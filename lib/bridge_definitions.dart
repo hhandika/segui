@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 
-abstract class Native {
+abstract class Api {
   Future<String> showDnaUppercase({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
