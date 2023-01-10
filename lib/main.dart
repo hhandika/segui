@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segul_gui/screens/home.dart';
+import 'package:segui/screens/home.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 void main() {

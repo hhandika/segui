@@ -1,6 +1,6 @@
 {
-    "name": "segul_gui",
-    "short_name": "segul_gui",
+    "name": "segui",
+    "short_name": "segui",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

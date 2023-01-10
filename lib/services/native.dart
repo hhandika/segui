@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:segul_gui/bridge_generated.dart';
+import 'package:segui/bridge_generated.dart';
 
 const _base = 'native';
 

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.segul_gui">
+    package="com.example.segui">
    <application
-        android:label="segul_gui"
+        android:label="segui"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

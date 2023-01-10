@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:segul_gui/screens/components.dart';
-import 'package:segul_gui/services/native.dart';
+import 'package:segui/screens/components.dart';
+import 'package:segui/services/native.dart';
 
 class SegulHome extends StatefulWidget {
   const SegulHome({super.key, required this.title});
@@ -17,6 +17,11 @@ class _SegulHomeState extends State<SegulHome> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: Color.lerp(
+          Theme.of(context).colorScheme.primary,
+          Colors.tealAccent,
+          0.5,
+        ),
       ),
       drawer: const MenuDrawer(),
       body: SafeArea(

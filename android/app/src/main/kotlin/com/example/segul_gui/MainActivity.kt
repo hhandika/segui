@@ -1,4 +1,4 @@
-package com.example.segul_gui
+package com.example.segui
 
 import io.flutter.embedding.android.FlutterActivity
 
