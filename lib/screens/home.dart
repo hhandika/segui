@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segui/screens/components.dart';
+import 'package:segui/screens/shared/components.dart';
 import 'package:segui/services/native.dart';
 
 class SegulHome extends StatefulWidget {
