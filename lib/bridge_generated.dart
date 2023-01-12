@@ -7,11 +7,11 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 
-// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+import 'package:meta/meta.dart';
 import 'dart:ffi' as ffi;
 
 class ApiImpl implements Api {
