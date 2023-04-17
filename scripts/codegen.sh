@@ -1,2 +1,6 @@
 #!/bin/bash
-flutter_rust_bridge_codegen --rust-input api/src/api.rs --dart-output lib/bridge_generated.dart --dart-decl-output lib/bridge_definitions.dart
+flutter_rust_bridge_codegen \
+    -r api/src/api.rs \
+    -d lib/bridge_generated.dart \
+    -c ios/Runner/bridge_generated.h \
+    -e macos/Runner/
