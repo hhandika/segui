@@ -46,3 +46,7 @@ app.*.map.json
 api/target/
 
 *.dmg
+
+# Ignore Rust binaries
+src/main/jniLibs/
+*.tar.gz

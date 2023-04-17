@@ -2,3 +2,4 @@
 cargo install flutter_rust_bridge_codegen
 flutter pub add --dev ffigen && flutter pub add ffi
 cargo install cargo-xcode
+rustup target install armv7-linux-androideabi
