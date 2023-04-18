@@ -1,53 +1,34 @@
 import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton({super.key, required this.text, required this.onPressed});
+  const PrimaryButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    required this.isRunning,
+  });
 
-  final String text;
+  final String label;
   final VoidCallback? onPressed;
+  final bool isRunning;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
         foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         elevation: 0,
       ),
+      icon: isRunning
+          ? const SizedBox(
+              height: 10,
+              width: 10,
+              child: CircularProgressIndicator(),
+            )
+          : const Icon(Icons.play_arrow),
       onPressed: onPressed,
-      child: Text(text),
-    );
-  }
-}
-
-class FormButton extends StatelessWidget {
-  const FormButton({
-    super.key,
-    required this.isEditing,
-    required this.onDeleted,
-    required this.onSubmitted,
-  });
-
-  final bool isEditing;
-  final VoidCallback onDeleted;
-  final VoidCallback onSubmitted;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      children: [
-        SecondaryButton(
-          text: 'Cancel',
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        const SizedBox(width: 10),
-        PrimaryButton(
-          text: isEditing ? 'Update' : 'Add',
-          onPressed: onSubmitted,
-        ),
-      ],
+      label: Text(label),
     );
   }
 }

@@ -13,9 +13,11 @@ class ConcatPage extends StatefulWidget {
 
 class _ConcatPageState extends State<ConcatPage> {
   String? _dirPath;
+  String? _outputDir;
   final TextEditingController _outputController = TextEditingController();
   String? _inputFormatController;
   String? _outputFormatController;
+  bool _isRunning = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,14 @@ class _ConcatPageState extends State<ConcatPage> {
               ),
               const SizedBox(height: 20),
               Text('Output', style: Theme.of(context).textTheme.titleMedium),
+              SelectDirField(
+                dirPath: _outputDir,
+                onChanged: (value) {
+                  setState(() {
+                    _outputDir = value;
+                  });
+                },
+              ),
               SharedTextField(
                 controller: _outputController,
                 label: 'Output Filename',
@@ -69,26 +79,36 @@ class _ConcatPageState extends State<ConcatPage> {
               SizedBox(
                 width: 80,
                 child: PrimaryButton(
-                    text: 'Run',
-                    onPressed: () {
-                      if (_dirPath != null) {
-                        api
-                            .concatAlignment(
-                          dirPath: _dirPath!,
-                          fileFmt: _inputFormatController!,
-                          datatype: 'dna',
-                          output: _outputController.text,
-                        )
-                            .then((value) {
-                          setState(() {
-                            _dirPath = null;
-                            _outputController.text = '';
-                            _inputFormatController = null;
-                            _outputFormatController = null;
-                          });
-                        });
-                      }
-                    }),
+                  label: 'Concatenate',
+                  isRunning: _isRunning,
+                  onPressed: _isRunning
+                      ? null
+                      : () {
+                          if (_dirPath != null) {
+                            setState(() {
+                              _isRunning = true;
+                            });
+                            api
+                                .concatAlignment(
+                              dirPath: _dirPath!,
+                              fileFmt: _inputFormatController!,
+                              datatype: 'dna',
+                              output: '$_outputDir/${_outputController.text}',
+                            )
+                                .then(
+                              (value) {
+                                setState(() {
+                                  _dirPath = null;
+                                  _outputController.text = '';
+                                  _inputFormatController = null;
+                                  _outputFormatController = null;
+                                  _isRunning = false;
+                                });
+                              },
+                            );
+                          }
+                        },
+                ),
               )
             ],
           ),
