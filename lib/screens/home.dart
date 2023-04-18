@@ -138,9 +138,7 @@ class _LargeScreenViewState extends State<LargeScreenView> {
               const VerticalDivider(thickness: 0.5, width: 1),
               Expanded(
                 flex: 3,
-                child: Center(
-                  child: _pages.elementAt(_selectedIndex),
-                ),
+                child: _pages.elementAt(_selectedIndex),
               ),
             ],
           )),

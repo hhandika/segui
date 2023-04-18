@@ -31,6 +31,35 @@ fn wire_show_dna_uppercase_impl(port_: MessagePort) {
         move || move |task_callback| Ok(show_dna_uppercase()),
     )
 }
+fn wire_concat_alignment_impl(
+    port_: MessagePort,
+    dir_path: impl Wire2Api<String> + UnwindSafe,
+    file_fmt: impl Wire2Api<String> + UnwindSafe,
+    datatype: impl Wire2Api<String> + UnwindSafe,
+    output: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "concat_alignment",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_dir_path = dir_path.wire2api();
+            let api_file_fmt = file_fmt.wire2api();
+            let api_datatype = datatype.wire2api();
+            let api_output = output.wire2api();
+            move |task_callback| {
+                Ok(concat_alignment(
+                    api_dir_path,
+                    api_file_fmt,
+                    api_datatype,
+                    api_output,
+                ))
+            }
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -53,6 +82,13 @@ where
         (!self.is_null()).then(|| self.wire2api())
     }
 }
+
+impl Wire2Api<u8> for u8 {
+    fn wire2api(self) -> u8 {
+        self
+    }
+}
+
 // Section: impl IntoDart
 
 // Section: executor

@@ -41,6 +41,32 @@ class ApiImpl implements Api {
         argNames: [],
       );
 
+  Future<void> concatAlignment(
+      {required String dirPath,
+      required String fileFmt,
+      required String datatype,
+      required String output,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_String(dirPath);
+    var arg1 = _platform.api2wire_String(fileFmt);
+    var arg2 = _platform.api2wire_String(datatype);
+    var arg3 = _platform.api2wire_String(output);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_concat_alignment(port_, arg0, arg1, arg2, arg3),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kConcatAlignmentConstMeta,
+      argValues: [dirPath, fileFmt, datatype, output],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kConcatAlignmentConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "concat_alignment",
+        argNames: ["dirPath", "fileFmt", "datatype", "output"],
+      );
+
   void dispose() {
     _platform.dispose();
   }
@@ -57,9 +83,18 @@ class ApiImpl implements Api {
   Uint8List _wire2api_uint_8_list(dynamic raw) {
     return raw as Uint8List;
   }
+
+  void _wire2api_unit(dynamic raw) {
+    return;
+  }
 }
 
 // Section: api2wire
+
+@protected
+int api2wire_u8(int raw) {
+  return raw;
+}
 
 // Section: finalizer
 
@@ -68,6 +103,17 @@ class ApiPlatform extends FlutterRustBridgeBase<ApiWire> {
 
 // Section: api2wire
 
+  @protected
+  ffi.Pointer<wire_uint_8_list> api2wire_String(String raw) {
+    return api2wire_uint_8_list(utf8.encoder.convert(raw));
+  }
+
+  @protected
+  ffi.Pointer<wire_uint_8_list> api2wire_uint_8_list(Uint8List raw) {
+    final ans = inner.new_uint_8_list_0(raw.length);
+    ans.ref.ptr.asTypedList(raw.length).setAll(0, raw);
+    return ans;
+  }
 // Section: finalizer
 
 // Section: api_fill_to_wire
@@ -182,6 +228,53 @@ class ApiWire implements FlutterRustBridgeWireBase {
   late final _wire_show_dna_uppercase =
       _wire_show_dna_uppercasePtr.asFunction<void Function(int)>();
 
+  void wire_concat_alignment(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> dir_path,
+    ffi.Pointer<wire_uint_8_list> file_fmt,
+    ffi.Pointer<wire_uint_8_list> datatype,
+    ffi.Pointer<wire_uint_8_list> output,
+  ) {
+    return _wire_concat_alignment(
+      port_,
+      dir_path,
+      file_fmt,
+      datatype,
+      output,
+    );
+  }
+
+  late final _wire_concat_alignmentPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_concat_alignment');
+  late final _wire_concat_alignment = _wire_concat_alignmentPtr.asFunction<
+      void Function(
+          int,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>)>();
+
+  ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
+    int len,
+  ) {
+    return _new_uint_8_list_0(
+      len,
+    );
+  }
+
+  late final _new_uint_8_list_0Ptr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<wire_uint_8_list> Function(
+              ffi.Int32)>>('new_uint_8_list_0');
+  late final _new_uint_8_list_0 = _new_uint_8_list_0Ptr
+      .asFunction<ffi.Pointer<wire_uint_8_list> Function(int)>();
+
   void free_WireSyncReturn(
     WireSyncReturn ptr,
   ) {
@@ -198,6 +291,13 @@ class ApiWire implements FlutterRustBridgeWireBase {
 }
 
 class _Dart_Handle extends ffi.Opaque {}
+
+class wire_uint_8_list extends ffi.Struct {
+  external ffi.Pointer<ffi.Uint8> ptr;
+
+  @ffi.Int32()
+  external int len;
+}
 
 typedef DartPostCObjectFnType = ffi.Pointer<
     ffi.NativeFunction<

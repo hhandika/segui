@@ -14,4 +14,13 @@ abstract class Api {
   Future<String> showDnaUppercase({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
+
+  Future<void> concatAlignment(
+      {required String dirPath,
+      required String fileFmt,
+      required String datatype,
+      required String output,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kConcatAlignmentConstMeta;
 }
