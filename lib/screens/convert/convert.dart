@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:segui/services/native.dart';
 
-class SummaryPage extends StatefulWidget {
-  const SummaryPage({super.key});
+class ConvertPage extends StatefulWidget {
+  const ConvertPage({super.key});
 
   @override
-  State<SummaryPage> createState() => _SummaryPageState();
+  State<ConvertPage> createState() => _ConvertPageState();
 }
 
-class _SummaryPageState extends State<SummaryPage> {
+class _ConvertPageState extends State<ConvertPage> {
   @override
   Widget build(BuildContext context) {
     return Center(

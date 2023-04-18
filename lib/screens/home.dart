@@ -1,275 +1,177 @@
 import 'package:flutter/material.dart';
-import 'package:segui/screens/shared/components.dart';
-import 'package:segui/services/native.dart';
+import 'package:segui/screens/concat/concat.dart';
+import 'package:segui/screens/convert/convert.dart';
+import 'package:segui/screens/shared.dart';
+import 'package:segui/screens/summary/summary.dart';
+import 'package:segui/screens/translate/translate.dart';
+
+const List<Widget> _pages = <Widget>[
+  HomePage(),
+  ConcatPage(),
+  ConvertPage(),
+  SummaryPage(),
+  TranslatePage(),
+];
+
+const List<String> _pageTitles = <String>[
+  'HOME',
+  'Alignment Concatenation',
+  'Sequence Conversion',
+  'Sequence Summary',
+  'Sequence Translation',
+];
 
 class SegulHome extends StatefulWidget {
-  const SegulHome({super.key, required this.title});
-
-  final String title;
+  const SegulHome({super.key});
 
   @override
   State<SegulHome> createState() => _SegulHomeState();
 }
 
 class _SegulHomeState extends State<SegulHome> {
+  late bool showLargeScreenView;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    showLargeScreenView = MediaQuery.of(context).size.width >= 450;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return showLargeScreenView
+        ? const LargeScreenView()
+        : const SmallScreenView();
+  }
+}
+
+class SmallScreenView extends StatefulWidget {
+  const SmallScreenView({super.key});
+
+  @override
+  State<SmallScreenView> createState() => _SmallScreenViewState();
+}
+
+class _SmallScreenViewState extends State<SmallScreenView> {
+  int _selectedIndex = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(_pageTitles[_selectedIndex]),
+        ),
+        body: SafeArea(
+          child: Center(
+            child: _pages.elementAt(_selectedIndex),
+          ),
+        ),
+        bottomNavigationBar: NavigationBar(
+          destinations: navigationTargets
+              .map((e) => NavigationDestination(
+                    icon: e.icon,
+                    selectedIcon: e.selectedIcon,
+                    label: e.label,
+                  ))
+              .toList(),
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (value) {
+            setState(() {
+              _selectedIndex = value;
+            });
+          },
+        ));
+  }
+}
+
+class LargeScreenView extends StatefulWidget {
+  const LargeScreenView({super.key});
+
+  @override
+  State<LargeScreenView> createState() => _LargeScreenViewState();
+}
+
+class _LargeScreenViewState extends State<LargeScreenView> {
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: Color.lerp(
-          Theme.of(context).colorScheme.primary,
-          Colors.tealAccent,
-          0.5,
-        ),
+        title: Text(_pageTitles[_selectedIndex]),
+        elevation: 10,
       ),
-      drawer: const MenuDrawer(),
       body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: 300,
-            height: 300,
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+          bottom: false,
+          top: false,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: NavigationRail(
+                    labelType: NavigationRailLabelType.selected,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                    destinations: navigationTargets
+                        .map((e) => NavigationRailDestination(
+                              icon: e.icon,
+                              selectedIcon: e.selectedIcon,
+                              label: Text(e.label),
+                            ))
+                        .toList(),
+                    selectedIndex: _selectedIndex,
+                    onDestinationSelected: (int index) {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                    groupAlignment: BorderSide.strokeAlignCenter,
+                    trailing: Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: IconButton(
+                          icon: const Icon(Icons.settings),
+                          onPressed: () {},
+                        ),
+                      ),
+                    )),
+              ),
+              const VerticalDivider(thickness: 0.5, width: 1),
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: _pages.elementAt(_selectedIndex),
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+          height: 200,
+          width: 400,
+          decoration: BoxDecoration(
+              border:
+                  Border.all(color: Theme.of(context).colorScheme.secondary),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                ConcatButton(),
-                ConvertButton(),
-                SummaryButton(),
-                TranslateButton(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MenuDrawer extends StatelessWidget {
-  const MenuDrawer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: const Text('Menu'),
-          ),
-          ListTile(
-            title: const Text('Item 1'),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              // Then close the drawer.
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Item 2'),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              // Then close the drawer.
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TranslateButton extends StatelessWidget {
-  const TranslateButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FeatureButton(
-        onTap: (() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TranslatePage()),
-          );
-        }),
-        mainColor: Colors.blue,
-        icon: Icons.translate,
-        title: "Translate");
-  }
-}
-
-class SummaryButton extends StatelessWidget {
-  const SummaryButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FeatureButton(
-        onTap: (() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SummaryPage()),
-          );
-        }),
-        mainColor: Colors.green,
-        icon: Icons.bar_chart,
-        title: "Summarize");
-  }
-}
-
-class ConvertButton extends StatelessWidget {
-  const ConvertButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FeatureButton(
-        onTap: (() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ConvertPage()),
-          );
-        }),
-        mainColor: Colors.orange,
-        icon: Icons.construction,
-        title: "Convert");
-  }
-}
-
-class TranslatePage extends StatefulWidget {
-  const TranslatePage({super.key});
-
-  @override
-  State<TranslatePage> createState() => _TranslatePageState();
-}
-
-class _TranslatePageState extends State<TranslatePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Alignment Translation"),
-      ),
-      body: Center(
-        child: FutureBuilder(
-          future: api.showDnaUppercase(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(snapshot.data.toString());
-            }
-            return const Text("Loading...");
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class ConvertPage extends StatefulWidget {
-  const ConvertPage({super.key});
-
-  @override
-  State<ConvertPage> createState() => _ConvertPageState();
-}
-
-class _ConvertPageState extends State<ConvertPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Alignment Conversion"),
-      ),
-      body: Center(
-        child: FutureBuilder(
-          future: api.showDnaUppercase(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(snapshot.data.toString());
-            }
-            return const Text("Loading...");
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class SummaryPage extends StatefulWidget {
-  const SummaryPage({super.key});
-
-  @override
-  State<SummaryPage> createState() => _SummaryPageState();
-}
-
-class _SummaryPageState extends State<SummaryPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Alignment Summary"),
-      ),
-      body: Center(
-        child: FutureBuilder(
-          future: api.showDnaUppercase(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(snapshot.data.toString());
-            }
-            return const Text("Loading...");
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class ConcatButton extends StatelessWidget {
-  const ConcatButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FeatureButton(
-        onTap: (() {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ConcatPage()),
-          );
-        }),
-        mainColor: Colors.purple,
-        icon: Icons.compare_arrows,
-        title: "Concatenate");
-  }
-}
-
-class ConcatPage extends StatefulWidget {
-  const ConcatPage({super.key});
-
-  @override
-  State<ConcatPage> createState() => _ConcatPageState();
-}
-
-class _ConcatPageState extends State<ConcatPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Alignment Concatenation"),
-      ),
-      body: Center(
-        child: FutureBuilder(
-          future: api.showDnaUppercase(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(snapshot.data.toString());
-            }
-            return const Text("Loading...");
-          },
-        ),
-      ),
+                Text("Welcome to SEGUL GUI!"),
+                Text("Select a tool from the navigation bar to get started."),
+              ])),
     );
   }
 }

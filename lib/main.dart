@@ -14,11 +14,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SEGUL',
-      theme:
-          FlexThemeData.light(scheme: FlexScheme.mandyRed, useMaterial3: true),
+      theme: FlexThemeData.light(
+          scheme: FlexScheme.bahamaBlue, useMaterial3: true),
       darkTheme:
-          FlexThemeData.dark(scheme: FlexScheme.mandyRed, useMaterial3: true),
-      home: const SegulHome(title: 'HOME'),
+          FlexThemeData.dark(scheme: FlexScheme.bahamaBlue, useMaterial3: true),
+      home: const SegulHome(),
     );
   }
 }
