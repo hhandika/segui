@@ -17,6 +17,7 @@ class _ConcatPageState extends State<ConcatPage> {
   String? _outputDir;
   final TextEditingController _outputController = TextEditingController();
   String? _inputFormatController;
+  String? _dataTypeController;
   String? _outputFormatController;
   String? _partitionFormatController;
   bool _isRunning = false;
@@ -27,7 +28,7 @@ class _ConcatPageState extends State<ConcatPage> {
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 25, 5, 5),
+          padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
           child: ListView(
             shrinkWrap: false,
             children: [
@@ -49,6 +50,16 @@ class _ConcatPageState extends State<ConcatPage> {
                 onChanged: (String? value) {
                   setState(() {
                     _inputFormatController = value;
+                  });
+                },
+              ),
+              SharedDropdownField(
+                value: _dataTypeController,
+                label: 'Data Type',
+                items: dataType,
+                onChanged: (String? value) {
+                  setState(() {
+                    _dataTypeController = value;
                   });
                 },
               ),
@@ -104,7 +115,7 @@ class _ConcatPageState extends State<ConcatPage> {
                               bridge: api,
                               dirPath: _dirPath!,
                               fileFmt: _inputFormatController!,
-                              datatype: 'dna',
+                              datatype: _dataTypeController!,
                               output: '$_outputDir/${_outputController.text}',
                               outputFmt: _outputFormatController!,
                               partitionFmt: '',

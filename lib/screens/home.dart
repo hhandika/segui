@@ -157,7 +157,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Container(
           height: 200,
           width: 400,
           decoration: BoxDecoration(
@@ -165,11 +167,14 @@ class _HomePageState extends State<HomePage> {
                   Border.all(color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(10)),
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text("Welcome to SEGUL GUI!"),
-                Text("Select a tool from the navigation bar to get started."),
-              ])),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text("Welcome to SEGUL GUI!"),
+              Text("Select a tool from the navigation bar to get started."),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

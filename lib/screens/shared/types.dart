@@ -18,3 +18,9 @@ const List<String> partitionFormat = [
   'NEXUS',
   'RaXML',
 ];
+
+const List<String> dataType = [
+  'DNA',
+  'Amino Acid',
+  'Ignore',
+];
