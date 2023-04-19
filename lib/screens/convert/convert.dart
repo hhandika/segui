@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:segui/bridge_generated.dart';
+import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/services/native.dart';
+import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/types.dart';
 
 class ConvertPage extends StatefulWidget {
   const ConvertPage({super.key});
@@ -9,17 +14,105 @@ class ConvertPage extends StatefulWidget {
 }
 
 class _ConvertPageState extends State<ConvertPage> {
+  IOController ctr = IOController.empty();
+  bool _isRunning = false;
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FutureBuilder(
-        future: api.showDnaUppercase(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data.toString());
-          }
-          return const Text("Loading...");
-        },
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
+          child: ListView(
+            shrinkWrap: false,
+            children: [
+              Text(
+                'Input',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SelectDirField(
+                  dirPath: ctr.dirPath,
+                  onChanged: (value) {
+                    setState(() {
+                      ctr.dirPath = value;
+                    });
+                  }),
+              SharedDropdownField(
+                value: ctr.inputFormatController,
+                label: 'Format',
+                items: inputFormat,
+                onChanged: (String? value) {
+                  setState(() {
+                    ctr.inputFormatController = value;
+                  });
+                },
+              ),
+              SharedDropdownField(
+                value: ctr.dataTypeController,
+                label: 'Data Type',
+                items: dataType,
+                onChanged: (String? value) {
+                  setState(() {
+                    ctr.dataTypeController = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Output',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SelectDirField(
+                  dirPath: ctr.outputDir,
+                  onChanged: (value) {
+                    setState(() {
+                      ctr.outputDir = value;
+                    });
+                  }),
+              SharedDropdownField(
+                value: ctr.outputFormatController,
+                label: 'Format',
+                items: outputFormat,
+                onChanged: (String? value) {
+                  setState(() {
+                    ctr.outputFormatController = value;
+                  });
+                },
+              ),
+              SharedTextField(
+                controller: ctr.outputController,
+                label: 'Output Name',
+                hint: 'Enter output name',
+              ),
+              const SizedBox(height: 20),
+              PrimaryButton(
+                label: 'Convert',
+                isRunning: _isRunning,
+                onPressed: _isRunning
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isRunning = true;
+                        });
+                        await SegulApi(
+                          bridge: api,
+                          dirPath: ctr.dirPath!,
+                          output: ctr.outputDir!,
+                          fileFmt: ctr.inputFormatController!,
+                          datatype: ctr.dataTypeController!,
+                        ).convertSequence(
+                          outputFmt: ctr.outputFormatController!,
+                          sort: false,
+                        );
+                        setState(() {
+                          _isRunning = false;
+                        });
+                      },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

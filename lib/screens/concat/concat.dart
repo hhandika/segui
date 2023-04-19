@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/types.dart';
 import 'package:segui/services/native.dart';
@@ -13,12 +14,7 @@ class ConcatPage extends StatefulWidget {
 }
 
 class _ConcatPageState extends State<ConcatPage> {
-  String? _dirPath;
-  String? _outputDir;
-  final TextEditingController _outputController = TextEditingController();
-  String? _inputFormatController;
-  String? _dataTypeController;
-  String? _outputFormatController;
+  IOController ctr = IOController.empty();
   String? _partitionFormatController;
   bool _isRunning = false;
 
@@ -37,54 +33,54 @@ class _ConcatPageState extends State<ConcatPage> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               SelectDirField(
-                  dirPath: _dirPath,
+                  dirPath: ctr.dirPath,
                   onChanged: (value) {
                     setState(() {
-                      _dirPath = value;
+                      ctr.dirPath = value;
                     });
                   }),
               SharedDropdownField(
-                value: _inputFormatController,
+                value: ctr.inputFormatController,
                 label: 'Format',
                 items: inputFormat,
                 onChanged: (String? value) {
                   setState(() {
-                    _inputFormatController = value;
+                    ctr.inputFormatController = value;
                   });
                 },
               ),
               SharedDropdownField(
-                value: _dataTypeController,
+                value: ctr.dataTypeController,
                 label: 'Data Type',
                 items: dataType,
                 onChanged: (String? value) {
                   setState(() {
-                    _dataTypeController = value;
+                    ctr.dataTypeController = value;
                   });
                 },
               ),
               const SizedBox(height: 20),
               Text('Output', style: Theme.of(context).textTheme.titleMedium),
               SelectDirField(
-                dirPath: _outputDir,
+                dirPath: ctr.outputDir,
                 onChanged: (value) {
                   setState(() {
-                    _outputDir = value;
+                    ctr.outputDir = value;
                   });
                 },
               ),
               SharedTextField(
-                controller: _outputController,
+                controller: ctr.outputController,
                 label: 'Output Filename',
                 hint: 'Enter output filename',
               ),
               SharedDropdownField(
-                value: _outputFormatController,
+                value: ctr.outputFormatController,
                 label: 'Output Format',
                 items: outputFormat,
                 onChanged: (String? value) {
                   setState(() {
-                    _outputFormatController = value;
+                    ctr.outputFormatController = value;
                   });
                 },
               ),
@@ -107,20 +103,24 @@ class _ConcatPageState extends State<ConcatPage> {
                   onPressed: _isRunning || !_validate()
                       ? null
                       : () {
-                          if (_dirPath != null) {
+                          if (ctr.dirPath != null) {
                             setState(() {
                               _isRunning = true;
                             });
                             try {
-                              ConcatParser(
+                              SegulApi(
                                 bridge: api,
-                                dirPath: _dirPath!,
-                                fileFmt: _inputFormatController!,
-                                datatype: _dataTypeController!,
-                                output: '$_outputDir/${_outputController.text}',
-                                outputFmt: _outputFormatController!,
-                                partitionFmt: '',
-                              ).concatAlignment().then(
+                                dirPath: ctr.dirPath!,
+                                fileFmt: ctr.inputFormatController!,
+                                datatype: ctr.dataTypeController!,
+                                output:
+                                    '${ctr.outputDir}/${ctr.outputController.text}',
+                              )
+                                  .concatAlignment(
+                                outputFmt: ctr.outputFormatController!,
+                                partitionFmt: _partitionFormatController!,
+                              )
+                                  .then(
                                 (_) {
                                   resetController();
                                 },
@@ -144,23 +144,17 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   bool _validate() {
-    return _dirPath != null &&
-        _outputDir != null &&
-        _outputController.text.isNotEmpty &&
-        _inputFormatController != null &&
-        _outputFormatController != null &&
+    return ctr.dirPath != null &&
+        ctr.outputDir != null &&
+        ctr.outputController.text.isNotEmpty &&
+        ctr.inputFormatController != null &&
+        ctr.outputFormatController != null &&
         _partitionFormatController != null;
   }
 
   void resetController() {
     setState(() {
-      _dirPath = null;
-      _outputController.text = '';
-      _inputFormatController = null;
-      _outputFormatController = null;
-      _partitionFormatController = null;
-      _outputDir = null;
-      _isRunning = false;
+      ctr.reset();
     });
   }
 }

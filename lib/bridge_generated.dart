@@ -15,43 +15,61 @@ abstract class Api {
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
 
-  Future<ConcatParser> newStaticMethodConcatParser({dynamic hint});
+  Future<SegulApi> newStaticMethodSegulApi({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodConcatParserConstMeta;
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulApiConstMeta;
 
-  Future<void> concatAlignmentMethodConcatParser(
-      {required ConcatParser that, dynamic hint});
+  Future<void> concatAlignmentMethodSegulApi(
+      {required SegulApi that,
+      required String outputFmt,
+      required String partitionFmt,
+      dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta
-      get kConcatAlignmentMethodConcatParserConstMeta;
+  FlutterRustBridgeTaskConstMeta get kConcatAlignmentMethodSegulApiConstMeta;
+
+  Future<void> convertSequenceMethodSegulApi(
+      {required SegulApi that,
+      required String outputFmt,
+      required bool sort,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kConvertSequenceMethodSegulApiConstMeta;
 }
 
-class ConcatParser {
+class SegulApi {
   final Api bridge;
   final String dirPath;
   final String fileFmt;
   final String datatype;
   final String output;
-  final String outputFmt;
-  final String partitionFmt;
 
-  const ConcatParser({
+  const SegulApi({
     required this.bridge,
     required this.dirPath,
     required this.fileFmt,
     required this.datatype,
     required this.output,
-    required this.outputFmt,
-    required this.partitionFmt,
   });
 
-  static Future<ConcatParser> newConcatParser(
-          {required Api bridge, dynamic hint}) =>
-      bridge.newStaticMethodConcatParser(hint: hint);
+  static Future<SegulApi> newSegulApi({required Api bridge, dynamic hint}) =>
+      bridge.newStaticMethodSegulApi(hint: hint);
 
-  Future<void> concatAlignment({dynamic hint}) =>
-      bridge.concatAlignmentMethodConcatParser(
+  Future<void> concatAlignment(
+          {required String outputFmt,
+          required String partitionFmt,
+          dynamic hint}) =>
+      bridge.concatAlignmentMethodSegulApi(
         that: this,
+        outputFmt: outputFmt,
+        partitionFmt: partitionFmt,
+      );
+
+  Future<void> convertSequence(
+          {required String outputFmt, required bool sort, dynamic hint}) =>
+      bridge.convertSequenceMethodSegulApi(
+        that: this,
+        outputFmt: outputFmt,
+        sort: sort,
       );
 }
 
@@ -79,42 +97,70 @@ class ApiImpl implements Api {
         argNames: [],
       );
 
-  Future<ConcatParser> newStaticMethodConcatParser({dynamic hint}) {
+  Future<SegulApi> newStaticMethodSegulApi({dynamic hint}) {
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) =>
-          _platform.inner.wire_new__static_method__ConcatParser(port_),
-      parseSuccessData: (d) => _wire2api_concat_parser(d),
-      constMeta: kNewStaticMethodConcatParserConstMeta,
+          _platform.inner.wire_new__static_method__SegulApi(port_),
+      parseSuccessData: (d) => _wire2api_segul_api(d),
+      constMeta: kNewStaticMethodSegulApiConstMeta,
       argValues: [],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodConcatParserConstMeta =>
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulApiConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
-        debugName: "new__static_method__ConcatParser",
+        debugName: "new__static_method__SegulApi",
         argNames: [],
       );
 
-  Future<void> concatAlignmentMethodConcatParser(
-      {required ConcatParser that, dynamic hint}) {
-    var arg0 = _platform.api2wire_box_autoadd_concat_parser(that);
+  Future<void> concatAlignmentMethodSegulApi(
+      {required SegulApi that,
+      required String outputFmt,
+      required String partitionFmt,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_segul_api(that);
+    var arg1 = _platform.api2wire_String(outputFmt);
+    var arg2 = _platform.api2wire_String(partitionFmt);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
-          .wire_concat_alignment__method__ConcatParser(port_, arg0),
+          .wire_concat_alignment__method__SegulApi(port_, arg0, arg1, arg2),
       parseSuccessData: _wire2api_unit,
-      constMeta: kConcatAlignmentMethodConcatParserConstMeta,
-      argValues: [that],
+      constMeta: kConcatAlignmentMethodSegulApiConstMeta,
+      argValues: [that, outputFmt, partitionFmt],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta
-      get kConcatAlignmentMethodConcatParserConstMeta =>
-          const FlutterRustBridgeTaskConstMeta(
-            debugName: "concat_alignment__method__ConcatParser",
-            argNames: ["that"],
-          );
+  FlutterRustBridgeTaskConstMeta get kConcatAlignmentMethodSegulApiConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "concat_alignment__method__SegulApi",
+        argNames: ["that", "outputFmt", "partitionFmt"],
+      );
+
+  Future<void> convertSequenceMethodSegulApi(
+      {required SegulApi that,
+      required String outputFmt,
+      required bool sort,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_segul_api(that);
+    var arg1 = _platform.api2wire_String(outputFmt);
+    var arg2 = sort;
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner
+          .wire_convert_sequence__method__SegulApi(port_, arg0, arg1, arg2),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kConvertSequenceMethodSegulApiConstMeta,
+      argValues: [that, outputFmt, sort],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kConvertSequenceMethodSegulApiConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "convert_sequence__method__SegulApi",
+        argNames: ["that", "outputFmt", "sort"],
+      );
 
   void dispose() {
     _platform.dispose();
@@ -125,18 +171,16 @@ class ApiImpl implements Api {
     return raw as String;
   }
 
-  ConcatParser _wire2api_concat_parser(dynamic raw) {
+  SegulApi _wire2api_segul_api(dynamic raw) {
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
-    return ConcatParser(
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return SegulApi(
       bridge: this,
       dirPath: _wire2api_String(arr[0]),
       fileFmt: _wire2api_String(arr[1]),
       datatype: _wire2api_String(arr[2]),
       output: _wire2api_String(arr[3]),
-      outputFmt: _wire2api_String(arr[4]),
-      partitionFmt: _wire2api_String(arr[5]),
     );
   }
 
@@ -156,6 +200,11 @@ class ApiImpl implements Api {
 // Section: api2wire
 
 @protected
+bool api2wire_bool(bool raw) {
+  return raw;
+}
+
+@protected
 int api2wire_u8(int raw) {
   return raw;
 }
@@ -173,10 +222,9 @@ class ApiPlatform extends FlutterRustBridgeBase<ApiWire> {
   }
 
   @protected
-  ffi.Pointer<wire_ConcatParser> api2wire_box_autoadd_concat_parser(
-      ConcatParser raw) {
-    final ptr = inner.new_box_autoadd_concat_parser_0();
-    _api_fill_to_wire_concat_parser(raw, ptr.ref);
+  ffi.Pointer<wire_SegulApi> api2wire_box_autoadd_segul_api(SegulApi raw) {
+    final ptr = inner.new_box_autoadd_segul_api_0();
+    _api_fill_to_wire_segul_api(raw, ptr.ref);
     return ptr;
   }
 
@@ -190,19 +238,16 @@ class ApiPlatform extends FlutterRustBridgeBase<ApiWire> {
 
 // Section: api_fill_to_wire
 
-  void _api_fill_to_wire_box_autoadd_concat_parser(
-      ConcatParser apiObj, ffi.Pointer<wire_ConcatParser> wireObj) {
-    _api_fill_to_wire_concat_parser(apiObj, wireObj.ref);
+  void _api_fill_to_wire_box_autoadd_segul_api(
+      SegulApi apiObj, ffi.Pointer<wire_SegulApi> wireObj) {
+    _api_fill_to_wire_segul_api(apiObj, wireObj.ref);
   }
 
-  void _api_fill_to_wire_concat_parser(
-      ConcatParser apiObj, wire_ConcatParser wireObj) {
+  void _api_fill_to_wire_segul_api(SegulApi apiObj, wire_SegulApi wireObj) {
     wireObj.dir_path = api2wire_String(apiObj.dirPath);
     wireObj.file_fmt = api2wire_String(apiObj.fileFmt);
     wireObj.datatype = api2wire_String(apiObj.datatype);
     wireObj.output = api2wire_String(apiObj.output);
-    wireObj.output_fmt = api2wire_String(apiObj.outputFmt);
-    wireObj.partition_fmt = api2wire_String(apiObj.partitionFmt);
   }
 }
 
@@ -315,49 +360,82 @@ class ApiWire implements FlutterRustBridgeWireBase {
   late final _wire_show_dna_uppercase =
       _wire_show_dna_uppercasePtr.asFunction<void Function(int)>();
 
-  void wire_new__static_method__ConcatParser(
+  void wire_new__static_method__SegulApi(
     int port_,
   ) {
-    return _wire_new__static_method__ConcatParser(
+    return _wire_new__static_method__SegulApi(
       port_,
     );
   }
 
-  late final _wire_new__static_method__ConcatParserPtr =
+  late final _wire_new__static_method__SegulApiPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
-          'wire_new__static_method__ConcatParser');
-  late final _wire_new__static_method__ConcatParser =
-      _wire_new__static_method__ConcatParserPtr
-          .asFunction<void Function(int)>();
+          'wire_new__static_method__SegulApi');
+  late final _wire_new__static_method__SegulApi =
+      _wire_new__static_method__SegulApiPtr.asFunction<void Function(int)>();
 
-  void wire_concat_alignment__method__ConcatParser(
+  void wire_concat_alignment__method__SegulApi(
     int port_,
-    ffi.Pointer<wire_ConcatParser> that,
+    ffi.Pointer<wire_SegulApi> that,
+    ffi.Pointer<wire_uint_8_list> output_fmt,
+    ffi.Pointer<wire_uint_8_list> partition_fmt,
   ) {
-    return _wire_concat_alignment__method__ConcatParser(
+    return _wire_concat_alignment__method__SegulApi(
       port_,
       that,
+      output_fmt,
+      partition_fmt,
     );
   }
 
-  late final _wire_concat_alignment__method__ConcatParserPtr = _lookup<
+  late final _wire_concat_alignment__method__SegulApiPtr = _lookup<
           ffi.NativeFunction<
-              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_ConcatParser>)>>(
-      'wire_concat_alignment__method__ConcatParser');
-  late final _wire_concat_alignment__method__ConcatParser =
-      _wire_concat_alignment__method__ConcatParserPtr
-          .asFunction<void Function(int, ffi.Pointer<wire_ConcatParser>)>();
+              ffi.Void Function(
+                  ffi.Int64,
+                  ffi.Pointer<wire_SegulApi>,
+                  ffi.Pointer<wire_uint_8_list>,
+                  ffi.Pointer<wire_uint_8_list>)>>(
+      'wire_concat_alignment__method__SegulApi');
+  late final _wire_concat_alignment__method__SegulApi =
+      _wire_concat_alignment__method__SegulApiPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_SegulApi>,
+              ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
 
-  ffi.Pointer<wire_ConcatParser> new_box_autoadd_concat_parser_0() {
-    return _new_box_autoadd_concat_parser_0();
+  void wire_convert_sequence__method__SegulApi(
+    int port_,
+    ffi.Pointer<wire_SegulApi> that,
+    ffi.Pointer<wire_uint_8_list> output_fmt,
+    bool sort,
+  ) {
+    return _wire_convert_sequence__method__SegulApi(
+      port_,
+      that,
+      output_fmt,
+      sort,
+    );
   }
 
-  late final _new_box_autoadd_concat_parser_0Ptr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<wire_ConcatParser> Function()>>(
-          'new_box_autoadd_concat_parser_0');
-  late final _new_box_autoadd_concat_parser_0 =
-      _new_box_autoadd_concat_parser_0Ptr
-          .asFunction<ffi.Pointer<wire_ConcatParser> Function()>();
+  late final _wire_convert_sequence__method__SegulApiPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_SegulApi>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Bool)>>('wire_convert_sequence__method__SegulApi');
+  late final _wire_convert_sequence__method__SegulApi =
+      _wire_convert_sequence__method__SegulApiPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_SegulApi>,
+              ffi.Pointer<wire_uint_8_list>, bool)>();
+
+  ffi.Pointer<wire_SegulApi> new_box_autoadd_segul_api_0() {
+    return _new_box_autoadd_segul_api_0();
+  }
+
+  late final _new_box_autoadd_segul_api_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_SegulApi> Function()>>(
+          'new_box_autoadd_segul_api_0');
+  late final _new_box_autoadd_segul_api_0 = _new_box_autoadd_segul_api_0Ptr
+      .asFunction<ffi.Pointer<wire_SegulApi> Function()>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
@@ -398,7 +476,7 @@ class wire_uint_8_list extends ffi.Struct {
   external int len;
 }
 
-class wire_ConcatParser extends ffi.Struct {
+class wire_SegulApi extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> dir_path;
 
   external ffi.Pointer<wire_uint_8_list> file_fmt;
@@ -406,10 +484,6 @@ class wire_ConcatParser extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> datatype;
 
   external ffi.Pointer<wire_uint_8_list> output;
-
-  external ffi.Pointer<wire_uint_8_list> output_fmt;
-
-  external ffi.Pointer<wire_uint_8_list> partition_fmt;
 }
 
 typedef DartPostCObjectFnType = ffi.Pointer<
