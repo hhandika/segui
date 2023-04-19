@@ -15,14 +15,44 @@ abstract class Api {
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
 
-  Future<void> concatAlignment(
-      {required String dirPath,
-      required String fileFmt,
-      required String datatype,
-      required String output,
-      dynamic hint});
+  Future<ConcatParser> newStaticMethodConcatParser({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kConcatAlignmentConstMeta;
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodConcatParserConstMeta;
+
+  Future<void> concatAlignmentMethodConcatParser(
+      {required ConcatParser that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta
+      get kConcatAlignmentMethodConcatParserConstMeta;
+}
+
+class ConcatParser {
+  final Api bridge;
+  final String dirPath;
+  final String fileFmt;
+  final String datatype;
+  final String output;
+  final String outputFmt;
+  final String partitionFmt;
+
+  const ConcatParser({
+    required this.bridge,
+    required this.dirPath,
+    required this.fileFmt,
+    required this.datatype,
+    required this.output,
+    required this.outputFmt,
+    required this.partitionFmt,
+  });
+
+  static Future<ConcatParser> newConcatParser(
+          {required Api bridge, dynamic hint}) =>
+      bridge.newStaticMethodConcatParser(hint: hint);
+
+  Future<void> concatAlignment({dynamic hint}) =>
+      bridge.concatAlignmentMethodConcatParser(
+        that: this,
+      );
 }
 
 class ApiImpl implements Api {
@@ -49,31 +79,42 @@ class ApiImpl implements Api {
         argNames: [],
       );
 
-  Future<void> concatAlignment(
-      {required String dirPath,
-      required String fileFmt,
-      required String datatype,
-      required String output,
-      dynamic hint}) {
-    var arg0 = _platform.api2wire_String(dirPath);
-    var arg1 = _platform.api2wire_String(fileFmt);
-    var arg2 = _platform.api2wire_String(datatype);
-    var arg3 = _platform.api2wire_String(output);
+  Future<ConcatParser> newStaticMethodConcatParser({dynamic hint}) {
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) =>
-          _platform.inner.wire_concat_alignment(port_, arg0, arg1, arg2, arg3),
-      parseSuccessData: _wire2api_unit,
-      constMeta: kConcatAlignmentConstMeta,
-      argValues: [dirPath, fileFmt, datatype, output],
+          _platform.inner.wire_new__static_method__ConcatParser(port_),
+      parseSuccessData: (d) => _wire2api_concat_parser(d),
+      constMeta: kNewStaticMethodConcatParserConstMeta,
+      argValues: [],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kConcatAlignmentConstMeta =>
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodConcatParserConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
-        debugName: "concat_alignment",
-        argNames: ["dirPath", "fileFmt", "datatype", "output"],
+        debugName: "new__static_method__ConcatParser",
+        argNames: [],
       );
+
+  Future<void> concatAlignmentMethodConcatParser(
+      {required ConcatParser that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_concat_parser(that);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner
+          .wire_concat_alignment__method__ConcatParser(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kConcatAlignmentMethodConcatParserConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta
+      get kConcatAlignmentMethodConcatParserConstMeta =>
+          const FlutterRustBridgeTaskConstMeta(
+            debugName: "concat_alignment__method__ConcatParser",
+            argNames: ["that"],
+          );
 
   void dispose() {
     _platform.dispose();
@@ -82,6 +123,21 @@ class ApiImpl implements Api {
 
   String _wire2api_String(dynamic raw) {
     return raw as String;
+  }
+
+  ConcatParser _wire2api_concat_parser(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return ConcatParser(
+      bridge: this,
+      dirPath: _wire2api_String(arr[0]),
+      fileFmt: _wire2api_String(arr[1]),
+      datatype: _wire2api_String(arr[2]),
+      output: _wire2api_String(arr[3]),
+      outputFmt: _wire2api_String(arr[4]),
+      partitionFmt: _wire2api_String(arr[5]),
+    );
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -117,6 +173,14 @@ class ApiPlatform extends FlutterRustBridgeBase<ApiWire> {
   }
 
   @protected
+  ffi.Pointer<wire_ConcatParser> api2wire_box_autoadd_concat_parser(
+      ConcatParser raw) {
+    final ptr = inner.new_box_autoadd_concat_parser_0();
+    _api_fill_to_wire_concat_parser(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_uint_8_list> api2wire_uint_8_list(Uint8List raw) {
     final ans = inner.new_uint_8_list_0(raw.length);
     ans.ref.ptr.asTypedList(raw.length).setAll(0, raw);
@@ -125,6 +189,21 @@ class ApiPlatform extends FlutterRustBridgeBase<ApiWire> {
 // Section: finalizer
 
 // Section: api_fill_to_wire
+
+  void _api_fill_to_wire_box_autoadd_concat_parser(
+      ConcatParser apiObj, ffi.Pointer<wire_ConcatParser> wireObj) {
+    _api_fill_to_wire_concat_parser(apiObj, wireObj.ref);
+  }
+
+  void _api_fill_to_wire_concat_parser(
+      ConcatParser apiObj, wire_ConcatParser wireObj) {
+    wireObj.dir_path = api2wire_String(apiObj.dirPath);
+    wireObj.file_fmt = api2wire_String(apiObj.fileFmt);
+    wireObj.datatype = api2wire_String(apiObj.datatype);
+    wireObj.output = api2wire_String(apiObj.output);
+    wireObj.output_fmt = api2wire_String(apiObj.outputFmt);
+    wireObj.partition_fmt = api2wire_String(apiObj.partitionFmt);
+  }
 }
 
 // ignore_for_file: camel_case_types, non_constant_identifier_names, avoid_positional_boolean_parameters, annotate_overrides, constant_identifier_names
@@ -236,37 +315,49 @@ class ApiWire implements FlutterRustBridgeWireBase {
   late final _wire_show_dna_uppercase =
       _wire_show_dna_uppercasePtr.asFunction<void Function(int)>();
 
-  void wire_concat_alignment(
+  void wire_new__static_method__ConcatParser(
     int port_,
-    ffi.Pointer<wire_uint_8_list> dir_path,
-    ffi.Pointer<wire_uint_8_list> file_fmt,
-    ffi.Pointer<wire_uint_8_list> datatype,
-    ffi.Pointer<wire_uint_8_list> output,
   ) {
-    return _wire_concat_alignment(
+    return _wire_new__static_method__ConcatParser(
       port_,
-      dir_path,
-      file_fmt,
-      datatype,
-      output,
     );
   }
 
-  late final _wire_concat_alignmentPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Int64,
-              ffi.Pointer<wire_uint_8_list>,
-              ffi.Pointer<wire_uint_8_list>,
-              ffi.Pointer<wire_uint_8_list>,
-              ffi.Pointer<wire_uint_8_list>)>>('wire_concat_alignment');
-  late final _wire_concat_alignment = _wire_concat_alignmentPtr.asFunction<
-      void Function(
-          int,
-          ffi.Pointer<wire_uint_8_list>,
-          ffi.Pointer<wire_uint_8_list>,
-          ffi.Pointer<wire_uint_8_list>,
-          ffi.Pointer<wire_uint_8_list>)>();
+  late final _wire_new__static_method__ConcatParserPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_new__static_method__ConcatParser');
+  late final _wire_new__static_method__ConcatParser =
+      _wire_new__static_method__ConcatParserPtr
+          .asFunction<void Function(int)>();
+
+  void wire_concat_alignment__method__ConcatParser(
+    int port_,
+    ffi.Pointer<wire_ConcatParser> that,
+  ) {
+    return _wire_concat_alignment__method__ConcatParser(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_concat_alignment__method__ConcatParserPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_ConcatParser>)>>(
+      'wire_concat_alignment__method__ConcatParser');
+  late final _wire_concat_alignment__method__ConcatParser =
+      _wire_concat_alignment__method__ConcatParserPtr
+          .asFunction<void Function(int, ffi.Pointer<wire_ConcatParser>)>();
+
+  ffi.Pointer<wire_ConcatParser> new_box_autoadd_concat_parser_0() {
+    return _new_box_autoadd_concat_parser_0();
+  }
+
+  late final _new_box_autoadd_concat_parser_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_ConcatParser> Function()>>(
+          'new_box_autoadd_concat_parser_0');
+  late final _new_box_autoadd_concat_parser_0 =
+      _new_box_autoadd_concat_parser_0Ptr
+          .asFunction<ffi.Pointer<wire_ConcatParser> Function()>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
@@ -305,6 +396,20 @@ class wire_uint_8_list extends ffi.Struct {
 
   @ffi.Int32()
   external int len;
+}
+
+class wire_ConcatParser extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> dir_path;
+
+  external ffi.Pointer<wire_uint_8_list> file_fmt;
+
+  external ffi.Pointer<wire_uint_8_list> datatype;
+
+  external ffi.Pointer<wire_uint_8_list> output;
+
+  external ffi.Pointer<wire_uint_8_list> output_fmt;
+
+  external ffi.Pointer<wire_uint_8_list> partition_fmt;
 }
 
 typedef DartPostCObjectFnType = ffi.Pointer<

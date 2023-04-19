@@ -31,32 +31,29 @@ fn wire_show_dna_uppercase_impl(port_: MessagePort) {
         move || move |task_callback| Ok(show_dna_uppercase()),
     )
 }
-fn wire_concat_alignment_impl(
+fn wire_new__static_method__ConcatParser_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "new__static_method__ConcatParser",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Ok(ConcatParser::new()),
+    )
+}
+fn wire_concat_alignment__method__ConcatParser_impl(
     port_: MessagePort,
-    dir_path: impl Wire2Api<String> + UnwindSafe,
-    file_fmt: impl Wire2Api<String> + UnwindSafe,
-    datatype: impl Wire2Api<String> + UnwindSafe,
-    output: impl Wire2Api<String> + UnwindSafe,
+    that: impl Wire2Api<ConcatParser> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
-            debug_name: "concat_alignment",
+            debug_name: "concat_alignment__method__ConcatParser",
             port: Some(port_),
             mode: FfiCallMode::Normal,
         },
         move || {
-            let api_dir_path = dir_path.wire2api();
-            let api_file_fmt = file_fmt.wire2api();
-            let api_datatype = datatype.wire2api();
-            let api_output = output.wire2api();
-            move |task_callback| {
-                Ok(concat_alignment(
-                    api_dir_path,
-                    api_file_fmt,
-                    api_datatype,
-                    api_output,
-                ))
-            }
+            let api_that = that.wire2api();
+            move |task_callback| Ok(ConcatParser::concat_alignment(&api_that))
         },
     )
 }
@@ -90,6 +87,21 @@ impl Wire2Api<u8> for u8 {
 }
 
 // Section: impl IntoDart
+
+impl support::IntoDart for ConcatParser {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.dir_path.into_dart(),
+            self.file_fmt.into_dart(),
+            self.datatype.into_dart(),
+            self.output.into_dart(),
+            self.output_fmt.into_dart(),
+            self.partition_fmt.into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for ConcatParser {}
 
 // Section: executor
 

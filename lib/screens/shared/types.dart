@@ -12,3 +12,9 @@ const List<String> outputFormat = [
   'NEXUS interleaved',
   'PHYLIP interleaved',
 ];
+
+const List<String> partitionFormat = [
+  'Charset',
+  'NEXUS',
+  'RaXML',
+];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/types.dart';
@@ -17,6 +18,7 @@ class _ConcatPageState extends State<ConcatPage> {
   final TextEditingController _outputController = TextEditingController();
   String? _inputFormatController;
   String? _outputFormatController;
+  String? _partitionFormatController;
   bool _isRunning = false;
 
   @override
@@ -67,11 +69,21 @@ class _ConcatPageState extends State<ConcatPage> {
               ),
               SharedDropdownField(
                 value: _outputFormatController,
-                label: 'Format',
+                label: 'Output Format',
                 items: outputFormat,
                 onChanged: (String? value) {
                   setState(() {
                     _outputFormatController = value;
+                  });
+                },
+              ),
+              SharedDropdownField(
+                value: _partitionFormatController,
+                label: 'Partition Format',
+                items: partitionFormat,
+                onChanged: (String? value) {
+                  setState(() {
+                    _partitionFormatController = value;
                   });
                 },
               ),
@@ -81,29 +93,24 @@ class _ConcatPageState extends State<ConcatPage> {
                 child: PrimaryButton(
                   label: 'Concatenate',
                   isRunning: _isRunning,
-                  onPressed: _isRunning
+                  onPressed: _isRunning || !_validate()
                       ? null
                       : () {
                           if (_dirPath != null) {
                             setState(() {
                               _isRunning = true;
                             });
-                            api
-                                .concatAlignment(
+                            ConcatParser(
+                              bridge: api,
                               dirPath: _dirPath!,
                               fileFmt: _inputFormatController!,
                               datatype: 'dna',
                               output: '$_outputDir/${_outputController.text}',
-                            )
-                                .then(
-                              (value) {
-                                setState(() {
-                                  _dirPath = null;
-                                  _outputController.text = '';
-                                  _inputFormatController = null;
-                                  _outputFormatController = null;
-                                  _isRunning = false;
-                                });
+                              outputFmt: _outputFormatController!,
+                              partitionFmt: '',
+                            ).concatAlignment().then(
+                              (_) {
+                                resetController();
                               },
                             );
                           }
@@ -115,5 +122,26 @@ class _ConcatPageState extends State<ConcatPage> {
         ),
       ),
     );
+  }
+
+  bool _validate() {
+    return _dirPath != null &&
+        _outputDir != null &&
+        _outputController.text.isNotEmpty &&
+        _inputFormatController != null &&
+        _outputFormatController != null &&
+        _partitionFormatController != null;
+  }
+
+  void resetController() {
+    setState(() {
+      _dirPath = null;
+      _outputController.text = '';
+      _inputFormatController = null;
+      _outputFormatController = null;
+      _partitionFormatController = null;
+      _outputDir = null;
+      _isRunning = false;
+    });
   }
 }
