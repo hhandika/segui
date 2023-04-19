@@ -80,6 +80,33 @@ impl SegulApi {
         }
     }
 
+    fn create_new_output_if_exist(&self, output: &PathBuf) -> PathBuf {
+        if output.exists() {
+            let mut new_output = output.clone();
+            let mut counter = 1;
+            loop {
+                let new_name = format!(
+                    "{}({})",
+                    output
+                        .file_stem()
+                        .expect("Failed to get file stem")
+                        .to_str()
+                        .expect("Failed to convert file stem to string"),
+                    counter
+                );
+                new_output.set_file_name(new_name);
+                new_output.set_extension(output.extension().unwrap());
+                if !new_output.exists() {
+                    break;
+                }
+                counter += 1;
+            }
+            new_output
+        } else {
+            output.clone()
+        }
+    }
+
     fn set_output_ext(&self, output_fmt: &str) -> PathBuf {
         let ext = match output_fmt.to_lowercase().as_str() {
             "fasta" | "fasta interleaved" => String::from("fas"),
@@ -88,7 +115,8 @@ impl SegulApi {
             _ => unreachable!("Output format is not supported"),
         };
         let output = PathBuf::from(&self.output);
-        output.with_extension(ext)
+        output.with_extension(ext);
+        self.create_new_output_if_exist(&output)
     }
 
     fn match_datatype(&self) -> DataType {
