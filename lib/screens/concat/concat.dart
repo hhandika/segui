@@ -111,19 +111,27 @@ class _ConcatPageState extends State<ConcatPage> {
                             setState(() {
                               _isRunning = true;
                             });
-                            ConcatParser(
-                              bridge: api,
-                              dirPath: _dirPath!,
-                              fileFmt: _inputFormatController!,
-                              datatype: _dataTypeController!,
-                              output: '$_outputDir/${_outputController.text}',
-                              outputFmt: _outputFormatController!,
-                              partitionFmt: '',
-                            ).concatAlignment().then(
-                              (_) {
-                                resetController();
-                              },
-                            );
+                            try {
+                              ConcatParser(
+                                bridge: api,
+                                dirPath: _dirPath!,
+                                fileFmt: _inputFormatController!,
+                                datatype: _dataTypeController!,
+                                output: '$_outputDir/${_outputController.text}',
+                                outputFmt: _outputFormatController!,
+                                partitionFmt: '',
+                              ).concatAlignment().then(
+                                (_) {
+                                  resetController();
+                                },
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                ),
+                              );
+                            }
                           }
                         },
                 ),
