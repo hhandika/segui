@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/bridge_definitions.dart';
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';

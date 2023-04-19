@@ -45,10 +45,9 @@ impl SegulApi {
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
         let mut files = Files::new(path, &input_fmt).find();
-        let output = self.set_output_ext(&output_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
-        concat.convert(&mut files, &output);
+        concat.convert(&mut files, Path::new(&self.output));
     }
 
     fn match_input_fmt(&self) -> InputFmt {

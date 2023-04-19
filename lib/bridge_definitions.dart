@@ -4,10 +4,8 @@
 
 import 'dart:convert';
 import 'dart:async';
-// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
-// ignore: depend_on_referenced_packages
 import 'package:uuid/uuid.dart';
 
 abstract class Api {
@@ -15,12 +13,60 @@ abstract class Api {
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
 
-  Future<void> concatAlignment(
-      {required String dirPath,
-      required String fileFmt,
-      required String datatype,
-      required String output,
+  Future<SegulApi> newStaticMethodSegulApi({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulApiConstMeta;
+
+  Future<void> concatAlignmentMethodSegulApi(
+      {required SegulApi that,
+      required String outputFmt,
+      required String partitionFmt,
       dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kConcatAlignmentConstMeta;
+  FlutterRustBridgeTaskConstMeta get kConcatAlignmentMethodSegulApiConstMeta;
+
+  Future<void> convertSequenceMethodSegulApi(
+      {required SegulApi that,
+      required String outputFmt,
+      required bool sort,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kConvertSequenceMethodSegulApiConstMeta;
+}
+
+class SegulApi {
+  final Api bridge;
+  final String dirPath;
+  final String fileFmt;
+  final String datatype;
+  final String output;
+
+  const SegulApi({
+    required this.bridge,
+    required this.dirPath,
+    required this.fileFmt,
+    required this.datatype,
+    required this.output,
+  });
+
+  static Future<SegulApi> newSegulApi({required Api bridge, dynamic hint}) =>
+      bridge.newStaticMethodSegulApi(hint: hint);
+
+  Future<void> concatAlignment(
+          {required String outputFmt,
+          required String partitionFmt,
+          dynamic hint}) =>
+      bridge.concatAlignmentMethodSegulApi(
+        that: this,
+        outputFmt: outputFmt,
+        partitionFmt: partitionFmt,
+      );
+
+  Future<void> convertSequence(
+          {required String outputFmt, required bool sort, dynamic hint}) =>
+      bridge.convertSequenceMethodSegulApi(
+        that: this,
+        outputFmt: outputFmt,
+        sort: sort,
+      );
 }
