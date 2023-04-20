@@ -256,3 +256,30 @@ SnackBar showSharedSnackBar(BuildContext context, String text) {
     duration: const Duration(seconds: 8),
   );
 }
+
+class SwitchForm extends StatelessWidget {
+  const SwitchForm({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onPressed,
+  });
+
+  final String label;
+  final bool value;
+  final void Function(bool) onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
+        Switch(
+          value: value,
+          onChanged: onPressed,
+        ),
+      ],
+    );
+  }
+}

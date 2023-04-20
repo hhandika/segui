@@ -16,6 +16,7 @@ class ConvertPage extends StatefulWidget {
 class _ConvertPageState extends State<ConvertPage> {
   IOController ctr = IOController.empty();
   bool _isRunning = false;
+  bool isSortSequence = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,15 @@ class _ConvertPageState extends State<ConvertPage> {
                       }
                     });
                   },
-                )
+                ),
+                SwitchForm(
+                    label: 'Sort by sequence ID',
+                    value: isSortSequence,
+                    onPressed: (value) {
+                      setState(() {
+                        isSortSequence = value;
+                      });
+                    }),
               ]),
               const SizedBox(height: 20),
               PrimaryButton(
@@ -108,7 +117,7 @@ class _ConvertPageState extends State<ConvertPage> {
       datatype: ctr.dataTypeController,
     ).convertSequence(
       outputFmt: ctr.outputFormatController,
-      sort: false,
+      sort: isSortSequence,
     );
   }
 
