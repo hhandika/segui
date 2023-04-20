@@ -80,40 +80,61 @@ class _ConvertPageState extends State<ConvertPage> {
                   });
                 },
               ),
-              SharedTextField(
-                controller: ctr.outputController,
-                label: 'Output Name',
-                hint: 'Enter output name',
-              ),
               const SizedBox(height: 20),
               PrimaryButton(
                 label: 'Convert',
                 isRunning: _isRunning,
                 onPressed: _isRunning
                     ? null
-                    : () {
+                    : () async {
                         setState(() {
                           _isRunning = true;
                         });
-                        SegulServices(
-                          bridge: segulApi,
-                          dirPath: ctr.dirPath!,
-                          output: ctr.outputDir!,
-                          fileFmt: ctr.inputFormatController!,
-                          datatype: ctr.dataTypeController!,
-                        ).convertSequence(
-                          outputFmt: ctr.outputFormatController!,
-                          sort: false,
-                        );
-                        setState(() {
-                          _isRunning = false;
-                        });
+                        try {
+                          await _convert();
+                          if (mounted) {
+                            setState(() {
+                              _isRunning = false;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Conversion complete!'),
+                                ),
+                              );
+                            });
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            setState(() {
+                              _isRunning = false;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Conversion failed! $e',
+                                  ),
+                                ),
+                              );
+                            });
+                          }
+                        }
                       },
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _convert() async {
+    await SegulServices(
+      bridge: segulApi,
+      dirPath: ctr.dirPath!,
+      output: ctr.outputDir!,
+      fileFmt: ctr.inputFormatController!,
+      datatype: ctr.dataTypeController!,
+    ).convertSequence(
+      outputFmt: ctr.outputFormatController!,
+      sort: false,
     );
   }
 }

@@ -102,29 +102,41 @@ class _ConcatPageState extends State<ConcatPage> {
                   isRunning: _isRunning,
                   onPressed: _isRunning || !_validate()
                       ? null
-                      : () {
+                      : () async {
                           if (ctr.dirPath != null) {
                             setState(() {
                               _isRunning = true;
                             });
-                            SegulServices(
-                              bridge: segulApi,
-                              dirPath: ctr.dirPath!,
-                              fileFmt: ctr.inputFormatController!,
-                              datatype: ctr.dataTypeController!,
-                              output:
-                                  '${ctr.outputDir}/${ctr.outputController.text}',
-                            )
-                                .concatAlignment(
-                              outputFmt: ctr.outputFormatController!,
-                              partitionFmt: _partitionFormatController!,
-                            )
-                                .then((_) {
-                              setState(() {
-                                _isRunning = false;
-                              });
-                              resetController();
-                            });
+                            try {
+                              await SegulServices(
+                                bridge: segulApi,
+                                dirPath: ctr.dirPath!,
+                                fileFmt: ctr.inputFormatController!,
+                                datatype: ctr.dataTypeController!,
+                                output:
+                                    '${ctr.outputDir}/${ctr.outputController.text}',
+                              ).concatAlignment(
+                                outputFmt: ctr.outputFormatController!,
+                                partitionFmt: _partitionFormatController!,
+                              );
+                              if (mounted) {
+                                setState(() {
+                                  _isRunning = false;
+                                });
+                                resetController();
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                ),
+                              );
+                              if (mounted) {
+                                setState(() {
+                                  _isRunning = false;
+                                });
+                              }
+                            }
                           }
                         },
                 ),
