@@ -1,4 +1,4 @@
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use segul::handler::concat::ConcatHandler;
 use segul::handler::convert::Converter;
