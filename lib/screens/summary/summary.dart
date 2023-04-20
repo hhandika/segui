@@ -13,7 +13,7 @@ class _SummaryPageState extends State<SummaryPage> {
   Widget build(BuildContext context) {
     return Center(
       child: FutureBuilder(
-        future: api.showDnaUppercase(),
+        future: segulApi.showDnaUppercase(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Text(snapshot.data.toString());

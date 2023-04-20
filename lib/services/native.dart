@@ -7,6 +7,6 @@ const _base = 'api';
 
 final _dylib = Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
 
-final api = ApiImpl(Platform.isIOS || Platform.isMacOS
+final segulApi = SegulApiImpl(Platform.isIOS || Platform.isMacOS
     ? DynamicLibrary.process()
     : DynamicLibrary.open(_dylib));

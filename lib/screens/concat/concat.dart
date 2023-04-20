@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segui/bridge_definitions.dart';
+import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -107,8 +107,8 @@ class _ConcatPageState extends State<ConcatPage> {
                             setState(() {
                               _isRunning = true;
                             });
-                            SegulApi(
-                              bridge: api,
+                            SegulServices(
+                              bridge: segulApi,
                               dirPath: ctr.dirPath!,
                               fileFmt: ctr.inputFormatController!,
                               datatype: ctr.dataTypeController!,
@@ -116,22 +116,12 @@ class _ConcatPageState extends State<ConcatPage> {
                                   '${ctr.outputDir}/${ctr.outputController.text}',
                             )
                                 .concatAlignment(
-                              outputFmt: ctr.outputFormatController!,
-                              partitionFmt: _partitionFormatController!,
-                            )
-                                .then(
-                              (value) {
-                                setState(() {
-                                  resetController();
-                                  _isRunning = false;
-                                });
-                              },
-                            ).catchError((e) {
-                              setState(() {
-                                resetController();
-                                _isRunning = false;
-                              });
-                            });
+                                  outputFmt: ctr.outputFormatController!,
+                                  partitionFmt: _partitionFormatController!,
+                                )
+                                .then((value) => setState(() {
+                                      _isRunning = false;
+                                    }));
                           }
                         },
                 ),

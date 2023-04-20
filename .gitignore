@@ -50,3 +50,5 @@ api/target/
 # Ignore Rust binaries
 src/main/jniLibs/
 *.tar.gz
+
+/target/

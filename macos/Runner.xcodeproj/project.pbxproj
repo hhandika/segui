@@ -26,8 +26,7 @@
 		33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F22044A3C60003C045 /* Assets.xcassets */; };
 		33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33CC10F42044A3C60003C045 /* MainMenu.xib */; };
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
-		C3ABB10A29EF77C9000B5FD8 /* api.dylib in Bundle Framework */ = {isa = PBXBuildFile; fileRef = C3C05AA129ED80E1008DE77E /* api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		C3C05AA629ED8107008DE77E /* api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C3C05AA129ED80E1008DE77E /* api.dylib */; };
+		C3FC85F029F0E8D600249FDF /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; };
 		F3A9F985191521406E545DD8 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,26 +38,26 @@
 			remoteGlobalIDString = 33CC111A2044C6BA0003C045;
 			remoteInfo = FLX;
 		};
-		C3C05AA029ED80E1008DE77E /* PBXContainerItemProxy */ = {
+		C33C6B0729F0E69000833310 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C3C05A9B29ED80E1008DE77E /* api.xcodeproj */;
+			containerPortal = C33C6B0229F0E69000833310 /* segul_api.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = CA60D6A714571DF30B0BF4E6;
-			remoteInfo = "api-cdylib";
+			remoteGlobalIDString = CA60B336AC8C6874C5CDB712;
+			remoteInfo = "segul_api-cdylib";
 		};
-		C3C05AA229ED80E1008DE77E /* PBXContainerItemProxy */ = {
+		C33C6B0929F0E69000833310 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C3C05A9B29ED80E1008DE77E /* api.xcodeproj */;
+			containerPortal = C33C6B0229F0E69000833310 /* segul_api.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = CA60F288BAABF2C576EAE2AA;
-			remoteInfo = "api-staticlib";
+			remoteGlobalIDString = CA60FE5BF20AB0D2D8955496;
+			remoteInfo = "segul_api-staticlib";
 		};
-		C3C05AA429ED80ED008DE77E /* PBXContainerItemProxy */ = {
+		C3FC85EE29F0E8D000249FDF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C3C05A9B29ED80E1008DE77E /* api.xcodeproj */;
+			containerPortal = C33C6B0229F0E69000833310 /* segul_api.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = CA60D6A71457B1DCD5AAB698;
-			remoteInfo = "api-cdylib";
+			remoteGlobalIDString = CA60B336AC8C45A453757D4B;
+			remoteInfo = "segul_api-cdylib";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -69,7 +68,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				C3ABB10A29EF77C9000B5FD8 /* api.dylib in Bundle Framework */,
 			);
 			name = "Bundle Framework";
 			runOnlyForDeploymentPostprocessing = 1;
@@ -96,7 +94,7 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		7C2FAB3F8887FAB1030EBFE3 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		C3C05A9B29ED80E1008DE77E /* api.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = api.xcodeproj; path = ../../api/api.xcodeproj; sourceTree = "<group>"; };
+		C33C6B0229F0E69000833310 /* segul_api.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = segul_api.xcodeproj; path = ../../segul_api/segul_api.xcodeproj; sourceTree = "<group>"; };
 		D12D8C145FA66213340E947F /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,7 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3C05AA629ED8107008DE77E /* api.dylib in Frameworks */,
+				C3FC85F029F0E8D600249FDF /* segul_api.dylib in Frameworks */,
 				F3A9F985191521406E545DD8 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -168,7 +166,7 @@
 		33FAB671232836740065AC1E /* Runner */ = {
 			isa = PBXGroup;
 			children = (
-				C3C05A9B29ED80E1008DE77E /* api.xcodeproj */,
+				C33C6B0229F0E69000833310 /* segul_api.xcodeproj */,
 				33CC10F02044A3C60003C045 /* AppDelegate.swift */,
 				33CC11122044BFA00003C045 /* MainFlutterWindow.swift */,
 				33E51913231747F40026EE4D /* DebugProfile.entitlements */,
@@ -179,11 +177,11 @@
 			path = Runner;
 			sourceTree = "<group>";
 		};
-		C3C05A9C29ED80E1008DE77E /* Products */ = {
+		C33C6B0329F0E69000833310 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C3C05AA129ED80E1008DE77E /* api.dylib */,
-				C3C05AA329ED80E1008DE77E /* libapi_static.a */,
+				C33C6B0829F0E69000833310 /* segul_api.dylib */,
+				C33C6B0A29F0E69000833310 /* libsegul_api_static.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -223,7 +221,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				C3C05AA529ED80ED008DE77E /* PBXTargetDependency */,
+				C3FC85EF29F0E8D000249FDF /* PBXTargetDependency */,
 				33CC11202044C79F0003C045 /* PBXTargetDependency */,
 			);
 			name = Runner;
@@ -270,8 +268,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = C3C05A9C29ED80E1008DE77E /* Products */;
-					ProjectRef = C3C05A9B29ED80E1008DE77E /* api.xcodeproj */;
+					ProductGroup = C33C6B0329F0E69000833310 /* Products */;
+					ProjectRef = C33C6B0229F0E69000833310 /* segul_api.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -283,18 +281,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		C3C05AA129ED80E1008DE77E /* api.dylib */ = {
+		C33C6B0829F0E69000833310 /* segul_api.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = api.dylib;
-			remoteRef = C3C05AA029ED80E1008DE77E /* PBXContainerItemProxy */;
+			path = segul_api.dylib;
+			remoteRef = C33C6B0729F0E69000833310 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C3C05AA329ED80E1008DE77E /* libapi_static.a */ = {
+		C33C6B0A29F0E69000833310 /* libsegul_api_static.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = libapi_static.a;
-			remoteRef = C3C05AA229ED80E1008DE77E /* PBXContainerItemProxy */;
+			path = libsegul_api_static.a;
+			remoteRef = C33C6B0929F0E69000833310 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -393,10 +391,10 @@
 			target = 33CC111A2044C6BA0003C045 /* Flutter Assemble */;
 			targetProxy = 33CC111F2044C79F0003C045 /* PBXContainerItemProxy */;
 		};
-		C3C05AA529ED80ED008DE77E /* PBXTargetDependency */ = {
+		C3FC85EF29F0E8D000249FDF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "api-cdylib";
-			targetProxy = C3C05AA429ED80ED008DE77E /* PBXContainerItemProxy */;
+			name = "segul_api-cdylib";
+			targetProxy = C3FC85EE29F0E8D000249FDF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -476,7 +474,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hhandika.segui;
@@ -610,7 +608,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hhandika.segui;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -637,7 +635,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
 				MARKETING_VERSION = 1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hhandika.segui;

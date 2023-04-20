@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segui/bridge_definitions.dart';
+import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/services/native.dart';
@@ -91,12 +91,12 @@ class _ConvertPageState extends State<ConvertPage> {
                 isRunning: _isRunning,
                 onPressed: _isRunning
                     ? null
-                    : () async {
+                    : () {
                         setState(() {
                           _isRunning = true;
                         });
-                        await SegulApi(
-                          bridge: api,
+                        SegulServices(
+                          bridge: segulApi,
                           dirPath: ctr.dirPath!,
                           output: ctr.outputDir!,
                           fileFmt: ctr.inputFormatController!,

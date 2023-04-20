@@ -16,7 +16,7 @@ class _TranslatePageState extends State<TranslatePage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         FutureBuilder(
-          future: api.showDnaUppercase(),
+          future: segulApi.showDnaUppercase(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Text(snapshot.data.toString());
