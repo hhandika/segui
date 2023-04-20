@@ -37,6 +37,25 @@ abstract class SegulApi {
 
   FlutterRustBridgeTaskConstMeta
       get kConvertSequenceMethodSegulServicesConstMeta;
+
+  Future<void> summarizeAlignmentMethodSegulServices(
+      {required SegulServices that,
+      required String outputPrefix,
+      required int interval,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta
+      get kSummarizeAlignmentMethodSegulServicesConstMeta;
+
+  Future<void> translateSequenceMethodSegulServices(
+      {required SegulServices that,
+      required int table,
+      required int readingFrame,
+      required String outputFmt,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta
+      get kTranslateSequenceMethodSegulServicesConstMeta;
 }
 
 class SegulServices {
@@ -76,5 +95,27 @@ class SegulServices {
         that: this,
         outputFmt: outputFmt,
         sort: sort,
+      );
+
+  Future<void> summarizeAlignment(
+          {required String outputPrefix,
+          required int interval,
+          dynamic hint}) =>
+      bridge.summarizeAlignmentMethodSegulServices(
+        that: this,
+        outputPrefix: outputPrefix,
+        interval: interval,
+      );
+
+  Future<void> translateSequence(
+          {required int table,
+          required int readingFrame,
+          required String outputFmt,
+          dynamic hint}) =>
+      bridge.translateSequenceMethodSegulServices(
+        that: this,
+        table: table,
+        readingFrame: readingFrame,
+        outputFmt: outputFmt,
       );
 }

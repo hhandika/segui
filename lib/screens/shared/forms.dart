@@ -68,6 +68,28 @@ class _SharedInputFormsState extends State<SharedInputForms> {
   }
 }
 
+class FormView extends StatelessWidget {
+  const FormView({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
+          child: ListView(
+            shrinkWrap: false,
+            children: children,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CardTitle extends StatelessWidget {
   const CardTitle({super.key, required this.title});
 

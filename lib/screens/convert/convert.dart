@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:segui/bridge_definitions.dart';
+// ignore: unused_import
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -15,96 +17,86 @@ class ConvertPage extends StatefulWidget {
 
 class _ConvertPageState extends State<ConvertPage> {
   IOController ctr = IOController.empty();
-  bool _isRunning = false;
   bool isSortSequence = false;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
-          child: ListView(
-            shrinkWrap: false,
-            children: [
-              const CardTitle(title: 'Input'),
-              SharedInputForms(ctr: ctr),
-              const SizedBox(height: 20),
-              const CardTitle(title: 'Output'),
-              FormCard(children: [
-                SelectDirField(
-                    label: 'Select output directory',
-                    dirPath: ctr.outputDir,
-                    onPressed: (value) {
-                      setState(() {
-                        ctr.outputDir = value;
-                      });
-                    }),
-                SharedDropdownField(
-                  value: ctr.outputFormatController,
-                  label: 'Format',
-                  items: outputFormat,
-                  onChanged: (String? value) {
-                    setState(() {
-                      if (value != null) {
-                        ctr.outputFormatController = value;
-                      }
-                    });
-                  },
-                ),
-                SwitchForm(
-                    label: 'Sort by sequence ID',
-                    value: isSortSequence,
-                    onPressed: (value) {
-                      setState(() {
-                        isSortSequence = value;
-                      });
-                    }),
-              ]),
-              const SizedBox(height: 20),
-              PrimaryButton(
-                label: 'Convert',
-                isRunning: _isRunning,
-                onPressed: _isRunning || !ctr.isValid()
-                    ? null
-                    : () async {
-                        setState(() {
-                          _isRunning = true;
-                        });
-                        try {
-                          await _convert();
-                          if (mounted) {
-                            setState(() {
-                              _isRunning = false;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                showSharedSnackBar(
-                                  context,
-                                  'Conversion successful!',
-                                ),
-                              );
-                              _resetController();
-                            });
-                          }
-                        } catch (e) {
-                          if (mounted) {
-                            setState(() {
-                              _isRunning = false;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                showSharedSnackBar(
-                                  context,
-                                  'Conversion failed!: $e',
-                                ),
-                              );
-                            });
-                          }
-                        }
-                      },
-              ),
-            ],
+    return FormView(
+      children: [
+        const CardTitle(title: 'Input'),
+        SharedInputForms(ctr: ctr),
+        const SizedBox(height: 20),
+        const CardTitle(title: 'Output'),
+        FormCard(children: [
+          SelectDirField(
+              label: 'Select output directory',
+              dirPath: ctr.outputDir,
+              onPressed: (value) {
+                setState(() {
+                  ctr.outputDir = value;
+                });
+              }),
+          SharedDropdownField(
+            value: ctr.outputFormatController,
+            label: 'Format',
+            items: outputFormat,
+            onChanged: (String? value) {
+              setState(() {
+                if (value != null) {
+                  ctr.outputFormatController = value;
+                }
+              });
+            },
           ),
+          SwitchForm(
+              label: 'Sort by sequence ID',
+              value: isSortSequence,
+              onPressed: (value) {
+                setState(() {
+                  isSortSequence = value;
+                });
+              }),
+        ]),
+        const SizedBox(height: 20),
+        PrimaryButton(
+          label: 'Convert',
+          isRunning: ctr.isRunning,
+          onPressed: ctr.isRunning || !ctr.isValid()
+              ? null
+              : () async {
+                  setState(() {
+                    ctr.isRunning = true;
+                  });
+                  try {
+                    await _convert();
+                    if (mounted) {
+                      setState(() {
+                        ctr.isRunning = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          showSharedSnackBar(
+                            context,
+                            'Conversion successful!',
+                          ),
+                        );
+                        _resetController();
+                      });
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      setState(() {
+                        ctr.isRunning = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          showSharedSnackBar(
+                            context,
+                            'Conversion failed!: $e',
+                          ),
+                        );
+                      });
+                    }
+                  }
+                },
         ),
-      ),
+      ],
     );
   }
 

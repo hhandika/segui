@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:segui/bridge_definitions.dart';
+// ignore: unused_import
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -17,103 +19,93 @@ class ConcatPage extends StatefulWidget {
 class _ConcatPageState extends State<ConcatPage> {
   IOController ctr = IOController.empty();
   String _partitionFormatController = partitionFormat[1];
-  bool _isRunning = false;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
-          child: ListView(
-            shrinkWrap: false,
-            children: [
-              const CardTitle(title: 'Input'),
-              SharedInputForms(ctr: ctr),
-              const SizedBox(height: 20),
-              const CardTitle(title: 'Output'),
-              FormCard(children: [
-                SelectDirField(
-                  label: 'Select output directory',
-                  dirPath: ctr.outputDir,
-                  onPressed: (value) {
-                    setState(() {
-                      ctr.outputDir = value;
-                    });
-                  },
-                ),
-                SharedTextField(
-                  controller: ctr.outputController,
-                  label: 'Output Filename',
-                  hint: 'Enter output filename',
-                ),
-                SharedDropdownField(
-                  value: ctr.outputFormatController,
-                  label: 'Output Format',
-                  items: outputFormat,
-                  onChanged: (String? value) {
-                    setState(() {
-                      if (value != null) {
-                        ctr.outputFormatController = value;
-                      }
-                    });
-                  },
-                ),
-                SharedDropdownField(
-                  value: _partitionFormatController,
-                  label: 'Partition Format',
-                  items: partitionFormat,
-                  onChanged: (String? value) {
-                    setState(() {
-                      if (value != null) {
-                        _partitionFormatController = value;
-                      }
-                    });
-                  },
-                )
-              ]),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 80,
-                child: PrimaryButton(
-                  label: 'Concatenate',
-                  isRunning: _isRunning,
-                  onPressed: _isRunning || !ctr.isValid()
-                      ? null
-                      : () async {
-                          setState(() {
-                            _isRunning = true;
-                          });
-                          try {
-                            await _concat();
-                            if (mounted) {
-                              setState(() {
-                                _isRunning = false;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  showSharedSnackBar(
-                                      context, 'Concatenation successful!'),
-                                );
-                                _resetController();
-                              });
-                            }
-                          } catch (e) {
-                            if (mounted) {
-                              setState(() {
-                                _isRunning = false;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  showSharedSnackBar(context, e.toString()),
-                                );
-                              });
-                            }
-                          }
-                        },
-                ),
-              )
-            ],
+    return FormView(
+      children: [
+        const CardTitle(title: 'Input'),
+        SharedInputForms(ctr: ctr),
+        const SizedBox(height: 20),
+        const CardTitle(title: 'Output'),
+        FormCard(children: [
+          SelectDirField(
+            label: 'Select output directory',
+            dirPath: ctr.outputDir,
+            onPressed: (value) {
+              setState(() {
+                ctr.outputDir = value;
+              });
+            },
           ),
-        ),
-      ),
+          SharedTextField(
+            controller: ctr.outputController,
+            label: 'Output Filename',
+            hint: 'Enter output filename',
+          ),
+          SharedDropdownField(
+            value: ctr.outputFormatController,
+            label: 'Output Format',
+            items: outputFormat,
+            onChanged: (String? value) {
+              setState(() {
+                if (value != null) {
+                  ctr.outputFormatController = value;
+                }
+              });
+            },
+          ),
+          SharedDropdownField(
+            value: _partitionFormatController,
+            label: 'Partition Format',
+            items: partitionFormat,
+            onChanged: (String? value) {
+              setState(() {
+                if (value != null) {
+                  _partitionFormatController = value;
+                }
+              });
+            },
+          )
+        ]),
+        const SizedBox(height: 20),
+        SizedBox(
+          width: 80,
+          child: PrimaryButton(
+            label: 'Concatenate',
+            isRunning: ctr.isRunning,
+            onPressed: ctr.isRunning || !ctr.isValid()
+                ? null
+                : () async {
+                    setState(() {
+                      ctr.isRunning = true;
+                    });
+                    try {
+                      await _concat();
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            showSharedSnackBar(
+                                context, 'Concatenation successful!'),
+                          );
+                          _resetController();
+                        });
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            showSharedSnackBar(context, e.toString()),
+                          );
+                        });
+                      }
+                    }
+                  },
+          ),
+        )
+      ],
     );
   }
 

@@ -26,3 +26,12 @@ const List<String> dataType = [
   'Amino Acid',
   'Ignore',
 ];
+
+const List<String> summaryInt = ["1", "2", "5", "10"];
+
+const List<String> readingFrame = ["1", "2", "3"];
+
+const List<String> translationTable = [
+  "Standard Code",
+  "Vertebrate Mitochondrial Code",
+];

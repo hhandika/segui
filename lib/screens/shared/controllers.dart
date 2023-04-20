@@ -10,6 +10,7 @@ class IOController {
     this.inputFormatController,
     required this.dataTypeController,
     this.outputFormatController,
+    this.isRunning = false,
   });
 
   final TextEditingController outputController;
@@ -19,6 +20,7 @@ class IOController {
   String? inputFormatController;
   String dataTypeController;
   String? outputFormatController;
+  bool isRunning;
 
   factory IOController.empty() => IOController(
         outputController: TextEditingController(),

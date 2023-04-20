@@ -38,6 +38,33 @@ pub extern "C" fn wire_convert_sequence__method__SegulServices(
     wire_convert_sequence__method__SegulServices_impl(port_, that, output_fmt, sort)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_summarize_alignment__method__SegulServices(
+    port_: i64,
+    that: *mut wire_SegulServices,
+    output_prefix: *mut wire_uint_8_list,
+    interval: usize,
+) {
+    wire_summarize_alignment__method__SegulServices_impl(port_, that, output_prefix, interval)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_translate_sequence__method__SegulServices(
+    port_: i64,
+    that: *mut wire_SegulServices,
+    table: usize,
+    reading_frame: usize,
+    output_fmt: *mut wire_uint_8_list,
+) {
+    wire_translate_sequence__method__SegulServices_impl(
+        port_,
+        that,
+        table,
+        reading_frame,
+        output_fmt,
+    )
+}
+
 // Section: allocate functions
 
 #[no_mangle]
@@ -90,6 +117,7 @@ impl Wire2Api<Vec<u8>> for *mut wire_uint_8_list {
         }
     }
 }
+
 // Section: wire structs
 
 #[repr(C)]

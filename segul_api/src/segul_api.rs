@@ -2,8 +2,10 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::concat::ConcatHandler;
 use segul::handler::convert::Converter;
+use segul::handler::summarize::SeqStats;
+use segul::handler::translate::Translate;
 use segul::helper::finder::Files;
-use segul::helper::types::{DataType, InputFmt};
+use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, filenames};
 
@@ -51,6 +53,35 @@ impl SegulServices {
         concat.convert(&mut files, Path::new(&self.output_dir));
     }
 
+    pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
+        let path = Path::new(&self.dir_path);
+        let input_fmt = self.match_input_fmt();
+        let datatype = self.match_datatype();
+        let mut files = Files::new(path, &input_fmt).find();
+        let output = Path::new(&self.output_dir);
+        let mut summary = SeqStats::new(&input_fmt, output, interval, &datatype);
+        summary.summarize_all(&mut files, &Some(output_prefix));
+    }
+
+    pub fn translate_sequence(&self, table: usize, reading_frame: usize, output_fmt: String) {
+        let path = Path::new(&self.dir_path);
+        let input_fmt = self.match_input_fmt();
+        let datatype = self.match_datatype();
+        let mut files = Files::new(path, &input_fmt).find();
+        let output_fmt = self.match_output_fmt(&output_fmt);
+        let translation_table = self.match_translation_table(table);
+        let translate = Translate::new(&translation_table, &input_fmt, &datatype, &output_fmt);
+        translate.translate_all(&mut files, reading_frame, Path::new(&self.output_dir));
+    }
+
+    fn match_translation_table(&self, table: usize) -> GeneticCodes {
+        match table {
+            1 => GeneticCodes::StandardCode,
+            2 => GeneticCodes::VertMtDna,
+            _ => unreachable!("Translation table is not supported {}", table),
+        }
+    }
+
     fn match_input_fmt(&self) -> InputFmt {
         match self.file_fmt.to_lowercase().as_str() {
             "fasta" => InputFmt::Fasta,
@@ -80,20 +111,6 @@ impl SegulServices {
             _ => PartitionFmt::Nexus,
         }
     }
-
-    // fn set_output_ext(&self, output_fmt: &OutputFmt) -> PathBuf {
-    //     match output_fmt {
-    //         OutputFmt::Fasta | OutputFmt::FastaInt => {
-    //             Path::new(&self.output).with_extension("fasta")
-    //         }
-    //         OutputFmt::Phylip | OutputFmt::NexusInt => {
-    //             Path::new(&self.output).with_extension("phy")
-    //         }
-    //         OutputFmt::Nexus | OutputFmt::PhylipInt => {
-    //             Path::new(&self.output).with_extension("nex")
-    //         }
-    //     }
-    // }
 
     fn match_datatype(&self) -> DataType {
         match self.datatype.to_lowercase().as_str() {
