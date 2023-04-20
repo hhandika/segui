@@ -163,9 +163,11 @@ class _HomePageState extends State<HomePage> {
           height: 200,
           width: 400,
           decoration: BoxDecoration(
-              border:
-                  Border.all(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: BorderRadius.circular(10)),
+            border: Border.all(color: Theme.of(context).colorScheme.secondary),
+            borderRadius: BorderRadius.circular(10),
+            color: Color.lerp(Theme.of(context).colorScheme.secondary,
+                Theme.of(context).colorScheme.surface, 0.95),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
