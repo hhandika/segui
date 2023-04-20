@@ -15,10 +15,17 @@ pub extern "C" fn wire_new__static_method__SegulServices(port_: i64) {
 pub extern "C" fn wire_concat_alignment__method__SegulServices(
     port_: i64,
     that: *mut wire_SegulServices,
+    out_fname: *mut wire_uint_8_list,
     out_fmt_str: *mut wire_uint_8_list,
     partition_fmt: *mut wire_uint_8_list,
 ) {
-    wire_concat_alignment__method__SegulServices_impl(port_, that, out_fmt_str, partition_fmt)
+    wire_concat_alignment__method__SegulServices_impl(
+        port_,
+        that,
+        out_fname,
+        out_fmt_str,
+        partition_fmt,
+    )
 }
 
 #[no_mangle]
@@ -70,7 +77,7 @@ impl Wire2Api<SegulServices> for wire_SegulServices {
             dir_path: self.dir_path.wire2api(),
             file_fmt: self.file_fmt.wire2api(),
             datatype: self.datatype.wire2api(),
-            output: self.output.wire2api(),
+            output_dir: self.output_dir.wire2api(),
         }
     }
 }
@@ -91,7 +98,7 @@ pub struct wire_SegulServices {
     dir_path: *mut wire_uint_8_list,
     file_fmt: *mut wire_uint_8_list,
     datatype: *mut wire_uint_8_list,
-    output: *mut wire_uint_8_list,
+    output_dir: *mut wire_uint_8_list,
 }
 
 #[repr(C)]
@@ -119,7 +126,7 @@ impl NewWithNullPtr for wire_SegulServices {
             dir_path: core::ptr::null_mut(),
             file_fmt: core::ptr::null_mut(),
             datatype: core::ptr::null_mut(),
-            output: core::ptr::null_mut(),
+            output_dir: core::ptr::null_mut(),
         }
     }
 }

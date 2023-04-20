@@ -21,6 +21,7 @@ abstract class SegulApi {
 
   Future<void> concatAlignmentMethodSegulServices(
       {required SegulServices that,
+      required String outFname,
       required String outFmtStr,
       required String partitionFmt,
       dynamic hint});
@@ -43,14 +44,14 @@ class SegulServices {
   final String dirPath;
   final String fileFmt;
   final String datatype;
-  final String output;
+  final String outputDir;
 
   const SegulServices({
     required this.bridge,
     required this.dirPath,
     required this.fileFmt,
     required this.datatype,
-    required this.output,
+    required this.outputDir,
   });
 
   static Future<SegulServices> newSegulServices(
@@ -58,11 +59,13 @@ class SegulServices {
       bridge.newStaticMethodSegulServices(hint: hint);
 
   Future<void> concatAlignment(
-          {required String outFmtStr,
+          {required String outFname,
+          required String outFmtStr,
           required String partitionFmt,
           dynamic hint}) =>
       bridge.concatAlignmentMethodSegulServices(
         that: this,
+        outFname: outFname,
         outFmtStr: outFmtStr,
         partitionFmt: partitionFmt,
       );
@@ -120,19 +123,21 @@ class SegulApiImpl implements SegulApi {
 
   Future<void> concatAlignmentMethodSegulServices(
       {required SegulServices that,
+      required String outFname,
       required String outFmtStr,
       required String partitionFmt,
       dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_segul_services(that);
-    var arg1 = _platform.api2wire_String(outFmtStr);
-    var arg2 = _platform.api2wire_String(partitionFmt);
+    var arg1 = _platform.api2wire_String(outFname);
+    var arg2 = _platform.api2wire_String(outFmtStr);
+    var arg3 = _platform.api2wire_String(partitionFmt);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
           .wire_concat_alignment__method__SegulServices(
-              port_, arg0, arg1, arg2),
+              port_, arg0, arg1, arg2, arg3),
       parseSuccessData: _wire2api_unit,
       constMeta: kConcatAlignmentMethodSegulServicesConstMeta,
-      argValues: [that, outFmtStr, partitionFmt],
+      argValues: [that, outFname, outFmtStr, partitionFmt],
       hint: hint,
     ));
   }
@@ -141,7 +146,7 @@ class SegulApiImpl implements SegulApi {
       get kConcatAlignmentMethodSegulServicesConstMeta =>
           const FlutterRustBridgeTaskConstMeta(
             debugName: "concat_alignment__method__SegulServices",
-            argNames: ["that", "outFmtStr", "partitionFmt"],
+            argNames: ["that", "outFname", "outFmtStr", "partitionFmt"],
           );
 
   Future<void> convertSequenceMethodSegulServices(
@@ -188,7 +193,7 @@ class SegulApiImpl implements SegulApi {
       dirPath: _wire2api_String(arr[0]),
       fileFmt: _wire2api_String(arr[1]),
       datatype: _wire2api_String(arr[2]),
-      output: _wire2api_String(arr[3]),
+      outputDir: _wire2api_String(arr[3]),
     );
   }
 
@@ -257,7 +262,7 @@ class SegulApiPlatform extends FlutterRustBridgeBase<SegulApiWire> {
     wireObj.dir_path = api2wire_String(apiObj.dirPath);
     wireObj.file_fmt = api2wire_String(apiObj.fileFmt);
     wireObj.datatype = api2wire_String(apiObj.datatype);
-    wireObj.output = api2wire_String(apiObj.output);
+    wireObj.output_dir = api2wire_String(apiObj.outputDir);
   }
 }
 
@@ -389,12 +394,14 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
   void wire_concat_alignment__method__SegulServices(
     int port_,
     ffi.Pointer<wire_SegulServices> that,
+    ffi.Pointer<wire_uint_8_list> out_fname,
     ffi.Pointer<wire_uint_8_list> out_fmt_str,
     ffi.Pointer<wire_uint_8_list> partition_fmt,
   ) {
     return _wire_concat_alignment__method__SegulServices(
       port_,
       that,
+      out_fname,
       out_fmt_str,
       partition_fmt,
     );
@@ -406,12 +413,17 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
                   ffi.Int64,
                   ffi.Pointer<wire_SegulServices>,
                   ffi.Pointer<wire_uint_8_list>,
+                  ffi.Pointer<wire_uint_8_list>,
                   ffi.Pointer<wire_uint_8_list>)>>(
       'wire_concat_alignment__method__SegulServices');
   late final _wire_concat_alignment__method__SegulServices =
       _wire_concat_alignment__method__SegulServicesPtr.asFunction<
-          void Function(int, ffi.Pointer<wire_SegulServices>,
-              ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+          void Function(
+              int,
+              ffi.Pointer<wire_SegulServices>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_convert_sequence__method__SegulServices(
     int port_,
@@ -496,7 +508,7 @@ class wire_SegulServices extends ffi.Struct {
 
   external ffi.Pointer<wire_uint_8_list> datatype;
 
-  external ffi.Pointer<wire_uint_8_list> output;
+  external ffi.Pointer<wire_uint_8_list> output_dir;
 }
 
 typedef DartPostCObjectFnType = ffi.Pointer<

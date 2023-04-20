@@ -147,8 +147,9 @@ class _ConcatPageState extends State<ConcatPage> {
       dirPath: ctr.dirPath!,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController!,
-      output: '${ctr.outputDir}/${ctr.outputController.text}',
+      outputDir: ctr.outputDir!,
     ).concatAlignment(
+      outFname: ctr.outputController.text,
       outFmtStr: ctr.outputFormatController!,
       partitionFmt: _partitionFormatController!,
     );
@@ -157,7 +158,10 @@ class _ConcatPageState extends State<ConcatPage> {
   bool _validate() {
     return ctr.dirPath != null &&
         ctr.outputDir != null &&
-        ctr.outputController.text.isNotEmpty;
+        ctr.outputController.text.isNotEmpty &&
+        ctr.outputFormatController != null &&
+        ctr.inputFormatController != null &&
+        ctr.dataTypeController != null;
   }
 
   void _resetController() {

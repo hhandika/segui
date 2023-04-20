@@ -18,7 +18,7 @@ typedef struct wire_SegulServices {
   struct wire_uint_8_list *dir_path;
   struct wire_uint_8_list *file_fmt;
   struct wire_uint_8_list *datatype;
-  struct wire_uint_8_list *output;
+  struct wire_uint_8_list *output_dir;
 } wire_SegulServices;
 
 typedef struct DartCObject *WireSyncReturn;
@@ -39,6 +39,7 @@ void wire_new__static_method__SegulServices(int64_t port_);
 
 void wire_concat_alignment__method__SegulServices(int64_t port_,
                                                   struct wire_SegulServices *that,
+                                                  struct wire_uint_8_list *out_fname,
                                                   struct wire_uint_8_list *out_fmt_str,
                                                   struct wire_uint_8_list *partition_fmt);
 

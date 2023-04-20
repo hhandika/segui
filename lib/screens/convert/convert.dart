@@ -130,7 +130,7 @@ class _ConvertPageState extends State<ConvertPage> {
     await SegulServices(
       bridge: segulApi,
       dirPath: ctr.dirPath!,
-      output: ctr.outputDir!,
+      outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController!,
     ).convertSequence(
