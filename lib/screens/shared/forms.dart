@@ -47,7 +47,9 @@ class _SharedInputFormsState extends State<SharedInputForms> {
           items: dataType,
           onChanged: (String? value) {
             setState(() {
-              widget.ctr.dataTypeController = value;
+              if (value != null) {
+                widget.ctr.dataTypeController = value;
+              }
             });
           },
         ),
@@ -91,7 +93,7 @@ class FormCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Color.lerp(Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.surface, 0.9),
+            Theme.of(context).colorScheme.surface, 0.95),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
@@ -251,6 +253,6 @@ class SharedFilePicker extends StatelessWidget {
 SnackBar showSharedSnackBar(BuildContext context, String text) {
   return SnackBar(
     content: Text(text),
-    duration: const Duration(seconds: 10),
+    duration: const Duration(seconds: 8),
   );
 }

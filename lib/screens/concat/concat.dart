@@ -16,7 +16,7 @@ class ConcatPage extends StatefulWidget {
 
 class _ConcatPageState extends State<ConcatPage> {
   IOController ctr = IOController.empty();
-  String? _partitionFormatController = partitionFormat[0];
+  String _partitionFormatController = partitionFormat[1];
   bool _isRunning = false;
 
   @override
@@ -54,7 +54,9 @@ class _ConcatPageState extends State<ConcatPage> {
                   items: outputFormat,
                   onChanged: (String? value) {
                     setState(() {
-                      ctr.outputFormatController = value;
+                      if (value != null) {
+                        ctr.outputFormatController = value;
+                      }
                     });
                   },
                 ),
@@ -64,7 +66,9 @@ class _ConcatPageState extends State<ConcatPage> {
                   items: partitionFormat,
                   onChanged: (String? value) {
                     setState(() {
-                      _partitionFormatController = value;
+                      if (value != null) {
+                        _partitionFormatController = value;
+                      }
                     });
                   },
                 )
@@ -118,12 +122,12 @@ class _ConcatPageState extends State<ConcatPage> {
       bridge: segulApi,
       dirPath: ctr.dirPath!,
       fileFmt: ctr.inputFormatController!,
-      datatype: ctr.dataTypeController!,
+      datatype: ctr.dataTypeController,
       outputDir: ctr.outputDir!,
     ).concatAlignment(
       outFname: ctr.outputController.text,
-      outFmtStr: ctr.outputFormatController!,
-      partitionFmt: _partitionFormatController!,
+      outFmtStr: ctr.outputFormatController,
+      partitionFmt: _partitionFormatController,
     );
   }
 
@@ -132,9 +136,7 @@ class _ConcatPageState extends State<ConcatPage> {
         ctr.files.isNotEmpty &&
             ctr.outputDir != null &&
             ctr.outputController.text.isNotEmpty &&
-            ctr.outputFormatController != null &&
-            ctr.inputFormatController != null &&
-            ctr.dataTypeController != null;
+            ctr.inputFormatController != null;
   }
 
   void _resetController() {

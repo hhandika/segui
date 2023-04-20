@@ -46,7 +46,9 @@ class _ConvertPageState extends State<ConvertPage> {
                   items: outputFormat,
                   onChanged: (String? value) {
                     setState(() {
-                      ctr.outputFormatController = value;
+                      if (value != null) {
+                        ctr.outputFormatController = value;
+                      }
                     });
                   },
                 )
@@ -103,9 +105,9 @@ class _ConvertPageState extends State<ConvertPage> {
       dirPath: ctr.dirPath!,
       outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
-      datatype: ctr.dataTypeController!,
+      datatype: ctr.dataTypeController,
     ).convertSequence(
-      outputFmt: ctr.outputFormatController!,
+      outputFmt: ctr.outputFormatController,
       sort: false,
     );
   }
@@ -114,9 +116,7 @@ class _ConvertPageState extends State<ConvertPage> {
     return ctr.dirPath != null ||
         ctr.files.isNotEmpty &&
             ctr.outputDir != null &&
-            ctr.inputFormatController != null &&
-            ctr.dataTypeController != null &&
-            ctr.outputFormatController != null;
+            ctr.inputFormatController != null;
   }
 
   void _resetController() {

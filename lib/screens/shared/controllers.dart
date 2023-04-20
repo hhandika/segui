@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/screens/shared/types.dart';
 
 class IOController {
   IOController({
@@ -7,8 +8,8 @@ class IOController {
     this.outputDir,
     required this.files,
     this.inputFormatController,
-    this.dataTypeController,
-    this.outputFormatController,
+    required this.dataTypeController,
+    required this.outputFormatController,
   });
 
   final TextEditingController outputController;
@@ -16,12 +17,14 @@ class IOController {
   String? dirPath;
   String? outputDir;
   String? inputFormatController;
-  String? dataTypeController;
-  String? outputFormatController;
+  String dataTypeController;
+  String outputFormatController;
 
   factory IOController.empty() => IOController(
         outputController: TextEditingController(),
         files: [],
+        dataTypeController: dataType[0],
+        outputFormatController: outputFormat[1],
       );
 
   void reset() {
