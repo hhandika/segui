@@ -15,7 +15,7 @@ class ConcatPage extends StatefulWidget {
 
 class _ConcatPageState extends State<ConcatPage> {
   IOController ctr = IOController.empty();
-  String? _partitionFormatController;
+  String? _partitionFormatController = partitionFormat[0];
   bool _isRunning = false;
 
   @override
@@ -149,7 +149,7 @@ class _ConcatPageState extends State<ConcatPage> {
       datatype: ctr.dataTypeController!,
       output: '${ctr.outputDir}/${ctr.outputController.text}',
     ).concatAlignment(
-      outputFmt: ctr.outputFormatController!,
+      outFmtStr: ctr.outputFormatController!,
       partitionFmt: _partitionFormatController!,
     );
   }
@@ -157,10 +157,7 @@ class _ConcatPageState extends State<ConcatPage> {
   bool _validate() {
     return ctr.dirPath != null &&
         ctr.outputDir != null &&
-        ctr.outputController.text.isNotEmpty &&
-        ctr.inputFormatController != null &&
-        ctr.outputFormatController != null &&
-        _partitionFormatController != null;
+        ctr.outputController.text.isNotEmpty;
   }
 
   void _resetController() {

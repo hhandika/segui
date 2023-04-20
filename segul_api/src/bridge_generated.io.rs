@@ -15,10 +15,10 @@ pub extern "C" fn wire_new__static_method__SegulServices(port_: i64) {
 pub extern "C" fn wire_concat_alignment__method__SegulServices(
     port_: i64,
     that: *mut wire_SegulServices,
-    output_fmt: *mut wire_uint_8_list,
+    out_fmt_str: *mut wire_uint_8_list,
     partition_fmt: *mut wire_uint_8_list,
 ) {
-    wire_concat_alignment__method__SegulServices_impl(port_, that, output_fmt, partition_fmt)
+    wire_concat_alignment__method__SegulServices_impl(port_, that, out_fmt_str, partition_fmt)
 }
 
 #[no_mangle]

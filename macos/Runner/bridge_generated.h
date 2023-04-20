@@ -39,7 +39,7 @@ void wire_new__static_method__SegulServices(int64_t port_);
 
 void wire_concat_alignment__method__SegulServices(int64_t port_,
                                                   struct wire_SegulServices *that,
-                                                  struct wire_uint_8_list *output_fmt,
+                                                  struct wire_uint_8_list *out_fmt_str,
                                                   struct wire_uint_8_list *partition_fmt);
 
 void wire_convert_sequence__method__SegulServices(int64_t port_,

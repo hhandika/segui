@@ -21,7 +21,7 @@ abstract class SegulApi {
 
   Future<void> concatAlignmentMethodSegulServices(
       {required SegulServices that,
-      required String outputFmt,
+      required String outFmtStr,
       required String partitionFmt,
       dynamic hint});
 
@@ -58,12 +58,12 @@ class SegulServices {
       bridge.newStaticMethodSegulServices(hint: hint);
 
   Future<void> concatAlignment(
-          {required String outputFmt,
+          {required String outFmtStr,
           required String partitionFmt,
           dynamic hint}) =>
       bridge.concatAlignmentMethodSegulServices(
         that: this,
-        outputFmt: outputFmt,
+        outFmtStr: outFmtStr,
         partitionFmt: partitionFmt,
       );
 
@@ -120,11 +120,11 @@ class SegulApiImpl implements SegulApi {
 
   Future<void> concatAlignmentMethodSegulServices(
       {required SegulServices that,
-      required String outputFmt,
+      required String outFmtStr,
       required String partitionFmt,
       dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_segul_services(that);
-    var arg1 = _platform.api2wire_String(outputFmt);
+    var arg1 = _platform.api2wire_String(outFmtStr);
     var arg2 = _platform.api2wire_String(partitionFmt);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
@@ -132,7 +132,7 @@ class SegulApiImpl implements SegulApi {
               port_, arg0, arg1, arg2),
       parseSuccessData: _wire2api_unit,
       constMeta: kConcatAlignmentMethodSegulServicesConstMeta,
-      argValues: [that, outputFmt, partitionFmt],
+      argValues: [that, outFmtStr, partitionFmt],
       hint: hint,
     ));
   }
@@ -141,7 +141,7 @@ class SegulApiImpl implements SegulApi {
       get kConcatAlignmentMethodSegulServicesConstMeta =>
           const FlutterRustBridgeTaskConstMeta(
             debugName: "concat_alignment__method__SegulServices",
-            argNames: ["that", "outputFmt", "partitionFmt"],
+            argNames: ["that", "outFmtStr", "partitionFmt"],
           );
 
   Future<void> convertSequenceMethodSegulServices(
@@ -389,13 +389,13 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
   void wire_concat_alignment__method__SegulServices(
     int port_,
     ffi.Pointer<wire_SegulServices> that,
-    ffi.Pointer<wire_uint_8_list> output_fmt,
+    ffi.Pointer<wire_uint_8_list> out_fmt_str,
     ffi.Pointer<wire_uint_8_list> partition_fmt,
   ) {
     return _wire_concat_alignment__method__SegulServices(
       port_,
       that,
-      output_fmt,
+      out_fmt_str,
       partition_fmt,
     );
   }

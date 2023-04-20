@@ -28,13 +28,13 @@ impl SegulServices {
         }
     }
 
-    pub fn concat_alignment(&self, output_fmt: String, partition_fmt: String) {
+    pub fn concat_alignment(&self, out_fmt_str: String, partition_fmt: String) {
         let path = Path::new(&self.dir_path);
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
         let mut files = Files::new(path, &input_fmt).find();
+        let output_fmt = self.match_output_fmt(&out_fmt_str);
         let output = self.set_output_ext(&output_fmt);
-        let output_fmt = self.match_output_fmt(&output_fmt);
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let mut concat = ConcatHandler::new(&input_fmt, &output, &output_fmt, &partition_fmt);
         concat.concat_alignment(&mut files, &datatype);
@@ -80,43 +80,18 @@ impl SegulServices {
         }
     }
 
-    fn create_new_output_if_exist(&self, output: &PathBuf) -> PathBuf {
-        if output.exists() {
-            let mut new_output = output.clone();
-            let mut counter = 1;
-            loop {
-                let new_name = format!(
-                    "{}({})",
-                    output
-                        .file_stem()
-                        .expect("Failed to get file stem")
-                        .to_str()
-                        .expect("Failed to convert file stem to string"),
-                    counter
-                );
-                new_output.set_file_name(new_name);
-                new_output.set_extension(output.extension().unwrap());
-                if !new_output.exists() {
-                    break;
-                }
-                counter += 1;
+    fn set_output_ext(&self, output_fmt: &OutputFmt) -> PathBuf {
+        match output_fmt {
+            OutputFmt::Fasta | OutputFmt::FastaInt => {
+                Path::new(&self.output).with_extension("fasta")
             }
-            new_output
-        } else {
-            output.clone()
+            OutputFmt::Phylip | OutputFmt::NexusInt => {
+                Path::new(&self.output).with_extension("phy")
+            }
+            OutputFmt::Nexus | OutputFmt::PhylipInt => {
+                Path::new(&self.output).with_extension("nex")
+            }
         }
-    }
-
-    fn set_output_ext(&self, output_fmt: &str) -> PathBuf {
-        let ext = match output_fmt.to_lowercase().as_str() {
-            "fasta" | "fasta interleaved" => String::from("fas"),
-            "nexus" | "nexus interleaved" => String::from("nex"),
-            "phylip" | "phylip interleaved" => String::from("phy"),
-            _ => unreachable!("Output format is not supported"),
-        };
-        let output = PathBuf::from(&self.output);
-        output.with_extension(ext);
-        self.create_new_output_if_exist(&output)
     }
 
     fn match_datatype(&self) -> DataType {

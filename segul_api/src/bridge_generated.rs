@@ -44,7 +44,7 @@ fn wire_new__static_method__SegulServices_impl(port_: MessagePort) {
 fn wire_concat_alignment__method__SegulServices_impl(
     port_: MessagePort,
     that: impl Wire2Api<SegulServices> + UnwindSafe,
-    output_fmt: impl Wire2Api<String> + UnwindSafe,
+    out_fmt_str: impl Wire2Api<String> + UnwindSafe,
     partition_fmt: impl Wire2Api<String> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
@@ -55,12 +55,12 @@ fn wire_concat_alignment__method__SegulServices_impl(
         },
         move || {
             let api_that = that.wire2api();
-            let api_output_fmt = output_fmt.wire2api();
+            let api_out_fmt_str = out_fmt_str.wire2api();
             let api_partition_fmt = partition_fmt.wire2api();
             move |task_callback| {
                 Ok(SegulServices::concat_alignment(
                     &api_that,
-                    api_output_fmt,
+                    api_out_fmt_str,
                     api_partition_fmt,
                 ))
             }

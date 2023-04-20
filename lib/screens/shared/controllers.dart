@@ -25,9 +25,6 @@ class IOController {
     dirPath = null;
     outputDir = null;
     outputController.text = '';
-    inputFormatController = null;
-    dataTypeController = null;
-    outputFormatController = null;
   }
 
   void dispose() {
