@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:segui/screens/concat/concat.dart';
 import 'package:segui/screens/convert/convert.dart';
-import 'package:segui/screens/shared.dart';
+import 'package:segui/screens/shared/navigation.dart';
 import 'package:segui/screens/summary/summary.dart';
 import 'package:segui/screens/translate/translate.dart';
 

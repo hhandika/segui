@@ -100,6 +100,7 @@ class _ConvertPageState extends State<ConvertPage> {
                                   content: Text('Conversion complete!'),
                                 ),
                               );
+                              _resetController();
                             });
                           }
                         } catch (e) {
@@ -136,5 +137,11 @@ class _ConvertPageState extends State<ConvertPage> {
       outputFmt: ctr.outputFormatController!,
       sort: false,
     );
+  }
+
+  void _resetController() {
+    setState(() {
+      ctr.reset();
+    });
   }
 }

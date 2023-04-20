@@ -103,39 +103,32 @@ class _ConcatPageState extends State<ConcatPage> {
                   onPressed: _isRunning || !_validate()
                       ? null
                       : () async {
-                          if (ctr.dirPath != null) {
-                            setState(() {
-                              _isRunning = true;
-                            });
-                            try {
-                              await SegulServices(
-                                bridge: segulApi,
-                                dirPath: ctr.dirPath!,
-                                fileFmt: ctr.inputFormatController!,
-                                datatype: ctr.dataTypeController!,
-                                output:
-                                    '${ctr.outputDir}/${ctr.outputController.text}',
-                              ).concatAlignment(
-                                outputFmt: ctr.outputFormatController!,
-                                partitionFmt: _partitionFormatController!,
-                              );
-                              if (mounted) {
-                                setState(() {
-                                  _isRunning = false;
-                                });
-                                resetController();
-                              }
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(e.toString()),
-                                ),
-                              );
-                              if (mounted) {
-                                setState(() {
-                                  _isRunning = false;
-                                });
-                              }
+                          setState(() {
+                            _isRunning = true;
+                          });
+                          try {
+                            await _concat();
+                            if (mounted) {
+                              setState(() {
+                                _isRunning = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Concatenation complete!'),
+                                  ),
+                                );
+                                _resetController();
+                              });
+                            }
+                          } catch (e) {
+                            if (mounted) {
+                              setState(() {
+                                _isRunning = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Concatenation failed: $e'),
+                                  ),
+                                );
+                              });
                             }
                           }
                         },
@@ -148,6 +141,19 @@ class _ConcatPageState extends State<ConcatPage> {
     );
   }
 
+  Future<void> _concat() async {
+    await SegulServices(
+      bridge: segulApi,
+      dirPath: ctr.dirPath!,
+      fileFmt: ctr.inputFormatController!,
+      datatype: ctr.dataTypeController!,
+      output: '${ctr.outputDir}/${ctr.outputController.text}',
+    ).concatAlignment(
+      outputFmt: ctr.outputFormatController!,
+      partitionFmt: _partitionFormatController!,
+    );
+  }
+
   bool _validate() {
     return ctr.dirPath != null &&
         ctr.outputDir != null &&
@@ -157,7 +163,7 @@ class _ConcatPageState extends State<ConcatPage> {
         _partitionFormatController != null;
   }
 
-  void resetController() {
+  void _resetController() {
     setState(() {
       ctr.reset();
     });

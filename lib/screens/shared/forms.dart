@@ -60,7 +60,7 @@ class SharedDropdownField extends StatelessWidget {
   }
 }
 
-class SelectDirField extends StatefulWidget {
+class SelectDirField extends StatelessWidget {
   const SelectDirField({
     super.key,
     required this.dirPath,
@@ -71,17 +71,12 @@ class SelectDirField extends StatefulWidget {
   final void Function(String?) onChanged;
 
   @override
-  State<SelectDirField> createState() => _SelectDirFieldState();
-}
-
-class _SelectDirFieldState extends State<SelectDirField> {
-  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: Text(
-            'Choose a directory: ${widget.dirPath ?? ''}',
+            'Choose a directory: ${dirPath ?? ''}',
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -91,7 +86,7 @@ class _SelectDirFieldState extends State<SelectDirField> {
           onPressed: () async {
             final dir = await _selectDir();
             if (dir != null) {
-              widget.onChanged(dir.path);
+              onChanged(dir.path);
             }
           },
         ),
