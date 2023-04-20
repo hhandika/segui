@@ -11,3 +11,6 @@ segul = "0.*"
 
 [lib]
 crate-type = ["lib", "cdylib", "staticlib"]
+
+[target.aarch64-apple-darwin]
+rustflags = ["MACOSX_DEPLOYMENT_TARGET=11.0"]
