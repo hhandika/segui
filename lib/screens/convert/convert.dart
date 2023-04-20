@@ -27,64 +27,35 @@ class _ConvertPageState extends State<ConvertPage> {
           child: ListView(
             shrinkWrap: false,
             children: [
-              Text(
-                'Input',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              SelectDirField(
-                  dirPath: ctr.dirPath,
-                  onChanged: (value) {
-                    setState(() {
-                      ctr.dirPath = value;
-                    });
-                  }),
-              SharedDropdownField(
-                value: ctr.inputFormatController,
-                label: 'Format',
-                items: inputFormat,
-                onChanged: (String? value) {
-                  setState(() {
-                    ctr.inputFormatController = value;
-                  });
-                },
-              ),
-              SharedDropdownField(
-                value: ctr.dataTypeController,
-                label: 'Data Type',
-                items: dataType,
-                onChanged: (String? value) {
-                  setState(() {
-                    ctr.dataTypeController = value;
-                  });
-                },
-              ),
+              const CardTitle(title: 'Input'),
+              SharedInputForms(ctr: ctr),
               const SizedBox(height: 20),
-              Text(
-                'Output',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              SelectDirField(
-                  dirPath: ctr.outputDir,
-                  onChanged: (value) {
+              const CardTitle(title: 'Output'),
+              FormCard(children: [
+                SelectDirField(
+                    label: 'Select output directory',
+                    dirPath: ctr.outputDir,
+                    onPressed: (value) {
+                      setState(() {
+                        ctr.outputDir = value;
+                      });
+                    }),
+                SharedDropdownField(
+                  value: ctr.outputFormatController,
+                  label: 'Format',
+                  items: outputFormat,
+                  onChanged: (String? value) {
                     setState(() {
-                      ctr.outputDir = value;
+                      ctr.outputFormatController = value;
                     });
-                  }),
-              SharedDropdownField(
-                value: ctr.outputFormatController,
-                label: 'Format',
-                items: outputFormat,
-                onChanged: (String? value) {
-                  setState(() {
-                    ctr.outputFormatController = value;
-                  });
-                },
-              ),
+                  },
+                )
+              ]),
               const SizedBox(height: 20),
               PrimaryButton(
                 label: 'Convert',
                 isRunning: _isRunning,
-                onPressed: _isRunning
+                onPressed: _isRunning || !_validate()
                     ? null
                     : () async {
                         setState(() {
@@ -137,6 +108,15 @@ class _ConvertPageState extends State<ConvertPage> {
       outputFmt: ctr.outputFormatController!,
       sort: false,
     );
+  }
+
+  bool _validate() {
+    return ctr.dirPath != null ||
+        ctr.files.isNotEmpty &&
+            ctr.outputDir != null &&
+            ctr.inputFormatController != null &&
+            ctr.dataTypeController != null &&
+            ctr.outputFormatController != null;
   }
 
   void _resetController() {

@@ -4,6 +4,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/types.dart';
+
 import 'package:segui/services/native.dart';
 
 class ConcatPage extends StatefulWidget {
@@ -28,72 +29,46 @@ class _ConcatPageState extends State<ConcatPage> {
           child: ListView(
             shrinkWrap: false,
             children: [
-              Text(
-                'Input',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              SelectDirField(
-                  dirPath: ctr.dirPath,
-                  onChanged: (value) {
-                    setState(() {
-                      ctr.dirPath = value;
-                    });
-                  }),
-              SharedDropdownField(
-                value: ctr.inputFormatController,
-                label: 'Format',
-                items: inputFormat,
-                onChanged: (String? value) {
-                  setState(() {
-                    ctr.inputFormatController = value;
-                  });
-                },
-              ),
-              SharedDropdownField(
-                value: ctr.dataTypeController,
-                label: 'Data Type',
-                items: dataType,
-                onChanged: (String? value) {
-                  setState(() {
-                    ctr.dataTypeController = value;
-                  });
-                },
-              ),
+              const CardTitle(title: 'Input'),
+              SharedInputForms(ctr: ctr),
               const SizedBox(height: 20),
-              Text('Output', style: Theme.of(context).textTheme.titleMedium),
-              SelectDirField(
-                dirPath: ctr.outputDir,
-                onChanged: (value) {
-                  setState(() {
-                    ctr.outputDir = value;
-                  });
-                },
-              ),
-              SharedTextField(
-                controller: ctr.outputController,
-                label: 'Output Filename',
-                hint: 'Enter output filename',
-              ),
-              SharedDropdownField(
-                value: ctr.outputFormatController,
-                label: 'Output Format',
-                items: outputFormat,
-                onChanged: (String? value) {
-                  setState(() {
-                    ctr.outputFormatController = value;
-                  });
-                },
-              ),
-              SharedDropdownField(
-                value: _partitionFormatController,
-                label: 'Partition Format',
-                items: partitionFormat,
-                onChanged: (String? value) {
-                  setState(() {
-                    _partitionFormatController = value;
-                  });
-                },
-              ),
+              const CardTitle(title: 'Output'),
+              FormCard(children: [
+                SelectDirField(
+                  label: 'Select output directory',
+                  dirPath: ctr.outputDir,
+                  onPressed: (value) {
+                    setState(() {
+                      ctr.outputDir = value;
+                    });
+                  },
+                ),
+                SharedTextField(
+                  controller: ctr.outputController,
+                  label: 'Output Filename',
+                  hint: 'Enter output filename',
+                ),
+                SharedDropdownField(
+                  value: ctr.outputFormatController,
+                  label: 'Output Format',
+                  items: outputFormat,
+                  onChanged: (String? value) {
+                    setState(() {
+                      ctr.outputFormatController = value;
+                    });
+                  },
+                ),
+                SharedDropdownField(
+                  value: _partitionFormatController,
+                  label: 'Partition Format',
+                  items: partitionFormat,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _partitionFormatController = value;
+                    });
+                  },
+                )
+              ]),
               const SizedBox(height: 20),
               SizedBox(
                 width: 80,
@@ -113,7 +88,7 @@ class _ConcatPageState extends State<ConcatPage> {
                                 _isRunning = false;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   showSharedSnackBar(
-                                      context, 'Concatenation successful'),
+                                      context, 'Concatenation successful!'),
                                 );
                                 _resetController();
                               });
@@ -153,12 +128,13 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   bool _validate() {
-    return ctr.dirPath != null &&
-        ctr.outputDir != null &&
-        ctr.outputController.text.isNotEmpty &&
-        ctr.outputFormatController != null &&
-        ctr.inputFormatController != null &&
-        ctr.dataTypeController != null;
+    return ctr.dirPath != null ||
+        ctr.files.isNotEmpty &&
+            ctr.outputDir != null &&
+            ctr.outputController.text.isNotEmpty &&
+            ctr.outputFormatController != null &&
+            ctr.inputFormatController != null &&
+            ctr.dataTypeController != null;
   }
 
   void _resetController() {

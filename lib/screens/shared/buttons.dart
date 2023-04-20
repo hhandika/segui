@@ -47,8 +47,8 @@ class SecondaryButton extends StatelessWidget {
         side: BorderSide(
           color: Theme.of(context).colorScheme.secondary,
         ),
-        foregroundColor: Theme.of(context).colorScheme.secondary,
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        foregroundColor: Theme.of(context).colorScheme.onSecondary,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         // elevation: 0,
       ),
       onPressed: onPressed,

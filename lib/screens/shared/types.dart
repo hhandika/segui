@@ -1,3 +1,5 @@
+enum PlatformType { isDesktop, isMobile }
+
 const List<String> inputFormat = [
   'FASTA',
   'NEXUS',
