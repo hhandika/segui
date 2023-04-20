@@ -67,8 +67,9 @@ class _ConvertPageState extends State<ConvertPage> {
                             setState(() {
                               _isRunning = false;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Conversion complete!'),
+                                showSharedSnackBar(
+                                  context,
+                                  'Conversion successful!',
                                 ),
                               );
                               _resetController();
@@ -79,10 +80,9 @@ class _ConvertPageState extends State<ConvertPage> {
                             setState(() {
                               _isRunning = false;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Conversion failed! $e',
-                                  ),
+                                showSharedSnackBar(
+                                  context,
+                                  'Conversion failed!: $e',
                                 ),
                               );
                             });

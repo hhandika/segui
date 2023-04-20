@@ -4,8 +4,10 @@
 
 import 'dart:convert';
 import 'dart:async';
+// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+// ignore: depend_on_referenced_packages
 import 'package:uuid/uuid.dart';
 
 abstract class SegulApi {

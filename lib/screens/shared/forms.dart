@@ -90,7 +90,8 @@ class FormCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.grey[350],
+        color: Color.lerp(Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.surface, 0.9),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
