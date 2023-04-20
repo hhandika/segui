@@ -19,37 +19,39 @@ class _SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FormView(children: [
-      const CardTitle(title: 'Input'),
-      SharedInputForms(ctr: ctr),
-      const SizedBox(height: 20),
-      const CardTitle(title: 'Output'),
-      FormCard(children: [
-        SelectDirField(
-            label: 'Select output directory',
-            dirPath: ctr.outputDir,
-            onPressed: (value) {
+    return FormView(
+      children: [
+        const CardTitle(title: 'Input'),
+        SharedInputForms(ctr: ctr),
+        const SizedBox(height: 20),
+        const CardTitle(title: 'Output'),
+        FormCard(children: [
+          SelectDirField(
+              label: 'Select output directory',
+              dirPath: ctr.outputDir,
+              onPressed: (value) {
+                setState(() {
+                  ctr.outputDir = value;
+                });
+              }),
+          SharedTextField(
+            controller: ctr.outputController,
+            label: 'Output Prefix',
+            hint: 'Enter output prefix',
+          ),
+          SharedDropdownField(
+            value: _interval,
+            label: 'Summary Interval',
+            items: summaryInt,
+            onChanged: (String? value) {
               setState(() {
-                ctr.outputDir = value;
+                if (value != null) {
+                  _interval = value;
+                }
               });
-            }),
-        SharedTextField(
-          controller: ctr.outputController,
-          label: 'Output Prefix',
-          hint: 'Enter output prefix',
-        ),
-        SharedDropdownField(
-          value: _interval,
-          label: 'Summary Interval',
-          items: summaryInt,
-          onChanged: (String? value) {
-            setState(() {
-              if (value != null) {
-                _interval = value;
-              }
-            });
-          },
-        ),
+            },
+          ),
+        ]),
         const SizedBox(height: 20),
         PrimaryButton(
           label: 'Summarize',
@@ -82,8 +84,8 @@ class _SummaryPageState extends State<SummaryPage> {
                   }
                 },
         )
-      ]),
-    ]);
+      ],
+    );
   }
 
   Future<void> _summarize() async {
