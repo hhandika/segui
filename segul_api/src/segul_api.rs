@@ -2,10 +2,10 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::concat::ConcatHandler;
 use segul::handler::convert::Converter;
-use segul::helper::alphabet;
 use segul::helper::finder::Files;
 use segul::helper::types::{DataType, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
+use segul::helper::{alphabet, filenames};
 
 pub fn show_dna_uppercase() -> String {
     alphabet::DNA_STR_UPPERCASE.to_string()
@@ -34,7 +34,7 @@ impl SegulServices {
         let datatype = self.match_datatype();
         let mut files = Files::new(path, &input_fmt).find();
         let output_fmt = self.match_output_fmt(&out_fmt_str);
-        let output = self.set_output_ext(&output_fmt);
+        let output = filenames::create_output_fname_from_path(Path::new(&self.output), &output_fmt);
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let mut concat = ConcatHandler::new(&input_fmt, &output, &output_fmt, &partition_fmt);
         concat.concat_alignment(&mut files, &datatype);
@@ -80,19 +80,19 @@ impl SegulServices {
         }
     }
 
-    fn set_output_ext(&self, output_fmt: &OutputFmt) -> PathBuf {
-        match output_fmt {
-            OutputFmt::Fasta | OutputFmt::FastaInt => {
-                Path::new(&self.output).with_extension("fasta")
-            }
-            OutputFmt::Phylip | OutputFmt::NexusInt => {
-                Path::new(&self.output).with_extension("phy")
-            }
-            OutputFmt::Nexus | OutputFmt::PhylipInt => {
-                Path::new(&self.output).with_extension("nex")
-            }
-        }
-    }
+    // fn set_output_ext(&self, output_fmt: &OutputFmt) -> PathBuf {
+    //     match output_fmt {
+    //         OutputFmt::Fasta | OutputFmt::FastaInt => {
+    //             Path::new(&self.output).with_extension("fasta")
+    //         }
+    //         OutputFmt::Phylip | OutputFmt::NexusInt => {
+    //             Path::new(&self.output).with_extension("phy")
+    //         }
+    //         OutputFmt::Nexus | OutputFmt::PhylipInt => {
+    //             Path::new(&self.output).with_extension("nex")
+    //         }
+    //     }
+    // }
 
     fn match_datatype(&self) -> DataType {
         match self.datatype.to_lowercase().as_str() {
