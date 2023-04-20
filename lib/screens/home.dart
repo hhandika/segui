@@ -108,7 +108,7 @@ class _LargeScreenViewState extends State<LargeScreenView> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: NavigationRail(
-                    labelType: NavigationRailLabelType.selected,
+                    labelType: NavigationRailLabelType.all,
                     backgroundColor:
                         Theme.of(context).colorScheme.surface.withOpacity(0.5),
                     destinations: navigationTargets
