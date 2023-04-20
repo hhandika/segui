@@ -14,11 +14,11 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Corrosion)
 
-corrosion_import_crate(MANIFEST_PATH ../api/Cargo.toml)
+corrosion_import_crate(MANIFEST_PATH ../segul_api/Cargo.toml)
 
 # Flutter-specific
 
-set(CRATE_NAME "api")
+set(CRATE_NAME "segul_api")
 
 target_link_libraries(${BINARY_NAME} PRIVATE ${CRATE_NAME})
 

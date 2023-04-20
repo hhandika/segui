@@ -4,69 +4,73 @@
 
 import 'dart:convert';
 import 'dart:async';
-// ignore: depend_on_referenced_packages
 import 'package:meta/meta.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
-// ignore: depend_on_referenced_packages
 import 'package:uuid/uuid.dart';
 
-abstract class Api {
+abstract class SegulApi {
   Future<String> showDnaUppercase({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
 
-  Future<SegulApi> newStaticMethodSegulApi({dynamic hint});
+  Future<SegulServices> newStaticMethodSegulServices({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulApiConstMeta;
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulServicesConstMeta;
 
-  Future<void> concatAlignmentMethodSegulApi(
-      {required SegulApi that,
-      required String outputFmt,
+  Future<void> concatAlignmentMethodSegulServices(
+      {required SegulServices that,
+      required String outFname,
+      required String outFmtStr,
       required String partitionFmt,
       dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kConcatAlignmentMethodSegulApiConstMeta;
+  FlutterRustBridgeTaskConstMeta
+      get kConcatAlignmentMethodSegulServicesConstMeta;
 
-  Future<void> convertSequenceMethodSegulApi(
-      {required SegulApi that,
+  Future<void> convertSequenceMethodSegulServices(
+      {required SegulServices that,
       required String outputFmt,
       required bool sort,
       dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kConvertSequenceMethodSegulApiConstMeta;
+  FlutterRustBridgeTaskConstMeta
+      get kConvertSequenceMethodSegulServicesConstMeta;
 }
 
-class SegulApi {
-  final Api bridge;
+class SegulServices {
+  final SegulApi bridge;
   final String dirPath;
   final String fileFmt;
   final String datatype;
-  final String output;
+  final String outputDir;
 
-  const SegulApi({
+  const SegulServices({
     required this.bridge,
     required this.dirPath,
     required this.fileFmt,
     required this.datatype,
-    required this.output,
+    required this.outputDir,
   });
 
-  static Future<SegulApi> newSegulApi({required Api bridge, dynamic hint}) =>
-      bridge.newStaticMethodSegulApi(hint: hint);
+  static Future<SegulServices> newSegulServices(
+          {required SegulApi bridge, dynamic hint}) =>
+      bridge.newStaticMethodSegulServices(hint: hint);
 
   Future<void> concatAlignment(
-          {required String outputFmt,
+          {required String outFname,
+          required String outFmtStr,
           required String partitionFmt,
           dynamic hint}) =>
-      bridge.concatAlignmentMethodSegulApi(
+      bridge.concatAlignmentMethodSegulServices(
         that: this,
-        outputFmt: outputFmt,
+        outFname: outFname,
+        outFmtStr: outFmtStr,
         partitionFmt: partitionFmt,
       );
 
   Future<void> convertSequence(
           {required String outputFmt, required bool sort, dynamic hint}) =>
-      bridge.convertSequenceMethodSegulApi(
+      bridge.convertSequenceMethodSegulServices(
         that: this,
         outputFmt: outputFmt,
         sort: sort,
