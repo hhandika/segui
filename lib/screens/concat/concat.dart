@@ -116,12 +116,15 @@ class _ConcatPageState extends State<ConcatPage> {
                                   '${ctr.outputDir}/${ctr.outputController.text}',
                             )
                                 .concatAlignment(
-                                  outputFmt: ctr.outputFormatController!,
-                                  partitionFmt: _partitionFormatController!,
-                                )
-                                .then((value) => setState(() {
-                                      _isRunning = false;
-                                    }));
+                              outputFmt: ctr.outputFormatController!,
+                              partitionFmt: _partitionFormatController!,
+                            )
+                                .then((_) {
+                              setState(() {
+                                _isRunning = false;
+                              });
+                              resetController();
+                            });
                           }
                         },
                 ),
