@@ -79,7 +79,7 @@ class _ConcatPageState extends State<ConcatPage> {
                 child: PrimaryButton(
                   label: 'Concatenate',
                   isRunning: _isRunning,
-                  onPressed: _isRunning || !_validate()
+                  onPressed: _isRunning || !ctr.isValid()
                       ? null
                       : () async {
                           setState(() {
@@ -126,17 +126,9 @@ class _ConcatPageState extends State<ConcatPage> {
       outputDir: ctr.outputDir!,
     ).concatAlignment(
       outFname: ctr.outputController.text,
-      outFmtStr: ctr.outputFormatController,
+      outFmtStr: ctr.outputFormatController!,
       partitionFmt: _partitionFormatController,
     );
-  }
-
-  bool _validate() {
-    return ctr.dirPath != null ||
-        ctr.files.isNotEmpty &&
-            ctr.outputDir != null &&
-            ctr.outputController.text.isNotEmpty &&
-            ctr.inputFormatController != null;
   }
 
   void _resetController() {

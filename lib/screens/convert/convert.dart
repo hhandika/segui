@@ -66,7 +66,7 @@ class _ConvertPageState extends State<ConvertPage> {
               PrimaryButton(
                 label: 'Convert',
                 isRunning: _isRunning,
-                onPressed: _isRunning || !_validate()
+                onPressed: _isRunning || !ctr.isValid()
                     ? null
                     : () async {
                         setState(() {
@@ -116,16 +116,9 @@ class _ConvertPageState extends State<ConvertPage> {
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).convertSequence(
-      outputFmt: ctr.outputFormatController,
+      outputFmt: ctr.outputFormatController!,
       sort: isSortSequence,
     );
-  }
-
-  bool _validate() {
-    return ctr.dirPath != null ||
-        ctr.files.isNotEmpty &&
-            ctr.outputDir != null &&
-            ctr.inputFormatController != null;
   }
 
   void _resetController() {

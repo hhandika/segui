@@ -9,7 +9,7 @@ class IOController {
     required this.files,
     this.inputFormatController,
     required this.dataTypeController,
-    required this.outputFormatController,
+    this.outputFormatController,
   });
 
   final TextEditingController outputController;
@@ -18,14 +18,21 @@ class IOController {
   String? outputDir;
   String? inputFormatController;
   String dataTypeController;
-  String outputFormatController;
+  String? outputFormatController;
 
   factory IOController.empty() => IOController(
         outputController: TextEditingController(),
         files: [],
         dataTypeController: dataType[0],
-        outputFormatController: outputFormat[1],
       );
+
+  bool isValid() {
+    return dirPath != null ||
+        files.isNotEmpty &&
+            outputDir != null &&
+            inputFormatController != null &&
+            outputFormatController != null;
+  }
 
   void reset() {
     dirPath = null;
