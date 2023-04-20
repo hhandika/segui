@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segui/bridge_generated.dart';
+import 'package:segui/bridge_definitions.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -112,9 +112,8 @@ class _ConcatPageState extends State<ConcatPage> {
                               setState(() {
                                 _isRunning = false;
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Concatenation complete!'),
-                                  ),
+                                  showSharedSnackBar(
+                                      context, 'Concatenation successful'),
                                 );
                                 _resetController();
                               });
@@ -124,9 +123,7 @@ class _ConcatPageState extends State<ConcatPage> {
                               setState(() {
                                 _isRunning = false;
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Concatenation failed: $e'),
-                                  ),
+                                  showSharedSnackBar(context, e.toString()),
                                 );
                               });
                             }

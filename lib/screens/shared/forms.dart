@@ -105,3 +105,10 @@ class SelectDirField extends StatelessWidget {
     return null;
   }
 }
+
+SnackBar showSharedSnackBar(BuildContext context, String text) {
+  return SnackBar(
+    content: Text(text),
+    duration: const Duration(seconds: 10),
+  );
+}

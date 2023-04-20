@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:segui/bridge_generated.dart';
 
-const _base = 'api';
+const _base = 'segul_api';
 
 final _dylib = Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
 
