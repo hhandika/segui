@@ -30,10 +30,7 @@ class IOController {
 
   bool isValid() {
     bool validInputPath = dirPath != null || files.isNotEmpty;
-    return validInputPath &&
-        outputDir != null &&
-        inputFormatController != null &&
-        outputFormatController != null;
+    return validInputPath && outputDir != null && inputFormatController != null;
   }
 
   void reset() {

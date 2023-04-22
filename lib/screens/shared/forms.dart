@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/types.dart';
 import 'package:segui/services/io.dart';
@@ -30,7 +29,15 @@ class _SharedInputFormsState extends State<SharedInputForms> {
                     widget.ctr.dirPath = value;
                   });
                 })
-            : const SizedBox.shrink(),
+            : SharedFilePicker(
+                label: 'Select input files',
+                paths: widget.ctr.files,
+                onPressed: (value) {
+                  setState(() {
+                    widget.ctr.files = value;
+                  });
+                },
+              ),
         SharedDropdownField(
           value: widget.ctr.inputFormatController,
           label: 'Format',
@@ -53,16 +60,6 @@ class _SharedInputFormsState extends State<SharedInputForms> {
             });
           },
         ),
-        runningPlatform == PlatformType.isMobile
-            ? SharedFilePicker(
-                label: 'Select Files',
-                onPressed: (value) {
-                  setState(() {
-                    widget.ctr.files = value;
-                  });
-                },
-              )
-            : const SizedBox.shrink(),
       ],
     );
   }
@@ -208,7 +205,9 @@ class SelectDirField extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         IconButton(
-          icon: const Icon(Icons.folder),
+          icon: dirPath == null
+              ? const Icon(Icons.folder)
+              : const Icon(Icons.folder_open),
           onPressed: () async {
             final dir = await _selectDir();
             if (dir != null) {
@@ -236,27 +235,38 @@ class SharedFilePicker extends StatelessWidget {
   const SharedFilePicker({
     super.key,
     required this.label,
+    required this.paths,
     required this.onPressed,
   });
 
   final String label;
+  final List<String> paths;
   final Function(List<String>) onPressed;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: SizedBox(
-        height: 50,
-        width: 120,
-        child: FittedBox(
-            child: SecondaryButton(
-                text: label,
-                onPressed: () async {
-                  final paths = await _selectFile();
-                  if (paths.isNotEmpty) {
-                    onPressed(paths);
-                  }
-                })),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              '$label: ${paths.length} files selected',
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 10),
+          IconButton(
+            icon: paths.isEmpty
+                ? const Icon(Icons.folder)
+                : const Icon(Icons.folder_open),
+            onPressed: () async {
+              final paths = await _selectFile();
+              if (paths.isNotEmpty) {
+                onPressed(paths);
+              }
+            },
+          ),
+        ],
       ),
     );
   }

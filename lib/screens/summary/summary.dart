@@ -78,7 +78,8 @@ class _SummaryPageState extends State<SummaryPage> {
                         ctr.isRunning = false;
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
-                        showSharedSnackBar(context, 'Summarization failed!'),
+                        showSharedSnackBar(
+                            context, 'Summarization failed!: $e'),
                       );
                     }
                   }

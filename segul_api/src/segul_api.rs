@@ -36,6 +36,7 @@ impl SegulServices {
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
         let mut files = self.find_input_files(&input_fmt);
+        self.check_file_count(files.len());
         let output_fmt = self.match_output_fmt(&out_fmt_str);
         let output_path = PathBuf::from(&self.output_dir).join(out_fname);
         let final_path = filenames::create_output_fname_from_path(&output_path, &output_fmt);
@@ -82,6 +83,12 @@ impl SegulServices {
             } else {
                 self.files.iter().map(PathBuf::from).collect()
             }
+        }
+    }
+
+    fn check_file_count(&self, file_count: usize) {
+        if file_count < 2 {
+            panic!("At least two files are required for the analysis");
         }
     }
 

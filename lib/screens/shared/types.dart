@@ -1,5 +1,10 @@
 enum PlatformType { isDesktop, isMobile }
 
+const List<String> alignmentAnalysis = [
+  'Alignment Concatenation',
+  'Alignment Summary Statistics',
+];
+
 const List<String> inputFormat = [
   'FASTA',
   'NEXUS',
