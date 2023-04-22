@@ -14,7 +14,7 @@ class IOController {
   });
 
   final TextEditingController outputController;
-  List<String?> files;
+  List<String> files;
   String? dirPath;
   String? outputDir;
   String? inputFormatController;
@@ -29,11 +29,11 @@ class IOController {
       );
 
   bool isValid() {
-    return dirPath != null ||
-        files.isNotEmpty &&
-            outputDir != null &&
-            inputFormatController != null &&
-            outputFormatController != null;
+    bool validInputPath = dirPath != null || files.isNotEmpty;
+    return validInputPath &&
+        outputDir != null &&
+        inputFormatController != null &&
+        outputFormatController != null;
   }
 
   void reset() {

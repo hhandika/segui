@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segui/bridge_definitions.dart';
+// import 'package:segui/bridge_definitions.dart';
 // ignore: unused_import
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
@@ -112,7 +112,8 @@ class _ConcatPageState extends State<ConcatPage> {
   Future<void> _concat() async {
     await SegulServices(
       bridge: segulApi,
-      dirPath: ctr.dirPath!,
+      dirPath: ctr.dirPath,
+      files: ctr.files,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
       outputDir: ctr.outputDir!,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segui/bridge_definitions.dart';
+import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -91,7 +91,8 @@ class _SummaryPageState extends State<SummaryPage> {
   Future<void> _summarize() async {
     await SegulServices(
       bridge: segulApi,
-      dirPath: ctr.dirPath!,
+      files: ctr.files,
+      dirPath: ctr.dirPath,
       outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,

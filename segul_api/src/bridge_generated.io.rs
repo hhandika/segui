@@ -68,6 +68,15 @@ pub extern "C" fn wire_translate_sequence__method__SegulServices(
 // Section: allocate functions
 
 #[no_mangle]
+pub extern "C" fn new_StringList_0(len: i32) -> *mut wire_StringList {
+    let wrap = wire_StringList {
+        ptr: support::new_leak_vec_ptr(<*mut wire_uint_8_list>::new_with_null_ptr(), len),
+        len,
+    };
+    support::new_leak_box_ptr(wrap)
+}
+
+#[no_mangle]
 pub extern "C" fn new_box_autoadd_segul_services_0() -> *mut wire_SegulServices {
     support::new_leak_box_ptr(wire_SegulServices::new_with_null_ptr())
 }
@@ -91,6 +100,15 @@ impl Wire2Api<String> for *mut wire_uint_8_list {
         String::from_utf8_lossy(&vec).into_owned()
     }
 }
+impl Wire2Api<Vec<String>> for *mut wire_StringList {
+    fn wire2api(self) -> Vec<String> {
+        let vec = unsafe {
+            let wrap = support::box_from_leak_ptr(self);
+            support::vec_from_leak_ptr(wrap.ptr, wrap.len)
+        };
+        vec.into_iter().map(Wire2Api::wire2api).collect()
+    }
+}
 
 impl Wire2Api<SegulServices> for *mut wire_SegulServices {
     fn wire2api(self) -> SegulServices {
@@ -98,10 +116,12 @@ impl Wire2Api<SegulServices> for *mut wire_SegulServices {
         Wire2Api::<SegulServices>::wire2api(*wrap).into()
     }
 }
+
 impl Wire2Api<SegulServices> for wire_SegulServices {
     fn wire2api(self) -> SegulServices {
         SegulServices {
             dir_path: self.dir_path.wire2api(),
+            files: self.files.wire2api(),
             file_fmt: self.file_fmt.wire2api(),
             datatype: self.datatype.wire2api(),
             output_dir: self.output_dir.wire2api(),
@@ -122,8 +142,16 @@ impl Wire2Api<Vec<u8>> for *mut wire_uint_8_list {
 
 #[repr(C)]
 #[derive(Clone)]
+pub struct wire_StringList {
+    ptr: *mut *mut wire_uint_8_list,
+    len: i32,
+}
+
+#[repr(C)]
+#[derive(Clone)]
 pub struct wire_SegulServices {
     dir_path: *mut wire_uint_8_list,
+    files: *mut wire_StringList,
     file_fmt: *mut wire_uint_8_list,
     datatype: *mut wire_uint_8_list,
     output_dir: *mut wire_uint_8_list,
@@ -152,6 +180,7 @@ impl NewWithNullPtr for wire_SegulServices {
     fn new_with_null_ptr() -> Self {
         Self {
             dir_path: core::ptr::null_mut(),
+            files: core::ptr::null_mut(),
             file_fmt: core::ptr::null_mut(),
             datatype: core::ptr::null_mut(),
             output_dir: core::ptr::null_mut(),

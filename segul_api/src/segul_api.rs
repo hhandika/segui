@@ -14,7 +14,8 @@ pub fn show_dna_uppercase() -> String {
 }
 
 pub struct SegulServices {
-    pub dir_path: String,
+    pub dir_path: Option<String>,
+    pub files: Vec<String>,
     pub file_fmt: String,
     pub datatype: String,
     pub output_dir: String,
@@ -23,7 +24,8 @@ pub struct SegulServices {
 impl SegulServices {
     pub fn new() -> SegulServices {
         SegulServices {
-            dir_path: String::new(),
+            dir_path: None,
+            files: Vec::new(),
             file_fmt: String::new(),
             datatype: String::new(),
             output_dir: String::new(),
@@ -31,10 +33,9 @@ impl SegulServices {
     }
 
     pub fn concat_alignment(&self, out_fname: String, out_fmt_str: String, partition_fmt: String) {
-        let path = Path::new(&self.dir_path);
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
-        let mut files = Files::new(path, &input_fmt).find();
+        let mut files = self.find_input_files(&input_fmt);
         let output_fmt = self.match_output_fmt(&out_fmt_str);
         let output_path = PathBuf::from(&self.output_dir).join(out_fname);
         let final_path = filenames::create_output_fname_from_path(&output_path, &output_fmt);
@@ -44,34 +45,44 @@ impl SegulServices {
     }
 
     pub fn convert_sequence(&self, output_fmt: String, sort: bool) {
-        let path = Path::new(&self.dir_path);
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
-        let mut files = Files::new(path, &input_fmt).find();
+        let mut files = self.find_input_files(&input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
         concat.convert(&mut files, Path::new(&self.output_dir));
     }
 
     pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
-        let path = Path::new(&self.dir_path);
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
-        let mut files = Files::new(path, &input_fmt).find();
+        let mut files = self.find_input_files(&input_fmt);
         let output = Path::new(&self.output_dir);
         let mut summary = SeqStats::new(&input_fmt, output, interval, &datatype);
         summary.summarize_all(&mut files, &Some(output_prefix));
     }
 
     pub fn translate_sequence(&self, table: usize, reading_frame: usize, output_fmt: String) {
-        let path = Path::new(&self.dir_path);
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
-        let mut files = Files::new(path, &input_fmt).find();
+        let mut files = self.find_input_files(&input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let translation_table = self.match_translation_table(table);
         let translate = Translate::new(&translation_table, &input_fmt, &datatype, &output_fmt);
         translate.translate_all(&mut files, reading_frame, Path::new(&self.output_dir));
+    }
+
+    fn find_input_files(&self, input_fmt: &InputFmt) -> Vec<PathBuf> {
+        if let Some(path) = &self.dir_path {
+            let path = Path::new(&path);
+            Files::new(path, &input_fmt).find()
+        } else {
+            if self.files.is_empty() {
+                panic!("No input files found");
+            } else {
+                self.files.iter().map(PathBuf::from).collect()
+            }
+        }
     }
 
     fn match_translation_table(&self, table: usize) -> GeneticCodes {

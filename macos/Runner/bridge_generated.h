@@ -14,8 +14,14 @@ typedef struct wire_uint_8_list {
   int32_t len;
 } wire_uint_8_list;
 
+typedef struct wire_StringList {
+  struct wire_uint_8_list **ptr;
+  int32_t len;
+} wire_StringList;
+
 typedef struct wire_SegulServices {
   struct wire_uint_8_list *dir_path;
+  struct wire_StringList *files;
   struct wire_uint_8_list *file_fmt;
   struct wire_uint_8_list *datatype;
   struct wire_uint_8_list *output_dir;
@@ -48,6 +54,19 @@ void wire_convert_sequence__method__SegulServices(int64_t port_,
                                                   struct wire_uint_8_list *output_fmt,
                                                   bool sort);
 
+void wire_summarize_alignment__method__SegulServices(int64_t port_,
+                                                     struct wire_SegulServices *that,
+                                                     struct wire_uint_8_list *output_prefix,
+                                                     uintptr_t interval);
+
+void wire_translate_sequence__method__SegulServices(int64_t port_,
+                                                    struct wire_SegulServices *that,
+                                                    uintptr_t table,
+                                                    uintptr_t reading_frame,
+                                                    struct wire_uint_8_list *output_fmt);
+
+struct wire_StringList *new_StringList_0(int32_t len);
+
 struct wire_SegulServices *new_box_autoadd_segul_services_0(void);
 
 struct wire_uint_8_list *new_uint_8_list_0(int32_t len);
@@ -60,6 +79,9 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_new__static_method__SegulServices);
     dummy_var ^= ((int64_t) (void*) wire_concat_alignment__method__SegulServices);
     dummy_var ^= ((int64_t) (void*) wire_convert_sequence__method__SegulServices);
+    dummy_var ^= ((int64_t) (void*) wire_summarize_alignment__method__SegulServices);
+    dummy_var ^= ((int64_t) (void*) wire_translate_sequence__method__SegulServices);
+    dummy_var ^= ((int64_t) (void*) new_StringList_0);
     dummy_var ^= ((int64_t) (void*) new_box_autoadd_segul_services_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);
     dummy_var ^= ((int64_t) (void*) free_WireSyncReturn);

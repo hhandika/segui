@@ -240,7 +240,7 @@ class SharedFilePicker extends StatelessWidget {
   });
 
   final String label;
-  final Function(List<String?>) onPressed;
+  final Function(List<String>) onPressed;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -251,24 +251,24 @@ class SharedFilePicker extends StatelessWidget {
         child: FittedBox(
             child: SecondaryButton(
                 text: label,
-                onPressed: () {
-                  _selectFile();
+                onPressed: () async {
+                  final paths = await _selectFile();
+                  if (paths.isNotEmpty) {
+                    onPressed(paths);
+                  }
                 })),
       ),
     );
   }
 
-  Future<List<File?>> _selectFile() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+  Future<List<String>> _selectFile() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
-      if (kDebugMode) {
-        print('Selected file: ${result.files.single.path}');
-      }
-      return result.paths
-          .map((file) => file != null ? File(file) : null)
-          .toList();
+      return result.paths.map((e) => e ?? '').toList();
+    } else {
+      return [];
     }
-    return [];
   }
 }
 

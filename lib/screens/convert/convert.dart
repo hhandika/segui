@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segui/bridge_definitions.dart';
+// import 'package:segui/bridge_definitions.dart';
 // ignore: unused_import
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
@@ -103,7 +103,8 @@ class _ConvertPageState extends State<ConvertPage> {
   Future<void> _convert() async {
     await SegulServices(
       bridge: segulApi,
-      dirPath: ctr.dirPath!,
+      files: ctr.files,
+      dirPath: ctr.dirPath,
       outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
