@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:segui/screens/concat/concat.dart';
 import 'package:segui/screens/convert/convert.dart';
 import 'package:segui/screens/shared/navigation.dart';
+import 'package:segui/screens/shared/settings.dart';
 import 'package:segui/screens/summary/summary.dart';
 import 'package:segui/screens/translate/translate.dart';
 
@@ -59,6 +60,9 @@ class _SmallScreenViewState extends State<SmallScreenView> {
     return Scaffold(
         appBar: AppBar(
           title: Text(_pageTitles[_selectedIndex]),
+          actions: const [
+            SettingButtons(),
+          ],
         ),
         body: SafeArea(
           child: Center(
@@ -125,13 +129,10 @@ class _LargeScreenViewState extends State<LargeScreenView> {
                       });
                     },
                     groupAlignment: BorderSide.strokeAlignCenter,
-                    trailing: Expanded(
+                    trailing: const Expanded(
                       child: Align(
                         alignment: Alignment.bottomCenter,
-                        child: IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () {},
-                        ),
+                        child: SettingButtons(),
                       ),
                     )),
               ),
