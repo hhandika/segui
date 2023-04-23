@@ -85,7 +85,8 @@ class _AppAboutState extends State<AppAbout> {
                   }
                 },
               ),
-              const Text('A GUI version of the SEGUL genomic tool')
+              const Text('A GUI version of the SEGUL genomic tool'),
+              const Text('Heru Handika & Jacob A. Esselstyn'),
             ],
           ),
         ));
