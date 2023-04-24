@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 // import 'package:segui/bridge_definitions.dart';
 // ignore: unused_import
@@ -6,6 +8,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/types.dart';
+import 'package:segui/services/io.dart';
 
 import 'package:segui/services/native.dart';
 
@@ -45,15 +48,17 @@ class _ConcatPageState extends State<ConcatPage> {
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SelectDirField(
-            label: 'Select output directory',
-            dirPath: ctr.outputDir,
-            onPressed: (value) {
-              setState(() {
-                ctr.outputDir = value;
-              });
-            },
-          ),
+          Platform.isIOS
+              ? const SizedBox.shrink()
+              : SelectDirField(
+                  label: 'Select output directory',
+                  dirPath: ctr.outputDir,
+                  onPressed: (value) {
+                    setState(() {
+                      ctr.outputDir = value;
+                    });
+                  },
+                ),
           SharedTextField(
             controller: ctr.outputController,
             label: 'Output Filename',
@@ -131,13 +136,14 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   Future<void> _concat() async {
+    String outputDir = await getOutputDir(ctr.outputDir);
     await SegulServices(
       bridge: segulApi,
       dirPath: ctr.dirPath,
       files: ctr.files,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
-      outputDir: ctr.outputDir!,
+      outputDir: outputDir,
     ).concatAlignment(
       outFname: ctr.outputController.text,
       outFmtStr: ctr.outputFormatController!,
