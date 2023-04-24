@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/types.dart';
 
@@ -30,7 +32,8 @@ class IOController {
 
   bool isValid() {
     bool validInputPath = dirPath != null || files.isNotEmpty;
-    return validInputPath && outputDir != null && inputFormatController != null;
+    bool validOutputPath = Platform.isIOS || outputDir != null;
+    return validInputPath && validOutputPath && inputFormatController != null;
   }
 
   void reset() {

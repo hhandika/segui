@@ -4,6 +4,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/types.dart';
+import 'package:segui/services/io.dart';
 import 'package:segui/services/native.dart';
 
 class SummaryPage extends StatefulWidget {
@@ -26,9 +27,8 @@ class _SummaryPageState extends State<SummaryPage> {
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SelectDirField(
-              label: 'Select output directory',
-              dirPath: ctr.outputDir,
+          SharedOutputDirField(
+              ctr: ctr.outputDir,
               onPressed: (value) {
                 setState(() {
                   ctr.outputDir = value;
@@ -90,11 +90,12 @@ class _SummaryPageState extends State<SummaryPage> {
   }
 
   Future<void> _summarize() async {
+    String outputDir = await getOutputDir(ctr.outputDir);
     await SegulServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,
-      outputDir: ctr.outputDir!,
+      outputDir: outputDir,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).summarizeAlignment(

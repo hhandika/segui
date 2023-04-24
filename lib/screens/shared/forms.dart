@@ -181,6 +181,27 @@ class SharedDropdownField extends StatelessWidget {
   }
 }
 
+class SharedOutputDirField extends StatelessWidget {
+  const SharedOutputDirField({
+    super.key,
+    required this.ctr,
+    required this.onPressed,
+  });
+
+  final String? ctr;
+  final void Function(String?) onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Platform.isIOS
+        ? const SizedBox.shrink()
+        : SelectDirField(
+            label: 'Select output directory',
+            dirPath: ctr,
+            onPressed: onPressed);
+  }
+}
+
 class SelectDirField extends StatelessWidget {
   const SelectDirField({
     super.key,

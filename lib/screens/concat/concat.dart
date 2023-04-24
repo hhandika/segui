@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 // import 'package:segui/bridge_definitions.dart';
 // ignore: unused_import
@@ -48,17 +46,13 @@ class _ConcatPageState extends State<ConcatPage> {
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          Platform.isIOS
-              ? const SizedBox.shrink()
-              : SelectDirField(
-                  label: 'Select output directory',
-                  dirPath: ctr.outputDir,
-                  onPressed: (value) {
-                    setState(() {
-                      ctr.outputDir = value;
-                    });
-                  },
-                ),
+          SharedOutputDirField(
+              ctr: ctr.outputDir,
+              onPressed: (value) {
+                setState(() {
+                  ctr.outputDir = value;
+                });
+              }),
           SharedTextField(
             controller: ctr.outputController,
             label: 'Output Filename',

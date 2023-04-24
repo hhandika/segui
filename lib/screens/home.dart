@@ -109,30 +109,39 @@ class _LargeScreenViewState extends State<LargeScreenView> {
           top: false,
           child: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: NavigationRail(
-                    labelType: NavigationRailLabelType.all,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surface.withOpacity(0.5),
-                    destinations: navigationTargets
-                        .map((e) => NavigationRailDestination(
-                              icon: e.icon,
-                              selectedIcon: e.selectedIcon,
-                              label: Text(e.label),
-                            ))
-                        .toList(),
-                    selectedIndex: _selectedIndex,
-                    onDestinationSelected: (int index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                    groupAlignment: BorderSide.strokeAlignCenter,
-                    trailing: const Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SettingButtons(),
+              SingleChildScrollView(
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height * .9),
+                    child: IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: NavigationRail(
+                            labelType: NavigationRailLabelType.all,
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .surface
+                                .withOpacity(0.5),
+                            destinations: navigationTargets
+                                .map((e) => NavigationRailDestination(
+                                      icon: e.icon,
+                                      selectedIcon: e.selectedIcon,
+                                      label: Text(e.label),
+                                    ))
+                                .toList(),
+                            selectedIndex: _selectedIndex,
+                            onDestinationSelected: (int index) {
+                              setState(() {
+                                _selectedIndex = index;
+                              });
+                            },
+                            groupAlignment: BorderSide.strokeAlignCenter,
+                            trailing: const Expanded(
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: SettingButtons(),
+                              ),
+                            )),
                       ),
                     )),
               ),
