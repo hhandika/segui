@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class NavigationTarget {
   const NavigationTarget({
@@ -19,23 +20,23 @@ const List<NavigationTarget> navigationTargets = [
     selectedIcon: Icon(Icons.home),
   ),
   NavigationTarget(
-    label: 'Concat',
-    icon: Icon(Icons.compare_arrows_outlined),
-    selectedIcon: Icon(Icons.compare_arrows),
+    label: 'Raw',
+    icon: Icon(Icons.factory_outlined),
+    selectedIcon: Icon(Icons.factory_rounded),
   ),
   NavigationTarget(
-    label: 'Convert',
-    icon: Icon(Icons.construction),
-    selectedIcon: Icon(Icons.construction_outlined),
+    label: 'Contigs',
+    icon: Icon(Icons.segment_outlined),
+    selectedIcon: Icon(Icons.segment_rounded),
   ),
   NavigationTarget(
-    label: 'Summarize',
-    icon: Icon(Icons.bar_chart_outlined),
-    selectedIcon: Icon(Icons.bar_chart),
+    label: 'Alignments',
+    icon: Icon(Icons.sync_alt_outlined),
+    selectedIcon: Icon(Icons.sync_alt_rounded),
   ),
   NavigationTarget(
-    label: 'Translate',
-    icon: Icon(Icons.translate_outlined),
-    selectedIcon: Icon(Icons.translate),
+    label: 'Sequences',
+    icon: Icon(LineAwesome.dna_solid),
+    selectedIcon: Icon(BoxIcons.bx_dna),
   ),
 ];
