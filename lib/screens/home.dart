@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:segui/screens/concat/concat.dart';
 import 'package:segui/screens/convert/convert.dart';
+import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/navigation.dart';
 import 'package:segui/screens/shared/settings.dart';
 import 'package:segui/screens/summary/summary.dart';
 import 'package:segui/screens/translate/translate.dart';
+import 'package:segui/services/utils.dart';
 
 const List<Widget> _pages = <Widget>[
   HomePage(),
@@ -15,7 +17,7 @@ const List<Widget> _pages = <Widget>[
 ];
 
 const List<String> _pageTitles = <String>[
-  'HOME',
+  'SEGUL GUI',
   'Alignment Concatenation',
   'Sequence Conversion',
   'Sequence Summary',
@@ -166,26 +168,66 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Container(
-          height: 200,
-          width: 400,
-          decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.secondary),
-            borderRadius: BorderRadius.circular(10),
-            color: Color.lerp(Theme.of(context).colorScheme.secondary,
-                Theme.of(context).colorScheme.surface, 0.95),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset('assets/images/icon.png', height: 100, width: 100),
+          Text(greeting, style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 50),
+          const QuickActionContainer(),
+        ],
+      ),
+    );
+  }
+}
+
+class QuickActionContainer extends StatelessWidget {
+  const QuickActionContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Quick Actions',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Welcome to SEGUL GUI!"),
-              Text("Select a tool from the navigation bar to get started."),
-            ],
+          Icon(
+            Icons.arrow_drop_down,
+            color: Theme.of(context).colorScheme.secondary,
           ),
-        ),
+          const SizedBox(height: 10),
+          QuickActionButton(
+            icon: Icons.compare_arrows,
+            label: 'Concatenate Alignments',
+            onPressed: () {},
+          ),
+          QuickActionButton(
+            icon: Icons.swap_horiz,
+            label: 'Convert Alignments',
+            onPressed: () {},
+          ),
+          QuickActionButton(
+            icon: Icons.translate,
+            label: 'Translate Sequences',
+            onPressed: () {},
+          ),
+          QuickActionButton(
+            icon: Icons.bar_chart,
+            label: 'Summarize Sequences',
+            onPressed: () {},
+          ),
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }

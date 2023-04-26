@@ -56,3 +56,30 @@ class SecondaryButton extends StatelessWidget {
     );
   }
 }
+
+class QuickActionButton extends StatelessWidget {
+  const QuickActionButton({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        elevation: 0,
+      ),
+      icon: Icon(icon),
+      onPressed: onPressed,
+      label: Text(label),
+    );
+  }
+}
