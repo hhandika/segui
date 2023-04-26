@@ -177,6 +177,15 @@ class _HomePageState extends State<HomePage> {
           Image.asset('assets/images/icon.png', height: 100, width: 100),
           Text(greeting, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 50),
+          Text(
+            'Quick Actions',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          Icon(
+            Icons.arrow_drop_down,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          const SizedBox(height: 10),
           const QuickActionContainer(),
         ],
       ),
@@ -189,46 +198,34 @@ class QuickActionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Quick Actions',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          Icon(
-            Icons.arrow_drop_down,
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-          const SizedBox(height: 10),
-          QuickActionButton(
-            icon: Icons.compare_arrows,
-            label: 'Concatenate Alignments',
-            onPressed: () {},
-          ),
-          QuickActionButton(
-            icon: Icons.swap_horiz,
-            label: 'Convert Alignments',
-            onPressed: () {},
-          ),
-          QuickActionButton(
-            icon: Icons.translate,
-            label: 'Translate Sequences',
-            onPressed: () {},
-          ),
-          QuickActionButton(
-            icon: Icons.bar_chart,
-            label: 'Summarize Sequences',
-            onPressed: () {},
-          ),
-          const SizedBox(height: 10),
-        ],
-      ),
-    );
+    return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 250, maxHeight: 250),
+        child: GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          children: [
+            QuickActionButton(
+              icon: Icons.compare_arrows,
+              label: 'Concatenate Alignments',
+              onTap: () {},
+            ),
+            QuickActionButton(
+              icon: Icons.swap_horiz,
+              label: 'Convert Alignments',
+              onTap: () {},
+            ),
+            QuickActionButton(
+              icon: Icons.translate,
+              label: 'Translate Sequences',
+              onTap: () {},
+            ),
+            QuickActionButton(
+              icon: Icons.bar_chart,
+              label: 'Summarize Sequences',
+              onTap: () {},
+            ),
+          ],
+        ));
   }
 }

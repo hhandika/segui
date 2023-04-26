@@ -60,26 +60,53 @@ class SecondaryButton extends StatelessWidget {
 class QuickActionButton extends StatelessWidget {
   const QuickActionButton({
     super.key,
+    required this.onTap,
     required this.icon,
     required this.label,
-    required this.onPressed,
   });
 
+  final VoidCallback onTap;
   final IconData icon;
   final String label;
-  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        elevation: 0,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 120,
+        width: 120,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              20,
+            ),
+
+            // Lerp colors
+            color: Color.lerp(
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.primaryContainer,
+              0.5,
+            )),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Icon(icon,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer),
+              ),
+            ),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelLarge,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
-      icon: Icon(icon),
-      onPressed: onPressed,
-      label: Text(label),
     );
   }
 }
