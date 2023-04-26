@@ -183,10 +183,12 @@ class _HomePageState extends State<HomePage> {
           ),
           Icon(
             Icons.arrow_drop_down,
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           const QuickActionContainer(),
+          const SizedBox(height: 30),
+          const ResourceTiles(),
         ],
       ),
     );
@@ -227,5 +229,50 @@ class QuickActionContainer extends StatelessWidget {
             ),
           ],
         ));
+  }
+}
+
+class ResourceTiles extends StatelessWidget {
+  const ResourceTiles({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 500),
+      child: Column(
+        children: [
+          ListTile(
+            leading: Icon(Icons.help_outline_outlined,
+                color: Theme.of(context).colorScheme.onSurface),
+            title: Text(
+              'FAQ',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: Icon(Icons.arrow_forward_ios,
+                color: Theme.of(context).colorScheme.onSurface),
+          ),
+          ListTile(
+            leading: Icon(Icons.school_outlined,
+                color: Theme.of(context).colorScheme.onSurface),
+            title: Text('Learner resources',
+                style: Theme.of(context).textTheme.titleMedium),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.description_outlined,
+                color: Theme.of(context).colorScheme.onSurface),
+            title: Text(
+              'SEGUL documentation',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            trailing: Icon(Icons.arrow_forward_ios,
+                color: Theme.of(context).colorScheme.onSurface),
+          )
+        ],
+      ),
+    );
   }
 }
