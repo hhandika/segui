@@ -174,9 +174,9 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset('assets/images/icon.png', height: 100, width: 100),
+          Image.asset('assets/images/logo.png', height: 100, width: 100),
           Text(greeting, style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 50),
+          const SizedBox(height: 40),
           Text(
             'Quick Actions',
             style: Theme.of(context).textTheme.titleMedium,
