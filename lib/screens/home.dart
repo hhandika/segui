@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:segui/screens/concat/concat.dart';
-import 'package:segui/screens/convert/convert.dart';
+import 'package:segui/screens/alignment/alignment.dart';
+import 'package:segui/screens/contig/contig.dart';
+import 'package:segui/screens/raw/raw.dart';
+import 'package:segui/screens/sequence/sequence.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/navigation.dart';
 import 'package:segui/screens/shared/settings.dart';
-import 'package:segui/screens/summary/summary.dart';
-import 'package:segui/screens/translate/translate.dart';
 import 'package:segui/services/utils.dart';
 
 const List<Widget> _pages = <Widget>[
   HomePage(),
-  ConcatPage(),
-  ConvertPage(),
-  SummaryPage(),
-  TranslatePage(),
+  RawPage(),
+  ContigPage(),
+  AlignmentPage(),
+  SequencePage(),
 ];
 
 const List<String> _pageTitles = <String>[
   'SEGUL GUI',
-  'Alignment Concatenation',
-  'Sequence Conversion',
-  'Sequence Summary',
-  'Sequence Translation',
+  'Raw Sequence Tools',
+  'Contig Sequence Tools',
+  'Alignment Tools',
+  'Sequence Tools',
 ];
 
 class SegulHome extends StatefulWidget {

@@ -37,10 +37,7 @@ class _ConcatPageState extends State<ConcatPage> {
                 }
               });
             }),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
-          child: Divider(),
-        ),
+        const SizedBox(height: 20),
         const CardTitle(title: 'Input'),
         SharedInputForms(ctr: ctr),
         const SizedBox(height: 20),
