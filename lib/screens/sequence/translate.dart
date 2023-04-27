@@ -21,7 +21,10 @@ class _TranslatePageState extends State<TranslatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FormView(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
       children: [
         const CardTitle(title: 'Input'),
         SharedInputForms(ctr: ctr),
@@ -73,37 +76,40 @@ class _TranslatePageState extends State<TranslatePage> {
           ),
         ]),
         const SizedBox(height: 20),
-        PrimaryButton(
-          label: 'Translate',
-          isRunning: ctr.isRunning,
-          onPressed: ctr.isRunning || !ctr.isValid()
-              ? null
-              : () async {
-                  setState(() {
-                    ctr.isRunning = true;
-                  });
-                  try {
-                    await _translate();
-                    if (mounted) {
-                      setState(() {
-                        ctr.isRunning = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        showSharedSnackBar(context, 'Translation complete!'),
-                      );
+        Center(
+          child: PrimaryButton(
+            label: 'Translate',
+            isRunning: ctr.isRunning,
+            onPressed: ctr.isRunning || !ctr.isValid()
+                ? null
+                : () async {
+                    setState(() {
+                      ctr.isRunning = true;
+                    });
+                    try {
+                      await _translate();
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          showSharedSnackBar(context, 'Translation complete!'),
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          showSharedSnackBar(
+                              context, 'Translation failed!: $e'),
+                        );
+                      }
                     }
-                  } catch (e) {
-                    if (mounted) {
-                      setState(() {
-                        ctr.isRunning = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        showSharedSnackBar(context, 'Translation failed!: $e'),
-                      );
-                    }
-                  }
-                },
-        ),
+                  },
+          ),
+        )
       ],
     );
   }

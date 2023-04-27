@@ -20,7 +20,10 @@ class _SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FormView(
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const CardTitle(title: 'Input'),
         SharedInputForms(ctr: ctr),
@@ -53,37 +56,40 @@ class _SummaryPageState extends State<SummaryPage> {
           ),
         ]),
         const SizedBox(height: 20),
-        PrimaryButton(
-          label: 'Summarize',
-          isRunning: ctr.isRunning,
-          onPressed: ctr.isRunning || !ctr.isValid()
-              ? null
-              : () async {
-                  setState(() {
-                    ctr.isRunning = true;
-                  });
-                  try {
-                    await _summarize();
-                    if (mounted) {
-                      setState(() {
-                        ctr.isRunning = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        showSharedSnackBar(context, 'Summarization complete!'),
-                      );
+        Center(
+          child: PrimaryButton(
+            label: 'Summarize',
+            isRunning: ctr.isRunning,
+            onPressed: ctr.isRunning || !ctr.isValid()
+                ? null
+                : () async {
+                    setState(() {
+                      ctr.isRunning = true;
+                    });
+                    try {
+                      await _summarize();
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          showSharedSnackBar(
+                              context, 'Summarization complete!'),
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          showSharedSnackBar(
+                              context, 'Summarization failed!: $e'),
+                        );
+                      }
                     }
-                  } catch (e) {
-                    if (mounted) {
-                      setState(() {
-                        ctr.isRunning = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        showSharedSnackBar(
-                            context, 'Summarization failed!: $e'),
-                      );
-                    }
-                  }
-                },
+                  },
+          ),
         )
       ],
     );

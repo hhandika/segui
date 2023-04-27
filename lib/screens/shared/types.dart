@@ -1,8 +1,18 @@
 enum PlatformType { isDesktop, isMobile }
 
-const List<String> alignmentAnalysis = [
-  'Alignment Concatenation',
-  'Alignment Summary Statistics',
+enum AlignmentOperationType { concat, summary, convert }
+
+// DO NOT CHANGE THE ORDER OF THE LIST
+const List<String> alignmentOperation = [
+  'Concatenation',
+  'Summary Statistics',
+  'Conversion',
+];
+
+enum SequenceOperationType { translation }
+
+const List<String> sequenceOperation = [
+  'Translation',
 ];
 
 const List<String> inputFormat = [

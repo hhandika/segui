@@ -20,24 +20,13 @@ class ConcatPage extends StatefulWidget {
 class _ConcatPageState extends State<ConcatPage> {
   IOController ctr = IOController.empty();
   String _partitionFormatController = partitionFormat[1];
-  String? analysisType;
 
   @override
   Widget build(BuildContext context) {
-    return FormView(
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedDropdownField(
-            value: analysisType,
-            label: 'Type of analyses',
-            items: alignmentAnalysis,
-            onChanged: (String? value) {
-              setState(() {
-                if (value != null) {
-                  analysisType = value;
-                }
-              });
-            }),
-        const SizedBox(height: 20),
         const CardTitle(title: 'Input'),
         SharedInputForms(ctr: ctr),
         const SizedBox(height: 20),
@@ -81,8 +70,7 @@ class _ConcatPageState extends State<ConcatPage> {
           )
         ]),
         const SizedBox(height: 20),
-        SizedBox(
-          width: 80,
+        Center(
           child: PrimaryButton(
             label: 'Concatenate',
             isRunning: ctr.isRunning,

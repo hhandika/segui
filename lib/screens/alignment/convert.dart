@@ -22,7 +22,10 @@ class _ConvertPageState extends State<ConvertPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FormView(
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const CardTitle(title: 'Input'),
         SharedInputForms(ctr: ctr),
@@ -58,44 +61,46 @@ class _ConvertPageState extends State<ConvertPage> {
               }),
         ]),
         const SizedBox(height: 20),
-        PrimaryButton(
-          label: 'Convert',
-          isRunning: ctr.isRunning,
-          onPressed: ctr.isRunning || !ctr.isValid()
-              ? null
-              : () async {
-                  setState(() {
-                    ctr.isRunning = true;
-                  });
-                  try {
-                    await _convert();
-                    if (mounted) {
-                      setState(() {
-                        ctr.isRunning = false;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          showSharedSnackBar(
-                            context,
-                            'Conversion successful!',
-                          ),
-                        );
-                        _resetController();
-                      });
+        Center(
+          child: PrimaryButton(
+            label: 'Convert',
+            isRunning: ctr.isRunning,
+            onPressed: ctr.isRunning || !ctr.isValid()
+                ? null
+                : () async {
+                    setState(() {
+                      ctr.isRunning = true;
+                    });
+                    try {
+                      await _convert();
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            showSharedSnackBar(
+                              context,
+                              'Conversion successful!',
+                            ),
+                          );
+                          _resetController();
+                        });
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        setState(() {
+                          ctr.isRunning = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            showSharedSnackBar(
+                              context,
+                              'Conversion failed!: $e',
+                            ),
+                          );
+                        });
+                      }
                     }
-                  } catch (e) {
-                    if (mounted) {
-                      setState(() {
-                        ctr.isRunning = false;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          showSharedSnackBar(
-                            context,
-                            'Conversion failed!: $e',
-                          ),
-                        );
-                      });
-                    }
-                  }
-                },
-        ),
+                  },
+          ),
+        )
       ],
     );
   }
