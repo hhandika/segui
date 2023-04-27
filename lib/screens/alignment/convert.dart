@@ -9,6 +9,20 @@ import 'package:segui/services/native.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/types.dart';
 
+class QuickConvertPage extends StatelessWidget {
+  const QuickConvertPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Alignment Conversion'),
+      ),
+      body: const AppPageView(child: ConvertPage()),
+    );
+  }
+}
+
 class ConvertPage extends StatefulWidget {
   const ConvertPage({super.key});
 
@@ -25,7 +39,6 @@ class _ConvertPageState extends State<ConvertPage> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const CardTitle(title: 'Input'),
         SharedInputForms(ctr: ctr),

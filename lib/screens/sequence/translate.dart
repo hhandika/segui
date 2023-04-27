@@ -7,6 +7,20 @@ import 'package:segui/screens/shared/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/native.dart';
 
+class QuickTranslatePage extends StatelessWidget {
+  const QuickTranslatePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sequence Translation'),
+      ),
+      body: const AppPageView(child: TranslatePage()),
+    );
+  }
+}
+
 class TranslatePage extends StatefulWidget {
   const TranslatePage({super.key});
 
@@ -22,7 +36,6 @@ class _TranslatePageState extends State<TranslatePage> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [

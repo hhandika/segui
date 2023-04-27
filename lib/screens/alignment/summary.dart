@@ -7,6 +7,20 @@ import 'package:segui/screens/shared/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/native.dart';
 
+class QuickAlnSummaryPage extends StatelessWidget {
+  const QuickAlnSummaryPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Alignment Summary'),
+      ),
+      body: const AppPageView(child: SummaryPage()),
+    );
+  }
+}
+
 class SummaryPage extends StatefulWidget {
   const SummaryPage({super.key});
 
@@ -23,7 +37,6 @@ class _SummaryPageState extends State<SummaryPage> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const CardTitle(title: 'Input'),
         SharedInputForms(ctr: ctr),

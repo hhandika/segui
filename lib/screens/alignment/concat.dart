@@ -10,6 +10,19 @@ import 'package:segui/services/io.dart';
 
 import 'package:segui/services/native.dart';
 
+class QuickConcatPage extends StatelessWidget {
+  const QuickConcatPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Alignment Concatenation'),
+        ),
+        body: const AppPageView(child: ConcatPage()));
+  }
+}
+
 class ConcatPage extends StatefulWidget {
   const ConcatPage({super.key});
 

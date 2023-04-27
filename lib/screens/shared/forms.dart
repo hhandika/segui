@@ -72,16 +72,25 @@ class FormView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return AppPageView(
+      child: ListView(
+        shrinkWrap: false,
+        children: children,
+      ),
+    );
+  }
+}
+
+class AppPageView extends StatelessWidget {
+  const AppPageView({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
-          child: ListView(
-            shrinkWrap: false,
-            children: children,
-          ),
-        ),
+            padding: const EdgeInsets.fromLTRB(10, 25, 10, 15), child: child),
       ),
     );
   }

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:segui/screens/alignment/alignment.dart';
+import 'package:segui/screens/alignment/concat.dart';
+import 'package:segui/screens/alignment/convert.dart';
+import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/contig/contig.dart';
 import 'package:segui/screens/raw/raw.dart';
 import 'package:segui/screens/sequence/sequence.dart';
+import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/navigation.dart';
 import 'package:segui/screens/shared/settings.dart';
@@ -210,22 +214,34 @@ class QuickActionContainer extends StatelessWidget {
             QuickActionButton(
               icon: Icons.compare_arrows,
               label: 'Concatenate Alignments',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const QuickConcatPage()));
+              },
             ),
             QuickActionButton(
               icon: Icons.swap_horiz,
               label: 'Convert Alignments',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const QuickConvertPage()));
+              },
             ),
             QuickActionButton(
               icon: Icons.translate,
               label: 'Translate Sequences',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const QuickTranslatePage()));
+              },
             ),
             QuickActionButton(
               icon: Icons.bar_chart,
               label: 'Summarize Sequences',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const QuickAlnSummaryPage()));
+              },
             ),
           ],
         ));
