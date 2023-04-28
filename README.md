@@ -1,7 +1,5 @@
 # SEGUL GUI (in development)
 
-A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memory-efficient command-line (cli) application for working with sequence alignments.
+A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memory-efficient application for alignment manipulation and sequence summary statistics. It brings similar performance as the CLI version of the app with support for iOS, iPadOS and Android, in addition to macOS, Windows, and Linux.
 
-Goals:
-
-We are bringing `segul` fast alignment manipulation tools to GUI version, including support for iOS, iPadOS and Android.
+SEGUL Documentation: [[EN]](https://docs.page/hhandika/segul-docs/)
