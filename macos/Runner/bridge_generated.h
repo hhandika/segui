@@ -27,6 +27,13 @@ typedef struct wire_SegulServices {
   struct wire_uint_8_list *output_dir;
 } wire_SegulServices;
 
+typedef struct wire_RawReadServices {
+  struct wire_uint_8_list *dir_path;
+  struct wire_StringList *files;
+  struct wire_uint_8_list *file_fmt;
+  struct wire_uint_8_list *output_dir;
+} wire_RawReadServices;
+
 typedef struct DartCObject *WireSyncReturn;
 
 void store_dart_post_cobject(DartPostCObjectFnType ptr);
@@ -65,7 +72,16 @@ void wire_translate_sequence__method__SegulServices(int64_t port_,
                                                     uintptr_t reading_frame,
                                                     struct wire_uint_8_list *output_fmt);
 
+void wire_new__static_method__RawReadServices(int64_t port_);
+
+void wire_summarize__method__RawReadServices(int64_t port_,
+                                             struct wire_RawReadServices *that,
+                                             struct wire_uint_8_list *mode,
+                                             bool lowmem);
+
 struct wire_StringList *new_StringList_0(int32_t len);
+
+struct wire_RawReadServices *new_box_autoadd_raw_read_services_0(void);
 
 struct wire_SegulServices *new_box_autoadd_segul_services_0(void);
 
@@ -81,7 +97,10 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_convert_sequence__method__SegulServices);
     dummy_var ^= ((int64_t) (void*) wire_summarize_alignment__method__SegulServices);
     dummy_var ^= ((int64_t) (void*) wire_translate_sequence__method__SegulServices);
+    dummy_var ^= ((int64_t) (void*) wire_new__static_method__RawReadServices);
+    dummy_var ^= ((int64_t) (void*) wire_summarize__method__RawReadServices);
     dummy_var ^= ((int64_t) (void*) new_StringList_0);
+    dummy_var ^= ((int64_t) (void*) new_box_autoadd_raw_read_services_0);
     dummy_var ^= ((int64_t) (void*) new_box_autoadd_segul_services_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);
     dummy_var ^= ((int64_t) (void*) free_WireSyncReturn);

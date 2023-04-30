@@ -56,6 +56,46 @@ abstract class SegulApi {
 
   FlutterRustBridgeTaskConstMeta
       get kTranslateSequenceMethodSegulServicesConstMeta;
+
+  Future<RawReadServices> newStaticMethodRawReadServices({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodRawReadServicesConstMeta;
+
+  Future<void> summarizeMethodRawReadServices(
+      {required RawReadServices that,
+      required String mode,
+      required bool lowmem,
+      dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSummarizeMethodRawReadServicesConstMeta;
+}
+
+class RawReadServices {
+  final SegulApi bridge;
+  final String? dirPath;
+  final List<String> files;
+  final String fileFmt;
+  final String outputDir;
+
+  const RawReadServices({
+    required this.bridge,
+    this.dirPath,
+    required this.files,
+    required this.fileFmt,
+    required this.outputDir,
+  });
+
+  static Future<RawReadServices> newRawReadServices(
+          {required SegulApi bridge, dynamic hint}) =>
+      bridge.newStaticMethodRawReadServices(hint: hint);
+
+  Future<void> summarize(
+          {required String mode, required bool lowmem, dynamic hint}) =>
+      bridge.summarizeMethodRawReadServices(
+        that: this,
+        mode: mode,
+        lowmem: lowmem,
+      );
 }
 
 class SegulServices {
@@ -272,6 +312,47 @@ class SegulApiImpl implements SegulApi {
             argNames: ["that", "table", "readingFrame", "outputFmt"],
           );
 
+  Future<RawReadServices> newStaticMethodRawReadServices({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_new__static_method__RawReadServices(port_),
+      parseSuccessData: (d) => _wire2api_raw_read_services(d),
+      constMeta: kNewStaticMethodRawReadServicesConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodRawReadServicesConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "new__static_method__RawReadServices",
+        argNames: [],
+      );
+
+  Future<void> summarizeMethodRawReadServices(
+      {required RawReadServices that,
+      required String mode,
+      required bool lowmem,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_raw_read_services(that);
+    var arg1 = _platform.api2wire_String(mode);
+    var arg2 = lowmem;
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner
+          .wire_summarize__method__RawReadServices(port_, arg0, arg1, arg2),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kSummarizeMethodRawReadServicesConstMeta,
+      argValues: [that, mode, lowmem],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSummarizeMethodRawReadServicesConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "summarize__method__RawReadServices",
+        argNames: ["that", "mode", "lowmem"],
+      );
+
   void dispose() {
     _platform.dispose();
   }
@@ -287,6 +368,19 @@ class SegulApiImpl implements SegulApi {
 
   String? _wire2api_opt_String(dynamic raw) {
     return raw == null ? null : _wire2api_String(raw);
+  }
+
+  RawReadServices _wire2api_raw_read_services(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return RawReadServices(
+      bridge: this,
+      dirPath: _wire2api_opt_String(arr[0]),
+      files: _wire2api_StringList(arr[1]),
+      fileFmt: _wire2api_String(arr[2]),
+      outputDir: _wire2api_String(arr[3]),
+    );
   }
 
   SegulServices _wire2api_segul_services(dynamic raw) {
@@ -354,6 +448,14 @@ class SegulApiPlatform extends FlutterRustBridgeBase<SegulApiWire> {
   }
 
   @protected
+  ffi.Pointer<wire_RawReadServices> api2wire_box_autoadd_raw_read_services(
+      RawReadServices raw) {
+    final ptr = inner.new_box_autoadd_raw_read_services_0();
+    _api_fill_to_wire_raw_read_services(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_SegulServices> api2wire_box_autoadd_segul_services(
       SegulServices raw) {
     final ptr = inner.new_box_autoadd_segul_services_0();
@@ -377,9 +479,22 @@ class SegulApiPlatform extends FlutterRustBridgeBase<SegulApiWire> {
 
 // Section: api_fill_to_wire
 
+  void _api_fill_to_wire_box_autoadd_raw_read_services(
+      RawReadServices apiObj, ffi.Pointer<wire_RawReadServices> wireObj) {
+    _api_fill_to_wire_raw_read_services(apiObj, wireObj.ref);
+  }
+
   void _api_fill_to_wire_box_autoadd_segul_services(
       SegulServices apiObj, ffi.Pointer<wire_SegulServices> wireObj) {
     _api_fill_to_wire_segul_services(apiObj, wireObj.ref);
+  }
+
+  void _api_fill_to_wire_raw_read_services(
+      RawReadServices apiObj, wire_RawReadServices wireObj) {
+    wireObj.dir_path = api2wire_opt_String(apiObj.dirPath);
+    wireObj.files = api2wire_StringList(apiObj.files);
+    wireObj.file_fmt = api2wire_String(apiObj.fileFmt);
+    wireObj.output_dir = api2wire_String(apiObj.outputDir);
   }
 
   void _api_fill_to_wire_segul_services(
@@ -629,6 +744,47 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
           void Function(int, ffi.Pointer<wire_SegulServices>, int, int,
               ffi.Pointer<wire_uint_8_list>)>();
 
+  void wire_new__static_method__RawReadServices(
+    int port_,
+  ) {
+    return _wire_new__static_method__RawReadServices(
+      port_,
+    );
+  }
+
+  late final _wire_new__static_method__RawReadServicesPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_new__static_method__RawReadServices');
+  late final _wire_new__static_method__RawReadServices =
+      _wire_new__static_method__RawReadServicesPtr
+          .asFunction<void Function(int)>();
+
+  void wire_summarize__method__RawReadServices(
+    int port_,
+    ffi.Pointer<wire_RawReadServices> that,
+    ffi.Pointer<wire_uint_8_list> mode,
+    bool lowmem,
+  ) {
+    return _wire_summarize__method__RawReadServices(
+      port_,
+      that,
+      mode,
+      lowmem,
+    );
+  }
+
+  late final _wire_summarize__method__RawReadServicesPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_RawReadServices>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Bool)>>('wire_summarize__method__RawReadServices');
+  late final _wire_summarize__method__RawReadServices =
+      _wire_summarize__method__RawReadServicesPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_RawReadServices>,
+              ffi.Pointer<wire_uint_8_list>, bool)>();
+
   ffi.Pointer<wire_StringList> new_StringList_0(
     int len,
   ) {
@@ -642,6 +798,17 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
       'new_StringList_0');
   late final _new_StringList_0 = _new_StringList_0Ptr
       .asFunction<ffi.Pointer<wire_StringList> Function(int)>();
+
+  ffi.Pointer<wire_RawReadServices> new_box_autoadd_raw_read_services_0() {
+    return _new_box_autoadd_raw_read_services_0();
+  }
+
+  late final _new_box_autoadd_raw_read_services_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_RawReadServices> Function()>>(
+          'new_box_autoadd_raw_read_services_0');
+  late final _new_box_autoadd_raw_read_services_0 =
+      _new_box_autoadd_raw_read_services_0Ptr
+          .asFunction<ffi.Pointer<wire_RawReadServices> Function()>();
 
   ffi.Pointer<wire_SegulServices> new_box_autoadd_segul_services_0() {
     return _new_box_autoadd_segul_services_0();
@@ -708,6 +875,16 @@ class wire_SegulServices extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> file_fmt;
 
   external ffi.Pointer<wire_uint_8_list> datatype;
+
+  external ffi.Pointer<wire_uint_8_list> output_dir;
+}
+
+class wire_RawReadServices extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> dir_path;
+
+  external ffi.Pointer<wire_StringList> files;
+
+  external ffi.Pointer<wire_uint_8_list> file_fmt;
 
   external ffi.Pointer<wire_uint_8_list> output_dir;
 }

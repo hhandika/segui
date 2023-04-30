@@ -1,5 +1,22 @@
 enum PlatformType { isDesktop, isMobile }
 
+enum RawReadOperationType { summary }
+
+const List<String> rawReadOperation = [
+  'Summary Statistics',
+];
+
+const List<String> rawReadFormat = [
+  'FASTQ',
+  'GZip',
+];
+
+const List<String> rawReadSummaryMode = [
+  'default',
+  'minimal',
+  'complete',
+];
+
 enum AlignmentOperationType { concat, summary, convert }
 
 // DO NOT CHANGE THE ORDER OF THE LIST

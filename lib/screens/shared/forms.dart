@@ -20,24 +20,19 @@ class _SharedInputFormsState extends State<SharedInputForms> {
   Widget build(BuildContext context) {
     return FormCard(
       children: [
-        runningPlatform == PlatformType.isDesktop
-            ? SelectDirField(
-                label: 'Select input directory',
-                dirPath: widget.ctr.dirPath,
-                onPressed: (value) {
-                  setState(() {
-                    widget.ctr.dirPath = value;
-                  });
-                })
-            : SharedFilePicker(
-                label: 'Select input files',
-                paths: widget.ctr.files,
-                onPressed: (value) {
-                  setState(() {
-                    widget.ctr.files = value;
-                  });
-                },
-              ),
+        InputSelectorForm(
+          ctr: widget.ctr,
+          onDirPressed: (value) {
+            setState(() {
+              widget.ctr.dirPath = value;
+            });
+          },
+          onFilePressed: (value) {
+            setState(() {
+              widget.ctr.files = value;
+            });
+          },
+        ),
         SharedDropdownField(
           value: widget.ctr.inputFormatController,
           label: 'Format',
@@ -62,6 +57,34 @@ class _SharedInputFormsState extends State<SharedInputForms> {
         ),
       ],
     );
+  }
+}
+
+class InputSelectorForm extends StatelessWidget {
+  const InputSelectorForm({
+    super.key,
+    required this.onDirPressed,
+    required this.onFilePressed,
+    required this.ctr,
+  });
+
+  final void Function(String?) onDirPressed;
+  final void Function(List<String>) onFilePressed;
+  final IOController ctr;
+
+  @override
+  Widget build(BuildContext context) {
+    return runningPlatform == PlatformType.isDesktop
+        ? SelectDirField(
+            label: 'Select input directory',
+            dirPath: ctr.dirPath,
+            onPressed: onDirPressed,
+          )
+        : SharedFilePicker(
+            label: 'Select input files',
+            paths: ctr.files,
+            onPressed: onFilePressed,
+          );
   }
 }
 

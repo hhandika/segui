@@ -151,6 +151,36 @@ fn wire_translate_sequence__method__SegulServices_impl(
         },
     )
 }
+fn wire_new__static_method__RawReadServices_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "new__static_method__RawReadServices",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Ok(RawReadServices::new()),
+    )
+}
+fn wire_summarize__method__RawReadServices_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<RawReadServices> + UnwindSafe,
+    mode: impl Wire2Api<String> + UnwindSafe,
+    lowmem: impl Wire2Api<bool> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "summarize__method__RawReadServices",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_mode = mode.wire2api();
+            let api_lowmem = lowmem.wire2api();
+            move |task_callback| Ok(RawReadServices::summarize(&api_that, api_mode, api_lowmem))
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -192,6 +222,19 @@ impl Wire2Api<usize> for usize {
     }
 }
 // Section: impl IntoDart
+
+impl support::IntoDart for RawReadServices {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.dir_path.into_dart(),
+            self.files.into_dart(),
+            self.file_fmt.into_dart(),
+            self.output_dir.into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for RawReadServices {}
 
 impl support::IntoDart for SegulServices {
     fn into_dart(self) -> support::DartAbi {

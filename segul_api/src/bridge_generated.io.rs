@@ -65,6 +65,21 @@ pub extern "C" fn wire_translate_sequence__method__SegulServices(
     )
 }
 
+#[no_mangle]
+pub extern "C" fn wire_new__static_method__RawReadServices(port_: i64) {
+    wire_new__static_method__RawReadServices_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_summarize__method__RawReadServices(
+    port_: i64,
+    that: *mut wire_RawReadServices,
+    mode: *mut wire_uint_8_list,
+    lowmem: bool,
+) {
+    wire_summarize__method__RawReadServices_impl(port_, that, mode, lowmem)
+}
+
 // Section: allocate functions
 
 #[no_mangle]
@@ -74,6 +89,11 @@ pub extern "C" fn new_StringList_0(len: i32) -> *mut wire_StringList {
         len,
     };
     support::new_leak_box_ptr(wrap)
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_raw_read_services_0() -> *mut wire_RawReadServices {
+    support::new_leak_box_ptr(wire_RawReadServices::new_with_null_ptr())
 }
 
 #[no_mangle]
@@ -110,6 +130,12 @@ impl Wire2Api<Vec<String>> for *mut wire_StringList {
     }
 }
 
+impl Wire2Api<RawReadServices> for *mut wire_RawReadServices {
+    fn wire2api(self) -> RawReadServices {
+        let wrap = unsafe { support::box_from_leak_ptr(self) };
+        Wire2Api::<RawReadServices>::wire2api(*wrap).into()
+    }
+}
 impl Wire2Api<SegulServices> for *mut wire_SegulServices {
     fn wire2api(self) -> SegulServices {
         let wrap = unsafe { support::box_from_leak_ptr(self) };
@@ -117,6 +143,16 @@ impl Wire2Api<SegulServices> for *mut wire_SegulServices {
     }
 }
 
+impl Wire2Api<RawReadServices> for wire_RawReadServices {
+    fn wire2api(self) -> RawReadServices {
+        RawReadServices {
+            dir_path: self.dir_path.wire2api(),
+            files: self.files.wire2api(),
+            file_fmt: self.file_fmt.wire2api(),
+            output_dir: self.output_dir.wire2api(),
+        }
+    }
+}
 impl Wire2Api<SegulServices> for wire_SegulServices {
     fn wire2api(self) -> SegulServices {
         SegulServices {
@@ -149,6 +185,15 @@ pub struct wire_StringList {
 
 #[repr(C)]
 #[derive(Clone)]
+pub struct wire_RawReadServices {
+    dir_path: *mut wire_uint_8_list,
+    files: *mut wire_StringList,
+    file_fmt: *mut wire_uint_8_list,
+    output_dir: *mut wire_uint_8_list,
+}
+
+#[repr(C)]
+#[derive(Clone)]
 pub struct wire_SegulServices {
     dir_path: *mut wire_uint_8_list,
     files: *mut wire_StringList,
@@ -173,6 +218,23 @@ pub trait NewWithNullPtr {
 impl<T> NewWithNullPtr for *mut T {
     fn new_with_null_ptr() -> Self {
         std::ptr::null_mut()
+    }
+}
+
+impl NewWithNullPtr for wire_RawReadServices {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            dir_path: core::ptr::null_mut(),
+            files: core::ptr::null_mut(),
+            file_fmt: core::ptr::null_mut(),
+            output_dir: core::ptr::null_mut(),
+        }
+    }
+}
+
+impl Default for wire_RawReadServices {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
     }
 }
 

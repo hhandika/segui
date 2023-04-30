@@ -3,9 +3,10 @@ use std::path::{Path, PathBuf};
 use segul::handler::align::concat::ConcatHandler;
 use segul::handler::align::convert::Converter;
 use segul::handler::align::summarize::SeqStats;
+use segul::handler::raw::summarize::RawSummaryHandler;
 use segul::handler::sequence::translate::Translate;
 use segul::helper::finder::Files;
-use segul::helper::types::{DataType, GeneticCodes, InputFmt};
+use segul::helper::types::{DataType, GeneticCodes, InputFmt, RawReadFmt, SummaryMode};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, files};
 
@@ -131,11 +132,56 @@ impl SegulServices {
     }
 
     fn match_datatype(&self) -> DataType {
-        match self.datatype.to_lowercase().as_str() {
-            "dna" => DataType::Dna,
-            "amino acid" => DataType::Aa,
-            "ignore" => DataType::Ignore,
-            _ => DataType::Dna,
+        self.datatype
+            .parse::<DataType>()
+            .expect("Invalid data type")
+    }
+}
+
+pub struct RawReadServices {
+    pub dir_path: Option<String>,
+    pub files: Vec<String>,
+    pub file_fmt: String,
+    pub output_dir: String,
+}
+
+impl RawReadServices {
+    pub fn new() -> RawReadServices {
+        RawReadServices {
+            dir_path: None,
+            files: Vec::new(),
+            file_fmt: String::new(),
+            output_dir: String::new(),
+        }
+    }
+
+    pub fn summarize(&self, mode: String, lowmem: bool) {
+        let input_fmt = self.match_input_fmt();
+        let mut files = self.find_input_files(&input_fmt);
+        let output = Path::new(&self.output_dir);
+        let sum_mode = self.match_mode(&mode);
+        let mut summary = RawSummaryHandler::new(&mut files, &input_fmt, &sum_mode, output);
+        summary.summarize(lowmem);
+    }
+
+    fn match_input_fmt(&self) -> RawReadFmt {
+        self.file_fmt.parse().expect("Invalid input format")
+    }
+
+    fn match_mode(&self, mode: &str) -> SummaryMode {
+        mode.parse().expect("Invalid summary mode")
+    }
+
+    fn find_input_files(&self, input_fmt: &RawReadFmt) -> Vec<PathBuf> {
+        if let Some(path) = &self.dir_path {
+            let path = Path::new(&path);
+            Files::new(path).find_raw_read(input_fmt)
+        } else {
+            if self.files.is_empty() {
+                panic!("No input files found");
+            } else {
+                self.files.iter().map(PathBuf::from).collect()
+            }
         }
     }
 }
