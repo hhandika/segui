@@ -1,13 +1,13 @@
 use std::path::{Path, PathBuf};
 
-use segul::handler::concat::ConcatHandler;
-use segul::handler::convert::Converter;
-use segul::handler::summarize::SeqStats;
-use segul::handler::translate::Translate;
+use segul::handler::align::concat::ConcatHandler;
+use segul::handler::align::convert::Converter;
+use segul::handler::align::summarize::SeqStats;
+use segul::handler::sequence::translate::Translate;
 use segul::helper::finder::Files;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
-use segul::helper::{alphabet, filenames};
+use segul::helper::{alphabet, files};
 
 pub fn show_dna_uppercase() -> String {
     alphabet::DNA_STR_UPPERCASE.to_string()
@@ -39,7 +39,7 @@ impl SegulServices {
         self.check_file_count(files.len());
         let output_fmt = self.match_output_fmt(&out_fmt_str);
         let output_path = PathBuf::from(&self.output_dir).join(out_fname);
-        let final_path = filenames::create_output_fname_from_path(&output_path, &output_fmt);
+        let final_path = files::create_output_fname_from_path(&output_path, &output_fmt);
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let mut concat = ConcatHandler::new(&input_fmt, &final_path, &output_fmt, &partition_fmt);
         concat.concat_alignment(&mut files, &datatype);
@@ -76,7 +76,7 @@ impl SegulServices {
     fn find_input_files(&self, input_fmt: &InputFmt) -> Vec<PathBuf> {
         if let Some(path) = &self.dir_path {
             let path = Path::new(&path);
-            Files::new(path, &input_fmt).find()
+            Files::new(path).find(&input_fmt)
         } else {
             if self.files.is_empty() {
                 panic!("No input files found");
