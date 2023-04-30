@@ -7,10 +7,7 @@ edition = "2021"
 
 [dependencies]
 flutter_rust_bridge = "*"
-segul = "0.*"
+segul = { git = "https://github.com/hhandika/segul.git", branch = "dev" }
 
 [lib]
 crate-type = ["lib", "cdylib", "staticlib"]
-
-[target.aarch64-apple-darwin]
-rustflags = ["MACOSX_DEPLOYMENT_TARGET=11.0"]
