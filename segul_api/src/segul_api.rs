@@ -133,6 +133,7 @@ impl SegulServices {
 
     fn match_datatype(&self) -> DataType {
         self.datatype
+            .to_lowercase()
             .parse::<DataType>()
             .expect("Invalid data type")
     }
@@ -165,11 +166,14 @@ impl RawReadServices {
     }
 
     fn match_input_fmt(&self) -> RawReadFmt {
-        self.file_fmt.parse().expect("Invalid input format")
+        self.file_fmt
+            .to_lowercase()
+            .parse()
+            .expect("Invalid input format")
     }
 
     fn match_mode(&self, mode: &str) -> SummaryMode {
-        mode.parse().expect("Invalid summary mode")
+        mode.to_lowercase().parse().expect("Invalid summary mode")
     }
 
     fn find_input_files(&self, input_fmt: &RawReadFmt) -> Vec<PathBuf> {
