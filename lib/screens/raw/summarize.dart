@@ -36,6 +36,8 @@ class _RawSummaryPageState extends State<RawSummaryPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const CardTitle(title: 'Input'),
         FormCard(children: [
@@ -109,13 +111,15 @@ class _RawSummaryPageState extends State<RawSummaryPage> {
                       try {
                         await _summarize();
                         if (mounted) {
-                          ctr.isRunning = false;
+                          setState(() {
+                            ctr.isRunning = false;
+                            ctr.reset();
+                          });
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Summarization complete'),
                             ),
                           );
-                          ctr.reset();
                         }
                       } catch (e) {
                         if (mounted) {
