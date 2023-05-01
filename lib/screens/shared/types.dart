@@ -12,9 +12,9 @@ const List<String> rawReadFormat = [
 ];
 
 const List<String> rawReadSummaryMode = [
-  'default',
-  'minimal',
-  'complete',
+  'Default',
+  'Minimal',
+  'Complete',
 ];
 
 enum AlignmentOperationType { concat, summary, convert }
