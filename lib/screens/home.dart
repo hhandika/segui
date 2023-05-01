@@ -11,6 +11,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/navigation.dart';
 import 'package:segui/screens/shared/settings.dart';
 import 'package:segui/services/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const List<Widget> _pages = <Widget>[
   HomePage(),
@@ -278,17 +279,23 @@ class ResourceTiles extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.description_outlined,
-                color: Theme.of(context).colorScheme.onSurface),
-            title: Text(
-              'SEGUL documentation',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            trailing: Icon(Icons.arrow_forward_ios,
-                color: Theme.of(context).colorScheme.onSurface),
-          )
+              leading: Icon(Icons.description_outlined,
+                  color: Theme.of(context).colorScheme.onSurface),
+              title: Text(
+                'SEGUL documentation',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              trailing: Icon(Icons.arrow_forward_ios,
+                  color: Theme.of(context).colorScheme.onSurface),
+              onTap: () => launch())
         ],
       ),
     );
+  }
+
+  void launch() {
+    String url = 'https://docs.page/hhandika/segul-docs/';
+    Uri uri = Uri.parse(url);
+    launchUrl(uri);
   }
 }
