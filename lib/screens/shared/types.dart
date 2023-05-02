@@ -9,6 +9,7 @@ const List<String> rawReadOperation = [
 const List<String> rawReadFormat = [
   'FASTQ',
   'GZip',
+  'Auto',
 ];
 
 const List<String> rawReadSummaryMode = [
@@ -36,15 +37,13 @@ const List<String> inputFormat = [
   'FASTA',
   'NEXUS',
   'PHYLIP',
+  'Auto',
 ];
 
 const List<String> outputFormat = [
   'FASTA',
   'NEXUS',
   'PHYLIP',
-  'FASTA interleaved',
-  'NEXUS interleaved',
-  'PHYLIP interleaved',
 ];
 
 const List<String> partitionFormat = [

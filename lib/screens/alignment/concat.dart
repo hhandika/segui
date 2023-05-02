@@ -30,6 +30,8 @@ class ConcatPage extends StatefulWidget {
 class _ConcatPageState extends State<ConcatPage> {
   IOController ctr = IOController.empty();
   String _partitionFormatController = partitionFormat[1];
+  bool isCodon = false;
+  bool isInterleave = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,15 @@ class _ConcatPageState extends State<ConcatPage> {
               });
             },
           ),
+          SwitchForm(
+            label: 'Set interleaved format',
+            value: isInterleave,
+            onPressed: (value) {
+              setState(() {
+                isInterleave = value;
+              });
+            },
+          ),
           SharedDropdownField(
             value: _partitionFormatController,
             label: 'Partition Format',
@@ -77,7 +88,15 @@ class _ConcatPageState extends State<ConcatPage> {
                 }
               });
             },
-          )
+          ),
+          SwitchForm(
+              label: 'Set codon model partition',
+              value: isCodon,
+              onPressed: (value) {
+                setState(() {
+                  isCodon = value;
+                });
+              }),
         ]),
         const SizedBox(height: 20),
         Center(
@@ -111,6 +130,8 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   Future<void> _concat() async {
+    String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
+    String partitionFmt = getPartitionFmt(_partitionFormatController, isCodon);
     await SegulServices(
       bridge: segulApi,
       dirPath: ctr.dirPath,
@@ -120,8 +141,8 @@ class _ConcatPageState extends State<ConcatPage> {
       outputDir: ctr.outputDir!,
     ).concatAlignment(
       outFname: ctr.outputController.text,
-      outFmtStr: ctr.outputFormatController!,
-      partitionFmt: _partitionFormatController,
+      outFmtStr: outputFmt,
+      partitionFmt: partitionFmt,
     );
   }
 

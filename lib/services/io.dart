@@ -26,3 +26,19 @@ String showOutputDir(String outputDir) {
     return outputDir;
   }
 }
+
+String getOutputFmt(String outputFormat, bool isInterleave) {
+  if (isInterleave) {
+    return '$outputFormat-int';
+  } else {
+    return outputFormat;
+  }
+}
+
+String getPartitionFmt(String partitionFormat, bool isCodon) {
+  if (isCodon) {
+    return '$partitionFormat-codon';
+  } else {
+    return partitionFormat;
+  }
+}

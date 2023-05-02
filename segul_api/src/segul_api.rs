@@ -102,33 +102,24 @@ impl SegulServices {
     }
 
     fn match_input_fmt(&self) -> InputFmt {
-        match self.file_fmt.to_lowercase().as_str() {
-            "fasta" => InputFmt::Fasta,
-            "phylip" => InputFmt::Phylip,
-            "nexus" => InputFmt::Nexus,
-            _ => InputFmt::Fasta,
-        }
+        self.file_fmt
+            .to_lowercase()
+            .parse()
+            .expect("Invalid input format")
     }
 
     fn match_output_fmt(&self, out_fmt_str: &str) -> OutputFmt {
-        match out_fmt_str.to_lowercase().as_str() {
-            "fasta" => OutputFmt::Fasta,
-            "phylip" => OutputFmt::Phylip,
-            "nexus" => OutputFmt::Nexus,
-            "fasta interleaved" => OutputFmt::FastaInt,
-            "phylip interleaved" => OutputFmt::NexusInt,
-            "nexus interleaved" => OutputFmt::PhylipInt,
-            _ => unreachable!("Output format is not supported {}", out_fmt_str),
-        }
+        out_fmt_str
+            .to_lowercase()
+            .parse()
+            .expect("Invalid output format")
     }
 
     fn match_partition_fmt(&self, partition_fmt: &str) -> PartitionFmt {
-        match partition_fmt.to_lowercase().as_str() {
-            "charset" => PartitionFmt::Charset,
-            "nexus" => PartitionFmt::Nexus,
-            "raxml" => PartitionFmt::Raxml,
-            _ => PartitionFmt::Nexus,
-        }
+        partition_fmt
+            .to_lowercase()
+            .parse()
+            .expect("Invalid partition format")
     }
 
     fn match_datatype(&self) -> DataType {
