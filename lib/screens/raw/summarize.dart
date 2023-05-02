@@ -112,10 +112,9 @@ class _RawSummaryPageState extends State<RawSummaryPage> {
                       });
                       try {
                         await _summarize();
+                        _setSuccess();
                       } catch (e) {
                         _showError(e.toString());
-                      } finally {
-                        _setSuccess();
                       }
                     }),
         )

@@ -94,10 +94,9 @@ class _ConcatPageState extends State<ConcatPage> {
                     });
                     try {
                       await _concat();
+                      _setSuccess();
                     } catch (e) {
                       _showError(e.toString());
-                    } finally {
-                      _setSuccess();
                     }
                   },
           ),

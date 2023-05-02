@@ -83,10 +83,9 @@ class _SummaryPageState extends State<SummaryPage> {
                     });
                     try {
                       await _summarize();
+                      _setSuccess();
                     } catch (e) {
                       _showError(e.toString());
-                    } finally {
-                      _setSuccess();
                     }
                   },
           ),

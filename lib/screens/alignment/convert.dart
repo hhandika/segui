@@ -86,6 +86,7 @@ class _ConvertPageState extends State<ConvertPage> {
                     });
                     try {
                       await _convert();
+                      _setSuccess();
                     } catch (e) {
                       setState(() {
                         ctr.isRunning = false;
@@ -96,8 +97,6 @@ class _ConvertPageState extends State<ConvertPage> {
                           ),
                         );
                       });
-                    } finally {
-                      _setSuccess();
                     }
                   },
           ),

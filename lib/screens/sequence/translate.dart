@@ -101,10 +101,9 @@ class _TranslatePageState extends State<TranslatePage> {
                     });
                     try {
                       await _translate();
+                      _setSuccess();
                     } catch (e) {
                       _showError(e.toString());
-                    } finally {
-                      _setSuccess();
                     }
                   },
           ),
