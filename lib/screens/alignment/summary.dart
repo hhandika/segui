@@ -16,7 +16,9 @@ class QuickAlnSummaryPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Alignment Summary'),
       ),
-      body: const AppPageView(child: SummaryPage()),
+      body: const SingleChildScrollView(
+        child: AppPageView(child: SummaryPage()),
+      ),
     );
   }
 }

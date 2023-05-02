@@ -111,10 +111,10 @@ class AppPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 25, 10, 15), child: child),
-      ),
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
+              child: child)),
     );
   }
 }
@@ -338,7 +338,7 @@ class SharedFilePicker extends StatelessWidget {
 SnackBar showSharedSnackBar(BuildContext context, String text) {
   return SnackBar(
     content: Text(text),
-    duration: const Duration(seconds: 8),
+    duration: const Duration(seconds: 10),
   );
 }
 

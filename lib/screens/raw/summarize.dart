@@ -13,11 +13,12 @@ class QuickRawSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Raw Sequence Summary'),
-      ),
-      body: const AppPageView(child: RawSummaryPage()),
-    );
+        appBar: AppBar(
+          title: const Text('Raw Sequence Summary'),
+        ),
+        body: const SingleChildScrollView(
+          child: AppPageView(child: RawSummaryPage()),
+        ));
   }
 }
 

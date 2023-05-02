@@ -16,7 +16,9 @@ class QuickConvertPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Alignment Conversion'),
       ),
-      body: const AppPageView(child: ConvertPage()),
+      body: const SingleChildScrollView(
+        child: AppPageView(child: ConvertPage()),
+      ),
     );
   }
 }
@@ -31,6 +33,7 @@ class ConvertPage extends StatefulWidget {
 class _ConvertPageState extends State<ConvertPage> {
   IOController ctr = IOController.empty();
   bool isSortSequence = false;
+  bool isInterleave = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +65,14 @@ class _ConvertPageState extends State<ConvertPage> {
               });
             },
           ),
+          SwitchForm(
+              label: 'Set interleaved format',
+              value: isInterleave,
+              onPressed: (value) {
+                setState(() {
+                  isInterleave = value;
+                });
+              }),
           SwitchForm(
               label: 'Sort by sequence ID',
               value: isSortSequence,
@@ -106,6 +117,7 @@ class _ConvertPageState extends State<ConvertPage> {
   }
 
   Future<void> _convert() async {
+    String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     await SegulServices(
       bridge: segulApi,
       files: ctr.files,
@@ -114,7 +126,7 @@ class _ConvertPageState extends State<ConvertPage> {
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).convertSequence(
-      outputFmt: ctr.outputFormatController!,
+      outputFmt: outputFmt,
       sort: isSortSequence,
     );
   }

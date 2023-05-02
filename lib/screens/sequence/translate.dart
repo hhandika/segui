@@ -16,7 +16,9 @@ class QuickTranslatePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Sequence Translation'),
       ),
-      body: const AppPageView(child: TranslatePage()),
+      body: const SingleChildScrollView(
+        child: AppPageView(child: TranslatePage()),
+      ),
     );
   }
 }
@@ -30,6 +32,7 @@ class TranslatePage extends StatefulWidget {
 
 class _TranslatePageState extends State<TranslatePage> {
   IOController ctr = IOController.empty();
+  bool isInterleave = false;
   String _readingFrame = readingFrame[0];
   String _translationTable = translationTable[0];
 
@@ -63,6 +66,14 @@ class _TranslatePageState extends State<TranslatePage> {
               });
             },
           ),
+          SwitchForm(
+              label: 'Set interleaved format',
+              value: isInterleave,
+              onPressed: (value) {
+                setState(() {
+                  isInterleave = value;
+                });
+              }),
           SharedDropdownField(
             value: _translationTable,
             label: 'Translation Table',
@@ -96,8 +107,10 @@ class _TranslatePageState extends State<TranslatePage> {
             onPressed: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
+                    String dir = await getOutputDir(ctr.outputDir);
                     setState(() {
                       ctr.isRunning = true;
+                      ctr.outputDir = dir;
                     });
                     try {
                       await _translate();
@@ -113,18 +126,18 @@ class _TranslatePageState extends State<TranslatePage> {
   }
 
   Future<void> _translate() async {
-    String outputDir = await getOutputDir(ctr.outputDir);
+    String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     await SegulServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,
-      outputDir: outputDir,
+      outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).translateSequence(
         table: int.tryParse(_translationTable) ?? 1,
         readingFrame: int.tryParse(_readingFrame) ?? 1,
-        outputFmt: ctr.outputFormatController!);
+        outputFmt: outputFmt);
   }
 
   void _showError(String error) {
@@ -140,7 +153,10 @@ class _TranslatePageState extends State<TranslatePage> {
     setState(() {
       ctr.isRunning = false;
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(context, 'Translation complete!'),
+        showSharedSnackBar(
+            context,
+            'Translation complete! 🎉 \n'
+            'Output path: ${showOutputDir(ctr.outputDir!)}'),
       );
       ctr.reset();
     });

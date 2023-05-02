@@ -34,10 +34,10 @@ const List<String> sequenceOperation = [
 ];
 
 const List<String> inputFormat = [
+  'Auto',
   'FASTA',
   'NEXUS',
   'PHYLIP',
-  'Auto',
 ];
 
 const List<String> outputFormat = [
@@ -54,7 +54,7 @@ const List<String> partitionFormat = [
 
 const List<String> dataType = [
   'DNA',
-  'Amino Acid',
+  'AA',
   'Ignore',
 ];
 

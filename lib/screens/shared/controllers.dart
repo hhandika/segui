@@ -27,6 +27,7 @@ class IOController {
   factory IOController.empty() => IOController(
         outputController: TextEditingController(),
         files: [],
+        inputFormatController: inputFormat[0],
         dataTypeController: dataType[0],
       );
 
