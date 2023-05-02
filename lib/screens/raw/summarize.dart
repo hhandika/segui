@@ -105,34 +105,17 @@ class _RawSummaryPageState extends State<RawSummaryPage> {
               onPressed: ctr.isRunning || !ctr.isValid()
                   ? null
                   : () async {
+                      String dir = await getOutputDir(ctr.outputDir);
                       setState(() {
                         ctr.isRunning = true;
+                        ctr.outputDir = dir;
                       });
                       try {
                         await _summarize();
-                        if (mounted) {
-                          setState(() {
-                            ctr.isRunning = false;
-                            ctr.reset();
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Summarization complete'),
-                            ),
-                          );
-                        }
                       } catch (e) {
-                        if (mounted) {
-                          setState(() {
-                            ctr.isRunning = false;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.toString()),
-                              ),
-                            );
-                            ctr.reset();
-                          });
-                        }
+                        _showError(e.toString());
+                      } finally {
+                        _setSuccess();
                       }
                     }),
         )
@@ -141,17 +124,39 @@ class _RawSummaryPageState extends State<RawSummaryPage> {
   }
 
   Future<void> _summarize() async {
-    String outputDir = await getOutputDir(ctr.outputDir);
-
     await RawReadServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,
-      outputDir: outputDir,
+      outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
     ).summarize(
       mode: mode,
       lowmem: lowMemory,
     );
+  }
+
+  void _showError(String error) {
+    setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Summarization failed: $error'),
+        ),
+      );
+      ctr.reset();
+    });
+  }
+
+  void _setSuccess() {
+    setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Summarization complete'),
+        ),
+      );
+      ctr.reset();
+    });
   }
 }

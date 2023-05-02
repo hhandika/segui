@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:segui/bridge_definitions.dart';
-// ignore: unused_import
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/types.dart';
 import 'package:segui/services/io.dart';
-
 import 'package:segui/services/native.dart';
 
 class QuickConcatPage extends StatelessWidget {
@@ -90,30 +87,17 @@ class _ConcatPageState extends State<ConcatPage> {
             onPressed: ctr.isRunning || !_validate()
                 ? null
                 : () async {
+                    String dir = await getOutputDir(ctr.outputDir);
                     setState(() {
                       ctr.isRunning = true;
+                      ctr.outputDir = dir;
                     });
                     try {
                       await _concat();
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            showSharedSnackBar(
-                                context, 'Concatenation successful!'),
-                          );
-                          _resetController();
-                        });
-                      }
                     } catch (e) {
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            showSharedSnackBar(context, e.toString()),
-                          );
-                        });
-                      }
+                      _showError(e.toString());
+                    } finally {
+                      _setSuccess();
                     }
                   },
           ),
@@ -128,14 +112,13 @@ class _ConcatPageState extends State<ConcatPage> {
   }
 
   Future<void> _concat() async {
-    String outputDir = await getOutputDir(ctr.outputDir);
     await SegulServices(
       bridge: segulApi,
       dirPath: ctr.dirPath,
       files: ctr.files,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
-      outputDir: outputDir,
+      outputDir: ctr.outputDir!,
     ).concatAlignment(
       outFname: ctr.outputController.text,
       outFmtStr: ctr.outputFormatController!,
@@ -143,8 +126,24 @@ class _ConcatPageState extends State<ConcatPage> {
     );
   }
 
-  void _resetController() {
+  void _showError(String error) {
     setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, 'Failed to concatenate: $error'),
+      );
+    });
+  }
+
+  void _setSuccess() {
+    setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+            context,
+            'Concatenation successful! 🎉 \n'
+            'Output path: ${showOutputDir(ctr.outputDir!)}'),
+      );
       ctr.reset();
     });
   }

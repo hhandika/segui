@@ -76,30 +76,17 @@ class _SummaryPageState extends State<SummaryPage> {
             onPressed: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
+                    String dir = await getOutputDir(ctr.outputDir);
                     setState(() {
                       ctr.isRunning = true;
+                      ctr.outputDir = dir;
                     });
                     try {
                       await _summarize();
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          showSharedSnackBar(
-                              context, 'Summarization complete!'),
-                        );
-                      }
                     } catch (e) {
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          showSharedSnackBar(
-                              context, 'Summarization failed!: $e'),
-                        );
-                      }
+                      _showError(e.toString());
+                    } finally {
+                      _setSuccess();
                     }
                   },
           ),
@@ -109,16 +96,37 @@ class _SummaryPageState extends State<SummaryPage> {
   }
 
   Future<void> _summarize() async {
-    String outputDir = await getOutputDir(ctr.outputDir);
     await SegulServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,
-      outputDir: outputDir,
+      outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).summarizeAlignment(
         outputPrefix: ctr.outputController.text,
         interval: int.tryParse(_interval) ?? 5);
+  }
+
+  void _showError(String error) {
+    setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, 'Summarization failed!: $error'),
+      );
+    });
+  }
+
+  void _setSuccess() {
+    setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+            context,
+            'Summarization complete! 🎉 \n'
+            'Output path: ${showOutputDir(ctr.outputDir!)}'),
+      );
+      ctr.reset();
+    });
   }
 }

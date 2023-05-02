@@ -101,24 +101,10 @@ class _TranslatePageState extends State<TranslatePage> {
                     });
                     try {
                       await _translate();
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          showSharedSnackBar(context, 'Translation complete!'),
-                        );
-                      }
                     } catch (e) {
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          showSharedSnackBar(
-                              context, 'Translation failed!: $e'),
-                        );
-                      }
+                      _showError(e.toString());
+                    } finally {
+                      _setSuccess();
                     }
                   },
           ),
@@ -140,5 +126,24 @@ class _TranslatePageState extends State<TranslatePage> {
         table: int.tryParse(_translationTable) ?? 1,
         readingFrame: int.tryParse(_readingFrame) ?? 1,
         outputFmt: ctr.outputFormatController!);
+  }
+
+  void _showError(String error) {
+    setState(() {
+      ctr.isRunning = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      showSharedSnackBar(context, 'Translation failed!: $error'),
+    );
+  }
+
+  void _setSuccess() {
+    setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, 'Translation complete!'),
+      );
+      ctr.reset();
+    });
   }
 }

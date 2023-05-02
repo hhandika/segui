@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:segui/bridge_definitions.dart';
-// ignore: unused_import
 import 'package:segui/bridge_generated.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -81,35 +79,25 @@ class _ConvertPageState extends State<ConvertPage> {
             onPressed: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
+                    String dir = await getOutputDir(ctr.outputDir);
                     setState(() {
                       ctr.isRunning = true;
+                      ctr.outputDir = dir;
                     });
                     try {
                       await _convert();
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            showSharedSnackBar(
-                              context,
-                              'Conversion successful!',
-                            ),
-                          );
-                          _resetController();
-                        });
-                      }
                     } catch (e) {
-                      if (mounted) {
-                        setState(() {
-                          ctr.isRunning = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            showSharedSnackBar(
-                              context,
-                              'Conversion failed!: $e',
-                            ),
-                          );
-                        });
-                      }
+                      setState(() {
+                        ctr.isRunning = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          showSharedSnackBar(
+                            context,
+                            'Conversion failed!: $e',
+                          ),
+                        );
+                      });
+                    } finally {
+                      _setSuccess();
                     }
                   },
           ),
@@ -119,12 +107,11 @@ class _ConvertPageState extends State<ConvertPage> {
   }
 
   Future<void> _convert() async {
-    String outputDir = await getOutputDir(ctr.outputDir);
     await SegulServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,
-      outputDir: outputDir,
+      outputDir: ctr.outputDir!,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).convertSequence(
@@ -133,8 +120,16 @@ class _ConvertPageState extends State<ConvertPage> {
     );
   }
 
-  void _resetController() {
+  void _setSuccess() {
     setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+          context,
+          'Conversion successful! 🎉 \n'
+          'Output Path: ${showOutputDir(ctr.outputDir!)}',
+        ),
+      );
       ctr.reset();
     });
   }

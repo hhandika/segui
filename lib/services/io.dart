@@ -18,3 +18,11 @@ Future<String> getOutputDir(String? outputCtr) async {
     return outputCtr;
   }
 }
+
+String showOutputDir(String outputDir) {
+  if (Platform.isIOS) {
+    return 'On My Devices/segui';
+  } else {
+    return outputDir;
+  }
+}
