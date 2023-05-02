@@ -20,7 +20,7 @@ class _AlignmentPageState extends State<AlignmentPage> {
     return FormView(children: [
       SharedDropdownField(
           value: analysisType,
-          label: 'Type of operation',
+          label: 'Select a task',
           items: alignmentOperation,
           onChanged: (String? value) {
             setState(() {

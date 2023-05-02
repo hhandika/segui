@@ -17,7 +17,7 @@ class _RawPageState extends State<RawPage> {
     return FormView(children: [
       SharedDropdownField(
         value: analysisType,
-        label: 'Select operation',
+        label: 'Select a task',
         items: rawReadOperation,
         onChanged: (String? value) {
           setState(() {

@@ -18,7 +18,7 @@ class _SequencePageState extends State<SequencePage> {
     return FormView(children: [
       SharedDropdownField(
           value: analysisType,
-          label: 'Select operation',
+          label: 'Select a task',
           items: sequenceOperation,
           onChanged: (String? value) {
             setState(() {
