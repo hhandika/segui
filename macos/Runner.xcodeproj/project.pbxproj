@@ -29,7 +29,7 @@
 		C32C9AAB29F3AAE00050358C /* segul_api.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C32C9AAE29F3AAFA0050358C /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; };
 		C32C9AAF29F3AAFA0050358C /* Pods_Runner.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C3FC85F029F0E8D600249FDF /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; };
+		C35677A92A01FA6300D5FFDB /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +54,7 @@
 			remoteGlobalIDString = CA60FE5BF20AB0D2D8955496;
 			remoteInfo = "segul_api-staticlib";
 		};
-		C3FC85EE29F0E8D000249FDF /* PBXContainerItemProxy */ = {
+		C35677A72A01FA5A00D5FFDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C33C6B0229F0E69000833310 /* segul_api.xcodeproj */;
 			proxyType = 1;
@@ -117,8 +117,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C35677A92A01FA6300D5FFDB /* segul_api.dylib in Frameworks */,
 				C32C9AAE29F3AAFA0050358C /* Pods_Runner.framework in Frameworks */,
-				C3FC85F029F0E8D600249FDF /* segul_api.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,7 +237,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				C3FC85EF29F0E8D000249FDF /* PBXTargetDependency */,
+				C35677A82A01FA5A00D5FFDB /* PBXTargetDependency */,
 				33CC11202044C79F0003C045 /* PBXTargetDependency */,
 			);
 			name = Runner;
@@ -424,10 +424,10 @@
 			target = 33CC111A2044C6BA0003C045 /* Flutter Assemble */;
 			targetProxy = 33CC111F2044C79F0003C045 /* PBXContainerItemProxy */;
 		};
-		C3FC85EF29F0E8D000249FDF /* PBXTargetDependency */ = {
+		C35677A82A01FA5A00D5FFDB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "segul_api-cdylib";
-			targetProxy = C3FC85EE29F0E8D000249FDF /* PBXContainerItemProxy */;
+			targetProxy = C35677A72A01FA5A00D5FFDB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -512,6 +512,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hhandika.segui;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_STYLE = "non-global";
 				SWIFT_OBJC_BRIDGING_HEADER = Runner/bridge_generated.h;
 				SWIFT_VERSION = 5.0;
 			};
@@ -645,6 +646,7 @@
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hhandika.segui;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_STYLE = "non-global";
 				SWIFT_OBJC_BRIDGING_HEADER = Runner/bridge_generated.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -673,6 +675,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hhandika.segui;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				STRIP_STYLE = "non-global";
 				SWIFT_OBJC_BRIDGING_HEADER = Runner/bridge_generated.h;
 				SWIFT_VERSION = 5.0;
 			};
