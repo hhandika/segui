@@ -63,28 +63,28 @@ const List<String> summaryInt = ["1", "2", "5", "10"];
 const List<String> readingFrame = ["1", "2", "3"];
 
 const List<String> translationTable = [
-  "1. The Standard Code",
-  "2. The Vertebrate Mitochondrial Code",
-  "3. The Yeast Mitochondrial Code",
-  "4. The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code",
-  "5. The Invertebrate Mitochondrial Code",
-  "6. The Ciliate, Dasycladacean and Hexamita Nuclear Code",
-  "9. The Echinoderm and Flatworm Mitochondrial Code",
-  "10. The Euplotid Nuclear Code",
-  "11. The Bacterial, Archaeal and Plant Plastid Code",
-  "12. The Alternative Yeast Nuclear Code",
-  "13. The Ascidian Mitochondrial Code",
-  "14. The Alternative Flatworm Mitochondrial Code",
-  "16. Chlorophycean Mitochondrial Code",
-  "21. Trematode Mitochondrial Code",
-  "22. Scenedesmus obliquus Mitochondrial Code",
-  "23. Thraustochytrium Mitochondrial Code",
-  "24. Rhabdopleuridae Mitochondrial Code",
-  "25. Candidate Division SR1 and Gracilibacteria Code",
-  "26. Pachysolen tannophilus Nuclear Code",
-  "29. Mesodinium Nuclear Code",
-  "30. Peritrich Nuclear Code",
-  "33. Cephalodiscidae Mitochondrial UAA-Tyr Code",
+  "Standard Code", // Table 1
+  "Vertebrate Mitochondrial Code", // Table 2
+  "Yeast Mitochondrial Code", // Table 3
+  "Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code", // Table 4
+  "Invertebrate Mitochondrial Code", // Table 5
+  "Ciliate, Dasycladacean and Hexamita Nuclear Code", // Table 6
+  "Echinoderm and Flatworm Mitochondrial Code", // Table 9
+  "Euplotid Nuclear Code", // Table 10
+  "Bacterial, Archaeal and Plant Plastid Code", // Table 11
+  "Alternative Yeast Nuclear Code", // Table 12
+  "Ascidian Mitochondrial Code", // Table 13
+  "Alternative Flatworm Mitochondrial Code", // Table 14
+  "Chlorophycean Mitochondrial Code", // Table 16
+  "Trematode Mitochondrial Code", // Table 21
+  "Scenedesmus obliquus Mitochondrial Code", // Table 22
+  "Thraustochytrium Mitochondrial Code", // Table 23
+  "Rhabdopleuridae Mitochondrial Code", // Table 24
+  "Candidate Division SR1 and Gracilibacteria Code", // Table 25
+  "Pachysolen tannophilus Nuclear Code", // Table 26
+  "Mesodinium Nuclear Code", // Table 29
+  "Peritrich Nuclear Code", // Table 30
+  "Cephalodiscidae Mitochondrial UAA-Tyr Code", // Table 33
 ];
 
 /// Match NCBI translation table to the corresponding index
