@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:segui/screens/shared/controllers.dart';
-import 'package:segui/screens/shared/types.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 
 class SharedInputForms extends StatefulWidget {

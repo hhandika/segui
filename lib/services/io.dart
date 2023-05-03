@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:segui/screens/shared/types.dart';
+import 'package:segui/services/types.dart';
 
 PlatformType get runningPlatform {
   if (Platform.isAndroid || Platform.isIOS) {

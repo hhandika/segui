@@ -1112,7 +1112,7 @@ checksum = "1792db035ce95be60c3f8853017b3999209281c24e2ba5bc8e59bf97a0c590c1"
 [[package]]
 name = "segul"
 version = "0.19.0"
-source = "git+https://github.com/hhandika/segul.git?branch=dev#3ef8b0d4301c80812a28a8e27f995d36e51dc09b"
+source = "git+https://github.com/hhandika/segul.git?branch=dev#171259220f2515730f93aaf7e1e9c05b5494cbd8"
 dependencies = [
  "ahash",
  "alphanumeric-sort",

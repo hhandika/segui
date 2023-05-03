@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:segui/screens/shared/types.dart';
+import 'package:segui/services/types.dart';
 
 class IOController {
   IOController({

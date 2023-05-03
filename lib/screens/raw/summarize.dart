@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
-import 'package:segui/screens/shared/types.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/bridge_generated.dart';
+import 'package:segui/bridge_definitions.dart';
 import 'package:segui/services/native.dart';
 
 class QuickRawSummary extends StatelessWidget {
