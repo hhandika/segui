@@ -64,7 +64,7 @@ impl SegulServices {
         summary.summarize_all(&mut files, &Some(output_prefix));
     }
 
-    pub fn translate_sequence(&self, table: usize, reading_frame: usize, output_fmt: String) {
+    pub fn translate_sequence(&self, table: String, reading_frame: usize, output_fmt: String) {
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
         let mut files = self.find_input_files(&input_fmt);
@@ -93,12 +93,10 @@ impl SegulServices {
         }
     }
 
-    fn match_translation_table(&self, table: usize) -> GeneticCodes {
-        match table {
-            1 => GeneticCodes::StandardCode,
-            2 => GeneticCodes::VertMtDna,
-            _ => unreachable!("Translation table is not supported {}", table),
-        }
+    fn match_translation_table(&self, table: String) -> GeneticCodes {
+        table
+            .parse::<GeneticCodes>()
+            .expect("Invalid translation table")
     }
 
     fn match_input_fmt(&self) -> InputFmt {

@@ -34,7 +34,7 @@ class _TranslatePageState extends State<TranslatePage> {
   IOController ctr = IOController.empty();
   bool isInterleave = false;
   String _readingFrame = readingFrame[0];
-  String _translationTable = translationTable[0];
+  int _tableIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,10 @@ class _TranslatePageState extends State<TranslatePage> {
       mainAxisSize: MainAxisSize.max,
       children: [
         const CardTitle(title: 'Input'),
-        SharedInputForms(ctr: ctr),
+        SharedInputForms(
+          ctr: ctr,
+          isDatatypeEnabled: false,
+        ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
@@ -75,13 +78,13 @@ class _TranslatePageState extends State<TranslatePage> {
                 });
               }),
           SharedDropdownField(
-            value: _translationTable,
+            value: translationTable[_tableIndex],
             label: 'Translation Table',
             items: translationTable,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
-                  _translationTable = value;
+                  _tableIndex = translationTable.indexOf(value);
                 }
               });
             },
@@ -135,7 +138,7 @@ class _TranslatePageState extends State<TranslatePage> {
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).translateSequence(
-        table: int.tryParse(_translationTable) ?? 1,
+        table: _tableIndex.toString(),
         readingFrame: int.tryParse(_readingFrame) ?? 1,
         outputFmt: outputFmt);
   }

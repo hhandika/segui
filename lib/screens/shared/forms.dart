@@ -7,9 +7,14 @@ import 'package:segui/screens/shared/types.dart';
 import 'package:segui/services/io.dart';
 
 class SharedInputForms extends StatefulWidget {
-  const SharedInputForms({super.key, required this.ctr});
+  const SharedInputForms({
+    super.key,
+    required this.ctr,
+    this.isDatatypeEnabled = true,
+  });
 
   final IOController ctr;
+  final bool isDatatypeEnabled;
 
   @override
   State<SharedInputForms> createState() => _SharedInputFormsState();
@@ -47,6 +52,7 @@ class _SharedInputFormsState extends State<SharedInputForms> {
           value: widget.ctr.dataTypeController,
           label: 'Data Type',
           items: dataType,
+          enabled: widget.isDatatypeEnabled,
           onChanged: (String? value) {
             setState(() {
               if (value != null) {
@@ -188,16 +194,19 @@ class SharedDropdownField extends StatelessWidget {
     required this.label,
     required this.items,
     required this.onChanged,
+    this.enabled = true,
   });
 
   final String? value;
   final String label;
   final List<String> items;
   final void Function(String?) onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String?>(
+      isExpanded: true,
       value: value,
       decoration: InputDecoration(
         labelText: label,
@@ -205,10 +214,13 @@ class SharedDropdownField extends StatelessWidget {
       items: items
           .map((item) => DropdownMenuItem<String>(
                 value: item,
-                child: Text(item),
+                child: Text(
+                  item,
+                  overflow: TextOverflow.clip,
+                ),
               ))
           .toList(),
-      onChanged: onChanged,
+      onChanged: enabled ? onChanged : null,
     );
   }
 }

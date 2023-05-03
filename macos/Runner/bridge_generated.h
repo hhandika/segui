@@ -68,7 +68,7 @@ void wire_summarize_alignment__method__SegulServices(int64_t port_,
 
 void wire_translate_sequence__method__SegulServices(int64_t port_,
                                                     struct wire_SegulServices *that,
-                                                    uintptr_t table,
+                                                    struct wire_uint_8_list *table,
                                                     uintptr_t reading_frame,
                                                     struct wire_uint_8_list *output_fmt);
 

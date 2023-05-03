@@ -52,7 +52,7 @@ pub extern "C" fn wire_summarize_alignment__method__SegulServices(
 pub extern "C" fn wire_translate_sequence__method__SegulServices(
     port_: i64,
     that: *mut wire_SegulServices,
-    table: usize,
+    table: *mut wire_uint_8_list,
     reading_frame: usize,
     output_fmt: *mut wire_uint_8_list,
 ) {

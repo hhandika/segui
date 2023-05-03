@@ -49,7 +49,7 @@ abstract class SegulApi {
 
   Future<void> translateSequenceMethodSegulServices(
       {required SegulServices that,
-      required int table,
+      required String table,
       required int readingFrame,
       required String outputFmt,
       dynamic hint});
@@ -150,7 +150,7 @@ class SegulServices {
       );
 
   Future<void> translateSequence(
-          {required int table,
+          {required String table,
           required int readingFrame,
           required String outputFmt,
           dynamic hint}) =>
@@ -286,12 +286,12 @@ class SegulApiImpl implements SegulApi {
 
   Future<void> translateSequenceMethodSegulServices(
       {required SegulServices that,
-      required int table,
+      required String table,
       required int readingFrame,
       required String outputFmt,
       dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_segul_services(that);
-    var arg1 = api2wire_usize(table);
+    var arg1 = _platform.api2wire_String(table);
     var arg2 = api2wire_usize(readingFrame);
     var arg3 = _platform.api2wire_String(outputFmt);
     return _platform.executeNormal(FlutterRustBridgeTask(
@@ -721,7 +721,7 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
   void wire_translate_sequence__method__SegulServices(
     int port_,
     ffi.Pointer<wire_SegulServices> that,
-    int table,
+    ffi.Pointer<wire_uint_8_list> table,
     int reading_frame,
     ffi.Pointer<wire_uint_8_list> output_fmt,
   ) {
@@ -736,12 +736,20 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
 
   late final _wire_translate_sequence__method__SegulServicesPtr = _lookup<
           ffi.NativeFunction<
-              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_SegulServices>,
-                  ffi.UintPtr, ffi.UintPtr, ffi.Pointer<wire_uint_8_list>)>>(
+              ffi.Void Function(
+                  ffi.Int64,
+                  ffi.Pointer<wire_SegulServices>,
+                  ffi.Pointer<wire_uint_8_list>,
+                  ffi.UintPtr,
+                  ffi.Pointer<wire_uint_8_list>)>>(
       'wire_translate_sequence__method__SegulServices');
   late final _wire_translate_sequence__method__SegulServices =
       _wire_translate_sequence__method__SegulServicesPtr.asFunction<
-          void Function(int, ffi.Pointer<wire_SegulServices>, int, int,
+          void Function(
+              int,
+              ffi.Pointer<wire_SegulServices>,
+              ffi.Pointer<wire_uint_8_list>,
+              int,
               ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_new__static_method__RawReadServices(

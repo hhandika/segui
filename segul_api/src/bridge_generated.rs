@@ -125,7 +125,7 @@ fn wire_summarize_alignment__method__SegulServices_impl(
 fn wire_translate_sequence__method__SegulServices_impl(
     port_: MessagePort,
     that: impl Wire2Api<SegulServices> + UnwindSafe,
-    table: impl Wire2Api<usize> + UnwindSafe,
+    table: impl Wire2Api<String> + UnwindSafe,
     reading_frame: impl Wire2Api<usize> + UnwindSafe,
     output_fmt: impl Wire2Api<String> + UnwindSafe,
 ) {
