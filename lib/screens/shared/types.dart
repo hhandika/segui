@@ -7,9 +7,9 @@ const List<String> rawReadOperation = [
 ];
 
 const List<String> rawReadFormat = [
+  'Auto',
   'FASTQ',
   'GZip',
-  'Auto',
 ];
 
 const List<String> rawReadSummaryMode = [
@@ -90,6 +90,9 @@ const List<String> translationTable = [
 /// Match NCBI translation table to the corresponding index
 /// We use list index to represent the translation table
 /// then convert to matching NCBI table number
+/// Internally segul API uses String to parse
+/// the translation table number to Genetic Code
+/// enum.
 const Map<int, String> translationTableMap = {
   1: "1",
   2: "2",
