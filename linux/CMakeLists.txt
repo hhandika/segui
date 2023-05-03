@@ -1,5 +1,5 @@
 # Project-level configuration.
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project(runner LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
@@ -7,7 +7,7 @@ project(runner LANGUAGES CXX)
 set(BINARY_NAME "segui")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
-set(APPLICATION_ID "com.example.segui")
+set(APPLICATION_ID "com.hhandika.segui")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -89,6 +89,7 @@ set_target_properties(${BINARY_NAME}
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
+include(./rust.cmake)
 
 
 # === Installation ===
