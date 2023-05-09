@@ -269,6 +269,14 @@ class ResourceTiles extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurface),
           ),
           ListTile(
+            leading: Icon(Icons.speed_outlined,
+                color: Theme.of(context).colorScheme.onSurface),
+            title: Text('Quick start',
+                style: Theme.of(context).textTheme.titleMedium),
+            trailing: Icon(Icons.arrow_forward_ios,
+                color: Theme.of(context).colorScheme.onSurface),
+          ),
+          ListTile(
             leading: Icon(Icons.school_outlined,
                 color: Theme.of(context).colorScheme.onSurface),
             title: Text('Learner resources',
