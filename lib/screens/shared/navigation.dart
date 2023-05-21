@@ -25,11 +25,6 @@ const List<NavigationTarget> navigationTargets = [
     selectedIcon: Icon(Icons.factory_rounded),
   ),
   NavigationTarget(
-    label: 'Contigs',
-    icon: Icon(Icons.segment_outlined),
-    selectedIcon: Icon(Icons.segment_rounded),
-  ),
-  NavigationTarget(
     label: 'Alignments',
     icon: Icon(Icons.sync_alt_outlined),
     selectedIcon: Icon(Icons.sync_alt_rounded),

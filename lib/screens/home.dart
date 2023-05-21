@@ -3,7 +3,6 @@ import 'package:segui/screens/alignment/alignment.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/summary.dart';
-import 'package:segui/screens/contig/contig.dart';
 import 'package:segui/screens/raw/raw.dart';
 import 'package:segui/screens/sequence/sequence.dart';
 import 'package:segui/screens/sequence/translate.dart';
@@ -16,7 +15,6 @@ import 'package:url_launcher/url_launcher.dart';
 const List<Widget> _pages = <Widget>[
   HomePage(),
   RawPage(),
-  ContigPage(),
   AlignmentPage(),
   SequencePage(),
 ];
@@ -24,7 +22,6 @@ const List<Widget> _pages = <Widget>[
 const List<String> _pageTitles = <String>[
   'SEGUL GUI',
   'Raw Sequence Tools',
-  'Contig Sequence Tools',
   'Alignment Tools',
   'Sequence Tools',
 ];
