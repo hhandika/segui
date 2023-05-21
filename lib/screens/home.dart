@@ -21,7 +21,7 @@ const List<Widget> _pages = <Widget>[
 
 const List<String> _pageTitles = <String>[
   'SEGUL GUI',
-  'Raw Sequence Tools',
+  'Genomic Sequence Tools',
   'Alignment Tools',
   'Sequence Tools',
 ];

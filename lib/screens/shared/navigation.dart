@@ -20,7 +20,7 @@ const List<NavigationTarget> navigationTargets = [
     selectedIcon: Icon(Icons.home),
   ),
   NavigationTarget(
-    label: 'Raw',
+    label: 'Genomics',
     icon: Icon(Icons.factory_outlined),
     selectedIcon: Icon(Icons.factory_rounded),
   ),
