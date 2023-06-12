@@ -4,7 +4,6 @@ import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/bridge_definitions.dart';
 import 'package:segui/services/native.dart';
 
 class QuickRawSummary extends StatelessWidget {
