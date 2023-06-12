@@ -3,10 +3,10 @@ use std::path::{Path, PathBuf};
 use segul::handler::align::concat::ConcatHandler;
 use segul::handler::align::convert::Converter;
 use segul::handler::align::summarize::SeqStats;
-use segul::handler::raw::summarize::RawSummaryHandler;
+use segul::handler::read::summarize::ReadSummaryHandler;
 use segul::handler::sequence::translate::Translate;
-use segul::helper::finder::Files;
-use segul::helper::types::{DataType, GeneticCodes, InputFmt, RawReadFmt, SummaryMode};
+use segul::helper::finder::{SeqFileFinder, SeqReadFinder};
+use segul::helper::types::{DataType, GeneticCodes, InputFmt, SeqReadFmt, SummaryMode};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, files, logger};
 
@@ -83,7 +83,7 @@ impl SegulServices {
     fn find_input_files(&self, input_fmt: &InputFmt) -> Vec<PathBuf> {
         if let Some(path) = &self.dir_path {
             let path = Path::new(&path);
-            Files::new(path).find(&input_fmt)
+            SeqFileFinder::new(path).find(&input_fmt)
         } else {
             if self.files.is_empty() {
                 panic!("No input files found");
@@ -157,11 +157,11 @@ impl RawReadServices {
         let output_path = Path::new(&self.output_dir);
         let sum_mode = self.match_mode(&mode);
         init_logger(&output_path);
-        let mut summary = RawSummaryHandler::new(&mut files, &input_fmt, &sum_mode, output_path);
+        let mut summary = ReadSummaryHandler::new(&mut files, &input_fmt, &sum_mode, output_path);
         summary.summarize(lowmem);
     }
 
-    fn match_input_fmt(&self) -> RawReadFmt {
+    fn match_input_fmt(&self) -> SeqReadFmt {
         self.file_fmt
             .to_lowercase()
             .parse()
@@ -172,10 +172,10 @@ impl RawReadServices {
         mode.to_lowercase().parse().expect("Invalid summary mode")
     }
 
-    fn find_input_files(&self, input_fmt: &RawReadFmt) -> Vec<PathBuf> {
+    fn find_input_files(&self, input_fmt: &SeqReadFmt) -> Vec<PathBuf> {
         if let Some(path) = &self.dir_path {
             let path = Path::new(&path);
-            Files::new(path).find_raw_read(input_fmt)
+            SeqReadFinder::new(path).find(input_fmt)
         } else {
             if self.files.is_empty() {
                 panic!("No input files found");
@@ -187,5 +187,5 @@ impl RawReadServices {
 }
 
 fn init_logger(path: &Path) {
-    logger::setup_file_logger(&path).expect("Failed to setup logger");
+    logger::setup_logger(&path).expect("Failed to setup logger");
 }
