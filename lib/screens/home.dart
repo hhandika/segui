@@ -114,45 +114,49 @@ class _LargeScreenViewState extends State<LargeScreenView> {
           child: Row(
             children: [
               SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        minHeight: MediaQuery.of(context).size.height * .9),
-                    child: IntrinsicHeight(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        child: NavigationRail(
-                            labelType: NavigationRailLabelType.all,
-                            backgroundColor: Theme.of(context)
-                                .colorScheme
-                                .surface
-                                .withOpacity(0.5),
-                            destinations: navigationTargets
-                                .map((e) => NavigationRailDestination(
-                                      icon: e.icon,
-                                      selectedIcon: e.selectedIcon,
-                                      label: Text(e.label),
-                                    ))
-                                .toList(),
-                            selectedIndex: _selectedIndex,
-                            onDestinationSelected: (int index) {
-                              setState(() {
-                                _selectedIndex = index;
-                              });
-                            },
-                            groupAlignment: BorderSide.strokeAlignCenter,
-                            trailing: const Expanded(
-                              child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: SettingButtons(),
-                              ),
-                            )),
-                      ),
-                    )),
-              ),
-              const VerticalDivider(thickness: 0.5, width: 1),
+                  child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height * 0.9),
+                child: IntrinsicHeight(
+                  child: NavigationRail(
+                      labelType: NavigationRailLabelType.all,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      destinations: navigationTargets
+                          .map((e) => NavigationRailDestination(
+                                icon: e.icon,
+                                selectedIcon: e.selectedIcon,
+                                label: Text(e.label),
+                              ))
+                          .toList(),
+                      selectedIndex: _selectedIndex,
+                      onDestinationSelected: (int index) {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
+                      groupAlignment: BorderSide.strokeAlignCenter,
+                      trailing: const Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SettingButtons(),
+                        ),
+                      )),
+                ),
+              )),
+              const VerticalDivider(thickness: 1, width: 1),
               Expanded(
                 flex: 3,
-                child: _pages.elementAt(_selectedIndex),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: _pages.elementAt(_selectedIndex),
+                  ),
+                ),
               ),
             ],
           )),

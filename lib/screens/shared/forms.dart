@@ -103,7 +103,7 @@ class FormView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppPageView(
       child: ListView(
-        shrinkWrap: false,
+        shrinkWrap: true,
         children: children,
       ),
     );
