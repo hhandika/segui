@@ -16,19 +16,19 @@ class QuickRawSummary extends StatelessWidget {
           title: const Text('Raw Sequence Summary'),
         ),
         body: const SingleChildScrollView(
-          child: AppPageView(child: RawSummaryPage()),
+          child: AppPageView(child: ReadSummaryPage()),
         ));
   }
 }
 
-class RawSummaryPage extends StatefulWidget {
-  const RawSummaryPage({super.key});
+class ReadSummaryPage extends StatefulWidget {
+  const ReadSummaryPage({super.key});
 
   @override
-  State<RawSummaryPage> createState() => _RawSummaryPageState();
+  State<ReadSummaryPage> createState() => _ReadSummaryPageState();
 }
 
-class _RawSummaryPageState extends State<RawSummaryPage> {
+class _ReadSummaryPageState extends State<ReadSummaryPage> {
   IOController ctr = IOController.empty();
   String mode = rawReadSummaryMode[0];
   bool lowMemory = false;

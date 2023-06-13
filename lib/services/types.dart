@@ -1,10 +1,11 @@
 enum PlatformType { isDesktop, isMobile }
 
-enum RawReadOperationType { summary }
+enum GenomicOperationType { readSummary, contigSummary }
 
-const List<String> rawReadOperation = [
-  'Summary Statistics',
-];
+const Map<GenomicOperationType, String> genomicOperationMap = {
+  GenomicOperationType.readSummary: 'Read Summary Statistics',
+  GenomicOperationType.contigSummary: 'Contig Summary Statistics',
+};
 
 const List<String> rawReadFormat = [
   'Auto',
