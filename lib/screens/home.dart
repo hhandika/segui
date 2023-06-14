@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:segui/screens/alignment/alignment.dart';
+import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/summary.dart';
-import 'package:segui/screens/genomics/main_page.dart';
-import 'package:segui/screens/sequence/sequence.dart';
+import 'package:segui/screens/genomics/entry_page.dart';
+import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/navigation.dart';
@@ -242,7 +242,7 @@ class QuickActionContainer extends StatelessWidget {
               label: 'Summarize Sequences',
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickAlnSummaryPage()));
+                    builder: (context) => const QuickAlignmentSummaryPage()));
               },
             ),
           ],

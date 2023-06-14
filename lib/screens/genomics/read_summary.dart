@@ -30,7 +30,7 @@ class ReadSummaryPage extends StatefulWidget {
 
 class _ReadSummaryPageState extends State<ReadSummaryPage> {
   IOController ctr = IOController.empty();
-  String mode = rawReadSummaryMode[0];
+  String mode = sequenceReadSummaryMode[0];
   bool lowMemory = false;
 
   @override
@@ -57,7 +57,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
           SharedDropdownField(
             value: ctr.inputFormatController,
             label: 'Format',
-            items: rawReadFormat,
+            items: sequenceReadFormat,
             onChanged: (String? value) {
               setState(() {
                 ctr.inputFormatController = value;
@@ -78,7 +78,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
           SharedDropdownField(
             value: mode,
             label: 'Summary Mode',
-            items: rawReadSummaryMode,
+            items: sequenceReadSummaryMode,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {

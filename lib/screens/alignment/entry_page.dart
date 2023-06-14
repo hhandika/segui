@@ -51,7 +51,7 @@ class AlignmentOptions extends StatelessWidget {
       case AlignmentOperationType.concat:
         return const ConcatPage();
       case AlignmentOperationType.summary:
-        return const SummaryPage();
+        return const AlignmentSummaryPage();
       case AlignmentOperationType.convert:
         return const ConvertPage();
       default:

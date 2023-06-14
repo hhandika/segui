@@ -7,13 +7,19 @@ const Map<GenomicOperationType, String> genomicOperationMap = {
   GenomicOperationType.contigSummary: 'Contig Summary Statistics',
 };
 
-const List<String> rawReadFormat = [
+const List<String> sequenceReadFormat = [
   'Auto',
   'FASTQ',
   'GZip',
 ];
 
-const List<String> rawReadSummaryMode = [
+const List<String> contigFormat = [
+  'Auto',
+  'FASTA',
+  'GZip',
+];
+
+const List<String> sequenceReadSummaryMode = [
   'Default',
   'Minimal',
   'Complete',

@@ -6,8 +6,8 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/native.dart';
 
-class QuickAlnSummaryPage extends StatelessWidget {
-  const QuickAlnSummaryPage({super.key});
+class QuickAlignmentSummaryPage extends StatelessWidget {
+  const QuickAlignmentSummaryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +16,20 @@ class QuickAlnSummaryPage extends StatelessWidget {
         title: const Text('Alignment Summary'),
       ),
       body: const SingleChildScrollView(
-        child: AppPageView(child: SummaryPage()),
+        child: AppPageView(child: AlignmentSummaryPage()),
       ),
     );
   }
 }
 
-class SummaryPage extends StatefulWidget {
-  const SummaryPage({super.key});
+class AlignmentSummaryPage extends StatefulWidget {
+  const AlignmentSummaryPage({super.key});
 
   @override
-  State<SummaryPage> createState() => _SummaryPageState();
+  State<AlignmentSummaryPage> createState() => _AlignmentSummaryPageState();
 }
 
-class _SummaryPageState extends State<SummaryPage> {
+class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
   IOController ctr = IOController.empty();
   String _interval = summaryInt[2];
 
