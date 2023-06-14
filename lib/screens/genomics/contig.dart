@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/services/native.dart';
 import 'package:segui/services/types.dart';
 
 class ContigPage extends StatefulWidget {
@@ -74,6 +75,7 @@ class _ContigPageState extends State<ContigPage> {
                       ctr.isRunning = true;
                     });
                     await _summarize(ctr);
+                    _setSuccess();
                     setState(() {
                       ctr.isRunning = false;
                     });
@@ -83,7 +85,26 @@ class _ContigPageState extends State<ContigPage> {
   }
 
   Future<void> _summarize(IOController ctr) async {
-    // await NativeService.summarizeContig(
-    //     ctr.dirPath, ctr.files, ctr.outputDir, ctr.outputController.text);
+    await ContigServices(
+      bridge: segulApi,
+      files: ctr.files,
+      dirPath: ctr.dirPath,
+      fileFmt: ctr.inputFormatController!,
+      outputDir: ctr.outputDir!,
+    ).summarize();
+  }
+
+  void _setSuccess() {
+    setState(() {
+      ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Summarization complete!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      ctr.reset();
+    });
   }
 }
