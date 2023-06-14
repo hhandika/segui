@@ -12,7 +12,6 @@ do
             RUST_LOG=debug flutter_rust_bridge_codegen \
                 -r segul_api/src/segul_api.rs \
                 -d lib/bridge_generated.dart \
-                --dart-decl-output lib/bridge_definitions.dart \
                 -c ios/Runner/bridge_generated.h \
                 -e macos/Runner/
             break
@@ -22,7 +21,6 @@ do
             flutter_rust_bridge_codegen \
                 -r segul_api/src/segul_api.rs \
                 -d lib/bridge_generated.dart \
-                --dart-decl-output lib/bridge_definitions.dart \
                 -c ios/Runner/bridge_generated.h \
                 -e macos/Runner/
             break
