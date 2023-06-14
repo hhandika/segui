@@ -129,7 +129,7 @@ class _TranslatePageState extends State<TranslatePage> {
 
   Future<void> _translate() async {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
-    await SegulServices(
+    await SequenceServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,

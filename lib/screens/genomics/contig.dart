@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
@@ -34,17 +35,17 @@ class _ContigPageState extends State<ContigPage> {
               },
               ctr: ctr,
             ),
+            SharedDropdownField(
+              value: ctr.inputFormatController,
+              label: 'Format',
+              items: contigFormat,
+              onChanged: (value) {
+                setState(() {
+                  ctr.inputFormatController = value;
+                });
+              },
+            ),
           ]),
-          SharedDropdownField(
-            value: ctr.inputFormatController,
-            label: 'Format',
-            items: contigFormat,
-            onChanged: (value) {
-              setState(() {
-                ctr.inputFormatController = value;
-              });
-            },
-          ),
           const SizedBox(height: 16),
           const CardTitle(title: 'Output'),
           FormCard(children: [
@@ -61,6 +62,28 @@ class _ContigPageState extends State<ContigPage> {
               hint: 'Enter output filename',
             ),
           ]),
+          const SizedBox(height: 16),
+          Center(
+              child: PrimaryButton(
+            isRunning: ctr.isRunning,
+            label: 'Summarize',
+            onPressed: ctr.isRunning || !ctr.isValid()
+                ? null
+                : () async {
+                    setState(() {
+                      ctr.isRunning = true;
+                    });
+                    await _summarize(ctr);
+                    setState(() {
+                      ctr.isRunning = false;
+                    });
+                  },
+          ))
         ]);
+  }
+
+  Future<void> _summarize(IOController ctr) async {
+    // await NativeService.summarizeContig(
+    //     ctr.dirPath, ctr.files, ctr.outputDir, ctr.outputController.text);
   }
 }

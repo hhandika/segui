@@ -117,7 +117,7 @@ class _ConvertPageState extends State<ConvertPage> {
 
   Future<void> _convert() async {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
-    await SegulServices(
+    await SequenceServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,

@@ -3,10 +3,11 @@ use std::path::{Path, PathBuf};
 use segul::handler::align::concat::ConcatHandler;
 use segul::handler::align::convert::Converter;
 use segul::handler::align::summarize::SeqStats;
+use segul::handler::contig::summarize::ContigSummaryHandler;
 use segul::handler::read::summarize::ReadSummaryHandler;
 use segul::handler::sequence::translate::Translate;
-use segul::helper::finder::{SeqFileFinder, SeqReadFinder};
-use segul::helper::types::{DataType, GeneticCodes, InputFmt, SeqReadFmt, SummaryMode};
+use segul::helper::finder::{ContigFileFinder, SeqFileFinder, SeqReadFinder};
+use segul::helper::types::{ContigFmt, DataType, GeneticCodes, InputFmt, SeqReadFmt, SummaryMode};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, files, logger};
 
@@ -14,7 +15,7 @@ pub fn show_dna_uppercase() -> String {
     alphabet::DNA_STR_UPPERCASE.to_string()
 }
 
-pub struct SegulServices {
+pub struct SequenceServices {
     pub dir_path: Option<String>,
     pub files: Vec<String>,
     pub file_fmt: String,
@@ -22,9 +23,9 @@ pub struct SegulServices {
     pub output_dir: String,
 }
 
-impl SegulServices {
-    pub fn new() -> SegulServices {
-        SegulServices {
+impl SequenceServices {
+    pub fn new() -> SequenceServices {
+        SequenceServices {
             dir_path: None,
             files: Vec::new(),
             file_fmt: String::new(),
@@ -134,16 +135,16 @@ impl SegulServices {
     }
 }
 
-pub struct RawReadServices {
+pub struct FastqServices {
     pub dir_path: Option<String>,
     pub files: Vec<String>,
     pub file_fmt: String,
     pub output_dir: String,
 }
 
-impl RawReadServices {
-    pub fn new() -> RawReadServices {
-        RawReadServices {
+impl FastqServices {
+    pub fn new() -> FastqServices {
+        FastqServices {
             dir_path: None,
             files: Vec::new(),
             file_fmt: String::new(),
@@ -176,6 +177,53 @@ impl RawReadServices {
         if let Some(path) = &self.dir_path {
             let path = Path::new(&path);
             SeqReadFinder::new(path).find(input_fmt)
+        } else {
+            if self.files.is_empty() {
+                panic!("No input files found");
+            } else {
+                self.files.iter().map(PathBuf::from).collect()
+            }
+        }
+    }
+}
+
+pub struct ContigServices {
+    pub dir_path: Option<String>,
+    pub files: Vec<String>,
+    pub file_fmt: String,
+    pub output_dir: String,
+}
+
+impl ContigServices {
+    pub fn new() -> ContigServices {
+        ContigServices {
+            dir_path: None,
+            files: Vec::new(),
+            file_fmt: String::new(),
+            output_dir: String::new(),
+        }
+    }
+
+    pub fn summarize(&self) {
+        let input_fmt = self.match_input_fmt();
+        let mut files = self.find_input_files(&input_fmt);
+        let output_path = Path::new(&self.output_dir);
+        init_logger(&output_path);
+        let summary = ContigSummaryHandler::new(&mut files, &input_fmt, output_path);
+        summary.summarize();
+    }
+
+    fn match_input_fmt(&self) -> ContigFmt {
+        self.file_fmt
+            .to_lowercase()
+            .parse()
+            .expect("Invalid input format")
+    }
+
+    fn find_input_files(&self, input_fmt: &ContigFmt) -> Vec<PathBuf> {
+        if let Some(path) = &self.dir_path {
+            let path = Path::new(&path);
+            ContigFileFinder::new(path).find(input_fmt)
         } else {
             if self.files.is_empty() {
                 panic!("No input files found");

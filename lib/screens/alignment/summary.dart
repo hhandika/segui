@@ -96,7 +96,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
   }
 
   Future<void> _summarize() async {
-    await SegulServices(
+    await SequenceServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,

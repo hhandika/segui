@@ -15,69 +15,69 @@ abstract class SegulApi {
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
 
-  Future<SegulServices> newStaticMethodSegulServices({dynamic hint});
+  Future<SequenceServices> newStaticMethodSequenceServices({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulServicesConstMeta;
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSequenceServicesConstMeta;
 
-  Future<void> concatAlignmentMethodSegulServices(
-      {required SegulServices that,
+  Future<void> concatAlignmentMethodSequenceServices(
+      {required SequenceServices that,
       required String outFname,
       required String outFmtStr,
       required String partitionFmt,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kConcatAlignmentMethodSegulServicesConstMeta;
+      get kConcatAlignmentMethodSequenceServicesConstMeta;
 
-  Future<void> convertSequenceMethodSegulServices(
-      {required SegulServices that,
+  Future<void> convertSequenceMethodSequenceServices(
+      {required SequenceServices that,
       required String outputFmt,
       required bool sort,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kConvertSequenceMethodSegulServicesConstMeta;
+      get kConvertSequenceMethodSequenceServicesConstMeta;
 
-  Future<void> summarizeAlignmentMethodSegulServices(
-      {required SegulServices that,
+  Future<void> summarizeAlignmentMethodSequenceServices(
+      {required SequenceServices that,
       required String outputPrefix,
       required int interval,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kSummarizeAlignmentMethodSegulServicesConstMeta;
+      get kSummarizeAlignmentMethodSequenceServicesConstMeta;
 
-  Future<void> translateSequenceMethodSegulServices(
-      {required SegulServices that,
+  Future<void> translateSequenceMethodSequenceServices(
+      {required SequenceServices that,
       required String table,
       required int readingFrame,
       required String outputFmt,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kTranslateSequenceMethodSegulServicesConstMeta;
+      get kTranslateSequenceMethodSequenceServicesConstMeta;
 
-  Future<RawReadServices> newStaticMethodRawReadServices({dynamic hint});
+  Future<FastqServices> newStaticMethodFastqServices({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodRawReadServicesConstMeta;
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodFastqServicesConstMeta;
 
-  Future<void> summarizeMethodRawReadServices(
-      {required RawReadServices that,
+  Future<void> summarizeMethodFastqServices(
+      {required FastqServices that,
       required String mode,
       required bool lowmem,
       dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kSummarizeMethodRawReadServicesConstMeta;
+  FlutterRustBridgeTaskConstMeta get kSummarizeMethodFastqServicesConstMeta;
 }
 
-class RawReadServices {
+class FastqServices {
   final SegulApi bridge;
   final String? dirPath;
   final List<String> files;
   final String fileFmt;
   final String outputDir;
 
-  const RawReadServices({
+  const FastqServices({
     required this.bridge,
     this.dirPath,
     required this.files,
@@ -85,20 +85,20 @@ class RawReadServices {
     required this.outputDir,
   });
 
-  static Future<RawReadServices> newRawReadServices(
+  static Future<FastqServices> newFastqServices(
           {required SegulApi bridge, dynamic hint}) =>
-      bridge.newStaticMethodRawReadServices(hint: hint);
+      bridge.newStaticMethodFastqServices(hint: hint);
 
   Future<void> summarize(
           {required String mode, required bool lowmem, dynamic hint}) =>
-      bridge.summarizeMethodRawReadServices(
+      bridge.summarizeMethodFastqServices(
         that: this,
         mode: mode,
         lowmem: lowmem,
       );
 }
 
-class SegulServices {
+class SequenceServices {
   final SegulApi bridge;
   final String? dirPath;
   final List<String> files;
@@ -106,7 +106,7 @@ class SegulServices {
   final String datatype;
   final String outputDir;
 
-  const SegulServices({
+  const SequenceServices({
     required this.bridge,
     this.dirPath,
     required this.files,
@@ -115,16 +115,16 @@ class SegulServices {
     required this.outputDir,
   });
 
-  static Future<SegulServices> newSegulServices(
+  static Future<SequenceServices> newSequenceServices(
           {required SegulApi bridge, dynamic hint}) =>
-      bridge.newStaticMethodSegulServices(hint: hint);
+      bridge.newStaticMethodSequenceServices(hint: hint);
 
   Future<void> concatAlignment(
           {required String outFname,
           required String outFmtStr,
           required String partitionFmt,
           dynamic hint}) =>
-      bridge.concatAlignmentMethodSegulServices(
+      bridge.concatAlignmentMethodSequenceServices(
         that: this,
         outFname: outFname,
         outFmtStr: outFmtStr,
@@ -133,7 +133,7 @@ class SegulServices {
 
   Future<void> convertSequence(
           {required String outputFmt, required bool sort, dynamic hint}) =>
-      bridge.convertSequenceMethodSegulServices(
+      bridge.convertSequenceMethodSequenceServices(
         that: this,
         outputFmt: outputFmt,
         sort: sort,
@@ -143,7 +143,7 @@ class SegulServices {
           {required String outputPrefix,
           required int interval,
           dynamic hint}) =>
-      bridge.summarizeAlignmentMethodSegulServices(
+      bridge.summarizeAlignmentMethodSequenceServices(
         that: this,
         outputPrefix: outputPrefix,
         interval: interval,
@@ -154,7 +154,7 @@ class SegulServices {
           required int readingFrame,
           required String outputFmt,
           dynamic hint}) =>
-      bridge.translateSequenceMethodSegulServices(
+      bridge.translateSequenceMethodSequenceServices(
         that: this,
         table: table,
         readingFrame: readingFrame,

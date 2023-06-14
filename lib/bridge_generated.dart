@@ -15,69 +15,78 @@ abstract class SegulApi {
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
 
-  Future<SegulServices> newStaticMethodSegulServices({dynamic hint});
+  Future<SequenceServices> newStaticMethodSequenceServices({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulServicesConstMeta;
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSequenceServicesConstMeta;
 
-  Future<void> concatAlignmentMethodSegulServices(
-      {required SegulServices that,
+  Future<void> concatAlignmentMethodSequenceServices(
+      {required SequenceServices that,
       required String outFname,
       required String outFmtStr,
       required String partitionFmt,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kConcatAlignmentMethodSegulServicesConstMeta;
+      get kConcatAlignmentMethodSequenceServicesConstMeta;
 
-  Future<void> convertSequenceMethodSegulServices(
-      {required SegulServices that,
+  Future<void> convertSequenceMethodSequenceServices(
+      {required SequenceServices that,
       required String outputFmt,
       required bool sort,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kConvertSequenceMethodSegulServicesConstMeta;
+      get kConvertSequenceMethodSequenceServicesConstMeta;
 
-  Future<void> summarizeAlignmentMethodSegulServices(
-      {required SegulServices that,
+  Future<void> summarizeAlignmentMethodSequenceServices(
+      {required SequenceServices that,
       required String outputPrefix,
       required int interval,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kSummarizeAlignmentMethodSegulServicesConstMeta;
+      get kSummarizeAlignmentMethodSequenceServicesConstMeta;
 
-  Future<void> translateSequenceMethodSegulServices(
-      {required SegulServices that,
+  Future<void> translateSequenceMethodSequenceServices(
+      {required SequenceServices that,
       required String table,
       required int readingFrame,
       required String outputFmt,
       dynamic hint});
 
   FlutterRustBridgeTaskConstMeta
-      get kTranslateSequenceMethodSegulServicesConstMeta;
+      get kTranslateSequenceMethodSequenceServicesConstMeta;
 
-  Future<RawReadServices> newStaticMethodRawReadServices({dynamic hint});
+  Future<FastqServices> newStaticMethodFastqServices({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodRawReadServicesConstMeta;
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodFastqServicesConstMeta;
 
-  Future<void> summarizeMethodRawReadServices(
-      {required RawReadServices that,
+  Future<void> summarizeMethodFastqServices(
+      {required FastqServices that,
       required String mode,
       required bool lowmem,
       dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kSummarizeMethodRawReadServicesConstMeta;
+  FlutterRustBridgeTaskConstMeta get kSummarizeMethodFastqServicesConstMeta;
+
+  Future<ContigServices> newStaticMethodContigServices({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodContigServicesConstMeta;
+
+  Future<void> summarizeMethodContigServices(
+      {required ContigServices that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSummarizeMethodContigServicesConstMeta;
 }
 
-class RawReadServices {
+class ContigServices {
   final SegulApi bridge;
   final String? dirPath;
   final List<String> files;
   final String fileFmt;
   final String outputDir;
 
-  const RawReadServices({
+  const ContigServices({
     required this.bridge,
     this.dirPath,
     required this.files,
@@ -85,20 +94,45 @@ class RawReadServices {
     required this.outputDir,
   });
 
-  static Future<RawReadServices> newRawReadServices(
+  static Future<ContigServices> newContigServices(
           {required SegulApi bridge, dynamic hint}) =>
-      bridge.newStaticMethodRawReadServices(hint: hint);
+      bridge.newStaticMethodContigServices(hint: hint);
+
+  Future<void> summarize({dynamic hint}) =>
+      bridge.summarizeMethodContigServices(
+        that: this,
+      );
+}
+
+class FastqServices {
+  final SegulApi bridge;
+  final String? dirPath;
+  final List<String> files;
+  final String fileFmt;
+  final String outputDir;
+
+  const FastqServices({
+    required this.bridge,
+    this.dirPath,
+    required this.files,
+    required this.fileFmt,
+    required this.outputDir,
+  });
+
+  static Future<FastqServices> newFastqServices(
+          {required SegulApi bridge, dynamic hint}) =>
+      bridge.newStaticMethodFastqServices(hint: hint);
 
   Future<void> summarize(
           {required String mode, required bool lowmem, dynamic hint}) =>
-      bridge.summarizeMethodRawReadServices(
+      bridge.summarizeMethodFastqServices(
         that: this,
         mode: mode,
         lowmem: lowmem,
       );
 }
 
-class SegulServices {
+class SequenceServices {
   final SegulApi bridge;
   final String? dirPath;
   final List<String> files;
@@ -106,7 +140,7 @@ class SegulServices {
   final String datatype;
   final String outputDir;
 
-  const SegulServices({
+  const SequenceServices({
     required this.bridge,
     this.dirPath,
     required this.files,
@@ -115,16 +149,16 @@ class SegulServices {
     required this.outputDir,
   });
 
-  static Future<SegulServices> newSegulServices(
+  static Future<SequenceServices> newSequenceServices(
           {required SegulApi bridge, dynamic hint}) =>
-      bridge.newStaticMethodSegulServices(hint: hint);
+      bridge.newStaticMethodSequenceServices(hint: hint);
 
   Future<void> concatAlignment(
           {required String outFname,
           required String outFmtStr,
           required String partitionFmt,
           dynamic hint}) =>
-      bridge.concatAlignmentMethodSegulServices(
+      bridge.concatAlignmentMethodSequenceServices(
         that: this,
         outFname: outFname,
         outFmtStr: outFmtStr,
@@ -133,7 +167,7 @@ class SegulServices {
 
   Future<void> convertSequence(
           {required String outputFmt, required bool sort, dynamic hint}) =>
-      bridge.convertSequenceMethodSegulServices(
+      bridge.convertSequenceMethodSequenceServices(
         that: this,
         outputFmt: outputFmt,
         sort: sort,
@@ -143,7 +177,7 @@ class SegulServices {
           {required String outputPrefix,
           required int interval,
           dynamic hint}) =>
-      bridge.summarizeAlignmentMethodSegulServices(
+      bridge.summarizeAlignmentMethodSequenceServices(
         that: this,
         outputPrefix: outputPrefix,
         interval: interval,
@@ -154,7 +188,7 @@ class SegulServices {
           required int readingFrame,
           required String outputFmt,
           dynamic hint}) =>
-      bridge.translateSequenceMethodSegulServices(
+      bridge.translateSequenceMethodSequenceServices(
         that: this,
         table: table,
         readingFrame: readingFrame,
@@ -187,170 +221,207 @@ class SegulApiImpl implements SegulApi {
         argNames: [],
       );
 
-  Future<SegulServices> newStaticMethodSegulServices({dynamic hint}) {
+  Future<SequenceServices> newStaticMethodSequenceServices({dynamic hint}) {
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) =>
-          _platform.inner.wire_new__static_method__SegulServices(port_),
-      parseSuccessData: (d) => _wire2api_segul_services(d),
-      constMeta: kNewStaticMethodSegulServicesConstMeta,
+          _platform.inner.wire_new__static_method__SequenceServices(port_),
+      parseSuccessData: (d) => _wire2api_sequence_services(d),
+      constMeta: kNewStaticMethodSequenceServicesConstMeta,
       argValues: [],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodSegulServicesConstMeta =>
-      const FlutterRustBridgeTaskConstMeta(
-        debugName: "new__static_method__SegulServices",
-        argNames: [],
-      );
+  FlutterRustBridgeTaskConstMeta
+      get kNewStaticMethodSequenceServicesConstMeta =>
+          const FlutterRustBridgeTaskConstMeta(
+            debugName: "new__static_method__SequenceServices",
+            argNames: [],
+          );
 
-  Future<void> concatAlignmentMethodSegulServices(
-      {required SegulServices that,
+  Future<void> concatAlignmentMethodSequenceServices(
+      {required SequenceServices that,
       required String outFname,
       required String outFmtStr,
       required String partitionFmt,
       dynamic hint}) {
-    var arg0 = _platform.api2wire_box_autoadd_segul_services(that);
+    var arg0 = _platform.api2wire_box_autoadd_sequence_services(that);
     var arg1 = _platform.api2wire_String(outFname);
     var arg2 = _platform.api2wire_String(outFmtStr);
     var arg3 = _platform.api2wire_String(partitionFmt);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
-          .wire_concat_alignment__method__SegulServices(
+          .wire_concat_alignment__method__SequenceServices(
               port_, arg0, arg1, arg2, arg3),
       parseSuccessData: _wire2api_unit,
-      constMeta: kConcatAlignmentMethodSegulServicesConstMeta,
+      constMeta: kConcatAlignmentMethodSequenceServicesConstMeta,
       argValues: [that, outFname, outFmtStr, partitionFmt],
       hint: hint,
     ));
   }
 
   FlutterRustBridgeTaskConstMeta
-      get kConcatAlignmentMethodSegulServicesConstMeta =>
+      get kConcatAlignmentMethodSequenceServicesConstMeta =>
           const FlutterRustBridgeTaskConstMeta(
-            debugName: "concat_alignment__method__SegulServices",
+            debugName: "concat_alignment__method__SequenceServices",
             argNames: ["that", "outFname", "outFmtStr", "partitionFmt"],
           );
 
-  Future<void> convertSequenceMethodSegulServices(
-      {required SegulServices that,
+  Future<void> convertSequenceMethodSequenceServices(
+      {required SequenceServices that,
       required String outputFmt,
       required bool sort,
       dynamic hint}) {
-    var arg0 = _platform.api2wire_box_autoadd_segul_services(that);
+    var arg0 = _platform.api2wire_box_autoadd_sequence_services(that);
     var arg1 = _platform.api2wire_String(outputFmt);
     var arg2 = sort;
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
-          .wire_convert_sequence__method__SegulServices(
+          .wire_convert_sequence__method__SequenceServices(
               port_, arg0, arg1, arg2),
       parseSuccessData: _wire2api_unit,
-      constMeta: kConvertSequenceMethodSegulServicesConstMeta,
+      constMeta: kConvertSequenceMethodSequenceServicesConstMeta,
       argValues: [that, outputFmt, sort],
       hint: hint,
     ));
   }
 
   FlutterRustBridgeTaskConstMeta
-      get kConvertSequenceMethodSegulServicesConstMeta =>
+      get kConvertSequenceMethodSequenceServicesConstMeta =>
           const FlutterRustBridgeTaskConstMeta(
-            debugName: "convert_sequence__method__SegulServices",
+            debugName: "convert_sequence__method__SequenceServices",
             argNames: ["that", "outputFmt", "sort"],
           );
 
-  Future<void> summarizeAlignmentMethodSegulServices(
-      {required SegulServices that,
+  Future<void> summarizeAlignmentMethodSequenceServices(
+      {required SequenceServices that,
       required String outputPrefix,
       required int interval,
       dynamic hint}) {
-    var arg0 = _platform.api2wire_box_autoadd_segul_services(that);
+    var arg0 = _platform.api2wire_box_autoadd_sequence_services(that);
     var arg1 = _platform.api2wire_String(outputPrefix);
     var arg2 = api2wire_usize(interval);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
-          .wire_summarize_alignment__method__SegulServices(
+          .wire_summarize_alignment__method__SequenceServices(
               port_, arg0, arg1, arg2),
       parseSuccessData: _wire2api_unit,
-      constMeta: kSummarizeAlignmentMethodSegulServicesConstMeta,
+      constMeta: kSummarizeAlignmentMethodSequenceServicesConstMeta,
       argValues: [that, outputPrefix, interval],
       hint: hint,
     ));
   }
 
   FlutterRustBridgeTaskConstMeta
-      get kSummarizeAlignmentMethodSegulServicesConstMeta =>
+      get kSummarizeAlignmentMethodSequenceServicesConstMeta =>
           const FlutterRustBridgeTaskConstMeta(
-            debugName: "summarize_alignment__method__SegulServices",
+            debugName: "summarize_alignment__method__SequenceServices",
             argNames: ["that", "outputPrefix", "interval"],
           );
 
-  Future<void> translateSequenceMethodSegulServices(
-      {required SegulServices that,
+  Future<void> translateSequenceMethodSequenceServices(
+      {required SequenceServices that,
       required String table,
       required int readingFrame,
       required String outputFmt,
       dynamic hint}) {
-    var arg0 = _platform.api2wire_box_autoadd_segul_services(that);
+    var arg0 = _platform.api2wire_box_autoadd_sequence_services(that);
     var arg1 = _platform.api2wire_String(table);
     var arg2 = api2wire_usize(readingFrame);
     var arg3 = _platform.api2wire_String(outputFmt);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
-          .wire_translate_sequence__method__SegulServices(
+          .wire_translate_sequence__method__SequenceServices(
               port_, arg0, arg1, arg2, arg3),
       parseSuccessData: _wire2api_unit,
-      constMeta: kTranslateSequenceMethodSegulServicesConstMeta,
+      constMeta: kTranslateSequenceMethodSequenceServicesConstMeta,
       argValues: [that, table, readingFrame, outputFmt],
       hint: hint,
     ));
   }
 
   FlutterRustBridgeTaskConstMeta
-      get kTranslateSequenceMethodSegulServicesConstMeta =>
+      get kTranslateSequenceMethodSequenceServicesConstMeta =>
           const FlutterRustBridgeTaskConstMeta(
-            debugName: "translate_sequence__method__SegulServices",
+            debugName: "translate_sequence__method__SequenceServices",
             argNames: ["that", "table", "readingFrame", "outputFmt"],
           );
 
-  Future<RawReadServices> newStaticMethodRawReadServices({dynamic hint}) {
+  Future<FastqServices> newStaticMethodFastqServices({dynamic hint}) {
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) =>
-          _platform.inner.wire_new__static_method__RawReadServices(port_),
-      parseSuccessData: (d) => _wire2api_raw_read_services(d),
-      constMeta: kNewStaticMethodRawReadServicesConstMeta,
+          _platform.inner.wire_new__static_method__FastqServices(port_),
+      parseSuccessData: (d) => _wire2api_fastq_services(d),
+      constMeta: kNewStaticMethodFastqServicesConstMeta,
       argValues: [],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kNewStaticMethodRawReadServicesConstMeta =>
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodFastqServicesConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
-        debugName: "new__static_method__RawReadServices",
+        debugName: "new__static_method__FastqServices",
         argNames: [],
       );
 
-  Future<void> summarizeMethodRawReadServices(
-      {required RawReadServices that,
+  Future<void> summarizeMethodFastqServices(
+      {required FastqServices that,
       required String mode,
       required bool lowmem,
       dynamic hint}) {
-    var arg0 = _platform.api2wire_box_autoadd_raw_read_services(that);
+    var arg0 = _platform.api2wire_box_autoadd_fastq_services(that);
     var arg1 = _platform.api2wire_String(mode);
     var arg2 = lowmem;
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
-          .wire_summarize__method__RawReadServices(port_, arg0, arg1, arg2),
+          .wire_summarize__method__FastqServices(port_, arg0, arg1, arg2),
       parseSuccessData: _wire2api_unit,
-      constMeta: kSummarizeMethodRawReadServicesConstMeta,
+      constMeta: kSummarizeMethodFastqServicesConstMeta,
       argValues: [that, mode, lowmem],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kSummarizeMethodRawReadServicesConstMeta =>
+  FlutterRustBridgeTaskConstMeta get kSummarizeMethodFastqServicesConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
-        debugName: "summarize__method__RawReadServices",
+        debugName: "summarize__method__FastqServices",
         argNames: ["that", "mode", "lowmem"],
+      );
+
+  Future<ContigServices> newStaticMethodContigServices({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_new__static_method__ContigServices(port_),
+      parseSuccessData: (d) => _wire2api_contig_services(d),
+      constMeta: kNewStaticMethodContigServicesConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kNewStaticMethodContigServicesConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "new__static_method__ContigServices",
+        argNames: [],
+      );
+
+  Future<void> summarizeMethodContigServices(
+      {required ContigServices that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_contig_services(that);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_summarize__method__ContigServices(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kSummarizeMethodContigServicesConstMeta,
+      argValues: [that],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSummarizeMethodContigServicesConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "summarize__method__ContigServices",
+        argNames: ["that"],
       );
 
   void dispose() {
@@ -366,15 +437,11 @@ class SegulApiImpl implements SegulApi {
     return (raw as List<dynamic>).cast<String>();
   }
 
-  String? _wire2api_opt_String(dynamic raw) {
-    return raw == null ? null : _wire2api_String(raw);
-  }
-
-  RawReadServices _wire2api_raw_read_services(dynamic raw) {
+  ContigServices _wire2api_contig_services(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 4)
       throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return RawReadServices(
+    return ContigServices(
       bridge: this,
       dirPath: _wire2api_opt_String(arr[0]),
       files: _wire2api_StringList(arr[1]),
@@ -383,11 +450,28 @@ class SegulApiImpl implements SegulApi {
     );
   }
 
-  SegulServices _wire2api_segul_services(dynamic raw) {
+  FastqServices _wire2api_fastq_services(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return FastqServices(
+      bridge: this,
+      dirPath: _wire2api_opt_String(arr[0]),
+      files: _wire2api_StringList(arr[1]),
+      fileFmt: _wire2api_String(arr[2]),
+      outputDir: _wire2api_String(arr[3]),
+    );
+  }
+
+  String? _wire2api_opt_String(dynamic raw) {
+    return raw == null ? null : _wire2api_String(raw);
+  }
+
+  SequenceServices _wire2api_sequence_services(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 5)
       throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-    return SegulServices(
+    return SequenceServices(
       bridge: this,
       dirPath: _wire2api_opt_String(arr[0]),
       files: _wire2api_StringList(arr[1]),
@@ -448,18 +532,26 @@ class SegulApiPlatform extends FlutterRustBridgeBase<SegulApiWire> {
   }
 
   @protected
-  ffi.Pointer<wire_RawReadServices> api2wire_box_autoadd_raw_read_services(
-      RawReadServices raw) {
-    final ptr = inner.new_box_autoadd_raw_read_services_0();
-    _api_fill_to_wire_raw_read_services(raw, ptr.ref);
+  ffi.Pointer<wire_ContigServices> api2wire_box_autoadd_contig_services(
+      ContigServices raw) {
+    final ptr = inner.new_box_autoadd_contig_services_0();
+    _api_fill_to_wire_contig_services(raw, ptr.ref);
     return ptr;
   }
 
   @protected
-  ffi.Pointer<wire_SegulServices> api2wire_box_autoadd_segul_services(
-      SegulServices raw) {
-    final ptr = inner.new_box_autoadd_segul_services_0();
-    _api_fill_to_wire_segul_services(raw, ptr.ref);
+  ffi.Pointer<wire_FastqServices> api2wire_box_autoadd_fastq_services(
+      FastqServices raw) {
+    final ptr = inner.new_box_autoadd_fastq_services_0();
+    _api_fill_to_wire_fastq_services(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_SequenceServices> api2wire_box_autoadd_sequence_services(
+      SequenceServices raw) {
+    final ptr = inner.new_box_autoadd_sequence_services_0();
+    _api_fill_to_wire_sequence_services(raw, ptr.ref);
     return ptr;
   }
 
@@ -479,26 +571,39 @@ class SegulApiPlatform extends FlutterRustBridgeBase<SegulApiWire> {
 
 // Section: api_fill_to_wire
 
-  void _api_fill_to_wire_box_autoadd_raw_read_services(
-      RawReadServices apiObj, ffi.Pointer<wire_RawReadServices> wireObj) {
-    _api_fill_to_wire_raw_read_services(apiObj, wireObj.ref);
+  void _api_fill_to_wire_box_autoadd_contig_services(
+      ContigServices apiObj, ffi.Pointer<wire_ContigServices> wireObj) {
+    _api_fill_to_wire_contig_services(apiObj, wireObj.ref);
   }
 
-  void _api_fill_to_wire_box_autoadd_segul_services(
-      SegulServices apiObj, ffi.Pointer<wire_SegulServices> wireObj) {
-    _api_fill_to_wire_segul_services(apiObj, wireObj.ref);
+  void _api_fill_to_wire_box_autoadd_fastq_services(
+      FastqServices apiObj, ffi.Pointer<wire_FastqServices> wireObj) {
+    _api_fill_to_wire_fastq_services(apiObj, wireObj.ref);
   }
 
-  void _api_fill_to_wire_raw_read_services(
-      RawReadServices apiObj, wire_RawReadServices wireObj) {
+  void _api_fill_to_wire_box_autoadd_sequence_services(
+      SequenceServices apiObj, ffi.Pointer<wire_SequenceServices> wireObj) {
+    _api_fill_to_wire_sequence_services(apiObj, wireObj.ref);
+  }
+
+  void _api_fill_to_wire_contig_services(
+      ContigServices apiObj, wire_ContigServices wireObj) {
     wireObj.dir_path = api2wire_opt_String(apiObj.dirPath);
     wireObj.files = api2wire_StringList(apiObj.files);
     wireObj.file_fmt = api2wire_String(apiObj.fileFmt);
     wireObj.output_dir = api2wire_String(apiObj.outputDir);
   }
 
-  void _api_fill_to_wire_segul_services(
-      SegulServices apiObj, wire_SegulServices wireObj) {
+  void _api_fill_to_wire_fastq_services(
+      FastqServices apiObj, wire_FastqServices wireObj) {
+    wireObj.dir_path = api2wire_opt_String(apiObj.dirPath);
+    wireObj.files = api2wire_StringList(apiObj.files);
+    wireObj.file_fmt = api2wire_String(apiObj.fileFmt);
+    wireObj.output_dir = api2wire_String(apiObj.outputDir);
+  }
+
+  void _api_fill_to_wire_sequence_services(
+      SequenceServices apiObj, wire_SequenceServices wireObj) {
     wireObj.dir_path = api2wire_opt_String(apiObj.dirPath);
     wireObj.files = api2wire_StringList(apiObj.files);
     wireObj.file_fmt = api2wire_String(apiObj.fileFmt);
@@ -617,29 +722,29 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
   late final _wire_show_dna_uppercase =
       _wire_show_dna_uppercasePtr.asFunction<void Function(int)>();
 
-  void wire_new__static_method__SegulServices(
+  void wire_new__static_method__SequenceServices(
     int port_,
   ) {
-    return _wire_new__static_method__SegulServices(
+    return _wire_new__static_method__SequenceServices(
       port_,
     );
   }
 
-  late final _wire_new__static_method__SegulServicesPtr =
+  late final _wire_new__static_method__SequenceServicesPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
-          'wire_new__static_method__SegulServices');
-  late final _wire_new__static_method__SegulServices =
-      _wire_new__static_method__SegulServicesPtr
+          'wire_new__static_method__SequenceServices');
+  late final _wire_new__static_method__SequenceServices =
+      _wire_new__static_method__SequenceServicesPtr
           .asFunction<void Function(int)>();
 
-  void wire_concat_alignment__method__SegulServices(
+  void wire_concat_alignment__method__SequenceServices(
     int port_,
-    ffi.Pointer<wire_SegulServices> that,
+    ffi.Pointer<wire_SequenceServices> that,
     ffi.Pointer<wire_uint_8_list> out_fname,
     ffi.Pointer<wire_uint_8_list> out_fmt_str,
     ffi.Pointer<wire_uint_8_list> partition_fmt,
   ) {
-    return _wire_concat_alignment__method__SegulServices(
+    return _wire_concat_alignment__method__SequenceServices(
       port_,
       that,
       out_fname,
@@ -648,31 +753,31 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _wire_concat_alignment__method__SegulServicesPtr = _lookup<
+  late final _wire_concat_alignment__method__SequenceServicesPtr = _lookup<
           ffi.NativeFunction<
               ffi.Void Function(
                   ffi.Int64,
-                  ffi.Pointer<wire_SegulServices>,
+                  ffi.Pointer<wire_SequenceServices>,
                   ffi.Pointer<wire_uint_8_list>,
                   ffi.Pointer<wire_uint_8_list>,
                   ffi.Pointer<wire_uint_8_list>)>>(
-      'wire_concat_alignment__method__SegulServices');
-  late final _wire_concat_alignment__method__SegulServices =
-      _wire_concat_alignment__method__SegulServicesPtr.asFunction<
+      'wire_concat_alignment__method__SequenceServices');
+  late final _wire_concat_alignment__method__SequenceServices =
+      _wire_concat_alignment__method__SequenceServicesPtr.asFunction<
           void Function(
               int,
-              ffi.Pointer<wire_SegulServices>,
+              ffi.Pointer<wire_SequenceServices>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>)>();
 
-  void wire_convert_sequence__method__SegulServices(
+  void wire_convert_sequence__method__SequenceServices(
     int port_,
-    ffi.Pointer<wire_SegulServices> that,
+    ffi.Pointer<wire_SequenceServices> that,
     ffi.Pointer<wire_uint_8_list> output_fmt,
     bool sort,
   ) {
-    return _wire_convert_sequence__method__SegulServices(
+    return _wire_convert_sequence__method__SequenceServices(
       port_,
       that,
       output_fmt,
@@ -680,25 +785,25 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _wire_convert_sequence__method__SegulServicesPtr = _lookup<
+  late final _wire_convert_sequence__method__SequenceServicesPtr = _lookup<
       ffi.NativeFunction<
           ffi.Void Function(
               ffi.Int64,
-              ffi.Pointer<wire_SegulServices>,
+              ffi.Pointer<wire_SequenceServices>,
               ffi.Pointer<wire_uint_8_list>,
-              ffi.Bool)>>('wire_convert_sequence__method__SegulServices');
-  late final _wire_convert_sequence__method__SegulServices =
-      _wire_convert_sequence__method__SegulServicesPtr.asFunction<
-          void Function(int, ffi.Pointer<wire_SegulServices>,
+              ffi.Bool)>>('wire_convert_sequence__method__SequenceServices');
+  late final _wire_convert_sequence__method__SequenceServices =
+      _wire_convert_sequence__method__SequenceServicesPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_SequenceServices>,
               ffi.Pointer<wire_uint_8_list>, bool)>();
 
-  void wire_summarize_alignment__method__SegulServices(
+  void wire_summarize_alignment__method__SequenceServices(
     int port_,
-    ffi.Pointer<wire_SegulServices> that,
+    ffi.Pointer<wire_SequenceServices> that,
     ffi.Pointer<wire_uint_8_list> output_prefix,
     int interval,
   ) {
-    return _wire_summarize_alignment__method__SegulServices(
+    return _wire_summarize_alignment__method__SequenceServices(
       port_,
       that,
       output_prefix,
@@ -706,26 +811,24 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _wire_summarize_alignment__method__SegulServicesPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Int64,
-              ffi.Pointer<wire_SegulServices>,
-              ffi.Pointer<wire_uint_8_list>,
-              ffi.UintPtr)>>('wire_summarize_alignment__method__SegulServices');
-  late final _wire_summarize_alignment__method__SegulServices =
-      _wire_summarize_alignment__method__SegulServicesPtr.asFunction<
-          void Function(int, ffi.Pointer<wire_SegulServices>,
+  late final _wire_summarize_alignment__method__SequenceServicesPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_SequenceServices>,
+                  ffi.Pointer<wire_uint_8_list>, ffi.UintPtr)>>(
+      'wire_summarize_alignment__method__SequenceServices');
+  late final _wire_summarize_alignment__method__SequenceServices =
+      _wire_summarize_alignment__method__SequenceServicesPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_SequenceServices>,
               ffi.Pointer<wire_uint_8_list>, int)>();
 
-  void wire_translate_sequence__method__SegulServices(
+  void wire_translate_sequence__method__SequenceServices(
     int port_,
-    ffi.Pointer<wire_SegulServices> that,
+    ffi.Pointer<wire_SequenceServices> that,
     ffi.Pointer<wire_uint_8_list> table,
     int reading_frame,
     ffi.Pointer<wire_uint_8_list> output_fmt,
   ) {
-    return _wire_translate_sequence__method__SegulServices(
+    return _wire_translate_sequence__method__SequenceServices(
       port_,
       that,
       table,
@@ -734,46 +837,46 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _wire_translate_sequence__method__SegulServicesPtr = _lookup<
+  late final _wire_translate_sequence__method__SequenceServicesPtr = _lookup<
           ffi.NativeFunction<
               ffi.Void Function(
                   ffi.Int64,
-                  ffi.Pointer<wire_SegulServices>,
+                  ffi.Pointer<wire_SequenceServices>,
                   ffi.Pointer<wire_uint_8_list>,
                   ffi.UintPtr,
                   ffi.Pointer<wire_uint_8_list>)>>(
-      'wire_translate_sequence__method__SegulServices');
-  late final _wire_translate_sequence__method__SegulServices =
-      _wire_translate_sequence__method__SegulServicesPtr.asFunction<
+      'wire_translate_sequence__method__SequenceServices');
+  late final _wire_translate_sequence__method__SequenceServices =
+      _wire_translate_sequence__method__SequenceServicesPtr.asFunction<
           void Function(
               int,
-              ffi.Pointer<wire_SegulServices>,
+              ffi.Pointer<wire_SequenceServices>,
               ffi.Pointer<wire_uint_8_list>,
               int,
               ffi.Pointer<wire_uint_8_list>)>();
 
-  void wire_new__static_method__RawReadServices(
+  void wire_new__static_method__FastqServices(
     int port_,
   ) {
-    return _wire_new__static_method__RawReadServices(
+    return _wire_new__static_method__FastqServices(
       port_,
     );
   }
 
-  late final _wire_new__static_method__RawReadServicesPtr =
+  late final _wire_new__static_method__FastqServicesPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
-          'wire_new__static_method__RawReadServices');
-  late final _wire_new__static_method__RawReadServices =
-      _wire_new__static_method__RawReadServicesPtr
+          'wire_new__static_method__FastqServices');
+  late final _wire_new__static_method__FastqServices =
+      _wire_new__static_method__FastqServicesPtr
           .asFunction<void Function(int)>();
 
-  void wire_summarize__method__RawReadServices(
+  void wire_summarize__method__FastqServices(
     int port_,
-    ffi.Pointer<wire_RawReadServices> that,
+    ffi.Pointer<wire_FastqServices> that,
     ffi.Pointer<wire_uint_8_list> mode,
     bool lowmem,
   ) {
-    return _wire_summarize__method__RawReadServices(
+    return _wire_summarize__method__FastqServices(
       port_,
       that,
       mode,
@@ -781,17 +884,50 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
     );
   }
 
-  late final _wire_summarize__method__RawReadServicesPtr = _lookup<
+  late final _wire_summarize__method__FastqServicesPtr = _lookup<
       ffi.NativeFunction<
           ffi.Void Function(
               ffi.Int64,
-              ffi.Pointer<wire_RawReadServices>,
+              ffi.Pointer<wire_FastqServices>,
               ffi.Pointer<wire_uint_8_list>,
-              ffi.Bool)>>('wire_summarize__method__RawReadServices');
-  late final _wire_summarize__method__RawReadServices =
-      _wire_summarize__method__RawReadServicesPtr.asFunction<
-          void Function(int, ffi.Pointer<wire_RawReadServices>,
+              ffi.Bool)>>('wire_summarize__method__FastqServices');
+  late final _wire_summarize__method__FastqServices =
+      _wire_summarize__method__FastqServicesPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_FastqServices>,
               ffi.Pointer<wire_uint_8_list>, bool)>();
+
+  void wire_new__static_method__ContigServices(
+    int port_,
+  ) {
+    return _wire_new__static_method__ContigServices(
+      port_,
+    );
+  }
+
+  late final _wire_new__static_method__ContigServicesPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_new__static_method__ContigServices');
+  late final _wire_new__static_method__ContigServices =
+      _wire_new__static_method__ContigServicesPtr
+          .asFunction<void Function(int)>();
+
+  void wire_summarize__method__ContigServices(
+    int port_,
+    ffi.Pointer<wire_ContigServices> that,
+  ) {
+    return _wire_summarize__method__ContigServices(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_summarize__method__ContigServicesPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_ContigServices>)>>(
+      'wire_summarize__method__ContigServices');
+  late final _wire_summarize__method__ContigServices =
+      _wire_summarize__method__ContigServicesPtr
+          .asFunction<void Function(int, ffi.Pointer<wire_ContigServices>)>();
 
   ffi.Pointer<wire_StringList> new_StringList_0(
     int len,
@@ -807,27 +943,38 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
   late final _new_StringList_0 = _new_StringList_0Ptr
       .asFunction<ffi.Pointer<wire_StringList> Function(int)>();
 
-  ffi.Pointer<wire_RawReadServices> new_box_autoadd_raw_read_services_0() {
-    return _new_box_autoadd_raw_read_services_0();
+  ffi.Pointer<wire_ContigServices> new_box_autoadd_contig_services_0() {
+    return _new_box_autoadd_contig_services_0();
   }
 
-  late final _new_box_autoadd_raw_read_services_0Ptr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<wire_RawReadServices> Function()>>(
-          'new_box_autoadd_raw_read_services_0');
-  late final _new_box_autoadd_raw_read_services_0 =
-      _new_box_autoadd_raw_read_services_0Ptr
-          .asFunction<ffi.Pointer<wire_RawReadServices> Function()>();
+  late final _new_box_autoadd_contig_services_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_ContigServices> Function()>>(
+          'new_box_autoadd_contig_services_0');
+  late final _new_box_autoadd_contig_services_0 =
+      _new_box_autoadd_contig_services_0Ptr
+          .asFunction<ffi.Pointer<wire_ContigServices> Function()>();
 
-  ffi.Pointer<wire_SegulServices> new_box_autoadd_segul_services_0() {
-    return _new_box_autoadd_segul_services_0();
+  ffi.Pointer<wire_FastqServices> new_box_autoadd_fastq_services_0() {
+    return _new_box_autoadd_fastq_services_0();
   }
 
-  late final _new_box_autoadd_segul_services_0Ptr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<wire_SegulServices> Function()>>(
-          'new_box_autoadd_segul_services_0');
-  late final _new_box_autoadd_segul_services_0 =
-      _new_box_autoadd_segul_services_0Ptr
-          .asFunction<ffi.Pointer<wire_SegulServices> Function()>();
+  late final _new_box_autoadd_fastq_services_0Ptr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_FastqServices> Function()>>(
+          'new_box_autoadd_fastq_services_0');
+  late final _new_box_autoadd_fastq_services_0 =
+      _new_box_autoadd_fastq_services_0Ptr
+          .asFunction<ffi.Pointer<wire_FastqServices> Function()>();
+
+  ffi.Pointer<wire_SequenceServices> new_box_autoadd_sequence_services_0() {
+    return _new_box_autoadd_sequence_services_0();
+  }
+
+  late final _new_box_autoadd_sequence_services_0Ptr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<wire_SequenceServices> Function()>>(
+      'new_box_autoadd_sequence_services_0');
+  late final _new_box_autoadd_sequence_services_0 =
+      _new_box_autoadd_sequence_services_0Ptr
+          .asFunction<ffi.Pointer<wire_SequenceServices> Function()>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
@@ -875,7 +1022,7 @@ class wire_StringList extends ffi.Struct {
   external int len;
 }
 
-class wire_SegulServices extends ffi.Struct {
+class wire_SequenceServices extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> dir_path;
 
   external ffi.Pointer<wire_StringList> files;
@@ -887,7 +1034,17 @@ class wire_SegulServices extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> output_dir;
 }
 
-class wire_RawReadServices extends ffi.Struct {
+class wire_FastqServices extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> dir_path;
+
+  external ffi.Pointer<wire_StringList> files;
+
+  external ffi.Pointer<wire_uint_8_list> file_fmt;
+
+  external ffi.Pointer<wire_uint_8_list> output_dir;
+}
+
+class wire_ContigServices extends ffi.Struct {
   external ffi.Pointer<wire_uint_8_list> dir_path;
 
   external ffi.Pointer<wire_StringList> files;

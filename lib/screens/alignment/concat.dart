@@ -134,7 +134,7 @@ class _ConcatPageState extends State<ConcatPage> {
   Future<void> _concat() async {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     String partitionFmt = getPartitionFmt(_partitionFormatController, isCodon);
-    await SegulServices(
+    await SequenceServices(
       bridge: segulApi,
       dirPath: ctr.dirPath,
       files: ctr.files,

@@ -97,7 +97,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
             },
           ),
         ]),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Center(
           child: PrimaryButton(
               isRunning: ctr.isRunning,
@@ -123,7 +123,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
   }
 
   Future<void> _summarize() async {
-    await RawReadServices(
+    await FastqServices(
       bridge: segulApi,
       files: ctr.files,
       dirPath: ctr.dirPath,
