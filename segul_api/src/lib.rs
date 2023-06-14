@@ -6,7 +6,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn test_rust_call() {
         assert_eq!(segul_api::show_dna_uppercase(), "ACGT".to_string());
     }
 }

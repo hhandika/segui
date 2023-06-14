@@ -4,7 +4,6 @@ import 'dart:io';
 import '../bridge_generated.dart';
 
 export 'package:segui/bridge_generated.dart';
-export '../bridge_definitions.dart';
 
 const _base = 'segul_api';
 

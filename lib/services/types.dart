@@ -30,14 +30,19 @@ enum AlignmentOperationType { concat, summary, convert }
 // DO NOT CHANGE THE ORDER OF THE LIST
 const List<String> alignmentOperation = [
   'Concatenation',
-  'Summary Statistics',
   'Conversion',
+  'Filtering',
+  'Alignment splitting',
+  'Summary statistics',
 ];
 
 enum SequenceOperationType { translation }
 
 const List<String> sequenceOperation = [
   'Translation',
+  'ID parsing',
+  'Sequence removal',
+  'Sequence extraction',
 ];
 
 const List<String> inputFormat = [

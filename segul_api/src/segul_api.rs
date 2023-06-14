@@ -5,6 +5,7 @@ use segul::handler::align::convert::Converter;
 use segul::handler::align::summarize::SeqStats;
 use segul::handler::contig::summarize::ContigSummaryHandler;
 use segul::handler::read::summarize::ReadSummaryHandler;
+use segul::handler::sequence::id::Id;
 use segul::handler::sequence::translate::Translate;
 use segul::helper::finder::{ContigFileFinder, SeqFileFinder, SeqReadFinder};
 use segul::helper::types::{ContigFmt, DataType, GeneticCodes, InputFmt, SeqReadFmt, SummaryMode};
@@ -57,6 +58,30 @@ impl SequenceServices {
         init_logger(&output_path);
         let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
         concat.convert(&mut files, &output_path);
+    }
+
+    pub fn parse_sequence_id(&self, is_map: bool) {
+        let input_fmt = self.match_input_fmt();
+        let datatype = self.match_datatype();
+        let files = self.find_input_files(&input_fmt);
+        let output_path = Path::new(&self.output_dir);
+        init_logger(&output_path);
+        let id = Id::new(&output_path, &input_fmt, &datatype);
+        if !is_map {
+            id.generate_id(&files);
+        } else {
+            let output_stem = output_path
+                .file_stem()
+                .expect("No output path")
+                .to_str()
+                .expect("Invalid output path");
+            let output_fname = format!("{}.map", output_stem);
+            let mapped_path = output_path
+                .parent()
+                .expect("No output path")
+                .join(output_fname);
+            id.map_id(&files, &mapped_path);
+        }
     }
 
     pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
