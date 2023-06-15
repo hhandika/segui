@@ -40,7 +40,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const CardTitle(title: 'Input'),
-        SharedInputForms(ctr: ctr),
+        SharedSequenceInputForm(ctr: ctr),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [

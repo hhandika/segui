@@ -6,8 +6,8 @@ import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 
-class SharedInputForms extends StatefulWidget {
-  const SharedInputForms({
+class SharedSequenceInputForm extends StatefulWidget {
+  const SharedSequenceInputForm({
     super.key,
     required this.ctr,
     this.isDatatypeEnabled = true,
@@ -17,10 +17,11 @@ class SharedInputForms extends StatefulWidget {
   final bool isDatatypeEnabled;
 
   @override
-  State<SharedInputForms> createState() => _SharedInputFormsState();
+  State<SharedSequenceInputForm> createState() =>
+      _SharedSequenceInputFormState();
 }
 
-class _SharedInputFormsState extends State<SharedInputForms> {
+class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
   @override
   Widget build(BuildContext context) {
     return FormCard(

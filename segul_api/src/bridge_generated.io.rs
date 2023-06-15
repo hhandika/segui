@@ -39,6 +39,15 @@ pub extern "C" fn wire_convert_sequence__method__SequenceServices(
 }
 
 #[no_mangle]
+pub extern "C" fn wire_parse_sequence_id__method__SequenceServices(
+    port_: i64,
+    that: *mut wire_SequenceServices,
+    is_map: bool,
+) {
+    wire_parse_sequence_id__method__SequenceServices_impl(port_, that, is_map)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_summarize_alignment__method__SequenceServices(
     port_: i64,
     that: *mut wire_SequenceServices,

@@ -42,11 +42,11 @@ class _TranslatePageState extends State<TranslatePage> {
       mainAxisSize: MainAxisSize.max,
       children: [
         const CardTitle(title: 'Input'),
-        SharedInputForms(
+        SharedSequenceInputForm(
           ctr: ctr,
           isDatatypeEnabled: false,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -101,7 +101,7 @@ class _TranslatePageState extends State<TranslatePage> {
             },
           ),
         ]),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Center(
           child: PrimaryButton(
             label: 'Translate',

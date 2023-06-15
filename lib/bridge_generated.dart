@@ -38,6 +38,12 @@ abstract class SegulApi {
   FlutterRustBridgeTaskConstMeta
       get kConvertSequenceMethodSequenceServicesConstMeta;
 
+  Future<void> parseSequenceIdMethodSequenceServices(
+      {required SequenceServices that, required bool isMap, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta
+      get kParseSequenceIdMethodSequenceServicesConstMeta;
+
   Future<void> summarizeAlignmentMethodSequenceServices(
       {required SequenceServices that,
       required String outputPrefix,
@@ -173,6 +179,12 @@ class SequenceServices {
         sort: sort,
       );
 
+  Future<void> parseSequenceId({required bool isMap, dynamic hint}) =>
+      bridge.parseSequenceIdMethodSequenceServices(
+        that: this,
+        isMap: isMap,
+      );
+
   Future<void> summarizeAlignment(
           {required String outputPrefix,
           required int interval,
@@ -291,6 +303,27 @@ class SegulApiImpl implements SegulApi {
           const FlutterRustBridgeTaskConstMeta(
             debugName: "convert_sequence__method__SequenceServices",
             argNames: ["that", "outputFmt", "sort"],
+          );
+
+  Future<void> parseSequenceIdMethodSequenceServices(
+      {required SequenceServices that, required bool isMap, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_sequence_services(that);
+    var arg1 = isMap;
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner
+          .wire_parse_sequence_id__method__SequenceServices(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kParseSequenceIdMethodSequenceServicesConstMeta,
+      argValues: [that, isMap],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta
+      get kParseSequenceIdMethodSequenceServicesConstMeta =>
+          const FlutterRustBridgeTaskConstMeta(
+            debugName: "parse_sequence_id__method__SequenceServices",
+            argNames: ["that", "isMap"],
           );
 
   Future<void> summarizeAlignmentMethodSequenceServices(
@@ -796,6 +829,26 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
       _wire_convert_sequence__method__SequenceServicesPtr.asFunction<
           void Function(int, ffi.Pointer<wire_SequenceServices>,
               ffi.Pointer<wire_uint_8_list>, bool)>();
+
+  void wire_parse_sequence_id__method__SequenceServices(
+    int port_,
+    ffi.Pointer<wire_SequenceServices> that,
+    bool is_map,
+  ) {
+    return _wire_parse_sequence_id__method__SequenceServices(
+      port_,
+      that,
+      is_map,
+    );
+  }
+
+  late final _wire_parse_sequence_id__method__SequenceServicesPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_SequenceServices>,
+              ffi.Bool)>>('wire_parse_sequence_id__method__SequenceServices');
+  late final _wire_parse_sequence_id__method__SequenceServices =
+      _wire_parse_sequence_id__method__SequenceServicesPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_SequenceServices>, bool)>();
 
   void wire_summarize_alignment__method__SequenceServices(
     int port_,

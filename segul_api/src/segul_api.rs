@@ -75,7 +75,7 @@ impl SequenceServices {
                 .expect("No output path")
                 .to_str()
                 .expect("Invalid output path");
-            let output_fname = format!("{}.map", output_stem);
+            let output_fname = format!("{}_map", output_stem);
             let mapped_path = output_path
                 .parent()
                 .expect("No output path")

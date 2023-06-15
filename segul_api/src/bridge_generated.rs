@@ -96,6 +96,24 @@ fn wire_convert_sequence__method__SequenceServices_impl(
         },
     )
 }
+fn wire_parse_sequence_id__method__SequenceServices_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<SequenceServices> + UnwindSafe,
+    is_map: impl Wire2Api<bool> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "parse_sequence_id__method__SequenceServices",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_is_map = is_map.wire2api();
+            move |task_callback| Ok(SequenceServices::parse_sequence_id(&api_that, api_is_map))
+        },
+    )
+}
 fn wire_summarize_alignment__method__SequenceServices_impl(
     port_: MessagePort,
     that: impl Wire2Api<SequenceServices> + UnwindSafe,
