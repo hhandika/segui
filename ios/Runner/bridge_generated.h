@@ -68,6 +68,10 @@ void wire_convert_sequence__method__SequenceServices(int64_t port_,
                                                      struct wire_uint_8_list *output_fmt,
                                                      bool sort);
 
+void wire_parse_sequence_id__method__SequenceServices(int64_t port_,
+                                                      struct wire_SequenceServices *that,
+                                                      bool is_map);
+
 void wire_summarize_alignment__method__SequenceServices(int64_t port_,
                                                         struct wire_SequenceServices *that,
                                                         struct wire_uint_8_list *output_prefix,
@@ -108,6 +112,7 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_new__static_method__SequenceServices);
     dummy_var ^= ((int64_t) (void*) wire_concat_alignment__method__SequenceServices);
     dummy_var ^= ((int64_t) (void*) wire_convert_sequence__method__SequenceServices);
+    dummy_var ^= ((int64_t) (void*) wire_parse_sequence_id__method__SequenceServices);
     dummy_var ^= ((int64_t) (void*) wire_summarize_alignment__method__SequenceServices);
     dummy_var ^= ((int64_t) (void*) wire_translate_sequence__method__SequenceServices);
     dummy_var ^= ((int64_t) (void*) wire_new__static_method__FastqServices);
