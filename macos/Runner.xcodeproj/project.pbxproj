@@ -31,7 +31,6 @@
 		C32C9AAF29F3AAFA0050358C /* Pods_Runner.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C35677A92A01FA6300D5FFDB /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C3D71F6A2A48240F00466E1E /* segul_api.dylib in Bundle Framework */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		C3D71F6B2A48241C00466E1E /* segul_api.dylib in Resources */ = {isa = PBXBuildFile; fileRef = C314E24F2A48215F005446D2 /* segul_api.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,7 +110,6 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		7C2FAB3F8887FAB1030EBFE3 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		C314E24F2A48215F005446D2 /* segul_api.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = segul_api.dylib; path = ../segul_api/segul_api.dylib; sourceTree = "<group>"; };
 		C33C6B0229F0E69000833310 /* segul_api.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = segul_api.xcodeproj; path = ../../segul_api/segul_api.xcodeproj; sourceTree = "<group>"; };
 		D12D8C145FA66213340E947F /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -217,7 +215,6 @@
 		D73912EC22F37F3D000D13A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C314E24F2A48215F005446D2 /* segul_api.dylib */,
 				727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -323,7 +320,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3D71F6B2A48241C00466E1E /* segul_api.dylib in Resources */,
 				33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */,
 				33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */,
 			);
@@ -517,7 +513,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"@rpath/segul_api.dylib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1;
@@ -658,7 +653,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"@rpath/segul_api.dylib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1;
@@ -692,7 +686,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"@rpath/segul_api.dylib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1;

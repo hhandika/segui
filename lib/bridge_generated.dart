@@ -15,6 +15,10 @@ abstract class SegulApi {
 
   FlutterRustBridgeTaskConstMeta get kShowDnaUppercaseConstMeta;
 
+  Future<void> initLogger({required String path, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kInitLoggerConstMeta;
+
   Future<SequenceServices> newStaticMethodSequenceServices({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodSequenceServicesConstMeta;
@@ -231,6 +235,23 @@ class SegulApiImpl implements SegulApi {
       const FlutterRustBridgeTaskConstMeta(
         debugName: "show_dna_uppercase",
         argNames: [],
+      );
+
+  Future<void> initLogger({required String path, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(path);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_init_logger(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kInitLoggerConstMeta,
+      argValues: [path],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kInitLoggerConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "init_logger",
+        argNames: ["path"],
       );
 
   Future<SequenceServices> newStaticMethodSequenceServices({dynamic hint}) {
@@ -754,6 +775,23 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
           'wire_show_dna_uppercase');
   late final _wire_show_dna_uppercase =
       _wire_show_dna_uppercasePtr.asFunction<void Function(int)>();
+
+  void wire_init_logger(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> path,
+  ) {
+    return _wire_init_logger(
+      port_,
+      path,
+    );
+  }
+
+  late final _wire_init_loggerPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>('wire_init_logger');
+  late final _wire_init_logger = _wire_init_loggerPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_new__static_method__SequenceServices(
     int port_,

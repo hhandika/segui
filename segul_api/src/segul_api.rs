@@ -42,7 +42,6 @@ impl SequenceServices {
         self.check_file_count(files.len());
         let output_fmt = self.match_output_fmt(&out_fmt_str);
         let output_path = PathBuf::from(&self.output_dir).join(out_fname);
-        init_logger(&output_path);
         let final_path = files::create_output_fname_from_path(&output_path, &output_fmt);
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let mut concat = ConcatHandler::new(&input_fmt, &final_path, &output_fmt, &partition_fmt);
@@ -55,7 +54,6 @@ impl SequenceServices {
         let mut files = self.find_input_files(&input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let output_path = Path::new(&self.output_dir);
-        init_logger(&output_path);
         let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
         concat.convert(&mut files, &output_path);
     }
@@ -65,7 +63,6 @@ impl SequenceServices {
         let datatype = self.match_datatype();
         let files = self.find_input_files(&input_fmt);
         let output_path = Path::new(&self.output_dir);
-        init_logger(&output_path);
         let id = Id::new(&output_path, &input_fmt, &datatype);
         if !is_map {
             id.generate_id(&files);
@@ -89,7 +86,6 @@ impl SequenceServices {
         let datatype = self.match_datatype();
         let mut files = self.find_input_files(&input_fmt);
         let output_path = Path::new(&self.output_dir);
-        init_logger(&output_path);
         let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
         summary.summarize_all(&mut files, &Some(output_prefix));
     }
@@ -101,7 +97,6 @@ impl SequenceServices {
         let output_fmt = self.match_output_fmt(&output_fmt);
         let translation_table = self.match_translation_table(table);
         let output_path = Path::new(&self.output_dir);
-        init_logger(&output_path);
         let translate = Translate::new(&translation_table, &input_fmt, &datatype, &output_fmt);
         translate.translate_all(&mut files, reading_frame, &output_path);
     }
@@ -182,7 +177,6 @@ impl FastqServices {
         let mut files = self.find_input_files(&input_fmt);
         let output_path = Path::new(&self.output_dir);
         let sum_mode = self.match_mode(&mode);
-        init_logger(&output_path);
         let mut summary = ReadSummaryHandler::new(&mut files, &input_fmt, &sum_mode, output_path);
         summary.summarize(lowmem);
     }
@@ -233,7 +227,6 @@ impl ContigServices {
         let input_fmt = self.match_input_fmt();
         let mut files = self.find_input_files(&input_fmt);
         let output_path = Path::new(&self.output_dir);
-        init_logger(&output_path);
         let summary = ContigSummaryHandler::new(&mut files, &input_fmt, output_path);
         summary.summarize();
     }
@@ -259,6 +252,7 @@ impl ContigServices {
     }
 }
 
-fn init_logger(path: &Path) {
-    logger::init_logger(&path).expect("Failed to setup logger");
+pub fn init_logger(path: String) {
+    let logger_path = Path::new(&path);
+    logger::init_file_logger(&logger_path).expect("Failed to setup logger");
 }

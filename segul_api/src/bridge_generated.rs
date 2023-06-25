@@ -31,6 +31,19 @@ fn wire_show_dna_uppercase_impl(port_: MessagePort) {
         move || move |task_callback| Ok(show_dna_uppercase()),
     )
 }
+fn wire_init_logger_impl(port_: MessagePort, path: impl Wire2Api<String> + UnwindSafe) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "init_logger",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_path = path.wire2api();
+            move |task_callback| Ok(init_logger(api_path))
+        },
+    )
+}
 fn wire_new__static_method__SequenceServices_impl(port_: MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {

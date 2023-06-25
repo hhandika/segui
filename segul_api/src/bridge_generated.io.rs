@@ -7,6 +7,11 @@ pub extern "C" fn wire_show_dna_uppercase(port_: i64) {
 }
 
 #[no_mangle]
+pub extern "C" fn wire_init_logger(port_: i64, path: *mut wire_uint_8_list) {
+    wire_init_logger_impl(port_, path)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_new__static_method__SequenceServices(port_: i64) {
     wire_new__static_method__SequenceServices_impl(port_)
 }

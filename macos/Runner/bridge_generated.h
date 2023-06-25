@@ -55,6 +55,8 @@ intptr_t init_frb_dart_api_dl(void *obj);
 
 void wire_show_dna_uppercase(int64_t port_);
 
+void wire_init_logger(int64_t port_, struct wire_uint_8_list *path);
+
 void wire_new__static_method__SequenceServices(int64_t port_);
 
 void wire_concat_alignment__method__SequenceServices(int64_t port_,
@@ -109,6 +111,7 @@ void free_WireSyncReturn(WireSyncReturn ptr);
 static int64_t dummy_method_to_enforce_bundling(void) {
     int64_t dummy_var = 0;
     dummy_var ^= ((int64_t) (void*) wire_show_dna_uppercase);
+    dummy_var ^= ((int64_t) (void*) wire_init_logger);
     dummy_var ^= ((int64_t) (void*) wire_new__static_method__SequenceServices);
     dummy_var ^= ((int64_t) (void*) wire_concat_alignment__method__SequenceServices);
     dummy_var ^= ((int64_t) (void*) wire_convert_sequence__method__SequenceServices);

@@ -31,7 +31,6 @@
 
 /* Begin PBXFileReference section */
 		ADDEDBA66A6E1 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
-		C32BA41C2A480D0900C73EAD /* segul_api.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = segul_api.dylib; sourceTree = "<group>"; };
 		CA60B336AC8C6874C5CDB712 /* segul_api.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = segul_api.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA60B8A3FDDD3EF4668187A5 /* Cargo.toml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cargo.toml; sourceTree = "<group>"; };
 		CA60FE5BF20AB0D2D8955496 /* libsegul_api_static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsegul_api_static.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,7 +65,6 @@
 		CA60B8A3FDDDD65BC3C892A8 = {
 			isa = PBXGroup;
 			children = (
-				C32BA41C2A480D0900C73EAD /* segul_api.dylib */,
 				CA60B8A3FDDD3EF4668187A5 /* Cargo.toml */,
 				CA60B8A3FDDD22869D176AE5 /* Products */,
 				CA60B8A3FDDD98AF0B5890DB /* Frameworks */,
