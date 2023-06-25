@@ -9,7 +9,7 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 
 Our first goal is to offer all the SEGUL features in the GUI version. In the future, we will take advantage of the GUI to offer more features that are not possible in the CLI version, such as interactive data visualization.
 
-Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
+Documentation: [[ :us: EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 
 ## Feature Tracker
 
