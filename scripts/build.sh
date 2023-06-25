@@ -23,7 +23,6 @@ do
             flutter build macos --release
             echo "Creating DMG installer..."
             scripts/build_dmg.sh
-            sudo cp build/macos/Build/Products/Release/segul_api.dylib /usr/local/lib/
             break
             ;;
         "All")

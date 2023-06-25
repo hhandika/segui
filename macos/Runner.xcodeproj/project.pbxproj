@@ -29,7 +29,9 @@
 		C32C9AAB29F3AAE00050358C /* segul_api.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C32C9AAE29F3AAFA0050358C /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; };
 		C32C9AAF29F3AAFA0050358C /* Pods_Runner.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C35677A92A01FA6300D5FFDB /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; };
+		C350BF042A480D7700F6CCC4 /* segul_api.dylib in Resources */ = {isa = PBXBuildFile; fileRef = C350BF022A480D7700F6CCC4 /* segul_api.dylib */; };
+		C350BF052A480DA200F6CCC4 /* segul_api.dylib in Bundle Framework */ = {isa = PBXBuildFile; fileRef = C350BF022A480D7700F6CCC4 /* segul_api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C35677A92A01FA6300D5FFDB /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +72,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
+				C350BF052A480DA200F6CCC4 /* segul_api.dylib in Bundle Framework */,
 			);
 			name = "Bundle Framework";
 			runOnlyForDeploymentPostprocessing = 1;
@@ -108,7 +111,9 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		7C2FAB3F8887FAB1030EBFE3 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		C32BA4192A480CD500C73EAD /* segul_api.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = segul_api.dylib; sourceTree = "<group>"; };
 		C33C6B0229F0E69000833310 /* segul_api.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = segul_api.xcodeproj; path = ../../segul_api/segul_api.xcodeproj; sourceTree = "<group>"; };
+		C350BF022A480D7700F6CCC4 /* segul_api.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = segul_api.dylib; path = "../../segui-release/release/Products/usr/local/lib/segul_api.dylib"; sourceTree = "<group>"; };
 		D12D8C145FA66213340E947F /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -139,6 +144,7 @@
 		33CC10E42044A3C60003C045 = {
 			isa = PBXGroup;
 			children = (
+				C350BF022A480D7700F6CCC4 /* segul_api.dylib */,
 				33FAB671232836740065AC1E /* Runner */,
 				33CEB47122A05771004F2AC0 /* Flutter */,
 				33CC10EE2044A3C60003C045 /* Products */,
@@ -213,6 +219,7 @@
 		D73912EC22F37F3D000D13A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C32BA4192A480CD500C73EAD /* segul_api.dylib */,
 				727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -320,6 +327,7 @@
 			files = (
 				33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */,
 				33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */,
+				C350BF042A480D7700F6CCC4 /* segul_api.dylib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,6 +515,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1;
 				ONLY_ACTIVE_ARCH = NO;
@@ -642,6 +654,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hhandika.segui;
@@ -669,6 +685,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1;
