@@ -5,3 +5,20 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 Our first goal is to offer all the SEGUL features in the GUI version. In the future, we will take advantage of the GUI to offer more features that are not possible in the CLI version, such as interactive data visualization.
 
 SEGUL Documentation: [[EN]](https://docs.page/hhandika/segul-docs/)
+
+## Feature Tracker
+
+| Feature                          | Status             |
+| -------------------------------- | ------------------ |
+| Alignment concatenation          | :heavy_check_mark: |
+| Alignment conversion             | :heavy_check_mark: |
+| Alignment filtering              |                    |
+| Alignment splitting              |                    |
+| Alignment summary statistics     | :heavy_check_mark: |
+| Contiguous sequence statistics   | :heavy_check_mark: |
+| Partition format conversion      |                    |
+| Sequence ID extraction           |                    |
+| Sequence ID renaming             |                    |
+| Sequence read summary statistics | :heavy_check_mark: |
+| Sequence removal                 |                    |
+| Sequence translation             | :heavy_check_mark: |
