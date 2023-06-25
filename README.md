@@ -17,7 +17,7 @@ SEGUL Documentation: [[EN]](https://docs.page/hhandika/segul-docs/)
 | Alignment summary statistics     | :heavy_check_mark: |
 | Contiguous sequence statistics   | :heavy_check_mark: |
 | Partition format conversion      |                    |
-| Sequence ID extraction           |                    |
+| Sequence ID extraction           | :heavy_check_mark: |
 | Sequence ID renaming             |                    |
 | Sequence read summary statistics | :heavy_check_mark: |
 | Sequence removal                 |                    |
