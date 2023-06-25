@@ -7,6 +7,9 @@ mod tests {
 
     #[test]
     fn test_rust_call() {
-        assert_eq!(segul_api::show_dna_uppercase(), "ACGT".to_string());
+        assert_eq!(
+            segul_api::show_dna_uppercase(),
+            "?-ACGTNRYSWKMBDHV.".to_string()
+        );
     }
 }

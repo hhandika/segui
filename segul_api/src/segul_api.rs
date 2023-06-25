@@ -260,5 +260,5 @@ impl ContigServices {
 }
 
 fn init_logger(path: &Path) {
-    logger::setup_logger(&path).expect("Failed to setup logger");
+    logger::init_logger(&path).expect("Failed to setup logger");
 }
