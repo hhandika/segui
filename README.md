@@ -15,15 +15,15 @@ Documentation: [[:us: EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 
 | Feature                          | Status             |
 | -------------------------------- | ------------------ |
-| Alignment concatenation          | :heavy_check_mark: |
-| Alignment conversion             | :heavy_check_mark: |
+| Alignment concatenation          | :white_check_mark: |
+| Alignment conversion             | :white_check_mark: |
 | Alignment filtering              |                    |
 | Alignment splitting              |                    |
-| Alignment summary statistics     | :heavy_check_mark: |
-| Contiguous sequence statistics   | :heavy_check_mark: |
+| Alignment summary statistics     | :white_check_mark: |
+| Contiguous sequence statistics   | :white_check_mark: |
 | Partition format conversion      |                    |
 | Sequence ID extraction           |                    |
 | Sequence ID renaming             |                    |
-| Sequence read summary statistics | :heavy_check_mark: |
+| Sequence read summary statistics | :white_check_mark: |
 | Sequence removal                 |                    |
-| Sequence translation             | :heavy_check_mark: |
+| Sequence translation             | :white_check_mark: |
