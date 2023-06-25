@@ -3,6 +3,35 @@
 echo "Build options:"
 PS3='Please select the platform: '
 OPT=("Android" "iOS" "MacOS" "All" "Quit")
+OUTPUT_DIR="../segui-releases"
+
+create_output_dir() {
+    if [ ! -d $OUTPUT_DIR ]; then
+        mkdir $OUTPUT_DIR
+    fi
+}
+
+copy_apk() {
+    create_output_dir
+    if [ -f "build/app/outputs/apk/release/app-release.apk" ]; then
+        echo "Copying APK to $OUTPUT_DIR"
+        cp build/app/outputs/apk/release/app-release.apk $OUTPUT_DIR/segui_beta_android.apk
+    fi
+}
+
+mv_dmg() {
+    create_output_dir
+    if [ -f "installer/segui.dmg" ]; then
+        echo "Moving DMG to $OUTPUT_DIR"
+        mv installer/segui.dmg $OUTPUT_DIR/segui_beta_macos.dmg
+    fi
+}
+
+copy_and_move_all() {
+    copy_apk
+    mv_dmg
+}
+
 
 select os in "${OPT[@]}"
 
@@ -11,6 +40,7 @@ do
         "Android")
             echo "Building for Android..."
             flutter build apk --release
+            copy_apk
             break
             ;;
         "iOS")
@@ -23,6 +53,7 @@ do
             flutter build macos --release
             echo "Creating DMG installer..."
             scripts/build_dmg.sh
+            mv_dmg
             break
             ;;
         "All")
@@ -35,6 +66,7 @@ do
             flutter build macos --release
             echo "Creating DMG installer..."
             scripts/build_dmg.sh
+            copy_and_move_all
             break
             ;;
         "Quit")
