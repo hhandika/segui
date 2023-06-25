@@ -11,16 +11,21 @@ class SequencePage extends StatefulWidget {
 }
 
 class _SequencePageState extends State<SequencePage> {
-  String? analysisType = sequenceOperation[0];
+  SequenceOperationType analysisType = SequenceOperationType.translation;
 
   @override
   Widget build(BuildContext context) {
     return FormView(children: [
-      SharedDropdownField(
+      DropdownButton(
           value: analysisType,
-          label: 'Select a task',
-          items: sequenceOperation,
-          onChanged: (String? value) {
+          isExpanded: true,
+          items: sequenceOperationMap.entries
+              .map((e) => DropdownMenuItem(
+                    value: e.key,
+                    child: Text(e.value),
+                  ))
+              .toList(),
+          onChanged: (SequenceOperationType? value) {
             setState(() {
               if (value != null) {
                 analysisType = value;
@@ -29,10 +34,7 @@ class _SequencePageState extends State<SequencePage> {
           }),
       const SizedBox(height: 20),
       SequenceOptions(
-        analysis: analysisType == null
-            ? null
-            : SequenceOperationType
-                .values[sequenceOperation.indexOf(analysisType!)],
+        analysis: analysisType,
       ),
     ]);
   }
@@ -41,7 +43,7 @@ class _SequencePageState extends State<SequencePage> {
 class SequenceOptions extends StatelessWidget {
   const SequenceOptions({super.key, required this.analysis});
 
-  final SequenceOperationType? analysis;
+  final SequenceOperationType analysis;
 
   @override
   Widget build(BuildContext context) {

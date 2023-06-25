@@ -27,23 +27,17 @@ const List<String> sequenceReadSummaryMode = [
 
 enum AlignmentOperationType { concat, summary, convert }
 
-// DO NOT CHANGE THE ORDER OF THE LIST
-const List<String> alignmentOperation = [
-  'Concatenation',
-  'Conversion',
-  'Filtering',
-  'Alignment splitting',
-  'Summary statistics',
-];
+const Map<AlignmentOperationType, String> alignmentOperationMap = {
+  AlignmentOperationType.concat: 'Concatenate',
+  AlignmentOperationType.summary: 'Summary',
+  AlignmentOperationType.convert: 'Convert',
+};
 
 enum SequenceOperationType { translation }
 
-const List<String> sequenceOperation = [
-  'Translation',
-  'ID parsing',
-  'Sequence removal',
-  'Sequence extraction',
-];
+const Map<SequenceOperationType, String> sequenceOperationMap = {
+  SequenceOperationType.translation: 'Translation',
+};
 
 const List<String> inputFormat = [
   'Auto',

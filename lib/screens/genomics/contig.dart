@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/services/io.dart';
 import 'package:segui/services/native.dart';
 import 'package:segui/services/types.dart';
 
@@ -71,11 +72,12 @@ class _ContigPageState extends State<ContigPage> {
             onPressed: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
+                    String dir = await getOutputDir(ctr.outputDir);
                     setState(() {
                       ctr.isRunning = true;
+                      ctr.outputDir = dir;
                     });
                     await _summarize(ctr);
-                    _setSuccess();
                     setState(() {
                       ctr.isRunning = false;
                     });
@@ -85,13 +87,23 @@ class _ContigPageState extends State<ContigPage> {
   }
 
   Future<void> _summarize(IOController ctr) async {
-    await ContigServices(
-      bridge: segulApi,
-      files: ctr.files,
-      dirPath: ctr.dirPath,
-      fileFmt: ctr.inputFormatController!,
-      outputDir: ctr.outputDir!,
-    ).summarize();
+    try {
+      await ContigServices(
+        bridge: segulApi,
+        files: ctr.files,
+        dirPath: ctr.dirPath,
+        fileFmt: ctr.inputFormatController!,
+        outputDir: ctr.outputDir!,
+      ).summarize();
+      _setSuccess();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _setSuccess() {

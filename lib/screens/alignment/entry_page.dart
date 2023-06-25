@@ -13,16 +13,21 @@ class AlignmentPage extends StatefulWidget {
 }
 
 class _AlignmentPageState extends State<AlignmentPage> {
-  String? analysisType;
+  AlignmentOperationType analysisType = AlignmentOperationType.summary;
 
   @override
   Widget build(BuildContext context) {
     return FormView(children: [
-      SharedDropdownField(
+      DropdownButton(
           value: analysisType,
-          label: 'Select a task',
-          items: alignmentOperation,
-          onChanged: (String? value) {
+          isExpanded: true,
+          items: alignmentOperationMap.entries
+              .map((e) => DropdownMenuItem(
+                    value: e.key,
+                    child: Text(e.value),
+                  ))
+              .toList(),
+          onChanged: (AlignmentOperationType? value) {
             setState(() {
               if (value != null) {
                 analysisType = value;
@@ -31,10 +36,7 @@ class _AlignmentPageState extends State<AlignmentPage> {
           }),
       const SizedBox(height: 20),
       AlignmentOptions(
-        analysis: analysisType == null
-            ? null
-            : AlignmentOperationType
-                .values[alignmentOperation.indexOf(analysisType!)],
+        analysis: analysisType,
       ),
     ]);
   }
@@ -43,7 +45,7 @@ class _AlignmentPageState extends State<AlignmentPage> {
 class AlignmentOptions extends StatelessWidget {
   const AlignmentOptions({super.key, required this.analysis});
 
-  final AlignmentOperationType? analysis;
+  final AlignmentOperationType analysis;
 
   @override
   Widget build(BuildContext context) {
