@@ -28,7 +28,7 @@
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
 		C32C9AAE29F3AAFA0050358C /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; };
 		C32C9AAF29F3AAFA0050358C /* Pods_Runner.framework in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 727D1AC1526C9F008A0A51F3 /* Pods_Runner.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C37222F72A4972C600A3BA82 /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C37222F72A4972C600A3BA82 /* segul_api.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		C37222F92A4972D400A3BA82 /* segul_api.dylib in Bundle Framework */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		C37222FA2A4972EF00A3BA82 /* segul_api.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = C33C6B0829F0E69000833310 /* segul_api.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -62,7 +62,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 8;
 			dstPath = "";
-			dstSubfolderSpec = 6;
+			dstSubfolderSpec = 10;
 			files = (
 				C37222F92A4972D400A3BA82 /* segul_api.dylib in Bundle Framework */,
 			);
@@ -252,7 +252,6 @@
 					33CC10EC2044A3C60003C045 = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
-						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 1;
@@ -661,7 +660,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Release.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = H54K5MD3NJ;
