@@ -28,8 +28,6 @@
 	<string>$(PRODUCT_NAME) would like to access documents</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>$(PRODUCT_COPYRIGHT)</string>
-	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
