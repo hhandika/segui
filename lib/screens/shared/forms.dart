@@ -120,9 +120,7 @@ class AppPageView extends StatelessWidget {
       child: Container(
           height: MediaQuery.of(context).size.height * 0.8,
           constraints: const BoxConstraints(maxWidth: 500),
-          child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 25, 10, 15),
-              child: child)),
+          child: child),
     );
   }
 }
@@ -148,18 +146,30 @@ class FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return CommonCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: children,
+      ),
+    );
+  }
+}
+
+class CommonCard extends StatelessWidget {
+  const CommonCard({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
         color: Color.lerp(Theme.of(context).colorScheme.primary,
             Theme.of(context).colorScheme.surface, 0.95),
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-        child: Column(
-          children: children,
-        ),
-      ),
+      child: child,
     );
   }
 }
@@ -266,11 +276,11 @@ class SelectDirField extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            '$label: ${dirPath ?? ''}',
+            dirPath ?? '$label: ',
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         IconButton(
           icon: dirPath == null
               ? const Icon(Icons.folder)
@@ -311,30 +321,27 @@ class SharedFilePicker extends StatelessWidget {
   final Function(List<String>) onPressed;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              '$label: ${paths.length} files selected',
-              overflow: TextOverflow.ellipsis,
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            paths.isEmpty ? '$label: ' : '${paths.length} files selected',
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(width: 10),
-          IconButton(
-            icon: paths.isEmpty
-                ? const Icon(Icons.folder)
-                : const Icon(Icons.folder_open),
-            onPressed: () async {
-              final paths = await _selectFile();
-              if (paths.isNotEmpty) {
-                onPressed(paths);
-              }
-            },
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 10),
+        IconButton(
+          icon: paths.isEmpty
+              ? const Icon(Icons.folder)
+              : const Icon(Icons.folder_open),
+          onPressed: () async {
+            final paths = await _selectFile();
+            if (paths.isNotEmpty) {
+              onPressed(paths);
+            }
+          },
+        ),
+      ],
     );
   }
 

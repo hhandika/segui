@@ -65,7 +65,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
             },
           ),
         ]),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
