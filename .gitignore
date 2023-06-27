@@ -52,3 +52,4 @@ src/main/jniLibs/
 *.tar.gz
 
 /target/
+
