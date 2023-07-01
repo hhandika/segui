@@ -13,17 +13,18 @@ Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 
 ## Feature Tracker
 
-| Feature                          | Status             |
-| -------------------------------- | ------------------ |
-| Alignment concatenation          | :white_check_mark: |
-| Alignment conversion             | :white_check_mark: |
-| Alignment filtering              |                    |
-| Alignment splitting              |                    |
-| Alignment summary statistics     | :white_check_mark: |
-| Contiguous sequence statistics   | :white_check_mark: |
-| Partition format conversion      |                    |
-| Sequence ID extraction           |                    |
-| Sequence ID renaming             |                    |
-| Sequence read summary statistics | :white_check_mark: |
-| Sequence removal                 |                    |
-| Sequence translation             | :white_check_mark: |
+| Feature                        | Status             |
+| ------------------------------ | ------------------ |
+| Alignment concatenation        | :white_check_mark: |
+| Alignment conversion           | :white_check_mark: |
+| Alignment filtering            |                    |
+| Alignment partition conversion |                    |
+| Alignment splitting            |                    |
+| Alignment summary statistics   | :white_check_mark: |
+| Contig summary statistics      | :white_check_mark: |
+| Raw read summary statistics    | :white_check_mark: |
+| Sequence extraction            |                    |
+| Sequence ID extraction         |                    |
+| Sequence ID renaming           |                    |
+| Sequence removal               |                    |
+| Sequence translation           | :white_check_mark: |
