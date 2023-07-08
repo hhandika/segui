@@ -89,9 +89,8 @@ pub extern "C" fn wire_summarize__method__FastqServices(
     port_: i64,
     that: *mut wire_FastqServices,
     mode: *mut wire_uint_8_list,
-    lowmem: bool,
 ) {
-    wire_summarize__method__FastqServices_impl(port_, that, mode, lowmem)
+    wire_summarize__method__FastqServices_impl(port_, that, mode)
 }
 
 #[no_mangle]

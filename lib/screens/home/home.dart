@@ -4,7 +4,9 @@ import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/genomics/entry_page.dart';
-import 'package:segui/screens/home/faq.dart';
+import 'package:segui/screens/home/components/faq.dart';
+import 'package:segui/screens/home/components/learning_resources.dart';
+import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/buttons.dart';
@@ -279,16 +281,22 @@ class ResourceTiles extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium),
             trailing: Icon(Icons.arrow_forward_ios,
                 color: Theme.of(context).colorScheme.onSurface),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const QuickStartPage())),
           ),
           ListTile(
             leading: Icon(Icons.school_outlined,
                 color: Theme.of(context).colorScheme.onSurface),
-            title: Text('Learner resources',
+            title: Text('Learning resources',
                 style: Theme.of(context).textTheme.titleMedium),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: Theme.of(context).colorScheme.onSurface,
             ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const LearningResourcesPage()));
+            },
           ),
           ListTile(
               leading: Icon(Icons.description_outlined,
@@ -299,13 +307,13 @@ class ResourceTiles extends StatelessWidget {
               ),
               trailing: Icon(Icons.arrow_forward_ios,
                   color: Theme.of(context).colorScheme.onSurface),
-              onTap: () => launch())
+              onTap: () => launchSegulDocUrl())
         ],
       ),
     );
   }
 
-  void launch() {
+  void launchSegulDocUrl() {
     String url = 'https://docs.page/hhandika/segul-docs/';
     Uri uri = Uri.parse(url);
     launchUrl(uri);

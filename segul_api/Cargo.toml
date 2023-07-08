@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# segul = "0.19.*"
 flutter_rust_bridge = "*"
 segul = { git = "https://github.com/hhandika/segul.git", branch = "dev" }
 

@@ -196,7 +196,6 @@ fn wire_summarize__method__FastqServices_impl(
     port_: MessagePort,
     that: impl Wire2Api<FastqServices> + UnwindSafe,
     mode: impl Wire2Api<String> + UnwindSafe,
-    lowmem: impl Wire2Api<bool> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
@@ -207,8 +206,7 @@ fn wire_summarize__method__FastqServices_impl(
         move || {
             let api_that = that.wire2api();
             let api_mode = mode.wire2api();
-            let api_lowmem = lowmem.wire2api();
-            move |task_callback| Ok(FastqServices::summarize(&api_that, api_mode, api_lowmem))
+            move |task_callback| Ok(FastqServices::summarize(&api_that, api_mode))
         },
     )
 }

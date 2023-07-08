@@ -72,10 +72,7 @@ abstract class SegulApi {
   FlutterRustBridgeTaskConstMeta get kNewStaticMethodFastqServicesConstMeta;
 
   Future<void> summarizeMethodFastqServices(
-      {required FastqServices that,
-      required String mode,
-      required bool lowmem,
-      dynamic hint});
+      {required FastqServices that, required String mode, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kSummarizeMethodFastqServicesConstMeta;
 
@@ -133,12 +130,10 @@ class FastqServices {
           {required SegulApi bridge, dynamic hint}) =>
       bridge.newStaticMethodFastqServices(hint: hint);
 
-  Future<void> summarize(
-          {required String mode, required bool lowmem, dynamic hint}) =>
+  Future<void> summarize({required String mode, dynamic hint}) =>
       bridge.summarizeMethodFastqServices(
         that: this,
         mode: mode,
-        lowmem: lowmem,
       );
 }
 
@@ -419,19 +414,15 @@ class SegulApiImpl implements SegulApi {
       );
 
   Future<void> summarizeMethodFastqServices(
-      {required FastqServices that,
-      required String mode,
-      required bool lowmem,
-      dynamic hint}) {
+      {required FastqServices that, required String mode, dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_fastq_services(that);
     var arg1 = _platform.api2wire_String(mode);
-    var arg2 = lowmem;
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner
-          .wire_summarize__method__FastqServices(port_, arg0, arg1, arg2),
+          .wire_summarize__method__FastqServices(port_, arg0, arg1),
       parseSuccessData: _wire2api_unit,
       constMeta: kSummarizeMethodFastqServicesConstMeta,
-      argValues: [that, mode, lowmem],
+      argValues: [that, mode],
       hint: hint,
     ));
   }
@@ -439,7 +430,7 @@ class SegulApiImpl implements SegulApi {
   FlutterRustBridgeTaskConstMeta get kSummarizeMethodFastqServicesConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "summarize__method__FastqServices",
-        argNames: ["that", "mode", "lowmem"],
+        argNames: ["that", "mode"],
       );
 
   Future<ContigServices> newStaticMethodContigServices({dynamic hint}) {
@@ -965,27 +956,23 @@ class SegulApiWire implements FlutterRustBridgeWireBase {
     int port_,
     ffi.Pointer<wire_FastqServices> that,
     ffi.Pointer<wire_uint_8_list> mode,
-    bool lowmem,
   ) {
     return _wire_summarize__method__FastqServices(
       port_,
       that,
       mode,
-      lowmem,
     );
   }
 
   late final _wire_summarize__method__FastqServicesPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.Void Function(
-              ffi.Int64,
-              ffi.Pointer<wire_FastqServices>,
-              ffi.Pointer<wire_uint_8_list>,
-              ffi.Bool)>>('wire_summarize__method__FastqServices');
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_FastqServices>,
+                  ffi.Pointer<wire_uint_8_list>)>>(
+      'wire_summarize__method__FastqServices');
   late final _wire_summarize__method__FastqServices =
       _wire_summarize__method__FastqServicesPtr.asFunction<
           void Function(int, ffi.Pointer<wire_FastqServices>,
-              ffi.Pointer<wire_uint_8_list>, bool)>();
+              ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_new__static_method__ContigServices(
     int port_,

@@ -172,13 +172,13 @@ impl FastqServices {
         }
     }
 
-    pub fn summarize(&self, mode: String, lowmem: bool) {
+    pub fn summarize(&self, mode: String) {
         let input_fmt = self.match_input_fmt();
         let mut files = self.find_input_files(&input_fmt);
         let output_path = Path::new(&self.output_dir);
         let sum_mode = self.match_mode(&mode);
         let mut summary = ReadSummaryHandler::new(&mut files, &input_fmt, &sum_mode, output_path);
-        summary.summarize(lowmem);
+        summary.summarize();
     }
 
     fn match_input_fmt(&self) -> SeqReadFmt {

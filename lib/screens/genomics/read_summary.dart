@@ -31,7 +31,6 @@ class ReadSummaryPage extends StatefulWidget {
 class _ReadSummaryPageState extends State<ReadSummaryPage> {
   IOController ctr = IOController.empty();
   String mode = sequenceReadSummaryMode[0];
-  bool lowMemory = false;
 
   @override
   Widget build(BuildContext context) {
@@ -87,15 +86,6 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
               });
             },
           ),
-          SwitchForm(
-            label: 'Use low memory mode',
-            value: lowMemory,
-            onPressed: (value) {
-              setState(() {
-                lowMemory = value;
-              });
-            },
-          ),
         ]),
         const SizedBox(height: 16),
         Center(
@@ -131,7 +121,6 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
       fileFmt: ctr.inputFormatController!,
     ).summarize(
       mode: mode,
-      lowmem: lowMemory,
     );
   }
 

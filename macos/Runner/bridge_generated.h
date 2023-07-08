@@ -89,8 +89,7 @@ void wire_new__static_method__FastqServices(int64_t port_);
 
 void wire_summarize__method__FastqServices(int64_t port_,
                                            struct wire_FastqServices *that,
-                                           struct wire_uint_8_list *mode,
-                                           bool lowmem);
+                                           struct wire_uint_8_list *mode);
 
 void wire_new__static_method__ContigServices(int64_t port_);
 
