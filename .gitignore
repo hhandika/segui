@@ -53,3 +53,5 @@ src/main/jniLibs/
 
 /target/
 
+.windows.yml
+
