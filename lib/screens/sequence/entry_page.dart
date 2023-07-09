@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
@@ -50,6 +51,8 @@ class SequenceOptions extends StatelessWidget {
     switch (analysis) {
       case SequenceOperationType.translation:
         return const TranslatePage();
+      case SequenceOperationType.uniqueID:
+        return const IdParsingPage();
       default:
         return const SizedBox();
     }

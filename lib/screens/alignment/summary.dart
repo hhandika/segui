@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -44,13 +46,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onPressed: (value) {
-                setState(() {
-                  ctr.outputDir = value;
-                });
-              }),
+          SharedOutputDirField(ctr: ctr.outputDir),
           SharedTextField(
             controller: ctr.outputController,
             label: 'Output Prefix',
@@ -71,16 +67,18 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
         ]),
         const SizedBox(height: 20),
         Center(
-          child: PrimaryButton(
+          child: ExecutionButton(
             label: 'Summarize',
             isRunning: ctr.isRunning,
-            onPressed: ctr.isRunning || !ctr.isValid()
+            isSuccess: ctr.isSuccess,
+            onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
-                    String dir = await getOutputDir(ctr.outputDir);
+                    String dir = await getOutputDir(
+                        ctr.outputDir.text, SupportedTask.alignmentSummary);
                     setState(() {
                       ctr.isRunning = true;
-                      ctr.outputDir = dir;
+                      ctr.outputDir.text = dir;
                     });
                     try {
                       await _summarize();
@@ -89,6 +87,13 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
                       _showError(e.toString());
                     }
                   },
+            onShared: () async {
+              try {
+                await _shareOutput();
+              } catch (e) {
+                _showError(e.toString());
+              }
+            },
           ),
         )
       ],
@@ -99,13 +104,25 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
     await SequenceServices(
       bridge: segulApi,
       files: ctr.files,
-      dirPath: ctr.dirPath,
-      outputDir: ctr.outputDir!,
+      dirPath: ctr.dirPath.text,
+      outputDir: ctr.outputDir.text,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).summarizeAlignment(
         outputPrefix: ctr.outputController.text,
         interval: int.tryParse(_interval) ?? 5);
+  }
+
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    File outputPath = await io.archiveOutput(
+      dir: Directory(ctr.outputDir.text),
+      fileName: ctr.outputController.text,
+      task: SupportedTask.alignmentSummary,
+    );
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
   }
 
   void _showError(String error) {
@@ -120,13 +137,13 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
   void _setSuccess() {
     setState(() {
       ctr.isRunning = false;
+      ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
             'Summarization complete! 🎉 \n'
-            'Output path: ${showOutputDir(ctr.outputDir!)}'),
+            'Output path: ${showOutputDir(ctr.outputDir.text)}'),
       );
-      ctr.reset();
     });
   }
 }

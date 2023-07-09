@@ -102,15 +102,16 @@ impl SequenceServices {
     }
 
     fn find_input_files(&self, input_fmt: &InputFmt) -> Vec<PathBuf> {
-        if let Some(path) = &self.dir_path {
-            let path = Path::new(&path);
-            SeqFileFinder::new(path).find(&input_fmt)
-        } else {
-            if self.files.is_empty() {
-                panic!("No input files found");
-            } else {
-                self.files.iter().map(PathBuf::from).collect()
+        if self.files.is_empty() {
+            match self.dir_path {
+                Some(ref path) => {
+                    let path = Path::new(&path);
+                    SeqFileFinder::new(path).find(&input_fmt)
+                }
+                None => panic!("No input files found"),
             }
+        } else {
+            self.files.iter().map(PathBuf::from).collect()
         }
     }
 
@@ -193,15 +194,16 @@ impl FastqServices {
     }
 
     fn find_input_files(&self, input_fmt: &SeqReadFmt) -> Vec<PathBuf> {
-        if let Some(path) = &self.dir_path {
-            let path = Path::new(&path);
-            SeqReadFinder::new(path).find(input_fmt)
-        } else {
-            if self.files.is_empty() {
-                panic!("No input files found");
-            } else {
-                self.files.iter().map(PathBuf::from).collect()
+        if self.files.is_empty() {
+            match self.dir_path {
+                Some(ref path) => {
+                    let path = Path::new(&path);
+                    SeqReadFinder::new(path).find(&input_fmt)
+                }
+                None => panic!("No input files found"),
             }
+        } else {
+            self.files.iter().map(PathBuf::from).collect()
         }
     }
 }
@@ -239,15 +241,16 @@ impl ContigServices {
     }
 
     fn find_input_files(&self, input_fmt: &ContigFmt) -> Vec<PathBuf> {
-        if let Some(path) = &self.dir_path {
-            let path = Path::new(&path);
-            ContigFileFinder::new(path).find(input_fmt)
-        } else {
-            if self.files.is_empty() {
-                panic!("No input files found");
-            } else {
-                self.files.iter().map(PathBuf::from).collect()
+        if self.files.is_empty() {
+            match self.dir_path {
+                Some(ref path) => {
+                    let path = Path::new(&path);
+                    ContigFileFinder::new(path).find(input_fmt)
+                }
+                None => panic!("No input files found"),
             }
+        } else {
+            self.files.iter().map(PathBuf::from).collect()
         }
     }
 }

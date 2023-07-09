@@ -33,10 +33,11 @@ const Map<AlignmentOperationType, String> alignmentOperationMap = {
   AlignmentOperationType.convert: 'Convert',
 };
 
-enum SequenceOperationType { translation }
+enum SequenceOperationType { translation, uniqueID }
 
 const Map<SequenceOperationType, String> sequenceOperationMap = {
   SequenceOperationType.translation: 'Translation',
+  SequenceOperationType.uniqueID: 'Unique ID',
 };
 
 const List<String> inputFormat = [

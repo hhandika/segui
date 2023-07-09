@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -41,11 +43,6 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
         const CardTitle(title: 'Input'),
         FormCard(children: [
           InputSelectorForm(
-            onDirPressed: (value) {
-              setState(() {
-                ctr.dirPath = value;
-              });
-            },
             onFilePressed: (value) {
               setState(() {
                 ctr.files = value;
@@ -67,13 +64,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onPressed: (value) {
-                setState(() {
-                  ctr.outputDir = value;
-                });
-              }),
+          SharedOutputDirField(ctr: ctr.outputDir),
           SharedDropdownField(
             value: mode,
             label: 'Summary Mode',
@@ -89,24 +80,34 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
         ]),
         const SizedBox(height: 16),
         Center(
-          child: PrimaryButton(
-              isRunning: ctr.isRunning,
-              label: 'Summarize',
-              onPressed: ctr.isRunning || !ctr.isValid()
-                  ? null
-                  : () async {
-                      String dir = await getOutputDir(ctr.outputDir);
-                      setState(() {
-                        ctr.isRunning = true;
-                        ctr.outputDir = dir;
-                      });
-                      try {
-                        await _summarize();
-                        _setSuccess();
-                      } catch (e) {
-                        _showError(e.toString());
-                      }
-                    }),
+          child: ExecutionButton(
+            isRunning: ctr.isRunning,
+            isSuccess: ctr.isSuccess,
+            label: 'Summarize',
+            onExecuted: ctr.isRunning || !ctr.isValid()
+                ? null
+                : () async {
+                    String dir = await getOutputDir(ctr.outputDir.text,
+                        SupportedTask.genomicRawReadSummary);
+                    setState(() {
+                      ctr.isRunning = true;
+                      ctr.outputDir.text = dir;
+                    });
+                    try {
+                      await _summarize();
+                      _setSuccess();
+                    } catch (e) {
+                      _showError(e.toString());
+                    }
+                  },
+            onShared: () {
+              try {
+                _shareOutput();
+              } catch (e) {
+                _showError(e.toString());
+              }
+            },
+          ),
         )
       ],
     );
@@ -116,12 +117,24 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
     await FastqServices(
       bridge: segulApi,
       files: ctr.files,
-      dirPath: ctr.dirPath,
-      outputDir: ctr.outputDir!,
+      dirPath: ctr.dirPath.text,
+      outputDir: ctr.outputDir.text,
       fileFmt: ctr.inputFormatController!,
     ).summarize(
       mode: mode,
     );
+  }
+
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    File outputPath = await io.archiveOutput(
+      dir: Directory(ctr.outputDir.text),
+      fileName: ctr.outputController.text,
+      task: SupportedTask.genomicRawReadSummary,
+    );
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
   }
 
   void _showError(String error) {
@@ -129,10 +142,9 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
       ctr.isRunning = false;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Summarization failed: $error'),
+          content: Text(error),
         ),
       );
-      ctr.reset();
     });
   }
 
@@ -144,7 +156,6 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
           content: Text('Summarization complete'),
         ),
       );
-      ctr.reset();
     });
   }
 }

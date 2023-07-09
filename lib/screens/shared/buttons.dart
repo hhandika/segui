@@ -1,5 +1,62 @@
 import 'package:flutter/material.dart';
 
+class ExecutionButton extends StatelessWidget {
+  const ExecutionButton({
+    super.key,
+    required this.label,
+    required this.isRunning,
+    required this.isSuccess,
+    required this.onExecuted,
+    required this.onShared,
+  });
+
+  final String label;
+  final bool isRunning;
+  final bool isSuccess;
+  final VoidCallback? onExecuted;
+  final VoidCallback? onShared;
+
+  @override
+  Widget build(BuildContext context) {
+    return isSuccess
+        ? ShareButton(isRunning: isRunning, onPressed: onShared)
+        : PrimaryButton(
+            label: label, onPressed: onExecuted, isRunning: isRunning);
+  }
+}
+
+class ShareButton extends StatelessWidget {
+  const ShareButton({
+    super.key,
+    required this.isRunning,
+    required this.onPressed,
+  });
+
+  final bool isRunning;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        elevation: 0,
+      ),
+      icon: isRunning
+          ? const SizedBox(
+              height: 8,
+              width: 8,
+              child: CircularProgressIndicator(),
+            )
+          : const Icon(Icons.share),
+      onPressed: onPressed,
+      label:
+          isRunning ? const Text('Compressing files...') : const Text('Share'),
+    );
+  }
+}
+
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
@@ -22,8 +79,8 @@ class PrimaryButton extends StatelessWidget {
       ),
       icon: isRunning
           ? const SizedBox(
-              height: 10,
-              width: 10,
+              height: 8,
+              width: 8,
               child: CircularProgressIndicator(),
             )
           : const Icon(Icons.play_arrow),

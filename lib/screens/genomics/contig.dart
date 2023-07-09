@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -25,11 +27,6 @@ class _ContigPageState extends State<ContigPage> {
           const CardTitle(title: 'Input'),
           FormCard(children: [
             InputSelectorForm(
-              onDirPressed: (value) {
-                setState(() {
-                  ctr.dirPath = value;
-                });
-              },
               onFilePressed: (value) {
                 setState(() {
                   ctr.files = value;
@@ -51,13 +48,7 @@ class _ContigPageState extends State<ContigPage> {
           const SizedBox(height: 16),
           const CardTitle(title: 'Output'),
           FormCard(children: [
-            SharedOutputDirField(
-                ctr: ctr.outputDir,
-                onPressed: (value) {
-                  setState(() {
-                    ctr.outputDir = value;
-                  });
-                }),
+            SharedOutputDirField(ctr: ctr.outputDir),
             SharedTextField(
               controller: ctr.outputController,
               label: 'Output Filename',
@@ -66,22 +57,33 @@ class _ContigPageState extends State<ContigPage> {
           ]),
           const SizedBox(height: 16),
           Center(
-              child: PrimaryButton(
+              child: ExecutionButton(
             isRunning: ctr.isRunning,
+            isSuccess: ctr.isSuccess,
             label: 'Summarize',
-            onPressed: ctr.isRunning || !ctr.isValid()
+            onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
-                    String dir = await getOutputDir(ctr.outputDir);
+                    String dir = await getOutputDir(
+                        ctr.outputDir.text, SupportedTask.genomicContigSummary);
                     setState(() {
                       ctr.isRunning = true;
-                      ctr.outputDir = dir;
+                      ctr.outputDir.text = dir;
                     });
                     await _summarize(ctr);
-                    setState(() {
-                      ctr.isRunning = false;
-                    });
                   },
+            onShared: () {
+              try {
+                _shareOutput();
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(e.toString()),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
           ))
         ]);
   }
@@ -91,9 +93,9 @@ class _ContigPageState extends State<ContigPage> {
       await ContigServices(
         bridge: segulApi,
         files: ctr.files,
-        dirPath: ctr.dirPath,
+        dirPath: ctr.dirPath.text,
         fileFmt: ctr.inputFormatController!,
-        outputDir: ctr.outputDir!,
+        outputDir: ctr.outputDir.text,
       ).summarize();
       _setSuccess();
     } catch (e) {
@@ -106,17 +108,28 @@ class _ContigPageState extends State<ContigPage> {
     }
   }
 
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    File outputPath = await io.archiveOutput(
+      dir: Directory(ctr.outputDir.text),
+      fileName: ctr.outputController.text,
+      task: SupportedTask.genomicContigSummary,
+    );
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
+  }
+
   void _setSuccess() {
     setState(() {
       ctr.isRunning = false;
+      ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Summarization complete!'),
           backgroundColor: Colors.green,
         ),
       );
-
-      ctr.reset();
     });
   }
 }

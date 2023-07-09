@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -46,12 +48,8 @@ class _ConvertPageState extends State<ConvertPage> {
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onPressed: (value) {
-                setState(() {
-                  ctr.outputDir = value;
-                });
-              }),
+            ctr: ctr.outputDir,
+          ),
           SharedDropdownField(
             value: ctr.outputFormatController,
             label: 'Format',
@@ -83,16 +81,18 @@ class _ConvertPageState extends State<ConvertPage> {
         ]),
         const SizedBox(height: 20),
         Center(
-          child: PrimaryButton(
+          child: ExecutionButton(
             label: 'Convert',
             isRunning: ctr.isRunning,
-            onPressed: ctr.isRunning || !ctr.isValid()
+            isSuccess: ctr.isSuccess,
+            onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
-                    String dir = await getOutputDir(ctr.outputDir);
+                    String dir = await getOutputDir(
+                        ctr.outputDir.text, SupportedTask.alignmentConversion);
                     setState(() {
                       ctr.isRunning = true;
-                      ctr.outputDir = dir;
+                      ctr.outputDir.text = dir;
                     });
                     try {
                       await _convert();
@@ -109,6 +109,18 @@ class _ConvertPageState extends State<ConvertPage> {
                       });
                     }
                   },
+            onShared: () async {
+              try {
+                await _shareOutput();
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  showSharedSnackBar(
+                    context,
+                    'Sharing failed!: $e',
+                  ),
+                );
+              }
+            },
           ),
         )
       ],
@@ -120,8 +132,8 @@ class _ConvertPageState extends State<ConvertPage> {
     await SequenceServices(
       bridge: segulApi,
       files: ctr.files,
-      dirPath: ctr.dirPath,
-      outputDir: ctr.outputDir!,
+      dirPath: ctr.dirPath.text,
+      outputDir: ctr.outputDir.text,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).convertSequence(
@@ -130,17 +142,29 @@ class _ConvertPageState extends State<ConvertPage> {
     );
   }
 
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    File outputPath = await io.archiveOutput(
+      dir: Directory(ctr.outputDir.text),
+      fileName: ctr.outputController.text,
+      task: SupportedTask.alignmentConversion,
+    );
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
+  }
+
   void _setSuccess() {
     setState(() {
       ctr.isRunning = false;
+      ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
           'Conversion successful! 🎉 \n'
-          'Output Path: ${showOutputDir(ctr.outputDir!)}',
+          'Output Path: ${showOutputDir(ctr.outputDir.text)}',
         ),
       );
-      ctr.reset();
     });
   }
 }

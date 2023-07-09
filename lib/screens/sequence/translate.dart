@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -49,13 +51,7 @@ class _TranslatePageState extends State<TranslatePage> {
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onPressed: (value) {
-                setState(() {
-                  ctr.outputDir = value;
-                });
-              }),
+          SharedOutputDirField(ctr: ctr.outputDir),
           SharedDropdownField(
             value: ctr.outputFormatController,
             label: 'Format',
@@ -103,16 +99,18 @@ class _TranslatePageState extends State<TranslatePage> {
         ]),
         const SizedBox(height: 16),
         Center(
-          child: PrimaryButton(
+          child: ExecutionButton(
             label: 'Translate',
             isRunning: ctr.isRunning,
-            onPressed: ctr.isRunning || !ctr.isValid()
+            isSuccess: ctr.isSuccess,
+            onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
-                    String dir = await getOutputDir(ctr.outputDir);
+                    String dir = await getOutputDir(
+                        ctr.outputDir.text, SupportedTask.sequenceTranslation);
                     setState(() {
                       ctr.isRunning = true;
-                      ctr.outputDir = dir;
+                      ctr.outputDir.text = dir;
                     });
                     try {
                       await _translate();
@@ -121,6 +119,13 @@ class _TranslatePageState extends State<TranslatePage> {
                       _showError(e.toString());
                     }
                   },
+            onShared: () {
+              try {
+                _shareOutput();
+              } catch (e) {
+                _showError(e.toString());
+              }
+            },
           ),
         )
       ],
@@ -132,8 +137,8 @@ class _TranslatePageState extends State<TranslatePage> {
     await SequenceServices(
       bridge: segulApi,
       files: ctr.files,
-      dirPath: ctr.dirPath,
-      outputDir: ctr.outputDir!,
+      dirPath: ctr.dirPath.text,
+      outputDir: ctr.outputDir.text,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).translateSequence(
@@ -142,12 +147,24 @@ class _TranslatePageState extends State<TranslatePage> {
         outputFmt: outputFmt);
   }
 
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    File outputPath = await io.archiveOutput(
+      dir: Directory(ctr.outputDir.text),
+      fileName: ctr.outputController.text,
+      task: SupportedTask.sequenceTranslation,
+    );
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
+  }
+
   void _showError(String error) {
     setState(() {
       ctr.isRunning = false;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      showSharedSnackBar(context, 'Translation failed!: $error'),
+      showSharedSnackBar(context, error),
     );
   }
 
@@ -158,9 +175,8 @@ class _TranslatePageState extends State<TranslatePage> {
         showSharedSnackBar(
             context,
             'Translation complete! 🎉 \n'
-            'Output path: ${showOutputDir(ctr.outputDir!)}'),
+            'Output path: ${showOutputDir(ctr.outputDir.text)}'),
       );
-      ctr.reset();
     });
   }
 }

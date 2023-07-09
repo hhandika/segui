@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
@@ -33,6 +35,7 @@ class _ConcatPageState extends State<ConcatPage> {
   String _partitionFormatController = partitionFormat[1];
   bool isCodon = false;
   bool isInterleave = false;
+  bool isShowMore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +49,7 @@ class _ConcatPageState extends State<ConcatPage> {
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onPressed: (value) {
-                setState(() {
-                  ctr.outputDir = value;
-                });
-              }),
+          SharedOutputDirField(ctr: ctr.outputDir),
           SharedTextField(
             controller: ctr.outputController,
             label: 'Output Filename',
@@ -66,18 +63,22 @@ class _ConcatPageState extends State<ConcatPage> {
               setState(() {
                 if (value != null) {
                   ctr.outputFormatController = value;
+                  ctr.isSuccess = false;
                 }
               });
             },
           ),
-          SwitchForm(
-            label: 'Set interleaved format',
-            value: isInterleave,
-            onPressed: (value) {
-              setState(() {
-                isInterleave = value;
-              });
-            },
+          Visibility(
+            visible: isShowMore,
+            child: SwitchForm(
+              label: 'Set interleaved format',
+              value: isInterleave,
+              onPressed: (value) {
+                setState(() {
+                  isInterleave = value;
+                });
+              },
+            ),
           ),
           SharedDropdownField(
             value: _partitionFormatController,
@@ -91,27 +92,42 @@ class _ConcatPageState extends State<ConcatPage> {
               });
             },
           ),
-          SwitchForm(
-              label: 'Set codon model partition',
-              value: isCodon,
-              onPressed: (value) {
+          Visibility(
+            visible: isShowMore,
+            child: SwitchForm(
+                label: 'Set codon model partition',
+                value: isCodon,
+                onPressed: (value) {
+                  setState(() {
+                    isCodon = value;
+                  });
+                }),
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () {
                 setState(() {
-                  isCodon = value;
+                  isShowMore = !isShowMore;
                 });
-              }),
+              },
+              child: Text(isShowMore ? 'Show less' : 'Show more'),
+            ),
+          ),
         ]),
         const SizedBox(height: 20),
         Center(
-          child: PrimaryButton(
+          child: ExecutionButton(
             label: 'Concatenate',
             isRunning: ctr.isRunning,
-            onPressed: ctr.isRunning || !_validate()
+            isSuccess: ctr.isSuccess,
+            onExecuted: ctr.isRunning || !_validate()
                 ? null
                 : () async {
-                    String dir = await getOutputDir(ctr.outputDir);
+                    String dir = await getOutputDir(ctr.outputDir.text,
+                        SupportedTask.alignmentConcatenation);
                     setState(() {
                       ctr.isRunning = true;
-                      ctr.outputDir = dir;
+                      ctr.outputDir.text = dir;
                     });
                     try {
                       await _concat();
@@ -120,6 +136,7 @@ class _ConcatPageState extends State<ConcatPage> {
                       _showError(e.toString());
                     }
                   },
+            onShared: () async => await _shareOutput(),
           ),
         )
       ],
@@ -136,16 +153,28 @@ class _ConcatPageState extends State<ConcatPage> {
     String partitionFmt = getPartitionFmt(_partitionFormatController, isCodon);
     await SequenceServices(
       bridge: segulApi,
-      dirPath: ctr.dirPath,
+      dirPath: ctr.dirPath.text,
       files: ctr.files,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
-      outputDir: ctr.outputDir!,
+      outputDir: ctr.outputDir.text,
     ).concatAlignment(
       outFname: ctr.outputController.text,
       outFmtStr: outputFmt,
       partitionFmt: partitionFmt,
     );
+  }
+
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    File outputPath = await io.archiveOutput(
+      dir: Directory(ctr.outputDir.text),
+      fileName: ctr.outputController.text,
+      task: SupportedTask.alignmentConcatenation,
+    );
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
   }
 
   void _showError(String error) {
@@ -160,13 +189,13 @@ class _ConcatPageState extends State<ConcatPage> {
   void _setSuccess() {
     setState(() {
       ctr.isRunning = false;
+      ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
             'Concatenation successful! 🎉 \n'
-            'Output path: ${showOutputDir(ctr.outputDir!)}'),
+            'Output path: ${showOutputDir(ctr.outputDir.text)}'),
       );
-      ctr.reset();
     });
   }
 }

@@ -28,11 +28,6 @@ class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
       children: [
         InputSelectorForm(
           ctr: widget.ctr,
-          onDirPressed: (value) {
-            setState(() {
-              widget.ctr.dirPath = value;
-            });
-          },
           onFilePressed: (value) {
             setState(() {
               widget.ctr.files = value;
@@ -70,12 +65,10 @@ class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
 class InputSelectorForm extends StatelessWidget {
   const InputSelectorForm({
     super.key,
-    required this.onDirPressed,
     required this.onFilePressed,
     required this.ctr,
   });
 
-  final void Function(String?) onDirPressed;
   final void Function(List<String>) onFilePressed;
   final IOController ctr;
 
@@ -85,7 +78,6 @@ class InputSelectorForm extends StatelessWidget {
         ? SelectDirField(
             label: 'Select input directory',
             dirPath: ctr.dirPath,
-            onPressed: onDirPressed,
           )
         : SharedFilePicker(
             label: 'Select input files',
@@ -241,20 +233,19 @@ class SharedOutputDirField extends StatelessWidget {
   const SharedOutputDirField({
     super.key,
     required this.ctr,
-    required this.onPressed,
   });
 
-  final String? ctr;
-  final void Function(String?) onPressed;
+  final TextEditingController ctr;
 
   @override
   Widget build(BuildContext context) {
     return Platform.isIOS
-        ? const SizedBox.shrink()
-        : SelectDirField(
-            label: 'Select output directory',
-            dirPath: ctr,
-            onPressed: onPressed);
+        ? SharedTextField(
+            label: 'Output directory',
+            hint: 'Enter output directory name',
+            controller: ctr,
+          )
+        : SelectDirField(label: 'Select output directory', dirPath: ctr);
   }
 }
 
@@ -263,12 +254,10 @@ class SelectDirField extends StatelessWidget {
     super.key,
     required this.label,
     required this.dirPath,
-    required this.onPressed,
   });
 
   final String label;
-  final String? dirPath;
-  final void Function(String?) onPressed;
+  final TextEditingController dirPath;
 
   @override
   Widget build(BuildContext context) {
@@ -276,19 +265,19 @@ class SelectDirField extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            dirPath ?? '$label: ',
+            dirPath.text.isEmpty ? dirPath.text : '$label: ',
             overflow: TextOverflow.ellipsis,
           ),
         ),
         const SizedBox(width: 8),
         IconButton(
-          icon: dirPath == null
+          icon: dirPath.text.isEmpty
               ? const Icon(Icons.folder)
               : const Icon(Icons.folder_open),
           onPressed: () async {
             final dir = await _selectDir();
             if (dir != null) {
-              onPressed(dir.path);
+              dirPath.text = dir.path;
             }
           },
         ),

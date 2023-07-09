@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/services/io.dart';
 import 'package:segui/services/native.dart';
 
 class IdParsingPage extends StatefulWidget {
@@ -13,7 +16,6 @@ class IdParsingPage extends StatefulWidget {
 
 class _IdParsingPageState extends State<IdParsingPage> {
   IOController ctr = IOController.empty();
-  bool _isRunning = false;
   bool _isMap = false;
 
   @override
@@ -30,13 +32,7 @@ class _IdParsingPageState extends State<IdParsingPage> {
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onPressed: (value) {
-                setState(() {
-                  ctr.outputDir = value;
-                });
-              }),
+          SharedOutputDirField(ctr: ctr.outputDir),
           SharedTextField(
             controller: ctr.outputController,
             label: 'Output Filename',
@@ -53,18 +49,26 @@ class _IdParsingPageState extends State<IdParsingPage> {
             }),
         const SizedBox(height: 16),
         Center(
-          child: PrimaryButton(
+          child: ExecutionButton(
             label: 'Parse IDs',
-            isRunning: _isRunning,
-            onPressed: () async {
+            isRunning: ctr.isRunning,
+            isSuccess: ctr.isSuccess,
+            onExecuted: () async {
               setState(() {
-                _isRunning = true;
+                ctr.isRunning = true;
               });
               try {
                 await _parseId();
                 setState(() {
-                  _isRunning = false;
+                  ctr.isRunning = false;
                 });
+              } catch (e) {
+                _showError(e.toString());
+              }
+            },
+            onShared: () async {
+              try {
+                await _shareOutput();
               } catch (e) {
                 _showError(e.toString());
               }
@@ -79,11 +83,23 @@ class _IdParsingPageState extends State<IdParsingPage> {
     await SequenceServices(
       bridge: segulApi,
       files: ctr.files,
-      dirPath: ctr.dirPath,
-      outputDir: ctr.outputDir!,
+      dirPath: ctr.dirPath.text,
+      outputDir: ctr.outputDir.text,
       fileFmt: ctr.inputFormatController!,
       datatype: ctr.dataTypeController,
     ).parseSequenceId(isMap: _isMap);
+  }
+
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    File outputPath = await io.archiveOutput(
+      dir: Directory(ctr.outputDir.text),
+      fileName: ctr.outputController.text,
+      task: SupportedTask.alignmentConcatenation,
+    );
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
   }
 
   void _showError(String error) {
