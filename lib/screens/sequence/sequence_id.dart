@@ -32,7 +32,8 @@ class _IdParsingPageState extends State<IdParsingPage> {
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(ctr: ctr.outputDir),
+          SharedOutputDirField(
+              ctr: ctr.outputDir, onChanged: () => setState(() {})),
           SharedTextField(
             controller: ctr.outputController,
             label: 'Filename',

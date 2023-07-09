@@ -49,6 +49,9 @@ class _ConvertPageState extends State<ConvertPage> {
         FormCard(children: [
           SharedOutputDirField(
             ctr: ctr.outputDir,
+            onChanged: () {
+              setState(() {});
+            },
           ),
           SharedDropdownField(
             value: ctr.outputFormatController,

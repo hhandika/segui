@@ -48,7 +48,12 @@ class _ContigPageState extends State<ContigPage> {
           const SizedBox(height: 16),
           const CardTitle(title: 'Output'),
           FormCard(children: [
-            SharedOutputDirField(ctr: ctr.outputDir),
+            SharedOutputDirField(
+              ctr: ctr.outputDir,
+              onChanged: () {
+                setState(() {});
+              },
+            ),
             SharedTextField(
               controller: ctr.outputController,
               label: 'Output Filename',

@@ -51,7 +51,11 @@ class _TranslatePageState extends State<TranslatePage> {
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(ctr: ctr.outputDir),
+          SharedOutputDirField(
+              ctr: ctr.outputDir,
+              onChanged: () {
+                setState(() {});
+              }),
           SharedDropdownField(
             value: ctr.outputFormatController,
             label: 'Format',

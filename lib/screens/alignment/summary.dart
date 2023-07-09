@@ -46,7 +46,11 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
-          SharedOutputDirField(ctr: ctr.outputDir),
+          SharedOutputDirField(
+              ctr: ctr.outputDir,
+              onChanged: () {
+                setState(() {});
+              }),
           SharedTextField(
             controller: ctr.outputController,
             label: 'Output Prefix',

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/services/io.dart';
 
 class SharedSequenceInputForm extends StatefulWidget {
   const SharedSequenceInputForm({
@@ -59,31 +58,6 @@ class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
         ),
       ],
     );
-  }
-}
-
-class InputSelectorForm extends StatelessWidget {
-  const InputSelectorForm({
-    super.key,
-    required this.onFilePressed,
-    required this.ctr,
-  });
-
-  final void Function(List<String>) onFilePressed;
-  final IOController ctr;
-
-  @override
-  Widget build(BuildContext context) {
-    return runningPlatform == PlatformType.isDesktop
-        ? SelectDirField(
-            label: 'Select input directory',
-            dirPath: ctr.dirPath,
-          )
-        : SharedFilePicker(
-            label: 'Select input files',
-            paths: ctr.files,
-            onPressed: onFilePressed,
-          );
   }
 }
 
@@ -239,13 +213,35 @@ class SharedDropdownField extends StatelessWidget {
   }
 }
 
+class InputSelectorForm extends StatelessWidget {
+  const InputSelectorForm({
+    super.key,
+    required this.onFilePressed,
+    required this.ctr,
+  });
+
+  final void Function(List<String>) onFilePressed;
+  final IOController ctr;
+
+  @override
+  Widget build(BuildContext context) {
+    return SharedFilePicker(
+      label: 'Select input files',
+      paths: ctr.files,
+      onPressed: onFilePressed,
+    );
+  }
+}
+
 class SharedOutputDirField extends StatelessWidget {
   const SharedOutputDirField({
     super.key,
     required this.ctr,
+    required this.onChanged,
   });
 
   final TextEditingController ctr;
+  final void Function() onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +251,11 @@ class SharedOutputDirField extends StatelessWidget {
             hint: 'Enter output directory name',
             controller: ctr,
           )
-        : SelectDirField(label: 'Select output directory', dirPath: ctr);
+        : SelectDirField(
+            label: 'Select output directory',
+            dirPath: ctr,
+            onChanged: onChanged,
+          );
   }
 }
 
@@ -264,10 +264,12 @@ class SelectDirField extends StatelessWidget {
     super.key,
     required this.label,
     required this.dirPath,
+    required this.onChanged,
   });
 
   final String label;
   final TextEditingController dirPath;
+  final void Function() onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +277,7 @@ class SelectDirField extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            dirPath.text.isEmpty ? dirPath.text : '$label: ',
+            dirPath.text.isEmpty ? '$label: ' : dirPath.text,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -288,6 +290,7 @@ class SelectDirField extends StatelessWidget {
             final dir = await _selectDir();
             if (dir != null) {
               dirPath.text = dir.path;
+              onChanged();
             }
           },
         ),

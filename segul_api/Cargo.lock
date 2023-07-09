@@ -1004,9 +1004,9 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "segul"
-version = "0.19.0"
+version = "0.19.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8089e06d6a382e0df95d65beb96942860d4d6899da3acbf16fa36bacf0aecfb8"
+checksum = "58ddb0cbcc48fe6d9fe3afb8ce94225fb8cf0800182f225fa1d954cbefa5975d"
 dependencies = [
  "ahash",
  "alphanumeric-sort",
