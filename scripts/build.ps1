@@ -1,22 +1,30 @@
 flutter build windows --release
 
 # Build path
+$target = "Release"
 $buildExe = "build\windows\runner\Release\segui.exe"
-$buildPath = "build\windows\runner\Release"
-$releasePath = "$env:USERPROFILE\Documents\segui"
-$exePath = "$env:USERPROFILE\Documents\segui\Release\segui.exe"
+$buildPath = "build\windows\runner\$target"
+$releasePath = "$env:USERPROFILE\Documents\"
+$exePath = "$env:USERPROFILE\Documents\segui\segui.exe"
+$archivePath = "$env:USERPROFILE\Documents\Releases\"
+$appName = "segui"
 # Check build file exists
 if (Test-Path -Path $buildExe) {
     Write-Host "Build succeeded"
     # Copy relese files to user document folder
     
-    if (Test-Path -Path $releasePath) {
-        Remove-Item -Path $releasePath -Recurse -Force
+    if (Test-Path -Path $releasePath\$appName) {
+        Remove-Item -Path $releasePath\$appName -Recurse -Force
     }
-    New-Item -Path $releasePath -ItemType Directory
     Copy-Item -Path $buildPath -Destination $releasePath -Recurse
+
+    Write-Host "Rename $deployPath to $appName"
+    Rename-Item  $releasePath\$target $appName
+
     Write-Host "Release files copied to $releasePath"
-    Start $exePath
+    New-Item -ItemType Directory -Path $archivePath -Force
+    Compress-Archive -Path $releasePath\$appName -DestinationPath $archivePath\$appName-windows.zip -Force
+    Start-Process $exePath
 } else {
     Write-Host "Build failed"
     exit 1
