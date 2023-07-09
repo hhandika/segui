@@ -57,14 +57,8 @@ class _IdParsingPageState extends State<IdParsingPage> {
               setState(() {
                 ctr.isRunning = true;
               });
-              try {
-                await _parseId();
-                setState(() {
-                  ctr.isRunning = false;
-                });
-              } catch (e) {
-                _showError(e.toString());
-              }
+
+              await _parseId();
             },
             onShared: () async {
               try {
@@ -80,14 +74,19 @@ class _IdParsingPageState extends State<IdParsingPage> {
   }
 
   Future<void> _parseId() async {
-    await SequenceServices(
-      bridge: segulApi,
-      files: ctr.files,
-      dirPath: ctr.dirPath.text,
-      outputDir: ctr.outputDir.text,
-      fileFmt: ctr.inputFormatController!,
-      datatype: ctr.dataTypeController,
-    ).parseSequenceId(isMap: _isMap);
+    try {
+      await SequenceServices(
+        bridge: segulApi,
+        files: ctr.files,
+        dirPath: ctr.dirPath.text,
+        outputDir: ctr.outputDir.text,
+        fileFmt: ctr.inputFormatController!,
+        datatype: ctr.dataTypeController,
+      ).parseSequenceId(isMap: _isMap);
+      _setSuccess();
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _shareOutput() async {
@@ -100,6 +99,18 @@ class _IdParsingPageState extends State<IdParsingPage> {
     if (mounted) {
       await io.shareFile(context, outputPath);
     }
+  }
+
+  void _setSuccess() {
+    setState(() {
+      ctr.isRunning = false;
+      ctr.isSuccess = true;
+      ScaffoldMessenger.of(context).showSnackBar(showSharedSnackBar(
+        context,
+        'Successfully parsed sequence ID! 🎉 \n'
+        'Output Path: ${showOutputDir(ctr.outputDir.text)}',
+      ));
+    });
   }
 
   void _showError(String error) {

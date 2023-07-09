@@ -94,20 +94,7 @@ class _ConvertPageState extends State<ConvertPage> {
                       ctr.isRunning = true;
                       ctr.outputDir.text = dir;
                     });
-                    try {
-                      await _convert();
-                      _setSuccess();
-                    } catch (e) {
-                      setState(() {
-                        ctr.isRunning = false;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          showSharedSnackBar(
-                            context,
-                            'Conversion failed!: $e',
-                          ),
-                        );
-                      });
-                    }
+                    await _convert();
                   },
             onShared: () async {
               try {
@@ -129,17 +116,32 @@ class _ConvertPageState extends State<ConvertPage> {
 
   Future<void> _convert() async {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
-    await SequenceServices(
-      bridge: segulApi,
-      files: ctr.files,
-      dirPath: ctr.dirPath.text,
-      outputDir: ctr.outputDir.text,
-      fileFmt: ctr.inputFormatController!,
-      datatype: ctr.dataTypeController,
-    ).convertSequence(
-      outputFmt: outputFmt,
-      sort: isSortSequence,
-    );
+    try {
+      await SequenceServices(
+        bridge: segulApi,
+        files: ctr.files,
+        dirPath: ctr.dirPath.text,
+        outputDir: ctr.outputDir.text,
+        fileFmt: ctr.inputFormatController!,
+        datatype: ctr.dataTypeController,
+      ).convertSequence(
+        outputFmt: outputFmt,
+        sort: isSortSequence,
+      );
+      _setSuccess();
+    } catch (e) {
+      _showError(e.toString());
+    }
+  }
+
+  void _showError(String error) {
+    setState(() {
+      ctr.isRunning = false;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, error),
+      );
+    });
   }
 
   Future<void> _shareOutput() async {

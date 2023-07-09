@@ -80,12 +80,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
                       ctr.isRunning = true;
                       ctr.outputDir.text = dir;
                     });
-                    try {
-                      await _summarize();
-                      _setSuccess();
-                    } catch (e) {
-                      _showError(e.toString());
-                    }
+                    await _summarize();
                   },
             onShared: () async {
               try {
@@ -101,16 +96,21 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
   }
 
   Future<void> _summarize() async {
-    await SequenceServices(
-      bridge: segulApi,
-      files: ctr.files,
-      dirPath: ctr.dirPath.text,
-      outputDir: ctr.outputDir.text,
-      fileFmt: ctr.inputFormatController!,
-      datatype: ctr.dataTypeController,
-    ).summarizeAlignment(
-        outputPrefix: ctr.outputController.text,
-        interval: int.tryParse(_interval) ?? 5);
+    try {
+      await SequenceServices(
+        bridge: segulApi,
+        files: ctr.files,
+        dirPath: ctr.dirPath.text,
+        outputDir: ctr.outputDir.text,
+        fileFmt: ctr.inputFormatController!,
+        datatype: ctr.dataTypeController,
+      ).summarizeAlignment(
+          outputPrefix: ctr.outputController.text,
+          interval: int.tryParse(_interval) ?? 5);
+      _setSuccess();
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _shareOutput() async {
@@ -129,7 +129,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
     setState(() {
       ctr.isRunning = false;
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(context, 'Summarization failed!: $error'),
+        showSharedSnackBar(context, error),
       );
     });
   }

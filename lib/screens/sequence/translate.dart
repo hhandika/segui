@@ -112,16 +112,12 @@ class _TranslatePageState extends State<TranslatePage> {
                       ctr.isRunning = true;
                       ctr.outputDir.text = dir;
                     });
-                    try {
-                      await _translate();
-                      _setSuccess();
-                    } catch (e) {
-                      _showError(e.toString());
-                    }
+
+                    await _translate();
                   },
-            onShared: () {
+            onShared: () async {
               try {
-                _shareOutput();
+                await _shareOutput();
               } catch (e) {
                 _showError(e.toString());
               }
@@ -134,17 +130,22 @@ class _TranslatePageState extends State<TranslatePage> {
 
   Future<void> _translate() async {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
-    await SequenceServices(
-      bridge: segulApi,
-      files: ctr.files,
-      dirPath: ctr.dirPath.text,
-      outputDir: ctr.outputDir.text,
-      fileFmt: ctr.inputFormatController!,
-      datatype: ctr.dataTypeController,
-    ).translateSequence(
-        table: _tableIndex.toString(),
-        readingFrame: int.tryParse(_readingFrame) ?? 1,
-        outputFmt: outputFmt);
+    try {
+      await SequenceServices(
+        bridge: segulApi,
+        files: ctr.files,
+        dirPath: ctr.dirPath.text,
+        outputDir: ctr.outputDir.text,
+        fileFmt: ctr.inputFormatController!,
+        datatype: ctr.dataTypeController,
+      ).translateSequence(
+          table: _tableIndex.toString(),
+          readingFrame: int.tryParse(_readingFrame) ?? 1,
+          outputFmt: outputFmt);
+      _setSuccess();
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _shareOutput() async {
@@ -171,6 +172,7 @@ class _TranslatePageState extends State<TranslatePage> {
   void _setSuccess() {
     setState(() {
       ctr.isRunning = false;
+      ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,

@@ -93,12 +93,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
                       ctr.isRunning = true;
                       ctr.outputDir.text = dir;
                     });
-                    try {
-                      await _summarize();
-                      _setSuccess();
-                    } catch (e) {
-                      _showError(e.toString());
-                    }
+                    await _summarize();
                   },
             onShared: () {
               try {
@@ -114,15 +109,20 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
   }
 
   Future<void> _summarize() async {
-    await FastqServices(
-      bridge: segulApi,
-      files: ctr.files,
-      dirPath: ctr.dirPath.text,
-      outputDir: ctr.outputDir.text,
-      fileFmt: ctr.inputFormatController!,
-    ).summarize(
-      mode: mode,
-    );
+    try {
+      await FastqServices(
+        bridge: segulApi,
+        files: ctr.files,
+        dirPath: ctr.dirPath.text,
+        outputDir: ctr.outputDir.text,
+        fileFmt: ctr.inputFormatController!,
+      ).summarize(
+        mode: mode,
+      );
+      _setSuccess();
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _shareOutput() async {
@@ -151,6 +151,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
   void _setSuccess() {
     setState(() {
       ctr.isRunning = false;
+      ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Summarization complete'),

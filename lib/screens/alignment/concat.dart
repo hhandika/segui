@@ -129,14 +129,15 @@ class _ConcatPageState extends State<ConcatPage> {
                       ctr.isRunning = true;
                       ctr.outputDir.text = dir;
                     });
-                    try {
-                      await _concat();
-                      _setSuccess();
-                    } catch (e) {
-                      _showError(e.toString());
-                    }
+                    await _concat();
                   },
-            onShared: () async => await _shareOutput(),
+            onShared: () async {
+              try {
+                await _shareOutput();
+              } catch (e) {
+                _showError(e.toString());
+              }
+            },
           ),
         )
       ],
@@ -151,18 +152,23 @@ class _ConcatPageState extends State<ConcatPage> {
   Future<void> _concat() async {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     String partitionFmt = getPartitionFmt(_partitionFormatController, isCodon);
-    await SequenceServices(
-      bridge: segulApi,
-      dirPath: ctr.dirPath.text,
-      files: ctr.files,
-      fileFmt: ctr.inputFormatController!,
-      datatype: ctr.dataTypeController,
-      outputDir: ctr.outputDir.text,
-    ).concatAlignment(
-      outFname: ctr.outputController.text,
-      outFmtStr: outputFmt,
-      partitionFmt: partitionFmt,
-    );
+    try {
+      await SequenceServices(
+        bridge: segulApi,
+        dirPath: ctr.dirPath.text,
+        files: ctr.files,
+        fileFmt: ctr.inputFormatController!,
+        datatype: ctr.dataTypeController,
+        outputDir: ctr.outputDir.text,
+      ).concatAlignment(
+        outFname: ctr.outputController.text,
+        outFmtStr: outputFmt,
+        partitionFmt: partitionFmt,
+      );
+      _setSuccess();
+    } catch (e) {
+      _showError(e.toString());
+    }
   }
 
   Future<void> _shareOutput() async {
@@ -181,7 +187,7 @@ class _ConcatPageState extends State<ConcatPage> {
     setState(() {
       ctr.isRunning = false;
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(context, 'Failed to concatenate: $error'),
+        showSharedSnackBar(context, error),
       );
     });
   }
