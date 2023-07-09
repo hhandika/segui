@@ -2,8 +2,8 @@ name: SEGUI-Releases
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - release
 
 jobs:
   windows:
@@ -26,6 +26,11 @@ jobs:
       - run: |
           flutter pub get
           flutter analyze
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
 
       - name: Build release
         uses: subosito/flutter-action@v2
