@@ -33,7 +33,7 @@ class AlignmentSummaryPage extends StatefulWidget {
 
 class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
   IOController ctr = IOController.empty();
-  String _interval = summaryInt[2];
+  String? _interval;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +72,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
             controller: ctr,
+            onNewRun: () => setState(() {}),
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
@@ -107,7 +108,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
         datatype: ctr.dataTypeController,
       ).summarizeAlignment(
           outputPrefix: ctr.outputController.text,
-          interval: int.tryParse(_interval) ?? 5);
+          interval: int.tryParse(_interval!) ?? 5);
       _setSuccess();
     } catch (e) {
       _showError(e.toString());

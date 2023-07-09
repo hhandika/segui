@@ -62,7 +62,7 @@ impl SequenceServices {
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype();
         let files = self.find_input_files(&input_fmt);
-        let output_path = Path::new(&self.output_dir);
+        let output_path = Path::new(&self.output_dir).with_extension("txt");
         let id = Id::new(&output_path, &input_fmt, &datatype);
         if !is_map {
             id.generate_id(&files);
@@ -76,7 +76,8 @@ impl SequenceServices {
             let mapped_path = output_path
                 .parent()
                 .expect("No output path")
-                .join(output_fname);
+                .join(output_fname)
+                .with_extension("txt");
             id.map_id(&files, &mapped_path);
         }
     }

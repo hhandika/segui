@@ -85,6 +85,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
             isSuccess: ctr.isSuccess,
             controller: ctr,
             label: 'Summarize',
+            onNewRun: () => setState(() {}),
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {

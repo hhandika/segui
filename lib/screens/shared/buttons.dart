@@ -10,6 +10,7 @@ class ExecutionButton extends StatelessWidget {
     required this.controller,
     required this.onExecuted,
     required this.onShared,
+    required this.onNewRun,
   });
 
   final String label;
@@ -18,6 +19,7 @@ class ExecutionButton extends StatelessWidget {
   final IOController controller;
   final VoidCallback? onExecuted;
   final VoidCallback? onShared;
+  final void Function()? onNewRun;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,10 @@ class ExecutionButton extends StatelessWidget {
         ? Wrap(
             spacing: 16,
             children: [
-              NewRunButton(controller: controller),
+              NewRunButton(
+                controller: controller,
+                onPressed: onNewRun,
+              ),
               ShareButton(
                 isRunning: isRunning,
                 onPressed: onShared,
@@ -37,23 +42,23 @@ class ExecutionButton extends StatelessWidget {
   }
 }
 
-class NewRunButton extends StatefulWidget {
-  const NewRunButton({super.key, required this.controller});
+class NewRunButton extends StatelessWidget {
+  const NewRunButton({
+    super.key,
+    required this.controller,
+    required this.onPressed,
+  });
 
   final IOController controller;
-  @override
-  State<NewRunButton> createState() => _NewRunButtonState();
-}
+  final void Function()? onPressed;
 
-class _NewRunButtonState extends State<NewRunButton> {
   @override
   Widget build(BuildContext context) {
     return SecondaryButton(
       text: 'New run',
       onPressed: () {
-        setState(() {
-          widget.controller.reset();
-        });
+        controller.reset();
+        onPressed;
       },
     );
   }

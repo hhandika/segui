@@ -35,18 +35,18 @@ class _IdParsingPageState extends State<IdParsingPage> {
           SharedOutputDirField(ctr: ctr.outputDir),
           SharedTextField(
             controller: ctr.outputController,
-            label: 'Output Filename',
+            label: 'Filename',
             hint: 'Enter output filename',
           ),
+          SwitchForm(
+              label: 'Map sequence ID',
+              value: _isMap,
+              onPressed: (value) {
+                setState(() {
+                  _isMap = value;
+                });
+              }),
         ]),
-        SwitchForm(
-            label: 'Map sequence ID',
-            value: _isMap,
-            onPressed: (value) {
-              setState(() {
-                _isMap = value;
-              });
-            }),
         const SizedBox(height: 16),
         Center(
           child: ExecutionButton(
@@ -54,9 +54,15 @@ class _IdParsingPageState extends State<IdParsingPage> {
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
             controller: ctr,
+            onNewRun: () => setState(() {}),
             onExecuted: () async {
+              String dir = await getOutputDir(
+                ctr.outputDir.text,
+                SupportedTask.sequenceUniqueId,
+              );
               setState(() {
                 ctr.isRunning = true;
+                ctr.outputDir.text = dir;
               });
 
               await _parseId();
@@ -115,6 +121,10 @@ class _IdParsingPageState extends State<IdParsingPage> {
   }
 
   void _showError(String error) {
+    setState(() {
+      ctr.isRunning = false;
+      ctr.isSuccess = false;
+    });
     ScaffoldMessenger.of(context).showSnackBar(showSharedSnackBar(
       context,
       'Failed to parse sequence ID: $error',

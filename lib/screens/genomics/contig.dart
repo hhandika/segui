@@ -62,6 +62,7 @@ class _ContigPageState extends State<ContigPage> {
             isSuccess: ctr.isSuccess,
             controller: ctr,
             label: 'Summarize',
+            onNewRun: () => setState(() {}),
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {

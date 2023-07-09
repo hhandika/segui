@@ -121,6 +121,7 @@ class _ConcatPageState extends State<ConcatPage> {
             isRunning: ctr.isRunning,
             controller: ctr,
             isSuccess: ctr.isSuccess,
+            onNewRun: () => setState(() {}),
             onExecuted: ctr.isRunning || !_validate()
                 ? null
                 : () async {
