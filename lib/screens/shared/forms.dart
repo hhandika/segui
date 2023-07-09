@@ -185,8 +185,18 @@ class SharedTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        suffix: controller.text.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  controller.clear();
+                },
+              )
+            : null,
       ),
-      onChanged: (value) {},
+      onSubmitted: (value) {
+        controller.text = value;
+      },
     );
   }
 }
@@ -241,7 +251,7 @@ class SharedOutputDirField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Platform.isIOS
         ? SharedTextField(
-            label: 'Output directory',
+            label: 'Directory name',
             hint: 'Enter output directory name',
             controller: ctr,
           )

@@ -83,6 +83,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
           child: ExecutionButton(
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
+            controller: ctr,
             label: 'Summarize',
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null

@@ -103,6 +103,7 @@ class _TranslatePageState extends State<TranslatePage> {
             label: 'Translate',
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
+            controller: ctr,
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {

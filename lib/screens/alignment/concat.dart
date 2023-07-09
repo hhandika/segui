@@ -52,12 +52,12 @@ class _ConcatPageState extends State<ConcatPage> {
           SharedOutputDirField(ctr: ctr.outputDir),
           SharedTextField(
             controller: ctr.outputController,
-            label: 'Output Filename',
+            label: 'Filename',
             hint: 'Enter output filename',
           ),
           SharedDropdownField(
             value: ctr.outputFormatController,
-            label: 'Output Format',
+            label: 'Format',
             items: outputFormat,
             onChanged: (String? value) {
               setState(() {
@@ -119,6 +119,7 @@ class _ConcatPageState extends State<ConcatPage> {
           child: ExecutionButton(
             label: 'Concatenate',
             isRunning: ctr.isRunning,
+            controller: ctr,
             isSuccess: ctr.isSuccess,
             onExecuted: ctr.isRunning || !_validate()
                 ? null

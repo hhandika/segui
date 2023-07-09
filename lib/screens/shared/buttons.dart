@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/screens/shared/controllers.dart';
 
 class ExecutionButton extends StatelessWidget {
   const ExecutionButton({
@@ -6,6 +7,7 @@ class ExecutionButton extends StatelessWidget {
     required this.label,
     required this.isRunning,
     required this.isSuccess,
+    required this.controller,
     required this.onExecuted,
     required this.onShared,
   });
@@ -13,15 +15,47 @@ class ExecutionButton extends StatelessWidget {
   final String label;
   final bool isRunning;
   final bool isSuccess;
+  final IOController controller;
   final VoidCallback? onExecuted;
   final VoidCallback? onShared;
 
   @override
   Widget build(BuildContext context) {
     return isSuccess
-        ? ShareButton(isRunning: isRunning, onPressed: onShared)
+        ? Wrap(
+            spacing: 16,
+            children: [
+              NewRunButton(controller: controller),
+              ShareButton(
+                isRunning: isRunning,
+                onPressed: onShared,
+              ),
+            ],
+          )
         : PrimaryButton(
             label: label, onPressed: onExecuted, isRunning: isRunning);
+  }
+}
+
+class NewRunButton extends StatefulWidget {
+  const NewRunButton({super.key, required this.controller});
+
+  final IOController controller;
+  @override
+  State<NewRunButton> createState() => _NewRunButtonState();
+}
+
+class _NewRunButtonState extends State<NewRunButton> {
+  @override
+  Widget build(BuildContext context) {
+    return SecondaryButton(
+      text: 'New run',
+      onPressed: () {
+        setState(() {
+          widget.controller.reset();
+        });
+      },
+    );
   }
 }
 
@@ -104,9 +138,7 @@ class SecondaryButton extends StatelessWidget {
         side: BorderSide(
           color: Theme.of(context).colorScheme.secondary,
         ),
-        foregroundColor: Theme.of(context).colorScheme.onSecondary,
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        // elevation: 0,
+        foregroundColor: Theme.of(context).colorScheme.secondary,
       ),
       onPressed: onPressed,
       child: Text(text),

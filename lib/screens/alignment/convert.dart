@@ -85,6 +85,7 @@ class _ConvertPageState extends State<ConvertPage> {
             label: 'Convert',
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
+            controller: ctr,
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {

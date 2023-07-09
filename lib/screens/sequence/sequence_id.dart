@@ -21,8 +21,8 @@ class _IdParsingPageState extends State<IdParsingPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
@@ -53,6 +53,7 @@ class _IdParsingPageState extends State<IdParsingPage> {
             label: 'Parse IDs',
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
+            controller: ctr,
             onExecuted: () async {
               setState(() {
                 ctr.isRunning = true;

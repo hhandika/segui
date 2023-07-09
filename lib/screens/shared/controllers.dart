@@ -41,6 +41,18 @@ class IOController {
     return validInputPath && validOutputPath && inputFormatController != null;
   }
 
+  void reset() {
+    outputController.clear();
+    dirPath.clear();
+    outputDir.clear();
+    files.clear();
+    inputFormatController = inputFormat[0];
+    dataTypeController = dataType[0];
+    outputFormatController = null;
+    isRunning = false;
+    isSuccess = false;
+  }
+
   void dispose() {
     outputController.dispose();
     dirPath.dispose();

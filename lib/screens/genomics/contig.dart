@@ -60,6 +60,7 @@ class _ContigPageState extends State<ContigPage> {
               child: ExecutionButton(
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
+            controller: ctr,
             label: 'Summarize',
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null

@@ -71,6 +71,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
             label: 'Summarize',
             isRunning: ctr.isRunning,
             isSuccess: ctr.isSuccess,
+            controller: ctr,
             onExecuted: ctr.isRunning || !ctr.isValid()
                 ? null
                 : () async {
