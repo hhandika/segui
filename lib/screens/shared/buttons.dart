@@ -49,7 +49,7 @@ class ShareButton extends StatelessWidget {
               width: 8,
               child: CircularProgressIndicator(),
             )
-          : const Icon(Icons.share),
+          : Icon(Icons.adaptive.share),
       onPressed: onPressed,
       label:
           isRunning ? const Text('Compressing files...') : const Text('Share'),
