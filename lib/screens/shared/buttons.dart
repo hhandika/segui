@@ -19,7 +19,7 @@ class ExecutionButton extends StatelessWidget {
   final IOController controller;
   final VoidCallback? onExecuted;
   final VoidCallback? onShared;
-  final void Function()? onNewRun;
+  final void Function() onNewRun;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class NewRunButton extends StatelessWidget {
   });
 
   final IOController controller;
-  final void Function()? onPressed;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class NewRunButton extends StatelessWidget {
       text: 'New run',
       onPressed: () {
         controller.reset();
-        onPressed;
+        onPressed();
       },
     );
   }
