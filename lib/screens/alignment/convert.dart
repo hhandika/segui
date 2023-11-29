@@ -105,12 +105,14 @@ class _ConvertPageState extends State<ConvertPage> {
               try {
                 await _shareOutput();
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  showSharedSnackBar(
-                    context,
-                    'Sharing failed!: $e',
-                  ),
-                );
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    showSharedSnackBar(
+                      context,
+                      'Sharing failed!: $e',
+                    ),
+                  );
+                }
               }
             },
           ),
