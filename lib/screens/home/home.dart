@@ -73,8 +73,9 @@ class _SmallScreenViewState extends State<SmallScreenView> {
         ),
         body: SafeArea(
           child: Center(
-            child: _pages.elementAt(_selectedIndex),
-          ),
+              child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: _pages.elementAt(_selectedIndex))),
         ),
         bottomNavigationBar: NavigationBar(
           destinations: navigationTargets
