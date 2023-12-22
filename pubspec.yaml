@@ -1,5 +1,5 @@
 name: segui
-description: A GUI version of SEGUL alignment manipulation and summary statistic tools.
+description: A GUI version of the SEGUL alignment manipulation and summary statistic tool.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
