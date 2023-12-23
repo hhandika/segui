@@ -1,4 +1,4 @@
-package com.example.segui
+package com.hhandika.segui
 
 import io.flutter.embedding.android.FlutterActivity
 

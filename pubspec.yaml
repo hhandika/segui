@@ -76,8 +76,6 @@ flutter_icons:
   remove_alpha_ios: true
   image_path_ios: "assets/launcher/icon.png"
   image_path_android: "assets/launcher/icon.png"
-  adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/launcher/icon_android_fg.png"
   windows:
     generate: true
     image_path: "assets/launcher/icon.png"
@@ -105,7 +103,6 @@ flutter:
   assets:
     - assets/images/
     - assets/markdown/
-  #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
