@@ -6,7 +6,7 @@ import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/services/native.dart';
+import 'package:segui/src/rust/api/handler.dart';
 
 class QuickTranslatePage extends StatelessWidget {
   const QuickTranslatePage({super.key});
@@ -138,7 +138,6 @@ class _TranslatePageState extends State<TranslatePage> {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     try {
       await SequenceServices(
-        bridge: segulApi,
         files: ctr.files,
         dirPath: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,

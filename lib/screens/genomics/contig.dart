@@ -5,8 +5,8 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/services/native.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/src/rust/api/handler.dart';
 
 class ContigPage extends StatefulWidget {
   const ContigPage({super.key});
@@ -98,7 +98,6 @@ class _ContigPageState extends State<ContigPage> {
   Future<void> _summarize(IOController ctr) async {
     try {
       await ContigServices(
-        bridge: segulApi,
         files: ctr.files,
         dirPath: ctr.dirPath.text,
         fileFmt: ctr.inputFormatController!,

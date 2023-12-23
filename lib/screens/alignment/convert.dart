@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/services/native.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/src/rust/api/handler.dart';
 
 class QuickConvertPage extends StatelessWidget {
   const QuickConvertPage({super.key});
@@ -125,7 +125,6 @@ class _ConvertPageState extends State<ConvertPage> {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     try {
       await SequenceServices(
-        bridge: segulApi,
         files: ctr.files,
         dirPath: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,

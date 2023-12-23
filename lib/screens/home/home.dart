@@ -71,12 +71,7 @@ class _SmallScreenViewState extends State<SmallScreenView> {
             SettingButtons(),
           ],
         ),
-        body: SafeArea(
-          child: Center(
-              child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _pages.elementAt(_selectedIndex))),
-        ),
+        body: SafeArea(child: Center(child: _pages.elementAt(_selectedIndex))),
         bottomNavigationBar: NavigationBar(
           destinations: navigationTargets
               .map((e) => NavigationDestination(
@@ -117,8 +112,7 @@ class _LargeScreenViewState extends State<LargeScreenView> {
           top: false,
           child: Row(
             children: [
-              SingleChildScrollView(
-                  child: ConstrainedBox(
+              ConstrainedBox(
                 constraints: BoxConstraints(
                     minHeight: MediaQuery.of(context).size.height * 0.9),
                 child: IntrinsicHeight(
@@ -147,7 +141,7 @@ class _LargeScreenViewState extends State<LargeScreenView> {
                         ),
                       )),
                 ),
-              )),
+              ),
               const VerticalDivider(thickness: 1, width: 1),
               Expanded(
                 flex: 3,

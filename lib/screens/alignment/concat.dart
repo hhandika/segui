@@ -6,7 +6,7 @@ import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/services/native.dart';
+import 'package:segui/src/rust/api/handler.dart';
 
 class QuickConcatPage extends StatelessWidget {
   const QuickConcatPage({super.key});
@@ -14,12 +14,11 @@ class QuickConcatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Alignment Concatenation'),
-        ),
-        body: const SingleChildScrollView(
-          child: AppPageView(child: ConcatPage()),
-        ));
+      appBar: AppBar(
+        title: const Text('Alignment Concatenation'),
+      ),
+      body: const AppPageView(child: ConcatPage()),
+    );
   }
 }
 
@@ -161,7 +160,6 @@ class _ConcatPageState extends State<ConcatPage> {
     String partitionFmt = getPartitionFmt(_partitionFormatController, isCodon);
     try {
       await SequenceServices(
-        bridge: segulApi,
         dirPath: ctr.dirPath.text,
         files: ctr.files,
         fileFmt: ctr.inputFormatController!,

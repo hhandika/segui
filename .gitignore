@@ -43,15 +43,13 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-api/target/
+target/
 
 *.dmg
 
 # Ignore Rust binaries
 src/main/jniLibs/
 *.tar.gz
-
-/target/
 
 .windows.yml
 

@@ -5,7 +5,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/services/native.dart';
+import 'package:segui/src/rust/api/handler.dart';
 
 class IdParsingPage extends StatefulWidget {
   const IdParsingPage({super.key});
@@ -84,7 +84,6 @@ class _IdParsingPageState extends State<IdParsingPage> {
   Future<void> _parseId() async {
     try {
       await SequenceServices(
-        bridge: segulApi,
         files: ctr.files,
         dirPath: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
