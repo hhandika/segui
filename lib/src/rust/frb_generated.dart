@@ -3,7 +3,10 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
-import 'api/handler.dart';
+import 'api/common.dart';
+import 'api/contig.dart';
+import 'api/fastq.dart';
+import 'api/sequence.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.io.dart' if (dart.library.html) 'frb_generated.web.dart';
@@ -56,6 +59,8 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  void initLogger({required String path, dynamic hint});
+
   Future<ContigServices> contigServicesNew({dynamic hint});
 
   Future<void> contigServicesSummarize(
@@ -97,8 +102,6 @@ abstract class RustLibApi extends BaseApi {
       required String outputFmt,
       dynamic hint});
 
-  void initLogger({required String path, dynamic hint});
-
   String showDnaUppercase({dynamic hint});
 }
 
@@ -109,6 +112,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.generalizedFrbRustBinding,
     required super.portManager,
   });
+
+  @override
+  void initLogger({required String path, dynamic hint}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        var arg0 = cst_encode_String(path);
+        return wire.wire_init_logger(arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kInitLoggerConstMeta,
+      argValues: [path],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kInitLoggerConstMeta => const TaskConstMeta(
+        debugName: "init_logger",
+        argNames: ["path"],
+      );
 
   @override
   Future<ContigServices> contigServicesNew({dynamic hint}) {
@@ -377,29 +403,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(
         debugName: "SequenceServices_translate_sequence",
         argNames: ["that", "table", "readingFrame", "outputFmt"],
-      );
-
-  @override
-  void initLogger({required String path, dynamic hint}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        var arg0 = cst_encode_String(path);
-        return wire.wire_init_logger(arg0);
-      },
-      codec: DcoCodec(
-        decodeSuccessData: dco_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kInitLoggerConstMeta,
-      argValues: [path],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kInitLoggerConstMeta => const TaskConstMeta(
-        debugName: "init_logger",
-        argNames: ["path"],
       );
 
   @override

@@ -6,7 +6,7 @@ import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/handler.dart';
+import 'package:segui/src/rust/api/fastq.dart';
 
 class QuickRawSummary extends StatelessWidget {
   const QuickRawSummary({super.key});

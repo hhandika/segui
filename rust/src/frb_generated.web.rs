@@ -25,10 +25,10 @@ impl CstDecode<String> for String {
         self
     }
 }
-impl CstDecode<crate::api::handler::ContigServices>
+impl CstDecode<crate::api::contig::ContigServices>
     for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
 {
-    fn cst_decode(self) -> crate::api::handler::ContigServices {
+    fn cst_decode(self) -> crate::api::contig::ContigServices {
         let self_ = self
             .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
             .unwrap();
@@ -38,7 +38,7 @@ impl CstDecode<crate::api::handler::ContigServices>
             "Expected 4 elements, got {}",
             self_.length()
         );
-        crate::api::handler::ContigServices {
+        crate::api::contig::ContigServices {
             dir_path: self_.get(0).cst_decode(),
             files: self_.get(1).cst_decode(),
             file_fmt: self_.get(2).cst_decode(),
@@ -46,10 +46,10 @@ impl CstDecode<crate::api::handler::ContigServices>
         }
     }
 }
-impl CstDecode<crate::api::handler::FastqServices>
+impl CstDecode<crate::api::fastq::FastqServices>
     for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
 {
-    fn cst_decode(self) -> crate::api::handler::FastqServices {
+    fn cst_decode(self) -> crate::api::fastq::FastqServices {
         let self_ = self
             .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
             .unwrap();
@@ -59,7 +59,7 @@ impl CstDecode<crate::api::handler::FastqServices>
             "Expected 4 elements, got {}",
             self_.length()
         );
-        crate::api::handler::FastqServices {
+        crate::api::fastq::FastqServices {
             dir_path: self_.get(0).cst_decode(),
             files: self_.get(1).cst_decode(),
             file_fmt: self_.get(2).cst_decode(),
@@ -86,10 +86,10 @@ impl CstDecode<Option<String>> for Option<String> {
         self.map(CstDecode::cst_decode)
     }
 }
-impl CstDecode<crate::api::handler::SequenceServices>
+impl CstDecode<crate::api::sequence::SequenceServices>
     for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
 {
-    fn cst_decode(self) -> crate::api::handler::SequenceServices {
+    fn cst_decode(self) -> crate::api::sequence::SequenceServices {
         let self_ = self
             .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
             .unwrap();
@@ -99,7 +99,7 @@ impl CstDecode<crate::api::handler::SequenceServices>
             "Expected 5 elements, got {}",
             self_.length()
         );
-        crate::api::handler::SequenceServices {
+        crate::api::sequence::SequenceServices {
             dir_path: self_.get(0).cst_decode(),
             files: self_.get(1).cst_decode(),
             file_fmt: self_.get(2).cst_decode(),
@@ -151,6 +151,11 @@ pub fn dart_fn_deliver_output(
         )
     };
     FLUTTER_RUST_BRIDGE_HANDLER.dart_fn_handle_output(call_id, message)
+}
+
+#[wasm_bindgen]
+pub fn wire_init_logger(path: String) -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
+    wire_init_logger_impl(path)
 }
 
 #[wasm_bindgen]
@@ -234,11 +239,6 @@ pub fn wire_SequenceServices_translate_sequence(
     output_fmt: String,
 ) {
     wire_SequenceServices_translate_sequence_impl(port_, that, table, reading_frame, output_fmt)
-}
-
-#[wasm_bindgen]
-pub fn wire_init_logger(path: String) -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
-    wire_init_logger_impl(path)
 }
 
 #[wasm_bindgen]

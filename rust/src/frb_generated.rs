@@ -32,6 +32,23 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire_init_logger_impl(
+    path: impl CstDecode<String> + core::panic::UnwindSafe,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::DcoCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "init_logger",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let api_path = path.cst_decode();
+            transform_result_dco((move || {
+                Result::<_, ()>::Ok(crate::api::common::init_logger(api_path))
+            })())
+        },
+    )
+}
 fn wire_ContigServices_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
@@ -42,7 +59,7 @@ fn wire_ContigServices_new_impl(port_: flutter_rust_bridge::for_generated::Messa
         move || {
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::ContigServices::new())
+                    Result::<_, ()>::Ok(crate::api::contig::ContigServices::new())
                 })())
             }
         },
@@ -50,7 +67,7 @@ fn wire_ContigServices_new_impl(port_: flutter_rust_bridge::for_generated::Messa
 }
 fn wire_ContigServices_summarize_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::handler::ContigServices> + core::panic::UnwindSafe,
+    that: impl CstDecode<crate::api::contig::ContigServices> + core::panic::UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
@@ -62,7 +79,7 @@ fn wire_ContigServices_summarize_impl(
             let api_that = that.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::ContigServices::summarize(&api_that))
+                    Result::<_, ()>::Ok(crate::api::contig::ContigServices::summarize(&api_that))
                 })())
             }
         },
@@ -78,7 +95,7 @@ fn wire_FastqServices_new_impl(port_: flutter_rust_bridge::for_generated::Messag
         move || {
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::FastqServices::new())
+                    Result::<_, ()>::Ok(crate::api::fastq::FastqServices::new())
                 })())
             }
         },
@@ -86,7 +103,7 @@ fn wire_FastqServices_new_impl(port_: flutter_rust_bridge::for_generated::Messag
 }
 fn wire_FastqServices_summarize_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::handler::FastqServices> + core::panic::UnwindSafe,
+    that: impl CstDecode<crate::api::fastq::FastqServices> + core::panic::UnwindSafe,
     mode: impl CstDecode<String> + core::panic::UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
@@ -100,7 +117,7 @@ fn wire_FastqServices_summarize_impl(
             let api_mode = mode.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::FastqServices::summarize(
+                    Result::<_, ()>::Ok(crate::api::fastq::FastqServices::summarize(
                         &api_that, api_mode,
                     ))
                 })())
@@ -110,7 +127,7 @@ fn wire_FastqServices_summarize_impl(
 }
 fn wire_SequenceServices_concat_alignment_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::handler::SequenceServices> + core::panic::UnwindSafe,
+    that: impl CstDecode<crate::api::sequence::SequenceServices> + core::panic::UnwindSafe,
     out_fname: impl CstDecode<String> + core::panic::UnwindSafe,
     out_fmt_str: impl CstDecode<String> + core::panic::UnwindSafe,
     partition_fmt: impl CstDecode<String> + core::panic::UnwindSafe,
@@ -128,7 +145,7 @@ fn wire_SequenceServices_concat_alignment_impl(
             let api_partition_fmt = partition_fmt.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::SequenceServices::concat_alignment(
+                    Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::concat_alignment(
                         &api_that,
                         api_out_fname,
                         api_out_fmt_str,
@@ -141,7 +158,7 @@ fn wire_SequenceServices_concat_alignment_impl(
 }
 fn wire_SequenceServices_convert_sequence_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::handler::SequenceServices> + core::panic::UnwindSafe,
+    that: impl CstDecode<crate::api::sequence::SequenceServices> + core::panic::UnwindSafe,
     output_fmt: impl CstDecode<String> + core::panic::UnwindSafe,
     sort: impl CstDecode<bool> + core::panic::UnwindSafe,
 ) {
@@ -157,7 +174,7 @@ fn wire_SequenceServices_convert_sequence_impl(
             let api_sort = sort.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::SequenceServices::convert_sequence(
+                    Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::convert_sequence(
                         &api_that,
                         api_output_fmt,
                         api_sort,
@@ -177,7 +194,7 @@ fn wire_SequenceServices_new_impl(port_: flutter_rust_bridge::for_generated::Mes
         move || {
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::SequenceServices::new())
+                    Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::new())
                 })())
             }
         },
@@ -185,7 +202,7 @@ fn wire_SequenceServices_new_impl(port_: flutter_rust_bridge::for_generated::Mes
 }
 fn wire_SequenceServices_parse_sequence_id_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::handler::SequenceServices> + core::panic::UnwindSafe,
+    that: impl CstDecode<crate::api::sequence::SequenceServices> + core::panic::UnwindSafe,
     is_map: impl CstDecode<bool> + core::panic::UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
@@ -199,7 +216,7 @@ fn wire_SequenceServices_parse_sequence_id_impl(
             let api_is_map = is_map.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::SequenceServices::parse_sequence_id(
+                    Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::parse_sequence_id(
                         &api_that, api_is_map,
                     ))
                 })())
@@ -209,7 +226,7 @@ fn wire_SequenceServices_parse_sequence_id_impl(
 }
 fn wire_SequenceServices_summarize_alignment_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::handler::SequenceServices> + core::panic::UnwindSafe,
+    that: impl CstDecode<crate::api::sequence::SequenceServices> + core::panic::UnwindSafe,
     output_prefix: impl CstDecode<String> + core::panic::UnwindSafe,
     interval: impl CstDecode<usize> + core::panic::UnwindSafe,
 ) {
@@ -225,11 +242,13 @@ fn wire_SequenceServices_summarize_alignment_impl(
             let api_interval = interval.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::SequenceServices::summarize_alignment(
-                        &api_that,
-                        api_output_prefix,
-                        api_interval,
-                    ))
+                    Result::<_, ()>::Ok(
+                        crate::api::sequence::SequenceServices::summarize_alignment(
+                            &api_that,
+                            api_output_prefix,
+                            api_interval,
+                        ),
+                    )
                 })())
             }
         },
@@ -237,7 +256,7 @@ fn wire_SequenceServices_summarize_alignment_impl(
 }
 fn wire_SequenceServices_translate_sequence_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::handler::SequenceServices> + core::panic::UnwindSafe,
+    that: impl CstDecode<crate::api::sequence::SequenceServices> + core::panic::UnwindSafe,
     table: impl CstDecode<String> + core::panic::UnwindSafe,
     reading_frame: impl CstDecode<usize> + core::panic::UnwindSafe,
     output_fmt: impl CstDecode<String> + core::panic::UnwindSafe,
@@ -255,7 +274,7 @@ fn wire_SequenceServices_translate_sequence_impl(
             let api_output_fmt = output_fmt.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::handler::SequenceServices::translate_sequence(
+                    Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::translate_sequence(
                         &api_that,
                         api_table,
                         api_reading_frame,
@@ -263,23 +282,6 @@ fn wire_SequenceServices_translate_sequence_impl(
                     ))
                 })())
             }
-        },
-    )
-}
-fn wire_init_logger_impl(
-    path: impl CstDecode<String> + core::panic::UnwindSafe,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::DcoCodec, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "init_logger",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
-        },
-        move || {
-            let api_path = path.cst_decode();
-            transform_result_dco((move || {
-                Result::<_, ()>::Ok(crate::api::handler::init_logger(api_path))
-            })())
         },
     )
 }
@@ -292,7 +294,7 @@ fn wire_show_dna_uppercase_impl() -> flutter_rust_bridge::for_generated::WireSyn
         },
         move || {
             transform_result_dco((move || {
-                Result::<_, ()>::Ok(crate::api::handler::show_dna_uppercase())
+                Result::<_, ()>::Ok(crate::api::sequence::show_dna_uppercase())
             })())
         },
     )
@@ -328,13 +330,13 @@ impl SseDecode for bool {
     }
 }
 
-impl SseDecode for crate::api::handler::ContigServices {
+impl SseDecode for crate::api::contig::ContigServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_dirPath = <Option<String>>::sse_decode(deserializer);
         let mut var_files = <Vec<String>>::sse_decode(deserializer);
         let mut var_fileFmt = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
-        return crate::api::handler::ContigServices {
+        return crate::api::contig::ContigServices {
             dir_path: var_dirPath,
             files: var_files,
             file_fmt: var_fileFmt,
@@ -343,13 +345,13 @@ impl SseDecode for crate::api::handler::ContigServices {
     }
 }
 
-impl SseDecode for crate::api::handler::FastqServices {
+impl SseDecode for crate::api::fastq::FastqServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_dirPath = <Option<String>>::sse_decode(deserializer);
         let mut var_files = <Vec<String>>::sse_decode(deserializer);
         let mut var_fileFmt = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
-        return crate::api::handler::FastqServices {
+        return crate::api::fastq::FastqServices {
             dir_path: var_dirPath,
             files: var_files,
             file_fmt: var_fileFmt,
@@ -390,14 +392,14 @@ impl SseDecode for Option<String> {
     }
 }
 
-impl SseDecode for crate::api::handler::SequenceServices {
+impl SseDecode for crate::api::sequence::SequenceServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_dirPath = <Option<String>>::sse_decode(deserializer);
         let mut var_files = <Vec<String>>::sse_decode(deserializer);
         let mut var_fileFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
-        return crate::api::handler::SequenceServices {
+        return crate::api::sequence::SequenceServices {
             dir_path: var_dirPath,
             files: var_files,
             file_fmt: var_fileFmt,
@@ -431,7 +433,7 @@ impl SseDecode for i32 {
 
 // Section: rust2dart
 
-impl flutter_rust_bridge::IntoDart for crate::api::handler::ContigServices {
+impl flutter_rust_bridge::IntoDart for crate::api::contig::ContigServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
             self.dir_path.into_into_dart().into_dart(),
@@ -443,17 +445,17 @@ impl flutter_rust_bridge::IntoDart for crate::api::handler::ContigServices {
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::handler::ContigServices
+    for crate::api::contig::ContigServices
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::handler::ContigServices>
-    for crate::api::handler::ContigServices
+impl flutter_rust_bridge::IntoIntoDart<crate::api::contig::ContigServices>
+    for crate::api::contig::ContigServices
 {
-    fn into_into_dart(self) -> crate::api::handler::ContigServices {
+    fn into_into_dart(self) -> crate::api::contig::ContigServices {
         self
     }
 }
-impl flutter_rust_bridge::IntoDart for crate::api::handler::FastqServices {
+impl flutter_rust_bridge::IntoDart for crate::api::fastq::FastqServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
             self.dir_path.into_into_dart().into_dart(),
@@ -465,17 +467,17 @@ impl flutter_rust_bridge::IntoDart for crate::api::handler::FastqServices {
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::handler::FastqServices
+    for crate::api::fastq::FastqServices
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::handler::FastqServices>
-    for crate::api::handler::FastqServices
+impl flutter_rust_bridge::IntoIntoDart<crate::api::fastq::FastqServices>
+    for crate::api::fastq::FastqServices
 {
-    fn into_into_dart(self) -> crate::api::handler::FastqServices {
+    fn into_into_dart(self) -> crate::api::fastq::FastqServices {
         self
     }
 }
-impl flutter_rust_bridge::IntoDart for crate::api::handler::SequenceServices {
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
             self.dir_path.into_into_dart().into_dart(),
@@ -488,13 +490,13 @@ impl flutter_rust_bridge::IntoDart for crate::api::handler::SequenceServices {
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::handler::SequenceServices
+    for crate::api::sequence::SequenceServices
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::handler::SequenceServices>
-    for crate::api::handler::SequenceServices
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceServices>
+    for crate::api::sequence::SequenceServices
 {
-    fn into_into_dart(self) -> crate::api::handler::SequenceServices {
+    fn into_into_dart(self) -> crate::api::sequence::SequenceServices {
         self
     }
 }
@@ -511,7 +513,7 @@ impl SseEncode for bool {
     }
 }
 
-impl SseEncode for crate::api::handler::ContigServices {
+impl SseEncode for crate::api::contig::ContigServices {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Option<String>>::sse_encode(self.dir_path, serializer);
         <Vec<String>>::sse_encode(self.files, serializer);
@@ -520,7 +522,7 @@ impl SseEncode for crate::api::handler::ContigServices {
     }
 }
 
-impl SseEncode for crate::api::handler::FastqServices {
+impl SseEncode for crate::api::fastq::FastqServices {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Option<String>>::sse_encode(self.dir_path, serializer);
         <Vec<String>>::sse_encode(self.files, serializer);
@@ -556,7 +558,7 @@ impl SseEncode for Option<String> {
     }
 }
 
-impl SseEncode for crate::api::handler::SequenceServices {
+impl SseEncode for crate::api::sequence::SequenceServices {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Option<String>>::sse_encode(self.dir_path, serializer);
         <Vec<String>>::sse_encode(self.files, serializer);

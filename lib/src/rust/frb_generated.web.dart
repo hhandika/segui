@@ -3,7 +3,10 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
-import 'api/handler.dart';
+import 'api/common.dart';
+import 'api/contig.dart';
+import 'api/fastq.dart';
+import 'api/sequence.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -246,6 +249,9 @@ class RustLibWire extends BaseWire {
       wasmModule.dart_fn_deliver_output(
           call_id, ptr_, rust_vec_len_, data_len_);
 
+  dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
+      wire_init_logger(String path) => wasmModule.wire_init_logger(path);
+
   void wire_ContigServices_new(NativePortType port_) =>
       wasmModule.wire_ContigServices_new(port_);
 
@@ -296,9 +302,6 @@ class RustLibWire extends BaseWire {
           port_, that, table, reading_frame, output_fmt);
 
   dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
-      wire_init_logger(String path) => wasmModule.wire_init_logger(path);
-
-  dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
       wire_show_dna_uppercase() => wasmModule.wire_show_dna_uppercase();
 }
 
@@ -316,6 +319,9 @@ class RustLibWasmModule implements WasmModule {
 
   external void dart_fn_deliver_output(int call_id,
       PlatformGeneralizedUint8ListPtr ptr_, int rust_vec_len_, int data_len_);
+
+  external dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
+      wire_init_logger(String path);
 
   external void wire_ContigServices_new(NativePortType port_);
 
@@ -347,9 +353,6 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_SequenceServices_translate_sequence(NativePortType port_,
       List<dynamic> that, String table, int reading_frame, String output_fmt);
-
-  external dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
-      wire_init_logger(String path);
 
   external dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
       wire_show_dna_uppercase();

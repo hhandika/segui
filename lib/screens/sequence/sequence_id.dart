@@ -5,7 +5,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/handler.dart';
+import 'package:segui/src/rust/api/sequence.dart';
 
 class IdParsingPage extends StatefulWidget {
   const IdParsingPage({super.key});

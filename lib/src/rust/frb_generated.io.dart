@@ -3,7 +3,10 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
-import 'api/handler.dart';
+import 'api/common.dart';
+import 'api/contig.dart';
+import 'api/fastq.dart';
+import 'api/sequence.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -316,6 +319,21 @@ class RustLibWire implements BaseWire {
   late final _dart_fn_deliver_output = _dart_fn_deliver_outputPtr
       .asFunction<void Function(int, ffi.Pointer<ffi.Uint8>, int, int)>();
 
+  WireSyncRust2DartDco wire_init_logger(
+    ffi.Pointer<wire_cst_list_prim_u_8> path,
+  ) {
+    return _wire_init_logger(
+      path,
+    );
+  }
+
+  late final _wire_init_loggerPtr = _lookup<
+      ffi.NativeFunction<
+          WireSyncRust2DartDco Function(
+              ffi.Pointer<wire_cst_list_prim_u_8>)>>('wire_init_logger');
+  late final _wire_init_logger = _wire_init_loggerPtr.asFunction<
+      WireSyncRust2DartDco Function(ffi.Pointer<wire_cst_list_prim_u_8>)>();
+
   void wire_ContigServices_new(
     int port_,
   ) {
@@ -537,21 +555,6 @@ class RustLibWire implements BaseWire {
               ffi.Pointer<wire_cst_list_prim_u_8>,
               int,
               ffi.Pointer<wire_cst_list_prim_u_8>)>();
-
-  WireSyncRust2DartDco wire_init_logger(
-    ffi.Pointer<wire_cst_list_prim_u_8> path,
-  ) {
-    return _wire_init_logger(
-      path,
-    );
-  }
-
-  late final _wire_init_loggerPtr = _lookup<
-      ffi.NativeFunction<
-          WireSyncRust2DartDco Function(
-              ffi.Pointer<wire_cst_list_prim_u_8>)>>('wire_init_logger');
-  late final _wire_init_logger = _wire_init_loggerPtr.asFunction<
-      WireSyncRust2DartDco Function(ffi.Pointer<wire_cst_list_prim_u_8>)>();
 
   WireSyncRust2DartDco wire_show_dna_uppercase() {
     return _wire_show_dna_uppercase();

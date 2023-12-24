@@ -16,27 +16,27 @@ impl CstDecode<String> for *mut wire_cst_list_prim_u_8 {
         String::from_utf8(vec).unwrap()
     }
 }
-impl CstDecode<crate::api::handler::ContigServices> for *mut wire_cst_contig_services {
-    fn cst_decode(self) -> crate::api::handler::ContigServices {
+impl CstDecode<crate::api::contig::ContigServices> for *mut wire_cst_contig_services {
+    fn cst_decode(self) -> crate::api::contig::ContigServices {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
-        CstDecode::<crate::api::handler::ContigServices>::cst_decode(*wrap).into()
+        CstDecode::<crate::api::contig::ContigServices>::cst_decode(*wrap).into()
     }
 }
-impl CstDecode<crate::api::handler::FastqServices> for *mut wire_cst_fastq_services {
-    fn cst_decode(self) -> crate::api::handler::FastqServices {
+impl CstDecode<crate::api::fastq::FastqServices> for *mut wire_cst_fastq_services {
+    fn cst_decode(self) -> crate::api::fastq::FastqServices {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
-        CstDecode::<crate::api::handler::FastqServices>::cst_decode(*wrap).into()
+        CstDecode::<crate::api::fastq::FastqServices>::cst_decode(*wrap).into()
     }
 }
-impl CstDecode<crate::api::handler::SequenceServices> for *mut wire_cst_sequence_services {
-    fn cst_decode(self) -> crate::api::handler::SequenceServices {
+impl CstDecode<crate::api::sequence::SequenceServices> for *mut wire_cst_sequence_services {
+    fn cst_decode(self) -> crate::api::sequence::SequenceServices {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
-        CstDecode::<crate::api::handler::SequenceServices>::cst_decode(*wrap).into()
+        CstDecode::<crate::api::sequence::SequenceServices>::cst_decode(*wrap).into()
     }
 }
-impl CstDecode<crate::api::handler::ContigServices> for wire_cst_contig_services {
-    fn cst_decode(self) -> crate::api::handler::ContigServices {
-        crate::api::handler::ContigServices {
+impl CstDecode<crate::api::contig::ContigServices> for wire_cst_contig_services {
+    fn cst_decode(self) -> crate::api::contig::ContigServices {
+        crate::api::contig::ContigServices {
             dir_path: self.dir_path.cst_decode(),
             files: self.files.cst_decode(),
             file_fmt: self.file_fmt.cst_decode(),
@@ -44,9 +44,9 @@ impl CstDecode<crate::api::handler::ContigServices> for wire_cst_contig_services
         }
     }
 }
-impl CstDecode<crate::api::handler::FastqServices> for wire_cst_fastq_services {
-    fn cst_decode(self) -> crate::api::handler::FastqServices {
-        crate::api::handler::FastqServices {
+impl CstDecode<crate::api::fastq::FastqServices> for wire_cst_fastq_services {
+    fn cst_decode(self) -> crate::api::fastq::FastqServices {
+        crate::api::fastq::FastqServices {
             dir_path: self.dir_path.cst_decode(),
             files: self.files.cst_decode(),
             file_fmt: self.file_fmt.cst_decode(),
@@ -71,9 +71,9 @@ impl CstDecode<Vec<u8>> for *mut wire_cst_list_prim_u_8 {
         }
     }
 }
-impl CstDecode<crate::api::handler::SequenceServices> for wire_cst_sequence_services {
-    fn cst_decode(self) -> crate::api::handler::SequenceServices {
-        crate::api::handler::SequenceServices {
+impl CstDecode<crate::api::sequence::SequenceServices> for wire_cst_sequence_services {
+    fn cst_decode(self) -> crate::api::sequence::SequenceServices {
+        crate::api::sequence::SequenceServices {
             dir_path: self.dir_path.cst_decode(),
             files: self.files.cst_decode(),
             file_fmt: self.file_fmt.cst_decode(),
@@ -156,6 +156,13 @@ pub extern "C" fn dart_fn_deliver_output(
 }
 
 #[no_mangle]
+pub extern "C" fn wire_init_logger(
+    path: *mut wire_cst_list_prim_u_8,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
+    wire_init_logger_impl(path)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_ContigServices_new(port_: i64) {
     wire_ContigServices_new_impl(port_)
 }
@@ -233,13 +240,6 @@ pub extern "C" fn wire_SequenceServices_translate_sequence(
     output_fmt: *mut wire_cst_list_prim_u_8,
 ) {
     wire_SequenceServices_translate_sequence_impl(port_, that, table, reading_frame, output_fmt)
-}
-
-#[no_mangle]
-pub extern "C" fn wire_init_logger(
-    path: *mut wire_cst_list_prim_u_8,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
-    wire_init_logger_impl(path)
 }
 
 #[no_mangle]
