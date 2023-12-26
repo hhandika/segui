@@ -2,7 +2,9 @@
 
 ![Segui-Tests](https://github.com/hhandika/segui/workflows/SEGUI-Tests/badge.svg)
 [![LoC](https://tokei.rs/b1/github/hhandika/segui?category=code)](https://github.com/XAMPPRocky/tokei)
+
 <!-- ![GH-Downloads](https://img.shields.io/github/downloads/hhandika/segui/total?color=blue&label=gh-release-downloads) -->
+
 ![last-commit](https://img.shields.io/github/last-commit/hhandika/segui)
 ![License](https://img.shields.io/github/license/hhandika/segui)
 
@@ -25,7 +27,7 @@ Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 | Contig summary statistics      | :white_check_mark: |
 | Raw read summary statistics    | :white_check_mark: |
 | Sequence extraction            |                    |
-| Sequence ID extraction         |                    |
+| Sequence ID extraction         | :white_check_mark: |
 | Sequence ID renaming           |                    |
 | Sequence removal               |                    |
 | Sequence translation           | :white_check_mark: |
