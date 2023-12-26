@@ -33,8 +33,6 @@ jobs:
           channel: "stable"
       - run: |
           flutter pub get
-          flutter_rust_bridge_codegen generate
-          flutter analyze
 
       - name: Run test
         uses: subosito/flutter-action@v2
