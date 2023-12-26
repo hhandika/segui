@@ -285,17 +285,19 @@ fn wire_SequenceServices_translate_sequence_impl(
         },
     )
 }
-fn wire_show_dna_uppercase_impl() -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::DcoCodec, _>(
+fn wire_show_dna_uppercase_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "show_dna_uppercase",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
-            transform_result_dco((move || {
-                Result::<_, ()>::Ok(crate::api::sequence::show_dna_uppercase())
-            })())
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(crate::api::sequence::show_dna_uppercase())
+                })())
+            }
         },
     )
 }

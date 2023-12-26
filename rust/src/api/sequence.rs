@@ -10,12 +10,10 @@ use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, files};
 
-#[flutter_rust_bridge::frb(sync)]
 pub fn show_dna_uppercase() -> String {
     alphabet::DNA_STR_UPPERCASE.to_string()
 }
 
-#[flutter_rust_bridge::frb(sync)]
 pub struct SequenceServices {
     pub dir_path: Option<String>,
     pub files: Vec<String>,

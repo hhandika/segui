@@ -4,7 +4,6 @@ use segul::handler::contig::summarize::ContigSummaryHandler;
 use segul::helper::finder::ContigFileFinder;
 use segul::helper::types::ContigFmt;
 
-#[flutter_rust_bridge::frb(sync)]
 pub struct ContigServices {
     pub dir_path: Option<String>,
     pub files: Vec<String>,

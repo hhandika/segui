@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-String showDnaUppercase({dynamic hint}) =>
+Future<String> showDnaUppercase({dynamic hint}) =>
     RustLib.instance.api.showDnaUppercase(hint: hint);
 
 class SequenceServices {

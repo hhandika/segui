@@ -102,7 +102,7 @@ abstract class RustLibApi extends BaseApi {
       required String outputFmt,
       dynamic hint});
 
-  String showDnaUppercase({dynamic hint});
+  Future<String> showDnaUppercase({dynamic hint});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -406,10 +406,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  String showDnaUppercase({dynamic hint}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        return wire.wire_show_dna_uppercase();
+  Future<String> showDnaUppercase({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_show_dna_uppercase(port_);
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_String,

@@ -243,9 +243,8 @@ pub extern "C" fn wire_SequenceServices_translate_sequence(
 }
 
 #[no_mangle]
-pub extern "C" fn wire_show_dna_uppercase(
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
-    wire_show_dna_uppercase_impl()
+pub extern "C" fn wire_show_dna_uppercase(port_: i64) {
+    wire_show_dna_uppercase_impl(port_)
 }
 
 #[no_mangle]

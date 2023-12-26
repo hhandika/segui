@@ -4,7 +4,6 @@ use segul::handler::read::summarize::ReadSummaryHandler;
 use segul::helper::finder::SeqReadFinder;
 use segul::helper::types::{SeqReadFmt, SummaryMode};
 
-#[flutter_rust_bridge::frb(sync)]
 pub struct FastqServices {
     pub dir_path: Option<String>,
     pub files: Vec<String>,

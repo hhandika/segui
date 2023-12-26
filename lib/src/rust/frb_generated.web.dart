@@ -301,8 +301,8 @@ class RustLibWire extends BaseWire {
       wasmModule.wire_SequenceServices_translate_sequence(
           port_, that, table, reading_frame, output_fmt);
 
-  dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
-      wire_show_dna_uppercase() => wasmModule.wire_show_dna_uppercase();
+  void wire_show_dna_uppercase(NativePortType port_) =>
+      wasmModule.wire_show_dna_uppercase(port_);
 }
 
 @JS('wasm_bindgen')
@@ -354,6 +354,5 @@ class RustLibWasmModule implements WasmModule {
   external void wire_SequenceServices_translate_sequence(NativePortType port_,
       List<dynamic> that, String table, int reading_frame, String output_fmt);
 
-  external dynamic /* flutter_rust_bridge::for_generated::WireSyncRust2DartDco */
-      wire_show_dna_uppercase();
+  external void wire_show_dna_uppercase(NativePortType port_);
 }

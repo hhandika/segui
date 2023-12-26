@@ -556,15 +556,19 @@ class RustLibWire implements BaseWire {
               int,
               ffi.Pointer<wire_cst_list_prim_u_8>)>();
 
-  WireSyncRust2DartDco wire_show_dna_uppercase() {
-    return _wire_show_dna_uppercase();
+  void wire_show_dna_uppercase(
+    int port_,
+  ) {
+    return _wire_show_dna_uppercase(
+      port_,
+    );
   }
 
   late final _wire_show_dna_uppercasePtr =
-      _lookup<ffi.NativeFunction<WireSyncRust2DartDco Function()>>(
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
           'wire_show_dna_uppercase');
   late final _wire_show_dna_uppercase =
-      _wire_show_dna_uppercasePtr.asFunction<WireSyncRust2DartDco Function()>();
+      _wire_show_dna_uppercasePtr.asFunction<void Function(int)>();
 
   ffi.Pointer<wire_cst_contig_services> cst_new_box_autoadd_contig_services() {
     return _cst_new_box_autoadd_contig_services();

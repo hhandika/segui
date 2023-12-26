@@ -242,6 +242,6 @@ pub fn wire_SequenceServices_translate_sequence(
 }
 
 #[wasm_bindgen]
-pub fn wire_show_dna_uppercase() -> flutter_rust_bridge::for_generated::WireSyncRust2DartDco {
-    wire_show_dna_uppercase_impl()
+pub fn wire_show_dna_uppercase(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_show_dna_uppercase_impl(port_)
 }
