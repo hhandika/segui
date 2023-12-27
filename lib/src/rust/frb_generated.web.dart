@@ -33,6 +33,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FastqServices dco_decode_box_autoadd_fastq_services(dynamic raw);
 
   @protected
+  PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
+
+  @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw);
 
   @protected
@@ -49,6 +52,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  PartitionServices dco_decode_partition_services(dynamic raw);
 
   @protected
   SequenceServices dco_decode_sequence_services(dynamic raw);
@@ -77,6 +83,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  PartitionServices sse_decode_box_autoadd_partition_services(
+      SseDeserializer deserializer);
+
+  @protected
   SequenceServices sse_decode_box_autoadd_sequence_services(
       SseDeserializer deserializer);
 
@@ -94,6 +104,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
 
   @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer);
@@ -123,6 +136,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   List<dynamic> cst_encode_box_autoadd_fastq_services(FastqServices raw) {
     return cst_encode_fastq_services(raw);
+  }
+
+  @protected
+  List<dynamic> cst_encode_box_autoadd_partition_services(
+      PartitionServices raw) {
+    return cst_encode_partition_services(raw);
   }
 
   @protected
@@ -166,6 +185,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  List<dynamic> cst_encode_partition_services(PartitionServices raw) {
+    return [
+      cst_encode_list_String(raw.fileInputs),
+      cst_encode_String(raw.inputPartFmt),
+      cst_encode_String(raw.output),
+      cst_encode_String(raw.outputPartFmt),
+      cst_encode_String(raw.datatype),
+      cst_encode_bool(raw.isUncheck)
+    ];
+  }
+
+  @protected
   List<dynamic> cst_encode_sequence_services(SequenceServices raw) {
     return [
       cst_encode_opt_String(raw.dirPath),
@@ -203,6 +234,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FastqServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_partition_services(
+      PartitionServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_sequence_services(
       SequenceServices self, SseSerializer serializer);
 
@@ -221,6 +256,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_partition_services(
+      PartitionServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_sequence_services(
@@ -265,6 +304,13 @@ class RustLibWire extends BaseWire {
   void wire_FastqServices_summarize(
           NativePortType port_, List<dynamic> that, String mode) =>
       wasmModule.wire_FastqServices_summarize(port_, that, mode);
+
+  void wire_PartitionServices_convert_partition(
+          NativePortType port_, List<dynamic> that) =>
+      wasmModule.wire_PartitionServices_convert_partition(port_, that);
+
+  void wire_PartitionServices_new(NativePortType port_) =>
+      wasmModule.wire_PartitionServices_new(port_);
 
   void wire_SequenceServices_concat_alignment(
           NativePortType port_,
@@ -332,6 +378,11 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_FastqServices_summarize(
       NativePortType port_, List<dynamic> that, String mode);
+
+  external void wire_PartitionServices_convert_partition(
+      NativePortType port_, List<dynamic> that);
+
+  external void wire_PartitionServices_new(NativePortType port_);
 
   external void wire_SequenceServices_concat_alignment(
       NativePortType port_,

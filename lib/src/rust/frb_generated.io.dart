@@ -34,6 +34,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FastqServices dco_decode_box_autoadd_fastq_services(dynamic raw);
 
   @protected
+  PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
+
+  @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw);
 
   @protected
@@ -50,6 +53,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  PartitionServices dco_decode_partition_services(dynamic raw);
 
   @protected
   SequenceServices dco_decode_sequence_services(dynamic raw);
@@ -78,6 +84,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  PartitionServices sse_decode_box_autoadd_partition_services(
+      SseDeserializer deserializer);
+
+  @protected
   SequenceServices sse_decode_box_autoadd_sequence_services(
       SseDeserializer deserializer);
 
@@ -95,6 +105,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
 
   @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer);
@@ -129,6 +142,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FastqServices raw) {
     final ptr = wire.cst_new_box_autoadd_fastq_services();
     cst_api_fill_to_wire_fastq_services(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_cst_partition_services>
+      cst_encode_box_autoadd_partition_services(PartitionServices raw) {
+    final ptr = wire.cst_new_box_autoadd_partition_services();
+    cst_api_fill_to_wire_partition_services(raw, ptr.ref);
     return ptr;
   }
 
@@ -174,6 +195,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  void cst_api_fill_to_wire_box_autoadd_partition_services(
+      PartitionServices apiObj,
+      ffi.Pointer<wire_cst_partition_services> wireObj) {
+    cst_api_fill_to_wire_partition_services(apiObj, wireObj.ref);
+  }
+
+  @protected
   void cst_api_fill_to_wire_box_autoadd_sequence_services(
       SequenceServices apiObj,
       ffi.Pointer<wire_cst_sequence_services> wireObj) {
@@ -196,6 +224,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     wireObj.files = cst_encode_list_String(apiObj.files);
     wireObj.file_fmt = cst_encode_String(apiObj.fileFmt);
     wireObj.output_dir = cst_encode_String(apiObj.outputDir);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_partition_services(
+      PartitionServices apiObj, wire_cst_partition_services wireObj) {
+    wireObj.file_inputs = cst_encode_list_String(apiObj.fileInputs);
+    wireObj.input_part_fmt = cst_encode_String(apiObj.inputPartFmt);
+    wireObj.output = cst_encode_String(apiObj.output);
+    wireObj.output_part_fmt = cst_encode_String(apiObj.outputPartFmt);
+    wireObj.datatype = cst_encode_String(apiObj.datatype);
+    wireObj.is_uncheck = cst_encode_bool(apiObj.isUncheck);
   }
 
   @protected
@@ -235,6 +274,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FastqServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_partition_services(
+      PartitionServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_sequence_services(
       SequenceServices self, SseSerializer serializer);
 
@@ -253,6 +296,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_partition_services(
+      PartitionServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_sequence_services(
@@ -401,6 +448,39 @@ class RustLibWire implements BaseWire {
       _wire_FastqServices_summarizePtr.asFunction<
           void Function(int, ffi.Pointer<wire_cst_fastq_services>,
               ffi.Pointer<wire_cst_list_prim_u_8>)>();
+
+  void wire_PartitionServices_convert_partition(
+    int port_,
+    ffi.Pointer<wire_cst_partition_services> that,
+  ) {
+    return _wire_PartitionServices_convert_partition(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_PartitionServices_convert_partitionPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64, ffi.Pointer<wire_cst_partition_services>)>>(
+      'wire_PartitionServices_convert_partition');
+  late final _wire_PartitionServices_convert_partition =
+      _wire_PartitionServices_convert_partitionPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_cst_partition_services>)>();
+
+  void wire_PartitionServices_new(
+    int port_,
+  ) {
+    return _wire_PartitionServices_new(
+      port_,
+    );
+  }
+
+  late final _wire_PartitionServices_newPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_PartitionServices_new');
+  late final _wire_PartitionServices_new =
+      _wire_PartitionServices_newPtr.asFunction<void Function(int)>();
 
   void wire_SequenceServices_concat_alignment(
     int port_,
@@ -592,6 +672,19 @@ class RustLibWire implements BaseWire {
       _cst_new_box_autoadd_fastq_servicesPtr
           .asFunction<ffi.Pointer<wire_cst_fastq_services> Function()>();
 
+  ffi.Pointer<wire_cst_partition_services>
+      cst_new_box_autoadd_partition_services() {
+    return _cst_new_box_autoadd_partition_services();
+  }
+
+  late final _cst_new_box_autoadd_partition_servicesPtr = _lookup<
+          ffi
+          .NativeFunction<ffi.Pointer<wire_cst_partition_services> Function()>>(
+      'cst_new_box_autoadd_partition_services');
+  late final _cst_new_box_autoadd_partition_services =
+      _cst_new_box_autoadd_partition_servicesPtr
+          .asFunction<ffi.Pointer<wire_cst_partition_services> Function()>();
+
   ffi.Pointer<wire_cst_sequence_services>
       cst_new_box_autoadd_sequence_services() {
     return _cst_new_box_autoadd_sequence_services();
@@ -678,6 +771,21 @@ final class wire_cst_fastq_services extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8> file_fmt;
 
   external ffi.Pointer<wire_cst_list_prim_u_8> output_dir;
+}
+
+final class wire_cst_partition_services extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_String> file_inputs;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8> input_part_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8> output;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8> output_part_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8> datatype;
+
+  @ffi.Bool()
+  external bool is_uncheck;
 }
 
 final class wire_cst_sequence_services extends ffi.Struct {

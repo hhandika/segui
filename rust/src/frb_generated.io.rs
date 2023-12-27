@@ -28,6 +28,12 @@ impl CstDecode<crate::api::fastq::FastqServices> for *mut wire_cst_fastq_service
         CstDecode::<crate::api::fastq::FastqServices>::cst_decode(*wrap).into()
     }
 }
+impl CstDecode<crate::api::sequence::PartitionServices> for *mut wire_cst_partition_services {
+    fn cst_decode(self) -> crate::api::sequence::PartitionServices {
+        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
+        CstDecode::<crate::api::sequence::PartitionServices>::cst_decode(*wrap).into()
+    }
+}
 impl CstDecode<crate::api::sequence::SequenceServices> for *mut wire_cst_sequence_services {
     fn cst_decode(self) -> crate::api::sequence::SequenceServices {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
@@ -68,6 +74,18 @@ impl CstDecode<Vec<u8>> for *mut wire_cst_list_prim_u_8 {
         unsafe {
             let wrap = flutter_rust_bridge::for_generated::box_from_leak_ptr(self);
             flutter_rust_bridge::for_generated::vec_from_leak_ptr(wrap.ptr, wrap.len)
+        }
+    }
+}
+impl CstDecode<crate::api::sequence::PartitionServices> for wire_cst_partition_services {
+    fn cst_decode(self) -> crate::api::sequence::PartitionServices {
+        crate::api::sequence::PartitionServices {
+            file_inputs: self.file_inputs.cst_decode(),
+            input_part_fmt: self.input_part_fmt.cst_decode(),
+            output: self.output.cst_decode(),
+            output_part_fmt: self.output_part_fmt.cst_decode(),
+            datatype: self.datatype.cst_decode(),
+            is_uncheck: self.is_uncheck.cst_decode(),
         }
     }
 }
@@ -117,6 +135,23 @@ impl NewWithNullPtr for wire_cst_fastq_services {
     }
 }
 impl Default for wire_cst_fastq_services {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
+impl NewWithNullPtr for wire_cst_partition_services {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            file_inputs: core::ptr::null_mut(),
+            input_part_fmt: core::ptr::null_mut(),
+            output: core::ptr::null_mut(),
+            output_part_fmt: core::ptr::null_mut(),
+            datatype: core::ptr::null_mut(),
+            is_uncheck: Default::default(),
+        }
+    }
+}
+impl Default for wire_cst_partition_services {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }
@@ -184,6 +219,19 @@ pub extern "C" fn wire_FastqServices_summarize(
     mode: *mut wire_cst_list_prim_u_8,
 ) {
     wire_FastqServices_summarize_impl(port_, that, mode)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_PartitionServices_convert_partition(
+    port_: i64,
+    that: *mut wire_cst_partition_services,
+) {
+    wire_PartitionServices_convert_partition_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_PartitionServices_new(port_: i64) {
+    wire_PartitionServices_new_impl(port_)
 }
 
 #[no_mangle]
@@ -262,6 +310,13 @@ pub extern "C" fn cst_new_box_autoadd_fastq_services() -> *mut wire_cst_fastq_se
 }
 
 #[no_mangle]
+pub extern "C" fn cst_new_box_autoadd_partition_services() -> *mut wire_cst_partition_services {
+    flutter_rust_bridge::for_generated::new_leak_box_ptr(
+        wire_cst_partition_services::new_with_null_ptr(),
+    )
+}
+
+#[no_mangle]
 pub extern "C" fn cst_new_box_autoadd_sequence_services() -> *mut wire_cst_sequence_services {
     flutter_rust_bridge::for_generated::new_leak_box_ptr(
         wire_cst_sequence_services::new_with_null_ptr(),
@@ -316,6 +371,16 @@ pub struct wire_cst_list_String {
 pub struct wire_cst_list_prim_u_8 {
     ptr: *mut u8,
     len: i32,
+}
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_cst_partition_services {
+    file_inputs: *mut wire_cst_list_String,
+    input_part_fmt: *mut wire_cst_list_prim_u_8,
+    output: *mut wire_cst_list_prim_u_8,
+    output_part_fmt: *mut wire_cst_list_prim_u_8,
+    datatype: *mut wire_cst_list_prim_u_8,
+    is_uncheck: bool,
 }
 #[repr(C)]
 #[derive(Clone)]

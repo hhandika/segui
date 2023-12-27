@@ -9,6 +9,53 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<String> showDnaUppercase({dynamic hint}) =>
     RustLib.instance.api.showDnaUppercase(hint: hint);
 
+class PartitionServices {
+  final List<String> fileInputs;
+  final String inputPartFmt;
+  final String output;
+  final String outputPartFmt;
+  final String datatype;
+  final bool isUncheck;
+
+  const PartitionServices({
+    required this.fileInputs,
+    required this.inputPartFmt,
+    required this.output,
+    required this.outputPartFmt,
+    required this.datatype,
+    required this.isUncheck,
+  });
+
+  Future<void> convertPartition({dynamic hint}) =>
+      RustLib.instance.api.partitionServicesConvertPartition(
+        that: this,
+      );
+
+  static Future<PartitionServices> newPartitionServices({dynamic hint}) =>
+      RustLib.instance.api.partitionServicesNew(hint: hint);
+
+  @override
+  int get hashCode =>
+      fileInputs.hashCode ^
+      inputPartFmt.hashCode ^
+      output.hashCode ^
+      outputPartFmt.hashCode ^
+      datatype.hashCode ^
+      isUncheck.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PartitionServices &&
+          runtimeType == other.runtimeType &&
+          fileInputs == other.fileInputs &&
+          inputPartFmt == other.inputPartFmt &&
+          output == other.output &&
+          outputPartFmt == other.outputPartFmt &&
+          datatype == other.datatype &&
+          isUncheck == other.isUncheck;
+}
+
 class SequenceServices {
   final String? dirPath;
   final List<String> files;

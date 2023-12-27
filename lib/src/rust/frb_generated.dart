@@ -71,6 +71,11 @@ abstract class RustLibApi extends BaseApi {
   Future<void> fastqServicesSummarize(
       {required FastqServices that, required String mode, dynamic hint});
 
+  Future<void> partitionServicesConvertPartition(
+      {required PartitionServices that, dynamic hint});
+
+  Future<PartitionServices> partitionServicesNew({dynamic hint});
+
   Future<void> sequenceServicesConcatAlignment(
       {required SequenceServices that,
       required String outFname,
@@ -227,6 +232,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kFastqServicesSummarizeConstMeta => const TaskConstMeta(
         debugName: "FastqServices_summarize",
         argNames: ["that", "mode"],
+      );
+
+  @override
+  Future<void> partitionServicesConvertPartition(
+      {required PartitionServices that, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_partition_services(that);
+        return wire.wire_PartitionServices_convert_partition(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kPartitionServicesConvertPartitionConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kPartitionServicesConvertPartitionConstMeta =>
+      const TaskConstMeta(
+        debugName: "PartitionServices_convert_partition",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<PartitionServices> partitionServicesNew({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_PartitionServices_new(port_);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_partition_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kPartitionServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kPartitionServicesNewConstMeta => const TaskConstMeta(
+        debugName: "PartitionServices_new",
+        argNames: [],
       );
 
   @override
@@ -448,6 +500,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw) {
+    return dco_decode_partition_services(raw);
+  }
+
+  @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw) {
     return dco_decode_sequence_services(raw);
   }
@@ -491,6 +548,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   String? dco_decode_opt_String(dynamic raw) {
     return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  PartitionServices dco_decode_partition_services(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return PartitionServices(
+      fileInputs: dco_decode_list_String(arr[0]),
+      inputPartFmt: dco_decode_String(arr[1]),
+      output: dco_decode_String(arr[2]),
+      outputPartFmt: dco_decode_String(arr[3]),
+      datatype: dco_decode_String(arr[4]),
+      isUncheck: dco_decode_bool(arr[5]),
+    );
   }
 
   @protected
@@ -543,6 +615,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FastqServices sse_decode_box_autoadd_fastq_services(
       SseDeserializer deserializer) {
     return (sse_decode_fastq_services(deserializer));
+  }
+
+  @protected
+  PartitionServices sse_decode_box_autoadd_partition_services(
+      SseDeserializer deserializer) {
+    return (sse_decode_partition_services(deserializer));
   }
 
   @protected
@@ -600,6 +678,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     } else {
       return null;
     }
+  }
+
+  @protected
+  PartitionServices sse_decode_partition_services(
+      SseDeserializer deserializer) {
+    var var_fileInputs = sse_decode_list_String(deserializer);
+    var var_inputPartFmt = sse_decode_String(deserializer);
+    var var_output = sse_decode_String(deserializer);
+    var var_outputPartFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_isUncheck = sse_decode_bool(deserializer);
+    return PartitionServices(
+        fileInputs: var_fileInputs,
+        inputPartFmt: var_inputPartFmt,
+        output: var_output,
+        outputPartFmt: var_outputPartFmt,
+        datatype: var_datatype,
+        isUncheck: var_isUncheck);
   }
 
   @protected
@@ -678,6 +774,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_partition_services(
+      PartitionServices self, SseSerializer serializer) {
+    sse_encode_partition_services(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_sequence_services(
       SequenceServices self, SseSerializer serializer) {
     sse_encode_sequence_services(self, serializer);
@@ -720,6 +822,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (self != null) {
       sse_encode_String(self, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_partition_services(
+      PartitionServices self, SseSerializer serializer) {
+    sse_encode_list_String(self.fileInputs, serializer);
+    sse_encode_String(self.inputPartFmt, serializer);
+    sse_encode_String(self.output, serializer);
+    sse_encode_String(self.outputPartFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_bool(self.isUncheck, serializer);
   }
 
   @protected
