@@ -51,6 +51,8 @@ dependencies:
   path: ^1.8.3
   rust_builder:
     path: rust_builder
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.0
@@ -69,6 +71,9 @@ dev_dependencies:
   msix: ^3.15.0
   integration_test:
     sdk: flutter
+  riverpod_generator: ^2.3.9
+  custom_lint: ^0.5.7
+  riverpod_lint: ^2.3.7
 
 flutter_icons:
   ios: true
