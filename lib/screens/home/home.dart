@@ -208,8 +208,9 @@ class QuickActionContainer extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 250, maxHeight: 250),
         child: GridView.count(
           crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
           children: [
             QuickActionButton(
               icon: Icons.compare_arrows,
