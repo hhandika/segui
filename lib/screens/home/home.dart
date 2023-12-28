@@ -11,7 +11,7 @@ import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/navigation.dart';
-import 'package:segui/screens/shared/settings.dart';
+import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 

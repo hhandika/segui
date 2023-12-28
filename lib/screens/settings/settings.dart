@@ -34,6 +34,26 @@ class Settings extends StatelessWidget {
             child: SettingsList(sections: [
           SettingsSection(
             tiles: [
+              // SettingsTile.switchTile(
+              //   initialValue: Theme.of(context).brightness == Brightness.dark,
+              //   title: const Text('Dark Mode'),
+              //   leading: const Icon(Icons.dark_mode),
+              //   onToggle: (bool value) {
+              //     if (value) {
+              //       FlexColorScheme.light(
+              //         colors: FlexColor.schemes[FlexScheme.green]!.light,
+              //         appBarStyle: FlexAppBarStyle.background,
+              //         visualDensity: FlexColorScheme.comfortablePlatformDensity,
+              //       ).toTheme;
+              //     } else {
+              //       FlexColorScheme.dark(
+              //         colors: FlexColor.schemes[FlexScheme.green]!.dark,
+              //         appBarStyle: FlexAppBarStyle.background,
+              //         visualDensity: FlexColorScheme.comfortablePlatformDensity,
+              //       ).toTheme;
+              //     }
+              //   },
+              // ),
               SettingsTile.navigation(
                 leading: const Icon(Icons.info),
                 title: const Text('About'),
