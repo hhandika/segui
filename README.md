@@ -21,8 +21,8 @@ Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 | Alignment concatenation        | :white_check_mark: |
 | Alignment conversion           | :white_check_mark: |
 | Alignment filtering            |                    |
-| Alignment partition conversion |                    |
-| Alignment splitting            |                    |
+| Alignment partition conversion | :wrench:           |
+| Alignment splitting            | :wrench:           |
 | Alignment summary statistics   | :white_check_mark: |
 | Contig summary statistics      | :white_check_mark: |
 | Raw read summary statistics    | :white_check_mark: |
