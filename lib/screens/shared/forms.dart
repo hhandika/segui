@@ -85,11 +85,10 @@ class AppPageView extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       constraints: const BoxConstraints(maxWidth: 500),
-      child: SingleChildScrollView(
-          child: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(8),
         child: child,
-      )),
+      ),
     );
   }
 }

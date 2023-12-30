@@ -71,7 +71,10 @@ class _SmallScreenViewState extends State<SmallScreenView> {
             SettingButtons(),
           ],
         ),
-        body: SafeArea(child: Center(child: _pages.elementAt(_selectedIndex))),
+        body: SafeArea(
+            child: Center(
+          child: _pages.elementAt(_selectedIndex),
+        )),
         bottomNavigationBar: NavigationBar(
           destinations: navigationTargets
               .map((e) => NavigationDestination(

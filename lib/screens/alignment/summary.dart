@@ -18,7 +18,10 @@ class QuickAlignmentSummaryPage extends StatelessWidget {
         title: const Text('Alignment Summary'),
       ),
       body: const SingleChildScrollView(
-        child: AppPageView(child: AlignmentSummaryPage()),
+        child: AppPageView(
+            child: SingleChildScrollView(
+          child: AlignmentSummaryPage(),
+        )),
       ),
     );
   }

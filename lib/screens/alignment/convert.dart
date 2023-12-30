@@ -18,7 +18,10 @@ class QuickConvertPage extends StatelessWidget {
         title: const Text('Alignment Conversion'),
       ),
       body: const SingleChildScrollView(
-        child: AppPageView(child: ConvertPage()),
+        child: AppPageView(
+            child: SingleChildScrollView(
+          child: ConvertPage(),
+        )),
       ),
     );
   }

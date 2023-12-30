@@ -18,7 +18,10 @@ class QuickTranslatePage extends StatelessWidget {
         title: const Text('Sequence Translation'),
       ),
       body: const SingleChildScrollView(
-        child: AppPageView(child: TranslatePage()),
+        child: AppPageView(
+            child: SingleChildScrollView(
+          child: TranslatePage(),
+        )),
       ),
     );
   }

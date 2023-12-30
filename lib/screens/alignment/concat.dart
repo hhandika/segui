@@ -17,7 +17,9 @@ class QuickConcatPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Alignment Concatenation'),
       ),
-      body: const AppPageView(child: ConcatPage()),
+      body: const AppPageView(
+        child: SingleChildScrollView(child: ConcatPage()),
+      ),
     );
   }
 }
