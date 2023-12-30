@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:segui/screens/settings/themes.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class SettingButtons extends StatelessWidget {
@@ -8,7 +9,7 @@ class SettingButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.settings),
+      icon: const Icon(Icons.settings_outlined),
       onPressed: () {
         Navigator.push(
           context,
@@ -35,7 +36,17 @@ class Settings extends StatelessWidget {
           SettingsSection(
             tiles: [
               SettingsTile.navigation(
-                leading: const Icon(Icons.info),
+                title: const Text('Theme'),
+                leading: const Icon(Icons.color_lens_outlined),
+                onPressed: (context) => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ThemeSettings(),
+                  ),
+                ),
+              ),
+              SettingsTile.navigation(
+                leading: const Icon(Icons.info_outline),
                 title: const Text('About'),
                 onPressed: (context) => Navigator.push(
                   context,
