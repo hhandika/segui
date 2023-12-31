@@ -5,7 +5,6 @@ import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/genomics/entry_page.dart';
 import 'package:segui/screens/home/components/faq.dart';
-import 'package:segui/screens/home/components/learning_resources.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/sequence/translate.dart';
@@ -283,25 +282,25 @@ class ResourceTiles extends StatelessWidget {
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const QuickStartPage())),
           ),
-          ListTile(
-            leading: Icon(Icons.school_outlined,
-                color: Theme.of(context).colorScheme.onSurface),
-            title: Text('Learning resources',
-                style: Theme.of(context).textTheme.titleMedium),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const LearningResourcesPage()));
-            },
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.school_outlined,
+          //       color: Theme.of(context).colorScheme.onSurface),
+          //   title: Text('Learning resources',
+          //       style: Theme.of(context).textTheme.titleMedium),
+          //   trailing: Icon(
+          //     Icons.arrow_forward_ios,
+          //     color: Theme.of(context).colorScheme.onSurface,
+          //   ),
+          //   onTap: () {
+          //     Navigator.of(context).push(MaterialPageRoute(
+          //         builder: (context) => const LearningResourcesPage()));
+          //   },
+          // ),
           ListTile(
               leading: Icon(Icons.description_outlined,
                   color: Theme.of(context).colorScheme.onSurface),
               title: Text(
-                'SEGUL documentation',
+                'Documentation',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               trailing: Icon(Icons.arrow_forward_ios,
