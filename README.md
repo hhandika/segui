@@ -1,4 +1,4 @@
-# SEGUI <img src="https://raw.githubusercontent.com/hhandika/segui/main/assets/images/logo.png" alt="segul logo" align="right" width="150"/>
+# SEGUI <img src="https://raw.githubusercontent.com/hhandika/segui/main/assets/launcher/iconDesktop.png" alt="segul logo" align="right" width="150"/>
 
 ![Segui-Tests](https://github.com/hhandika/segui/workflows/SEGUI-Tests/badge.svg)
 [![LoC](https://tokei.rs/b1/github/hhandika/segui?category=code)](https://github.com/XAMPPRocky/tokei)
