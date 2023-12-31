@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
@@ -180,7 +181,14 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset('assets/images/logo.png', height: 100, width: 100),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+              child: SvgPicture.asset(
+                greetingIconPack,
+                height: 80,
+                colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
+              )),
           Text(greeting, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 40),
           Text(
