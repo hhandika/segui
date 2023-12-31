@@ -26,6 +26,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: 'SEGUL',
+      debugShowCheckedModeBanner: false,
       theme: FlexThemeData.light(scheme: FlexScheme.green, useMaterial3: true),
       darkTheme:
           FlexThemeData.dark(scheme: FlexScheme.green, useMaterial3: true),
