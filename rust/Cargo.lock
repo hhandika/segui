@@ -473,9 +473,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge"
-version = "2.0.0-dev.3"
+version = "2.0.0-dev.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f1ce500dda0ec8fa3f0e594abb89b378d961bc556c71f00687b22842fa09fbb"
+checksum = "0bceedf6c72b74cfffbbaefa856b37acb1465e2cdd06cc83e2b41ce5b38611cd"
 dependencies = [
  "allo-isolate",
  "anyhow",
@@ -504,9 +504,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge_macros"
-version = "2.0.0-dev.3"
+version = "2.0.0-dev.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6942b7ec990565905a0eae161971ed38ec79c0610f9c5eb0a8ebd32825c70247"
+checksum = "f4616dd525ca80edde2763103aface171031eae84844c2c012439103ed6cf9a9"
 
 [[package]]
 name = "fnv"
@@ -1099,7 +1099,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "segul"
 version = "0.19.0"
-source = "git+https://github.com/hhandika/segul.git?branch=dev#a5a057894136f6522e55326d34289f3dc023fe2b"
+source = "git+https://github.com/hhandika/segul.git?branch=dev#f9cceb9ef8286c1deca6102788439e4f7a642f37"
 dependencies = [
  "ahash",
  "alphanumeric-sort",
