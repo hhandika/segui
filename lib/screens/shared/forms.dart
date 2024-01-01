@@ -312,7 +312,7 @@ class SelectDirField extends StatelessWidget {
   }
 }
 
-class SharedFilePicker extends StatelessWidget {
+class SharedFilePicker extends StatefulWidget {
   const SharedFilePicker({
     super.key,
     required this.label,
@@ -323,28 +323,58 @@ class SharedFilePicker extends StatelessWidget {
   final String label;
   final List<String> paths;
   final Function(List<String>) onPressed;
+
+  @override
+  State<SharedFilePicker> createState() => _SharedFilePickerState();
+}
+
+class _SharedFilePickerState extends State<SharedFilePicker> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: Text(
-            paths.isEmpty ? '$label: ' : '${paths.length} files selected',
+            widget.paths.isEmpty
+                ? '${widget.label}: '
+                : '${widget.paths.length} files selected',
             overflow: TextOverflow.ellipsis,
           ),
         ),
         const SizedBox(width: 10),
-        IconButton(
-          icon: paths.isEmpty
-              ? const Icon(Icons.folder)
-              : const Icon(Icons.folder_open),
-          onPressed: () async {
-            final paths = await _selectFile();
-            if (paths.isNotEmpty) {
-              onPressed(paths);
-            }
-          },
-        ),
+        _isLoading
+            ? const SizedBox(
+                height: 10,
+                width: 10,
+                child: CircularProgressIndicator(),
+              )
+            : IconButton(
+                icon: widget.paths.isEmpty
+                    ? const Icon(Icons.folder)
+                    : const Icon(Icons.folder_open),
+                onPressed: () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  try {
+                    final paths = await _selectFile();
+                    if (paths.isNotEmpty) {
+                      widget.onPressed(paths);
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        showSharedSnackBar(context, e.toString()),
+                      );
+                    }
+                  }
+                  setState(() {
+                    _isLoading = false;
+                  });
+                },
+              ),
       ],
     );
   }
