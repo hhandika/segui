@@ -10,7 +10,7 @@ sidebar_position: 14
 2. By inputting a list of IDs in a text file
 3. Using regular expression
 
-By default, segul will write the results in a nexus format and use the name from the original input. More details [below](#specifying-output-directory-and-format).
+By default, segul will write the results in a nexus format and use the name from the original input. More details [below](./extract#specifying-output-directory-and-format).
 
 ## Extracting sequences using stdin
 
@@ -44,7 +44,7 @@ The command will be:
 segul extract --dir alignments/ --input-format nexus --file id.txt
 ```
 
-For lots of ID, you can generate all the ID first using unique ID finder function on `segul` ([see above](./extract#finding-unique-ids-in-alignments)). Open the text file using your text editor and remove the sequence IDs that you don't need. Use this file as an input for `segul extract`.
+For lots of ID, you can generate all the ID first using `segul` [sequence ID extraction](./id). Open the text file using your text editor and remove the sequence IDs that you don't need. Use this file as an input for `segul extract`.
 
 > NOTES: `segul` can parse input file written both on Unix-like OS (Linux, WSL, and MacOS) and Windows with carriage return.
 
@@ -68,7 +68,7 @@ All the matched sequences found in each alignment will be written to the output 
 
 ## Specifying output directory and format
 
-By default, the output files will be written into `SEGUL-Extract` directory. To change the directory name, use the `--ouput` or `-o` option. For the output files, the matched sequences will be written in nexus format using the alignment original name. You can change the output format using `--output-format` (or `-F` in short version) option. For example, below we will change both the output directory and the output format of the resulting files.
+By default, the output files will be written into `SEGUL-Extract` directory. To change the directory name, use the `--output` or `-o` option. For the output files, the matched sequences will be written in nexus format using the alignment original name. You can change the output format using `--output-format` (or `-F` in short version) option. For example, below we will change both the output directory and the output format of the resulting files.
 
 ```Bash
 segul extract --dir alignments/ --input-format nexus --re="^Mus" output Mus-alignment/ --output-format Fasta

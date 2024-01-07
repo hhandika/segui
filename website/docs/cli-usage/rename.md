@@ -13,7 +13,7 @@ The table must contain two columns with a header for each column. Both the heade
 | Genus_species1_random | Genus_species1_voucherID |
 | Genus_species2_random | Genus_species2_voucherID |
 
-If you need to rename a lot of sequence ID, you can simplify the process by generating the unique IDs first ([see above](./rename#finding-unique-ids-in-alignments)). Then, copy the IDs that you would like to rename in the `csv` or `tsv` input. To input this file, we will use the `--name` or `-n` option. `segul` will infer the file format based on its extension. The full command is structure as below:
+If you need to rename a lot of sequence ID, you can simplify the process by [generating the unique IDs first](./id). Then, copy the IDs that you would like to rename in the `csv` or `tsv` input. To input this file, we will use the `--name` or `-n` option. `segul` will infer the file format based on its extension. The full command is structure as below:
 
 ```Bash
 segul rename -d [alignment-dir] -f [sequence-format-keyword] -n [file-path-to-IDs]

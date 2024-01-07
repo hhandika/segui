@@ -63,7 +63,7 @@ segul --dir segul --dir alignments/ --input-format nexus --npercent .9 .8 .75
 
 ## Filtering based on parsimony informative sites
 
-`segul` provides two ways in filtering based on parsimony informative sites. First, by inputing the minimal number of parsimony informative sites using the `--pinf` option. It will filter alignments that at least contains the input number of parsimony informative sites.
+`segul` provides two ways in filtering based on parsimony informative sites. First, by inputting the minimal number of parsimony informative sites using the `--pinf` option. It will filter alignments that at least contains the input number of parsimony informative sites.
 
 For example, in the command below, we will filter alignments in `alignments` directory with minimal contain 50 parsimony informative sites:
 
@@ -73,7 +73,7 @@ segul filter --dir alignments/ --input-format nexus --pinf 50
 
 Second, we can filter based on the percentage of minimal parsimony informative sites. This value is counted based on the highest number of parsimony informative sites in your alignments. It is similar to computing data matrix completeness, but based on the number of parsimony informative sites.
 
-For example, the highest number of parsinomy informative sites in the input alignments is 100. We will filter with minimal 80 percent of the highest parsimony informative value. Using `--percent-inf .8` option, `segul` will filter an alignments with at least containing 80 parsimony informative sites:
+For example, the highest number of parsimony informative sites in the input alignments is 100. We will filter with minimal 80 percent of the highest parsimony informative value. Using `--percent-inf .8` option, `segul` will filter an alignments with at least containing 80 parsimony informative sites:
 
 ```Bash
 segul filter --dir alignments/ --input-format nexus --percent-inf .8
@@ -93,7 +93,7 @@ You can change the prefix names using `--output` or `-o` option.
 
 ## Concatenating the results
 
-By defaults, `segul` copy the alignments that match the filtering option. Instead of copying the files, you can concat them by using `--concat` flag. All of the options available for the `concat` subcommand are also available for this task ([see above](./filter#concatenating-alignments)). You are, however, are required to specify the `--output` or `-o` name and the partition format `--part` or `-p` option. The output name will be used as the name of the output directory, the name of the concatenated alignment, and the prefix name for the partition setting file (if set for `raxml` or `nexus`).
+By defaults, `segul` copy the alignments that match the filtering option. Instead of copying the files, you can concat them by using `--concat` flag. All of the options available for the [`concat`](./concat) subcommand are also available for this task. You are, however, are required to specify the `--output` or `-o` name and the partition format `--part` or `-p` option. The output name will be used as the name of the output directory, the name of the concatenated alignment, and the prefix name for the partition setting file (if set for `raxml` or `nexus`).
 
 For example, in the command below, we will filter based on alignment length of 500 bp and will concat the result:
 
