@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Alignments Filtering
+# Alignment Filtering
 
 `segul` provides multiple ways to filter alignments:
 
