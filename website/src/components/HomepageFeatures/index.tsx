@@ -11,7 +11,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: "Easy to Use",
-    Svg: require("@site/static/img/easyToUse.svg").default,
+    Svg: require("@site/static/img/easyUse.svg").default,
     description: (
       <>
         SEGUL offers an easy to use command command line interface. Prefer
