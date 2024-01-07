@@ -1,6 +1,6 @@
 {
-  "label": "Tutorial - Extras",
-  "position": 3,
+  "label": "CLI Usages",
+  "position": 5,
   "link": {
     "type": "generated-index"
   }

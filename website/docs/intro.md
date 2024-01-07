@@ -2,46 +2,33 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Welcome
 
-Let's discover **Docusaurus in less than 5 minutes**.
+**Thank you for using SEGUL!** 🙏🏻
 
-## Getting Started
+`segul` is an ultrafast and memory efficient phylogenomic data manipulation and summary statistics calculation.
 
-Get started by **creating a new site**.
+## Why SEGUL?
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+1. **Fast and memory efficient**. It can process thousands of loci on a computer with limited RAM.
+2. **Repeatable and reproducible**. It supports reproducible research by providing a complete log of the analysis. The CLI and GUI version combined runs on macOS, Windows, Linux, Android, iPadOS, and iOS.
+3. **Easy to use**. It has a simple command line interface and a GUI app (in alpha version).
+4. API support.
 
-### What you'll need
+## Big changes in the version 0.19.0 💪🏼
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+- New command structure. Check [quick start](https://docs.page/hhandika/segul-docs/quick_start#cli-command-list) instruction to see the most up to date commands. We are working on updating the documentation throughout the website.
+- New command to calculate summary statistics for raw reads and contigs.
+- Input dir `-d` or `--dir` now can infer input format based on the file extension. No need to specify the input format anymore.
 
-## Generate a new site
+<div align="center">
+  <img
+    src="https://raw.githubusercontent.com/hhandika/segul-docs/main/assets/img/segui_mb.webp"
+    width="400"
+    alt="SEGUL GUI"
+  />
+</div>
 
-Generate a new Docusaurus site using the **classic template**.
+**SEGUL GUI (SEGUI) is available to test!** 🎉🎉🎉
 
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+It brings nearly similar speed and memory efficiency as the command line version, but with the convenience of GUI. Current version of SEGUI supports macOS, Windows, Android, iPadOS, and iOS. To the test the app, checkout the [installation instruction](https://docs.page/hhandika/segul-docs/gui_install) under the GUI Usage section. To see development progress, checkout the GitHub [repository](https://github.com/hhandika/segui).
