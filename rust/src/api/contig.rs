@@ -2,8 +2,8 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::contig::summarize::ContigSummaryHandler;
 use segul::helper::finder::ContigFileFinder;
+use segul::helper::logger::init_file_logger;
 use segul::helper::types::ContigFmt;
-
 pub struct ContigServices {
     pub dir_path: Option<String>,
     pub files: Vec<String>,
@@ -23,9 +23,10 @@ impl ContigServices {
 
     pub fn summarize(&self) {
         let input_fmt = self.match_input_fmt();
-        let mut files = self.find_input_files(&input_fmt);
+        let files = self.find_input_files(&input_fmt);
         let output_path = Path::new(&self.output_dir);
-        let summary = ContigSummaryHandler::new(&mut files, &input_fmt, output_path);
+        init_file_logger(output_path).expect("Failed to initialize logger");
+        let summary = ContigSummaryHandler::new(&files, &input_fmt, output_path);
         summary.summarize();
     }
 

@@ -2,6 +2,7 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::read::summarize::ReadSummaryHandler;
 use segul::helper::finder::SeqReadFinder;
+use segul::helper::logger::init_file_logger;
 use segul::helper::types::{SeqReadFmt, SummaryMode};
 
 pub struct FastqServices {
@@ -22,9 +23,10 @@ impl FastqServices {
     }
 
     pub fn summarize(&self, mode: String) {
+        let output_path = Path::new(&self.output_dir);
+        init_file_logger(output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt();
         let mut files = self.find_input_files(&input_fmt);
-        let output_path = Path::new(&self.output_dir);
         let sum_mode = self.match_mode(&mode);
         let mut summary = ReadSummaryHandler::new(&mut files, &input_fmt, &sum_mode, output_path);
         summary.summarize();
@@ -46,7 +48,7 @@ impl FastqServices {
             match self.dir_path {
                 Some(ref path) => {
                     let path = Path::new(&path);
-                    SeqReadFinder::new(path).find(&input_fmt)
+                    SeqReadFinder::new(path).find(input_fmt)
                 }
                 None => panic!("No input files found"),
             }

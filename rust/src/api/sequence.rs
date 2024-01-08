@@ -7,6 +7,7 @@ use segul::handler::sequence::id::Id;
 use segul::handler::sequence::partition::PartConverter;
 use segul::handler::sequence::translate::Translate;
 use segul::helper::finder::SeqFileFinder;
+use segul::helper::logger::init_file_logger;
 use segul::helper::partition::construct_partition_path;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
@@ -57,12 +58,13 @@ impl SequenceServices {
     }
 
     pub fn concat_alignment(&self, out_fname: String, out_fmt_str: String, partition_fmt: String) {
+        let output_path = PathBuf::from(&self.output_dir).join(out_fname);
+        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype(&self.datatype);
         let mut files = self.find_input_files(&input_fmt);
-        self.check_file_count(files.len());
         let output_fmt = self.match_output_fmt(&out_fmt_str);
-        let output_path = PathBuf::from(&self.output_dir).join(out_fname);
+        self.check_file_count(files.len());
         let final_path = files::create_output_fname_from_path(&output_path, &output_fmt);
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let mut concat = ConcatHandler::new(&input_fmt, &final_path, &output_fmt, &partition_fmt);
@@ -70,20 +72,23 @@ impl SequenceServices {
     }
 
     pub fn convert_sequence(&self, output_fmt: String, sort: bool) {
-        let input_fmt = self.match_input_fmt();
-        let datatype = self.match_datatype(&self.datatype);
-        let mut files = self.find_input_files(&input_fmt);
-        let output_fmt = self.match_output_fmt(&output_fmt);
         let output_path = Path::new(&self.output_dir);
-        let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
-        concat.convert(&mut files, &output_path);
-    }
-
-    pub fn parse_sequence_id(&self, is_map: bool) {
+        init_file_logger(output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&input_fmt);
+        let output_fmt = self.match_output_fmt(&output_fmt);
+        let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
+        concat.convert(&files, output_path);
+    }
+
+    pub fn parse_sequence_id(&self, is_map: bool) {
         let output_path = Path::new(&self.output_dir).with_extension("txt");
+        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
+        let input_fmt = self.match_input_fmt();
+        let datatype = self.match_datatype(&self.datatype);
+        let files = self.find_input_files(&input_fmt);
+
         let id = Id::new(&output_path, &input_fmt, &datatype);
         if !is_map {
             id.generate_id(&files);
@@ -104,21 +109,23 @@ impl SequenceServices {
     }
 
     pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
+        let output_path = Path::new(&self.output_dir);
+        init_file_logger(output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype(&self.datatype);
         let mut files = self.find_input_files(&input_fmt);
-        let output_path = Path::new(&self.output_dir);
-        let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
+        let mut summary = SeqStats::new(&input_fmt, output_path, interval, &datatype);
         summary.summarize_all(&mut files, &Some(output_prefix));
     }
 
     pub fn translate_sequence(&self, table: String, reading_frame: usize, output_fmt: String) {
+        let output_path = Path::new(&self.output_dir);
+        init_file_logger(output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt();
         let datatype = self.match_datatype(&self.datatype);
         let mut files = self.find_input_files(&input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let translation_table = self.match_translation_table(table);
-        let output_path = Path::new(&self.output_dir);
         let translate = Translate::new(&translation_table, &input_fmt, &datatype, &output_fmt);
         translate.translate_all(&mut files, reading_frame, &output_path);
     }
@@ -189,13 +196,14 @@ impl PartitionServices {
     }
 
     pub fn convert_partition(&self) {
+        let output = Path::new(&self.output);
+        init_file_logger(output).expect("Failed to initialize logger");
         let input_fmt = self.match_partition_fmt(&self.input_part_fmt);
         let datatype = self.match_datatype(&self.datatype);
-        let output = Path::new(&self.output);
         let out_part_fmt = self.match_partition_fmt(&self.output_part_fmt);
         self.file_inputs.iter().map(Path::new).for_each(|input| {
             let output_path = construct_partition_path(input, &out_part_fmt);
-            let converter = PartConverter::new(&output_path, &input_fmt, &output, &out_part_fmt);
+            let converter = PartConverter::new(&output_path, &input_fmt, output, &out_part_fmt);
             converter.convert(&datatype, self.is_uncheck);
         });
     }
