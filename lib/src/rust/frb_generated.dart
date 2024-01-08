@@ -45,6 +45,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   WireConstructor<RustLibWire> get wireConstructor =>
       RustLibWire.fromExternalLibrary;
 
+  @override
   Future<void> executeRustInitializers() async {}
 
   @override
