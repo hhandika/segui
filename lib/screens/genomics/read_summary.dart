@@ -6,7 +6,7 @@ import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/fastq.dart';
+import 'package:segui/src/rust/api/reads.dart';
 
 class QuickRawSummary extends StatelessWidget {
   const QuickRawSummary({super.key});
@@ -116,7 +116,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
 
   Future<void> _summarize() async {
     try {
-      await FastqServices(
+      await RawReadServices(
         files: ctr.files,
         dirPath: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
