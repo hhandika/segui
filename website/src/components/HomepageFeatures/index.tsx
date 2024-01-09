@@ -14,19 +14,24 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/easyUse.svg").default,
     description: (
       <>
-        SEGUL offers an easy to use command command line interface. Prefer
-        graphical interface? No problem, SEGUL also is also available as GUI
-        (beta version).
+        SEGUL features an intuitive command line interface for streamlined
+        operation. For those who favor a visual approach, SEGUL also provides a
+        graphical interface (in beta). Additionally, comprehensive documentation
+        is available for both the application and the API, ensuring a smooth
+        user experience.
       </>
     ),
   },
+
   {
     title: "Repeatable and Reproducible",
     Svg: require("@site/static/img/repeatableAndReproducible.svg").default,
     description: (
       <>
-        SEGUL runs from smartphone to high-performance computers. It also
-        generates log files that can be used to reproduce the results.
+        SEGUL operates across a range of devices, from smartphones to
+        high-performance computers, without requiring any runtime dependencies.
+        It also negates the need for supplementary applications like Docker,
+        enhancing its user-friendliness and accessibility.
       </>
     ),
   },
@@ -35,8 +40,9 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/fastMemoryEfficient.svg").default,
     description: (
       <>
-        SEGUL is high-performance. It can process thousands of locus alignments
-        on a computer with limited RAM.
+        SEGUL delivers high-speed performance while maintaining minimal memory
+        usage. It’s engineered to leverage multi-core CPUs for efficient data
+        handling, all without requiring manual intervention from the users.
       </>
     ),
   },

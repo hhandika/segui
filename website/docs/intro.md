@@ -8,13 +8,6 @@ sidebar_position: 1
 
 `segul` is an ultrafast and memory efficient phylogenomic data manipulation and summary statistics calculation.
 
-## Why SEGUL?
-
-1. **Fast and memory efficient**. It can process thousands of loci on a computer with limited RAM.
-2. **Repeatable and reproducible**. It supports reproducible research by providing a complete log of the analysis. The CLI and GUI version combined runs on macOS, Windows, Linux, Android, iPadOS, and iOS.
-3. **Easy to use**. It has a simple command line interface and a GUI app (in alpha version).
-4. API support.
-
 ## Big changes in the version 0.19.0 💪🏼
 
 - New command structure. Check [quick start](https://docs.page/hhandika/segul-docs/quick_start#cli-command-list) instruction to see the most up to date commands. We are working on updating the documentation throughout the website.
