@@ -86,6 +86,23 @@ abstract class RustLibApi extends BaseApi {
       required int interval,
       dynamic hint});
 
+  Future<void> filteringServicesFilterMinimalLength(
+      {required FilteringServices that, required int length, dynamic hint});
+
+  Future<void> filteringServicesFilterMinimalTaxa(
+      {required FilteringServices that,
+      required double percent,
+      int? taxonCount,
+      dynamic hint});
+
+  Future<void> filteringServicesFilterParsimonyInfCount(
+      {required FilteringServices that, required int count, dynamic hint});
+
+  Future<void> filteringServicesFilterPercentInformative(
+      {required FilteringServices that, required double percent, dynamic hint});
+
+  Future<FilteringServices> filteringServicesNew({dynamic hint});
+
   Future<void> partitionServicesConvertPartition(
       {required PartitionServices that, dynamic hint});
 
@@ -297,6 +314,142 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(
         debugName: "AlignmentServices_summarize_alignment",
         argNames: ["that", "outputPrefix", "interval"],
+      );
+
+  @override
+  Future<void> filteringServicesFilterMinimalLength(
+      {required FilteringServices that, required int length, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_filtering_services(that);
+        var arg1 = cst_encode_usize(length);
+        return wire.wire_FilteringServices_filter_minimal_length(
+            port_, arg0, arg1);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFilteringServicesFilterMinimalLengthConstMeta,
+      argValues: [that, length],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kFilteringServicesFilterMinimalLengthConstMeta =>
+      const TaskConstMeta(
+        debugName: "FilteringServices_filter_minimal_length",
+        argNames: ["that", "length"],
+      );
+
+  @override
+  Future<void> filteringServicesFilterMinimalTaxa(
+      {required FilteringServices that,
+      required double percent,
+      int? taxonCount,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_filtering_services(that);
+        var arg1 = cst_encode_f_64(percent);
+        var arg2 = cst_encode_opt_box_autoadd_usize(taxonCount);
+        return wire.wire_FilteringServices_filter_minimal_taxa(
+            port_, arg0, arg1, arg2);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFilteringServicesFilterMinimalTaxaConstMeta,
+      argValues: [that, percent, taxonCount],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kFilteringServicesFilterMinimalTaxaConstMeta =>
+      const TaskConstMeta(
+        debugName: "FilteringServices_filter_minimal_taxa",
+        argNames: ["that", "percent", "taxonCount"],
+      );
+
+  @override
+  Future<void> filteringServicesFilterParsimonyInfCount(
+      {required FilteringServices that, required int count, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_filtering_services(that);
+        var arg1 = cst_encode_usize(count);
+        return wire.wire_FilteringServices_filter_parsimony_inf_count(
+            port_, arg0, arg1);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFilteringServicesFilterParsimonyInfCountConstMeta,
+      argValues: [that, count],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kFilteringServicesFilterParsimonyInfCountConstMeta =>
+      const TaskConstMeta(
+        debugName: "FilteringServices_filter_parsimony_inf_count",
+        argNames: ["that", "count"],
+      );
+
+  @override
+  Future<void> filteringServicesFilterPercentInformative(
+      {required FilteringServices that,
+      required double percent,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_filtering_services(that);
+        var arg1 = cst_encode_f_64(percent);
+        return wire.wire_FilteringServices_filter_percent_informative(
+            port_, arg0, arg1);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kFilteringServicesFilterPercentInformativeConstMeta,
+      argValues: [that, percent],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kFilteringServicesFilterPercentInformativeConstMeta =>
+      const TaskConstMeta(
+        debugName: "FilteringServices_filter_percent_informative",
+        argNames: ["that", "percent"],
+      );
+
+  @override
+  Future<FilteringServices> filteringServicesNew({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_FilteringServices_new(port_);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_filtering_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kFilteringServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kFilteringServicesNewConstMeta => const TaskConstMeta(
+        debugName: "FilteringServices_new",
+        argNames: [],
       );
 
   @override
@@ -515,6 +668,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw) {
+    return dco_decode_filtering_services(raw);
+  }
+
+  @protected
   PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw) {
     return dco_decode_partition_services(raw);
   }
@@ -527,6 +685,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw) {
     return dco_decode_sequence_services(raw);
+  }
+
+  @protected
+  int dco_decode_box_autoadd_usize(dynamic raw) {
+    return dco_decode_usize(raw);
   }
 
   @protected
@@ -543,6 +706,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  double dco_decode_f_64(dynamic raw) {
+    return raw as double;
+  }
+
+  @protected
+  FilteringServices dco_decode_filtering_services(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return FilteringServices(
+      dir: dco_decode_opt_String(arr[0]),
+      files: dco_decode_list_String(arr[1]),
+      inputFmt: dco_decode_String(arr[2]),
+      datatype: dco_decode_String(arr[3]),
+      outputDir: dco_decode_String(arr[4]),
+      isConcat: dco_decode_bool(arr[5]),
+    );
+  }
+
+  @protected
   List<String> dco_decode_list_String(dynamic raw) {
     return (raw as List<dynamic>).map(dco_decode_String).toList();
   }
@@ -555,6 +738,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   String? dco_decode_opt_String(dynamic raw) {
     return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  int? dco_decode_opt_box_autoadd_usize(dynamic raw) {
+    return raw == null ? null : dco_decode_box_autoadd_usize(raw);
   }
 
   @protected
@@ -654,6 +842,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FilteringServices sse_decode_box_autoadd_filtering_services(
+      SseDeserializer deserializer) {
+    return (sse_decode_filtering_services(deserializer));
+  }
+
+  @protected
   PartitionServices sse_decode_box_autoadd_partition_services(
       SseDeserializer deserializer) {
     return (sse_decode_partition_services(deserializer));
@@ -672,6 +866,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  int sse_decode_box_autoadd_usize(SseDeserializer deserializer) {
+    return (sse_decode_usize(deserializer));
+  }
+
+  @protected
   ContigServices sse_decode_contig_services(SseDeserializer deserializer) {
     var var_dirPath = sse_decode_opt_String(deserializer);
     var var_files = sse_decode_list_String(deserializer);
@@ -682,6 +881,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         files: var_files,
         fileFmt: var_fileFmt,
         outputDir: var_outputDir);
+  }
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer) {
+    return deserializer.buffer.getFloat64();
+  }
+
+  @protected
+  FilteringServices sse_decode_filtering_services(
+      SseDeserializer deserializer) {
+    var var_dir = sse_decode_opt_String(deserializer);
+    var var_files = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_isConcat = sse_decode_bool(deserializer);
+    return FilteringServices(
+        dir: var_dir,
+        files: var_files,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir,
+        isConcat: var_isConcat);
   }
 
   @protected
@@ -704,6 +926,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   String? sse_decode_opt_String(SseDeserializer deserializer) {
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  int? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer) {
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_usize(deserializer));
     } else {
       return null;
     }
@@ -779,6 +1010,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  double cst_encode_f_64(double raw) {
+    return raw;
+  }
+
+  @protected
   int cst_encode_u_8(int raw) {
     return raw;
   }
@@ -826,6 +1062,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_filtering_services(
+      FilteringServices self, SseSerializer serializer) {
+    sse_encode_filtering_services(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_partition_services(
       PartitionServices self, SseSerializer serializer) {
     sse_encode_partition_services(self, serializer);
@@ -844,12 +1086,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_usize(int self, SseSerializer serializer) {
+    sse_encode_usize(self, serializer);
+  }
+
+  @protected
   void sse_encode_contig_services(
       ContigServices self, SseSerializer serializer) {
     sse_encode_opt_String(self.dirPath, serializer);
     sse_encode_list_String(self.files, serializer);
     sse_encode_String(self.fileFmt, serializer);
     sse_encode_String(self.outputDir, serializer);
+  }
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer) {
+    serializer.buffer.putFloat64(self);
+  }
+
+  @protected
+  void sse_encode_filtering_services(
+      FilteringServices self, SseSerializer serializer) {
+    sse_encode_opt_String(self.dir, serializer);
+    sse_encode_list_String(self.files, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_bool(self.isConcat, serializer);
   }
 
   @protected
@@ -872,6 +1135,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_usize(int? self, SseSerializer serializer) {
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_usize(self, serializer);
     }
   }
 

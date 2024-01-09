@@ -35,6 +35,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
 
   @protected
+  FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw);
+
+  @protected
   PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
 
   @protected
@@ -44,7 +47,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_usize(dynamic raw);
+
+  @protected
   ContigServices dco_decode_contig_services(dynamic raw);
+
+  @protected
+  double dco_decode_f_64(dynamic raw);
+
+  @protected
+  FilteringServices dco_decode_filtering_services(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
@@ -54,6 +66,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
   @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
@@ -91,6 +106,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  FilteringServices sse_decode_box_autoadd_filtering_services(
+      SseDeserializer deserializer);
+
+  @protected
   PartitionServices sse_decode_box_autoadd_partition_services(
       SseDeserializer deserializer);
 
@@ -103,7 +122,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_usize(SseDeserializer deserializer);
+
+  @protected
   ContigServices sse_decode_contig_services(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
+  FilteringServices sse_decode_filtering_services(SseDeserializer deserializer);
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
@@ -113,6 +141,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
@@ -163,6 +194,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  List<dynamic> cst_encode_box_autoadd_filtering_services(
+      FilteringServices raw) {
+    return cst_encode_filtering_services(raw);
+  }
+
+  @protected
   List<dynamic> cst_encode_box_autoadd_partition_services(
       PartitionServices raw) {
     return cst_encode_partition_services(raw);
@@ -179,12 +216,29 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  int cst_encode_box_autoadd_usize(int raw) {
+    return cst_encode_usize(raw);
+  }
+
+  @protected
   List<dynamic> cst_encode_contig_services(ContigServices raw) {
     return [
       cst_encode_opt_String(raw.dirPath),
       cst_encode_list_String(raw.files),
       cst_encode_String(raw.fileFmt),
       cst_encode_String(raw.outputDir)
+    ];
+  }
+
+  @protected
+  List<dynamic> cst_encode_filtering_services(FilteringServices raw) {
+    return [
+      cst_encode_opt_String(raw.dir),
+      cst_encode_list_String(raw.files),
+      cst_encode_String(raw.inputFmt),
+      cst_encode_String(raw.datatype),
+      cst_encode_String(raw.outputDir),
+      cst_encode_bool(raw.isConcat)
     ];
   }
 
@@ -201,6 +255,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   String? cst_encode_opt_String(String? raw) {
     return raw == null ? null : cst_encode_String(raw);
+  }
+
+  @protected
+  int? cst_encode_opt_box_autoadd_usize(int? raw) {
+    return raw == null ? null : cst_encode_box_autoadd_usize(raw);
   }
 
   @protected
@@ -240,6 +299,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool cst_encode_bool(bool raw);
 
   @protected
+  double cst_encode_f_64(double raw);
+
+  @protected
   int cst_encode_u_8(int raw);
 
   @protected
@@ -267,6 +329,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ContigServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_filtering_services(
+      FilteringServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_partition_services(
       PartitionServices self, SseSerializer serializer);
 
@@ -279,8 +345,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SequenceServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_usize(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_contig_services(
       ContigServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_filtering_services(
+      FilteringServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
@@ -291,6 +367,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_usize(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_partition_services(
@@ -357,6 +436,29 @@ class RustLibWire extends BaseWire {
           List<dynamic> that, String output_prefix, int interval) =>
       wasmModule.wire_AlignmentServices_summarize_alignment(
           port_, that, output_prefix, interval);
+
+  void wire_FilteringServices_filter_minimal_length(
+          NativePortType port_, List<dynamic> that, int length) =>
+      wasmModule.wire_FilteringServices_filter_minimal_length(
+          port_, that, length);
+
+  void wire_FilteringServices_filter_minimal_taxa(NativePortType port_,
+          List<dynamic> that, double percent, int? taxon_count) =>
+      wasmModule.wire_FilteringServices_filter_minimal_taxa(
+          port_, that, percent, taxon_count);
+
+  void wire_FilteringServices_filter_parsimony_inf_count(
+          NativePortType port_, List<dynamic> that, int count) =>
+      wasmModule.wire_FilteringServices_filter_parsimony_inf_count(
+          port_, that, count);
+
+  void wire_FilteringServices_filter_percent_informative(
+          NativePortType port_, List<dynamic> that, double percent) =>
+      wasmModule.wire_FilteringServices_filter_percent_informative(
+          port_, that, percent);
+
+  void wire_FilteringServices_new(NativePortType port_) =>
+      wasmModule.wire_FilteringServices_new(port_);
 
   void wire_PartitionServices_convert_partition(
           NativePortType port_, List<dynamic> that) =>
@@ -426,6 +528,20 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_AlignmentServices_summarize_alignment(NativePortType port_,
       List<dynamic> that, String output_prefix, int interval);
+
+  external void wire_FilteringServices_filter_minimal_length(
+      NativePortType port_, List<dynamic> that, int length);
+
+  external void wire_FilteringServices_filter_minimal_taxa(NativePortType port_,
+      List<dynamic> that, double percent, int? taxon_count);
+
+  external void wire_FilteringServices_filter_parsimony_inf_count(
+      NativePortType port_, List<dynamic> that, int count);
+
+  external void wire_FilteringServices_filter_percent_informative(
+      NativePortType port_, List<dynamic> that, double percent);
+
+  external void wire_FilteringServices_new(NativePortType port_);
 
   external void wire_PartitionServices_convert_partition(
       NativePortType port_, List<dynamic> that);

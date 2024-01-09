@@ -36,6 +36,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
 
   @protected
+  FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw);
+
+  @protected
   PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
 
   @protected
@@ -45,7 +48,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_usize(dynamic raw);
+
+  @protected
   ContigServices dco_decode_contig_services(dynamic raw);
+
+  @protected
+  double dco_decode_f_64(dynamic raw);
+
+  @protected
+  FilteringServices dco_decode_filtering_services(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
@@ -55,6 +67,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
   @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
@@ -92,6 +107,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  FilteringServices sse_decode_box_autoadd_filtering_services(
+      SseDeserializer deserializer);
+
+  @protected
   PartitionServices sse_decode_box_autoadd_partition_services(
       SseDeserializer deserializer);
 
@@ -104,7 +123,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_usize(SseDeserializer deserializer);
+
+  @protected
   ContigServices sse_decode_contig_services(SseDeserializer deserializer);
+
+  @protected
+  double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
+  FilteringServices sse_decode_filtering_services(SseDeserializer deserializer);
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
@@ -114,6 +142,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
@@ -158,6 +189,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  ffi.Pointer<wire_cst_filtering_services>
+      cst_encode_box_autoadd_filtering_services(FilteringServices raw) {
+    final ptr = wire.cst_new_box_autoadd_filtering_services();
+    cst_api_fill_to_wire_filtering_services(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_cst_partition_services>
       cst_encode_box_autoadd_partition_services(PartitionServices raw) {
     final ptr = wire.cst_new_box_autoadd_partition_services();
@@ -179,6 +218,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     final ptr = wire.cst_new_box_autoadd_sequence_services();
     cst_api_fill_to_wire_sequence_services(raw, ptr.ref);
     return ptr;
+  }
+
+  @protected
+  ffi.Pointer<ffi.UintPtr> cst_encode_box_autoadd_usize(int raw) {
+    return wire.cst_new_box_autoadd_usize(cst_encode_usize(raw));
   }
 
   @protected
@@ -205,6 +249,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  ffi.Pointer<ffi.UintPtr> cst_encode_opt_box_autoadd_usize(int? raw) {
+    return raw == null ? ffi.nullptr : cst_encode_box_autoadd_usize(raw);
+  }
+
+  @protected
   void cst_api_fill_to_wire_alignment_services(
       AlignmentServices apiObj, wire_cst_alignment_services wireObj) {
     wireObj.dir = cst_encode_opt_String(apiObj.dir);
@@ -225,6 +274,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void cst_api_fill_to_wire_box_autoadd_contig_services(
       ContigServices apiObj, ffi.Pointer<wire_cst_contig_services> wireObj) {
     cst_api_fill_to_wire_contig_services(apiObj, wireObj.ref);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_box_autoadd_filtering_services(
+      FilteringServices apiObj,
+      ffi.Pointer<wire_cst_filtering_services> wireObj) {
+    cst_api_fill_to_wire_filtering_services(apiObj, wireObj.ref);
   }
 
   @protected
@@ -254,6 +310,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     wireObj.files = cst_encode_list_String(apiObj.files);
     wireObj.file_fmt = cst_encode_String(apiObj.fileFmt);
     wireObj.output_dir = cst_encode_String(apiObj.outputDir);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_filtering_services(
+      FilteringServices apiObj, wire_cst_filtering_services wireObj) {
+    wireObj.dir = cst_encode_opt_String(apiObj.dir);
+    wireObj.files = cst_encode_list_String(apiObj.files);
+    wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
+    wireObj.datatype = cst_encode_String(apiObj.datatype);
+    wireObj.output_dir = cst_encode_String(apiObj.outputDir);
+    wireObj.is_concat = cst_encode_bool(apiObj.isConcat);
   }
 
   @protected
@@ -290,6 +357,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool cst_encode_bool(bool raw);
 
   @protected
+  double cst_encode_f_64(double raw);
+
+  @protected
   int cst_encode_u_8(int raw);
 
   @protected
@@ -317,6 +387,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ContigServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_filtering_services(
+      FilteringServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_partition_services(
       PartitionServices self, SseSerializer serializer);
 
@@ -329,8 +403,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SequenceServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_usize(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_contig_services(
       ContigServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_filtering_services(
+      FilteringServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
@@ -341,6 +425,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_usize(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_partition_services(
@@ -560,6 +647,111 @@ class RustLibWire implements BaseWire {
           void Function(int, ffi.Pointer<wire_cst_alignment_services>,
               ffi.Pointer<wire_cst_list_prim_u_8_strict>, int)>();
 
+  void wire_FilteringServices_filter_minimal_length(
+    int port_,
+    ffi.Pointer<wire_cst_filtering_services> that,
+    int length,
+  ) {
+    return _wire_FilteringServices_filter_minimal_length(
+      port_,
+      that,
+      length,
+    );
+  }
+
+  late final _wire_FilteringServices_filter_minimal_lengthPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64,
+                  ffi.Pointer<wire_cst_filtering_services>, ffi.UintPtr)>>(
+      'frbgen_segui_wire_FilteringServices_filter_minimal_length');
+  late final _wire_FilteringServices_filter_minimal_length =
+      _wire_FilteringServices_filter_minimal_lengthPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_cst_filtering_services>, int)>();
+
+  void wire_FilteringServices_filter_minimal_taxa(
+    int port_,
+    ffi.Pointer<wire_cst_filtering_services> that,
+    double percent,
+    ffi.Pointer<ffi.UintPtr> taxon_count,
+  ) {
+    return _wire_FilteringServices_filter_minimal_taxa(
+      port_,
+      that,
+      percent,
+      taxon_count,
+    );
+  }
+
+  late final _wire_FilteringServices_filter_minimal_taxaPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64,
+                  ffi.Pointer<wire_cst_filtering_services>,
+                  ffi.Double,
+                  ffi.Pointer<ffi.UintPtr>)>>(
+      'frbgen_segui_wire_FilteringServices_filter_minimal_taxa');
+  late final _wire_FilteringServices_filter_minimal_taxa =
+      _wire_FilteringServices_filter_minimal_taxaPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_cst_filtering_services>, double,
+              ffi.Pointer<ffi.UintPtr>)>();
+
+  void wire_FilteringServices_filter_parsimony_inf_count(
+    int port_,
+    ffi.Pointer<wire_cst_filtering_services> that,
+    int count,
+  ) {
+    return _wire_FilteringServices_filter_parsimony_inf_count(
+      port_,
+      that,
+      count,
+    );
+  }
+
+  late final _wire_FilteringServices_filter_parsimony_inf_countPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64,
+                  ffi.Pointer<wire_cst_filtering_services>, ffi.UintPtr)>>(
+      'frbgen_segui_wire_FilteringServices_filter_parsimony_inf_count');
+  late final _wire_FilteringServices_filter_parsimony_inf_count =
+      _wire_FilteringServices_filter_parsimony_inf_countPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_cst_filtering_services>, int)>();
+
+  void wire_FilteringServices_filter_percent_informative(
+    int port_,
+    ffi.Pointer<wire_cst_filtering_services> that,
+    double percent,
+  ) {
+    return _wire_FilteringServices_filter_percent_informative(
+      port_,
+      that,
+      percent,
+    );
+  }
+
+  late final _wire_FilteringServices_filter_percent_informativePtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64,
+                  ffi.Pointer<wire_cst_filtering_services>, ffi.Double)>>(
+      'frbgen_segui_wire_FilteringServices_filter_percent_informative');
+  late final _wire_FilteringServices_filter_percent_informative =
+      _wire_FilteringServices_filter_percent_informativePtr.asFunction<
+          void Function(
+              int, ffi.Pointer<wire_cst_filtering_services>, double)>();
+
+  void wire_FilteringServices_new(
+    int port_,
+  ) {
+    return _wire_FilteringServices_new(
+      port_,
+    );
+  }
+
+  late final _wire_FilteringServices_newPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'frbgen_segui_wire_FilteringServices_new');
+  late final _wire_FilteringServices_new =
+      _wire_FilteringServices_newPtr.asFunction<void Function(int)>();
+
   void wire_PartitionServices_convert_partition(
     int port_,
     ffi.Pointer<wire_cst_partition_services> that,
@@ -727,6 +919,19 @@ class RustLibWire implements BaseWire {
       _cst_new_box_autoadd_contig_servicesPtr
           .asFunction<ffi.Pointer<wire_cst_contig_services> Function()>();
 
+  ffi.Pointer<wire_cst_filtering_services>
+      cst_new_box_autoadd_filtering_services() {
+    return _cst_new_box_autoadd_filtering_services();
+  }
+
+  late final _cst_new_box_autoadd_filtering_servicesPtr = _lookup<
+          ffi
+          .NativeFunction<ffi.Pointer<wire_cst_filtering_services> Function()>>(
+      'frbgen_segui_cst_new_box_autoadd_filtering_services');
+  late final _cst_new_box_autoadd_filtering_services =
+      _cst_new_box_autoadd_filtering_servicesPtr
+          .asFunction<ffi.Pointer<wire_cst_filtering_services> Function()>();
+
   ffi.Pointer<wire_cst_partition_services>
       cst_new_box_autoadd_partition_services() {
     return _cst_new_box_autoadd_partition_services();
@@ -765,6 +970,20 @@ class RustLibWire implements BaseWire {
   late final _cst_new_box_autoadd_sequence_services =
       _cst_new_box_autoadd_sequence_servicesPtr
           .asFunction<ffi.Pointer<wire_cst_sequence_services> Function()>();
+
+  ffi.Pointer<ffi.UintPtr> cst_new_box_autoadd_usize(
+    int value,
+  ) {
+    return _cst_new_box_autoadd_usize(
+      value,
+    );
+  }
+
+  late final _cst_new_box_autoadd_usizePtr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<ffi.UintPtr> Function(ffi.UintPtr)>>(
+      'frbgen_segui_cst_new_box_autoadd_usize');
+  late final _cst_new_box_autoadd_usize = _cst_new_box_autoadd_usizePtr
+      .asFunction<ffi.Pointer<ffi.UintPtr> Function(int)>();
 
   ffi.Pointer<wire_cst_list_String> cst_new_list_String(
     int len,
@@ -851,6 +1070,21 @@ final class wire_cst_alignment_services extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> datatype;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_dir;
+}
+
+final class wire_cst_filtering_services extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
+
+  external ffi.Pointer<wire_cst_list_String> files;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> datatype;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_dir;
+
+  @ffi.Bool()
+  external bool is_concat;
 }
 
 final class wire_cst_partition_services extends ffi.Struct {

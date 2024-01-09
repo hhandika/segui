@@ -185,6 +185,131 @@ fn wire_AlignmentServices_summarize_alignment_impl(
         },
     )
 }
+fn wire_FilteringServices_filter_minimal_length_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::FilteringServices>,
+    length: impl CstDecode<usize>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "FilteringServices_filter_minimal_length",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            let api_length = length.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        crate::api::sequence::FilteringServices::filter_minimal_length(
+                            &api_that, api_length,
+                        ),
+                    )
+                })())
+            }
+        },
+    )
+}
+fn wire_FilteringServices_filter_minimal_taxa_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::FilteringServices>,
+    percent: impl CstDecode<f64>,
+    taxon_count: impl CstDecode<Option<usize>>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "FilteringServices_filter_minimal_taxa",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            let api_percent = percent.cst_decode();
+            let api_taxon_count = taxon_count.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        crate::api::sequence::FilteringServices::filter_minimal_taxa(
+                            &api_that,
+                            api_percent,
+                            api_taxon_count,
+                        ),
+                    )
+                })())
+            }
+        },
+    )
+}
+fn wire_FilteringServices_filter_parsimony_inf_count_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::FilteringServices>,
+    count: impl CstDecode<usize>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "FilteringServices_filter_parsimony_inf_count",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            let api_count = count.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        crate::api::sequence::FilteringServices::filter_parsimony_inf_count(
+                            &api_that, api_count,
+                        ),
+                    )
+                })())
+            }
+        },
+    )
+}
+fn wire_FilteringServices_filter_percent_informative_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::FilteringServices>,
+    percent: impl CstDecode<f64>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "FilteringServices_filter_percent_informative",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            let api_percent = percent.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        crate::api::sequence::FilteringServices::filter_percent_informative(
+                            &api_that,
+                            api_percent,
+                        ),
+                    )
+                })())
+            }
+        },
+    )
+}
+fn wire_FilteringServices_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "FilteringServices_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(crate::api::sequence::FilteringServices::new())
+                })())
+            }
+        },
+    )
+}
 fn wire_PartitionServices_convert_partition_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: impl CstDecode<crate::api::sequence::PartitionServices>,
@@ -346,6 +471,11 @@ impl CstDecode<bool> for bool {
         self
     }
 }
+impl CstDecode<f64> for f64 {
+    fn cst_decode(self) -> f64 {
+        self
+    }
+}
 impl CstDecode<u8> for u8 {
     fn cst_decode(self) -> u8 {
         self
@@ -401,6 +531,31 @@ impl SseDecode for crate::api::contig::ContigServices {
     }
 }
 
+impl SseDecode for f64 {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_f64::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for crate::api::sequence::FilteringServices {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_dir = <Option<String>>::sse_decode(deserializer);
+        let mut var_files = <Vec<String>>::sse_decode(deserializer);
+        let mut var_inputFmt = <String>::sse_decode(deserializer);
+        let mut var_datatype = <String>::sse_decode(deserializer);
+        let mut var_outputDir = <String>::sse_decode(deserializer);
+        let mut var_isConcat = <bool>::sse_decode(deserializer);
+        return crate::api::sequence::FilteringServices {
+            dir: var_dir,
+            files: var_files,
+            input_fmt: var_inputFmt,
+            datatype: var_datatype,
+            output_dir: var_outputDir,
+            is_concat: var_isConcat,
+        };
+    }
+}
+
 impl SseDecode for Vec<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
@@ -427,6 +582,16 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<usize> {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<usize>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -553,6 +718,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::contig::ContigServices>
         self
     }
 }
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::FilteringServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        vec![
+            self.dir.into_into_dart().into_dart(),
+            self.files.into_into_dart().into_dart(),
+            self.input_fmt.into_into_dart().into_dart(),
+            self.datatype.into_into_dart().into_dart(),
+            self.output_dir.into_into_dart().into_dart(),
+            self.is_concat.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sequence::FilteringServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::FilteringServices>
+    for crate::api::sequence::FilteringServices
+{
+    fn into_into_dart(self) -> crate::api::sequence::FilteringServices {
+        self
+    }
+}
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::PartitionServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
@@ -654,6 +843,23 @@ impl SseEncode for crate::api::contig::ContigServices {
     }
 }
 
+impl SseEncode for f64 {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_f64::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for crate::api::sequence::FilteringServices {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.dir, serializer);
+        <Vec<String>>::sse_encode(self.files, serializer);
+        <String>::sse_encode(self.input_fmt, serializer);
+        <String>::sse_encode(self.datatype, serializer);
+        <String>::sse_encode(self.output_dir, serializer);
+        <bool>::sse_encode(self.is_concat, serializer);
+    }
+}
+
 impl SseEncode for Vec<String> {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
@@ -677,6 +883,15 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<usize> {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <usize>::sse_encode(value, serializer);
         }
     }
 }

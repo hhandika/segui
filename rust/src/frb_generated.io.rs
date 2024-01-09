@@ -39,6 +39,12 @@ impl CstDecode<crate::api::contig::ContigServices> for *mut wire_cst_contig_serv
         CstDecode::<crate::api::contig::ContigServices>::cst_decode(*wrap).into()
     }
 }
+impl CstDecode<crate::api::sequence::FilteringServices> for *mut wire_cst_filtering_services {
+    fn cst_decode(self) -> crate::api::sequence::FilteringServices {
+        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
+        CstDecode::<crate::api::sequence::FilteringServices>::cst_decode(*wrap).into()
+    }
+}
 impl CstDecode<crate::api::sequence::PartitionServices> for *mut wire_cst_partition_services {
     fn cst_decode(self) -> crate::api::sequence::PartitionServices {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
@@ -57,6 +63,11 @@ impl CstDecode<crate::api::sequence::SequenceServices> for *mut wire_cst_sequenc
         CstDecode::<crate::api::sequence::SequenceServices>::cst_decode(*wrap).into()
     }
 }
+impl CstDecode<usize> for *mut usize {
+    fn cst_decode(self) -> usize {
+        unsafe { *flutter_rust_bridge::for_generated::box_from_leak_ptr(self) }
+    }
+}
 impl CstDecode<crate::api::contig::ContigServices> for wire_cst_contig_services {
     fn cst_decode(self) -> crate::api::contig::ContigServices {
         crate::api::contig::ContigServices {
@@ -64,6 +75,18 @@ impl CstDecode<crate::api::contig::ContigServices> for wire_cst_contig_services 
             files: self.files.cst_decode(),
             file_fmt: self.file_fmt.cst_decode(),
             output_dir: self.output_dir.cst_decode(),
+        }
+    }
+}
+impl CstDecode<crate::api::sequence::FilteringServices> for wire_cst_filtering_services {
+    fn cst_decode(self) -> crate::api::sequence::FilteringServices {
+        crate::api::sequence::FilteringServices {
+            dir: self.dir.cst_decode(),
+            files: self.files.cst_decode(),
+            input_fmt: self.input_fmt.cst_decode(),
+            datatype: self.datatype.cst_decode(),
+            output_dir: self.output_dir.cst_decode(),
+            is_concat: self.is_concat.cst_decode(),
         }
     }
 }
@@ -153,6 +176,23 @@ impl NewWithNullPtr for wire_cst_contig_services {
     }
 }
 impl Default for wire_cst_contig_services {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
+impl NewWithNullPtr for wire_cst_filtering_services {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            dir: core::ptr::null_mut(),
+            files: core::ptr::null_mut(),
+            input_fmt: core::ptr::null_mut(),
+            datatype: core::ptr::null_mut(),
+            output_dir: core::ptr::null_mut(),
+            is_concat: Default::default(),
+        }
+    }
+}
+impl Default for wire_cst_filtering_services {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }
@@ -277,6 +317,48 @@ pub extern "C" fn frbgen_segui_wire_AlignmentServices_summarize_alignment(
 }
 
 #[no_mangle]
+pub extern "C" fn frbgen_segui_wire_FilteringServices_filter_minimal_length(
+    port_: i64,
+    that: *mut wire_cst_filtering_services,
+    length: usize,
+) {
+    wire_FilteringServices_filter_minimal_length_impl(port_, that, length)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_FilteringServices_filter_minimal_taxa(
+    port_: i64,
+    that: *mut wire_cst_filtering_services,
+    percent: f64,
+    taxon_count: *mut usize,
+) {
+    wire_FilteringServices_filter_minimal_taxa_impl(port_, that, percent, taxon_count)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_FilteringServices_filter_parsimony_inf_count(
+    port_: i64,
+    that: *mut wire_cst_filtering_services,
+    count: usize,
+) {
+    wire_FilteringServices_filter_parsimony_inf_count_impl(port_, that, count)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_FilteringServices_filter_percent_informative(
+    port_: i64,
+    that: *mut wire_cst_filtering_services,
+    percent: f64,
+) {
+    wire_FilteringServices_filter_percent_informative_impl(port_, that, percent)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_FilteringServices_new(port_: i64) {
+    wire_FilteringServices_new_impl(port_)
+}
+
+#[no_mangle]
 pub extern "C" fn frbgen_segui_wire_PartitionServices_convert_partition(
     port_: i64,
     that: *mut wire_cst_partition_services,
@@ -346,6 +428,14 @@ pub extern "C" fn frbgen_segui_cst_new_box_autoadd_contig_services() -> *mut wir
 }
 
 #[no_mangle]
+pub extern "C" fn frbgen_segui_cst_new_box_autoadd_filtering_services(
+) -> *mut wire_cst_filtering_services {
+    flutter_rust_bridge::for_generated::new_leak_box_ptr(
+        wire_cst_filtering_services::new_with_null_ptr(),
+    )
+}
+
+#[no_mangle]
 pub extern "C" fn frbgen_segui_cst_new_box_autoadd_partition_services(
 ) -> *mut wire_cst_partition_services {
     flutter_rust_bridge::for_generated::new_leak_box_ptr(
@@ -367,6 +457,11 @@ pub extern "C" fn frbgen_segui_cst_new_box_autoadd_sequence_services(
     flutter_rust_bridge::for_generated::new_leak_box_ptr(
         wire_cst_sequence_services::new_with_null_ptr(),
     )
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_cst_new_box_autoadd_usize(value: usize) -> *mut usize {
+    flutter_rust_bridge::for_generated::new_leak_box_ptr(value)
 }
 
 #[no_mangle]
@@ -408,6 +503,16 @@ pub struct wire_cst_contig_services {
     files: *mut wire_cst_list_String,
     file_fmt: *mut wire_cst_list_prim_u_8_strict,
     output_dir: *mut wire_cst_list_prim_u_8_strict,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_filtering_services {
+    dir: *mut wire_cst_list_prim_u_8_strict,
+    files: *mut wire_cst_list_String,
+    input_fmt: *mut wire_cst_list_prim_u_8_strict,
+    datatype: *mut wire_cst_list_prim_u_8_strict,
+    output_dir: *mut wire_cst_list_prim_u_8_strict,
+    is_concat: bool,
 }
 #[repr(C)]
 #[derive(Clone, Copy)]

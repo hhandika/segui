@@ -68,6 +68,29 @@ impl CstDecode<crate::api::contig::ContigServices>
         }
     }
 }
+impl CstDecode<crate::api::sequence::FilteringServices>
+    for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
+{
+    fn cst_decode(self) -> crate::api::sequence::FilteringServices {
+        let self_ = self
+            .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
+            .unwrap();
+        assert_eq!(
+            self_.length(),
+            6,
+            "Expected 6 elements, got {}",
+            self_.length()
+        );
+        crate::api::sequence::FilteringServices {
+            dir: self_.get(0).cst_decode(),
+            files: self_.get(1).cst_decode(),
+            input_fmt: self_.get(2).cst_decode(),
+            datatype: self_.get(3).cst_decode(),
+            output_dir: self_.get(4).cst_decode(),
+            is_concat: self_.get(5).cst_decode(),
+        }
+    }
+}
 impl CstDecode<Vec<String>> for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue {
     fn cst_decode(self) -> Vec<String> {
         self.dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
@@ -163,6 +186,11 @@ impl CstDecode<bool> for flutter_rust_bridge::for_generated::wasm_bindgen::JsVal
         self.is_truthy()
     }
 }
+impl CstDecode<f64> for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue {
+    fn cst_decode(self) -> f64 {
+        self.unchecked_into_f64() as _
+    }
+}
 impl CstDecode<Vec<u8>> for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue {
     fn cst_decode(self) -> Vec<u8> {
         self.unchecked_into::<flutter_rust_bridge::for_generated::js_sys::Uint8Array>()
@@ -249,6 +277,48 @@ pub fn wire_AlignmentServices_summarize_alignment(
     interval: usize,
 ) {
     wire_AlignmentServices_summarize_alignment_impl(port_, that, output_prefix, interval)
+}
+
+#[wasm_bindgen]
+pub fn wire_FilteringServices_filter_minimal_length(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+    length: usize,
+) {
+    wire_FilteringServices_filter_minimal_length_impl(port_, that, length)
+}
+
+#[wasm_bindgen]
+pub fn wire_FilteringServices_filter_minimal_taxa(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+    percent: f64,
+    taxon_count: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+) {
+    wire_FilteringServices_filter_minimal_taxa_impl(port_, that, percent, taxon_count)
+}
+
+#[wasm_bindgen]
+pub fn wire_FilteringServices_filter_parsimony_inf_count(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+    count: usize,
+) {
+    wire_FilteringServices_filter_parsimony_inf_count_impl(port_, that, count)
+}
+
+#[wasm_bindgen]
+pub fn wire_FilteringServices_filter_percent_informative(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+    percent: f64,
+) {
+    wire_FilteringServices_filter_percent_informative_impl(port_, that, percent)
+}
+
+#[wasm_bindgen]
+pub fn wire_FilteringServices_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_FilteringServices_new_impl(port_)
 }
 
 #[wasm_bindgen]

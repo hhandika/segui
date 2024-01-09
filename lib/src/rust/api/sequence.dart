@@ -69,6 +69,75 @@ class AlignmentServices {
           outputDir == other.outputDir;
 }
 
+class FilteringServices {
+  final String? dir;
+  final List<String> files;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final bool isConcat;
+
+  const FilteringServices({
+    this.dir,
+    required this.files,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.isConcat,
+  });
+
+  Future<void> filterMinimalLength({required int length, dynamic hint}) =>
+      RustLib.instance.api.filteringServicesFilterMinimalLength(
+        that: this,
+        length: length,
+      );
+
+  Future<void> filterMinimalTaxa(
+          {required double percent, int? taxonCount, dynamic hint}) =>
+      RustLib.instance.api.filteringServicesFilterMinimalTaxa(
+        that: this,
+        percent: percent,
+        taxonCount: taxonCount,
+      );
+
+  Future<void> filterParsimonyInfCount({required int count, dynamic hint}) =>
+      RustLib.instance.api.filteringServicesFilterParsimonyInfCount(
+        that: this,
+        count: count,
+      );
+
+  Future<void> filterPercentInformative(
+          {required double percent, dynamic hint}) =>
+      RustLib.instance.api.filteringServicesFilterPercentInformative(
+        that: this,
+        percent: percent,
+      );
+
+  static Future<FilteringServices> newFilteringServices({dynamic hint}) =>
+      RustLib.instance.api.filteringServicesNew(hint: hint);
+
+  @override
+  int get hashCode =>
+      dir.hashCode ^
+      files.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      isConcat.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FilteringServices &&
+          runtimeType == other.runtimeType &&
+          dir == other.dir &&
+          files == other.files &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          isConcat == other.isConcat;
+}
+
 class PartitionServices {
   final List<String> fileInputs;
   final String inputPartFmt;
