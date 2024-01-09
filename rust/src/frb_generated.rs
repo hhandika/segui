@@ -68,30 +68,30 @@ fn wire_ContigServices_summarize_impl(
         },
     )
 }
-fn wire_FastqServices_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+fn wire_RawReadServices_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "FastqServices_new",
+            debug_name: "RawReadServices_new",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::fastq::FastqServices::new())
+                    Result::<_, ()>::Ok(crate::api::reads::RawReadServices::new())
                 })())
             }
         },
     )
 }
-fn wire_FastqServices_summarize_impl(
+fn wire_RawReadServices_summarize_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::fastq::FastqServices>,
+    that: impl CstDecode<crate::api::reads::RawReadServices>,
     mode: impl CstDecode<String>,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "FastqServices_summarize",
+            debug_name: "RawReadServices_summarize",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -100,7 +100,7 @@ fn wire_FastqServices_summarize_impl(
             let api_mode = mode.cst_decode();
             move |context| {
                 transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::fastq::FastqServices::summarize(
+                    Result::<_, ()>::Ok(crate::api::reads::RawReadServices::summarize(
                         &api_that, api_mode,
                     ))
                 })())
@@ -368,21 +368,6 @@ impl SseDecode for crate::api::contig::ContigServices {
     }
 }
 
-impl SseDecode for crate::api::fastq::FastqServices {
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_dirPath = <Option<String>>::sse_decode(deserializer);
-        let mut var_files = <Vec<String>>::sse_decode(deserializer);
-        let mut var_fileFmt = <String>::sse_decode(deserializer);
-        let mut var_outputDir = <String>::sse_decode(deserializer);
-        return crate::api::fastq::FastqServices {
-            dir_path: var_dirPath,
-            files: var_files,
-            file_fmt: var_fileFmt,
-            output_dir: var_outputDir,
-        };
-    }
-}
-
 impl SseDecode for Vec<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
@@ -430,6 +415,21 @@ impl SseDecode for crate::api::sequence::PartitionServices {
             output_part_fmt: var_outputPartFmt,
             datatype: var_datatype,
             is_uncheck: var_isUncheck,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::RawReadServices {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_dirPath = <Option<String>>::sse_decode(deserializer);
+        let mut var_files = <Vec<String>>::sse_decode(deserializer);
+        let mut var_fileFmt = <String>::sse_decode(deserializer);
+        let mut var_outputDir = <String>::sse_decode(deserializer);
+        return crate::api::reads::RawReadServices {
+            dir_path: var_dirPath,
+            files: var_files,
+            file_fmt: var_fileFmt,
+            output_dir: var_outputDir,
         };
     }
 }
@@ -497,28 +497,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::contig::ContigServices>
         self
     }
 }
-impl flutter_rust_bridge::IntoDart for crate::api::fastq::FastqServices {
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        vec![
-            self.dir_path.into_into_dart().into_dart(),
-            self.files.into_into_dart().into_dart(),
-            self.file_fmt.into_into_dart().into_dart(),
-            self.output_dir.into_into_dart().into_dart(),
-        ]
-        .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::fastq::FastqServices
-{
-}
-impl flutter_rust_bridge::IntoIntoDart<crate::api::fastq::FastqServices>
-    for crate::api::fastq::FastqServices
-{
-    fn into_into_dart(self) -> crate::api::fastq::FastqServices {
-        self
-    }
-}
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::PartitionServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
@@ -540,6 +518,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::PartitionServices>
     for crate::api::sequence::PartitionServices
 {
     fn into_into_dart(self) -> crate::api::sequence::PartitionServices {
+        self
+    }
+}
+impl flutter_rust_bridge::IntoDart for crate::api::reads::RawReadServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        vec![
+            self.dir_path.into_into_dart().into_dart(),
+            self.files.into_into_dart().into_dart(),
+            self.file_fmt.into_into_dart().into_dart(),
+            self.output_dir.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::RawReadServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::RawReadServices>
+    for crate::api::reads::RawReadServices
+{
+    fn into_into_dart(self) -> crate::api::reads::RawReadServices {
         self
     }
 }
@@ -588,15 +588,6 @@ impl SseEncode for crate::api::contig::ContigServices {
     }
 }
 
-impl SseEncode for crate::api::fastq::FastqServices {
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Option<String>>::sse_encode(self.dir_path, serializer);
-        <Vec<String>>::sse_encode(self.files, serializer);
-        <String>::sse_encode(self.file_fmt, serializer);
-        <String>::sse_encode(self.output_dir, serializer);
-    }
-}
-
 impl SseEncode for Vec<String> {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
@@ -632,6 +623,15 @@ impl SseEncode for crate::api::sequence::PartitionServices {
         <String>::sse_encode(self.output_part_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
         <bool>::sse_encode(self.is_uncheck, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::RawReadServices {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.dir_path, serializer);
+        <Vec<String>>::sse_encode(self.files, serializer);
+        <String>::sse_encode(self.file_fmt, serializer);
+        <String>::sse_encode(self.output_dir, serializer);
     }
 }
 

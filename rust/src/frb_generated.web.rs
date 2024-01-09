@@ -46,27 +46,6 @@ impl CstDecode<crate::api::contig::ContigServices>
         }
     }
 }
-impl CstDecode<crate::api::fastq::FastqServices>
-    for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
-{
-    fn cst_decode(self) -> crate::api::fastq::FastqServices {
-        let self_ = self
-            .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
-            .unwrap();
-        assert_eq!(
-            self_.length(),
-            4,
-            "Expected 4 elements, got {}",
-            self_.length()
-        );
-        crate::api::fastq::FastqServices {
-            dir_path: self_.get(0).cst_decode(),
-            files: self_.get(1).cst_decode(),
-            file_fmt: self_.get(2).cst_decode(),
-            output_dir: self_.get(3).cst_decode(),
-        }
-    }
-}
 impl CstDecode<Vec<String>> for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue {
     fn cst_decode(self) -> Vec<String> {
         self.dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
@@ -106,6 +85,27 @@ impl CstDecode<crate::api::sequence::PartitionServices>
             output_part_fmt: self_.get(3).cst_decode(),
             datatype: self_.get(4).cst_decode(),
             is_uncheck: self_.get(5).cst_decode(),
+        }
+    }
+}
+impl CstDecode<crate::api::reads::RawReadServices>
+    for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
+{
+    fn cst_decode(self) -> crate::api::reads::RawReadServices {
+        let self_ = self
+            .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
+            .unwrap();
+        assert_eq!(
+            self_.length(),
+            4,
+            "Expected 4 elements, got {}",
+            self_.length()
+        );
+        crate::api::reads::RawReadServices {
+            dir_path: self_.get(0).cst_decode(),
+            files: self_.get(1).cst_decode(),
+            file_fmt: self_.get(2).cst_decode(),
+            output_dir: self_.get(3).cst_decode(),
         }
     }
 }
@@ -190,17 +190,17 @@ pub fn wire_ContigServices_summarize(
 }
 
 #[wasm_bindgen]
-pub fn wire_FastqServices_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
-    wire_FastqServices_new_impl(port_)
+pub fn wire_RawReadServices_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_RawReadServices_new_impl(port_)
 }
 
 #[wasm_bindgen]
-pub fn wire_FastqServices_summarize(
+pub fn wire_RawReadServices_summarize(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
     mode: String,
 ) {
-    wire_FastqServices_summarize_impl(port_, that, mode)
+    wire_RawReadServices_summarize_impl(port_, that, mode)
 }
 
 #[wasm_bindgen]

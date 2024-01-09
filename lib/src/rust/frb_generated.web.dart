@@ -4,7 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
 import 'api/contig.dart';
-import 'api/fastq.dart';
+import 'api/reads.dart';
 import 'api/sequence.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -29,19 +29,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
 
   @protected
-  FastqServices dco_decode_box_autoadd_fastq_services(dynamic raw);
+  PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
 
   @protected
-  PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
+  RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw);
 
   @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw);
 
   @protected
   ContigServices dco_decode_contig_services(dynamic raw);
-
-  @protected
-  FastqServices dco_decode_fastq_services(dynamic raw);
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
@@ -54,6 +51,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
+
+  @protected
+  RawReadServices dco_decode_raw_read_services(dynamic raw);
 
   @protected
   SequenceServices dco_decode_sequence_services(dynamic raw);
@@ -78,11 +78,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  FastqServices sse_decode_box_autoadd_fastq_services(
+  PartitionServices sse_decode_box_autoadd_partition_services(
       SseDeserializer deserializer);
 
   @protected
-  PartitionServices sse_decode_box_autoadd_partition_services(
+  RawReadServices sse_decode_box_autoadd_raw_read_services(
       SseDeserializer deserializer);
 
   @protected
@@ -91,9 +91,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ContigServices sse_decode_contig_services(SseDeserializer deserializer);
-
-  @protected
-  FastqServices sse_decode_fastq_services(SseDeserializer deserializer);
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
@@ -106,6 +103,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
+
+  @protected
+  RawReadServices sse_decode_raw_read_services(SseDeserializer deserializer);
 
   @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer);
@@ -133,14 +133,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
-  List<dynamic> cst_encode_box_autoadd_fastq_services(FastqServices raw) {
-    return cst_encode_fastq_services(raw);
-  }
-
-  @protected
   List<dynamic> cst_encode_box_autoadd_partition_services(
       PartitionServices raw) {
     return cst_encode_partition_services(raw);
+  }
+
+  @protected
+  List<dynamic> cst_encode_box_autoadd_raw_read_services(RawReadServices raw) {
+    return cst_encode_raw_read_services(raw);
   }
 
   @protected
@@ -150,16 +150,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<dynamic> cst_encode_contig_services(ContigServices raw) {
-    return [
-      cst_encode_opt_String(raw.dirPath),
-      cst_encode_list_String(raw.files),
-      cst_encode_String(raw.fileFmt),
-      cst_encode_String(raw.outputDir)
-    ];
-  }
-
-  @protected
-  List<dynamic> cst_encode_fastq_services(FastqServices raw) {
     return [
       cst_encode_opt_String(raw.dirPath),
       cst_encode_list_String(raw.files),
@@ -192,6 +182,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       cst_encode_String(raw.outputPartFmt),
       cst_encode_String(raw.datatype),
       cst_encode_bool(raw.isUncheck)
+    ];
+  }
+
+  @protected
+  List<dynamic> cst_encode_raw_read_services(RawReadServices raw) {
+    return [
+      cst_encode_opt_String(raw.dirPath),
+      cst_encode_list_String(raw.files),
+      cst_encode_String(raw.fileFmt),
+      cst_encode_String(raw.outputDir)
     ];
   }
 
@@ -229,12 +229,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ContigServices self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_fastq_services(
-      FastqServices self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_partition_services(
       PartitionServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_raw_read_services(
+      RawReadServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_sequence_services(
@@ -243,9 +243,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_contig_services(
       ContigServices self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_fastq_services(FastqServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
@@ -260,6 +257,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_partition_services(
       PartitionServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_raw_read_services(
+      RawReadServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_sequence_services(
@@ -295,12 +296,12 @@ class RustLibWire extends BaseWire {
           NativePortType port_, List<dynamic> that) =>
       wasmModule.wire_ContigServices_summarize(port_, that);
 
-  void wire_FastqServices_new(NativePortType port_) =>
-      wasmModule.wire_FastqServices_new(port_);
+  void wire_RawReadServices_new(NativePortType port_) =>
+      wasmModule.wire_RawReadServices_new(port_);
 
-  void wire_FastqServices_summarize(
+  void wire_RawReadServices_summarize(
           NativePortType port_, List<dynamic> that, String mode) =>
-      wasmModule.wire_FastqServices_summarize(port_, that, mode);
+      wasmModule.wire_RawReadServices_summarize(port_, that, mode);
 
   void wire_PartitionServices_convert_partition(
           NativePortType port_, List<dynamic> that) =>
@@ -368,9 +369,9 @@ class RustLibWasmModule implements WasmModule {
   external void wire_ContigServices_summarize(
       NativePortType port_, List<dynamic> that);
 
-  external void wire_FastqServices_new(NativePortType port_);
+  external void wire_RawReadServices_new(NativePortType port_);
 
-  external void wire_FastqServices_summarize(
+  external void wire_RawReadServices_summarize(
       NativePortType port_, List<dynamic> that, String mode);
 
   external void wire_PartitionServices_convert_partition(

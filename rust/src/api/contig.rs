@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::contig::summarize::ContigSummaryHandler;
 use segul::helper::finder::ContigFileFinder;
-use segul::helper::logger::init_file_logger;
+use segul::helper::logger::{init_file_logger, ContigLogger};
 use segul::helper::types::ContigFmt;
 pub struct ContigServices {
     pub dir_path: Option<String>,
@@ -26,6 +26,8 @@ impl ContigServices {
         let files = self.find_input_files(&input_fmt);
         let output_path = Path::new(&self.output_dir);
         init_file_logger(output_path).expect("Failed to initialize logger");
+        let task = "Contig Summary";
+        ContigLogger::new(None, &input_fmt, files.len()).log(task);
         let summary = ContigSummaryHandler::new(&files, &input_fmt, output_path);
         summary.summarize();
     }

@@ -22,16 +22,16 @@ impl CstDecode<crate::api::contig::ContigServices> for *mut wire_cst_contig_serv
         CstDecode::<crate::api::contig::ContigServices>::cst_decode(*wrap).into()
     }
 }
-impl CstDecode<crate::api::fastq::FastqServices> for *mut wire_cst_fastq_services {
-    fn cst_decode(self) -> crate::api::fastq::FastqServices {
-        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
-        CstDecode::<crate::api::fastq::FastqServices>::cst_decode(*wrap).into()
-    }
-}
 impl CstDecode<crate::api::sequence::PartitionServices> for *mut wire_cst_partition_services {
     fn cst_decode(self) -> crate::api::sequence::PartitionServices {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
         CstDecode::<crate::api::sequence::PartitionServices>::cst_decode(*wrap).into()
+    }
+}
+impl CstDecode<crate::api::reads::RawReadServices> for *mut wire_cst_raw_read_services {
+    fn cst_decode(self) -> crate::api::reads::RawReadServices {
+        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
+        CstDecode::<crate::api::reads::RawReadServices>::cst_decode(*wrap).into()
     }
 }
 impl CstDecode<crate::api::sequence::SequenceServices> for *mut wire_cst_sequence_services {
@@ -43,16 +43,6 @@ impl CstDecode<crate::api::sequence::SequenceServices> for *mut wire_cst_sequenc
 impl CstDecode<crate::api::contig::ContigServices> for wire_cst_contig_services {
     fn cst_decode(self) -> crate::api::contig::ContigServices {
         crate::api::contig::ContigServices {
-            dir_path: self.dir_path.cst_decode(),
-            files: self.files.cst_decode(),
-            file_fmt: self.file_fmt.cst_decode(),
-            output_dir: self.output_dir.cst_decode(),
-        }
-    }
-}
-impl CstDecode<crate::api::fastq::FastqServices> for wire_cst_fastq_services {
-    fn cst_decode(self) -> crate::api::fastq::FastqServices {
-        crate::api::fastq::FastqServices {
             dir_path: self.dir_path.cst_decode(),
             files: self.files.cst_decode(),
             file_fmt: self.file_fmt.cst_decode(),
@@ -86,6 +76,16 @@ impl CstDecode<crate::api::sequence::PartitionServices> for wire_cst_partition_s
             output_part_fmt: self.output_part_fmt.cst_decode(),
             datatype: self.datatype.cst_decode(),
             is_uncheck: self.is_uncheck.cst_decode(),
+        }
+    }
+}
+impl CstDecode<crate::api::reads::RawReadServices> for wire_cst_raw_read_services {
+    fn cst_decode(self) -> crate::api::reads::RawReadServices {
+        crate::api::reads::RawReadServices {
+            dir_path: self.dir_path.cst_decode(),
+            files: self.files.cst_decode(),
+            file_fmt: self.file_fmt.cst_decode(),
+            output_dir: self.output_dir.cst_decode(),
         }
     }
 }
@@ -124,21 +124,6 @@ impl Default for wire_cst_contig_services {
         Self::new_with_null_ptr()
     }
 }
-impl NewWithNullPtr for wire_cst_fastq_services {
-    fn new_with_null_ptr() -> Self {
-        Self {
-            dir_path: core::ptr::null_mut(),
-            files: core::ptr::null_mut(),
-            file_fmt: core::ptr::null_mut(),
-            output_dir: core::ptr::null_mut(),
-        }
-    }
-}
-impl Default for wire_cst_fastq_services {
-    fn default() -> Self {
-        Self::new_with_null_ptr()
-    }
-}
 impl NewWithNullPtr for wire_cst_partition_services {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -152,6 +137,21 @@ impl NewWithNullPtr for wire_cst_partition_services {
     }
 }
 impl Default for wire_cst_partition_services {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
+impl NewWithNullPtr for wire_cst_raw_read_services {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            dir_path: core::ptr::null_mut(),
+            files: core::ptr::null_mut(),
+            file_fmt: core::ptr::null_mut(),
+            output_dir: core::ptr::null_mut(),
+        }
+    }
+}
+impl Default for wire_cst_raw_read_services {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }
@@ -204,17 +204,17 @@ pub extern "C" fn frbgen_segui_wire_ContigServices_summarize(
 }
 
 #[no_mangle]
-pub extern "C" fn frbgen_segui_wire_FastqServices_new(port_: i64) {
-    wire_FastqServices_new_impl(port_)
+pub extern "C" fn frbgen_segui_wire_RawReadServices_new(port_: i64) {
+    wire_RawReadServices_new_impl(port_)
 }
 
 #[no_mangle]
-pub extern "C" fn frbgen_segui_wire_FastqServices_summarize(
+pub extern "C" fn frbgen_segui_wire_RawReadServices_summarize(
     port_: i64,
-    that: *mut wire_cst_fastq_services,
+    that: *mut wire_cst_raw_read_services,
     mode: *mut wire_cst_list_prim_u_8_strict,
 ) {
-    wire_FastqServices_summarize_impl(port_, that, mode)
+    wire_RawReadServices_summarize_impl(port_, that, mode)
 }
 
 #[no_mangle]
@@ -300,18 +300,18 @@ pub extern "C" fn frbgen_segui_cst_new_box_autoadd_contig_services() -> *mut wir
 }
 
 #[no_mangle]
-pub extern "C" fn frbgen_segui_cst_new_box_autoadd_fastq_services() -> *mut wire_cst_fastq_services
-{
-    flutter_rust_bridge::for_generated::new_leak_box_ptr(
-        wire_cst_fastq_services::new_with_null_ptr(),
-    )
-}
-
-#[no_mangle]
 pub extern "C" fn frbgen_segui_cst_new_box_autoadd_partition_services(
 ) -> *mut wire_cst_partition_services {
     flutter_rust_bridge::for_generated::new_leak_box_ptr(
         wire_cst_partition_services::new_with_null_ptr(),
+    )
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_cst_new_box_autoadd_raw_read_services(
+) -> *mut wire_cst_raw_read_services {
+    flutter_rust_bridge::for_generated::new_leak_box_ptr(
+        wire_cst_raw_read_services::new_with_null_ptr(),
     )
 }
 
@@ -356,14 +356,6 @@ pub struct wire_cst_contig_services {
 }
 #[repr(C)]
 #[derive(Clone, Copy)]
-pub struct wire_cst_fastq_services {
-    dir_path: *mut wire_cst_list_prim_u_8_strict,
-    files: *mut wire_cst_list_String,
-    file_fmt: *mut wire_cst_list_prim_u_8_strict,
-    output_dir: *mut wire_cst_list_prim_u_8_strict,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
 pub struct wire_cst_list_String {
     ptr: *mut *mut wire_cst_list_prim_u_8_strict,
     len: i32,
@@ -383,6 +375,14 @@ pub struct wire_cst_partition_services {
     output_part_fmt: *mut wire_cst_list_prim_u_8_strict,
     datatype: *mut wire_cst_list_prim_u_8_strict,
     is_uncheck: bool,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_raw_read_services {
+    dir_path: *mut wire_cst_list_prim_u_8_strict,
+    files: *mut wire_cst_list_String,
+    file_fmt: *mut wire_cst_list_prim_u_8_strict,
+    output_dir: *mut wire_cst_list_prim_u_8_strict,
 }
 #[repr(C)]
 #[derive(Clone, Copy)]

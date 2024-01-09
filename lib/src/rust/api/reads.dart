@@ -6,24 +6,24 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class FastqServices {
+class RawReadServices {
   final String? dirPath;
   final List<String> files;
   final String fileFmt;
   final String outputDir;
 
-  const FastqServices({
+  const RawReadServices({
     this.dirPath,
     required this.files,
     required this.fileFmt,
     required this.outputDir,
   });
 
-  static Future<FastqServices> newFastqServices({dynamic hint}) =>
-      RustLib.instance.api.fastqServicesNew(hint: hint);
+  static Future<RawReadServices> newRawReadServices({dynamic hint}) =>
+      RustLib.instance.api.rawReadServicesNew(hint: hint);
 
   Future<void> summarize({required String mode, dynamic hint}) =>
-      RustLib.instance.api.fastqServicesSummarize(
+      RustLib.instance.api.rawReadServicesSummarize(
         that: this,
         mode: mode,
       );
@@ -35,7 +35,7 @@ class FastqServices {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is FastqServices &&
+      other is RawReadServices &&
           runtimeType == other.runtimeType &&
           dirPath == other.dirPath &&
           files == other.files &&

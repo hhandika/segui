@@ -3,5 +3,5 @@
 //
 
 pub mod contig;
-pub mod fastq;
+pub mod reads;
 pub mod sequence;

@@ -4,7 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
 import 'api/contig.dart';
-import 'api/fastq.dart';
+import 'api/reads.dart';
 import 'api/sequence.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -66,10 +66,10 @@ abstract class RustLibApi extends BaseApi {
   Future<void> contigServicesSummarize(
       {required ContigServices that, dynamic hint});
 
-  Future<FastqServices> fastqServicesNew({dynamic hint});
+  Future<RawReadServices> rawReadServicesNew({dynamic hint});
 
-  Future<void> fastqServicesSummarize(
-      {required FastqServices that, required String mode, dynamic hint});
+  Future<void> rawReadServicesSummarize(
+      {required RawReadServices that, required String mode, dynamic hint});
 
   Future<void> partitionServicesConvertPartition(
       {required PartitionServices that, dynamic hint});
@@ -165,49 +165,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<FastqServices> fastqServicesNew({dynamic hint}) {
+  Future<RawReadServices> rawReadServicesNew({dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
-        return wire.wire_FastqServices_new(port_);
+        return wire.wire_RawReadServices_new(port_);
       },
       codec: DcoCodec(
-        decodeSuccessData: dco_decode_fastq_services,
+        decodeSuccessData: dco_decode_raw_read_services,
         decodeErrorData: null,
       ),
-      constMeta: kFastqServicesNewConstMeta,
+      constMeta: kRawReadServicesNewConstMeta,
       argValues: [],
       apiImpl: this,
       hint: hint,
     ));
   }
 
-  TaskConstMeta get kFastqServicesNewConstMeta => const TaskConstMeta(
-        debugName: "FastqServices_new",
+  TaskConstMeta get kRawReadServicesNewConstMeta => const TaskConstMeta(
+        debugName: "RawReadServices_new",
         argNames: [],
       );
 
   @override
-  Future<void> fastqServicesSummarize(
-      {required FastqServices that, required String mode, dynamic hint}) {
+  Future<void> rawReadServicesSummarize(
+      {required RawReadServices that, required String mode, dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
-        var arg0 = cst_encode_box_autoadd_fastq_services(that);
+        var arg0 = cst_encode_box_autoadd_raw_read_services(that);
         var arg1 = cst_encode_String(mode);
-        return wire.wire_FastqServices_summarize(port_, arg0, arg1);
+        return wire.wire_RawReadServices_summarize(port_, arg0, arg1);
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
         decodeErrorData: null,
       ),
-      constMeta: kFastqServicesSummarizeConstMeta,
+      constMeta: kRawReadServicesSummarizeConstMeta,
       argValues: [that, mode],
       apiImpl: this,
       hint: hint,
     ));
   }
 
-  TaskConstMeta get kFastqServicesSummarizeConstMeta => const TaskConstMeta(
-        debugName: "FastqServices_summarize",
+  TaskConstMeta get kRawReadServicesSummarizeConstMeta => const TaskConstMeta(
+        debugName: "RawReadServices_summarize",
         argNames: ["that", "mode"],
       );
 
@@ -472,13 +472,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  FastqServices dco_decode_box_autoadd_fastq_services(dynamic raw) {
-    return dco_decode_fastq_services(raw);
+  PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw) {
+    return dco_decode_partition_services(raw);
   }
 
   @protected
-  PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw) {
-    return dco_decode_partition_services(raw);
+  RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw) {
+    return dco_decode_raw_read_services(raw);
   }
 
   @protected
@@ -492,19 +492,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.length != 4)
       throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return ContigServices(
-      dirPath: dco_decode_opt_String(arr[0]),
-      files: dco_decode_list_String(arr[1]),
-      fileFmt: dco_decode_String(arr[2]),
-      outputDir: dco_decode_String(arr[3]),
-    );
-  }
-
-  @protected
-  FastqServices dco_decode_fastq_services(dynamic raw) {
-    final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return FastqServices(
       dirPath: dco_decode_opt_String(arr[0]),
       files: dco_decode_list_String(arr[1]),
       fileFmt: dco_decode_String(arr[2]),
@@ -539,6 +526,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       outputPartFmt: dco_decode_String(arr[3]),
       datatype: dco_decode_String(arr[4]),
       isUncheck: dco_decode_bool(arr[5]),
+    );
+  }
+
+  @protected
+  RawReadServices dco_decode_raw_read_services(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return RawReadServices(
+      dirPath: dco_decode_opt_String(arr[0]),
+      files: dco_decode_list_String(arr[1]),
+      fileFmt: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
     );
   }
 
@@ -589,15 +589,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  FastqServices sse_decode_box_autoadd_fastq_services(
-      SseDeserializer deserializer) {
-    return (sse_decode_fastq_services(deserializer));
-  }
-
-  @protected
   PartitionServices sse_decode_box_autoadd_partition_services(
       SseDeserializer deserializer) {
     return (sse_decode_partition_services(deserializer));
+  }
+
+  @protected
+  RawReadServices sse_decode_box_autoadd_raw_read_services(
+      SseDeserializer deserializer) {
+    return (sse_decode_raw_read_services(deserializer));
   }
 
   @protected
@@ -613,19 +613,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_fileFmt = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     return ContigServices(
-        dirPath: var_dirPath,
-        files: var_files,
-        fileFmt: var_fileFmt,
-        outputDir: var_outputDir);
-  }
-
-  @protected
-  FastqServices sse_decode_fastq_services(SseDeserializer deserializer) {
-    var var_dirPath = sse_decode_opt_String(deserializer);
-    var var_files = sse_decode_list_String(deserializer);
-    var var_fileFmt = sse_decode_String(deserializer);
-    var var_outputDir = sse_decode_String(deserializer);
-    return FastqServices(
         dirPath: var_dirPath,
         files: var_files,
         fileFmt: var_fileFmt,
@@ -673,6 +660,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         outputPartFmt: var_outputPartFmt,
         datatype: var_datatype,
         isUncheck: var_isUncheck);
+  }
+
+  @protected
+  RawReadServices sse_decode_raw_read_services(SseDeserializer deserializer) {
+    var var_dirPath = sse_decode_opt_String(deserializer);
+    var var_files = sse_decode_list_String(deserializer);
+    var var_fileFmt = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    return RawReadServices(
+        dirPath: var_dirPath,
+        files: var_files,
+        fileFmt: var_fileFmt,
+        outputDir: var_outputDir);
   }
 
   @protected
@@ -745,15 +745,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_fastq_services(
-      FastqServices self, SseSerializer serializer) {
-    sse_encode_fastq_services(self, serializer);
-  }
-
-  @protected
   void sse_encode_box_autoadd_partition_services(
       PartitionServices self, SseSerializer serializer) {
     sse_encode_partition_services(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_raw_read_services(
+      RawReadServices self, SseSerializer serializer) {
+    sse_encode_raw_read_services(self, serializer);
   }
 
   @protected
@@ -765,14 +765,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_contig_services(
       ContigServices self, SseSerializer serializer) {
-    sse_encode_opt_String(self.dirPath, serializer);
-    sse_encode_list_String(self.files, serializer);
-    sse_encode_String(self.fileFmt, serializer);
-    sse_encode_String(self.outputDir, serializer);
-  }
-
-  @protected
-  void sse_encode_fastq_services(FastqServices self, SseSerializer serializer) {
     sse_encode_opt_String(self.dirPath, serializer);
     sse_encode_list_String(self.files, serializer);
     sse_encode_String(self.fileFmt, serializer);
@@ -811,6 +803,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.outputPartFmt, serializer);
     sse_encode_String(self.datatype, serializer);
     sse_encode_bool(self.isUncheck, serializer);
+  }
+
+  @protected
+  void sse_encode_raw_read_services(
+      RawReadServices self, SseSerializer serializer) {
+    sse_encode_opt_String(self.dirPath, serializer);
+    sse_encode_list_String(self.files, serializer);
+    sse_encode_String(self.fileFmt, serializer);
+    sse_encode_String(self.outputDir, serializer);
   }
 
   @protected

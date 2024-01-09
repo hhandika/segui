@@ -2,19 +2,19 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::read::summarize::ReadSummaryHandler;
 use segul::helper::finder::SeqReadFinder;
-use segul::helper::logger::init_file_logger;
+use segul::helper::logger::{init_file_logger, ReadLogger};
 use segul::helper::types::{SeqReadFmt, SummaryMode};
 
-pub struct FastqServices {
+pub struct RawReadServices {
     pub dir_path: Option<String>,
     pub files: Vec<String>,
     pub file_fmt: String,
     pub output_dir: String,
 }
 
-impl FastqServices {
-    pub fn new() -> FastqServices {
-        FastqServices {
+impl RawReadServices {
+    pub fn new() -> RawReadServices {
+        RawReadServices {
             dir_path: None,
             files: Vec::new(),
             file_fmt: String::new(),
@@ -28,6 +28,7 @@ impl FastqServices {
         let input_fmt = self.match_input_fmt();
         let mut files = self.find_input_files(&input_fmt);
         let sum_mode = self.match_mode(&mode);
+        ReadLogger::new(None, &input_fmt, files.len()).log("Read Summary");
         let mut summary = ReadSummaryHandler::new(&mut files, &input_fmt, &sum_mode, output_path);
         summary.summarize();
     }
