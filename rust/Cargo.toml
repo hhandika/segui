@@ -8,4 +8,6 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "2.0.0-dev.9"
+log = "0.*"
+log4rs = "1.2.*"
 segul = { git = "https://github.com/hhandika/segul.git", branch = "dev" }

@@ -2,11 +2,12 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::align::concat::ConcatHandler;
 use segul::handler::align::convert::Converter;
+use segul::handler::align::filter::{Params, SeqFilter};
 use segul::handler::align::summarize::SeqStats;
 use segul::handler::sequence::id::Id;
 use segul::handler::sequence::partition::PartConverter;
 use segul::handler::sequence::translate::Translate;
-use segul::helper::finder::SeqFileFinder;
+use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{init_file_logger, log_input_partition, AlignSeqLogger};
 use segul::helper::partition::construct_partition_path;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
@@ -208,6 +209,136 @@ impl AlignmentServices {
         AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
         let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
         summary.summarize_all(&mut files, &Some(output_prefix));
+    }
+}
+
+pub struct FilteringServices {
+    pub dir: Option<String>,
+    pub files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    pub is_concat: bool,
+}
+
+impl Sequence for FilteringServices {}
+impl Partition for FilteringServices {}
+
+impl FilteringServices {
+    pub fn new() -> FilteringServices {
+        FilteringServices {
+            dir: None,
+            files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            is_concat: false,
+        }
+    }
+
+    pub fn filter_minimal_taxa(&self, percent: f64, taxon_count: Option<usize>) {
+        let output_path = PathBuf::from(&self.output_dir);
+        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
+        self.check_file_count(files.len());
+        let task = "Alignment Filtering";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
+        let taxon_count = self.count_taxa(&taxon_count, &files, &input_fmt, &datatype);
+        let min_taxa = self.count_min_tax(percent, taxon_count);
+        let params = Params::MinTax(min_taxa);
+        self.log_min_taxa_param(min_taxa, taxon_count, percent);
+        let mut filter = SeqFilter::new(&files, &input_fmt, &datatype, &output_path, &params);
+        filter.filter_aln();
+    }
+
+    pub fn filter_minimal_length(&self, length: usize) {
+        let output_path = PathBuf::from(&self.output_dir);
+        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
+        self.check_file_count(files.len());
+        let task = "Alignment Filtering";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
+        let params = Params::AlnLen(length);
+        self.log_other_params(&params);
+        let mut filter = SeqFilter::new(&files, &input_fmt, &datatype, &output_path, &params);
+        filter.filter_aln();
+    }
+
+    pub fn filter_parsimony_inf_count(&self, count: usize) {
+        let output_path = PathBuf::from(&self.output_dir);
+        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
+        self.check_file_count(files.len());
+        let task = "Alignment Filtering";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
+        let params = Params::ParsInf(count);
+        self.log_other_params(&params);
+        let mut filter = SeqFilter::new(&files, &input_fmt, &datatype, &output_path, &params);
+        filter.filter_aln();
+    }
+
+    pub fn filter_percent_informative(&self, percent: f64) {
+        let output_path = PathBuf::from(&self.output_dir);
+        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
+        self.check_file_count(files.len());
+        let task = "Alignment Filtering";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
+        let params = Params::PercInf(percent);
+        self.log_other_params(&params);
+        let mut filter = SeqFilter::new(&files, &input_fmt, &datatype, &output_path, &params);
+        filter.filter_aln();
+    }
+
+    fn count_taxa(
+        &self,
+        &taxon_count: &Option<usize>,
+        files: &[PathBuf],
+        input_fmt: &InputFmt,
+        datatype: &DataType,
+    ) -> usize {
+        match taxon_count {
+            Some(count) => count,
+            None => IDs::new(files, input_fmt, datatype).id_unique().len(),
+        }
+    }
+
+    fn count_min_tax(&self, percent: f64, taxon_count: usize) -> usize {
+        (percent * taxon_count as f64).floor() as usize
+    }
+
+    fn log_min_taxa_param(&self, min_taxa: usize, taxon_count: usize, percent: f64) {
+        self.log_info();
+        log::info!("{:18}: {}", "Taxon count", taxon_count);
+        log::info!("{:18}: {}%", "Percent", percent * 100.0);
+        log::info!("{:18}: {}\n", "Min tax", min_taxa);
+    }
+
+    fn log_other_params(&self, params: &Params) {
+        self.log_info();
+        match params {
+            Params::AlnLen(len) => log::info!("{:18}: {} bp\n", "Min aln len", len),
+            Params::ParsInf(inf) => log::info!("{:18}: {}\n", "Min pars. inf", inf),
+            Params::PercInf(perc_inf) => {
+                log::info!("{:18}: {}%\n", "% pars. inf", perc_inf * 100.0)
+            }
+            Params::TaxonAll(taxon_id) => {
+                log::info!("{:18}: {} taxa\n", "Taxon id", taxon_id.len())
+            }
+            _ => unreachable!("Invalid params"),
+        }
+    }
+
+    fn log_info(&self) {
+        log::info!("{}", "Params");
     }
 }
 
