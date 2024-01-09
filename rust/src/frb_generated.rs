@@ -108,6 +108,83 @@ fn wire_RawReadServices_summarize_impl(
         },
     )
 }
+fn wire_AlignmentServices_concat_alignment_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::AlignmentServices>,
+    out_fname: impl CstDecode<String>,
+    out_fmt_str: impl CstDecode<String>,
+    partition_fmt: impl CstDecode<String>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AlignmentServices_concat_alignment",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            let api_out_fname = out_fname.cst_decode();
+            let api_out_fmt_str = out_fmt_str.cst_decode();
+            let api_partition_fmt = partition_fmt.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(crate::api::sequence::AlignmentServices::concat_alignment(
+                        &api_that,
+                        api_out_fname,
+                        api_out_fmt_str,
+                        api_partition_fmt,
+                    ))
+                })())
+            }
+        },
+    )
+}
+fn wire_AlignmentServices_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AlignmentServices_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(crate::api::sequence::AlignmentServices::new())
+                })())
+            }
+        },
+    )
+}
+fn wire_AlignmentServices_summarize_alignment_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::AlignmentServices>,
+    output_prefix: impl CstDecode<String>,
+    interval: impl CstDecode<usize>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AlignmentServices_summarize_alignment",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            let api_output_prefix = output_prefix.cst_decode();
+            let api_interval = interval.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        crate::api::sequence::AlignmentServices::summarize_alignment(
+                            &api_that,
+                            api_output_prefix,
+                            api_interval,
+                        ),
+                    )
+                })())
+            }
+        },
+    )
+}
 fn wire_PartitionServices_convert_partition_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: impl CstDecode<crate::api::sequence::PartitionServices>,
@@ -141,37 +218,6 @@ fn wire_PartitionServices_new_impl(port_: flutter_rust_bridge::for_generated::Me
             move |context| {
                 transform_result_dco((move || {
                     Result::<_, ()>::Ok(crate::api::sequence::PartitionServices::new())
-                })())
-            }
-        },
-    )
-}
-fn wire_SequenceServices_concat_alignment_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::sequence::SequenceServices>,
-    out_fname: impl CstDecode<String>,
-    out_fmt_str: impl CstDecode<String>,
-    partition_fmt: impl CstDecode<String>,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "SequenceServices_concat_alignment",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let api_that = that.cst_decode();
-            let api_out_fname = out_fname.cst_decode();
-            let api_out_fmt_str = out_fmt_str.cst_decode();
-            let api_partition_fmt = partition_fmt.cst_decode();
-            move |context| {
-                transform_result_dco((move || {
-                    Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::concat_alignment(
-                        &api_that,
-                        api_out_fname,
-                        api_out_fmt_str,
-                        api_partition_fmt,
-                    ))
                 })())
             }
         },
@@ -240,36 +286,6 @@ fn wire_SequenceServices_parse_sequence_id_impl(
                     Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::parse_sequence_id(
                         &api_that, api_is_map,
                     ))
-                })())
-            }
-        },
-    )
-}
-fn wire_SequenceServices_summarize_alignment_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: impl CstDecode<crate::api::sequence::SequenceServices>,
-    output_prefix: impl CstDecode<String>,
-    interval: impl CstDecode<usize>,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "SequenceServices_summarize_alignment",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let api_that = that.cst_decode();
-            let api_output_prefix = output_prefix.cst_decode();
-            let api_interval = interval.cst_decode();
-            move |context| {
-                transform_result_dco((move || {
-                    Result::<_, ()>::Ok(
-                        crate::api::sequence::SequenceServices::summarize_alignment(
-                            &api_that,
-                            api_output_prefix,
-                            api_interval,
-                        ),
-                    )
                 })())
             }
         },
@@ -344,6 +360,23 @@ impl SseDecode for String {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <Vec<u8>>::sse_decode(deserializer);
         return String::from_utf8(inner).unwrap();
+    }
+}
+
+impl SseDecode for crate::api::sequence::AlignmentServices {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_dir = <Option<String>>::sse_decode(deserializer);
+        let mut var_files = <Vec<String>>::sse_decode(deserializer);
+        let mut var_inputFmt = <String>::sse_decode(deserializer);
+        let mut var_datatype = <String>::sse_decode(deserializer);
+        let mut var_outputDir = <String>::sse_decode(deserializer);
+        return crate::api::sequence::AlignmentServices {
+            dir: var_dir,
+            files: var_files,
+            input_fmt: var_inputFmt,
+            datatype: var_datatype,
+            output_dir: var_outputDir,
+        };
     }
 }
 
@@ -436,15 +469,15 @@ impl SseDecode for crate::api::reads::RawReadServices {
 
 impl SseDecode for crate::api::sequence::SequenceServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_dirPath = <Option<String>>::sse_decode(deserializer);
+        let mut var_dir = <Option<String>>::sse_decode(deserializer);
         let mut var_files = <Vec<String>>::sse_decode(deserializer);
-        let mut var_fileFmt = <String>::sse_decode(deserializer);
+        let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         return crate::api::sequence::SequenceServices {
-            dir_path: var_dirPath,
+            dir: var_dir,
             files: var_files,
-            file_fmt: var_fileFmt,
+            input_fmt: var_inputFmt,
             datatype: var_datatype,
             output_dir: var_outputDir,
         };
@@ -475,6 +508,29 @@ impl SseDecode for i32 {
 
 // Section: rust2dart
 
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::AlignmentServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        vec![
+            self.dir.into_into_dart().into_dart(),
+            self.files.into_into_dart().into_dart(),
+            self.input_fmt.into_into_dart().into_dart(),
+            self.datatype.into_into_dart().into_dart(),
+            self.output_dir.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sequence::AlignmentServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::AlignmentServices>
+    for crate::api::sequence::AlignmentServices
+{
+    fn into_into_dart(self) -> crate::api::sequence::AlignmentServices {
+        self
+    }
+}
 impl flutter_rust_bridge::IntoDart for crate::api::contig::ContigServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
@@ -546,9 +602,9 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::RawReadServices>
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
-            self.dir_path.into_into_dart().into_dart(),
+            self.dir.into_into_dart().into_dart(),
             self.files.into_into_dart().into_dart(),
-            self.file_fmt.into_into_dart().into_dart(),
+            self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
             self.output_dir.into_into_dart().into_dart(),
         ]
@@ -570,6 +626,16 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceServices>
 impl SseEncode for String {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.into_bytes(), serializer);
+    }
+}
+
+impl SseEncode for crate::api::sequence::AlignmentServices {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.dir, serializer);
+        <Vec<String>>::sse_encode(self.files, serializer);
+        <String>::sse_encode(self.input_fmt, serializer);
+        <String>::sse_encode(self.datatype, serializer);
+        <String>::sse_encode(self.output_dir, serializer);
     }
 }
 
@@ -637,9 +703,9 @@ impl SseEncode for crate::api::reads::RawReadServices {
 
 impl SseEncode for crate::api::sequence::SequenceServices {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Option<String>>::sse_encode(self.dir_path, serializer);
+        <Option<String>>::sse_encode(self.dir, serializer);
         <Vec<String>>::sse_encode(self.files, serializer);
-        <String>::sse_encode(self.file_fmt, serializer);
+        <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
         <String>::sse_encode(self.output_dir, serializer);
     }

@@ -23,7 +23,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  AlignmentServices dco_decode_alignment_services(dynamic raw);
+
+  @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw);
 
   @protected
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
@@ -71,7 +77,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  AlignmentServices sse_decode_alignment_services(SseDeserializer deserializer);
+
+  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  AlignmentServices sse_decode_box_autoadd_alignment_services(
+      SseDeserializer deserializer);
 
   @protected
   ContigServices sse_decode_box_autoadd_contig_services(
@@ -125,6 +138,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   String cst_encode_String(String raw) {
     return raw;
+  }
+
+  @protected
+  List<dynamic> cst_encode_alignment_services(AlignmentServices raw) {
+    return [
+      cst_encode_opt_String(raw.dir),
+      cst_encode_list_String(raw.files),
+      cst_encode_String(raw.inputFmt),
+      cst_encode_String(raw.datatype),
+      cst_encode_String(raw.outputDir)
+    ];
+  }
+
+  @protected
+  List<dynamic> cst_encode_box_autoadd_alignment_services(
+      AlignmentServices raw) {
+    return cst_encode_alignment_services(raw);
   }
 
   @protected
@@ -198,9 +228,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   List<dynamic> cst_encode_sequence_services(SequenceServices raw) {
     return [
-      cst_encode_opt_String(raw.dirPath),
+      cst_encode_opt_String(raw.dir),
       cst_encode_list_String(raw.files),
-      cst_encode_String(raw.fileFmt),
+      cst_encode_String(raw.inputFmt),
       cst_encode_String(raw.datatype),
       cst_encode_String(raw.outputDir)
     ];
@@ -222,7 +252,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_alignment_services(
+      AlignmentServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_alignment_services(
+      AlignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_contig_services(
@@ -303,21 +341,29 @@ class RustLibWire extends BaseWire {
           NativePortType port_, List<dynamic> that, String mode) =>
       wasmModule.wire_RawReadServices_summarize(port_, that, mode);
 
+  void wire_AlignmentServices_concat_alignment(
+          NativePortType port_,
+          List<dynamic> that,
+          String out_fname,
+          String out_fmt_str,
+          String partition_fmt) =>
+      wasmModule.wire_AlignmentServices_concat_alignment(
+          port_, that, out_fname, out_fmt_str, partition_fmt);
+
+  void wire_AlignmentServices_new(NativePortType port_) =>
+      wasmModule.wire_AlignmentServices_new(port_);
+
+  void wire_AlignmentServices_summarize_alignment(NativePortType port_,
+          List<dynamic> that, String output_prefix, int interval) =>
+      wasmModule.wire_AlignmentServices_summarize_alignment(
+          port_, that, output_prefix, interval);
+
   void wire_PartitionServices_convert_partition(
           NativePortType port_, List<dynamic> that) =>
       wasmModule.wire_PartitionServices_convert_partition(port_, that);
 
   void wire_PartitionServices_new(NativePortType port_) =>
       wasmModule.wire_PartitionServices_new(port_);
-
-  void wire_SequenceServices_concat_alignment(
-          NativePortType port_,
-          List<dynamic> that,
-          String out_fname,
-          String out_fmt_str,
-          String partition_fmt) =>
-      wasmModule.wire_SequenceServices_concat_alignment(
-          port_, that, out_fname, out_fmt_str, partition_fmt);
 
   void wire_SequenceServices_convert_sequence(NativePortType port_,
           List<dynamic> that, String output_fmt, bool sort) =>
@@ -330,11 +376,6 @@ class RustLibWire extends BaseWire {
   void wire_SequenceServices_parse_sequence_id(
           NativePortType port_, List<dynamic> that, bool is_map) =>
       wasmModule.wire_SequenceServices_parse_sequence_id(port_, that, is_map);
-
-  void wire_SequenceServices_summarize_alignment(NativePortType port_,
-          List<dynamic> that, String output_prefix, int interval) =>
-      wasmModule.wire_SequenceServices_summarize_alignment(
-          port_, that, output_prefix, interval);
 
   void wire_SequenceServices_translate_sequence(
           NativePortType port_,
@@ -374,17 +415,22 @@ class RustLibWasmModule implements WasmModule {
   external void wire_RawReadServices_summarize(
       NativePortType port_, List<dynamic> that, String mode);
 
-  external void wire_PartitionServices_convert_partition(
-      NativePortType port_, List<dynamic> that);
-
-  external void wire_PartitionServices_new(NativePortType port_);
-
-  external void wire_SequenceServices_concat_alignment(
+  external void wire_AlignmentServices_concat_alignment(
       NativePortType port_,
       List<dynamic> that,
       String out_fname,
       String out_fmt_str,
       String partition_fmt);
+
+  external void wire_AlignmentServices_new(NativePortType port_);
+
+  external void wire_AlignmentServices_summarize_alignment(NativePortType port_,
+      List<dynamic> that, String output_prefix, int interval);
+
+  external void wire_PartitionServices_convert_partition(
+      NativePortType port_, List<dynamic> that);
+
+  external void wire_PartitionServices_new(NativePortType port_);
 
   external void wire_SequenceServices_convert_sequence(
       NativePortType port_, List<dynamic> that, String output_fmt, bool sort);
@@ -393,9 +439,6 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_SequenceServices_parse_sequence_id(
       NativePortType port_, List<dynamic> that, bool is_map);
-
-  external void wire_SequenceServices_summarize_alignment(NativePortType port_,
-      List<dynamic> that, String output_prefix, int interval);
 
   external void wire_SequenceServices_translate_sequence(NativePortType port_,
       List<dynamic> that, String table, int reading_frame, String output_fmt);

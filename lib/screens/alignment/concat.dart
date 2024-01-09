@@ -161,10 +161,10 @@ class _ConcatPageState extends State<ConcatPage> {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     String partitionFmt = getPartitionFmt(_partitionFormatController, isCodon);
     try {
-      await SequenceServices(
-        dirPath: ctr.dirPath.text,
+      await AlignmentServices(
+        dir: ctr.dirPath.text,
         files: ctr.files,
-        fileFmt: ctr.inputFormatController!,
+        inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
         outputDir: ctr.outputDir.text,
       ).concatAlignment(

@@ -24,7 +24,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  AlignmentServices dco_decode_alignment_services(dynamic raw);
+
+  @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw);
 
   @protected
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
@@ -72,7 +78,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  AlignmentServices sse_decode_alignment_services(SseDeserializer deserializer);
+
+  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  AlignmentServices sse_decode_box_autoadd_alignment_services(
+      SseDeserializer deserializer);
 
   @protected
   ContigServices sse_decode_box_autoadd_contig_services(
@@ -129,6 +142,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  ffi.Pointer<wire_cst_alignment_services>
+      cst_encode_box_autoadd_alignment_services(AlignmentServices raw) {
+    final ptr = wire.cst_new_box_autoadd_alignment_services();
+    cst_api_fill_to_wire_alignment_services(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_cst_contig_services> cst_encode_box_autoadd_contig_services(
       ContigServices raw) {
     final ptr = wire.cst_new_box_autoadd_contig_services();
@@ -181,6 +202,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ffi.Pointer<wire_cst_list_prim_u_8_strict> cst_encode_opt_String(
       String? raw) {
     return raw == null ? ffi.nullptr : cst_encode_String(raw);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_alignment_services(
+      AlignmentServices apiObj, wire_cst_alignment_services wireObj) {
+    wireObj.dir = cst_encode_opt_String(apiObj.dir);
+    wireObj.files = cst_encode_list_String(apiObj.files);
+    wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
+    wireObj.datatype = cst_encode_String(apiObj.datatype);
+    wireObj.output_dir = cst_encode_String(apiObj.outputDir);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_box_autoadd_alignment_services(
+      AlignmentServices apiObj,
+      ffi.Pointer<wire_cst_alignment_services> wireObj) {
+    cst_api_fill_to_wire_alignment_services(apiObj, wireObj.ref);
   }
 
   @protected
@@ -241,9 +279,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void cst_api_fill_to_wire_sequence_services(
       SequenceServices apiObj, wire_cst_sequence_services wireObj) {
-    wireObj.dir_path = cst_encode_opt_String(apiObj.dirPath);
+    wireObj.dir = cst_encode_opt_String(apiObj.dir);
     wireObj.files = cst_encode_list_String(apiObj.files);
-    wireObj.file_fmt = cst_encode_String(apiObj.fileFmt);
+    wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
     wireObj.datatype = cst_encode_String(apiObj.datatype);
     wireObj.output_dir = cst_encode_String(apiObj.outputDir);
   }
@@ -264,7 +302,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_alignment_services(
+      AlignmentServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_alignment_services(
+      AlignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_contig_services(
@@ -439,6 +485,81 @@ class RustLibWire implements BaseWire {
           void Function(int, ffi.Pointer<wire_cst_raw_read_services>,
               ffi.Pointer<wire_cst_list_prim_u_8_strict>)>();
 
+  void wire_AlignmentServices_concat_alignment(
+    int port_,
+    ffi.Pointer<wire_cst_alignment_services> that,
+    ffi.Pointer<wire_cst_list_prim_u_8_strict> out_fname,
+    ffi.Pointer<wire_cst_list_prim_u_8_strict> out_fmt_str,
+    ffi.Pointer<wire_cst_list_prim_u_8_strict> partition_fmt,
+  ) {
+    return _wire_AlignmentServices_concat_alignment(
+      port_,
+      that,
+      out_fname,
+      out_fmt_str,
+      partition_fmt,
+    );
+  }
+
+  late final _wire_AlignmentServices_concat_alignmentPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64,
+                  ffi.Pointer<wire_cst_alignment_services>,
+                  ffi.Pointer<wire_cst_list_prim_u_8_strict>,
+                  ffi.Pointer<wire_cst_list_prim_u_8_strict>,
+                  ffi.Pointer<wire_cst_list_prim_u_8_strict>)>>(
+      'frbgen_segui_wire_AlignmentServices_concat_alignment');
+  late final _wire_AlignmentServices_concat_alignment =
+      _wire_AlignmentServices_concat_alignmentPtr.asFunction<
+          void Function(
+              int,
+              ffi.Pointer<wire_cst_alignment_services>,
+              ffi.Pointer<wire_cst_list_prim_u_8_strict>,
+              ffi.Pointer<wire_cst_list_prim_u_8_strict>,
+              ffi.Pointer<wire_cst_list_prim_u_8_strict>)>();
+
+  void wire_AlignmentServices_new(
+    int port_,
+  ) {
+    return _wire_AlignmentServices_new(
+      port_,
+    );
+  }
+
+  late final _wire_AlignmentServices_newPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'frbgen_segui_wire_AlignmentServices_new');
+  late final _wire_AlignmentServices_new =
+      _wire_AlignmentServices_newPtr.asFunction<void Function(int)>();
+
+  void wire_AlignmentServices_summarize_alignment(
+    int port_,
+    ffi.Pointer<wire_cst_alignment_services> that,
+    ffi.Pointer<wire_cst_list_prim_u_8_strict> output_prefix,
+    int interval,
+  ) {
+    return _wire_AlignmentServices_summarize_alignment(
+      port_,
+      that,
+      output_prefix,
+      interval,
+    );
+  }
+
+  late final _wire_AlignmentServices_summarize_alignmentPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64,
+                  ffi.Pointer<wire_cst_alignment_services>,
+                  ffi.Pointer<wire_cst_list_prim_u_8_strict>,
+                  ffi.UintPtr)>>(
+      'frbgen_segui_wire_AlignmentServices_summarize_alignment');
+  late final _wire_AlignmentServices_summarize_alignment =
+      _wire_AlignmentServices_summarize_alignmentPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_cst_alignment_services>,
+              ffi.Pointer<wire_cst_list_prim_u_8_strict>, int)>();
+
   void wire_PartitionServices_convert_partition(
     int port_,
     ffi.Pointer<wire_cst_partition_services> that,
@@ -471,40 +592,6 @@ class RustLibWire implements BaseWire {
           'frbgen_segui_wire_PartitionServices_new');
   late final _wire_PartitionServices_new =
       _wire_PartitionServices_newPtr.asFunction<void Function(int)>();
-
-  void wire_SequenceServices_concat_alignment(
-    int port_,
-    ffi.Pointer<wire_cst_sequence_services> that,
-    ffi.Pointer<wire_cst_list_prim_u_8_strict> out_fname,
-    ffi.Pointer<wire_cst_list_prim_u_8_strict> out_fmt_str,
-    ffi.Pointer<wire_cst_list_prim_u_8_strict> partition_fmt,
-  ) {
-    return _wire_SequenceServices_concat_alignment(
-      port_,
-      that,
-      out_fname,
-      out_fmt_str,
-      partition_fmt,
-    );
-  }
-
-  late final _wire_SequenceServices_concat_alignmentPtr = _lookup<
-          ffi.NativeFunction<
-              ffi.Void Function(
-                  ffi.Int64,
-                  ffi.Pointer<wire_cst_sequence_services>,
-                  ffi.Pointer<wire_cst_list_prim_u_8_strict>,
-                  ffi.Pointer<wire_cst_list_prim_u_8_strict>,
-                  ffi.Pointer<wire_cst_list_prim_u_8_strict>)>>(
-      'frbgen_segui_wire_SequenceServices_concat_alignment');
-  late final _wire_SequenceServices_concat_alignment =
-      _wire_SequenceServices_concat_alignmentPtr.asFunction<
-          void Function(
-              int,
-              ffi.Pointer<wire_cst_sequence_services>,
-              ffi.Pointer<wire_cst_list_prim_u_8_strict>,
-              ffi.Pointer<wire_cst_list_prim_u_8_strict>,
-              ffi.Pointer<wire_cst_list_prim_u_8_strict>)>();
 
   void wire_SequenceServices_convert_sequence(
     int port_,
@@ -568,33 +655,6 @@ class RustLibWire implements BaseWire {
       _wire_SequenceServices_parse_sequence_idPtr.asFunction<
           void Function(int, ffi.Pointer<wire_cst_sequence_services>, bool)>();
 
-  void wire_SequenceServices_summarize_alignment(
-    int port_,
-    ffi.Pointer<wire_cst_sequence_services> that,
-    ffi.Pointer<wire_cst_list_prim_u_8_strict> output_prefix,
-    int interval,
-  ) {
-    return _wire_SequenceServices_summarize_alignment(
-      port_,
-      that,
-      output_prefix,
-      interval,
-    );
-  }
-
-  late final _wire_SequenceServices_summarize_alignmentPtr = _lookup<
-          ffi.NativeFunction<
-              ffi.Void Function(
-                  ffi.Int64,
-                  ffi.Pointer<wire_cst_sequence_services>,
-                  ffi.Pointer<wire_cst_list_prim_u_8_strict>,
-                  ffi.UintPtr)>>(
-      'frbgen_segui_wire_SequenceServices_summarize_alignment');
-  late final _wire_SequenceServices_summarize_alignment =
-      _wire_SequenceServices_summarize_alignmentPtr.asFunction<
-          void Function(int, ffi.Pointer<wire_cst_sequence_services>,
-              ffi.Pointer<wire_cst_list_prim_u_8_strict>, int)>();
-
   void wire_SequenceServices_translate_sequence(
     int port_,
     ffi.Pointer<wire_cst_sequence_services> that,
@@ -642,6 +702,19 @@ class RustLibWire implements BaseWire {
           'frbgen_segui_wire_show_dna_uppercase');
   late final _wire_show_dna_uppercase =
       _wire_show_dna_uppercasePtr.asFunction<void Function(int)>();
+
+  ffi.Pointer<wire_cst_alignment_services>
+      cst_new_box_autoadd_alignment_services() {
+    return _cst_new_box_autoadd_alignment_services();
+  }
+
+  late final _cst_new_box_autoadd_alignment_servicesPtr = _lookup<
+          ffi
+          .NativeFunction<ffi.Pointer<wire_cst_alignment_services> Function()>>(
+      'frbgen_segui_cst_new_box_autoadd_alignment_services');
+  late final _cst_new_box_autoadd_alignment_services =
+      _cst_new_box_autoadd_alignment_servicesPtr
+          .asFunction<ffi.Pointer<wire_cst_alignment_services> Function()>();
 
   ffi.Pointer<wire_cst_contig_services> cst_new_box_autoadd_contig_services() {
     return _cst_new_box_autoadd_contig_services();
@@ -768,6 +841,18 @@ final class wire_cst_raw_read_services extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_dir;
 }
 
+final class wire_cst_alignment_services extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
+
+  external ffi.Pointer<wire_cst_list_String> files;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> datatype;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_dir;
+}
+
 final class wire_cst_partition_services extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_String> file_inputs;
 
@@ -784,11 +869,11 @@ final class wire_cst_partition_services extends ffi.Struct {
 }
 
 final class wire_cst_sequence_services extends ffi.Struct {
-  external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir_path;
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
 
   external ffi.Pointer<wire_cst_list_String> files;
 
-  external ffi.Pointer<wire_cst_list_prim_u_8_strict> file_fmt;
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> datatype;
 

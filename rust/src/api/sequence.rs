@@ -24,6 +24,45 @@ trait Sequence {
             .parse::<DataType>()
             .expect("Invalid data type")
     }
+
+    fn match_input_fmt(&self, input_fmt: &str) -> InputFmt {
+        input_fmt
+            .to_lowercase()
+            .parse()
+            .expect("Invalid input format")
+    }
+
+    fn match_output_fmt(&self, out_fmt_str: &str) -> OutputFmt {
+        out_fmt_str
+            .to_lowercase()
+            .parse()
+            .expect("Invalid output format")
+    }
+
+    fn find_input_files(
+        &self,
+        files: &[String],
+        dir: Option<&str>,
+        input_fmt: &InputFmt,
+    ) -> Vec<PathBuf> {
+        if files.is_empty() {
+            match dir {
+                Some(ref path) => {
+                    let path = Path::new(&path);
+                    SeqFileFinder::new(path).find(&input_fmt)
+                }
+                None => panic!("No input files found"),
+            }
+        } else {
+            files.iter().map(PathBuf::from).collect()
+        }
+    }
+
+    fn check_file_count(&self, file_count: usize) {
+        if file_count < 2 {
+            panic!("At least two files are required for the analysis");
+        }
+    }
 }
 
 trait Partition {
@@ -36,9 +75,9 @@ trait Partition {
 }
 
 pub struct SequenceServices {
-    pub dir_path: Option<String>,
+    pub dir: Option<String>,
     pub files: Vec<String>,
-    pub file_fmt: String,
+    pub input_fmt: String,
     pub datatype: String,
     pub output_dir: String,
 }
@@ -49,36 +88,20 @@ impl Partition for SequenceServices {}
 impl SequenceServices {
     pub fn new() -> SequenceServices {
         SequenceServices {
-            dir_path: None,
+            dir: None,
             files: Vec::new(),
-            file_fmt: String::new(),
+            input_fmt: String::new(),
             datatype: String::new(),
             output_dir: String::new(),
         }
     }
 
-    pub fn concat_alignment(&self, out_fname: String, out_fmt_str: String, partition_fmt: String) {
-        let output_path = PathBuf::from(&self.output_dir).join(out_fname);
-        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
-        let input_fmt = self.match_input_fmt();
-        let datatype = self.match_datatype(&self.datatype);
-        let mut files = self.find_input_files(&input_fmt);
-        let output_fmt = self.match_output_fmt(&out_fmt_str);
-        self.check_file_count(files.len());
-        let final_path = files::create_output_fname_from_path(&output_path, &output_fmt);
-        let partition_fmt = self.match_partition_fmt(&partition_fmt);
-        let task = "Alignment Concatenation";
-        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
-        let mut concat = ConcatHandler::new(&input_fmt, &final_path, &output_fmt, &partition_fmt);
-        concat.concat_alignment(&mut files, &datatype);
-    }
-
     pub fn convert_sequence(&self, output_fmt: String, sort: bool) {
         let output_path = Path::new(&self.output_dir);
         init_file_logger(output_path).expect("Failed to initialize logger");
-        let input_fmt = self.match_input_fmt();
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
-        let files = self.find_input_files(&input_fmt);
+        let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let task = "Sequence Conversion";
         AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
@@ -89,9 +112,9 @@ impl SequenceServices {
     pub fn parse_sequence_id(&self, is_map: bool) {
         let output_path = Path::new(&self.output_dir).with_extension("txt");
         init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
-        let input_fmt = self.match_input_fmt();
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
-        let files = self.find_input_files(&input_fmt);
+        let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
         let log = AlignSeqLogger::new(None, &input_fmt, &datatype, files.len());
         let id = Id::new(&output_path, &input_fmt, &datatype);
         if !is_map {
@@ -116,24 +139,12 @@ impl SequenceServices {
         }
     }
 
-    pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
-        let output_path = PathBuf::from(&self.output_dir);
-        init_file_logger(&output_path).expect("Failed to initialize logger");
-        let input_fmt = self.match_input_fmt();
-        let datatype = self.match_datatype(&self.datatype);
-        let mut files = self.find_input_files(&input_fmt);
-        let task = "Alignment Summary";
-        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
-        let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
-        summary.summarize_all(&mut files, &Some(output_prefix));
-    }
-
     pub fn translate_sequence(&self, table: String, reading_frame: usize, output_fmt: String) {
         let output_path = Path::new(&self.output_dir);
         init_file_logger(output_path).expect("Failed to initialize logger");
-        let input_fmt = self.match_input_fmt();
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
-        let mut files = self.find_input_files(&input_fmt);
+        let mut files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let translation_table = self.match_translation_table(table);
         let task = "Sequence Translation";
@@ -142,44 +153,61 @@ impl SequenceServices {
         translate.translate_all(&mut files, reading_frame, &output_path);
     }
 
-    fn find_input_files(&self, input_fmt: &InputFmt) -> Vec<PathBuf> {
-        if self.files.is_empty() {
-            match self.dir_path {
-                Some(ref path) => {
-                    let path = Path::new(&path);
-                    SeqFileFinder::new(path).find(&input_fmt)
-                }
-                None => panic!("No input files found"),
-            }
-        } else {
-            self.files.iter().map(PathBuf::from).collect()
-        }
-    }
-
-    fn check_file_count(&self, file_count: usize) {
-        if file_count < 2 {
-            panic!("At least two files are required for the analysis");
-        }
-    }
-
     fn match_translation_table(&self, table: String) -> GeneticCodes {
         table
             .parse::<GeneticCodes>()
             .expect("Invalid translation table")
     }
+}
 
-    fn match_input_fmt(&self) -> InputFmt {
-        self.file_fmt
-            .to_lowercase()
-            .parse()
-            .expect("Invalid input format")
+pub struct AlignmentServices {
+    pub dir: Option<String>,
+    pub files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+}
+
+impl Sequence for AlignmentServices {}
+impl Partition for AlignmentServices {}
+
+impl AlignmentServices {
+    pub fn new() -> AlignmentServices {
+        AlignmentServices {
+            dir: None,
+            files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+        }
     }
 
-    fn match_output_fmt(&self, out_fmt_str: &str) -> OutputFmt {
-        out_fmt_str
-            .to_lowercase()
-            .parse()
-            .expect("Invalid output format")
+    pub fn concat_alignment(&self, out_fname: String, out_fmt_str: String, partition_fmt: String) {
+        let output_path = PathBuf::from(&self.output_dir).join(out_fname);
+        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let mut files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
+        let output_fmt = self.match_output_fmt(&out_fmt_str);
+        self.check_file_count(files.len());
+        let final_path = files::create_output_fname_from_path(&output_path, &output_fmt);
+        let partition_fmt = self.match_partition_fmt(&partition_fmt);
+        let task = "Alignment Concatenation";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
+        let mut concat = ConcatHandler::new(&input_fmt, &final_path, &output_fmt, &partition_fmt);
+        concat.concat_alignment(&mut files, &datatype);
+    }
+
+    pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
+        let output_path = PathBuf::from(&self.output_dir);
+        init_file_logger(&output_path).expect("Failed to initialize logger");
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let mut files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
+        let task = "Alignment Summary";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, files.len()).log(task);
+        let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
+        summary.summarize_all(&mut files, &Some(output_prefix));
     }
 }
 

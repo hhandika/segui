@@ -25,6 +25,28 @@ impl CstDecode<String> for String {
         self
     }
 }
+impl CstDecode<crate::api::sequence::AlignmentServices>
+    for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
+{
+    fn cst_decode(self) -> crate::api::sequence::AlignmentServices {
+        let self_ = self
+            .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
+            .unwrap();
+        assert_eq!(
+            self_.length(),
+            5,
+            "Expected 5 elements, got {}",
+            self_.length()
+        );
+        crate::api::sequence::AlignmentServices {
+            dir: self_.get(0).cst_decode(),
+            files: self_.get(1).cst_decode(),
+            input_fmt: self_.get(2).cst_decode(),
+            datatype: self_.get(3).cst_decode(),
+            output_dir: self_.get(4).cst_decode(),
+        }
+    }
+}
 impl CstDecode<crate::api::contig::ContigServices>
     for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
 {
@@ -123,9 +145,9 @@ impl CstDecode<crate::api::sequence::SequenceServices>
             self_.length()
         );
         crate::api::sequence::SequenceServices {
-            dir_path: self_.get(0).cst_decode(),
+            dir: self_.get(0).cst_decode(),
             files: self_.get(1).cst_decode(),
-            file_fmt: self_.get(2).cst_decode(),
+            input_fmt: self_.get(2).cst_decode(),
             datatype: self_.get(3).cst_decode(),
             output_dir: self_.get(4).cst_decode(),
         }
@@ -204,6 +226,32 @@ pub fn wire_RawReadServices_summarize(
 }
 
 #[wasm_bindgen]
+pub fn wire_AlignmentServices_concat_alignment(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+    out_fname: String,
+    out_fmt_str: String,
+    partition_fmt: String,
+) {
+    wire_AlignmentServices_concat_alignment_impl(port_, that, out_fname, out_fmt_str, partition_fmt)
+}
+
+#[wasm_bindgen]
+pub fn wire_AlignmentServices_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_AlignmentServices_new_impl(port_)
+}
+
+#[wasm_bindgen]
+pub fn wire_AlignmentServices_summarize_alignment(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+    output_prefix: String,
+    interval: usize,
+) {
+    wire_AlignmentServices_summarize_alignment_impl(port_, that, output_prefix, interval)
+}
+
+#[wasm_bindgen]
 pub fn wire_PartitionServices_convert_partition(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
@@ -214,17 +262,6 @@ pub fn wire_PartitionServices_convert_partition(
 #[wasm_bindgen]
 pub fn wire_PartitionServices_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
     wire_PartitionServices_new_impl(port_)
-}
-
-#[wasm_bindgen]
-pub fn wire_SequenceServices_concat_alignment(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
-    out_fname: String,
-    out_fmt_str: String,
-    partition_fmt: String,
-) {
-    wire_SequenceServices_concat_alignment_impl(port_, that, out_fname, out_fmt_str, partition_fmt)
 }
 
 #[wasm_bindgen]
@@ -249,16 +286,6 @@ pub fn wire_SequenceServices_parse_sequence_id(
     is_map: bool,
 ) {
     wire_SequenceServices_parse_sequence_id_impl(port_, that, is_map)
-}
-
-#[wasm_bindgen]
-pub fn wire_SequenceServices_summarize_alignment(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
-    output_prefix: String,
-    interval: usize,
-) {
-    wire_SequenceServices_summarize_alignment_impl(port_, that, output_prefix, interval)
 }
 
 #[wasm_bindgen]

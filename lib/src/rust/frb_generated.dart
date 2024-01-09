@@ -71,17 +71,25 @@ abstract class RustLibApi extends BaseApi {
   Future<void> rawReadServicesSummarize(
       {required RawReadServices that, required String mode, dynamic hint});
 
-  Future<void> partitionServicesConvertPartition(
-      {required PartitionServices that, dynamic hint});
-
-  Future<PartitionServices> partitionServicesNew({dynamic hint});
-
-  Future<void> sequenceServicesConcatAlignment(
-      {required SequenceServices that,
+  Future<void> alignmentServicesConcatAlignment(
+      {required AlignmentServices that,
       required String outFname,
       required String outFmtStr,
       required String partitionFmt,
       dynamic hint});
+
+  Future<AlignmentServices> alignmentServicesNew({dynamic hint});
+
+  Future<void> alignmentServicesSummarizeAlignment(
+      {required AlignmentServices that,
+      required String outputPrefix,
+      required int interval,
+      dynamic hint});
+
+  Future<void> partitionServicesConvertPartition(
+      {required PartitionServices that, dynamic hint});
+
+  Future<PartitionServices> partitionServicesNew({dynamic hint});
 
   Future<void> sequenceServicesConvertSequence(
       {required SequenceServices that,
@@ -93,12 +101,6 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> sequenceServicesParseSequenceId(
       {required SequenceServices that, required bool isMap, dynamic hint});
-
-  Future<void> sequenceServicesSummarizeAlignment(
-      {required SequenceServices that,
-      required String outputPrefix,
-      required int interval,
-      dynamic hint});
 
   Future<void> sequenceServicesTranslateSequence(
       {required SequenceServices that,
@@ -212,6 +214,92 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> alignmentServicesConcatAlignment(
+      {required AlignmentServices that,
+      required String outFname,
+      required String outFmtStr,
+      required String partitionFmt,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_alignment_services(that);
+        var arg1 = cst_encode_String(outFname);
+        var arg2 = cst_encode_String(outFmtStr);
+        var arg3 = cst_encode_String(partitionFmt);
+        return wire.wire_AlignmentServices_concat_alignment(
+            port_, arg0, arg1, arg2, arg3);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kAlignmentServicesConcatAlignmentConstMeta,
+      argValues: [that, outFname, outFmtStr, partitionFmt],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kAlignmentServicesConcatAlignmentConstMeta =>
+      const TaskConstMeta(
+        debugName: "AlignmentServices_concat_alignment",
+        argNames: ["that", "outFname", "outFmtStr", "partitionFmt"],
+      );
+
+  @override
+  Future<AlignmentServices> alignmentServicesNew({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_AlignmentServices_new(port_);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_alignment_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kAlignmentServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kAlignmentServicesNewConstMeta => const TaskConstMeta(
+        debugName: "AlignmentServices_new",
+        argNames: [],
+      );
+
+  @override
+  Future<void> alignmentServicesSummarizeAlignment(
+      {required AlignmentServices that,
+      required String outputPrefix,
+      required int interval,
+      dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_alignment_services(that);
+        var arg1 = cst_encode_String(outputPrefix);
+        var arg2 = cst_encode_usize(interval);
+        return wire.wire_AlignmentServices_summarize_alignment(
+            port_, arg0, arg1, arg2);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kAlignmentServicesSummarizeAlignmentConstMeta,
+      argValues: [that, outputPrefix, interval],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kAlignmentServicesSummarizeAlignmentConstMeta =>
+      const TaskConstMeta(
+        debugName: "AlignmentServices_summarize_alignment",
+        argNames: ["that", "outputPrefix", "interval"],
+      );
+
+  @override
   Future<void> partitionServicesConvertPartition(
       {required PartitionServices that, dynamic hint}) {
     return handler.executeNormal(NormalTask(
@@ -256,39 +344,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kPartitionServicesNewConstMeta => const TaskConstMeta(
         debugName: "PartitionServices_new",
         argNames: [],
-      );
-
-  @override
-  Future<void> sequenceServicesConcatAlignment(
-      {required SequenceServices that,
-      required String outFname,
-      required String outFmtStr,
-      required String partitionFmt,
-      dynamic hint}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        var arg0 = cst_encode_box_autoadd_sequence_services(that);
-        var arg1 = cst_encode_String(outFname);
-        var arg2 = cst_encode_String(outFmtStr);
-        var arg3 = cst_encode_String(partitionFmt);
-        return wire.wire_SequenceServices_concat_alignment(
-            port_, arg0, arg1, arg2, arg3);
-      },
-      codec: DcoCodec(
-        decodeSuccessData: dco_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kSequenceServicesConcatAlignmentConstMeta,
-      argValues: [that, outFname, outFmtStr, partitionFmt],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kSequenceServicesConcatAlignmentConstMeta =>
-      const TaskConstMeta(
-        debugName: "SequenceServices_concat_alignment",
-        argNames: ["that", "outFname", "outFmtStr", "partitionFmt"],
       );
 
   @override
@@ -371,37 +426,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> sequenceServicesSummarizeAlignment(
-      {required SequenceServices that,
-      required String outputPrefix,
-      required int interval,
-      dynamic hint}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        var arg0 = cst_encode_box_autoadd_sequence_services(that);
-        var arg1 = cst_encode_String(outputPrefix);
-        var arg2 = cst_encode_usize(interval);
-        return wire.wire_SequenceServices_summarize_alignment(
-            port_, arg0, arg1, arg2);
-      },
-      codec: DcoCodec(
-        decodeSuccessData: dco_decode_unit,
-        decodeErrorData: null,
-      ),
-      constMeta: kSequenceServicesSummarizeAlignmentConstMeta,
-      argValues: [that, outputPrefix, interval],
-      apiImpl: this,
-      hint: hint,
-    ));
-  }
-
-  TaskConstMeta get kSequenceServicesSummarizeAlignmentConstMeta =>
-      const TaskConstMeta(
-        debugName: "SequenceServices_summarize_alignment",
-        argNames: ["that", "outputPrefix", "interval"],
-      );
-
-  @override
   Future<void> sequenceServicesTranslateSequence(
       {required SequenceServices that,
       required String table,
@@ -462,8 +486,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AlignmentServices dco_decode_alignment_services(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return AlignmentServices(
+      dir: dco_decode_opt_String(arr[0]),
+      files: dco_decode_list_String(arr[1]),
+      inputFmt: dco_decode_String(arr[2]),
+      datatype: dco_decode_String(arr[3]),
+      outputDir: dco_decode_String(arr[4]),
+    );
+  }
+
+  @protected
   bool dco_decode_bool(dynamic raw) {
     return raw as bool;
+  }
+
+  @protected
+  AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw) {
+    return dco_decode_alignment_services(raw);
   }
 
   @protected
@@ -548,9 +591,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     if (arr.length != 5)
       throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return SequenceServices(
-      dirPath: dco_decode_opt_String(arr[0]),
+      dir: dco_decode_opt_String(arr[0]),
       files: dco_decode_list_String(arr[1]),
-      fileFmt: dco_decode_String(arr[2]),
+      inputFmt: dco_decode_String(arr[2]),
       datatype: dco_decode_String(arr[3]),
       outputDir: dco_decode_String(arr[4]),
     );
@@ -578,8 +621,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AlignmentServices sse_decode_alignment_services(
+      SseDeserializer deserializer) {
+    var var_dir = sse_decode_opt_String(deserializer);
+    var var_files = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    return AlignmentServices(
+        dir: var_dir,
+        files: var_files,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir);
+  }
+
+  @protected
   bool sse_decode_bool(SseDeserializer deserializer) {
     return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  AlignmentServices sse_decode_box_autoadd_alignment_services(
+      SseDeserializer deserializer) {
+    return (sse_decode_alignment_services(deserializer));
   }
 
   @protected
@@ -677,15 +742,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer) {
-    var var_dirPath = sse_decode_opt_String(deserializer);
+    var var_dir = sse_decode_opt_String(deserializer);
     var var_files = sse_decode_list_String(deserializer);
-    var var_fileFmt = sse_decode_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     return SequenceServices(
-        dirPath: var_dirPath,
+        dir: var_dir,
         files: var_files,
-        fileFmt: var_fileFmt,
+        inputFmt: var_inputFmt,
         datatype: var_datatype,
         outputDir: var_outputDir);
   }
@@ -734,8 +799,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_alignment_services(
+      AlignmentServices self, SseSerializer serializer) {
+    sse_encode_opt_String(self.dir, serializer);
+    sse_encode_list_String(self.files, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+  }
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer) {
     serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_alignment_services(
+      AlignmentServices self, SseSerializer serializer) {
+    sse_encode_alignment_services(self, serializer);
   }
 
   @protected
@@ -817,9 +898,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_sequence_services(
       SequenceServices self, SseSerializer serializer) {
-    sse_encode_opt_String(self.dirPath, serializer);
+    sse_encode_opt_String(self.dir, serializer);
     sse_encode_list_String(self.files, serializer);
-    sse_encode_String(self.fileFmt, serializer);
+    sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
     sse_encode_String(self.outputDir, serializer);
   }

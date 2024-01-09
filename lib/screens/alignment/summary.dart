@@ -106,11 +106,11 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
 
   Future<void> _summarize() async {
     try {
-      await SequenceServices(
+      await AlignmentServices(
         files: ctr.files,
-        dirPath: ctr.dirPath.text,
+        dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
-        fileFmt: ctr.inputFormatController!,
+        inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
       ).summarizeAlignment(
           outputPrefix: ctr.outputController.text,

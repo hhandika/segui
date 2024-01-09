@@ -142,9 +142,9 @@ class _TranslatePageState extends State<TranslatePage> {
     try {
       await SequenceServices(
         files: ctr.files,
-        dirPath: ctr.dirPath.text,
+        dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
-        fileFmt: ctr.inputFormatController!,
+        inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
       ).translateSequence(
           table: _tableIndex.toString(),

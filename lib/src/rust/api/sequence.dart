@@ -9,6 +9,66 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<String> showDnaUppercase({dynamic hint}) =>
     RustLib.instance.api.showDnaUppercase(hint: hint);
 
+class AlignmentServices {
+  final String? dir;
+  final List<String> files;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+
+  const AlignmentServices({
+    this.dir,
+    required this.files,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+  });
+
+  Future<void> concatAlignment(
+          {required String outFname,
+          required String outFmtStr,
+          required String partitionFmt,
+          dynamic hint}) =>
+      RustLib.instance.api.alignmentServicesConcatAlignment(
+        that: this,
+        outFname: outFname,
+        outFmtStr: outFmtStr,
+        partitionFmt: partitionFmt,
+      );
+
+  static Future<AlignmentServices> newAlignmentServices({dynamic hint}) =>
+      RustLib.instance.api.alignmentServicesNew(hint: hint);
+
+  Future<void> summarizeAlignment(
+          {required String outputPrefix,
+          required int interval,
+          dynamic hint}) =>
+      RustLib.instance.api.alignmentServicesSummarizeAlignment(
+        that: this,
+        outputPrefix: outputPrefix,
+        interval: interval,
+      );
+
+  @override
+  int get hashCode =>
+      dir.hashCode ^
+      files.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlignmentServices &&
+          runtimeType == other.runtimeType &&
+          dir == other.dir &&
+          files == other.files &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir;
+}
+
 class PartitionServices {
   final List<String> fileInputs;
   final String inputPartFmt;
@@ -57,31 +117,19 @@ class PartitionServices {
 }
 
 class SequenceServices {
-  final String? dirPath;
+  final String? dir;
   final List<String> files;
-  final String fileFmt;
+  final String inputFmt;
   final String datatype;
   final String outputDir;
 
   const SequenceServices({
-    this.dirPath,
+    this.dir,
     required this.files,
-    required this.fileFmt,
+    required this.inputFmt,
     required this.datatype,
     required this.outputDir,
   });
-
-  Future<void> concatAlignment(
-          {required String outFname,
-          required String outFmtStr,
-          required String partitionFmt,
-          dynamic hint}) =>
-      RustLib.instance.api.sequenceServicesConcatAlignment(
-        that: this,
-        outFname: outFname,
-        outFmtStr: outFmtStr,
-        partitionFmt: partitionFmt,
-      );
 
   Future<void> convertSequence(
           {required String outputFmt, required bool sort, dynamic hint}) =>
@@ -100,16 +148,6 @@ class SequenceServices {
         isMap: isMap,
       );
 
-  Future<void> summarizeAlignment(
-          {required String outputPrefix,
-          required int interval,
-          dynamic hint}) =>
-      RustLib.instance.api.sequenceServicesSummarizeAlignment(
-        that: this,
-        outputPrefix: outputPrefix,
-        interval: interval,
-      );
-
   Future<void> translateSequence(
           {required String table,
           required int readingFrame,
@@ -124,9 +162,9 @@ class SequenceServices {
 
   @override
   int get hashCode =>
-      dirPath.hashCode ^
+      dir.hashCode ^
       files.hashCode ^
-      fileFmt.hashCode ^
+      inputFmt.hashCode ^
       datatype.hashCode ^
       outputDir.hashCode;
 
@@ -135,9 +173,9 @@ class SequenceServices {
       identical(this, other) ||
       other is SequenceServices &&
           runtimeType == other.runtimeType &&
-          dirPath == other.dirPath &&
+          dir == other.dir &&
           files == other.files &&
-          fileFmt == other.fileFmt &&
+          inputFmt == other.inputFmt &&
           datatype == other.datatype &&
           outputDir == other.outputDir;
 }
