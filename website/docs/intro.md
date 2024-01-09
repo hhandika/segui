@@ -19,5 +19,5 @@ It brings nearly similar speed and memory efficiency as the command line version
 ## Additional Resources
 
 - [API Documentation](https://docs.rs/segul/0.18.1/segul/)
-- [SEGUL GUI Source Code](https://github.com/hhandika/segui)
-- [SEGUL CLI & API Source Code](https://github.com/hhandika/segul)
+- [GUI Source Code](https://github.com/hhandika/segui)
+- [CLI & API Source Code](https://github.com/hhandika/segul)
