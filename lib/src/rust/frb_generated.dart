@@ -120,7 +120,10 @@ abstract class RustLibApi extends BaseApi {
   Future<SequenceServices> sequenceServicesNew({dynamic hint});
 
   Future<void> sequenceServicesParseSequenceId(
-      {required SequenceServices that, required bool isMap, dynamic hint});
+      {required SequenceServices that,
+      required String outputFname,
+      required bool isMap,
+      dynamic hint});
 
   Future<void> sequenceServicesTranslateSequence(
       {required SequenceServices that,
@@ -580,19 +583,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> sequenceServicesParseSequenceId(
-      {required SequenceServices that, required bool isMap, dynamic hint}) {
+      {required SequenceServices that,
+      required String outputFname,
+      required bool isMap,
+      dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         var arg0 = cst_encode_box_autoadd_sequence_services(that);
-        var arg1 = cst_encode_bool(isMap);
-        return wire.wire_SequenceServices_parse_sequence_id(port_, arg0, arg1);
+        var arg1 = cst_encode_String(outputFname);
+        var arg2 = cst_encode_bool(isMap);
+        return wire.wire_SequenceServices_parse_sequence_id(
+            port_, arg0, arg1, arg2);
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
         decodeErrorData: null,
       ),
       constMeta: kSequenceServicesParseSequenceIdConstMeta,
-      argValues: [that, isMap],
+      argValues: [that, outputFname, isMap],
       apiImpl: this,
       hint: hint,
     ));
@@ -601,7 +609,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kSequenceServicesParseSequenceIdConstMeta =>
       const TaskConstMeta(
         debugName: "SequenceServices_parse_sequence_id",
-        argNames: ["that", "isMap"],
+        argNames: ["that", "outputFname", "isMap"],
       );
 
   @override

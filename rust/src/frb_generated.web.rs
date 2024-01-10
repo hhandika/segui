@@ -358,9 +358,10 @@ pub fn wire_SequenceServices_new(port_: flutter_rust_bridge::for_generated::Mess
 pub fn wire_SequenceServices_parse_sequence_id(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+    output_fname: String,
     is_map: bool,
 ) {
-    wire_SequenceServices_parse_sequence_id_impl(port_, that, is_map)
+    wire_SequenceServices_parse_sequence_id_impl(port_, that, output_fname, is_map)
 }
 
 #[wasm_bindgen]

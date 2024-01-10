@@ -13,7 +13,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final logDir = await getApplicationDocumentsDirectory();
   await RustLib.init();
-  initLogger(logDir: logDir.path);
+  await initLogger(logDir: logDir.path);
   runApp(ProviderScope(
     overrides: [
       settingProvider.overrideWithValue(prefs),

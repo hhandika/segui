@@ -479,9 +479,10 @@ class RustLibWire extends BaseWire {
   void wire_SequenceServices_new(NativePortType port_) =>
       wasmModule.wire_SequenceServices_new(port_);
 
-  void wire_SequenceServices_parse_sequence_id(
-          NativePortType port_, List<dynamic> that, bool is_map) =>
-      wasmModule.wire_SequenceServices_parse_sequence_id(port_, that, is_map);
+  void wire_SequenceServices_parse_sequence_id(NativePortType port_,
+          List<dynamic> that, String output_fname, bool is_map) =>
+      wasmModule.wire_SequenceServices_parse_sequence_id(
+          port_, that, output_fname, is_map);
 
   void wire_SequenceServices_translate_sequence(
           NativePortType port_,
@@ -559,8 +560,8 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_SequenceServices_new(NativePortType port_);
 
-  external void wire_SequenceServices_parse_sequence_id(
-      NativePortType port_, List<dynamic> that, bool is_map);
+  external void wire_SequenceServices_parse_sequence_id(NativePortType port_,
+      List<dynamic> that, String output_fname, bool is_map);
 
   external void wire_SequenceServices_translate_sequence(NativePortType port_,
       List<dynamic> that, String table, int reading_frame, String output_fmt);

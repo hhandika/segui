@@ -848,23 +848,29 @@ class RustLibWire implements BaseWire {
   void wire_SequenceServices_parse_sequence_id(
     int port_,
     ffi.Pointer<wire_cst_sequence_services> that,
+    ffi.Pointer<wire_cst_list_prim_u_8_strict> output_fname,
     bool is_map,
   ) {
     return _wire_SequenceServices_parse_sequence_id(
       port_,
       that,
+      output_fname,
       is_map,
     );
   }
 
   late final _wire_SequenceServices_parse_sequence_idPtr = _lookup<
           ffi.NativeFunction<
-              ffi.Void Function(ffi.Int64,
-                  ffi.Pointer<wire_cst_sequence_services>, ffi.Bool)>>(
+              ffi.Void Function(
+                  ffi.Int64,
+                  ffi.Pointer<wire_cst_sequence_services>,
+                  ffi.Pointer<wire_cst_list_prim_u_8_strict>,
+                  ffi.Bool)>>(
       'frbgen_segui_wire_SequenceServices_parse_sequence_id');
   late final _wire_SequenceServices_parse_sequence_id =
       _wire_SequenceServices_parse_sequence_idPtr.asFunction<
-          void Function(int, ffi.Pointer<wire_cst_sequence_services>, bool)>();
+          void Function(int, ffi.Pointer<wire_cst_sequence_services>,
+              ffi.Pointer<wire_cst_list_prim_u_8_strict>, bool)>();
 
   void wire_SequenceServices_translate_sequence(
     int port_,

@@ -89,7 +89,10 @@ class _IdParsingPageState extends State<IdParsingPage> {
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
-      ).parseSequenceId(isMap: _isMap);
+      ).parseSequenceId(
+        isMap: _isMap,
+        outputFname: ctr.outputController.text,
+      );
       _setSuccess();
     } catch (e) {
       _showError(e.toString());

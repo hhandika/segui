@@ -398,9 +398,10 @@ pub extern "C" fn frbgen_segui_wire_SequenceServices_new(port_: i64) {
 pub extern "C" fn frbgen_segui_wire_SequenceServices_parse_sequence_id(
     port_: i64,
     that: *mut wire_cst_sequence_services,
+    output_fname: *mut wire_cst_list_prim_u_8_strict,
     is_map: bool,
 ) {
-    wire_SequenceServices_parse_sequence_id_impl(port_, that, is_map)
+    wire_SequenceServices_parse_sequence_id_impl(port_, that, output_fname, is_map)
 }
 
 #[no_mangle]

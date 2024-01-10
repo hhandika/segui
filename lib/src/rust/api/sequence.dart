@@ -211,9 +211,11 @@ class SequenceServices {
   static Future<SequenceServices> newSequenceServices({dynamic hint}) =>
       RustLib.instance.api.sequenceServicesNew(hint: hint);
 
-  Future<void> parseSequenceId({required bool isMap, dynamic hint}) =>
+  Future<void> parseSequenceId(
+          {required String outputFname, required bool isMap, dynamic hint}) =>
       RustLib.instance.api.sequenceServicesParseSequenceId(
         that: this,
+        outputFname: outputFname,
         isMap: isMap,
       );
 

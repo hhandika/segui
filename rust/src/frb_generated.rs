@@ -415,6 +415,7 @@ fn wire_SequenceServices_new_impl(port_: flutter_rust_bridge::for_generated::Mes
 fn wire_SequenceServices_parse_sequence_id_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: impl CstDecode<crate::api::sequence::SequenceServices>,
+    output_fname: impl CstDecode<String>,
     is_map: impl CstDecode<bool>,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
@@ -425,11 +426,14 @@ fn wire_SequenceServices_parse_sequence_id_impl(
         },
         move || {
             let api_that = that.cst_decode();
+            let api_output_fname = output_fname.cst_decode();
             let api_is_map = is_map.cst_decode();
             move |context| {
                 transform_result_dco((move || {
                     Result::<_, ()>::Ok(crate::api::sequence::SequenceServices::parse_sequence_id(
-                        &api_that, api_is_map,
+                        &api_that,
+                        api_output_fname,
+                        api_is_map,
                     ))
                 })())
             }
