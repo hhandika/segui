@@ -101,7 +101,7 @@ class _IdParsingPageState extends State<IdParsingPage> {
     File outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
-      task: SupportedTask.alignmentConcatenation,
+      task: SupportedTask.sequenceUniqueId,
     );
     if (mounted) {
       await io.shareFile(context, outputPath);

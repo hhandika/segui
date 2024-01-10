@@ -264,6 +264,14 @@ pub extern "C" fn frbgen_segui_dart_fn_deliver_output(
 }
 
 #[no_mangle]
+pub extern "C" fn frbgen_segui_wire_init_logger(
+    port_: i64,
+    log_dir: *mut wire_cst_list_prim_u_8_strict,
+) {
+    wire_init_logger_impl(port_, log_dir)
+}
+
+#[no_mangle]
 pub extern "C" fn frbgen_segui_wire_ContigServices_new(port_: i64) {
     wire_ContigServices_new_impl(port_)
 }

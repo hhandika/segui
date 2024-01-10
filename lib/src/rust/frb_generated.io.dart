@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
+import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
@@ -501,6 +502,24 @@ class RustLibWire implements BaseWire {
               ffi.Int32)>>('frbgen_segui_dart_fn_deliver_output');
   late final _dart_fn_deliver_output = _dart_fn_deliver_outputPtr
       .asFunction<void Function(int, ffi.Pointer<ffi.Uint8>, int, int)>();
+
+  void wire_init_logger(
+    int port_,
+    ffi.Pointer<wire_cst_list_prim_u_8_strict> log_dir,
+  ) {
+    return _wire_init_logger(
+      port_,
+      log_dir,
+    );
+  }
+
+  late final _wire_init_loggerPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64, ffi.Pointer<wire_cst_list_prim_u_8_strict>)>>(
+      'frbgen_segui_wire_init_logger');
+  late final _wire_init_logger = _wire_init_loggerPtr.asFunction<
+      void Function(int, ffi.Pointer<wire_cst_list_prim_u_8_strict>)>();
 
   void wire_ContigServices_new(
     int port_,

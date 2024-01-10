@@ -8,7 +8,7 @@ use segul::handler::sequence::id::Id;
 use segul::handler::sequence::partition::PartConverter;
 use segul::handler::sequence::translate::Translate;
 use segul::helper::finder::{IDs, SeqFileFinder};
-use segul::helper::logger::{init_file_logger, log_input_partition, AlignSeqLogger};
+use segul::helper::logger::{log_input_partition, AlignSeqLogger};
 use segul::helper::partition::construct_partition_path;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
@@ -99,7 +99,6 @@ impl SequenceServices {
 
     pub fn convert_sequence(&self, output_fmt: String, sort: bool) {
         let output_path = Path::new(&self.output_dir);
-        init_file_logger(output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -112,7 +111,6 @@ impl SequenceServices {
 
     pub fn parse_sequence_id(&self, is_map: bool) {
         let output_path = Path::new(&self.output_dir).with_extension("txt");
-        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -142,7 +140,6 @@ impl SequenceServices {
 
     pub fn translate_sequence(&self, table: String, reading_frame: usize, output_fmt: String) {
         let output_path = Path::new(&self.output_dir);
-        init_file_logger(output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let mut files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -185,7 +182,6 @@ impl AlignmentServices {
 
     pub fn concat_alignment(&self, out_fname: String, out_fmt_str: String, partition_fmt: String) {
         let output_path = PathBuf::from(&self.output_dir).join(out_fname);
-        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let mut files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -201,7 +197,6 @@ impl AlignmentServices {
 
     pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
         let output_path = PathBuf::from(&self.output_dir);
-        init_file_logger(&output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let mut files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -238,7 +233,6 @@ impl FilteringServices {
 
     pub fn filter_minimal_taxa(&self, percent: f64, taxon_count: Option<usize>) {
         let output_path = PathBuf::from(&self.output_dir);
-        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -255,7 +249,6 @@ impl FilteringServices {
 
     pub fn filter_minimal_length(&self, length: usize) {
         let output_path = PathBuf::from(&self.output_dir);
-        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -270,7 +263,6 @@ impl FilteringServices {
 
     pub fn filter_parsimony_inf_count(&self, count: usize) {
         let output_path = PathBuf::from(&self.output_dir);
-        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -285,7 +277,6 @@ impl FilteringServices {
 
     pub fn filter_percent_informative(&self, percent: f64) {
         let output_path = PathBuf::from(&self.output_dir);
-        init_file_logger(Path::new(&self.output_dir)).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
@@ -369,7 +360,6 @@ impl PartitionServices {
     pub fn convert_partition(&self) {
         let input_dir = None::<PathBuf>;
         let output = Path::new(&self.output);
-        init_file_logger(output).expect("Failed to initialize logger");
         let input_fmt = self.match_partition_fmt(&self.input_part_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let out_part_fmt = self.match_partition_fmt(&self.output_part_fmt);

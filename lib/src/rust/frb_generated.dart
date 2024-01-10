@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
+import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
@@ -61,6 +62,8 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  Future<void> initLogger({required String logDir, dynamic hint});
+
   Future<ContigServices> contigServicesNew({dynamic hint});
 
   Future<void> contigServicesSummarize(
@@ -136,6 +139,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.generalizedFrbRustBinding,
     required super.portManager,
   });
+
+  @override
+  Future<void> initLogger({required String logDir, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_String(logDir);
+        return wire.wire_init_logger(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kInitLoggerConstMeta,
+      argValues: [logDir],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kInitLoggerConstMeta => const TaskConstMeta(
+        debugName: "init_logger",
+        argNames: ["logDir"],
+      );
 
   @override
   Future<ContigServices> contigServicesNew({dynamic hint}) {

@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables
 
+import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
@@ -406,6 +407,9 @@ class RustLibWire extends BaseWire {
       wasmModule.dart_fn_deliver_output(
           call_id, ptr_, rust_vec_len_, data_len_);
 
+  void wire_init_logger(NativePortType port_, String log_dir) =>
+      wasmModule.wire_init_logger(port_, log_dir);
+
   void wire_ContigServices_new(NativePortType port_) =>
       wasmModule.wire_ContigServices_new(port_);
 
@@ -506,6 +510,8 @@ class RustLibWasmModule implements WasmModule {
 
   external void dart_fn_deliver_output(int call_id,
       PlatformGeneralizedUint8ListPtr ptr_, int rust_vec_len_, int data_len_);
+
+  external void wire_init_logger(NativePortType port_, String log_dir);
 
   external void wire_ContigServices_new(NativePortType port_);
 

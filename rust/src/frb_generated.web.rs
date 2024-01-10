@@ -227,6 +227,11 @@ pub fn dart_fn_deliver_output(
 }
 
 #[wasm_bindgen]
+pub fn wire_init_logger(port_: flutter_rust_bridge::for_generated::MessagePort, log_dir: String) {
+    wire_init_logger_impl(port_, log_dir)
+}
+
+#[wasm_bindgen]
 pub fn wire_ContigServices_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
     wire_ContigServices_new_impl(port_)
 }
