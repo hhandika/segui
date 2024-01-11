@@ -1,4 +1,3 @@
-use std::fs::create_dir_all;
 use std::path::{Path, PathBuf};
 
 use segul::handler::align::concat::ConcatHandler;
@@ -112,7 +111,6 @@ impl SequenceServices {
 
     // TODO: handle output directory creation in the SEGUL API
     pub fn parse_sequence_id(&self, output_fname: String, is_map: bool) {
-        create_dir_all(&self.output_dir).expect("Failed to create output directory");
         let output_path = Path::new(&self.output_dir)
             .join(output_fname)
             .with_extension("txt");
@@ -120,7 +118,7 @@ impl SequenceServices {
         let datatype = self.match_datatype(&self.datatype);
         let files = self.find_input_files(&self.files, self.dir.as_deref(), &input_fmt);
         let log = AlignSeqLogger::new(None, &input_fmt, &datatype, files.len());
-        let id = Id::new(&output_path, &input_fmt, &datatype);
+        let id = Id::new(&input_fmt, &datatype, &output_path);
         if !is_map {
             let task = "Sequence ID parsing";
             log.log(task);
