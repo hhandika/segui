@@ -20,6 +20,44 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.portManager,
   });
 
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_SequenceExtractionPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_SequenceRenamingPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming;
+
+  @protected
+  SequenceExtraction
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic raw);
+
+  @protected
+  SequenceRenaming
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic raw);
+
+  @protected
+  SequenceExtraction
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic raw);
+
+  @protected
+  SequenceRenaming
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic raw);
+
+  @protected
+  SequenceExtraction
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic raw);
+
+  @protected
+  SequenceRenaming
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic raw);
+
   @protected
   String dco_decode_String(dynamic raw);
 
@@ -104,6 +142,36 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int dco_decode_usize(dynamic raw);
+
+  @protected
+  SequenceExtraction
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SseDeserializer deserializer);
+
+  @protected
+  SequenceRenaming
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SseDeserializer deserializer);
+
+  @protected
+  SequenceExtraction
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SseDeserializer deserializer);
+
+  @protected
+  SequenceRenaming
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SseDeserializer deserializer);
+
+  @protected
+  SequenceExtraction
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SseDeserializer deserializer);
+
+  @protected
+  SequenceRenaming
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SseDeserializer deserializer);
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -377,6 +445,36 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  PlatformPointer
+      cst_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction raw);
+
+  @protected
+  PlatformPointer
+      cst_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming raw);
+
+  @protected
+  PlatformPointer
+      cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction raw);
+
+  @protected
+  PlatformPointer
+      cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming raw);
+
+  @protected
+  PlatformPointer
+      cst_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction raw);
+
+  @protected
+  PlatformPointer
+      cst_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming raw);
+
+  @protected
   bool cst_encode_bool(bool raw);
 
   @protected
@@ -390,6 +488,36 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int cst_encode_usize(int raw);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -570,12 +698,25 @@ class RustLibWire extends BaseWire {
   void wire_PartitionServices_new(NativePortType port_) =>
       wasmModule.wire_PartitionServices_new(port_);
 
+  void wire_SequenceExtraction_extract(NativePortType port_, Object that) =>
+      wasmModule.wire_SequenceExtraction_extract(port_, that);
+
+  void wire_SequenceExtraction_new(NativePortType port_) =>
+      wasmModule.wire_SequenceExtraction_new(port_);
+
   void wire_SequenceRemoval_new(NativePortType port_) =>
       wasmModule.wire_SequenceRemoval_new(port_);
 
   void wire_SequenceRemoval_remove_sequence(
           NativePortType port_, List<dynamic> that) =>
       wasmModule.wire_SequenceRemoval_remove_sequence(port_, that);
+
+  void wire_SequenceRenaming_new(NativePortType port_) =>
+      wasmModule.wire_SequenceRenaming_new(port_);
+
+  void wire_SequenceRenaming_rename_sequence(
+          NativePortType port_, Object that) =>
+      wasmModule.wire_SequenceRenaming_rename_sequence(port_, that);
 
   void wire_SequenceServices_convert_sequence(NativePortType port_,
           List<dynamic> that, String output_fmt, bool sort) =>
@@ -608,6 +749,30 @@ class RustLibWire extends BaseWire {
 
   void wire_show_dna_uppercase(NativePortType port_) =>
       wasmModule.wire_show_dna_uppercase(port_);
+
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+              ptr);
+
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+              ptr);
+
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+              ptr);
+
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+              ptr);
 }
 
 @JS('wasm_bindgen')
@@ -668,10 +833,20 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_PartitionServices_new(NativePortType port_);
 
+  external void wire_SequenceExtraction_extract(
+      NativePortType port_, Object that);
+
+  external void wire_SequenceExtraction_new(NativePortType port_);
+
   external void wire_SequenceRemoval_new(NativePortType port_);
 
   external void wire_SequenceRemoval_remove_sequence(
       NativePortType port_, List<dynamic> that);
+
+  external void wire_SequenceRenaming_new(NativePortType port_);
+
+  external void wire_SequenceRenaming_rename_sequence(
+      NativePortType port_, Object that);
 
   external void wire_SequenceServices_convert_sequence(
       NativePortType port_, List<dynamic> that, String output_fmt, bool sort);
@@ -690,4 +865,20 @@ class RustLibWasmModule implements WasmModule {
       NativePortType port_, List<dynamic> that);
 
   external void wire_show_dna_uppercase(NativePortType port_);
+
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic ptr);
+
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic ptr);
 }

@@ -4,6 +4,7 @@
 // Section: imports
 
 use super::*;
+use crate::api::sequence::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::for_generated::wasm_bindgen;
@@ -227,6 +228,44 @@ impl CstDecode<crate::api::sequence::SplitAlignmentServices>
         }
     }
 }
+impl
+    CstDecode<
+        flutter_rust_bridge::RustOpaque<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceExtraction,
+            >,
+        >,
+    > for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
+{
+    fn cst_decode(
+        self,
+    ) -> flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceExtraction,
+        >,
+    > {
+        unsafe { flutter_rust_bridge::for_generated::cst_decode_rust_opaque(self) }
+    }
+}
+impl
+    CstDecode<
+        flutter_rust_bridge::RustOpaque<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceRenaming,
+            >,
+        >,
+    > for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
+{
+    fn cst_decode(
+        self,
+    ) -> flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceRenaming,
+        >,
+    > {
+        unsafe { flutter_rust_bridge::for_generated::cst_decode_rust_opaque(self) }
+    }
+}
 impl CstDecode<String> for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue {
     fn cst_decode(self) -> String {
         self.as_string().expect("non-UTF-8 string, or not a string")
@@ -391,6 +430,19 @@ pub fn wire_PartitionServices_new(port_: flutter_rust_bridge::for_generated::Mes
 }
 
 #[wasm_bindgen]
+pub fn wire_SequenceExtraction_extract(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+) {
+    wire_SequenceExtraction_extract_impl(port_, that)
+}
+
+#[wasm_bindgen]
+pub fn wire_SequenceExtraction_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_SequenceExtraction_new_impl(port_)
+}
+
+#[wasm_bindgen]
 pub fn wire_SequenceRemoval_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
     wire_SequenceRemoval_new_impl(port_)
 }
@@ -401,6 +453,19 @@ pub fn wire_SequenceRemoval_remove_sequence(
     that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
 ) {
     wire_SequenceRemoval_remove_sequence_impl(port_, that)
+}
+
+#[wasm_bindgen]
+pub fn wire_SequenceRenaming_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_SequenceRenaming_new_impl(port_)
+}
+
+#[wasm_bindgen]
+pub fn wire_SequenceRenaming_rename_sequence(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+) {
+    wire_SequenceRenaming_rename_sequence_impl(port_, that)
 }
 
 #[wasm_bindgen]
@@ -455,4 +520,56 @@ pub fn wire_SplitAlignmentServices_split_alignment(
 #[wasm_bindgen]
 pub fn wire_show_dna_uppercase(port_: flutter_rust_bridge::for_generated::MessagePort) {
     wire_show_dna_uppercase_impl(port_)
+}
+
+#[wasm_bindgen]
+pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_increment_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceExtraction,
+            >,
+        >(ptr);
+    }
+}
+
+#[wasm_bindgen]
+pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_decrement_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceExtraction,
+            >,
+        >(ptr);
+    }
+}
+
+#[wasm_bindgen]
+pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_increment_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceRenaming,
+            >,
+        >(ptr);
+    }
+}
+
+#[wasm_bindgen]
+pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_decrement_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceRenaming,
+            >,
+        >(ptr);
+    }
 }

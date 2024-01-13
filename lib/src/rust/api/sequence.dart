@@ -9,6 +9,44 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<String> showDnaUppercase({dynamic hint}) =>
     RustLib.instance.api.showDnaUppercase(hint: hint);
 
+// Rust type: flutter_rust_bridge::RustOpaque<flutter_rust_bridge::for_generated::rust_async::RwLock<crate::api::sequence::SequenceExtraction>>
+@sealed
+class SequenceExtraction extends RustOpaque {
+  SequenceExtraction.dcoDecode(List<dynamic> wire)
+      : super.dcoDecode(wire, _kStaticData);
+
+  SequenceExtraction.sseDecode(int ptr, int externalSizeOnNative)
+      : super.sseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_SequenceExtraction,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_SequenceExtraction,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_SequenceExtractionPtr,
+  );
+}
+
+// Rust type: flutter_rust_bridge::RustOpaque<flutter_rust_bridge::for_generated::rust_async::RwLock<crate::api::sequence::SequenceRenaming>>
+@sealed
+class SequenceRenaming extends RustOpaque {
+  SequenceRenaming.dcoDecode(List<dynamic> wire)
+      : super.dcoDecode(wire, _kStaticData);
+
+  SequenceRenaming.sseDecode(int ptr, int externalSizeOnNative)
+      : super.sseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_SequenceRenaming,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_SequenceRenaming,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_SequenceRenamingPtr,
+  );
+}
+
 class AlignmentServices {
   final String? dir;
   final List<String> inputFiles;

@@ -111,10 +111,20 @@ abstract class RustLibApi extends BaseApi {
 
   Future<PartitionServices> partitionServicesNew({dynamic hint});
 
+  Future<void> sequenceExtractionExtract(
+      {required SequenceExtraction that, dynamic hint});
+
+  Future<SequenceExtraction> sequenceExtractionNew({dynamic hint});
+
   Future<SequenceRemoval> sequenceRemovalNew({dynamic hint});
 
   Future<void> sequenceRemovalRemoveSequence(
       {required SequenceRemoval that, dynamic hint});
+
+  Future<SequenceRenaming> sequenceRenamingNew({dynamic hint});
+
+  Future<void> sequenceRenamingRenameSequence(
+      {required SequenceRenaming that, dynamic hint});
 
   Future<void> sequenceServicesConvertSequence(
       {required SequenceServices that,
@@ -143,6 +153,24 @@ abstract class RustLibApi extends BaseApi {
       {required SplitAlignmentServices that, dynamic hint});
 
   Future<String> showDnaUppercase({dynamic hint});
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_SequenceExtraction;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_SequenceExtraction;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_SequenceExtractionPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_SequenceRenaming;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_SequenceRenaming;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_SequenceRenamingPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -539,6 +567,55 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> sequenceExtractionExtract(
+      {required SequenceExtraction that, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 =
+            cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+                that);
+        return wire.wire_SequenceExtraction_extract(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kSequenceExtractionExtractConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSequenceExtractionExtractConstMeta => const TaskConstMeta(
+        debugName: "SequenceExtraction_extract",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<SequenceExtraction> sequenceExtractionNew({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_SequenceExtraction_new(port_);
+      },
+      codec: DcoCodec(
+        decodeSuccessData:
+            dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction,
+        decodeErrorData: null,
+      ),
+      constMeta: kSequenceExtractionNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSequenceExtractionNewConstMeta => const TaskConstMeta(
+        debugName: "SequenceExtraction_new",
+        argNames: [],
+      );
+
+  @override
   Future<SequenceRemoval> sequenceRemovalNew({dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -582,6 +659,56 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kSequenceRemovalRemoveSequenceConstMeta =>
       const TaskConstMeta(
         debugName: "SequenceRemoval_remove_sequence",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<SequenceRenaming> sequenceRenamingNew({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_SequenceRenaming_new(port_);
+      },
+      codec: DcoCodec(
+        decodeSuccessData:
+            dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming,
+        decodeErrorData: null,
+      ),
+      constMeta: kSequenceRenamingNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSequenceRenamingNewConstMeta => const TaskConstMeta(
+        debugName: "SequenceRenaming_new",
+        argNames: [],
+      );
+
+  @override
+  Future<void> sequenceRenamingRenameSequence(
+      {required SequenceRenaming that, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 =
+            cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+                that);
+        return wire.wire_SequenceRenaming_rename_sequence(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kSequenceRenamingRenameSequenceConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSequenceRenamingRenameSequenceConstMeta =>
+      const TaskConstMeta(
+        debugName: "SequenceRenaming_rename_sequence",
         argNames: ["that"],
       );
 
@@ -770,6 +897,64 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         debugName: "show_dna_uppercase",
         argNames: [],
       );
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_SequenceExtraction => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_SequenceExtraction => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_SequenceRenaming => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_SequenceRenaming => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming;
+
+  @protected
+  SequenceExtraction
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic raw) {
+    return SequenceExtraction.dcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SequenceRenaming
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic raw) {
+    return SequenceRenaming.dcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SequenceExtraction
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic raw) {
+    return SequenceExtraction.dcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SequenceRenaming
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic raw) {
+    return SequenceRenaming.dcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SequenceExtraction
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          dynamic raw) {
+    return SequenceExtraction.dcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  SequenceRenaming
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          dynamic raw) {
+    return SequenceRenaming.dcoDecode(raw as List<dynamic>);
+  }
 
   @protected
   String dco_decode_String(dynamic raw) {
@@ -989,6 +1174,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   int dco_decode_usize(dynamic raw) {
     return dcoDecodeI64OrU64(raw);
+  }
+
+  @protected
+  SequenceExtraction
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SseDeserializer deserializer) {
+    return SequenceExtraction.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SequenceRenaming
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SseDeserializer deserializer) {
+    return SequenceRenaming.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SequenceExtraction
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SseDeserializer deserializer) {
+    return SequenceExtraction.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SequenceRenaming
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SseDeserializer deserializer) {
+    return SequenceRenaming.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SequenceExtraction
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SseDeserializer deserializer) {
+    return SequenceExtraction.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  SequenceRenaming
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SseDeserializer deserializer) {
+    return SequenceRenaming.sseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
@@ -1260,6 +1493,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PlatformPointer
+      cst_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction raw) {
+    // ignore: invalid_use_of_internal_member
+    return raw.cstEncode(move: true);
+  }
+
+  @protected
+  PlatformPointer
+      cst_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming raw) {
+    // ignore: invalid_use_of_internal_member
+    return raw.cstEncode(move: true);
+  }
+
+  @protected
+  PlatformPointer
+      cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction raw) {
+    // ignore: invalid_use_of_internal_member
+    return raw.cstEncode(move: false);
+  }
+
+  @protected
+  PlatformPointer
+      cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming raw) {
+    // ignore: invalid_use_of_internal_member
+    return raw.cstEncode(move: false);
+  }
+
+  @protected
+  PlatformPointer
+      cst_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction raw) {
+    // ignore: invalid_use_of_internal_member
+    return raw.cstEncode();
+  }
+
+  @protected
+  PlatformPointer
+      cst_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming raw) {
+    // ignore: invalid_use_of_internal_member
+    return raw.cstEncode();
+  }
+
+  @protected
   bool cst_encode_bool(bool raw) {
     return raw;
   }
@@ -1282,6 +1563,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   int cst_encode_usize(int raw) {
     return raw;
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction self, SseSerializer serializer) {
+    sse_encode_usize(self.sseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming self, SseSerializer serializer) {
+    sse_encode_usize(self.sseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction self, SseSerializer serializer) {
+    sse_encode_usize(self.sseEncode(move: false), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming self, SseSerializer serializer) {
+    sse_encode_usize(self.sseEncode(move: false), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+          SequenceExtraction self, SseSerializer serializer) {
+    sse_encode_usize(self.sseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+          SequenceRenaming self, SseSerializer serializer) {
+    sse_encode_usize(self.sseEncode(move: null), serializer);
   }
 
   @protected

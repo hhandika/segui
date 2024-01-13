@@ -4,12 +4,51 @@
 // Section: imports
 
 use super::*;
+use crate::api::sequence::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::{Handler, IntoIntoDart};
 
 // Section: dart2rust
 
+impl
+    CstDecode<
+        flutter_rust_bridge::RustOpaque<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceExtraction,
+            >,
+        >,
+    > for *const std::ffi::c_void
+{
+    fn cst_decode(
+        self,
+    ) -> flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceExtraction,
+        >,
+    > {
+        unsafe { flutter_rust_bridge::for_generated::cst_decode_rust_opaque(self) }
+    }
+}
+impl
+    CstDecode<
+        flutter_rust_bridge::RustOpaque<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceRenaming,
+            >,
+        >,
+    > for *const std::ffi::c_void
+{
+    fn cst_decode(
+        self,
+    ) -> flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceRenaming,
+        >,
+    > {
+        unsafe { flutter_rust_bridge::for_generated::cst_decode_rust_opaque(self) }
+    }
+}
 impl CstDecode<String> for *mut wire_cst_list_prim_u_8_strict {
     fn cst_decode(self) -> String {
         let vec: Vec<u8> = self.cst_decode();
@@ -462,6 +501,19 @@ pub extern "C" fn frbgen_segui_wire_PartitionServices_new(port_: i64) {
 }
 
 #[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SequenceExtraction_extract(
+    port_: i64,
+    that: *const std::ffi::c_void,
+) {
+    wire_SequenceExtraction_extract_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SequenceExtraction_new(port_: i64) {
+    wire_SequenceExtraction_new_impl(port_)
+}
+
+#[no_mangle]
 pub extern "C" fn frbgen_segui_wire_SequenceRemoval_new(port_: i64) {
     wire_SequenceRemoval_new_impl(port_)
 }
@@ -472,6 +524,19 @@ pub extern "C" fn frbgen_segui_wire_SequenceRemoval_remove_sequence(
     that: *mut wire_cst_sequence_removal,
 ) {
     wire_SequenceRemoval_remove_sequence_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SequenceRenaming_new(port_: i64) {
+    wire_SequenceRenaming_new_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SequenceRenaming_rename_sequence(
+    port_: i64,
+    that: *const std::ffi::c_void,
+) {
+    wire_SequenceRenaming_rename_sequence_impl(port_, that)
 }
 
 #[no_mangle]
@@ -526,6 +591,58 @@ pub extern "C" fn frbgen_segui_wire_SplitAlignmentServices_split_alignment(
 #[no_mangle]
 pub extern "C" fn frbgen_segui_wire_show_dna_uppercase(port_: i64) {
     wire_show_dna_uppercase_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_increment_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceExtraction,
+            >,
+        >(ptr);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceExtraction(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_decrement_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceExtraction,
+            >,
+        >(ptr);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_increment_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceRenaming,
+            >,
+        >(ptr);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockcrateapisequenceSequenceRenaming(
+    ptr: *const std::ffi::c_void,
+) {
+    unsafe {
+        flutter_rust_bridge::for_generated::rust_arc_decrement_strong_count::<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceRenaming,
+            >,
+        >(ptr);
+    }
 }
 
 #[no_mangle]

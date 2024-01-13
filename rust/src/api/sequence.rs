@@ -6,9 +6,11 @@ use segul::handler::align::convert::Converter;
 use segul::handler::align::filter::{Params, SeqFilter};
 use segul::handler::align::split::Splitter;
 use segul::handler::align::summarize::SeqStats;
+use segul::handler::sequence::extract::{Extract, ExtractOpts};
 use segul::handler::sequence::id::Id;
 use segul::handler::sequence::partition::PartConverter;
 use segul::handler::sequence::remove::{Remove, RemoveOpts};
+use segul::handler::sequence::rename::{Rename, RenameOpts};
 use segul::handler::sequence::translate::Translate;
 use segul::helper::files::create_output_fname_from_path;
 use segul::helper::finder::{IDs, SeqFileFinder};
@@ -512,5 +514,85 @@ impl SequenceRemoval {
         } else {
             unimplemented!("Invalid removal type")
         }
+    }
+}
+
+pub struct SequenceRenaming {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    pub output_fmt: String,
+    pub params: RenameOpts,
+}
+
+impl Sequence for SequenceRenaming {}
+
+impl SequenceRenaming {
+    pub fn new() -> SequenceRenaming {
+        SequenceRenaming {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+            params: RenameOpts::None,
+        }
+    }
+
+    pub fn rename_sequence(&self) {
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None::<&str>, &input_fmt);
+        let output_fmt = self.match_output_fmt(&self.output_fmt);
+        let task = "Sequence Renaming";
+
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let rename_handle = Rename::new(
+            &input_fmt,
+            &datatype,
+            output_path,
+            &output_fmt,
+            &self.params,
+        );
+        rename_handle.rename(&input_files);
+    }
+}
+
+pub struct SequenceExtraction {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    pub output_fmt: String,
+    pub params: ExtractOpts,
+}
+
+impl Sequence for SequenceExtraction {}
+
+impl SequenceExtraction {
+    pub fn new() -> SequenceExtraction {
+        SequenceExtraction {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+            params: ExtractOpts::None,
+        }
+    }
+
+    pub fn extract(&self) {
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None::<&str>, &input_fmt);
+        let output_fmt = self.match_output_fmt(&self.output_fmt);
+        let task = "Sequence Extraction";
+
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let extract_handle = Extract::new(&self.params, &input_fmt, &datatype);
+        extract_handle.extract_sequences(&input_files, output_path, &output_fmt);
     }
 }

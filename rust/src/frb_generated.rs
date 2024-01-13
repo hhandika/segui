@@ -18,6 +18,7 @@
 
 // Section: imports
 
+use crate::api::sequence::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -368,6 +369,55 @@ fn wire_PartitionServices_new_impl(port_: flutter_rust_bridge::for_generated::Me
         },
     )
 }
+fn wire_SequenceExtraction_extract_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<
+        flutter_rust_bridge::RustOpaque<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceExtraction,
+            >,
+        >,
+    >,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SequenceExtraction_extract",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    let api_that = api_that.rust_auto_opaque_decode_sync_ref();
+                    Result::<_, flutter_rust_bridge::for_generated::anyhow::Error>::Ok(
+                        crate::api::sequence::SequenceExtraction::extract(&api_that),
+                    )
+                })())
+            }
+        },
+    )
+}
+fn wire_SequenceExtraction_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SequenceExtraction_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        flutter_rust_bridge::for_generated::rust_auto_opaque_encode(
+                            crate::api::sequence::SequenceExtraction::new(),
+                        ),
+                    )
+                })())
+            }
+        },
+    )
+}
 fn wire_SequenceRemoval_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
@@ -401,6 +451,55 @@ fn wire_SequenceRemoval_remove_sequence_impl(
                     Result::<_, ()>::Ok(crate::api::sequence::SequenceRemoval::remove_sequence(
                         &api_that,
                     ))
+                })())
+            }
+        },
+    )
+}
+fn wire_SequenceRenaming_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SequenceRenaming_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        flutter_rust_bridge::for_generated::rust_auto_opaque_encode(
+                            crate::api::sequence::SequenceRenaming::new(),
+                        ),
+                    )
+                })())
+            }
+        },
+    )
+}
+fn wire_SequenceRenaming_rename_sequence_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<
+        flutter_rust_bridge::RustOpaque<
+            flutter_rust_bridge::for_generated::rust_async::RwLock<
+                crate::api::sequence::SequenceRenaming,
+            >,
+        >,
+    >,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SequenceRenaming_rename_sequence",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    let api_that = api_that.rust_auto_opaque_decode_sync_ref();
+                    Result::<_, flutter_rust_bridge::for_generated::anyhow::Error>::Ok(
+                        crate::api::sequence::SequenceRenaming::rename_sequence(&api_that),
+                    )
                 })())
             }
         },
@@ -586,6 +685,32 @@ impl CstDecode<usize> for usize {
         self
     }
 }
+impl SseDecode
+    for flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceExtraction,
+        >,
+    >
+{
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return unsafe { flutter_rust_bridge::for_generated::sse_decode_rust_opaque(inner) };
+    }
+}
+
+impl SseDecode
+    for flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceRenaming,
+        >,
+    >
+{
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return unsafe { flutter_rust_bridge::for_generated::sse_decode_rust_opaque(inner) };
+    }
+}
+
 impl SseDecode for String {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <Vec<u8>>::sse_decode(deserializer);
@@ -1020,6 +1145,34 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SplitAlignmentServi
 {
     fn into_into_dart(self) -> crate::api::sequence::SplitAlignmentServices {
         self
+    }
+}
+
+impl SseEncode
+    for flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceExtraction,
+        >,
+    >
+{
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for flutter_rust_bridge::RustOpaque<
+        flutter_rust_bridge::for_generated::rust_async::RwLock<
+            crate::api::sequence::SequenceRenaming,
+        >,
+    >
+{
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
     }
 }
 
