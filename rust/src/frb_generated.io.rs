@@ -20,7 +20,7 @@ impl CstDecode<crate::api::sequence::AlignmentServices> for wire_cst_alignment_s
     fn cst_decode(self) -> crate::api::sequence::AlignmentServices {
         crate::api::sequence::AlignmentServices {
             dir: self.dir.cst_decode(),
-            files: self.files.cst_decode(),
+            input_files: self.input_files.cst_decode(),
             input_fmt: self.input_fmt.cst_decode(),
             datatype: self.datatype.cst_decode(),
             output_dir: self.output_dir.cst_decode(),
@@ -57,10 +57,24 @@ impl CstDecode<crate::api::reads::RawReadServices> for *mut wire_cst_raw_read_se
         CstDecode::<crate::api::reads::RawReadServices>::cst_decode(*wrap).into()
     }
 }
+impl CstDecode<crate::api::sequence::SequenceRemoval> for *mut wire_cst_sequence_removal {
+    fn cst_decode(self) -> crate::api::sequence::SequenceRemoval {
+        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
+        CstDecode::<crate::api::sequence::SequenceRemoval>::cst_decode(*wrap).into()
+    }
+}
 impl CstDecode<crate::api::sequence::SequenceServices> for *mut wire_cst_sequence_services {
     fn cst_decode(self) -> crate::api::sequence::SequenceServices {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
         CstDecode::<crate::api::sequence::SequenceServices>::cst_decode(*wrap).into()
+    }
+}
+impl CstDecode<crate::api::sequence::SplitAlignmentServices>
+    for *mut wire_cst_split_alignment_services
+{
+    fn cst_decode(self) -> crate::api::sequence::SplitAlignmentServices {
+        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
+        CstDecode::<crate::api::sequence::SplitAlignmentServices>::cst_decode(*wrap).into()
     }
 }
 impl CstDecode<usize> for *mut usize {
@@ -82,7 +96,7 @@ impl CstDecode<crate::api::sequence::FilteringServices> for wire_cst_filtering_s
     fn cst_decode(self) -> crate::api::sequence::FilteringServices {
         crate::api::sequence::FilteringServices {
             dir: self.dir.cst_decode(),
-            files: self.files.cst_decode(),
+            input_files: self.input_files.cst_decode(),
             input_fmt: self.input_fmt.cst_decode(),
             datatype: self.datatype.cst_decode(),
             output_dir: self.output_dir.cst_decode(),
@@ -110,7 +124,7 @@ impl CstDecode<Vec<u8>> for *mut wire_cst_list_prim_u_8_strict {
 impl CstDecode<crate::api::sequence::PartitionServices> for wire_cst_partition_services {
     fn cst_decode(self) -> crate::api::sequence::PartitionServices {
         crate::api::sequence::PartitionServices {
-            file_inputs: self.file_inputs.cst_decode(),
+            input_files: self.input_files.cst_decode(),
             input_part_fmt: self.input_part_fmt.cst_decode(),
             output: self.output.cst_decode(),
             output_part_fmt: self.output_part_fmt.cst_decode(),
@@ -129,14 +143,43 @@ impl CstDecode<crate::api::reads::RawReadServices> for wire_cst_raw_read_service
         }
     }
 }
+impl CstDecode<crate::api::sequence::SequenceRemoval> for wire_cst_sequence_removal {
+    fn cst_decode(self) -> crate::api::sequence::SequenceRemoval {
+        crate::api::sequence::SequenceRemoval {
+            input_files: self.input_files.cst_decode(),
+            input_fmt: self.input_fmt.cst_decode(),
+            datatype: self.datatype.cst_decode(),
+            output_dir: self.output_dir.cst_decode(),
+            output_fmt: self.output_fmt.cst_decode(),
+            remove_regex: self.remove_regex.cst_decode(),
+            remove_list: self.remove_list.cst_decode(),
+        }
+    }
+}
 impl CstDecode<crate::api::sequence::SequenceServices> for wire_cst_sequence_services {
     fn cst_decode(self) -> crate::api::sequence::SequenceServices {
         crate::api::sequence::SequenceServices {
             dir: self.dir.cst_decode(),
-            files: self.files.cst_decode(),
+            input_files: self.input_files.cst_decode(),
             input_fmt: self.input_fmt.cst_decode(),
             datatype: self.datatype.cst_decode(),
             output_dir: self.output_dir.cst_decode(),
+        }
+    }
+}
+impl CstDecode<crate::api::sequence::SplitAlignmentServices> for wire_cst_split_alignment_services {
+    fn cst_decode(self) -> crate::api::sequence::SplitAlignmentServices {
+        crate::api::sequence::SplitAlignmentServices {
+            dir: self.dir.cst_decode(),
+            input_file: self.input_file.cst_decode(),
+            input_fmt: self.input_fmt.cst_decode(),
+            datatype: self.datatype.cst_decode(),
+            input_partition: self.input_partition.cst_decode(),
+            input_partition_fmt: self.input_partition_fmt.cst_decode(),
+            output_dir: self.output_dir.cst_decode(),
+            prefix: self.prefix.cst_decode(),
+            output_fmt: self.output_fmt.cst_decode(),
+            is_uncheck: self.is_uncheck.cst_decode(),
         }
     }
 }
@@ -153,7 +196,7 @@ impl NewWithNullPtr for wire_cst_alignment_services {
     fn new_with_null_ptr() -> Self {
         Self {
             dir: core::ptr::null_mut(),
-            files: core::ptr::null_mut(),
+            input_files: core::ptr::null_mut(),
             input_fmt: core::ptr::null_mut(),
             datatype: core::ptr::null_mut(),
             output_dir: core::ptr::null_mut(),
@@ -184,7 +227,7 @@ impl NewWithNullPtr for wire_cst_filtering_services {
     fn new_with_null_ptr() -> Self {
         Self {
             dir: core::ptr::null_mut(),
-            files: core::ptr::null_mut(),
+            input_files: core::ptr::null_mut(),
             input_fmt: core::ptr::null_mut(),
             datatype: core::ptr::null_mut(),
             output_dir: core::ptr::null_mut(),
@@ -200,7 +243,7 @@ impl Default for wire_cst_filtering_services {
 impl NewWithNullPtr for wire_cst_partition_services {
     fn new_with_null_ptr() -> Self {
         Self {
-            file_inputs: core::ptr::null_mut(),
+            input_files: core::ptr::null_mut(),
             input_part_fmt: core::ptr::null_mut(),
             output: core::ptr::null_mut(),
             output_part_fmt: core::ptr::null_mut(),
@@ -229,11 +272,29 @@ impl Default for wire_cst_raw_read_services {
         Self::new_with_null_ptr()
     }
 }
+impl NewWithNullPtr for wire_cst_sequence_removal {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            input_files: core::ptr::null_mut(),
+            input_fmt: core::ptr::null_mut(),
+            datatype: core::ptr::null_mut(),
+            output_dir: core::ptr::null_mut(),
+            output_fmt: core::ptr::null_mut(),
+            remove_regex: core::ptr::null_mut(),
+            remove_list: core::ptr::null_mut(),
+        }
+    }
+}
+impl Default for wire_cst_sequence_removal {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
 impl NewWithNullPtr for wire_cst_sequence_services {
     fn new_with_null_ptr() -> Self {
         Self {
             dir: core::ptr::null_mut(),
-            files: core::ptr::null_mut(),
+            input_files: core::ptr::null_mut(),
             input_fmt: core::ptr::null_mut(),
             datatype: core::ptr::null_mut(),
             output_dir: core::ptr::null_mut(),
@@ -241,6 +302,27 @@ impl NewWithNullPtr for wire_cst_sequence_services {
     }
 }
 impl Default for wire_cst_sequence_services {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
+impl NewWithNullPtr for wire_cst_split_alignment_services {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            dir: core::ptr::null_mut(),
+            input_file: core::ptr::null_mut(),
+            input_fmt: core::ptr::null_mut(),
+            datatype: core::ptr::null_mut(),
+            input_partition: core::ptr::null_mut(),
+            input_partition_fmt: core::ptr::null_mut(),
+            output_dir: core::ptr::null_mut(),
+            prefix: core::ptr::null_mut(),
+            output_fmt: core::ptr::null_mut(),
+            is_uncheck: Default::default(),
+        }
+    }
+}
+impl Default for wire_cst_split_alignment_services {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }
@@ -380,6 +462,19 @@ pub extern "C" fn frbgen_segui_wire_PartitionServices_new(port_: i64) {
 }
 
 #[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SequenceRemoval_new(port_: i64) {
+    wire_SequenceRemoval_new_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SequenceRemoval_remove_sequence(
+    port_: i64,
+    that: *mut wire_cst_sequence_removal,
+) {
+    wire_SequenceRemoval_remove_sequence_impl(port_, that)
+}
+
+#[no_mangle]
 pub extern "C" fn frbgen_segui_wire_SequenceServices_convert_sequence(
     port_: i64,
     that: *mut wire_cst_sequence_services,
@@ -413,6 +508,19 @@ pub extern "C" fn frbgen_segui_wire_SequenceServices_translate_sequence(
     output_fmt: *mut wire_cst_list_prim_u_8_strict,
 ) {
     wire_SequenceServices_translate_sequence_impl(port_, that, table, reading_frame, output_fmt)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SplitAlignmentServices_new(port_: i64) {
+    wire_SplitAlignmentServices_new_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_wire_SplitAlignmentServices_split_alignment(
+    port_: i64,
+    that: *mut wire_cst_split_alignment_services,
+) {
+    wire_SplitAlignmentServices_split_alignment_impl(port_, that)
 }
 
 #[no_mangle]
@@ -461,10 +569,26 @@ pub extern "C" fn frbgen_segui_cst_new_box_autoadd_raw_read_services(
 }
 
 #[no_mangle]
+pub extern "C" fn frbgen_segui_cst_new_box_autoadd_sequence_removal(
+) -> *mut wire_cst_sequence_removal {
+    flutter_rust_bridge::for_generated::new_leak_box_ptr(
+        wire_cst_sequence_removal::new_with_null_ptr(),
+    )
+}
+
+#[no_mangle]
 pub extern "C" fn frbgen_segui_cst_new_box_autoadd_sequence_services(
 ) -> *mut wire_cst_sequence_services {
     flutter_rust_bridge::for_generated::new_leak_box_ptr(
         wire_cst_sequence_services::new_with_null_ptr(),
+    )
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_segui_cst_new_box_autoadd_split_alignment_services(
+) -> *mut wire_cst_split_alignment_services {
+    flutter_rust_bridge::for_generated::new_leak_box_ptr(
+        wire_cst_split_alignment_services::new_with_null_ptr(),
     )
 }
 
@@ -500,7 +624,7 @@ pub extern "C" fn frbgen_segui_cst_new_list_prim_u_8_strict(
 #[derive(Clone, Copy)]
 pub struct wire_cst_alignment_services {
     dir: *mut wire_cst_list_prim_u_8_strict,
-    files: *mut wire_cst_list_String,
+    input_files: *mut wire_cst_list_String,
     input_fmt: *mut wire_cst_list_prim_u_8_strict,
     datatype: *mut wire_cst_list_prim_u_8_strict,
     output_dir: *mut wire_cst_list_prim_u_8_strict,
@@ -517,7 +641,7 @@ pub struct wire_cst_contig_services {
 #[derive(Clone, Copy)]
 pub struct wire_cst_filtering_services {
     dir: *mut wire_cst_list_prim_u_8_strict,
-    files: *mut wire_cst_list_String,
+    input_files: *mut wire_cst_list_String,
     input_fmt: *mut wire_cst_list_prim_u_8_strict,
     datatype: *mut wire_cst_list_prim_u_8_strict,
     output_dir: *mut wire_cst_list_prim_u_8_strict,
@@ -538,7 +662,7 @@ pub struct wire_cst_list_prim_u_8_strict {
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct wire_cst_partition_services {
-    file_inputs: *mut wire_cst_list_String,
+    input_files: *mut wire_cst_list_String,
     input_part_fmt: *mut wire_cst_list_prim_u_8_strict,
     output: *mut wire_cst_list_prim_u_8_strict,
     output_part_fmt: *mut wire_cst_list_prim_u_8_strict,
@@ -555,10 +679,35 @@ pub struct wire_cst_raw_read_services {
 }
 #[repr(C)]
 #[derive(Clone, Copy)]
-pub struct wire_cst_sequence_services {
-    dir: *mut wire_cst_list_prim_u_8_strict,
-    files: *mut wire_cst_list_String,
+pub struct wire_cst_sequence_removal {
+    input_files: *mut wire_cst_list_String,
     input_fmt: *mut wire_cst_list_prim_u_8_strict,
     datatype: *mut wire_cst_list_prim_u_8_strict,
     output_dir: *mut wire_cst_list_prim_u_8_strict,
+    output_fmt: *mut wire_cst_list_prim_u_8_strict,
+    remove_regex: *mut wire_cst_list_prim_u_8_strict,
+    remove_list: *mut wire_cst_list_String,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_sequence_services {
+    dir: *mut wire_cst_list_prim_u_8_strict,
+    input_files: *mut wire_cst_list_String,
+    input_fmt: *mut wire_cst_list_prim_u_8_strict,
+    datatype: *mut wire_cst_list_prim_u_8_strict,
+    output_dir: *mut wire_cst_list_prim_u_8_strict,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_split_alignment_services {
+    dir: *mut wire_cst_list_prim_u_8_strict,
+    input_file: *mut wire_cst_list_prim_u_8_strict,
+    input_fmt: *mut wire_cst_list_prim_u_8_strict,
+    datatype: *mut wire_cst_list_prim_u_8_strict,
+    input_partition: *mut wire_cst_list_prim_u_8_strict,
+    input_partition_fmt: *mut wire_cst_list_prim_u_8_strict,
+    output_dir: *mut wire_cst_list_prim_u_8_strict,
+    prefix: *mut wire_cst_list_prim_u_8_strict,
+    output_fmt: *mut wire_cst_list_prim_u_8_strict,
+    is_uncheck: bool,
 }

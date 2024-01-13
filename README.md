@@ -20,7 +20,7 @@ Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 | ------------------------------ | ------------------ |
 | Alignment concatenation        | :white_check_mark: |
 | Alignment conversion           | :white_check_mark: |
-| Alignment filtering            |                    |
+| Alignment filtering            | :wrench:           |
 | Alignment partition conversion | :wrench:           |
 | Alignment splitting            | :wrench:           |
 | Alignment summary statistics   | :white_check_mark: |
@@ -29,5 +29,5 @@ Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 | Sequence extraction            |                    |
 | Sequence ID extraction         | :white_check_mark: |
 | Sequence ID renaming           |                    |
-| Sequence removal               |                    |
+| Sequence removal               | :wrench:                    |
 | Sequence translation           | :white_check_mark: |

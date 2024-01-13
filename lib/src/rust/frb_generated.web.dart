@@ -45,7 +45,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw);
 
   @protected
+  SequenceRemoval dco_decode_box_autoadd_sequence_removal(dynamic raw);
+
+  @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw);
+
+  @protected
+  SplitAlignmentServices dco_decode_box_autoadd_split_alignment_services(
+      dynamic raw);
 
   @protected
   int dco_decode_box_autoadd_usize(dynamic raw);
@@ -72,13 +79,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
   @protected
+  List<String>? dco_decode_opt_list_String(dynamic raw);
+
+  @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
 
   @protected
   RawReadServices dco_decode_raw_read_services(dynamic raw);
 
   @protected
+  SequenceRemoval dco_decode_sequence_removal(dynamic raw);
+
+  @protected
   SequenceServices dco_decode_sequence_services(dynamic raw);
+
+  @protected
+  SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -119,7 +135,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SequenceRemoval sse_decode_box_autoadd_sequence_removal(
+      SseDeserializer deserializer);
+
+  @protected
   SequenceServices sse_decode_box_autoadd_sequence_services(
+      SseDeserializer deserializer);
+
+  @protected
+  SplitAlignmentServices sse_decode_box_autoadd_split_alignment_services(
       SseDeserializer deserializer);
 
   @protected
@@ -147,13 +171,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
+
+  @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
 
   @protected
   RawReadServices sse_decode_raw_read_services(SseDeserializer deserializer);
 
   @protected
+  SequenceRemoval sse_decode_sequence_removal(SseDeserializer deserializer);
+
+  @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer);
+
+  @protected
+  SplitAlignmentServices sse_decode_split_alignment_services(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -176,7 +210,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<dynamic> cst_encode_alignment_services(AlignmentServices raw) {
     return [
       cst_encode_opt_String(raw.dir),
-      cst_encode_list_String(raw.files),
+      cst_encode_list_String(raw.inputFiles),
       cst_encode_String(raw.inputFmt),
       cst_encode_String(raw.datatype),
       cst_encode_String(raw.outputDir)
@@ -212,8 +246,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  List<dynamic> cst_encode_box_autoadd_sequence_removal(SequenceRemoval raw) {
+    return cst_encode_sequence_removal(raw);
+  }
+
+  @protected
   List<dynamic> cst_encode_box_autoadd_sequence_services(SequenceServices raw) {
     return cst_encode_sequence_services(raw);
+  }
+
+  @protected
+  List<dynamic> cst_encode_box_autoadd_split_alignment_services(
+      SplitAlignmentServices raw) {
+    return cst_encode_split_alignment_services(raw);
   }
 
   @protected
@@ -235,7 +280,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<dynamic> cst_encode_filtering_services(FilteringServices raw) {
     return [
       cst_encode_opt_String(raw.dir),
-      cst_encode_list_String(raw.files),
+      cst_encode_list_String(raw.inputFiles),
       cst_encode_String(raw.inputFmt),
       cst_encode_String(raw.datatype),
       cst_encode_String(raw.outputDir),
@@ -264,9 +309,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  List<dynamic>? cst_encode_opt_list_String(List<String>? raw) {
+    return raw == null ? null : cst_encode_list_String(raw);
+  }
+
+  @protected
   List<dynamic> cst_encode_partition_services(PartitionServices raw) {
     return [
-      cst_encode_list_String(raw.fileInputs),
+      cst_encode_list_String(raw.inputFiles),
       cst_encode_String(raw.inputPartFmt),
       cst_encode_String(raw.output),
       cst_encode_String(raw.outputPartFmt),
@@ -286,13 +336,43 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  List<dynamic> cst_encode_sequence_removal(SequenceRemoval raw) {
+    return [
+      cst_encode_list_String(raw.inputFiles),
+      cst_encode_String(raw.inputFmt),
+      cst_encode_String(raw.datatype),
+      cst_encode_String(raw.outputDir),
+      cst_encode_String(raw.outputFmt),
+      cst_encode_opt_String(raw.removeRegex),
+      cst_encode_opt_list_String(raw.removeList)
+    ];
+  }
+
+  @protected
   List<dynamic> cst_encode_sequence_services(SequenceServices raw) {
     return [
       cst_encode_opt_String(raw.dir),
-      cst_encode_list_String(raw.files),
+      cst_encode_list_String(raw.inputFiles),
       cst_encode_String(raw.inputFmt),
       cst_encode_String(raw.datatype),
       cst_encode_String(raw.outputDir)
+    ];
+  }
+
+  @protected
+  List<dynamic> cst_encode_split_alignment_services(
+      SplitAlignmentServices raw) {
+    return [
+      cst_encode_opt_String(raw.dir),
+      cst_encode_String(raw.inputFile),
+      cst_encode_String(raw.inputFmt),
+      cst_encode_String(raw.datatype),
+      cst_encode_opt_String(raw.inputPartition),
+      cst_encode_String(raw.inputPartitionFmt),
+      cst_encode_String(raw.outputDir),
+      cst_encode_opt_String(raw.prefix),
+      cst_encode_String(raw.outputFmt),
+      cst_encode_bool(raw.isUncheck)
     ];
   }
 
@@ -342,8 +422,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       RawReadServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_sequence_removal(
+      SequenceRemoval self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_sequence_services(
       SequenceServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_split_alignment_services(
+      SplitAlignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_usize(int self, SseSerializer serializer);
@@ -373,6 +461,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_box_autoadd_usize(int? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_partition_services(
       PartitionServices self, SseSerializer serializer);
 
@@ -381,8 +472,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       RawReadServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_sequence_removal(
+      SequenceRemoval self, SseSerializer serializer);
+
+  @protected
   void sse_encode_sequence_services(
       SequenceServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_split_alignment_services(
+      SplitAlignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -471,6 +570,13 @@ class RustLibWire extends BaseWire {
   void wire_PartitionServices_new(NativePortType port_) =>
       wasmModule.wire_PartitionServices_new(port_);
 
+  void wire_SequenceRemoval_new(NativePortType port_) =>
+      wasmModule.wire_SequenceRemoval_new(port_);
+
+  void wire_SequenceRemoval_remove_sequence(
+          NativePortType port_, List<dynamic> that) =>
+      wasmModule.wire_SequenceRemoval_remove_sequence(port_, that);
+
   void wire_SequenceServices_convert_sequence(NativePortType port_,
           List<dynamic> that, String output_fmt, bool sort) =>
       wasmModule.wire_SequenceServices_convert_sequence(
@@ -492,6 +598,13 @@ class RustLibWire extends BaseWire {
           String output_fmt) =>
       wasmModule.wire_SequenceServices_translate_sequence(
           port_, that, table, reading_frame, output_fmt);
+
+  void wire_SplitAlignmentServices_new(NativePortType port_) =>
+      wasmModule.wire_SplitAlignmentServices_new(port_);
+
+  void wire_SplitAlignmentServices_split_alignment(
+          NativePortType port_, List<dynamic> that) =>
+      wasmModule.wire_SplitAlignmentServices_split_alignment(port_, that);
 
   void wire_show_dna_uppercase(NativePortType port_) =>
       wasmModule.wire_show_dna_uppercase(port_);
@@ -555,6 +668,11 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_PartitionServices_new(NativePortType port_);
 
+  external void wire_SequenceRemoval_new(NativePortType port_);
+
+  external void wire_SequenceRemoval_remove_sequence(
+      NativePortType port_, List<dynamic> that);
+
   external void wire_SequenceServices_convert_sequence(
       NativePortType port_, List<dynamic> that, String output_fmt, bool sort);
 
@@ -565,6 +683,11 @@ class RustLibWasmModule implements WasmModule {
 
   external void wire_SequenceServices_translate_sequence(NativePortType port_,
       List<dynamic> that, String table, int reading_frame, String output_fmt);
+
+  external void wire_SplitAlignmentServices_new(NativePortType port_);
+
+  external void wire_SplitAlignmentServices_split_alignment(
+      NativePortType port_, List<dynamic> that);
 
   external void wire_show_dna_uppercase(NativePortType port_);
 }

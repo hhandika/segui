@@ -128,7 +128,7 @@ class _ConvertPageState extends State<ConvertPage> {
     String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
     try {
       await SequenceServices(
-        files: ctr.files,
+        inputFiles: ctr.files,
         dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,

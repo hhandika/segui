@@ -40,7 +40,7 @@ impl CstDecode<crate::api::sequence::AlignmentServices>
         );
         crate::api::sequence::AlignmentServices {
             dir: self_.get(0).cst_decode(),
-            files: self_.get(1).cst_decode(),
+            input_files: self_.get(1).cst_decode(),
             input_fmt: self_.get(2).cst_decode(),
             datatype: self_.get(3).cst_decode(),
             output_dir: self_.get(4).cst_decode(),
@@ -83,7 +83,7 @@ impl CstDecode<crate::api::sequence::FilteringServices>
         );
         crate::api::sequence::FilteringServices {
             dir: self_.get(0).cst_decode(),
-            files: self_.get(1).cst_decode(),
+            input_files: self_.get(1).cst_decode(),
             input_fmt: self_.get(2).cst_decode(),
             datatype: self_.get(3).cst_decode(),
             output_dir: self_.get(4).cst_decode(),
@@ -124,7 +124,7 @@ impl CstDecode<crate::api::sequence::PartitionServices>
             self_.length()
         );
         crate::api::sequence::PartitionServices {
-            file_inputs: self_.get(0).cst_decode(),
+            input_files: self_.get(0).cst_decode(),
             input_part_fmt: self_.get(1).cst_decode(),
             output: self_.get(2).cst_decode(),
             output_part_fmt: self_.get(3).cst_decode(),
@@ -154,6 +154,30 @@ impl CstDecode<crate::api::reads::RawReadServices>
         }
     }
 }
+impl CstDecode<crate::api::sequence::SequenceRemoval>
+    for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
+{
+    fn cst_decode(self) -> crate::api::sequence::SequenceRemoval {
+        let self_ = self
+            .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
+            .unwrap();
+        assert_eq!(
+            self_.length(),
+            7,
+            "Expected 7 elements, got {}",
+            self_.length()
+        );
+        crate::api::sequence::SequenceRemoval {
+            input_files: self_.get(0).cst_decode(),
+            input_fmt: self_.get(1).cst_decode(),
+            datatype: self_.get(2).cst_decode(),
+            output_dir: self_.get(3).cst_decode(),
+            output_fmt: self_.get(4).cst_decode(),
+            remove_regex: self_.get(5).cst_decode(),
+            remove_list: self_.get(6).cst_decode(),
+        }
+    }
+}
 impl CstDecode<crate::api::sequence::SequenceServices>
     for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
 {
@@ -169,10 +193,37 @@ impl CstDecode<crate::api::sequence::SequenceServices>
         );
         crate::api::sequence::SequenceServices {
             dir: self_.get(0).cst_decode(),
-            files: self_.get(1).cst_decode(),
+            input_files: self_.get(1).cst_decode(),
             input_fmt: self_.get(2).cst_decode(),
             datatype: self_.get(3).cst_decode(),
             output_dir: self_.get(4).cst_decode(),
+        }
+    }
+}
+impl CstDecode<crate::api::sequence::SplitAlignmentServices>
+    for flutter_rust_bridge::for_generated::wasm_bindgen::JsValue
+{
+    fn cst_decode(self) -> crate::api::sequence::SplitAlignmentServices {
+        let self_ = self
+            .dyn_into::<flutter_rust_bridge::for_generated::js_sys::Array>()
+            .unwrap();
+        assert_eq!(
+            self_.length(),
+            10,
+            "Expected 10 elements, got {}",
+            self_.length()
+        );
+        crate::api::sequence::SplitAlignmentServices {
+            dir: self_.get(0).cst_decode(),
+            input_file: self_.get(1).cst_decode(),
+            input_fmt: self_.get(2).cst_decode(),
+            datatype: self_.get(3).cst_decode(),
+            input_partition: self_.get(4).cst_decode(),
+            input_partition_fmt: self_.get(5).cst_decode(),
+            output_dir: self_.get(6).cst_decode(),
+            prefix: self_.get(7).cst_decode(),
+            output_fmt: self_.get(8).cst_decode(),
+            is_uncheck: self_.get(9).cst_decode(),
         }
     }
 }
@@ -340,6 +391,19 @@ pub fn wire_PartitionServices_new(port_: flutter_rust_bridge::for_generated::Mes
 }
 
 #[wasm_bindgen]
+pub fn wire_SequenceRemoval_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_SequenceRemoval_new_impl(port_)
+}
+
+#[wasm_bindgen]
+pub fn wire_SequenceRemoval_remove_sequence(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+) {
+    wire_SequenceRemoval_remove_sequence_impl(port_, that)
+}
+
+#[wasm_bindgen]
 pub fn wire_SequenceServices_convert_sequence(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
@@ -373,6 +437,19 @@ pub fn wire_SequenceServices_translate_sequence(
     output_fmt: String,
 ) {
     wire_SequenceServices_translate_sequence_impl(port_, that, table, reading_frame, output_fmt)
+}
+
+#[wasm_bindgen]
+pub fn wire_SplitAlignmentServices_new(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    wire_SplitAlignmentServices_new_impl(port_)
+}
+
+#[wasm_bindgen]
+pub fn wire_SplitAlignmentServices_split_alignment(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: flutter_rust_bridge::for_generated::wasm_bindgen::JsValue,
+) {
+    wire_SplitAlignmentServices_split_alignment_impl(port_, that)
 }
 
 #[wasm_bindgen]

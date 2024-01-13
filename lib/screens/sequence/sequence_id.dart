@@ -84,7 +84,7 @@ class _IdParsingPageState extends State<IdParsingPage> {
   Future<void> _parseId() async {
     try {
       await SequenceServices(
-        files: ctr.files,
+        inputFiles: ctr.files,
         dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,

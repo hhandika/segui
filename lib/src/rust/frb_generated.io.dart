@@ -46,7 +46,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw);
 
   @protected
+  SequenceRemoval dco_decode_box_autoadd_sequence_removal(dynamic raw);
+
+  @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw);
+
+  @protected
+  SplitAlignmentServices dco_decode_box_autoadd_split_alignment_services(
+      dynamic raw);
 
   @protected
   int dco_decode_box_autoadd_usize(dynamic raw);
@@ -73,13 +80,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
   @protected
+  List<String>? dco_decode_opt_list_String(dynamic raw);
+
+  @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
 
   @protected
   RawReadServices dco_decode_raw_read_services(dynamic raw);
 
   @protected
+  SequenceRemoval dco_decode_sequence_removal(dynamic raw);
+
+  @protected
   SequenceServices dco_decode_sequence_services(dynamic raw);
+
+  @protected
+  SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -120,7 +136,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SequenceRemoval sse_decode_box_autoadd_sequence_removal(
+      SseDeserializer deserializer);
+
+  @protected
   SequenceServices sse_decode_box_autoadd_sequence_services(
+      SseDeserializer deserializer);
+
+  @protected
+  SplitAlignmentServices sse_decode_box_autoadd_split_alignment_services(
       SseDeserializer deserializer);
 
   @protected
@@ -148,13 +172,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
+
+  @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
 
   @protected
   RawReadServices sse_decode_raw_read_services(SseDeserializer deserializer);
 
   @protected
+  SequenceRemoval sse_decode_sequence_removal(SseDeserializer deserializer);
+
+  @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer);
+
+  @protected
+  SplitAlignmentServices sse_decode_split_alignment_services(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -214,10 +248,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  ffi.Pointer<wire_cst_sequence_removal>
+      cst_encode_box_autoadd_sequence_removal(SequenceRemoval raw) {
+    final ptr = wire.cst_new_box_autoadd_sequence_removal();
+    cst_api_fill_to_wire_sequence_removal(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_cst_sequence_services>
       cst_encode_box_autoadd_sequence_services(SequenceServices raw) {
     final ptr = wire.cst_new_box_autoadd_sequence_services();
     cst_api_fill_to_wire_sequence_services(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_cst_split_alignment_services>
+      cst_encode_box_autoadd_split_alignment_services(
+          SplitAlignmentServices raw) {
+    final ptr = wire.cst_new_box_autoadd_split_alignment_services();
+    cst_api_fill_to_wire_split_alignment_services(raw, ptr.ref);
     return ptr;
   }
 
@@ -255,10 +306,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  ffi.Pointer<wire_cst_list_String> cst_encode_opt_list_String(
+      List<String>? raw) {
+    return raw == null ? ffi.nullptr : cst_encode_list_String(raw);
+  }
+
+  @protected
   void cst_api_fill_to_wire_alignment_services(
       AlignmentServices apiObj, wire_cst_alignment_services wireObj) {
     wireObj.dir = cst_encode_opt_String(apiObj.dir);
-    wireObj.files = cst_encode_list_String(apiObj.files);
+    wireObj.input_files = cst_encode_list_String(apiObj.inputFiles);
     wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
     wireObj.datatype = cst_encode_String(apiObj.datatype);
     wireObj.output_dir = cst_encode_String(apiObj.outputDir);
@@ -298,10 +355,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  void cst_api_fill_to_wire_box_autoadd_sequence_removal(
+      SequenceRemoval apiObj, ffi.Pointer<wire_cst_sequence_removal> wireObj) {
+    cst_api_fill_to_wire_sequence_removal(apiObj, wireObj.ref);
+  }
+
+  @protected
   void cst_api_fill_to_wire_box_autoadd_sequence_services(
       SequenceServices apiObj,
       ffi.Pointer<wire_cst_sequence_services> wireObj) {
     cst_api_fill_to_wire_sequence_services(apiObj, wireObj.ref);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_box_autoadd_split_alignment_services(
+      SplitAlignmentServices apiObj,
+      ffi.Pointer<wire_cst_split_alignment_services> wireObj) {
+    cst_api_fill_to_wire_split_alignment_services(apiObj, wireObj.ref);
   }
 
   @protected
@@ -317,7 +387,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void cst_api_fill_to_wire_filtering_services(
       FilteringServices apiObj, wire_cst_filtering_services wireObj) {
     wireObj.dir = cst_encode_opt_String(apiObj.dir);
-    wireObj.files = cst_encode_list_String(apiObj.files);
+    wireObj.input_files = cst_encode_list_String(apiObj.inputFiles);
     wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
     wireObj.datatype = cst_encode_String(apiObj.datatype);
     wireObj.output_dir = cst_encode_String(apiObj.outputDir);
@@ -327,7 +397,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void cst_api_fill_to_wire_partition_services(
       PartitionServices apiObj, wire_cst_partition_services wireObj) {
-    wireObj.file_inputs = cst_encode_list_String(apiObj.fileInputs);
+    wireObj.input_files = cst_encode_list_String(apiObj.inputFiles);
     wireObj.input_part_fmt = cst_encode_String(apiObj.inputPartFmt);
     wireObj.output = cst_encode_String(apiObj.output);
     wireObj.output_part_fmt = cst_encode_String(apiObj.outputPartFmt);
@@ -345,13 +415,41 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
-  void cst_api_fill_to_wire_sequence_services(
-      SequenceServices apiObj, wire_cst_sequence_services wireObj) {
-    wireObj.dir = cst_encode_opt_String(apiObj.dir);
-    wireObj.files = cst_encode_list_String(apiObj.files);
+  void cst_api_fill_to_wire_sequence_removal(
+      SequenceRemoval apiObj, wire_cst_sequence_removal wireObj) {
+    wireObj.input_files = cst_encode_list_String(apiObj.inputFiles);
     wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
     wireObj.datatype = cst_encode_String(apiObj.datatype);
     wireObj.output_dir = cst_encode_String(apiObj.outputDir);
+    wireObj.output_fmt = cst_encode_String(apiObj.outputFmt);
+    wireObj.remove_regex = cst_encode_opt_String(apiObj.removeRegex);
+    wireObj.remove_list = cst_encode_opt_list_String(apiObj.removeList);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_sequence_services(
+      SequenceServices apiObj, wire_cst_sequence_services wireObj) {
+    wireObj.dir = cst_encode_opt_String(apiObj.dir);
+    wireObj.input_files = cst_encode_list_String(apiObj.inputFiles);
+    wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
+    wireObj.datatype = cst_encode_String(apiObj.datatype);
+    wireObj.output_dir = cst_encode_String(apiObj.outputDir);
+  }
+
+  @protected
+  void cst_api_fill_to_wire_split_alignment_services(
+      SplitAlignmentServices apiObj,
+      wire_cst_split_alignment_services wireObj) {
+    wireObj.dir = cst_encode_opt_String(apiObj.dir);
+    wireObj.input_file = cst_encode_String(apiObj.inputFile);
+    wireObj.input_fmt = cst_encode_String(apiObj.inputFmt);
+    wireObj.datatype = cst_encode_String(apiObj.datatype);
+    wireObj.input_partition = cst_encode_opt_String(apiObj.inputPartition);
+    wireObj.input_partition_fmt = cst_encode_String(apiObj.inputPartitionFmt);
+    wireObj.output_dir = cst_encode_String(apiObj.outputDir);
+    wireObj.prefix = cst_encode_opt_String(apiObj.prefix);
+    wireObj.output_fmt = cst_encode_String(apiObj.outputFmt);
+    wireObj.is_uncheck = cst_encode_bool(apiObj.isUncheck);
   }
 
   @protected
@@ -400,8 +498,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       RawReadServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_sequence_removal(
+      SequenceRemoval self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_sequence_services(
       SequenceServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_split_alignment_services(
+      SplitAlignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_usize(int self, SseSerializer serializer);
@@ -431,6 +537,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_box_autoadd_usize(int? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_partition_services(
       PartitionServices self, SseSerializer serializer);
 
@@ -439,8 +548,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       RawReadServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_sequence_removal(
+      SequenceRemoval self, SseSerializer serializer);
+
+  @protected
   void sse_encode_sequence_services(
       SequenceServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_split_alignment_services(
+      SplitAlignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -804,6 +921,39 @@ class RustLibWire implements BaseWire {
   late final _wire_PartitionServices_new =
       _wire_PartitionServices_newPtr.asFunction<void Function(int)>();
 
+  void wire_SequenceRemoval_new(
+    int port_,
+  ) {
+    return _wire_SequenceRemoval_new(
+      port_,
+    );
+  }
+
+  late final _wire_SequenceRemoval_newPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'frbgen_segui_wire_SequenceRemoval_new');
+  late final _wire_SequenceRemoval_new =
+      _wire_SequenceRemoval_newPtr.asFunction<void Function(int)>();
+
+  void wire_SequenceRemoval_remove_sequence(
+    int port_,
+    ffi.Pointer<wire_cst_sequence_removal> that,
+  ) {
+    return _wire_SequenceRemoval_remove_sequence(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_SequenceRemoval_remove_sequencePtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64, ffi.Pointer<wire_cst_sequence_removal>)>>(
+      'frbgen_segui_wire_SequenceRemoval_remove_sequence');
+  late final _wire_SequenceRemoval_remove_sequence =
+      _wire_SequenceRemoval_remove_sequencePtr.asFunction<
+          void Function(int, ffi.Pointer<wire_cst_sequence_removal>)>();
+
   void wire_SequenceServices_convert_sequence(
     int port_,
     ffi.Pointer<wire_cst_sequence_services> that,
@@ -906,6 +1056,39 @@ class RustLibWire implements BaseWire {
               int,
               ffi.Pointer<wire_cst_list_prim_u_8_strict>)>();
 
+  void wire_SplitAlignmentServices_new(
+    int port_,
+  ) {
+    return _wire_SplitAlignmentServices_new(
+      port_,
+    );
+  }
+
+  late final _wire_SplitAlignmentServices_newPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'frbgen_segui_wire_SplitAlignmentServices_new');
+  late final _wire_SplitAlignmentServices_new =
+      _wire_SplitAlignmentServices_newPtr.asFunction<void Function(int)>();
+
+  void wire_SplitAlignmentServices_split_alignment(
+    int port_,
+    ffi.Pointer<wire_cst_split_alignment_services> that,
+  ) {
+    return _wire_SplitAlignmentServices_split_alignment(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_SplitAlignmentServices_split_alignmentPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(
+                  ffi.Int64, ffi.Pointer<wire_cst_split_alignment_services>)>>(
+      'frbgen_segui_wire_SplitAlignmentServices_split_alignment');
+  late final _wire_SplitAlignmentServices_split_alignment =
+      _wire_SplitAlignmentServices_split_alignmentPtr.asFunction<
+          void Function(int, ffi.Pointer<wire_cst_split_alignment_services>)>();
+
   void wire_show_dna_uppercase(
     int port_,
   ) {
@@ -983,6 +1166,19 @@ class RustLibWire implements BaseWire {
       _cst_new_box_autoadd_raw_read_servicesPtr
           .asFunction<ffi.Pointer<wire_cst_raw_read_services> Function()>();
 
+  ffi.Pointer<wire_cst_sequence_removal>
+      cst_new_box_autoadd_sequence_removal() {
+    return _cst_new_box_autoadd_sequence_removal();
+  }
+
+  late final _cst_new_box_autoadd_sequence_removalPtr = _lookup<
+          ffi
+          .NativeFunction<ffi.Pointer<wire_cst_sequence_removal> Function()>>(
+      'frbgen_segui_cst_new_box_autoadd_sequence_removal');
+  late final _cst_new_box_autoadd_sequence_removal =
+      _cst_new_box_autoadd_sequence_removalPtr
+          .asFunction<ffi.Pointer<wire_cst_sequence_removal> Function()>();
+
   ffi.Pointer<wire_cst_sequence_services>
       cst_new_box_autoadd_sequence_services() {
     return _cst_new_box_autoadd_sequence_services();
@@ -995,6 +1191,19 @@ class RustLibWire implements BaseWire {
   late final _cst_new_box_autoadd_sequence_services =
       _cst_new_box_autoadd_sequence_servicesPtr
           .asFunction<ffi.Pointer<wire_cst_sequence_services> Function()>();
+
+  ffi.Pointer<wire_cst_split_alignment_services>
+      cst_new_box_autoadd_split_alignment_services() {
+    return _cst_new_box_autoadd_split_alignment_services();
+  }
+
+  late final _cst_new_box_autoadd_split_alignment_servicesPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Pointer<wire_cst_split_alignment_services> Function()>>(
+      'frbgen_segui_cst_new_box_autoadd_split_alignment_services');
+  late final _cst_new_box_autoadd_split_alignment_services =
+      _cst_new_box_autoadd_split_alignment_servicesPtr.asFunction<
+          ffi.Pointer<wire_cst_split_alignment_services> Function()>();
 
   ffi.Pointer<ffi.UintPtr> cst_new_box_autoadd_usize(
     int value,
@@ -1088,7 +1297,7 @@ final class wire_cst_raw_read_services extends ffi.Struct {
 final class wire_cst_alignment_services extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
 
-  external ffi.Pointer<wire_cst_list_String> files;
+  external ffi.Pointer<wire_cst_list_String> input_files;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
 
@@ -1100,7 +1309,7 @@ final class wire_cst_alignment_services extends ffi.Struct {
 final class wire_cst_filtering_services extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
 
-  external ffi.Pointer<wire_cst_list_String> files;
+  external ffi.Pointer<wire_cst_list_String> input_files;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
 
@@ -1113,7 +1322,7 @@ final class wire_cst_filtering_services extends ffi.Struct {
 }
 
 final class wire_cst_partition_services extends ffi.Struct {
-  external ffi.Pointer<wire_cst_list_String> file_inputs;
+  external ffi.Pointer<wire_cst_list_String> input_files;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_part_fmt;
 
@@ -1127,14 +1336,53 @@ final class wire_cst_partition_services extends ffi.Struct {
   external bool is_uncheck;
 }
 
-final class wire_cst_sequence_services extends ffi.Struct {
-  external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
-
-  external ffi.Pointer<wire_cst_list_String> files;
+final class wire_cst_sequence_removal extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_String> input_files;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> datatype;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_dir;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> remove_regex;
+
+  external ffi.Pointer<wire_cst_list_String> remove_list;
+}
+
+final class wire_cst_sequence_services extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
+
+  external ffi.Pointer<wire_cst_list_String> input_files;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> datatype;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_dir;
+}
+
+final class wire_cst_split_alignment_services extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> dir;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_file;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> datatype;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_partition;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> input_partition_fmt;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_dir;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> prefix;
+
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> output_fmt;
+
+  @ffi.Bool()
+  external bool is_uncheck;
 }

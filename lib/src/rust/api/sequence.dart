@@ -11,14 +11,14 @@ Future<String> showDnaUppercase({dynamic hint}) =>
 
 class AlignmentServices {
   final String? dir;
-  final List<String> files;
+  final List<String> inputFiles;
   final String inputFmt;
   final String datatype;
   final String outputDir;
 
   const AlignmentServices({
     this.dir,
-    required this.files,
+    required this.inputFiles,
     required this.inputFmt,
     required this.datatype,
     required this.outputDir,
@@ -52,7 +52,7 @@ class AlignmentServices {
   @override
   int get hashCode =>
       dir.hashCode ^
-      files.hashCode ^
+      inputFiles.hashCode ^
       inputFmt.hashCode ^
       datatype.hashCode ^
       outputDir.hashCode;
@@ -63,7 +63,7 @@ class AlignmentServices {
       other is AlignmentServices &&
           runtimeType == other.runtimeType &&
           dir == other.dir &&
-          files == other.files &&
+          inputFiles == other.inputFiles &&
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&
           outputDir == other.outputDir;
@@ -71,7 +71,7 @@ class AlignmentServices {
 
 class FilteringServices {
   final String? dir;
-  final List<String> files;
+  final List<String> inputFiles;
   final String inputFmt;
   final String datatype;
   final String outputDir;
@@ -79,7 +79,7 @@ class FilteringServices {
 
   const FilteringServices({
     this.dir,
-    required this.files,
+    required this.inputFiles,
     required this.inputFmt,
     required this.datatype,
     required this.outputDir,
@@ -119,7 +119,7 @@ class FilteringServices {
   @override
   int get hashCode =>
       dir.hashCode ^
-      files.hashCode ^
+      inputFiles.hashCode ^
       inputFmt.hashCode ^
       datatype.hashCode ^
       outputDir.hashCode ^
@@ -131,7 +131,7 @@ class FilteringServices {
       other is FilteringServices &&
           runtimeType == other.runtimeType &&
           dir == other.dir &&
-          files == other.files &&
+          inputFiles == other.inputFiles &&
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&
           outputDir == other.outputDir &&
@@ -139,7 +139,7 @@ class FilteringServices {
 }
 
 class PartitionServices {
-  final List<String> fileInputs;
+  final List<String> inputFiles;
   final String inputPartFmt;
   final String output;
   final String outputPartFmt;
@@ -147,7 +147,7 @@ class PartitionServices {
   final bool isUncheck;
 
   const PartitionServices({
-    required this.fileInputs,
+    required this.inputFiles,
     required this.inputPartFmt,
     required this.output,
     required this.outputPartFmt,
@@ -165,7 +165,7 @@ class PartitionServices {
 
   @override
   int get hashCode =>
-      fileInputs.hashCode ^
+      inputFiles.hashCode ^
       inputPartFmt.hashCode ^
       output.hashCode ^
       outputPartFmt.hashCode ^
@@ -177,7 +177,7 @@ class PartitionServices {
       identical(this, other) ||
       other is PartitionServices &&
           runtimeType == other.runtimeType &&
-          fileInputs == other.fileInputs &&
+          inputFiles == other.inputFiles &&
           inputPartFmt == other.inputPartFmt &&
           output == other.output &&
           outputPartFmt == other.outputPartFmt &&
@@ -185,16 +185,67 @@ class PartitionServices {
           isUncheck == other.isUncheck;
 }
 
+class SequenceRemoval {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String outputFmt;
+  final String? removeRegex;
+  final List<String>? removeList;
+
+  const SequenceRemoval({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+    this.removeRegex,
+    this.removeList,
+  });
+
+  static Future<SequenceRemoval> newSequenceRemoval({dynamic hint}) =>
+      RustLib.instance.api.sequenceRemovalNew(hint: hint);
+
+  Future<void> removeSequence({dynamic hint}) =>
+      RustLib.instance.api.sequenceRemovalRemoveSequence(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode ^
+      removeRegex.hashCode ^
+      removeList.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SequenceRemoval &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt &&
+          removeRegex == other.removeRegex &&
+          removeList == other.removeList;
+}
+
 class SequenceServices {
   final String? dir;
-  final List<String> files;
+  final List<String> inputFiles;
   final String inputFmt;
   final String datatype;
   final String outputDir;
 
   const SequenceServices({
     this.dir,
-    required this.files,
+    required this.inputFiles,
     required this.inputFmt,
     required this.datatype,
     required this.outputDir,
@@ -234,7 +285,7 @@ class SequenceServices {
   @override
   int get hashCode =>
       dir.hashCode ^
-      files.hashCode ^
+      inputFiles.hashCode ^
       inputFmt.hashCode ^
       datatype.hashCode ^
       outputDir.hashCode;
@@ -245,8 +296,72 @@ class SequenceServices {
       other is SequenceServices &&
           runtimeType == other.runtimeType &&
           dir == other.dir &&
-          files == other.files &&
+          inputFiles == other.inputFiles &&
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&
           outputDir == other.outputDir;
+}
+
+class SplitAlignmentServices {
+  final String? dir;
+  final String inputFile;
+  final String inputFmt;
+  final String datatype;
+  final String? inputPartition;
+  final String inputPartitionFmt;
+  final String outputDir;
+  final String? prefix;
+  final String outputFmt;
+  final bool isUncheck;
+
+  const SplitAlignmentServices({
+    this.dir,
+    required this.inputFile,
+    required this.inputFmt,
+    required this.datatype,
+    this.inputPartition,
+    required this.inputPartitionFmt,
+    required this.outputDir,
+    this.prefix,
+    required this.outputFmt,
+    required this.isUncheck,
+  });
+
+  static Future<SplitAlignmentServices> newSplitAlignmentServices(
+          {dynamic hint}) =>
+      RustLib.instance.api.splitAlignmentServicesNew(hint: hint);
+
+  Future<void> splitAlignment({dynamic hint}) =>
+      RustLib.instance.api.splitAlignmentServicesSplitAlignment(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      dir.hashCode ^
+      inputFile.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      inputPartition.hashCode ^
+      inputPartitionFmt.hashCode ^
+      outputDir.hashCode ^
+      prefix.hashCode ^
+      outputFmt.hashCode ^
+      isUncheck.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SplitAlignmentServices &&
+          runtimeType == other.runtimeType &&
+          dir == other.dir &&
+          inputFile == other.inputFile &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          inputPartition == other.inputPartition &&
+          inputPartitionFmt == other.inputPartitionFmt &&
+          outputDir == other.outputDir &&
+          prefix == other.prefix &&
+          outputFmt == other.outputFmt &&
+          isUncheck == other.isUncheck;
 }

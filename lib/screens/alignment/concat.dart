@@ -163,7 +163,7 @@ class _ConcatPageState extends State<ConcatPage> {
     try {
       await AlignmentServices(
         dir: ctr.dirPath.text,
-        files: ctr.files,
+        inputFiles: ctr.files,
         inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
         outputDir: ctr.outputDir.text,
@@ -185,6 +185,7 @@ class _ConcatPageState extends State<ConcatPage> {
       fileName: ctr.outputController.text,
       task: SupportedTask.alignmentConcatenation,
     );
+
     if (mounted) {
       await io.shareFile(context, outputPath);
     }

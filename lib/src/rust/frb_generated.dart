@@ -111,6 +111,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<PartitionServices> partitionServicesNew({dynamic hint});
 
+  Future<SequenceRemoval> sequenceRemovalNew({dynamic hint});
+
+  Future<void> sequenceRemovalRemoveSequence(
+      {required SequenceRemoval that, dynamic hint});
+
   Future<void> sequenceServicesConvertSequence(
       {required SequenceServices that,
       required String outputFmt,
@@ -131,6 +136,11 @@ abstract class RustLibApi extends BaseApi {
       required int readingFrame,
       required String outputFmt,
       dynamic hint});
+
+  Future<SplitAlignmentServices> splitAlignmentServicesNew({dynamic hint});
+
+  Future<void> splitAlignmentServicesSplitAlignment(
+      {required SplitAlignmentServices that, dynamic hint});
 
   Future<String> showDnaUppercase({dynamic hint});
 }
@@ -529,6 +539,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<SequenceRemoval> sequenceRemovalNew({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_SequenceRemoval_new(port_);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_sequence_removal,
+        decodeErrorData: null,
+      ),
+      constMeta: kSequenceRemovalNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSequenceRemovalNewConstMeta => const TaskConstMeta(
+        debugName: "SequenceRemoval_new",
+        argNames: [],
+      );
+
+  @override
+  Future<void> sequenceRemovalRemoveSequence(
+      {required SequenceRemoval that, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_sequence_removal(that);
+        return wire.wire_SequenceRemoval_remove_sequence(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kSequenceRemovalRemoveSequenceConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSequenceRemovalRemoveSequenceConstMeta =>
+      const TaskConstMeta(
+        debugName: "SequenceRemoval_remove_sequence",
+        argNames: ["that"],
+      );
+
+  @override
   Future<void> sequenceServicesConvertSequence(
       {required SequenceServices that,
       required String outputFmt,
@@ -646,6 +703,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<SplitAlignmentServices> splitAlignmentServicesNew({dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        return wire.wire_SplitAlignmentServices_new(port_);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_split_alignment_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kSplitAlignmentServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSplitAlignmentServicesNewConstMeta => const TaskConstMeta(
+        debugName: "SplitAlignmentServices_new",
+        argNames: [],
+      );
+
+  @override
+  Future<void> splitAlignmentServicesSplitAlignment(
+      {required SplitAlignmentServices that, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 = cst_encode_box_autoadd_split_alignment_services(that);
+        return wire.wire_SplitAlignmentServices_split_alignment(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kSplitAlignmentServicesSplitAlignmentConstMeta,
+      argValues: [that],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSplitAlignmentServicesSplitAlignmentConstMeta =>
+      const TaskConstMeta(
+        debugName: "SplitAlignmentServices_split_alignment",
+        argNames: ["that"],
+      );
+
+  @override
   Future<String> showDnaUppercase({dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -679,7 +783,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return AlignmentServices(
       dir: dco_decode_opt_String(arr[0]),
-      files: dco_decode_list_String(arr[1]),
+      inputFiles: dco_decode_list_String(arr[1]),
       inputFmt: dco_decode_String(arr[2]),
       datatype: dco_decode_String(arr[3]),
       outputDir: dco_decode_String(arr[4]),
@@ -717,8 +821,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceRemoval dco_decode_box_autoadd_sequence_removal(dynamic raw) {
+    return dco_decode_sequence_removal(raw);
+  }
+
+  @protected
   SequenceServices dco_decode_box_autoadd_sequence_services(dynamic raw) {
     return dco_decode_sequence_services(raw);
+  }
+
+  @protected
+  SplitAlignmentServices dco_decode_box_autoadd_split_alignment_services(
+      dynamic raw) {
+    return dco_decode_split_alignment_services(raw);
   }
 
   @protected
@@ -751,7 +866,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return FilteringServices(
       dir: dco_decode_opt_String(arr[0]),
-      files: dco_decode_list_String(arr[1]),
+      inputFiles: dco_decode_list_String(arr[1]),
       inputFmt: dco_decode_String(arr[2]),
       datatype: dco_decode_String(arr[3]),
       outputDir: dco_decode_String(arr[4]),
@@ -780,12 +895,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<String>? dco_decode_opt_list_String(dynamic raw) {
+    return raw == null ? null : dco_decode_list_String(raw);
+  }
+
+  @protected
   PartitionServices dco_decode_partition_services(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 6)
       throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return PartitionServices(
-      fileInputs: dco_decode_list_String(arr[0]),
+      inputFiles: dco_decode_list_String(arr[0]),
       inputPartFmt: dco_decode_String(arr[1]),
       output: dco_decode_String(arr[2]),
       outputPartFmt: dco_decode_String(arr[3]),
@@ -808,16 +928,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceRemoval dco_decode_sequence_removal(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return SequenceRemoval(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
+      outputFmt: dco_decode_String(arr[4]),
+      removeRegex: dco_decode_opt_String(arr[5]),
+      removeList: dco_decode_opt_list_String(arr[6]),
+    );
+  }
+
+  @protected
   SequenceServices dco_decode_sequence_services(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 5)
       throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return SequenceServices(
       dir: dco_decode_opt_String(arr[0]),
-      files: dco_decode_list_String(arr[1]),
+      inputFiles: dco_decode_list_String(arr[1]),
       inputFmt: dco_decode_String(arr[2]),
       datatype: dco_decode_String(arr[3]),
       outputDir: dco_decode_String(arr[4]),
+    );
+  }
+
+  @protected
+  SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 10)
+      throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
+    return SplitAlignmentServices(
+      dir: dco_decode_opt_String(arr[0]),
+      inputFile: dco_decode_String(arr[1]),
+      inputFmt: dco_decode_String(arr[2]),
+      datatype: dco_decode_String(arr[3]),
+      inputPartition: dco_decode_opt_String(arr[4]),
+      inputPartitionFmt: dco_decode_String(arr[5]),
+      outputDir: dco_decode_String(arr[6]),
+      prefix: dco_decode_opt_String(arr[7]),
+      outputFmt: dco_decode_String(arr[8]),
+      isUncheck: dco_decode_bool(arr[9]),
     );
   }
 
@@ -846,13 +1001,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AlignmentServices sse_decode_alignment_services(
       SseDeserializer deserializer) {
     var var_dir = sse_decode_opt_String(deserializer);
-    var var_files = sse_decode_list_String(deserializer);
+    var var_inputFiles = sse_decode_list_String(deserializer);
     var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     return AlignmentServices(
         dir: var_dir,
-        files: var_files,
+        inputFiles: var_inputFiles,
         inputFmt: var_inputFmt,
         datatype: var_datatype,
         outputDir: var_outputDir);
@@ -894,9 +1049,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceRemoval sse_decode_box_autoadd_sequence_removal(
+      SseDeserializer deserializer) {
+    return (sse_decode_sequence_removal(deserializer));
+  }
+
+  @protected
   SequenceServices sse_decode_box_autoadd_sequence_services(
       SseDeserializer deserializer) {
     return (sse_decode_sequence_services(deserializer));
+  }
+
+  @protected
+  SplitAlignmentServices sse_decode_box_autoadd_split_alignment_services(
+      SseDeserializer deserializer) {
+    return (sse_decode_split_alignment_services(deserializer));
   }
 
   @protected
@@ -926,14 +1093,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FilteringServices sse_decode_filtering_services(
       SseDeserializer deserializer) {
     var var_dir = sse_decode_opt_String(deserializer);
-    var var_files = sse_decode_list_String(deserializer);
+    var var_inputFiles = sse_decode_list_String(deserializer);
     var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     var var_isConcat = sse_decode_bool(deserializer);
     return FilteringServices(
         dir: var_dir,
-        files: var_files,
+        inputFiles: var_inputFiles,
         inputFmt: var_inputFmt,
         datatype: var_datatype,
         outputDir: var_outputDir,
@@ -975,16 +1142,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<String>? sse_decode_opt_list_String(SseDeserializer deserializer) {
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   PartitionServices sse_decode_partition_services(
       SseDeserializer deserializer) {
-    var var_fileInputs = sse_decode_list_String(deserializer);
+    var var_inputFiles = sse_decode_list_String(deserializer);
     var var_inputPartFmt = sse_decode_String(deserializer);
     var var_output = sse_decode_String(deserializer);
     var var_outputPartFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_isUncheck = sse_decode_bool(deserializer);
     return PartitionServices(
-        fileInputs: var_fileInputs,
+        inputFiles: var_inputFiles,
         inputPartFmt: var_inputPartFmt,
         output: var_output,
         outputPartFmt: var_outputPartFmt,
@@ -1006,18 +1182,63 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceRemoval sse_decode_sequence_removal(SseDeserializer deserializer) {
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    var var_removeRegex = sse_decode_opt_String(deserializer);
+    var var_removeList = sse_decode_opt_list_String(deserializer);
+    return SequenceRemoval(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt,
+        removeRegex: var_removeRegex,
+        removeList: var_removeList);
+  }
+
+  @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer) {
     var var_dir = sse_decode_opt_String(deserializer);
-    var var_files = sse_decode_list_String(deserializer);
+    var var_inputFiles = sse_decode_list_String(deserializer);
     var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     return SequenceServices(
         dir: var_dir,
-        files: var_files,
+        inputFiles: var_inputFiles,
         inputFmt: var_inputFmt,
         datatype: var_datatype,
         outputDir: var_outputDir);
+  }
+
+  @protected
+  SplitAlignmentServices sse_decode_split_alignment_services(
+      SseDeserializer deserializer) {
+    var var_dir = sse_decode_opt_String(deserializer);
+    var var_inputFile = sse_decode_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_inputPartition = sse_decode_opt_String(deserializer);
+    var var_inputPartitionFmt = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_prefix = sse_decode_opt_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    var var_isUncheck = sse_decode_bool(deserializer);
+    return SplitAlignmentServices(
+        dir: var_dir,
+        inputFile: var_inputFile,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        inputPartition: var_inputPartition,
+        inputPartitionFmt: var_inputPartitionFmt,
+        outputDir: var_outputDir,
+        prefix: var_prefix,
+        outputFmt: var_outputFmt,
+        isUncheck: var_isUncheck);
   }
 
   @protected
@@ -1072,7 +1293,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_alignment_services(
       AlignmentServices self, SseSerializer serializer) {
     sse_encode_opt_String(self.dir, serializer);
-    sse_encode_list_String(self.files, serializer);
+    sse_encode_list_String(self.inputFiles, serializer);
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
     sse_encode_String(self.outputDir, serializer);
@@ -1114,9 +1335,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_sequence_removal(
+      SequenceRemoval self, SseSerializer serializer) {
+    sse_encode_sequence_removal(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_sequence_services(
       SequenceServices self, SseSerializer serializer) {
     sse_encode_sequence_services(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_split_alignment_services(
+      SplitAlignmentServices self, SseSerializer serializer) {
+    sse_encode_split_alignment_services(self, serializer);
   }
 
   @protected
@@ -1142,7 +1375,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_filtering_services(
       FilteringServices self, SseSerializer serializer) {
     sse_encode_opt_String(self.dir, serializer);
-    sse_encode_list_String(self.files, serializer);
+    sse_encode_list_String(self.inputFiles, serializer);
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
     sse_encode_String(self.outputDir, serializer);
@@ -1181,9 +1414,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_list_String(
+      List<String>? self, SseSerializer serializer) {
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_String(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_partition_services(
       PartitionServices self, SseSerializer serializer) {
-    sse_encode_list_String(self.fileInputs, serializer);
+    sse_encode_list_String(self.inputFiles, serializer);
     sse_encode_String(self.inputPartFmt, serializer);
     sse_encode_String(self.output, serializer);
     sse_encode_String(self.outputPartFmt, serializer);
@@ -1201,13 +1443,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_sequence_services(
-      SequenceServices self, SseSerializer serializer) {
-    sse_encode_opt_String(self.dir, serializer);
-    sse_encode_list_String(self.files, serializer);
+  void sse_encode_sequence_removal(
+      SequenceRemoval self, SseSerializer serializer) {
+    sse_encode_list_String(self.inputFiles, serializer);
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
     sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+    sse_encode_opt_String(self.removeRegex, serializer);
+    sse_encode_opt_list_String(self.removeList, serializer);
+  }
+
+  @protected
+  void sse_encode_sequence_services(
+      SequenceServices self, SseSerializer serializer) {
+    sse_encode_opt_String(self.dir, serializer);
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+  }
+
+  @protected
+  void sse_encode_split_alignment_services(
+      SplitAlignmentServices self, SseSerializer serializer) {
+    sse_encode_opt_String(self.dir, serializer);
+    sse_encode_String(self.inputFile, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_opt_String(self.inputPartition, serializer);
+    sse_encode_String(self.inputPartitionFmt, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_opt_String(self.prefix, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+    sse_encode_bool(self.isUncheck, serializer);
   }
 
   @protected

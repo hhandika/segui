@@ -368,6 +368,44 @@ fn wire_PartitionServices_new_impl(port_: flutter_rust_bridge::for_generated::Me
         },
     )
 }
+fn wire_SequenceRemoval_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SequenceRemoval_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(crate::api::sequence::SequenceRemoval::new())
+                })())
+            }
+        },
+    )
+}
+fn wire_SequenceRemoval_remove_sequence_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::SequenceRemoval>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SequenceRemoval_remove_sequence",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(crate::api::sequence::SequenceRemoval::remove_sequence(
+                        &api_that,
+                    ))
+                })())
+            }
+        },
+    )
+}
 fn wire_SequenceServices_convert_sequence_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     that: impl CstDecode<crate::api::sequence::SequenceServices>,
@@ -471,6 +509,44 @@ fn wire_SequenceServices_translate_sequence_impl(
         },
     )
 }
+fn wire_SplitAlignmentServices_new_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SplitAlignmentServices_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(crate::api::sequence::SplitAlignmentServices::new())
+                })())
+            }
+        },
+    )
+}
+fn wire_SplitAlignmentServices_split_alignment_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    that: impl CstDecode<crate::api::sequence::SplitAlignmentServices>,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "SplitAlignmentServices_split_alignment",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.cst_decode();
+            move |context| {
+                transform_result_dco((move || {
+                    Result::<_, ()>::Ok(
+                        crate::api::sequence::SplitAlignmentServices::split_alignment(&api_that),
+                    )
+                })())
+            }
+        },
+    )
+}
 fn wire_show_dna_uppercase_impl(port_: flutter_rust_bridge::for_generated::MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::DcoCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
@@ -520,13 +596,13 @@ impl SseDecode for String {
 impl SseDecode for crate::api::sequence::AlignmentServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_dir = <Option<String>>::sse_decode(deserializer);
-        let mut var_files = <Vec<String>>::sse_decode(deserializer);
+        let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         return crate::api::sequence::AlignmentServices {
             dir: var_dir,
-            files: var_files,
+            input_files: var_inputFiles,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
             output_dir: var_outputDir,
@@ -564,14 +640,14 @@ impl SseDecode for f64 {
 impl SseDecode for crate::api::sequence::FilteringServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_dir = <Option<String>>::sse_decode(deserializer);
-        let mut var_files = <Vec<String>>::sse_decode(deserializer);
+        let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         let mut var_isConcat = <bool>::sse_decode(deserializer);
         return crate::api::sequence::FilteringServices {
             dir: var_dir,
-            files: var_files,
+            input_files: var_inputFiles,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
             output_dir: var_outputDir,
@@ -622,16 +698,26 @@ impl SseDecode for Option<usize> {
     }
 }
 
+impl SseDecode for Option<Vec<String>> {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<Vec<String>>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for crate::api::sequence::PartitionServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_fileInputs = <Vec<String>>::sse_decode(deserializer);
+        let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         let mut var_inputPartFmt = <String>::sse_decode(deserializer);
         let mut var_output = <String>::sse_decode(deserializer);
         let mut var_outputPartFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_isUncheck = <bool>::sse_decode(deserializer);
         return crate::api::sequence::PartitionServices {
-            file_inputs: var_fileInputs,
+            input_files: var_inputFiles,
             input_part_fmt: var_inputPartFmt,
             output: var_output,
             output_part_fmt: var_outputPartFmt,
@@ -656,19 +742,67 @@ impl SseDecode for crate::api::reads::RawReadServices {
     }
 }
 
+impl SseDecode for crate::api::sequence::SequenceRemoval {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
+        let mut var_inputFmt = <String>::sse_decode(deserializer);
+        let mut var_datatype = <String>::sse_decode(deserializer);
+        let mut var_outputDir = <String>::sse_decode(deserializer);
+        let mut var_outputFmt = <String>::sse_decode(deserializer);
+        let mut var_removeRegex = <Option<String>>::sse_decode(deserializer);
+        let mut var_removeList = <Option<Vec<String>>>::sse_decode(deserializer);
+        return crate::api::sequence::SequenceRemoval {
+            input_files: var_inputFiles,
+            input_fmt: var_inputFmt,
+            datatype: var_datatype,
+            output_dir: var_outputDir,
+            output_fmt: var_outputFmt,
+            remove_regex: var_removeRegex,
+            remove_list: var_removeList,
+        };
+    }
+}
+
 impl SseDecode for crate::api::sequence::SequenceServices {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_dir = <Option<String>>::sse_decode(deserializer);
-        let mut var_files = <Vec<String>>::sse_decode(deserializer);
+        let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         return crate::api::sequence::SequenceServices {
             dir: var_dir,
-            files: var_files,
+            input_files: var_inputFiles,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
             output_dir: var_outputDir,
+        };
+    }
+}
+
+impl SseDecode for crate::api::sequence::SplitAlignmentServices {
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_dir = <Option<String>>::sse_decode(deserializer);
+        let mut var_inputFile = <String>::sse_decode(deserializer);
+        let mut var_inputFmt = <String>::sse_decode(deserializer);
+        let mut var_datatype = <String>::sse_decode(deserializer);
+        let mut var_inputPartition = <Option<String>>::sse_decode(deserializer);
+        let mut var_inputPartitionFmt = <String>::sse_decode(deserializer);
+        let mut var_outputDir = <String>::sse_decode(deserializer);
+        let mut var_prefix = <Option<String>>::sse_decode(deserializer);
+        let mut var_outputFmt = <String>::sse_decode(deserializer);
+        let mut var_isUncheck = <bool>::sse_decode(deserializer);
+        return crate::api::sequence::SplitAlignmentServices {
+            dir: var_dir,
+            input_file: var_inputFile,
+            input_fmt: var_inputFmt,
+            datatype: var_datatype,
+            input_partition: var_inputPartition,
+            input_partition_fmt: var_inputPartitionFmt,
+            output_dir: var_outputDir,
+            prefix: var_prefix,
+            output_fmt: var_outputFmt,
+            is_uncheck: var_isUncheck,
         };
     }
 }
@@ -701,7 +835,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::sequence::AlignmentServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
             self.dir.into_into_dart().into_dart(),
-            self.files.into_into_dart().into_dart(),
+            self.input_files.into_into_dart().into_dart(),
             self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
             self.output_dir.into_into_dart().into_dart(),
@@ -746,7 +880,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::sequence::FilteringServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
             self.dir.into_into_dart().into_dart(),
-            self.files.into_into_dart().into_dart(),
+            self.input_files.into_into_dart().into_dart(),
             self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
             self.output_dir.into_into_dart().into_dart(),
@@ -769,7 +903,7 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::FilteringServices>
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::PartitionServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
-            self.file_inputs.into_into_dart().into_dart(),
+            self.input_files.into_into_dart().into_dart(),
             self.input_part_fmt.into_into_dart().into_dart(),
             self.output.into_into_dart().into_dart(),
             self.output_part_fmt.into_into_dart().into_dart(),
@@ -812,11 +946,36 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::RawReadServices>
         self
     }
 }
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceRemoval {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        vec![
+            self.input_files.into_into_dart().into_dart(),
+            self.input_fmt.into_into_dart().into_dart(),
+            self.datatype.into_into_dart().into_dart(),
+            self.output_dir.into_into_dart().into_dart(),
+            self.output_fmt.into_into_dart().into_dart(),
+            self.remove_regex.into_into_dart().into_dart(),
+            self.remove_list.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sequence::SequenceRemoval
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceRemoval>
+    for crate::api::sequence::SequenceRemoval
+{
+    fn into_into_dart(self) -> crate::api::sequence::SequenceRemoval {
+        self
+    }
+}
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         vec![
             self.dir.into_into_dart().into_dart(),
-            self.files.into_into_dart().into_dart(),
+            self.input_files.into_into_dart().into_dart(),
             self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
             self.output_dir.into_into_dart().into_dart(),
@@ -835,6 +994,34 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceServices>
         self
     }
 }
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::SplitAlignmentServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        vec![
+            self.dir.into_into_dart().into_dart(),
+            self.input_file.into_into_dart().into_dart(),
+            self.input_fmt.into_into_dart().into_dart(),
+            self.datatype.into_into_dart().into_dart(),
+            self.input_partition.into_into_dart().into_dart(),
+            self.input_partition_fmt.into_into_dart().into_dart(),
+            self.output_dir.into_into_dart().into_dart(),
+            self.prefix.into_into_dart().into_dart(),
+            self.output_fmt.into_into_dart().into_dart(),
+            self.is_uncheck.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sequence::SplitAlignmentServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SplitAlignmentServices>
+    for crate::api::sequence::SplitAlignmentServices
+{
+    fn into_into_dart(self) -> crate::api::sequence::SplitAlignmentServices {
+        self
+    }
+}
 
 impl SseEncode for String {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -845,7 +1032,7 @@ impl SseEncode for String {
 impl SseEncode for crate::api::sequence::AlignmentServices {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Option<String>>::sse_encode(self.dir, serializer);
-        <Vec<String>>::sse_encode(self.files, serializer);
+        <Vec<String>>::sse_encode(self.input_files, serializer);
         <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
         <String>::sse_encode(self.output_dir, serializer);
@@ -876,7 +1063,7 @@ impl SseEncode for f64 {
 impl SseEncode for crate::api::sequence::FilteringServices {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Option<String>>::sse_encode(self.dir, serializer);
-        <Vec<String>>::sse_encode(self.files, serializer);
+        <Vec<String>>::sse_encode(self.input_files, serializer);
         <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
         <String>::sse_encode(self.output_dir, serializer);
@@ -920,9 +1107,18 @@ impl SseEncode for Option<usize> {
     }
 }
 
+impl SseEncode for Option<Vec<String>> {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Vec<String>>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for crate::api::sequence::PartitionServices {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<String>>::sse_encode(self.file_inputs, serializer);
+        <Vec<String>>::sse_encode(self.input_files, serializer);
         <String>::sse_encode(self.input_part_fmt, serializer);
         <String>::sse_encode(self.output, serializer);
         <String>::sse_encode(self.output_part_fmt, serializer);
@@ -940,13 +1136,40 @@ impl SseEncode for crate::api::reads::RawReadServices {
     }
 }
 
-impl SseEncode for crate::api::sequence::SequenceServices {
+impl SseEncode for crate::api::sequence::SequenceRemoval {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Option<String>>::sse_encode(self.dir, serializer);
-        <Vec<String>>::sse_encode(self.files, serializer);
+        <Vec<String>>::sse_encode(self.input_files, serializer);
         <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
         <String>::sse_encode(self.output_dir, serializer);
+        <String>::sse_encode(self.output_fmt, serializer);
+        <Option<String>>::sse_encode(self.remove_regex, serializer);
+        <Option<Vec<String>>>::sse_encode(self.remove_list, serializer);
+    }
+}
+
+impl SseEncode for crate::api::sequence::SequenceServices {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.dir, serializer);
+        <Vec<String>>::sse_encode(self.input_files, serializer);
+        <String>::sse_encode(self.input_fmt, serializer);
+        <String>::sse_encode(self.datatype, serializer);
+        <String>::sse_encode(self.output_dir, serializer);
+    }
+}
+
+impl SseEncode for crate::api::sequence::SplitAlignmentServices {
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<String>>::sse_encode(self.dir, serializer);
+        <String>::sse_encode(self.input_file, serializer);
+        <String>::sse_encode(self.input_fmt, serializer);
+        <String>::sse_encode(self.datatype, serializer);
+        <Option<String>>::sse_encode(self.input_partition, serializer);
+        <String>::sse_encode(self.input_partition_fmt, serializer);
+        <String>::sse_encode(self.output_dir, serializer);
+        <Option<String>>::sse_encode(self.prefix, serializer);
+        <String>::sse_encode(self.output_fmt, serializer);
+        <bool>::sse_encode(self.is_uncheck, serializer);
     }
 }
 
