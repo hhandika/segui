@@ -1,18 +1,22 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:segui/screens/shared/controllers.dart';
+import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
 
 class SharedSequenceInputForm extends StatefulWidget {
   const SharedSequenceInputForm({
     super.key,
     required this.ctr,
+    required this.xTypeGroup,
     this.isDatatypeEnabled = true,
   });
 
   final IOController ctr;
+  final List<XTypeGroup> xTypeGroup;
   final bool isDatatypeEnabled;
 
   @override
@@ -27,6 +31,7 @@ class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
       children: [
         InputSelectorForm(
           ctr: widget.ctr,
+          xTypeGroup: widget.xTypeGroup,
           onFilePressed: (value) {
             setState(() {
               widget.ctr.files = value;
@@ -218,18 +223,21 @@ class SharedDropdownField extends StatelessWidget {
 class InputSelectorForm extends StatelessWidget {
   const InputSelectorForm({
     super.key,
-    required this.onFilePressed,
     required this.ctr,
+    required this.xTypeGroup,
+    required this.onFilePressed,
   });
 
-  final void Function(List<String>) onFilePressed;
   final IOController ctr;
+  final List<XTypeGroup> xTypeGroup;
+  final void Function(List<String>) onFilePressed;
 
   @override
   Widget build(BuildContext context) {
     return SharedFilePicker(
       label: 'Select input files',
       paths: ctr.files,
+      xTypeGroup: xTypeGroup,
       onPressed: onFilePressed,
     );
   }
@@ -317,11 +325,13 @@ class SharedFilePicker extends StatefulWidget {
     super.key,
     required this.label,
     required this.paths,
+    required this.xTypeGroup,
     required this.onPressed,
   });
 
   final String label;
   final List<String> paths;
+  final List<XTypeGroup> xTypeGroup;
   final Function(List<String>) onPressed;
 
   @override
@@ -380,10 +390,9 @@ class _SharedFilePickerState extends State<SharedFilePicker> {
   }
 
   Future<List<String>> _selectFile() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result != null) {
-      return result.paths.map((e) => e ?? '').toList();
+    List<XFile> result = await IOServices().pickMultiFiles(widget.xTypeGroup);
+    if (result.isNotEmpty) {
+      return result.map((e) => e.path).toList();
     } else {
       return [];
     }

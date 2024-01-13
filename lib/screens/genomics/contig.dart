@@ -27,6 +27,7 @@ class _ContigPageState extends State<ContigPage> {
           const CardTitle(title: 'Input'),
           FormCard(children: [
             InputSelectorForm(
+              xTypeGroup: const [genomicTypeGroup],
               onFilePressed: (value) {
                 setState(() {
                   ctr.files = value;

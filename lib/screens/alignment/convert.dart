@@ -46,7 +46,10 @@ class _ConvertPageState extends State<ConvertPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const CardTitle(title: 'Input'),
-        SharedSequenceInputForm(ctr: ctr),
+        SharedSequenceInputForm(
+          ctr: ctr,
+          xTypeGroup: const [sequenceTypeGroup],
+        ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_selector/file_selector.dart';
 import 'package:path/path.dart' as p;
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
@@ -27,6 +28,32 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
 };
+
+const XTypeGroup genomicTypeGroup = XTypeGroup(
+  label: 'Sequence Read',
+  extensions: ['fasta', 'fastq', 'gz', 'gzip'],
+  uniformTypeIdentifiers: [
+    'com.segui.genomicSequence',
+    'com.segui.genomicGzipSequence'
+  ],
+);
+
+const XTypeGroup sequenceTypeGroup = XTypeGroup(
+  label: 'Alignment',
+  extensions: [
+    'fasta',
+    'fa',
+    'fas',
+    'fsa',
+    'nexus',
+    'nex',
+    'phylip',
+    'phy',
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.dnaSequence',
+  ],
+);
 
 class IOServices {
   IOServices();
@@ -68,6 +95,13 @@ class IOServices {
     return null;
   }
 
+  Future<List<XFile>> pickMultiFiles(List<XTypeGroup> allowedExtension) async {
+    final fileList = await openFiles(
+      acceptedTypeGroups: allowedExtension,
+    );
+    return fileList;
+  }
+
   Future<File?> selectFile(List<String>? allowedExtension) async {
     final result = await _matchPicker(allowedExtension);
 
@@ -80,7 +114,7 @@ class IOServices {
     return null;
   }
 
-  Future<List<File>> pickMultiFiles(List<String> allowedExtension) async {
+  Future<List<File>> selectMultiFiles(List<String> allowedExtension) async {
     FilePickerResult? files = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowMultiple: true,

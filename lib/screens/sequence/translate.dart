@@ -49,6 +49,7 @@ class _TranslatePageState extends State<TranslatePage> {
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
+          xTypeGroup: const [sequenceTypeGroup],
           isDatatypeEnabled: false,
         ),
         const SizedBox(height: 16),

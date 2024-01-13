@@ -43,6 +43,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
         const CardTitle(title: 'Input'),
         FormCard(children: [
           InputSelectorForm(
+            xTypeGroup: const [genomicTypeGroup],
             onFilePressed: (value) {
               setState(() {
                 ctr.files = value;
