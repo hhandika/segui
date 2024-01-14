@@ -74,11 +74,12 @@ class FormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppPageView(
-      child: ListView(
-        shrinkWrap: true,
+        child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: children,
       ),
-    );
+    ));
   }
 }
 
@@ -87,13 +88,14 @@ class AppPageView extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.8,
-      constraints: const BoxConstraints(maxWidth: 500),
       child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: child,
-      ),
+          padding: const EdgeInsets.all(8),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 200),
+            child: child,
+          )),
     );
   }
 }
