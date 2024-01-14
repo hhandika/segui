@@ -55,15 +55,42 @@ class _LargeScreenViewState extends State<LargeScreenView> {
               ),
             ),
             Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: SizedBox(
-                  child: pages.elementAt(_selectedIndex),
-                ),
+              child: Center(
+                child: pages[_selectedIndex],
               ),
-            ),
+            )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class LargeScreenContentView extends StatelessWidget {
+  const LargeScreenContentView({
+    super.key,
+    required this.selectedIndex,
+  });
+
+  final int selectedIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 3,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: SizedBox(
+          child: Row(children: [
+            SizedBox(
+              width: 500,
+              child: pages[selectedIndex],
+            ),
+            const Expanded(
+                child: Center(
+              child: Text('Viewer'),
+            )),
+          ]),
         ),
       ),
     );

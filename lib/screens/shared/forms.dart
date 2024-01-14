@@ -85,7 +85,9 @@ class FormView extends StatelessWidget {
 
 class AppPageView extends StatelessWidget {
   const AppPageView({super.key, required this.child});
+
   final Widget child;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -93,7 +95,7 @@ class AppPageView extends StatelessWidget {
       child: Padding(
           padding: const EdgeInsets.all(8),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 200),
+            constraints: const BoxConstraints(maxWidth: 800),
             child: child,
           )),
     );
