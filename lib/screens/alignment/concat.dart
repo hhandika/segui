@@ -50,7 +50,7 @@ class _ConcatPageState extends State<ConcatPage> {
           ctr: ctr,
           xTypeGroup: const [sequenceTypeGroup],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
+import 'package:segui/screens/alignment/split.dart';
 import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
@@ -56,6 +57,8 @@ class AlignmentOptions extends StatelessWidget {
         return const AlignmentSummaryPage();
       case AlignmentOperationType.convert:
         return const ConvertPage();
+      case AlignmentOperationType.split:
+        return const SplitAlignmentPage();
       default:
         return const SizedBox();
     }

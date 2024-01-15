@@ -238,7 +238,7 @@ class InputSelectorForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SharedFilePicker(
+    return SharedMultiFilePicker(
       label: 'Select input files',
       paths: ctr.files,
       xTypeGroup: xTypeGroup,
@@ -324,8 +324,8 @@ class SelectDirField extends StatelessWidget {
   }
 }
 
-class SharedFilePicker extends StatefulWidget {
-  const SharedFilePicker({
+class SharedMultiFilePicker extends StatefulWidget {
+  const SharedMultiFilePicker({
     super.key,
     required this.label,
     required this.paths,
@@ -339,10 +339,10 @@ class SharedFilePicker extends StatefulWidget {
   final Function(List<String>) onPressed;
 
   @override
-  State<SharedFilePicker> createState() => _SharedFilePickerState();
+  State<SharedMultiFilePicker> createState() => _SharedFilePickerState();
 }
 
-class _SharedFilePickerState extends State<SharedFilePicker> {
+class _SharedFilePickerState extends State<SharedMultiFilePicker> {
   bool _isLoading = false;
 
   @override
@@ -373,7 +373,7 @@ class _SharedFilePickerState extends State<SharedFilePicker> {
                     _isLoading = true;
                   });
                   try {
-                    final paths = await _selectFile();
+                    final paths = await _selectFiles();
                     if (paths.isNotEmpty) {
                       widget.onPressed(paths);
                     }
@@ -393,13 +393,62 @@ class _SharedFilePickerState extends State<SharedFilePicker> {
     );
   }
 
-  Future<List<String>> _selectFile() async {
-    List<XFile> result = await IOServices().pickMultiFiles(widget.xTypeGroup);
+  Future<List<String>> _selectFiles() async {
+    List<XFile> result = await IOServices().selectMultiFiles(widget.xTypeGroup);
     if (result.isNotEmpty) {
       return result.map((e) => e.path).toList();
     } else {
       return [];
     }
+  }
+}
+
+class SharedSingleFilePicker extends StatelessWidget {
+  const SharedSingleFilePicker(
+      {super.key,
+      required this.label,
+      required this.path,
+      required this.xTypeGroup,
+      required this.onPressed,
+      s});
+
+  final String label;
+  final String? path;
+  final List<XTypeGroup> xTypeGroup;
+  final Function(String) onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            path == null ? '$label: ' : path!,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 10),
+        IconButton(
+          icon: path == null
+              ? const Icon(Icons.folder)
+              : const Icon(Icons.folder_open),
+          onPressed: () async {
+            final path = await _selectFile();
+            if (path != null) {
+              onPressed(path);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<String?> _selectFile() async {
+    final result = await IOServices().selectFile(xTypeGroup);
+    if (result != null) {
+      return result.path;
+    }
+    return null;
   }
 }
 

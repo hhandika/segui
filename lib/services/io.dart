@@ -55,6 +55,14 @@ const XTypeGroup sequenceTypeGroup = XTypeGroup(
   ],
 );
 
+const XTypeGroup partitionTypeGroup = XTypeGroup(
+  label: 'Partition',
+  extensions: ['nexus', 'nex', 'txt', 'part', 'partition'],
+  uniformTypeIdentifiers: [
+    'com.segui.partition',
+  ],
+);
+
 class IOServices {
   IOServices();
 
@@ -95,48 +103,19 @@ class IOServices {
     return null;
   }
 
-  Future<List<XFile>> pickMultiFiles(List<XTypeGroup> allowedExtension) async {
+  Future<List<XFile>> selectMultiFiles(
+      List<XTypeGroup> allowedExtension) async {
     final fileList = await openFiles(
       acceptedTypeGroups: allowedExtension,
     );
     return fileList;
   }
 
-  Future<File?> selectFile(List<String>? allowedExtension) async {
-    final result = await _matchPicker(allowedExtension);
-
-    if (result != null) {
-      if (kDebugMode) {
-        print('Selected file: ${result.files.single.path}');
-      }
-      return File(result.files.single.path!);
-    }
-    return null;
-  }
-
-  Future<List<File>> selectMultiFiles(List<String> allowedExtension) async {
-    FilePickerResult? files = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowMultiple: true,
-      allowedExtensions: allowedExtension,
+  Future<XFile?> selectFile(List<XTypeGroup> allowedExtension) async {
+    final result = await openFile(
+      acceptedTypeGroups: allowedExtension,
     );
-
-    if (files != null) {
-      return files.paths.map((e) => File(e!)).toList();
-    } else {
-      return [];
-    }
-  }
-
-  Future<FilePickerResult?> _matchPicker(List<String>? allowedExt) async {
-    if (allowedExt == null) {
-      return await FilePicker.platform.pickFiles();
-    }
-
-    return await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: allowedExt,
-    );
+    return result;
   }
 }
 

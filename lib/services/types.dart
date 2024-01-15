@@ -59,6 +59,8 @@ const List<String> outputFormat = [
   'PHYLIP',
 ];
 
+enum PartitionFormat { charset, nexus, raxml }
+
 const List<String> partitionFormat = [
   'Charset',
   'NEXUS',
