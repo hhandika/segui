@@ -25,33 +25,28 @@ class _LargeScreenViewState extends State<LargeScreenView> {
         top: false,
         child: Row(
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height * 0.9),
-              child: IntrinsicHeight(
-                child: NavigationRail(
-                    labelType: NavigationRailLabelType.all,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    destinations: navigationTargets
-                        .map((e) => NavigationRailDestination(
-                              icon: e.icon,
-                              selectedIcon: e.selectedIcon,
-                              label: Text(e.label),
-                            ))
-                        .toList(),
-                    selectedIndex: _selectedIndex,
-                    onDestinationSelected: (int index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                    groupAlignment: BorderSide.strokeAlignCenter,
-                    trailing: const Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SettingButtons(),
-                      ),
-                    )),
+            NavigationRail(
+              labelType: NavigationRailLabelType.all,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              destinations: navigationTargets
+                  .map((e) => NavigationRailDestination(
+                        icon: e.icon,
+                        selectedIcon: e.selectedIcon,
+                        label: Text(e.label),
+                      ))
+                  .toList(),
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              groupAlignment: BorderSide.strokeAlignCenter,
+              trailing: const Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SettingButtons(),
+                ),
               ),
             ),
             Expanded(

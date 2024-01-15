@@ -24,6 +24,30 @@ class _SplitAlignmentPageState extends State<SplitAlignmentPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: FormCard(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Icon(Icons.info_outline_rounded),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.close,
+                      color: Theme.of(context).disabledColor,
+                    ),
+                  )
+                ],
+              ),
+              Text(
+                'Split a concatenated alignment into multiple files '
+                'based in its individual partition.'
+                ' The input partition can in be in a separate file as a RaXML or NEXUS format,'
+                ' or in the same file as a Charset format.',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ])),
         const CardTitle(title: 'Input Sequence'),
         FormCard(children: [
           SharedSingleFilePicker(
