@@ -154,11 +154,12 @@ class AppPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final windowWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Container(
         height: double.infinity,
-        constraints: const BoxConstraints(maxWidth: 500),
+        constraints: BoxConstraints(maxWidth: windowWidth > 1200 ? 800 : 500),
         padding: const EdgeInsets.all(16),
         child: child,
       ),
