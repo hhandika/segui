@@ -19,6 +19,8 @@ class _LargeScreenViewState extends State<LargeScreenView> {
       appBar: AppBar(
         title: Text(pageTitles[_selectedIndex]),
         elevation: 10,
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
       ),
       body: SafeArea(
         bottom: false,

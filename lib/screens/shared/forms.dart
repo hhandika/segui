@@ -1,3 +1,6 @@
+// ignore: unused_import
+import 'dart:isolate';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +69,67 @@ class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
   }
 }
 
+class SharedInfoForm extends StatelessWidget {
+  const SharedInfoForm({
+    super.key,
+    required this.text,
+    required this.onClosed,
+    required this.onExpanded,
+    required this.isShowingInfo,
+  });
+
+  final VoidCallback onExpanded;
+  final VoidCallback onClosed;
+  final String? text;
+  final bool isShowingInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Column(
+          children: [
+            Visibility(
+              visible: isShowingInfo,
+              child: CommonCard(
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.info_outline_rounded),
+                    const SizedBox(height: 4),
+                    Text(
+                      text ?? '',
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 2),
+            Center(
+              child: IconButton(
+                tooltip: isShowingInfo ? 'Hide info' : 'Show info',
+                icon: Icon(
+                  isShowingInfo
+                      ? Icons.expand_less_outlined
+                      : Icons.expand_more_outlined,
+                ),
+                onPressed: () {
+                  if (isShowingInfo) {
+                    onClosed();
+                  } else {
+                    onExpanded();
+                  }
+                },
+              ),
+            )
+          ],
+        ));
+  }
+}
+
 class FormView extends StatelessWidget {
   const FormView({super.key, required this.children});
 
@@ -124,6 +188,7 @@ class FormCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CommonCard(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,16 +200,22 @@ class FormCard extends StatelessWidget {
 }
 
 class CommonCard extends StatelessWidget {
-  const CommonCard({super.key, required this.child});
+  const CommonCard({
+    super.key,
+    required this.child,
+    required this.backgroundColor,
+  });
   final Widget child;
+  final Color backgroundColor;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Color.lerp(Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.surface, 0.95),
+        color: Color.lerp(
+            backgroundColor, Theme.of(context).colorScheme.surface, 0.9),
       ),
       child: child,
     );
