@@ -14,6 +14,30 @@ class AlignmentPage extends StatefulWidget {
 }
 
 class _AlignmentPageState extends State<AlignmentPage> {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth > 800) {
+        return const Row(children: [
+          AlignmentContent(),
+          Expanded(child: Center(child: Text('No view'))),
+        ]);
+      } else {
+        return const AlignmentContent();
+      }
+    });
+  }
+}
+
+class AlignmentContent extends StatefulWidget {
+  const AlignmentContent({super.key});
+
+  @override
+  State<AlignmentContent> createState() => _AlignmentContentState();
+}
+
+class _AlignmentContentState extends State<AlignmentContent> {
   AlignmentOperationType analysisType = AlignmentOperationType.summary;
 
   @override

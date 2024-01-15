@@ -25,7 +25,7 @@ class _SegulHomeState extends State<SegulHome> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    showLargeScreenView = MediaQuery.of(context).size.width >= 450;
+    showLargeScreenView = MediaQuery.of(context).size.width >= 720;
   }
 
   @override

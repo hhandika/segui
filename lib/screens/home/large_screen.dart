@@ -17,17 +17,28 @@ class _LargeScreenViewState extends State<LargeScreenView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(pageTitles[_selectedIndex]),
-        elevation: 10,
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-      ),
+          title: Text(pageTitles[_selectedIndex]),
+          elevation: 2,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Settings(),
+                  ),
+                );
+              },
+            ),
+          ]),
       body: SafeArea(
         bottom: false,
         top: false,
         child: Row(
           children: [
             NavigationRail(
+              elevation: 2,
               labelType: NavigationRailLabelType.all,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               destinations: navigationTargets
@@ -44,12 +55,6 @@ class _LargeScreenViewState extends State<LargeScreenView> {
                 });
               },
               groupAlignment: BorderSide.strokeAlignCenter,
-              trailing: const Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SettingButtons(),
-                ),
-              ),
             ),
             Expanded(
               child: Center(
