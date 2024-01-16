@@ -143,6 +143,22 @@ Future<String> getOutputDirForTask(String dir, SupportedTask task) async {
   return outputDir.path;
 }
 
+// Count file size. Returns in kb, mb, or gb.
+Future<String> getFileSize(XFile path) async {
+  File file = File(path.path);
+  int bytes = await file.length();
+  double kb = bytes / 1024;
+  double mb = kb / 1024;
+  double gb = mb / 1024;
+  if (gb >= 1) {
+    return '${gb.toStringAsFixed(2)} Gb';
+  } else if (mb >= 1) {
+    return '${mb.toStringAsFixed(2)} Mb';
+  } else {
+    return '${kb.toStringAsFixed(2)} Kb';
+  }
+}
+
 String showOutputDir(String outputDir) {
   if (Platform.isIOS) {
     return 'On My Devices/segui';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
@@ -36,7 +37,7 @@ class AlignmentSummaryPage extends StatefulWidget {
 
 class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
   IOController ctr = IOController.empty();
-  String? _interval;
+  String _interval = '5';
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +118,7 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
         datatype: ctr.dataTypeController,
       ).summarizeAlignment(
           outputPrefix: ctr.outputController.text,
-          interval: int.tryParse(_interval!) ?? 5);
+          interval: int.tryParse(_interval) ?? 5);
       _setSuccess();
     } catch (e) {
       _showError(e.toString());

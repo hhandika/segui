@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,7 +14,13 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final logDir = await getApplicationDocumentsDirectory();
   await RustLib.init();
-  await initLogger(logDir: logDir.path);
+  try {
+    await initLogger(logDir: logDir.path);
+  } catch (e) {
+    if (kDebugMode) {
+      print('Failed to initialize logger: $e');
+    }
+  }
   runApp(ProviderScope(
     overrides: [
       settingProvider.overrideWithValue(prefs),

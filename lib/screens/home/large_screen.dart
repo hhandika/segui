@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:segui/screens/home/components/pages.dart';
-import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/screens/home/components/navigation.dart';
+import 'package:segui/screens/settings/settings.dart';
 
 class LargeScreenView extends StatefulWidget {
   const LargeScreenView({super.key});
@@ -17,50 +17,52 @@ class _LargeScreenViewState extends State<LargeScreenView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(pageTitles[_selectedIndex]),
-          elevation: 2,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Settings(),
-                  ),
-                );
-              },
-            ),
-          ]),
+        title: Text(pageTitles[_selectedIndex]),
+        elevation: 2,
+      ),
       body: SafeArea(
         bottom: false,
         top: false,
         child: Row(
           children: [
             NavigationRail(
-              elevation: 2,
-              labelType: NavigationRailLabelType.all,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              destinations: navigationTargets
-                  .map((e) => NavigationRailDestination(
-                        icon: e.icon,
-                        selectedIcon: e.selectedIcon,
-                        label: Text(e.label),
-                      ))
-                  .toList(),
-              selectedIndex: _selectedIndex,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              groupAlignment: BorderSide.strokeAlignCenter,
-            ),
+                elevation: 4,
+                labelType: NavigationRailLabelType.all,
+                destinations: navigationTargets
+                    .map((e) => NavigationRailDestination(
+                          icon: e.icon,
+                          selectedIcon: e.selectedIcon,
+                          label: Text(e.label),
+                        ))
+                    .toList(),
+                selectedIndex: _selectedIndex,
+                onDestinationSelected: (int index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                groupAlignment: BorderSide.strokeAlignCenter,
+                trailing: Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: IconButton(
+                      icon: const Icon(Icons.settings_outlined),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Settings(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                )),
             Expanded(
               child: Center(
                 child: pages[_selectedIndex],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -98,3 +100,16 @@ class LargeScreenContentView extends StatelessWidget {
     );
   }
 }
+
+const List<NavigationDrawerDestination> navigationDrawerTargets = [
+  NavigationDrawerDestination(
+    icon: Icon(Icons.home),
+    selectedIcon: Icon(Icons.admin_panel_settings),
+    label: Text('Log files'),
+  ),
+  NavigationDrawerDestination(
+    icon: Icon(Icons.settings),
+    selectedIcon: Icon(Icons.color_lens_outlined),
+    label: Text('Theme'),
+  ),
+];
