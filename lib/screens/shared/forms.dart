@@ -130,6 +130,49 @@ class SharedInfoForm extends StatelessWidget {
   }
 }
 
+class DesktopIOScreen extends StatefulWidget {
+  const DesktopIOScreen({super.key});
+
+  @override
+  State<DesktopIOScreen> createState() => _DesktopIOScreenState();
+}
+
+class _DesktopIOScreenState extends State<DesktopIOScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Theme.of(context).dividerColor,
+              width: 1,
+            ),
+          ),
+          child: const DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              appBar: TabBar(
+                tabs: [
+                  Tab(
+                    text: 'Input',
+                  ),
+                  Tab(
+                    text: 'Output',
+                  ),
+                ],
+              ),
+              body: TabBarView(
+                children: [],
+              ),
+            ),
+          ),
+        ));
+  }
+}
+
 class FormView extends StatelessWidget {
   const FormView({super.key, required this.children});
 

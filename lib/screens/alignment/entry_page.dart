@@ -21,7 +21,7 @@ class _AlignmentPageState extends State<AlignmentPage> {
       if (constraints.maxWidth > 800) {
         return const Row(children: [
           AlignmentContent(),
-          Expanded(child: Center(child: Text('No view'))),
+          Expanded(child: DesktopIOScreen()),
         ]);
       } else {
         return const AlignmentContent();
