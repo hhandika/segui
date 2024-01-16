@@ -159,7 +159,7 @@ class AppPageView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Container(
         height: double.infinity,
-        constraints: BoxConstraints(maxWidth: windowWidth > 1200 ? 800 : 500),
+        constraints: BoxConstraints(maxWidth: windowWidth > 1500 ? 800 : 500),
         padding: const EdgeInsets.all(16),
         child: child,
       ),
