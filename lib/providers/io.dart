@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -46,6 +48,23 @@ class FileOutput extends _$FileOutput {
   @override
   FutureOr<List<XFile>> build() {
     return [];
+  }
+
+  Future<void> addFiles(Directory? outputDir) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      if (outputDir == null) {
+        return [];
+      }
+      // find all files in the directory
+      final files = await outputDir.list().toList();
+      // filter out directories
+      final filesFiltered = files.whereType<File>().toList();
+      // cast to XFile
+      final filesCasted =
+          filesFiltered.map((file) => XFile(file.path)).toList();
+      return filesCasted;
+    });
   }
 
   Future<void> clear() async {

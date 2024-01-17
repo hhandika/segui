@@ -33,11 +33,6 @@ class SharedSequenceInputFormState
         InputSelectorForm(
           ctr: widget.ctr,
           xTypeGroup: widget.xTypeGroup,
-          onFilePressed: (value) {
-            setState(() {
-              widget.ctr.files = value;
-            });
-          },
         ),
         SharedDropdownField(
           value: widget.ctr.inputFormatController,

@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/io.dart';
@@ -28,14 +31,14 @@ class QuickConvertPage extends StatelessWidget {
   }
 }
 
-class ConvertPage extends StatefulWidget {
+class ConvertPage extends ConsumerStatefulWidget {
   const ConvertPage({super.key});
 
   @override
-  State<ConvertPage> createState() => _ConvertPageState();
+  ConvertPageState createState() => ConvertPageState();
 }
 
-class _ConvertPageState extends State<ConvertPage> {
+class ConvertPageState extends ConsumerState<ConvertPage> {
   IOController ctr = IOController.empty();
   bool isSortSequence = false;
   bool isInterleave = false;
@@ -97,17 +100,28 @@ class _ConvertPageState extends State<ConvertPage> {
             isSuccess: ctr.isSuccess,
             controller: ctr,
             onNewRun: () => setState(() {}),
-            onExecuted: ctr.isRunning || !ctr.isValid()
-                ? null
-                : () async {
-                    String dir = await getOutputDir(
-                        ctr.outputDir.text, SupportedTask.alignmentConversion);
-                    setState(() {
-                      ctr.isRunning = true;
-                      ctr.outputDir.text = dir;
-                    });
-                    await _convert();
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return ctr.isRunning || !ctr.isValid()
+                          ? null
+                          : () async {
+                              String dir = await getOutputDir(
+                                  ctr.outputDir.text,
+                                  SupportedTask.alignmentConversion);
+                              setState(() {
+                                ctr.isRunning = true;
+                                ctr.outputDir.text = dir;
+                              });
+                              await _convert(value);
+                            };
+                    }
                   },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
             onShared: () async {
               try {
                 await _shareOutput();
@@ -128,11 +142,13 @@ class _ConvertPageState extends State<ConvertPage> {
     );
   }
 
-  Future<void> _convert() async {
-    String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
+  Future<void> _convert(List<XFile> inputFiles) async {
     try {
+      String outputFmt =
+          getOutputFmt(ctr.outputFormatController!, isInterleave);
+      final files = inputFiles.map((e) => e.path).toList();
       await SequenceServices(
-        inputFiles: ctr.files,
+        inputFiles: files,
         dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,

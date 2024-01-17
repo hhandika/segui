@@ -151,7 +151,7 @@ class IOList extends ConsumerWidget {
   }
 }
 
-class SelectDirField extends StatelessWidget {
+class SelectDirField extends ConsumerWidget {
   const SelectDirField({
     super.key,
     required this.label,
@@ -164,7 +164,7 @@ class SelectDirField extends StatelessWidget {
   final void Function() onChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         Expanded(
@@ -182,6 +182,7 @@ class SelectDirField extends StatelessWidget {
             final dir = await _selectDir();
             if (dir != null) {
               dirPath.text = dir.path;
+              ref.read(fileOutputProvider.notifier).addFiles(dir);
               onChanged();
             }
           },
@@ -206,15 +207,11 @@ class SharedMultiFilePicker extends ConsumerStatefulWidget {
   const SharedMultiFilePicker({
     super.key,
     required this.label,
-    required this.paths,
     required this.xTypeGroup,
-    required this.onPressed,
   });
 
   final String label;
-  final List<String> paths;
   final List<XTypeGroup> xTypeGroup;
-  final Function(List<String>) onPressed;
 
   @override
   SharedMultiFilePickerState createState() => SharedMultiFilePickerState();
@@ -228,12 +225,16 @@ class SharedMultiFilePickerState extends ConsumerState<SharedMultiFilePicker> {
     return Row(
       children: [
         Expanded(
-          child: Text(
-            widget.paths.isEmpty
-                ? '${widget.label}: '
-                : '${widget.paths.length} files selected',
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: ref.watch(fileInputProvider).when(
+                data: (data) => Text(
+                  data.isEmpty
+                      ? '${widget.label}: '
+                      : '${data.length} selected files',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                loading: () => const SizedBox.shrink(),
+                error: (err, stack) => Text(err.toString()),
+              ),
         ),
         const SizedBox(width: 10),
         _isLoading
@@ -243,18 +244,19 @@ class SharedMultiFilePickerState extends ConsumerState<SharedMultiFilePicker> {
                 child: CircularProgressIndicator(),
               )
             : IconButton(
-                icon: widget.paths.isEmpty
-                    ? const Icon(Icons.folder)
-                    : const Icon(Icons.folder_open),
+                icon: ref.watch(fileInputProvider).when(
+                      data: (data) => data.isEmpty
+                          ? const Icon(Icons.folder)
+                          : const Icon(Icons.folder_open),
+                      loading: () => const Icon(Icons.folder),
+                      error: (err, stack) => const Icon(Icons.folder),
+                    ),
                 onPressed: () async {
                   setState(() {
                     _isLoading = true;
                   });
                   try {
-                    final paths = await _selectFiles();
-                    if (paths.isNotEmpty) {
-                      widget.onPressed(paths);
-                    }
+                    await _selectFiles();
                   } catch (e) {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -271,13 +273,10 @@ class SharedMultiFilePickerState extends ConsumerState<SharedMultiFilePicker> {
     );
   }
 
-  Future<List<String>> _selectFiles() async {
+  Future<void> _selectFiles() async {
     List<XFile> result = await IOServices().selectMultiFiles(widget.xTypeGroup);
     if (result.isNotEmpty) {
       ref.read(fileInputProvider.notifier).addFiles(result);
-      return result.map((e) => e.path).toList();
-    } else {
-      return [];
     }
   }
 }
@@ -336,20 +335,16 @@ class InputSelectorForm extends StatelessWidget {
     super.key,
     required this.ctr,
     required this.xTypeGroup,
-    required this.onFilePressed,
   });
 
   final IOController ctr;
   final List<XTypeGroup> xTypeGroup;
-  final void Function(List<String>) onFilePressed;
 
   @override
   Widget build(BuildContext context) {
     return SharedMultiFilePicker(
       label: 'Select input files',
-      paths: ctr.files,
       xTypeGroup: xTypeGroup,
-      onPressed: onFilePressed,
     );
   }
 }

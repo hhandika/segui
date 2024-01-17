@@ -90,8 +90,9 @@ class ShareButton extends StatelessWidget {
             )
           : Icon(Icons.adaptive.share),
       onPressed: onPressed,
-      label:
-          isRunning ? const Text('Compressing files...') : const Text('Share'),
+      label: isRunning
+          ? const Text('Compressing files...')
+          : const Text('Quick Share'),
     );
   }
 }

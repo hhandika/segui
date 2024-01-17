@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -28,14 +31,14 @@ class QuickTranslatePage extends StatelessWidget {
   }
 }
 
-class TranslatePage extends StatefulWidget {
+class TranslatePage extends ConsumerStatefulWidget {
   const TranslatePage({super.key});
 
   @override
-  State<TranslatePage> createState() => _TranslatePageState();
+  TranslatePageState createState() => TranslatePageState();
 }
 
-class _TranslatePageState extends State<TranslatePage> {
+class TranslatePageState extends ConsumerState<TranslatePage> {
   IOController ctr = IOController.empty();
   bool isInterleave = false;
   String _readingFrame = readingFrame[0];
@@ -114,18 +117,26 @@ class _TranslatePageState extends State<TranslatePage> {
             isSuccess: ctr.isSuccess,
             controller: ctr,
             onNewRun: () => setState(() {}),
-            onExecuted: ctr.isRunning || !ctr.isValid()
-                ? null
-                : () async {
-                    String dir = await getOutputDir(
-                        ctr.outputDir.text, SupportedTask.sequenceTranslation);
-                    setState(() {
-                      ctr.isRunning = true;
-                      ctr.outputDir.text = dir;
-                    });
-
-                    await _translate();
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return ctr.isRunning || !ctr.isValid()
+                          ? null
+                          : () async {
+                              setState(() {
+                                ctr.isRunning = true;
+                              });
+                              await _translate(value);
+                            };
+                    }
                   },
+                  loading: () => null,
+                  error: (e, s) {
+                    return null;
+                  },
+                ),
             onShared: () async {
               try {
                 await _shareOutput();
@@ -139,11 +150,13 @@ class _TranslatePageState extends State<TranslatePage> {
     );
   }
 
-  Future<void> _translate() async {
-    String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
+  Future<void> _translate(List<XFile> inputFiles) async {
     try {
+      String outputFmt =
+          getOutputFmt(ctr.outputFormatController!, isInterleave);
+      final files = inputFiles.map((e) => e.path).toList();
       await SequenceServices(
-        inputFiles: ctr.files,
+        inputFiles: files,
         dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,
