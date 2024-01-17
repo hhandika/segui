@@ -223,60 +223,76 @@ class SharedMultiFilePickerState extends ConsumerState<SharedMultiFilePicker> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: ref.watch(fileInputProvider).when(
-                data: (data) => Text(
-                  data.isEmpty
-                      ? '${widget.label}: '
-                      : '${data.length} selected files',
-                  overflow: TextOverflow.ellipsis,
-                ),
-                loading: () => const SizedBox.shrink(),
-                error: (err, stack) => Text(err.toString()),
-              ),
-        ),
-        const SizedBox(width: 10),
+        ref.watch(fileInputProvider).when(
+              data: (data) => data.isEmpty
+                  ? Text(
+                      '${widget.label}: ',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    )
+                  : RichText(
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      text: TextSpan(children: [
+                        const WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Icon(Icons.folder_open),
+                        ),
+                        const WidgetSpan(
+                          child: SizedBox(width: 4),
+                        ),
+                        TextSpan(
+                          text: '${data.length} selected files',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ])),
+              loading: () => const SizedBox.shrink(),
+              error: (err, stack) => Text(err.toString()),
+            ),
+        const SizedBox(width: 8),
         _isLoading
             ? const SizedBox(
-                height: 10,
-                width: 10,
+                height: 8,
+                width: 8,
                 child: CircularProgressIndicator(),
               )
-            : IconButton(
-                icon: ref.watch(fileInputProvider).when(
-                      data: (data) => data.isEmpty
-                          ? const Icon(Icons.folder)
-                          : const Icon(Icons.folder_open),
-                      loading: () => const Icon(Icons.folder),
-                      error: (err, stack) => const Icon(Icons.folder),
-                    ),
-                onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  try {
-                    await _selectFiles();
-                  } catch (e) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        showSharedSnackBar(context, e.toString()),
-                      );
-                    }
-                  }
-                  setState(() {
-                    _isLoading = false;
-                  });
-                },
-              ),
+            : ref.watch(fileInputProvider).when(
+                  data: (data) => IconButton(
+                    icon: data.isEmpty
+                        ? const Icon(Icons.folder)
+                        : const Icon(Icons.add_rounded),
+                    onPressed: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      try {
+                        await _selectFiles(data.isEmpty);
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            showSharedSnackBar(context, e.toString()),
+                          );
+                        }
+                      }
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    },
+                  ),
+                  loading: () => const Icon(Icons.folder),
+                  error: (err, stack) => const Icon(Icons.folder),
+                ),
       ],
     );
   }
 
-  Future<void> _selectFiles() async {
+  Future<void> _selectFiles(bool isAddNew) async {
     List<XFile> result = await IOServices().selectMultiFiles(widget.xTypeGroup);
+    final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {
-      ref.read(fileInputProvider.notifier).addFiles(result);
+      isAddNew ? notifier.addFiles(result) : notifier.addMoreFiles(result);
     }
   }
 }

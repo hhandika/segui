@@ -44,6 +44,10 @@ class SharedSequenceInputFormState
             });
           },
         ),
+        Visibility(
+            visible: widget.ctr.inputFormatController == 'Auto',
+            child: Text('Auto-detect format based on file extension.',
+                style: Theme.of(context).textTheme.labelSmall)),
         SharedDropdownField(
           value: widget.ctr.dataTypeController,
           label: 'Data Type',
