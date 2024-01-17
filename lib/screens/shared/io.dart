@@ -46,7 +46,7 @@ class _DesktopIOScreenState extends State<DesktopIOScreen> {
               body: TabBarView(
                 children: [
                   InputScreen(),
-                  Text('Output'),
+                  OutputScreen(),
                 ],
               ),
             ),
@@ -55,20 +55,33 @@ class _DesktopIOScreenState extends State<DesktopIOScreen> {
   }
 }
 
-class InputScreen extends ConsumerStatefulWidget {
+class InputScreen extends ConsumerWidget {
   const InputScreen({super.key});
 
   @override
-  InputScreenState createState() => InputScreenState();
-}
-
-class InputScreenState extends ConsumerState<InputScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       height: double.infinity,
       child: ref.watch(fileInputProvider).when(
-            data: (data) => IOList(files: data),
+            data: (data) => IOList(title: 'Input Files', files: data),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            error: (err, stack) => Text(err.toString()),
+          ),
+    );
+  }
+}
+
+class OutputScreen extends ConsumerWidget {
+  const OutputScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      height: double.infinity,
+      child: ref.watch(fileOutputProvider).when(
+            data: (data) => IOList(title: 'Output Files', files: data),
             loading: () => const Center(
               child: CircularProgressIndicator(),
             ),
@@ -79,8 +92,13 @@ class InputScreenState extends ConsumerState<InputScreen> {
 }
 
 class IOList extends ConsumerWidget {
-  const IOList({super.key, required this.files});
+  const IOList({
+    super.key,
+    required this.title,
+    required this.files,
+  });
 
+  final String title;
   final List<XFile> files;
 
   @override
@@ -90,7 +108,7 @@ class IOList extends ConsumerWidget {
       children: [
         const SizedBox(height: 8),
         Text(
-          'Input Files',
+          title,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         Flexible(

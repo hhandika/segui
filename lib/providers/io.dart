@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'io.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class FileInput extends _$FileInput {
   @override
   FutureOr<List<XFile>> build() {
@@ -31,6 +31,21 @@ class FileInput extends _$FileInput {
       files.remove(file);
       return files;
     });
+  }
+
+  Future<void> clear() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      return [];
+    });
+  }
+}
+
+@Riverpod(keepAlive: true)
+class FileOutput extends _$FileOutput {
+  @override
+  FutureOr<List<XFile>> build() {
+    return [];
   }
 
   Future<void> clear() async {
