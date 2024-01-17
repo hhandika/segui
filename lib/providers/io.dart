@@ -23,6 +23,17 @@ class FileInput extends _$FileInput {
     });
   }
 
+  Future<void> addMoreFiles(List<XFile> inputFiles) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      if (state.value == null) {
+        return [];
+      }
+      final files = [...state.value!, ...inputFiles];
+      return files;
+    });
+  }
+
   Future<void> removeFile(XFile file) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -64,6 +75,17 @@ class FileOutput extends _$FileOutput {
       final filesCasted =
           filesFiltered.map((file) => XFile(file.path)).toList();
       return filesCasted;
+    });
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      if (state.value == null) {
+        return [];
+      }
+      final files = [...state.value!];
+      return files;
     });
   }
 
