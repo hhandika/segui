@@ -25,12 +25,18 @@ const List<String> sequenceReadSummaryMode = [
   'Complete',
 ];
 
-enum AlignmentOperationType { concat, summary, convert }
+enum AlignmentOperationType {
+  concat,
+  convert,
+  summary,
+  split,
+}
 
 const Map<AlignmentOperationType, String> alignmentOperationMap = {
-  AlignmentOperationType.concat: 'Concatenate',
-  AlignmentOperationType.summary: 'Summary',
-  AlignmentOperationType.convert: 'Convert',
+  AlignmentOperationType.concat: 'Concatenation',
+  AlignmentOperationType.convert: 'Conversion',
+  AlignmentOperationType.split: 'Splitting',
+  AlignmentOperationType.summary: 'Summarization',
 };
 
 enum SequenceOperationType { translation, uniqueID }
@@ -52,6 +58,8 @@ const List<String> outputFormat = [
   'NEXUS',
   'PHYLIP',
 ];
+
+enum PartitionFormat { charset, nexus, raxml }
 
 const List<String> partitionFormat = [
   'Charset',

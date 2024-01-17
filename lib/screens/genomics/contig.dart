@@ -1,21 +1,25 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/src/rust/api/contig.dart';
 
-class ContigPage extends StatefulWidget {
+class ContigPage extends ConsumerStatefulWidget {
   const ContigPage({super.key});
 
   @override
-  State<ContigPage> createState() => _ContigPageState();
+  ContigPageState createState() => ContigPageState();
 }
 
-class _ContigPageState extends State<ContigPage> {
+class ContigPageState extends ConsumerState<ContigPage> {
   IOController ctr = IOController.empty();
 
   @override
@@ -27,11 +31,7 @@ class _ContigPageState extends State<ContigPage> {
           const CardTitle(title: 'Input'),
           FormCard(children: [
             InputSelectorForm(
-              onFilePressed: (value) {
-                setState(() {
-                  ctr.files = value;
-                });
-              },
+              xTypeGroup: const [genomicTypeGroup],
               ctr: ctr,
             ),
             SharedDropdownField(
@@ -68,17 +68,35 @@ class _ContigPageState extends State<ContigPage> {
             controller: ctr,
             label: 'Summarize',
             onNewRun: () => setState(() {}),
-            onExecuted: ctr.isRunning || !ctr.isValid()
-                ? null
-                : () async {
-                    String dir = await getOutputDir(
-                        ctr.outputDir.text, SupportedTask.genomicContigSummary);
-                    setState(() {
-                      ctr.isRunning = true;
-                      ctr.outputDir.text = dir;
-                    });
-                    await _summarize(ctr);
-                  },
+            onExecuted: ref.read(fileInputProvider).when(
+                data: (value) {
+                  if (value.isEmpty) {
+                    return null;
+                  } else {
+                    return ctr.isRunning || !ctr.isValid()
+                        ? null
+                        : () async {
+                            String dir = await getOutputDir(ctr.outputDir.text,
+                                SupportedTask.genomicContigSummary);
+                            setState(() {
+                              ctr.isRunning = true;
+                              ctr.outputDir.text = dir;
+                            });
+                            await _summarize(value);
+                          };
+                  }
+                },
+                loading: () => null,
+                error: (e, s) {
+                  return () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(e.toString()),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  };
+                }),
             onShared: () {
               try {
                 _shareOutput();
@@ -95,10 +113,11 @@ class _ContigPageState extends State<ContigPage> {
         ]);
   }
 
-  Future<void> _summarize(IOController ctr) async {
+  Future<void> _summarize(List<XFile> inputFiles) async {
     try {
+      final files = inputFiles.map((e) => e.path).toList();
       await ContigServices(
-        files: ctr.files,
+        files: files,
         dirPath: ctr.dirPath.text,
         fileFmt: ctr.inputFormatController!,
         outputDir: ctr.outputDir.text,

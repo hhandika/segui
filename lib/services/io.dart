@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_selector/file_selector.dart';
 import 'package:path/path.dart' as p;
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
@@ -27,6 +28,40 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
 };
+
+const XTypeGroup genomicTypeGroup = XTypeGroup(
+  label: 'Sequence Read',
+  extensions: ['fasta', 'fastq', 'gz', 'gzip'],
+  uniformTypeIdentifiers: [
+    'com.segui.genomicSequence',
+    'com.segui.genomicGzipSequence'
+  ],
+);
+
+const XTypeGroup sequenceTypeGroup = XTypeGroup(
+  label: 'Alignment',
+  extensions: [
+    'fasta',
+    'fa',
+    'fas',
+    'fsa',
+    'nexus',
+    'nex',
+    'phylip',
+    'phy',
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.dnaSequence',
+  ],
+);
+
+const XTypeGroup partitionTypeGroup = XTypeGroup(
+  label: 'Partition',
+  extensions: ['nexus', 'nex', 'txt', 'part', 'partition'],
+  uniformTypeIdentifiers: [
+    'com.segui.partition',
+  ],
+);
 
 class IOServices {
   IOServices();
@@ -68,41 +103,19 @@ class IOServices {
     return null;
   }
 
-  Future<File?> selectFile(List<String>? allowedExtension) async {
-    final result = await _matchPicker(allowedExtension);
-
-    if (result != null) {
-      if (kDebugMode) {
-        print('Selected file: ${result.files.single.path}');
-      }
-      return File(result.files.single.path!);
-    }
-    return null;
+  Future<List<XFile>> selectMultiFiles(
+      List<XTypeGroup> allowedExtension) async {
+    final fileList = await openFiles(
+      acceptedTypeGroups: allowedExtension,
+    );
+    return fileList;
   }
 
-  Future<List<File>> pickMultiFiles(List<String> allowedExtension) async {
-    FilePickerResult? files = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowMultiple: true,
-      allowedExtensions: allowedExtension,
+  Future<XFile?> selectFile(List<XTypeGroup> allowedExtension) async {
+    final result = await openFile(
+      acceptedTypeGroups: allowedExtension,
     );
-
-    if (files != null) {
-      return files.paths.map((e) => File(e!)).toList();
-    } else {
-      return [];
-    }
-  }
-
-  Future<FilePickerResult?> _matchPicker(List<String>? allowedExt) async {
-    if (allowedExt == null) {
-      return await FilePicker.platform.pickFiles();
-    }
-
-    return await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: allowedExt,
-    );
+    return result;
   }
 }
 
@@ -128,6 +141,22 @@ Future<String> getOutputDirForTask(String dir, SupportedTask task) async {
   Directory outputDir = Directory(p.join(appDocDir.path, directory));
 
   return outputDir.path;
+}
+
+// Count file size. Returns in kb, mb, or gb.
+Future<String> getFileSize(XFile path) async {
+  File file = File(path.path);
+  int bytes = await file.length();
+  double kb = bytes / 1024;
+  double mb = kb / 1024;
+  double gb = mb / 1024;
+  if (gb >= 1) {
+    return '${gb.toStringAsFixed(2)} Gb';
+  } else if (mb >= 1) {
+    return '${mb.toStringAsFixed(2)} Mb';
+  } else {
+    return '${kb.toStringAsFixed(2)} Kb';
+  }
 }
 
 String showOutputDir(String outputDir) {

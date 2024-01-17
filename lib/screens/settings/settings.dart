@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -35,6 +36,16 @@ class Settings extends StatelessWidget {
             child: SettingsList(sections: [
           SettingsSection(
             tiles: [
+              SettingsTile.navigation(
+                title: const Text('Log files'),
+                leading: const Icon(Icons.admin_panel_settings),
+                onPressed: (context) => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LogScreen(),
+                  ),
+                ),
+              ),
               SettingsTile.navigation(
                 title: const Text('Theme'),
                 leading: const Icon(Icons.color_lens_outlined),

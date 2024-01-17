@@ -1,20 +1,24 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
-class IdParsingPage extends StatefulWidget {
+class IdParsingPage extends ConsumerStatefulWidget {
   const IdParsingPage({super.key});
 
   @override
-  State<IdParsingPage> createState() => _IdParsingPageState();
+  IdParsingPageState createState() => IdParsingPageState();
 }
 
-class _IdParsingPageState extends State<IdParsingPage> {
+class IdParsingPageState extends ConsumerState<IdParsingPage> {
   IOController ctr = IOController.empty();
   bool _isMap = false;
 
@@ -27,6 +31,7 @@ class _IdParsingPageState extends State<IdParsingPage> {
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
+          xTypeGroup: const [sequenceTypeGroup],
           isDatatypeEnabled: false,
         ),
         const SizedBox(height: 16),
@@ -56,18 +61,25 @@ class _IdParsingPageState extends State<IdParsingPage> {
             isSuccess: ctr.isSuccess,
             controller: ctr,
             onNewRun: () => setState(() {}),
-            onExecuted: () async {
-              String dir = await getOutputDir(
-                ctr.outputDir.text,
-                SupportedTask.sequenceUniqueId,
-              );
-              setState(() {
-                ctr.isRunning = true;
-                ctr.outputDir.text = dir;
-              });
-
-              await _parseId();
-            },
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return ctr.isRunning || !ctr.isValid()
+                          ? null
+                          : () async {
+                              try {
+                                await _parseId(value);
+                              } catch (e) {
+                                _showError(e.toString());
+                              }
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
             onShared: () async {
               try {
                 await _shareOutput();
@@ -81,15 +93,19 @@ class _IdParsingPageState extends State<IdParsingPage> {
     );
   }
 
-  Future<void> _parseId() async {
+  Future<void> _parseId(List<XFile> inputFiles) async {
     try {
+      final files = inputFiles.map((e) => e.path).toList();
       await SequenceServices(
-        files: ctr.files,
+        inputFiles: files,
         dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
-      ).parseSequenceId(isMap: _isMap);
+      ).parseSequenceId(
+        isMap: _isMap,
+        outputFname: ctr.outputController.text,
+      );
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
@@ -101,7 +117,7 @@ class _IdParsingPageState extends State<IdParsingPage> {
     File outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
-      task: SupportedTask.alignmentConcatenation,
+      task: SupportedTask.sequenceUniqueId,
     );
     if (mounted) {
       await io.shareFile(context, outputPath);

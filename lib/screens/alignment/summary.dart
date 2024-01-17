@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
@@ -27,16 +31,16 @@ class QuickAlignmentSummaryPage extends StatelessWidget {
   }
 }
 
-class AlignmentSummaryPage extends StatefulWidget {
+class AlignmentSummaryPage extends ConsumerStatefulWidget {
   const AlignmentSummaryPage({super.key});
 
   @override
-  State<AlignmentSummaryPage> createState() => _AlignmentSummaryPageState();
+  AlignmentSummaryPageState createState() => AlignmentSummaryPageState();
 }
 
-class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
+class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage> {
   IOController ctr = IOController.empty();
-  String? _interval;
+  String _interval = '5';
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +49,19 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const CardTitle(title: 'Input'),
-        SharedSequenceInputForm(ctr: ctr),
+        SharedSequenceInputForm(
+          ctr: ctr,
+          xTypeGroup: const [sequenceTypeGroup],
+        ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
               ctr: ctr.outputDir,
               onChanged: () {
+                ref
+                    .read(fileOutputProvider.notifier)
+                    .addFiles(Directory(ctr.outputDir.text));
                 setState(() {});
               }),
           SharedTextField(
@@ -80,41 +90,52 @@ class _AlignmentSummaryPageState extends State<AlignmentSummaryPage> {
             isSuccess: ctr.isSuccess,
             controller: ctr,
             onNewRun: () => setState(() {}),
-            onExecuted: ctr.isRunning || !ctr.isValid()
-                ? null
-                : () async {
-                    String dir = await getOutputDir(
-                        ctr.outputDir.text, SupportedTask.alignmentSummary);
-                    setState(() {
-                      ctr.isRunning = true;
-                      ctr.outputDir.text = dir;
-                    });
-                    await _summarize();
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return ctr.isRunning || !ctr.isValid()
+                          ? null
+                          : () async {
+                              setState(() {
+                                ctr.isRunning = true;
+                              });
+
+                              await _summarize(value);
+                            };
+                    }
                   },
-            onShared: () async {
+                  loading: () => null,
+                  error: (e, s) {
+                    return null;
+                  },
+                ),
+            onShared: () {
               try {
-                await _shareOutput();
+                _shareOutput();
               } catch (e) {
                 _showError(e.toString());
               }
             },
           ),
-        )
+        ),
       ],
     );
   }
 
-  Future<void> _summarize() async {
+  Future<void> _summarize(List<XFile> files) async {
     try {
+      final allFiles = files.map((e) => e.path).toList();
       await AlignmentServices(
-        files: ctr.files,
+        inputFiles: allFiles,
         dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
       ).summarizeAlignment(
           outputPrefix: ctr.outputController.text,
-          interval: int.tryParse(_interval!) ?? 5);
+          interval: int.tryParse(_interval) ?? 5);
       _setSuccess();
     } catch (e) {
       _showError(e.toString());

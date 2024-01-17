@@ -27,12 +27,148 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSDocumentsFolderUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access documen folders</string>
+	<string>$(PRODUCT_NAME) would like to access document folders</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>$(PRODUCT_COPYRIGHT)</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSSystemAdministrationUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like to access your file</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.dnaSequence</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DNA Sequence Files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>fasta</string>
+					<string>fa</string>
+					<string>fas</string>
+					<string>fsa</string>
+					<string>nexus</string>
+					<string>nex</string>
+					<string>phy</string>
+					<string>phylip</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.genomicSequence</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DNA Sequence Files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>fasta</string>
+					<string>fa</string>
+					<string>fas</string>
+					<string>fsa</string>
+					<string>fastq</string>
+					<string>fq</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.genomicGzipSequence</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>org.gnu.gnu-zip-archive</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DNA Sequence Files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>gzip</string>
+					<string>gz</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.dnaSequence</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DNA Sequence Files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>fasta</string>
+					<string>fa</string>
+					<string>fas</string>
+					<string>fsa</string>
+					<string>nexus</string>
+					<string>nex</string>
+					<string>phy</string>
+					<string>phylip</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.genomicSequence</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DNA Sequence Files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>fasta</string>
+					<string>fa</string>
+					<string>fas</string>
+					<string>fsa</string>
+					<string>fastq</string>
+					<string>fq</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.genomicGzipSequence</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>org.gnu.gnu-zip-archive</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DNA Sequence Files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>gzip</string>
+					<string>gz</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

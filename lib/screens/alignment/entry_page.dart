@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
+import 'package:segui/screens/alignment/split.dart';
 import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 
 class AlignmentPage extends StatefulWidget {
@@ -13,6 +15,30 @@ class AlignmentPage extends StatefulWidget {
 }
 
 class _AlignmentPageState extends State<AlignmentPage> {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth > 800) {
+        return const Row(children: [
+          AlignmentContent(),
+          Expanded(child: DesktopIOScreen()),
+        ]);
+      } else {
+        return const AlignmentContent();
+      }
+    });
+  }
+}
+
+class AlignmentContent extends StatefulWidget {
+  const AlignmentContent({super.key});
+
+  @override
+  State<AlignmentContent> createState() => _AlignmentContentState();
+}
+
+class _AlignmentContentState extends State<AlignmentContent> {
   AlignmentOperationType analysisType = AlignmentOperationType.summary;
 
   @override
@@ -56,6 +82,8 @@ class AlignmentOptions extends StatelessWidget {
         return const AlignmentSummaryPage();
       case AlignmentOperationType.convert:
         return const ConvertPage();
+      case AlignmentOperationType.split:
+        return const SplitAlignmentPage();
       default:
         return const SizedBox();
     }

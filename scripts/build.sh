@@ -2,7 +2,7 @@
 
 echo "Build options:"
 PS3='Please select the platform: '
-OPT=("Android" "iOS" "MacOS" "All" "Quit")
+OPT=("Android" "iOS" "MacOS" "Linux" "All" "Quit")
 OUTPUT_DIR="../segui-releases"
 
 create_output_dir() {
@@ -54,6 +54,12 @@ do
             echo "Creating DMG installer..."
             scripts/build_dmg.sh
             mv_dmg
+            break
+            ;;
+        "Linux")
+            echo "Building for Linux..."
+            flutter build linux --release
+            ldd build/linux/x64/release/bundle/segui
             break
             ;;
         "All")

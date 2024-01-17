@@ -15,8 +15,8 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
+  organizationName: "hhandika", // Usually your GitHub org/user name.
+  projectName: "segul", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -68,7 +68,7 @@ const config: Config = {
           position: "left",
           label: "Docs",
         },
-        { to: "/blog", label: "News", position: "left" },
+        { to: "./blog", label: "News", position: "left" },
         {
           href: "https://github.com/hhandika/segul",
           label: "GitHub",

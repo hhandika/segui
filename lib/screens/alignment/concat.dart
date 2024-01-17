@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
@@ -24,14 +28,14 @@ class QuickConcatPage extends StatelessWidget {
   }
 }
 
-class ConcatPage extends StatefulWidget {
+class ConcatPage extends ConsumerStatefulWidget {
   const ConcatPage({super.key});
 
   @override
-  State<ConcatPage> createState() => _ConcatPageState();
+  ConcatPageState createState() => ConcatPageState();
 }
 
-class _ConcatPageState extends State<ConcatPage> {
+class ConcatPageState extends ConsumerState<ConcatPage> {
   IOController ctr = IOController.empty();
   String _partitionFormatController = partitionFormat[1];
   bool isCodon = false;
@@ -46,8 +50,11 @@ class _ConcatPageState extends State<ConcatPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const CardTitle(title: 'Input'),
-        SharedSequenceInputForm(ctr: ctr),
-        const SizedBox(height: 20),
+        SharedSequenceInputForm(
+          ctr: ctr,
+          xTypeGroup: const [sequenceTypeGroup],
+        ),
+        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -128,17 +135,28 @@ class _ConcatPageState extends State<ConcatPage> {
             controller: ctr,
             isSuccess: ctr.isSuccess,
             onNewRun: () => setState(() {}),
-            onExecuted: ctr.isRunning || !_validate()
-                ? null
-                : () async {
-                    String dir = await getOutputDir(ctr.outputDir.text,
-                        SupportedTask.alignmentConcatenation);
-                    setState(() {
-                      ctr.isRunning = true;
-                      ctr.outputDir.text = dir;
-                    });
-                    await _concat();
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return ctr.isRunning || !_validate()
+                          ? null
+                          : () async {
+                              String dir = await getOutputDir(
+                                  ctr.outputDir.text,
+                                  SupportedTask.alignmentConcatenation);
+                              setState(() {
+                                ctr.isRunning = true;
+                                ctr.outputDir.text = dir;
+                              });
+                              await _concat(value);
+                            };
+                    }
                   },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
             onShared: () async {
               try {
                 await _shareOutput();
@@ -157,13 +175,16 @@ class _ConcatPageState extends State<ConcatPage> {
     return isInputValid && ctr.isValid();
   }
 
-  Future<void> _concat() async {
-    String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
-    String partitionFmt = getPartitionFmt(_partitionFormatController, isCodon);
+  Future<void> _concat(List<XFile> inputFiles) async {
     try {
+      String outputFmt =
+          getOutputFmt(ctr.outputFormatController!, isInterleave);
+      String partitionFmt =
+          getPartitionFmt(_partitionFormatController, isCodon);
+      final files = inputFiles.map((e) => e.path).toList();
       await AlignmentServices(
         dir: ctr.dirPath.text,
-        files: ctr.files,
+        inputFiles: files,
         inputFmt: ctr.inputFormatController!,
         datatype: ctr.dataTypeController,
         outputDir: ctr.outputDir.text,
@@ -185,6 +206,7 @@ class _ConcatPageState extends State<ConcatPage> {
       fileName: ctr.outputController.text,
       task: SupportedTask.alignmentConcatenation,
     );
+
     if (mounted) {
       await io.shareFile(context, outputPath);
     }

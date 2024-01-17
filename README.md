@@ -20,14 +20,14 @@ Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 | ------------------------------ | ------------------ |
 | Alignment concatenation        | :white_check_mark: |
 | Alignment conversion           | :white_check_mark: |
-| Alignment filtering            |                    |
+| Alignment filtering            | :wrench:           |
 | Alignment partition conversion | :wrench:           |
 | Alignment splitting            | :wrench:           |
 | Alignment summary statistics   | :white_check_mark: |
 | Contig summary statistics      | :white_check_mark: |
 | Raw read summary statistics    | :white_check_mark: |
-| Sequence extraction            |                    |
+| Sequence extraction            | :wrench:           |
 | Sequence ID extraction         | :white_check_mark: |
-| Sequence ID renaming           |                    |
-| Sequence removal               |                    |
+| Sequence ID renaming           | :wrench:           |
+| Sequence removal               | :wrench:           |
 | Sequence translation           | :white_check_mark: |
