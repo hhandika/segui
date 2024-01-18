@@ -4,18 +4,30 @@ import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
-class SequencePage extends ConsumerStatefulWidget {
+class SequencePage extends StatefulWidget {
   const SequencePage({super.key});
 
   @override
-  SequencePageState createState() => SequencePageState();
+  State<SequencePage> createState() => _SequencePageState();
 }
 
-class SequencePageState extends ConsumerState<SequencePage> {
+class _SequencePageState extends State<SequencePage> {
   @override
   Widget build(BuildContext context) {
+    return const SharedOperationPage(
+      child: SequenceContentPage(),
+    );
+  }
+}
+
+class SequenceContentPage extends ConsumerWidget {
+  const SequenceContentPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return FormView(children: [
       DropdownButton(
           value: ref.watch(sequenceOperationSelectionProvider),

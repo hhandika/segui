@@ -4,18 +4,30 @@ import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/genomics/contig.dart';
 import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
-class SeqReadPage extends ConsumerStatefulWidget {
-  const SeqReadPage({super.key});
+class GenomicPage extends ConsumerStatefulWidget {
+  const GenomicPage({super.key});
 
   @override
-  SeqReadPageState createState() => SeqReadPageState();
+  GenomicPageState createState() => GenomicPageState();
 }
 
-class SeqReadPageState extends ConsumerState<SeqReadPage> {
+class GenomicPageState extends ConsumerState<GenomicPage> {
   @override
   Widget build(BuildContext context) {
+    return const SharedOperationPage(
+      child: GenomicContentPage(),
+    );
+  }
+}
+
+class GenomicContentPage extends ConsumerWidget {
+  const GenomicContentPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return FormView(children: [
       DropdownButton<GenomicOperationType>(
         isExpanded: true,

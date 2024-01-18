@@ -7,7 +7,7 @@ import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/split.dart';
 import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/shared/forms.dart';
-import 'package:segui/screens/shared/io.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
 class AlignmentPage extends StatefulWidget {
@@ -20,30 +20,17 @@ class AlignmentPage extends StatefulWidget {
 class _AlignmentPageState extends State<AlignmentPage> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth > 840) {
-        return const Row(children: [
-          AlignmentContent(),
-          Expanded(child: IOExpandedScreen()),
-        ]);
-      } else {
-        return const IOCompactScreen(child: AlignmentContent());
-      }
-    });
+    return const SharedOperationPage(
+      child: AlignmentContentPage(),
+    );
   }
 }
 
-class AlignmentContent extends ConsumerStatefulWidget {
-  const AlignmentContent({super.key});
+class AlignmentContentPage extends ConsumerWidget {
+  const AlignmentContentPage({super.key});
 
   @override
-  AlignmentContentState createState() => AlignmentContentState();
-}
-
-class AlignmentContentState extends ConsumerState<AlignmentContent> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FormView(children: [
       DropdownButton(
           value: ref.watch(alignmentOperationSelectionProvider),

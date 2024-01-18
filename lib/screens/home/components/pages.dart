@@ -6,7 +6,7 @@ import 'package:segui/screens/sequence/entry_page.dart';
 
 const List<Widget> pages = <Widget>[
   HomePage(),
-  SeqReadPage(),
+  GenomicPage(),
   AlignmentPage(),
   SequencePage(),
 ];
