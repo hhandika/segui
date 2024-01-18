@@ -12,21 +12,6 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/reads.dart';
 
-class QuickRawSummary extends StatelessWidget {
-  const QuickRawSummary({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Raw Sequence Summary'),
-        ),
-        body: const SingleChildScrollView(
-          child: AppPageView(child: ReadSummaryPage()),
-        ));
-  }
-}
-
 class ReadSummaryPage extends ConsumerStatefulWidget {
   const ReadSummaryPage({super.key});
 

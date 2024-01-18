@@ -12,25 +12,6 @@ import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
-class QuickConvertPage extends StatelessWidget {
-  const QuickConvertPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Alignment Conversion'),
-      ),
-      body: const SingleChildScrollView(
-        child: AppPageView(
-            child: SingleChildScrollView(
-          child: ConvertPage(),
-        )),
-      ),
-    );
-  }
-}
-
 class ConvertPage extends ConsumerStatefulWidget {
   const ConvertPage({super.key});
 

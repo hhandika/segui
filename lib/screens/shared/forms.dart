@@ -85,6 +85,7 @@ class SharedInfoForm extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.only(bottom: 2),
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
             Visibility(
               visible: isShowingInfo,
@@ -93,6 +94,7 @@ class SharedInfoForm extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     const Icon(Icons.info_outline_rounded),
                     const SizedBox(height: 4),
@@ -210,6 +212,7 @@ class CommonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Color.lerp(

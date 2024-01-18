@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:segui/providers/screen.dart';
+import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/screens/home/large_screen.dart';
 import 'package:segui/screens/home/compact_screen.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -96,6 +97,9 @@ class QuickActionContainer extends ConsumerWidget {
               label: 'Concatenate Alignments',
               onTap: () {
                 ref.read(tabSelectionProvider.notifier).setTab(2);
+                ref
+                    .read(alignmentOperationSelectionProvider.notifier)
+                    .setOperation(AlignmentOperationType.concatenation);
               },
             ),
             QuickActionButton(
@@ -103,6 +107,9 @@ class QuickActionContainer extends ConsumerWidget {
               label: 'Convert Alignments',
               onTap: () {
                 ref.read(tabSelectionProvider.notifier).setTab(2);
+                ref
+                    .read(alignmentOperationSelectionProvider.notifier)
+                    .setOperation(AlignmentOperationType.conversion);
               },
             ),
             QuickActionButton(
@@ -110,12 +117,18 @@ class QuickActionContainer extends ConsumerWidget {
                 label: 'Translate Sequences',
                 onTap: () {
                   ref.read(tabSelectionProvider.notifier).setTab(3);
+                  ref
+                      .read(sequenceOperationSelectionProvider.notifier)
+                      .setOperation(SequenceOperationType.translation);
                 }),
             QuickActionButton(
               icon: Icons.bar_chart,
               label: 'Summarize Sequences',
               onTap: () {
                 ref.read(tabSelectionProvider.notifier).setTab(2);
+                ref
+                    .read(alignmentOperationSelectionProvider.notifier)
+                    .setOperation(AlignmentOperationType.summary);
               },
             ),
           ],

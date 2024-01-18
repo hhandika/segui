@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 
-class SequencePage extends StatefulWidget {
+class SequencePage extends ConsumerStatefulWidget {
   const SequencePage({super.key});
 
   @override
-  State<SequencePage> createState() => _SequencePageState();
+  SequencePageState createState() => SequencePageState();
 }
 
-class _SequencePageState extends State<SequencePage> {
-  SequenceOperationType analysisType = SequenceOperationType.translation;
-
+class SequencePageState extends ConsumerState<SequencePage> {
   @override
   Widget build(BuildContext context) {
     return FormView(children: [
       DropdownButton(
-          value: analysisType,
+          value: ref.watch(sequenceOperationSelectionProvider),
           isExpanded: true,
           items: sequenceOperationMap.entries
               .map((e) => DropdownMenuItem(
@@ -27,15 +27,15 @@ class _SequencePageState extends State<SequencePage> {
                   ))
               .toList(),
           onChanged: (SequenceOperationType? value) {
-            setState(() {
-              if (value != null) {
-                analysisType = value;
-              }
-            });
+            if (value != null) {
+              ref
+                  .read(sequenceOperationSelectionProvider.notifier)
+                  .setOperation(value);
+            }
           }),
       const SizedBox(height: 20),
       SequenceOptions(
-        analysis: analysisType,
+        analysis: ref.watch(sequenceOperationSelectionProvider),
       ),
     ]);
   }

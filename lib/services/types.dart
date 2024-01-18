@@ -3,8 +3,8 @@ enum PlatformType { isDesktop, isMobile }
 enum GenomicOperationType { readSummary, contigSummary }
 
 const Map<GenomicOperationType, String> genomicOperationMap = {
-  GenomicOperationType.readSummary: 'Summarize Genomic Reads',
-  GenomicOperationType.contigSummary: 'Summarize Contigous Sequences (Contigs)',
+  GenomicOperationType.readSummary: 'Summarize genomic reads',
+  GenomicOperationType.contigSummary: 'Summarize genomic contigs',
 };
 
 const List<String> sequenceReadFormat = [
@@ -34,11 +34,11 @@ enum AlignmentOperationType {
 }
 
 const Map<AlignmentOperationType, String> alignmentOperationMap = {
-  AlignmentOperationType.concatenation: 'Concatenate Alignments',
-  AlignmentOperationType.conversion: 'Convert Alignments',
-  AlignmentOperationType.partition: 'Convert Partition',
-  AlignmentOperationType.split: 'Split Alignments',
-  AlignmentOperationType.summary: 'Summarize Alignments',
+  AlignmentOperationType.concatenation: 'Concatenate alignments',
+  AlignmentOperationType.conversion: 'Convert alignments',
+  AlignmentOperationType.partition: 'Convert partition',
+  AlignmentOperationType.split: 'Split alignments',
+  AlignmentOperationType.summary: 'Summarize alignments',
 };
 
 enum SequenceOperationType {
@@ -50,11 +50,11 @@ enum SequenceOperationType {
 }
 
 const Map<SequenceOperationType, String> sequenceOperationMap = {
-  SequenceOperationType.extraction: 'Extraction',
-  SequenceOperationType.idExtraction: 'ID Extraction and Mapping',
-  SequenceOperationType.idRenaming: 'ID Renaming',
-  SequenceOperationType.removal: 'Removal',
-  SequenceOperationType.translation: 'Translation',
+  SequenceOperationType.extraction: 'Extract sequences',
+  SequenceOperationType.idExtraction: 'Extract and map sequence IDs',
+  SequenceOperationType.idRenaming: 'Rename sequence IDs',
+  SequenceOperationType.removal: 'Remove sequences',
+  SequenceOperationType.translation: 'Translate sequences',
 };
 
 const List<String> inputFormat = [

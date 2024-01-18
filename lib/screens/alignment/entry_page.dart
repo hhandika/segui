@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/split.dart';
@@ -41,13 +42,11 @@ class AlignmentContent extends ConsumerStatefulWidget {
 }
 
 class AlignmentContentState extends ConsumerState<AlignmentContent> {
-  AlignmentOperationType analysisType = AlignmentOperationType.summary;
-
   @override
   Widget build(BuildContext context) {
     return FormView(children: [
       DropdownButton(
-          value: analysisType,
+          value: ref.watch(alignmentOperationSelectionProvider),
           isExpanded: true,
           items: alignmentOperationMap.entries
               .map((e) => DropdownMenuItem(
@@ -56,16 +55,16 @@ class AlignmentContentState extends ConsumerState<AlignmentContent> {
                   ))
               .toList(),
           onChanged: (AlignmentOperationType? value) {
+            if (value != null) {
+              ref
+                  .read(alignmentOperationSelectionProvider.notifier)
+                  .setOperation(value);
+            }
             ref.invalidate(fileOutputProvider);
-            setState(() {
-              if (value != null) {
-                analysisType = value;
-              }
-            });
           }),
       const SizedBox(height: 20),
       AlignmentOptions(
-        analysis: analysisType,
+        analysis: ref.watch(alignmentOperationSelectionProvider),
       ),
     ]);
   }
