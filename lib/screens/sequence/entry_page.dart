@@ -51,8 +51,8 @@ class SequenceOptions extends StatelessWidget {
     switch (analysis) {
       case SequenceOperationType.translation:
         return const TranslatePage();
-      case SequenceOperationType.uniqueID:
-        return const IdParsingPage();
+      case SequenceOperationType.idExtraction:
+        return const IDExtractionPage();
       default:
         return const SizedBox();
     }

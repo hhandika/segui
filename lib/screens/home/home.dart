@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:segui/screens/alignment/concat.dart';
-import 'package:segui/screens/alignment/convert.dart';
-import 'package:segui/screens/alignment/summary.dart';
+import 'package:segui/providers/screen.dart';
 import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/screens/home/large_screen.dart';
 import 'package:segui/screens/home/compact_screen.dart';
-import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -80,11 +78,11 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class QuickActionContainer extends StatelessWidget {
+class QuickActionContainer extends ConsumerWidget {
   const QuickActionContainer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 250, maxHeight: 250),
         child: GridView.count(
@@ -97,32 +95,27 @@ class QuickActionContainer extends StatelessWidget {
               icon: Icons.compare_arrows,
               label: 'Concatenate Alignments',
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickConcatPage()));
+                ref.read(tabSelectionProvider.notifier).setTab(2);
               },
             ),
             QuickActionButton(
               icon: Icons.swap_horiz,
               label: 'Convert Alignments',
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickConvertPage()));
+                ref.read(tabSelectionProvider.notifier).setTab(2);
               },
             ),
             QuickActionButton(
-              icon: Icons.translate,
-              label: 'Translate Sequences',
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickTranslatePage()));
-              },
-            ),
+                icon: Icons.translate,
+                label: 'Translate Sequences',
+                onTap: () {
+                  ref.read(tabSelectionProvider.notifier).setTab(3);
+                }),
             QuickActionButton(
               icon: Icons.bar_chart,
               label: 'Summarize Sequences',
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickAlignmentSummaryPage()));
+                ref.read(tabSelectionProvider.notifier).setTab(2);
               },
             ),
           ],

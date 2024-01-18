@@ -79,11 +79,11 @@ class AlignmentOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (analysis) {
-      case AlignmentOperationType.concat:
+      case AlignmentOperationType.concatenation:
         return const ConcatPage();
       case AlignmentOperationType.summary:
         return const AlignmentSummaryPage();
-      case AlignmentOperationType.convert:
+      case AlignmentOperationType.conversion:
         return const ConvertPage();
       case AlignmentOperationType.split:
         return const SplitAlignmentPage();

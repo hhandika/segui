@@ -12,25 +12,6 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
-class QuickAlignmentSummaryPage extends StatelessWidget {
-  const QuickAlignmentSummaryPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Alignment Summary'),
-      ),
-      body: const SingleChildScrollView(
-        child: AppPageView(
-            child: SingleChildScrollView(
-          child: AlignmentSummaryPage(),
-        )),
-      ),
-    );
-  }
-}
-
 class AlignmentSummaryPage extends ConsumerStatefulWidget {
   const AlignmentSummaryPage({super.key});
 

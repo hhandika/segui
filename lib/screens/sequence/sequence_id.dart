@@ -11,14 +11,14 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
-class IdParsingPage extends ConsumerStatefulWidget {
-  const IdParsingPage({super.key});
+class IDExtractionPage extends ConsumerStatefulWidget {
+  const IDExtractionPage({super.key});
 
   @override
-  IdParsingPageState createState() => IdParsingPageState();
+  IDExtractionPageState createState() => IDExtractionPageState();
 }
 
-class IdParsingPageState extends ConsumerState<IdParsingPage> {
+class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
   IOController ctr = IOController.empty();
   bool _isMap = false;
 
