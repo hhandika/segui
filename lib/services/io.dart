@@ -30,10 +30,11 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
 };
 
-enum SegulTypes {
+enum SegulType {
   genomicReads,
   genomicContig,
   standardSequence,
+  alignmentPartition,
 }
 
 class SegulFile {
@@ -42,8 +43,21 @@ class SegulFile {
     required this.type,
   });
 
-  final SegulTypes type;
+  final SegulType type;
   final XFile file;
+}
+
+SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
+  switch (xTypeGroup) {
+    case genomicTypeGroup:
+      return SegulType.genomicReads;
+    case sequenceTypeGroup:
+      return SegulType.standardSequence;
+    case partitionTypeGroup:
+      return SegulType.alignmentPartition;
+    default:
+      return SegulType.standardSequence;
+  }
 }
 
 const XTypeGroup genomicTypeGroup = XTypeGroup(
@@ -85,8 +99,8 @@ class FileSelectionServices {
 
   final WidgetRef ref;
 
-  Future<List<XFile>> selectFiles(
-    List<XTypeGroup> allowedExtension,
+  Future<List<SegulFile>> selectFiles(
+    XTypeGroup allowedExtension,
     bool allowMultiple,
   ) async {
     if (allowMultiple) {
@@ -97,17 +111,21 @@ class FileSelectionServices {
     }
   }
 
-  Future<List<XFile>> _selectMultiFiles(
-      List<XTypeGroup> allowedExtension) async {
+  Future<List<SegulFile>> _selectMultiFiles(XTypeGroup allowedExtension) async {
     final fileList = await openFiles(
-      acceptedTypeGroups: allowedExtension,
+      acceptedTypeGroups: [allowedExtension],
     );
-    return fileList;
+    return fileList.map((e) {
+      return SegulFile(
+        file: e,
+        type: matchTypeByXTypeGroup(allowedExtension),
+      );
+    }).toList();
   }
 
-  Future<XFile?> _selectSingleFile(List<XTypeGroup> allowedExtension) async {
+  Future<XFile?> _selectSingleFile(XTypeGroup allowedExtension) async {
     final result = await openFile(
-      acceptedTypeGroups: allowedExtension,
+      acceptedTypeGroups: [allowedExtension],
     );
     return result;
   }
@@ -140,6 +158,10 @@ class IOServices {
       [XFile(file.path)],
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
+  }
+
+  int countFiles(List<SegulFile> files, SegulType type) {
+    return files.where((e) => e.type == type).length;
   }
 
   Future<Directory?> selectDir() async {

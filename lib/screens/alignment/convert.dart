@@ -153,11 +153,11 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
     );
   }
 
-  Future<void> _convert(List<XFile> inputFiles) async {
+  Future<void> _convert(List<SegulFile> inputFiles) async {
     try {
       String outputFmt =
           getOutputFmt(ctr.outputFormatController!, isInterleave);
-      final files = inputFiles.map((e) => e.path).toList();
+      final files = inputFiles.map((e) => e.file.path).toList();
       await SequenceServices(
         inputFiles: files,
         dir: ctr.dirPath.text,

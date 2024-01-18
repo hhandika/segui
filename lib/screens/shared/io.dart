@@ -254,7 +254,7 @@ class InputSelectorForm extends StatelessWidget {
 
   final IOController ctr;
   final bool allowMultiple;
-  final List<XTypeGroup> xTypeGroup;
+  final XTypeGroup xTypeGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -276,7 +276,7 @@ class SharedFilePicker extends ConsumerStatefulWidget {
 
   final String label;
   final bool allowMultiple;
-  final List<XTypeGroup> xTypeGroup;
+  final XTypeGroup xTypeGroup;
 
   @override
   SharedMultiFilePickerState createState() => SharedMultiFilePickerState();
@@ -287,6 +287,7 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final type = matchTypeByXTypeGroup(widget.xTypeGroup);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -309,7 +310,8 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
                           child: SizedBox(width: 4),
                         ),
                         TextSpan(
-                          text: '${data.length} selected files',
+                          text:
+                              '${IOServices().countFiles(data, type)} selected files',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ])),

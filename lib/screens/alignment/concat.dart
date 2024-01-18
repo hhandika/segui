@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
@@ -174,13 +172,13 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
     return isInputValid && ctr.isValid();
   }
 
-  Future<void> _concat(List<XFile> inputFiles) async {
+  Future<void> _concat(List<SegulFile> inputFiles) async {
     try {
       String outputFmt =
           getOutputFmt(ctr.outputFormatController!, isInterleave);
       String partitionFmt =
           getPartitionFmt(_partitionFormatController, isCodon);
-      final files = inputFiles.map((e) => e.path).toList();
+      final files = inputFiles.map((e) => e.file.path).toList();
       await AlignmentServices(
         dir: ctr.dirPath.text,
         inputFiles: files,
