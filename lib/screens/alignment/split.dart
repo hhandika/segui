@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -6,40 +7,51 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
 
-class SplitAlignmentPage extends StatefulWidget {
+class SplitAlignmentPage extends ConsumerStatefulWidget {
   const SplitAlignmentPage({super.key});
 
   @override
-  State<SplitAlignmentPage> createState() => _SplitAlignmentPageState();
+  SplitAlignmentPageState createState() => SplitAlignmentPageState();
 }
 
-class _SplitAlignmentPageState extends State<SplitAlignmentPage> {
+class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String? _inputFile;
   String? _inputPartitionFile;
   String? _partitionFormatController;
-  bool _isShowingInfo = true;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _ctr.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SharedInfoForm(
-          isShowingInfo: _isShowingInfo,
+          isShowingInfo: _ctr.isShowingInfo,
           text: 'Split a concatenated alignment into multiple files '
               'based in its individual partition.'
-              ' The input partition can in be in a separate file as a RaXML or NEXUS format,'
+              ' The input partition can be in a separate file as a RaXML or NEXUS format,'
               ' or in the same file as a Charset format.',
           onClosed: () {
             setState(() {
-              _isShowingInfo = false;
+              _ctr.isShowingInfo = false;
             });
           },
           onExpanded: () {
             setState(() {
-              _isShowingInfo = true;
+              _ctr.isShowingInfo = true;
             });
           },
         ),

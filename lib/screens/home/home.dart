@@ -6,7 +6,7 @@ import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/screens/home/large_screen.dart';
-import 'package:segui/screens/home/small_screen.dart';
+import 'package:segui/screens/home/compact_screen.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/utils.dart';

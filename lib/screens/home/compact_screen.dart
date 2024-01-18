@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/screen.dart';
 import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/settings/settings.dart';
 
-class SmallScreenView extends StatefulWidget {
+class SmallScreenView extends ConsumerWidget {
   const SmallScreenView({super.key});
 
   @override
-  State<SmallScreenView> createState() => _SmallScreenViewState();
-}
-
-class _SmallScreenViewState extends State<SmallScreenView> {
-  int _selectedIndex = 0;
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(pageTitles[_selectedIndex]),
+          title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
           actions: const [
             SettingButtons(),
           ],
         ),
         body: SafeArea(
             child: Center(
-          child: pages.elementAt(_selectedIndex),
+          child: pages.elementAt(ref.watch(tabSelectionProvider)),
         )),
         bottomNavigationBar: NavigationBar(
           destinations: navigationTargets
@@ -33,11 +29,9 @@ class _SmallScreenViewState extends State<SmallScreenView> {
                     label: e.label,
                   ))
               .toList(),
-          selectedIndex: _selectedIndex,
+          selectedIndex: ref.watch(tabSelectionProvider),
           onDestinationSelected: (value) {
-            setState(() {
-              _selectedIndex = value;
-            });
+            ref.read(tabSelectionProvider.notifier).setTab(value);
           },
         ));
   }

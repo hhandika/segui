@@ -2,6 +2,13 @@ enum PlatformType { isDesktop, isMobile }
 
 enum GenomicOperationType { readSummary, contigSummary }
 
+enum OperationType {
+  genomic,
+  alignment,
+  sequence,
+  none,
+}
+
 const Map<GenomicOperationType, String> genomicOperationMap = {
   GenomicOperationType.readSummary: 'Read Summary Statistics',
   GenomicOperationType.contigSummary: 'Contig Summary Statistics',

@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/screen.dart';
 import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/settings/settings.dart';
 
-class LargeScreenView extends StatefulWidget {
+class LargeScreenView extends ConsumerWidget {
   const LargeScreenView({super.key});
 
   @override
-  State<LargeScreenView> createState() => _LargeScreenViewState();
-}
-
-class _LargeScreenViewState extends State<LargeScreenView> {
-  int _selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(pageTitles[_selectedIndex]),
+        title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
         elevation: 2,
       ),
       body: SafeArea(
@@ -35,11 +30,9 @@ class _LargeScreenViewState extends State<LargeScreenView> {
                           label: Text(e.label),
                         ))
                     .toList(),
-                selectedIndex: _selectedIndex,
+                selectedIndex: ref.watch(tabSelectionProvider),
                 onDestinationSelected: (int index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
+                  ref.read(tabSelectionProvider.notifier).setTab(index);
                 },
                 groupAlignment: BorderSide.strokeAlignCenter,
                 trailing: Expanded(
@@ -60,7 +53,7 @@ class _LargeScreenViewState extends State<LargeScreenView> {
                 )),
             Expanded(
               child: Center(
-                child: pages[_selectedIndex],
+                child: pages[ref.watch(tabSelectionProvider)],
               ),
             ),
           ],

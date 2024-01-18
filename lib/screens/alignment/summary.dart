@@ -38,34 +38,62 @@ class AlignmentSummaryPage extends ConsumerStatefulWidget {
   AlignmentSummaryPageState createState() => AlignmentSummaryPageState();
 }
 
-class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage> {
-  IOController ctr = IOController.empty();
+// Always add with AutomaticKeepAliveClientMixin to keep state
+// when switching tabs
+class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
+    with AutomaticKeepAliveClientMixin {
+  final IOController _ctr = IOController.empty();
   String _interval = '5';
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _ctr.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SharedInfoForm(
+          isShowingInfo: _ctr.isShowingInfo,
+          text: 'Summarize alignments by calculating the number of '
+              'sequences, sites, and parsimony informative sites, etc.',
+          onClosed: () {
+            setState(() {
+              _ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              _ctr.isShowingInfo = true;
+            });
+          },
+        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
-          ctr: ctr,
+          ctr: _ctr,
           xTypeGroup: const [sequenceTypeGroup],
         ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-              ctr: ctr.outputDir,
+              ctr: _ctr.outputDir,
               onChanged: () {
                 ref
                     .read(fileOutputProvider.notifier)
-                    .addFiles(Directory(ctr.outputDir.text));
+                    .addFiles(Directory(_ctr.outputDir.text));
                 setState(() {});
               }),
           SharedTextField(
-            controller: ctr.outputController,
+            controller: _ctr.outputController,
             label: 'Output Prefix',
             hint: 'Enter output prefix',
           ),
@@ -86,20 +114,20 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage> {
         Center(
           child: ExecutionButton(
             label: 'Summarize',
-            isRunning: ctr.isRunning,
-            isSuccess: ctr.isSuccess,
-            controller: ctr,
+            isRunning: _ctr.isRunning,
+            isSuccess: _ctr.isSuccess,
+            controller: _ctr,
             onNewRun: () => setState(() {}),
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
                       return null;
                     } else {
-                      return ctr.isRunning || !ctr.isValid()
+                      return _ctr.isRunning || !_ctr.isValid()
                           ? null
                           : () async {
                               setState(() {
-                                ctr.isRunning = true;
+                                _ctr.isRunning = true;
                               });
 
                               await _summarize(value);
@@ -129,12 +157,12 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage> {
       final allFiles = files.map((e) => e.path).toList();
       await AlignmentServices(
         inputFiles: allFiles,
-        dir: ctr.dirPath.text,
-        outputDir: ctr.outputDir.text,
-        inputFmt: ctr.inputFormatController!,
-        datatype: ctr.dataTypeController,
+        dir: _ctr.dirPath.text,
+        outputDir: _ctr.outputDir.text,
+        inputFmt: _ctr.inputFormatController!,
+        datatype: _ctr.dataTypeController,
       ).summarizeAlignment(
-          outputPrefix: ctr.outputController.text,
+          outputPrefix: _ctr.outputController.text,
           interval: int.tryParse(_interval) ?? 5);
       _setSuccess();
     } catch (e) {
@@ -145,8 +173,8 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage> {
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
     File outputPath = await io.archiveOutput(
-      dir: Directory(ctr.outputDir.text),
-      fileName: ctr.outputController.text,
+      dir: Directory(_ctr.outputDir.text),
+      fileName: _ctr.outputController.text,
       task: SupportedTask.alignmentSummary,
     );
     if (mounted) {
@@ -156,7 +184,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage> {
 
   void _showError(String error) {
     setState(() {
-      ctr.isRunning = false;
+      _ctr.isRunning = false;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, error),
       );
@@ -165,13 +193,13 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage> {
 
   void _setSuccess() {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = true;
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
             'Summarization complete! 🎉 \n'
-            'Output path: ${showOutputDir(ctr.outputDir.text)}'),
+            'Output path: ${showOutputDir(_ctr.outputDir.text)}'),
       );
     });
   }

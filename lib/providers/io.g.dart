@@ -6,7 +6,7 @@ part of 'io.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fileInputHash() => r'336b25e97c045c92a2ebc5edfff1350b0338284e';
+String _$fileInputHash() => r'0254fbd73836cacbe25bfe4318fcbd645ea6776a';
 
 /// See also [FileInput].
 @ProviderFor(FileInput)
@@ -21,7 +21,7 @@ final fileInputProvider =
 );
 
 typedef _$FileInput = AsyncNotifier<List<XFile>>;
-String _$fileOutputHash() => r'34413679e2779a43aa290be5f8dba893de1c0b4e';
+String _$fileOutputHash() => r'3797fa4746f37f3871c92207908e875ce706ac1f';
 
 /// See also [FileOutput].
 @ProviderFor(FileOutput)

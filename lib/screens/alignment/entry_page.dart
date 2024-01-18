@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/split.dart';
@@ -31,14 +33,14 @@ class _AlignmentPageState extends State<AlignmentPage> {
   }
 }
 
-class AlignmentContent extends StatefulWidget {
+class AlignmentContent extends ConsumerStatefulWidget {
   const AlignmentContent({super.key});
 
   @override
-  State<AlignmentContent> createState() => _AlignmentContentState();
+  AlignmentContentState createState() => AlignmentContentState();
 }
 
-class _AlignmentContentState extends State<AlignmentContent> {
+class AlignmentContentState extends ConsumerState<AlignmentContent> {
   AlignmentOperationType analysisType = AlignmentOperationType.summary;
 
   @override
@@ -54,6 +56,7 @@ class _AlignmentContentState extends State<AlignmentContent> {
                   ))
               .toList(),
           onChanged: (AlignmentOperationType? value) {
+            ref.invalidate(fileOutputProvider);
             setState(() {
               if (value != null) {
                 analysisType = value;

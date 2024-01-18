@@ -13,6 +13,7 @@ class IOController {
     this.outputFormatController,
     this.isRunning = false,
     this.isSuccess = false,
+    this.isShowingInfo = true,
   });
 
   final TextEditingController outputController;
@@ -23,6 +24,7 @@ class IOController {
   String? outputFormatController;
   bool isRunning;
   bool isSuccess;
+  bool isShowingInfo;
 
   factory IOController.empty() => IOController(
         outputController: TextEditingController(),
@@ -51,5 +53,6 @@ class IOController {
   void dispose() {
     outputController.dispose();
     dirPath.dispose();
+    outputDir.dispose();
   }
 }

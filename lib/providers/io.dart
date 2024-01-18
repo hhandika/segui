@@ -45,13 +45,6 @@ class FileInput extends _$FileInput {
       return files;
     });
   }
-
-  Future<void> clear() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      return [];
-    });
-  }
 }
 
 @Riverpod(keepAlive: true)
@@ -86,13 +79,6 @@ class FileOutput extends _$FileOutput {
       }
       final files = [...state.value!];
       return files;
-    });
-  }
-
-  Future<void> clear() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      return [];
     });
   }
 }
