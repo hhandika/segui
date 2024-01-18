@@ -44,7 +44,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
       children: [
         SharedInfoForm(
           isShowingInfo: _ctr.isShowingInfo,
-          text: 'Summarize alignments by calculating the number of '
+          description: 'Summarize alignments by calculating the number of '
               'sequences, sites, and parsimony informative sites, etc.',
           onClosed: () {
             setState(() {
@@ -62,7 +62,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
           ctr: _ctr,
           xTypeGroup: const [sequenceTypeGroup],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -91,7 +91,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             },
           ),
         ]),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Center(
           child: ExecutionButton(
             label: 'Summarize',

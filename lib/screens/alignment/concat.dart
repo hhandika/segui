@@ -24,7 +24,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   String _partitionFormatController = partitionFormat[1];
   bool isCodon = false;
   bool isInterleave = false;
-  bool isShowMore = false;
+  bool _isShowMore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +33,22 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SharedInfoForm(
+          description: 'Concatenate multiple alignments '
+              'and generate partition '
+              'for the concatenated alignment.',
+          isShowingInfo: ctr.isShowingInfo,
+          onClosed: () {
+            setState(() {
+              ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              ctr.isShowingInfo = true;
+            });
+          },
+        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
@@ -49,11 +65,12 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
           ),
           SharedTextField(
             controller: ctr.outputController,
-            label: 'Filename',
-            hint: 'Enter output filename',
+            label: 'Prefix',
+            hint: 'E.g.: concat, species_concat, etc.',
           ),
+          // Default to NEXUS if user does not select
           SharedDropdownField(
-            value: ctr.outputFormatController,
+            value: ctr.outputFormatController ?? outputFormat[1],
             label: 'Format',
             items: outputFormat,
             onChanged: (String? value) {
@@ -66,7 +83,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
             },
           ),
           Visibility(
-            visible: isShowMore,
+            visible: _isShowMore,
             child: SwitchForm(
               label: 'Set interleaved format',
               value: isInterleave,
@@ -90,7 +107,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
             },
           ),
           Visibility(
-            visible: isShowMore,
+            visible: _isShowMore,
             child: SwitchForm(
                 label: 'Set codon model partition',
                 value: isCodon,
@@ -100,18 +117,16 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
                   });
                 }),
           ),
-          Center(
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  isShowMore = !isShowMore;
-                });
-              },
-              child: Text(isShowMore ? 'Show less' : 'Show more'),
-            ),
+          ShowMoreButton(
+            isShowMore: _isShowMore,
+            onPressed: () {
+              setState(() {
+                _isShowMore = !_isShowMore;
+              });
+            },
           ),
         ]),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Center(
           child: ExecutionButton(
             label: 'Concatenate',

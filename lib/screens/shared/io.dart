@@ -244,21 +244,45 @@ class SelectDirField extends ConsumerWidget {
   }
 }
 
-class SharedMultiFilePicker extends ConsumerStatefulWidget {
-  const SharedMultiFilePicker({
+class InputSelectorForm extends StatelessWidget {
+  const InputSelectorForm({
+    super.key,
+    required this.ctr,
+    required this.allowMultiple,
+    required this.xTypeGroup,
+  });
+
+  final IOController ctr;
+  final bool allowMultiple;
+  final List<XTypeGroup> xTypeGroup;
+
+  @override
+  Widget build(BuildContext context) {
+    return SharedFilePicker(
+      label: 'Select input files',
+      allowMultiple: allowMultiple,
+      xTypeGroup: xTypeGroup,
+    );
+  }
+}
+
+class SharedFilePicker extends ConsumerStatefulWidget {
+  const SharedFilePicker({
     super.key,
     required this.label,
+    required this.allowMultiple,
     required this.xTypeGroup,
   });
 
   final String label;
+  final bool allowMultiple;
   final List<XTypeGroup> xTypeGroup;
 
   @override
   SharedMultiFilePickerState createState() => SharedMultiFilePickerState();
 }
 
-class SharedMultiFilePickerState extends ConsumerState<SharedMultiFilePicker> {
+class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
   bool _isLoading = false;
 
   @override
@@ -304,23 +328,25 @@ class SharedMultiFilePickerState extends ConsumerState<SharedMultiFilePicker> {
                     icon: data.isEmpty
                         ? const Icon(Icons.folder)
                         : const Icon(Icons.add_rounded),
-                    onPressed: () async {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      try {
-                        await _selectFiles(data.isEmpty);
-                      } catch (e) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            showSharedSnackBar(context, e.toString()),
-                          );
-                        }
-                      }
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    },
+                    onPressed: data.isNotEmpty && !widget.allowMultiple
+                        ? null
+                        : () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            try {
+                              await _selectFiles(data.isEmpty);
+                            } catch (e) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  showSharedSnackBar(context, e.toString()),
+                                );
+                              }
+                            }
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          },
                   ),
                   loading: () => const Icon(Icons.folder),
                   error: (err, stack) => const Icon(Icons.folder),
@@ -330,79 +356,12 @@ class SharedMultiFilePickerState extends ConsumerState<SharedMultiFilePicker> {
   }
 
   Future<void> _selectFiles(bool isAddNew) async {
-    List<XFile> result = await IOServices().selectMultiFiles(widget.xTypeGroup);
+    List<XFile> result = await FileSelectionServices(ref)
+        .selectFiles(widget.xTypeGroup, widget.allowMultiple);
     final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {
       isAddNew ? notifier.addFiles(result) : notifier.addMoreFiles(result);
     }
-  }
-}
-
-class SharedSingleFilePicker extends StatelessWidget {
-  const SharedSingleFilePicker(
-      {super.key,
-      required this.label,
-      required this.path,
-      required this.xTypeGroup,
-      required this.onPressed,
-      s});
-
-  final String label;
-  final String? path;
-  final List<XTypeGroup> xTypeGroup;
-  final Function(String) onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            path == null ? '$label: ' : path!,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: 10),
-        IconButton(
-          icon: path == null
-              ? const Icon(Icons.folder)
-              : const Icon(Icons.folder_open),
-          onPressed: () async {
-            final path = await _selectFile();
-            if (path != null) {
-              onPressed(path);
-            }
-          },
-        ),
-      ],
-    );
-  }
-
-  Future<String?> _selectFile() async {
-    final result = await IOServices().selectFile(xTypeGroup);
-    if (result != null) {
-      return result.path;
-    }
-    return null;
-  }
-}
-
-class InputSelectorForm extends StatelessWidget {
-  const InputSelectorForm({
-    super.key,
-    required this.ctr,
-    required this.xTypeGroup,
-  });
-
-  final IOController ctr;
-  final List<XTypeGroup> xTypeGroup;
-
-  @override
-  Widget build(BuildContext context) {
-    return SharedMultiFilePicker(
-      label: 'Select input files',
-      xTypeGroup: xTypeGroup,
-    );
   }
 }
 

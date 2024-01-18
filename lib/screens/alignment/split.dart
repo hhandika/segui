@@ -17,8 +17,6 @@ class SplitAlignmentPage extends ConsumerStatefulWidget {
 class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
-  String? _inputFile;
-  String? _inputPartitionFile;
   String? _partitionFormatController;
 
   @override
@@ -40,7 +38,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
       children: [
         SharedInfoForm(
           isShowingInfo: _ctr.isShowingInfo,
-          text: 'Split a concatenated alignment into multiple files '
+          description: 'Split a concatenated alignment into multiple files '
               'based in its individual partition.'
               ' The input partition can be in a separate file as a RaXML or NEXUS format,'
               ' or in the same file as a Charset format.',
@@ -57,38 +55,9 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         ),
         const CardTitle(title: 'Input Sequence'),
         FormCard(children: [
-          SharedSingleFilePicker(
-            label: 'Select sequence file',
-            path: _inputFile,
+          SharedSequenceInputForm(
+            ctr: _ctr,
             xTypeGroup: const [sequenceTypeGroup],
-            onPressed: (String? path) {
-              setState(() {
-                _inputFile = path;
-              });
-            },
-          ),
-          SharedDropdownField(
-            value: _ctr.inputFormatController,
-            label: 'Format',
-            items: inputFormat,
-            onChanged: (String? value) {
-              setState(() {
-                _ctr.inputFormatController = value;
-              });
-            },
-          ),
-          SharedDropdownField(
-            value: _ctr.dataTypeController,
-            label: 'Data Type',
-            items: dataType,
-            enabled: true,
-            onChanged: (String? value) {
-              setState(() {
-                if (value != null) {
-                  _ctr.dataTypeController = value;
-                }
-              });
-            },
           ),
         ]),
         const SizedBox(height: 16),
@@ -109,15 +78,10 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
           const SizedBox(height: 16),
           Visibility(
             visible: _partitionFormatController != 'Charset',
-            child: SharedSingleFilePicker(
+            child: const SharedFilePicker(
               label: 'Select partition file',
-              path: _inputPartitionFile,
-              xTypeGroup: const [partitionTypeGroup],
-              onPressed: (String? path) {
-                setState(() {
-                  _inputPartitionFile = path;
-                });
-              },
+              allowMultiple: false,
+              xTypeGroup: [partitionTypeGroup],
             ),
           )
         ]),
@@ -132,8 +96,8 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
           ),
           SharedTextField(
             controller: _ctr.outputController,
-            label: 'Filename',
-            hint: 'Enter output filename',
+            label: 'Prefix',
+            hint: 'E.g., output, split, etc.',
           ),
           SharedDropdownField(
             value: _ctr.outputFormatController,

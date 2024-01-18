@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
@@ -28,6 +29,22 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
 };
+
+enum SegulTypes {
+  genomicReads,
+  genomicContig,
+  standardSequence,
+}
+
+class SegulFile {
+  SegulFile({
+    required this.file,
+    required this.type,
+  });
+
+  final SegulTypes type;
+  final XFile file;
+}
 
 const XTypeGroup genomicTypeGroup = XTypeGroup(
   label: 'Sequence Read',
@@ -62,6 +79,39 @@ const XTypeGroup partitionTypeGroup = XTypeGroup(
     'com.segui.partition',
   ],
 );
+
+class FileSelectionServices {
+  const FileSelectionServices(this.ref);
+
+  final WidgetRef ref;
+
+  Future<List<XFile>> selectFiles(
+    List<XTypeGroup> allowedExtension,
+    bool allowMultiple,
+  ) async {
+    if (allowMultiple) {
+      return _selectMultiFiles(allowedExtension);
+    } else {
+      final result = await _selectSingleFile(allowedExtension);
+      return result == null ? [] : [result];
+    }
+  }
+
+  Future<List<XFile>> _selectMultiFiles(
+      List<XTypeGroup> allowedExtension) async {
+    final fileList = await openFiles(
+      acceptedTypeGroups: allowedExtension,
+    );
+    return fileList;
+  }
+
+  Future<XFile?> _selectSingleFile(List<XTypeGroup> allowedExtension) async {
+    final result = await openFile(
+      acceptedTypeGroups: allowedExtension,
+    );
+    return result;
+  }
+}
 
 class IOServices {
   IOServices();
@@ -101,21 +151,6 @@ class IOServices {
       return Directory(result);
     }
     return null;
-  }
-
-  Future<List<XFile>> selectMultiFiles(
-      List<XTypeGroup> allowedExtension) async {
-    final fileList = await openFiles(
-      acceptedTypeGroups: allowedExtension,
-    );
-    return fileList;
-  }
-
-  Future<XFile?> selectFile(List<XTypeGroup> allowedExtension) async {
-    final result = await openFile(
-      acceptedTypeGroups: allowedExtension,
-    );
-    return result;
   }
 }
 

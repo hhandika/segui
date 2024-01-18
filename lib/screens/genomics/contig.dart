@@ -32,6 +32,7 @@ class ContigPageState extends ConsumerState<ContigPage> {
           FormCard(children: [
             InputSelectorForm(
               xTypeGroup: const [genomicTypeGroup],
+              allowMultiple: true,
               ctr: ctr,
             ),
             SharedDropdownField(

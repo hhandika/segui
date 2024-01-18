@@ -13,10 +13,12 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
     super.key,
     required this.ctr,
     required this.xTypeGroup,
+    this.allowMultiple = true,
     this.isDatatypeEnabled = true,
   });
 
   final IOController ctr;
+  final bool allowMultiple;
   final List<XTypeGroup> xTypeGroup;
   final bool isDatatypeEnabled;
 
@@ -32,6 +34,7 @@ class SharedSequenceInputFormState
       children: [
         InputSelectorForm(
           ctr: widget.ctr,
+          allowMultiple: widget.allowMultiple,
           xTypeGroup: widget.xTypeGroup,
         ),
         SharedDropdownField(
@@ -69,7 +72,7 @@ class SharedSequenceInputFormState
 class SharedInfoForm extends StatelessWidget {
   const SharedInfoForm({
     super.key,
-    required this.text,
+    required this.description,
     required this.onClosed,
     required this.onExpanded,
     required this.isShowingInfo,
@@ -77,7 +80,7 @@ class SharedInfoForm extends StatelessWidget {
 
   final VoidCallback onExpanded;
   final VoidCallback onClosed;
-  final String? text;
+  final String? description;
   final bool isShowingInfo;
 
   @override
@@ -99,7 +102,7 @@ class SharedInfoForm extends StatelessWidget {
                     const Icon(Icons.info_outline_rounded),
                     const SizedBox(height: 4),
                     Text(
-                      text ?? '',
+                      description ?? '',
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
                   ],

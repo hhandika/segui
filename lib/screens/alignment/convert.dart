@@ -23,6 +23,7 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
   IOController ctr = IOController.empty();
   bool isSortSequence = false;
   bool isInterleave = false;
+  bool _isShowMore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,20 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SharedInfoForm(
+          description: 'Convert sequence alignment to other formats.',
+          isShowingInfo: ctr.isShowingInfo,
+          onClosed: () {
+            setState(() {
+              ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              ctr.isShowingInfo = true;
+            });
+          },
+        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
@@ -56,24 +71,39 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
               });
             },
           ),
-          SwitchForm(
-              label: 'Set interleaved format',
-              value: isInterleave,
-              onPressed: (value) {
-                setState(() {
-                  isInterleave = value;
-                });
-              }),
-          SwitchForm(
+          Visibility(
+            visible: _isShowMore,
+            child: SwitchForm(
+                label: 'Set interleaved format',
+                value: isInterleave,
+                onPressed: (value) {
+                  setState(() {
+                    isInterleave = value;
+                  });
+                }),
+          ),
+          Visibility(
+            visible: _isShowMore,
+            child: SwitchForm(
               label: 'Sort by sequence ID',
               value: isSortSequence,
               onPressed: (value) {
                 setState(() {
                   isSortSequence = value;
                 });
-              }),
+              },
+            ),
+          ),
+          ShowMoreButton(
+            onPressed: () {
+              setState(() {
+                _isShowMore = !_isShowMore;
+              });
+            },
+            isShowMore: _isShowMore,
+          ),
         ]),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Center(
           child: ExecutionButton(
             label: 'Convert',

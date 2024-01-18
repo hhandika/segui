@@ -205,3 +205,27 @@ class QuickActionButton extends StatelessWidget {
     );
   }
 }
+
+class ShowMoreButton extends StatelessWidget {
+  const ShowMoreButton({
+    super.key,
+    required this.onPressed,
+    required this.isShowMore,
+  });
+
+  final bool isShowMore;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: TextButton(
+          onPressed: onPressed,
+          child: Text(isShowMore ? 'Show less' : 'Show more'),
+        ),
+      ),
+    );
+  }
+}

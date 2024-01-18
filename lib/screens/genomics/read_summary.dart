@@ -33,6 +33,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
         FormCard(children: [
           InputSelectorForm(
             xTypeGroup: const [genomicTypeGroup],
+            allowMultiple: true,
             ctr: ctr,
           ),
           SharedDropdownField(
