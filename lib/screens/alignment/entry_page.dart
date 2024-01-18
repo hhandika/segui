@@ -19,13 +19,13 @@ class _AlignmentPageState extends State<AlignmentPage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth > 800) {
+      if (constraints.maxWidth > 840) {
         return const Row(children: [
           AlignmentContent(),
-          Expanded(child: DesktopIOScreen()),
+          Expanded(child: IOExpandedScreen()),
         ]);
       } else {
-        return const AlignmentContent();
+        return const IOCompactScreen(child: AlignmentContent());
       }
     });
   }

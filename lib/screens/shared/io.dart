@@ -9,14 +9,55 @@ import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
 import 'package:file_picker/file_picker.dart';
 
-class DesktopIOScreen extends StatefulWidget {
-  const DesktopIOScreen({super.key});
+class IOCompactScreen extends StatefulWidget {
+  const IOCompactScreen({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
 
   @override
-  State<DesktopIOScreen> createState() => _DesktopIOScreenState();
+  State<IOCompactScreen> createState() => _IOCompactScreenState();
 }
 
-class _DesktopIOScreenState extends State<DesktopIOScreen> {
+class _IOCompactScreenState extends State<IOCompactScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+            appBar: const TabBar(
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.play_circle_outline),
+                ),
+                Tab(
+                  icon: Icon(Icons.input),
+                ),
+                Tab(
+                  icon: Icon(Icons.output),
+                ),
+              ],
+            ),
+            body: TabBarView(
+              children: [
+                widget.child,
+                const InputScreen(),
+                const OutputScreen(),
+              ],
+            )));
+  }
+}
+
+class IOExpandedScreen extends StatefulWidget {
+  const IOExpandedScreen({super.key});
+
+  @override
+  State<IOExpandedScreen> createState() => _IOExpandedScreenState();
+}
+
+class _IOExpandedScreenState extends State<IOExpandedScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
