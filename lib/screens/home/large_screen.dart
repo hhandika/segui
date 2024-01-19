@@ -52,7 +52,7 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
                         Theme.of(context).colorScheme.surface,
                         0.9),
                     indicatorColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
+                        Theme.of(context).colorScheme.primaryContainer,
                     indicatorShape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.horizontal(
                           right: Radius.circular(16), left: Radius.circular(8)),
