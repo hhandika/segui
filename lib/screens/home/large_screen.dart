@@ -45,7 +45,7 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
           children: [
             screenWidth > 840 && !isUsingNavigationRail
                 ? NavigationDrawer(
-                    tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 4),
                     elevation: 0,
                     backgroundColor: Color.lerp(
                         Theme.of(context).colorScheme.primary,
@@ -60,7 +60,11 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
                     selectedIndex: ref.watch(tabSelectionProvider),
                     children: [
                       ...navigationDrawerTargets,
-                      const Divider(),
+                      const Divider(
+                        thickness: 2,
+                        indent: 8,
+                        endIndent: 8,
+                      ),
                       ListTile(
                         title: const Text('Settings'),
                         onTap: () {
@@ -83,6 +87,8 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
                         Theme.of(context).colorScheme.surface,
                         0.9),
                     labelType: NavigationRailLabelType.all,
+                    indicatorColor:
+                        Theme.of(context).colorScheme.primaryContainer,
                     destinations: navigationTargets
                         .map((e) => NavigationRailDestination(
                               icon: e.icon,
