@@ -1,36 +1,25 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/reads.dart';
 
-class QuickRawSummary extends StatelessWidget {
-  const QuickRawSummary({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Raw Sequence Summary'),
-        ),
-        body: const SingleChildScrollView(
-          child: AppPageView(child: ReadSummaryPage()),
-        ));
-  }
-}
-
-class ReadSummaryPage extends StatefulWidget {
+class ReadSummaryPage extends ConsumerStatefulWidget {
   const ReadSummaryPage({super.key});
 
   @override
-  State<ReadSummaryPage> createState() => _ReadSummaryPageState();
+  ReadSummaryPageState createState() => ReadSummaryPageState();
 }
 
-class _ReadSummaryPageState extends State<ReadSummaryPage> {
+class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
   IOController ctr = IOController.empty();
   String mode = sequenceReadSummaryMode[0];
 
@@ -43,12 +32,10 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
         const CardTitle(title: 'Input'),
         FormCard(children: [
           InputSelectorForm(
-            onFilePressed: (value) {
-              setState(() {
-                ctr.files = value;
-              });
-            },
+            xTypeGroup: genomicTypeGroup,
+            allowMultiple: true,
             ctr: ctr,
+            hasSecondaryPicker: false,
           ),
           SharedDropdownField(
             value: ctr.inputFormatController,
@@ -90,17 +77,29 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
             controller: ctr,
             label: 'Summarize',
             onNewRun: () => setState(() {}),
-            onExecuted: ctr.isRunning || !ctr.isValid()
-                ? null
-                : () async {
-                    String dir = await getOutputDir(ctr.outputDir.text,
-                        SupportedTask.genomicRawReadSummary);
-                    setState(() {
-                      ctr.isRunning = true;
-                      ctr.outputDir.text = dir;
-                    });
-                    await _summarize();
-                  },
+            onExecuted: ref.read(fileInputProvider).when(
+                data: (value) {
+                  if (value.isEmpty) {
+                    return null;
+                  } else {
+                    return ctr.isRunning || !ctr.isValid()
+                        ? null
+                        : () async {
+                            String dir = await getOutputDir(ctr.outputDir.text,
+                                SupportedTask.genomicRawReadSummary);
+                            setState(() {
+                              ctr.isRunning = true;
+                              ctr.outputDir.text = dir;
+                            });
+                            await _summarize(value);
+                          };
+                  }
+                },
+                loading: () => null,
+                error: (e, s) {
+                  _showError(e.toString());
+                  return null;
+                }),
             onShared: () {
               try {
                 _shareOutput();
@@ -114,10 +113,12 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
     );
   }
 
-  Future<void> _summarize() async {
+  Future<void> _summarize(List<SegulFile> inputFiles) async {
     try {
+      final files =
+          IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);
       await RawReadServices(
-        files: ctr.files,
+        files: files,
         dirPath: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         fileFmt: ctr.inputFormatController!,
@@ -132,7 +133,7 @@ class _ReadSummaryPageState extends State<ReadSummaryPage> {
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
       task: SupportedTask.genomicRawReadSummary,

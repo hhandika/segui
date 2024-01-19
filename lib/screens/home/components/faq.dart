@@ -64,6 +64,7 @@ class MarkdownViewer extends StatelessWidget {
           return const SizedBox.shrink();
         } else {
           return CommonCard(
+            backgroundColor: Theme.of(context).colorScheme.surface,
             child: Text(
               data[index],
               style: Theme.of(context).textTheme.bodyLarge,

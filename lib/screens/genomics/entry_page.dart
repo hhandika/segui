@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/genomics/contig.dart';
 import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
-class SeqReadPage extends StatefulWidget {
-  const SeqReadPage({super.key});
+class GenomicPage extends ConsumerStatefulWidget {
+  const GenomicPage({super.key});
 
   @override
-  State<SeqReadPage> createState() => _SeqReadPageState();
+  GenomicPageState createState() => GenomicPageState();
 }
 
-class _SeqReadPageState extends State<SeqReadPage> {
-  GenomicOperationType analysisType = GenomicOperationType.readSummary;
+class GenomicPageState extends ConsumerState<GenomicPage> {
   @override
   Widget build(BuildContext context) {
+    return const SharedOperationPage(
+      child: GenomicContentPage(),
+    );
+  }
+}
+
+class GenomicContentPage extends ConsumerWidget {
+  const GenomicContentPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return FormView(children: [
       DropdownButton<GenomicOperationType>(
         isExpanded: true,
-        value: analysisType,
+        value: ref.watch(genomicOperationSelectionProvider),
         items: genomicOperationMap.entries
             .map((e) => DropdownMenuItem(
                   value: e.key,
@@ -26,16 +39,16 @@ class _SeqReadPageState extends State<SeqReadPage> {
                 ))
             .toList(),
         onChanged: (GenomicOperationType? value) {
-          setState(() {
-            if (value != null) {
-              analysisType = value;
-            }
-          });
+          if (value != null) {
+            ref
+                .read(genomicOperationSelectionProvider.notifier)
+                .setOperation(value);
+          }
         },
       ),
       const SizedBox(height: 20),
       GenomicOptions(
-        analysis: analysisType,
+        analysis: ref.watch(genomicOperationSelectionProvider),
       ),
     ]);
   }

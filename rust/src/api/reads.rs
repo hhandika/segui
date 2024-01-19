@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use segul::handler::read::summarize::ReadSummaryHandler;
 use segul::helper::finder::SeqReadFinder;
-use segul::helper::logger::{init_file_logger, ReadLogger};
+use segul::helper::logger::ReadLogger;
 use segul::helper::types::{SeqReadFmt, SummaryMode};
 
 pub struct RawReadServices {
@@ -24,7 +24,6 @@ impl RawReadServices {
 
     pub fn summarize(&self, mode: String) {
         let output_path = Path::new(&self.output_dir);
-        init_file_logger(output_path).expect("Failed to initialize logger");
         let input_fmt = self.match_input_fmt();
         let mut files = self.find_input_files(&input_fmt);
         let sum_mode = self.match_mode(&mode);

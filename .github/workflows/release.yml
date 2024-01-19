@@ -46,7 +46,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: segul.zip
-          asset_name: nahpu-Windows-x86_64.zip
+          asset_name: segui-Windows-x86_64.zip
           tag: ${{ github.ref }}
 
       - name: Upload Android release
@@ -54,5 +54,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build\app\outputs\flutter-apk\app-release.apk
-          asset_name: nahpu-Android.apk
+          asset_name: segui-Android.apk
           tag: ${{ github.ref }}

@@ -1,16 +1,27 @@
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:segui/providers/settings.dart';
 import 'package:segui/screens/home/home.dart';
+import 'package:segui/src/rust/api/common.dart';
 import 'package:segui/src/rust/frb_generated.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:segui/styles/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
-
+  final logDir = await getApplicationDocumentsDirectory();
   await RustLib.init();
+  try {
+    await initLogger(logDir: logDir.path);
+  } catch (e) {
+    if (kDebugMode) {
+      print('Failed to initialize logger: $e');
+    }
+  }
   runApp(ProviderScope(
     overrides: [
       settingProvider.overrideWithValue(prefs),
@@ -24,18 +35,19 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      title: 'SEGUL',
-      debugShowCheckedModeBanner: false,
-      theme: FlexThemeData.light(scheme: FlexScheme.green, useMaterial3: true),
-      darkTheme:
-          FlexThemeData.dark(scheme: FlexScheme.green, useMaterial3: true),
-      themeMode: ref.watch(themeSettingProvider).when(
-            data: (settings) => settings,
-            loading: () => ThemeMode.system,
-            error: (err, stack) => ThemeMode.system,
-          ),
-      home: const SegulHome(),
-    );
+    return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
+      return MaterialApp(
+        title: 'SEGUL',
+        debugShowCheckedModeBanner: false,
+        theme: SeguiTheme.lightTheme(lightColorScheme),
+        darkTheme: SeguiTheme.darkTheme(darkColorScheme),
+        themeMode: ref.watch(themeSettingProvider).when(
+              data: (settings) => settings,
+              loading: () => ThemeMode.system,
+              error: (err, stack) => ThemeMode.system,
+            ),
+        home: const SegulHome(),
+      );
+    });
   }
 }

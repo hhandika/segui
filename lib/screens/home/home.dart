@@ -1,33 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:segui/screens/alignment/entry_page.dart';
-import 'package:segui/screens/alignment/concat.dart';
-import 'package:segui/screens/alignment/convert.dart';
-import 'package:segui/screens/alignment/summary.dart';
-import 'package:segui/screens/genomics/entry_page.dart';
+import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
-import 'package:segui/screens/sequence/entry_page.dart';
-import 'package:segui/screens/sequence/translate.dart';
+import 'package:segui/screens/home/large_screen.dart';
+import 'package:segui/screens/home/compact_screen.dart';
 import 'package:segui/screens/shared/buttons.dart';
-import 'package:segui/screens/shared/navigation.dart';
-import 'package:segui/screens/settings/settings.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-const List<Widget> _pages = <Widget>[
-  HomePage(),
-  SeqReadPage(),
-  AlignmentPage(),
-  SequencePage(),
-];
-
-const List<String> _pageTitles = <String>[
-  'SEGUL GUI',
-  'Genomic Sequence Tools',
-  'Alignment Tools',
-  'Sequence Tools',
-];
 
 class SegulHome extends StatefulWidget {
   const SegulHome({super.key});
@@ -42,7 +24,7 @@ class _SegulHomeState extends State<SegulHome> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    showLargeScreenView = MediaQuery.of(context).size.width >= 450;
+    showLargeScreenView = MediaQuery.of(context).size.width >= 720;
   }
 
   @override
@@ -50,118 +32,6 @@ class _SegulHomeState extends State<SegulHome> {
     return showLargeScreenView
         ? const LargeScreenView()
         : const SmallScreenView();
-  }
-}
-
-class SmallScreenView extends StatefulWidget {
-  const SmallScreenView({super.key});
-
-  @override
-  State<SmallScreenView> createState() => _SmallScreenViewState();
-}
-
-class _SmallScreenViewState extends State<SmallScreenView> {
-  int _selectedIndex = 0;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(_pageTitles[_selectedIndex]),
-          actions: const [
-            SettingButtons(),
-          ],
-        ),
-        body: SafeArea(
-            child: Center(
-          child: _pages.elementAt(_selectedIndex),
-        )),
-        bottomNavigationBar: NavigationBar(
-          destinations: navigationTargets
-              .map((e) => NavigationDestination(
-                    icon: e.icon,
-                    selectedIcon: e.selectedIcon,
-                    label: e.label,
-                  ))
-              .toList(),
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: (value) {
-            setState(() {
-              _selectedIndex = value;
-            });
-          },
-        ));
-  }
-}
-
-class LargeScreenView extends StatefulWidget {
-  const LargeScreenView({super.key});
-
-  @override
-  State<LargeScreenView> createState() => _LargeScreenViewState();
-}
-
-class _LargeScreenViewState extends State<LargeScreenView> {
-  int _selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_pageTitles[_selectedIndex]),
-        elevation: 10,
-      ),
-      body: SafeArea(
-          bottom: false,
-          top: false,
-          child: Row(
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height * 0.9),
-                child: IntrinsicHeight(
-                  child: NavigationRail(
-                      labelType: NavigationRailLabelType.all,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      destinations: navigationTargets
-                          .map((e) => NavigationRailDestination(
-                                icon: e.icon,
-                                selectedIcon: e.selectedIcon,
-                                label: Text(e.label),
-                              ))
-                          .toList(),
-                      selectedIndex: _selectedIndex,
-                      onDestinationSelected: (int index) {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
-                      groupAlignment: BorderSide.strokeAlignCenter,
-                      trailing: const Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: SettingButtons(),
-                        ),
-                      )),
-                ),
-              ),
-              const VerticalDivider(thickness: 1, width: 1),
-              Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: _pages.elementAt(_selectedIndex),
-                  ),
-                ),
-              ),
-            ],
-          )),
-    );
   }
 }
 
@@ -175,45 +45,53 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-              child: SvgPicture.asset(
-                greetingIconPack,
-                height: 80,
-                colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
-              )),
-          Text(greeting, style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 40),
-          Text(
-            'Quick Actions',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          Icon(
-            Icons.arrow_drop_down,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          const SizedBox(height: 15),
-          const QuickActionContainer(),
-          const SizedBox(height: 30),
-          const ResourceTiles(),
-        ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        height: MediaQuery.sizeOf(context).height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        child: SingleChildScrollView(
+            child: Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                child: SvgPicture.asset(
+                  greetingIconPack,
+                  height: 80,
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
+                )),
+            Text(greeting, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 40),
+            Text(
+              'Quick Actions',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Icon(
+              Icons.arrow_drop_down,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            const SizedBox(height: 15),
+            const QuickActionContainer(),
+            const SizedBox(height: 30),
+            const ResourceTiles(),
+          ],
+        )),
       ),
     );
   }
 }
 
-class QuickActionContainer extends StatelessWidget {
+class QuickActionContainer extends ConsumerWidget {
   const QuickActionContainer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 250, maxHeight: 250),
         child: GridView.count(
@@ -226,32 +104,39 @@ class QuickActionContainer extends StatelessWidget {
               icon: Icons.compare_arrows,
               label: 'Concatenate Alignments',
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickConcatPage()));
+                ref.read(tabSelectionProvider.notifier).setTab(2);
+                ref
+                    .read(alignmentOperationSelectionProvider.notifier)
+                    .setOperation(AlignmentOperationType.concatenation);
               },
             ),
             QuickActionButton(
               icon: Icons.swap_horiz,
               label: 'Convert Alignments',
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickConvertPage()));
+                ref.read(tabSelectionProvider.notifier).setTab(2);
+                ref
+                    .read(alignmentOperationSelectionProvider.notifier)
+                    .setOperation(AlignmentOperationType.conversion);
               },
             ),
             QuickActionButton(
-              icon: Icons.translate,
-              label: 'Translate Sequences',
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickTranslatePage()));
-              },
-            ),
+                icon: Icons.translate,
+                label: 'Translate Sequences',
+                onTap: () {
+                  ref.read(tabSelectionProvider.notifier).setTab(3);
+                  ref
+                      .read(sequenceOperationSelectionProvider.notifier)
+                      .setOperation(SequenceOperationType.translation);
+                }),
             QuickActionButton(
               icon: Icons.bar_chart,
               label: 'Summarize Sequences',
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const QuickAlignmentSummaryPage()));
+                ref.read(tabSelectionProvider.notifier).setTab(2);
+                ref
+                    .read(alignmentOperationSelectionProvider.notifier)
+                    .setOperation(AlignmentOperationType.summary);
               },
             ),
           ],

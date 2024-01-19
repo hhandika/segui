@@ -1,8 +1,8 @@
 ---
-sidebar_position: 13
+sidebar_position: 4
 ---
 
-# Sequence Conversion
+# Alignment Conversion
 
 Segul can convert a single file, multiple file in the same directory, or multiple files in multiple directory.
 

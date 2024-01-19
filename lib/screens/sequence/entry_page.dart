@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
 class SequencePage extends StatefulWidget {
@@ -12,13 +15,22 @@ class SequencePage extends StatefulWidget {
 }
 
 class _SequencePageState extends State<SequencePage> {
-  SequenceOperationType analysisType = SequenceOperationType.translation;
-
   @override
   Widget build(BuildContext context) {
+    return const SharedOperationPage(
+      child: SequenceContentPage(),
+    );
+  }
+}
+
+class SequenceContentPage extends ConsumerWidget {
+  const SequenceContentPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return FormView(children: [
       DropdownButton(
-          value: analysisType,
+          value: ref.watch(sequenceOperationSelectionProvider),
           isExpanded: true,
           items: sequenceOperationMap.entries
               .map((e) => DropdownMenuItem(
@@ -27,15 +39,15 @@ class _SequencePageState extends State<SequencePage> {
                   ))
               .toList(),
           onChanged: (SequenceOperationType? value) {
-            setState(() {
-              if (value != null) {
-                analysisType = value;
-              }
-            });
+            if (value != null) {
+              ref
+                  .read(sequenceOperationSelectionProvider.notifier)
+                  .setOperation(value);
+            }
           }),
       const SizedBox(height: 20),
       SequenceOptions(
-        analysis: analysisType,
+        analysis: ref.watch(sequenceOperationSelectionProvider),
       ),
     ]);
   }
@@ -51,8 +63,8 @@ class SequenceOptions extends StatelessWidget {
     switch (analysis) {
       case SequenceOperationType.translation:
         return const TranslatePage();
-      case SequenceOperationType.uniqueID:
-        return const IdParsingPage();
+      case SequenceOperationType.idExtraction:
+        return const IDExtractionPage();
       default:
         return const SizedBox();
     }

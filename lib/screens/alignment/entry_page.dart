@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
+import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
+import 'package:segui/screens/alignment/split.dart';
 import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
 class AlignmentPage extends StatefulWidget {
@@ -13,13 +18,22 @@ class AlignmentPage extends StatefulWidget {
 }
 
 class _AlignmentPageState extends State<AlignmentPage> {
-  AlignmentOperationType analysisType = AlignmentOperationType.summary;
-
   @override
   Widget build(BuildContext context) {
+    return const SharedOperationPage(
+      child: AlignmentContentPage(),
+    );
+  }
+}
+
+class AlignmentContentPage extends ConsumerWidget {
+  const AlignmentContentPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return FormView(children: [
       DropdownButton(
-          value: analysisType,
+          value: ref.watch(alignmentOperationSelectionProvider),
           isExpanded: true,
           items: alignmentOperationMap.entries
               .map((e) => DropdownMenuItem(
@@ -28,34 +42,40 @@ class _AlignmentPageState extends State<AlignmentPage> {
                   ))
               .toList(),
           onChanged: (AlignmentOperationType? value) {
-            setState(() {
-              if (value != null) {
-                analysisType = value;
-              }
-            });
+            if (value != null) {
+              ref
+                  .read(alignmentOperationSelectionProvider.notifier)
+                  .setOperation(value);
+            }
+            ref.invalidate(fileOutputProvider);
           }),
       const SizedBox(height: 20),
       AlignmentOptions(
-        analysis: analysisType,
+        analysis: ref.watch(alignmentOperationSelectionProvider),
       ),
     ]);
   }
 }
 
-class AlignmentOptions extends StatelessWidget {
+class AlignmentOptions extends ConsumerWidget {
   const AlignmentOptions({super.key, required this.analysis});
 
   final AlignmentOperationType analysis;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     switch (analysis) {
-      case AlignmentOperationType.concat:
+      case AlignmentOperationType.concatenation:
         return const ConcatPage();
       case AlignmentOperationType.summary:
         return const AlignmentSummaryPage();
-      case AlignmentOperationType.convert:
+      case AlignmentOperationType.conversion:
         return const ConvertPage();
+      case AlignmentOperationType.split:
+        // Remove input when switching to split
+        // because it is not compatible with other operations
+        ref.invalidate(fileInputProvider);
+        return const SplitAlignmentPage();
       default:
         return const SizedBox();
     }

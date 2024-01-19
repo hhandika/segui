@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:file_selector/file_selector.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
@@ -28,10 +30,116 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
 };
 
+enum SegulType {
+  genomicReads,
+  genomicContig,
+  standardSequence,
+  alignmentPartition,
+}
+
+class SegulFile {
+  SegulFile({
+    required this.file,
+    required this.type,
+  });
+
+  final SegulType type;
+  final XFile file;
+}
+
+SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
+  switch (xTypeGroup) {
+    case genomicTypeGroup:
+      return SegulType.genomicReads;
+    case sequenceTypeGroup:
+      return SegulType.standardSequence;
+    case partitionTypeGroup:
+      return SegulType.alignmentPartition;
+    default:
+      return SegulType.standardSequence;
+  }
+}
+
+const XTypeGroup genomicTypeGroup = XTypeGroup(
+  label: 'Sequence Read',
+  extensions: ['fasta', 'fastq', 'gz', 'gzip'],
+  uniformTypeIdentifiers: [
+    'com.segui.genomicSequence',
+    'com.segui.genomicGzipSequence'
+  ],
+);
+
+const XTypeGroup sequenceTypeGroup = XTypeGroup(
+  label: 'Alignment',
+  extensions: [
+    'fasta',
+    'fa',
+    'fas',
+    'fsa',
+    'nexus',
+    'nex',
+    'phylip',
+    'phy',
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.dnaSequence',
+  ],
+);
+
+const XTypeGroup partitionTypeGroup = XTypeGroup(
+  label: 'Partition',
+  extensions: ['nexus', 'nex', 'txt', 'part', 'partition'],
+  uniformTypeIdentifiers: [
+    'com.segui.partition',
+  ],
+);
+
+class FileSelectionServices {
+  const FileSelectionServices(this.ref);
+
+  final WidgetRef ref;
+
+  Future<List<SegulFile>> selectFiles(
+    XTypeGroup allowedExtension,
+    bool allowMultiple,
+  ) async {
+    if (allowMultiple) {
+      return _selectMultiFiles(allowedExtension);
+    } else {
+      final result = await _selectSingleFile(allowedExtension);
+      return result == null ? [] : [result];
+    }
+  }
+
+  Future<List<SegulFile>> _selectMultiFiles(XTypeGroup allowedExtension) async {
+    final fileList = await openFiles(
+      acceptedTypeGroups: [allowedExtension],
+    );
+    return fileList.map((e) {
+      return SegulFile(
+        file: e,
+        type: matchTypeByXTypeGroup(allowedExtension),
+      );
+    }).toList();
+  }
+
+  Future<SegulFile?> _selectSingleFile(XTypeGroup allowedExtension) async {
+    final result = await openFile(
+      acceptedTypeGroups: [allowedExtension],
+    );
+    return result == null
+        ? null
+        : SegulFile(
+            file: result,
+            type: matchTypeByXTypeGroup(allowedExtension),
+          );
+  }
+}
+
 class IOServices {
   IOServices();
 
-  Future<File> archiveOutput({
+  Future<XFile> archiveOutput({
     required Directory dir,
     required String? fileName,
     required SupportedTask task,
@@ -46,15 +154,23 @@ class IOServices {
       filename: outputPath,
     );
 
-    return File(outputPath);
+    return XFile(outputPath);
   }
 
-  Future<void> shareFile(BuildContext context, File file) async {
+  Future<void> shareFile(BuildContext context, XFile file) async {
     final box = context.findRenderObject() as RenderBox?;
     await Share.shareXFiles(
-      [XFile(file.path)],
+      [file],
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
+  }
+
+  int countFiles(List<SegulFile> files, SegulType type) {
+    return files.where((e) => e.type == type).length;
+  }
+
+  List<String> convertPathsToString(List<SegulFile> files, SegulType type) {
+    return files.where((e) => e.type == type).map((e) => e.file.path).toList();
   }
 
   Future<Directory?> selectDir() async {
@@ -66,43 +182,6 @@ class IOServices {
       return Directory(result);
     }
     return null;
-  }
-
-  Future<File?> selectFile(List<String>? allowedExtension) async {
-    final result = await _matchPicker(allowedExtension);
-
-    if (result != null) {
-      if (kDebugMode) {
-        print('Selected file: ${result.files.single.path}');
-      }
-      return File(result.files.single.path!);
-    }
-    return null;
-  }
-
-  Future<List<File>> pickMultiFiles(List<String> allowedExtension) async {
-    FilePickerResult? files = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowMultiple: true,
-      allowedExtensions: allowedExtension,
-    );
-
-    if (files != null) {
-      return files.paths.map((e) => File(e!)).toList();
-    } else {
-      return [];
-    }
-  }
-
-  Future<FilePickerResult?> _matchPicker(List<String>? allowedExt) async {
-    if (allowedExt == null) {
-      return await FilePicker.platform.pickFiles();
-    }
-
-    return await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: allowedExt,
-    );
   }
 }
 
@@ -128,6 +207,22 @@ Future<String> getOutputDirForTask(String dir, SupportedTask task) async {
   Directory outputDir = Directory(p.join(appDocDir.path, directory));
 
   return outputDir.path;
+}
+
+// Count file size. Returns in kb, mb, or gb.
+Future<String> getFileSize(XFile path) async {
+  File file = File(path.path);
+  int bytes = await file.length();
+  double kb = bytes / 1024;
+  double mb = kb / 1024;
+  double gb = mb / 1024;
+  if (gb >= 1) {
+    return '${gb.toStringAsFixed(2)} Gb';
+  } else if (mb >= 1) {
+    return '${mb.toStringAsFixed(2)} Mb';
+  } else {
+    return '${kb.toStringAsFixed(2)} Kb';
+  }
 }
 
 String showOutputDir(String outputDir) {

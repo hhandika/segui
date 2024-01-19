@@ -1,43 +1,29 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
-class QuickConvertPage extends StatelessWidget {
-  const QuickConvertPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Alignment Conversion'),
-      ),
-      body: const SingleChildScrollView(
-        child: AppPageView(
-            child: SingleChildScrollView(
-          child: ConvertPage(),
-        )),
-      ),
-    );
-  }
-}
-
-class ConvertPage extends StatefulWidget {
+class ConvertPage extends ConsumerStatefulWidget {
   const ConvertPage({super.key});
 
   @override
-  State<ConvertPage> createState() => _ConvertPageState();
+  ConvertPageState createState() => ConvertPageState();
 }
 
-class _ConvertPageState extends State<ConvertPage> {
+class ConvertPageState extends ConsumerState<ConvertPage> {
   IOController ctr = IOController.empty();
   bool isSortSequence = false;
   bool isInterleave = false;
+  bool _isShowMore = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +31,25 @@ class _ConvertPageState extends State<ConvertPage> {
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SharedInfoForm(
+          description: 'Convert sequence alignment to other formats.',
+          isShowingInfo: ctr.isShowingInfo,
+          onClosed: () {
+            setState(() {
+              ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              ctr.isShowingInfo = true;
+            });
+          },
+        ),
         const CardTitle(title: 'Input'),
-        SharedSequenceInputForm(ctr: ctr),
+        SharedSequenceInputForm(
+          ctr: ctr,
+          xTypeGroup: sequenceTypeGroup,
+        ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
@@ -68,24 +71,39 @@ class _ConvertPageState extends State<ConvertPage> {
               });
             },
           ),
-          SwitchForm(
-              label: 'Set interleaved format',
-              value: isInterleave,
-              onPressed: (value) {
-                setState(() {
-                  isInterleave = value;
-                });
-              }),
-          SwitchForm(
+          Visibility(
+            visible: _isShowMore,
+            child: SwitchForm(
+                label: 'Set interleaved format',
+                value: isInterleave,
+                onPressed: (value) {
+                  setState(() {
+                    isInterleave = value;
+                  });
+                }),
+          ),
+          Visibility(
+            visible: _isShowMore,
+            child: SwitchForm(
               label: 'Sort by sequence ID',
               value: isSortSequence,
               onPressed: (value) {
                 setState(() {
                   isSortSequence = value;
                 });
-              }),
+              },
+            ),
+          ),
+          ShowMoreButton(
+            onPressed: () {
+              setState(() {
+                _isShowMore = !_isShowMore;
+              });
+            },
+            isShowMore: _isShowMore,
+          ),
         ]),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Center(
           child: ExecutionButton(
             label: 'Convert',
@@ -93,17 +111,28 @@ class _ConvertPageState extends State<ConvertPage> {
             isSuccess: ctr.isSuccess,
             controller: ctr,
             onNewRun: () => setState(() {}),
-            onExecuted: ctr.isRunning || !ctr.isValid()
-                ? null
-                : () async {
-                    String dir = await getOutputDir(
-                        ctr.outputDir.text, SupportedTask.alignmentConversion);
-                    setState(() {
-                      ctr.isRunning = true;
-                      ctr.outputDir.text = dir;
-                    });
-                    await _convert();
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return ctr.isRunning || !ctr.isValid()
+                          ? null
+                          : () async {
+                              String dir = await getOutputDir(
+                                  ctr.outputDir.text,
+                                  SupportedTask.alignmentConversion);
+                              setState(() {
+                                ctr.isRunning = true;
+                                ctr.outputDir.text = dir;
+                              });
+                              await _convert(value);
+                            };
+                    }
                   },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
             onShared: () async {
               try {
                 await _shareOutput();
@@ -124,11 +153,14 @@ class _ConvertPageState extends State<ConvertPage> {
     );
   }
 
-  Future<void> _convert() async {
-    String outputFmt = getOutputFmt(ctr.outputFormatController!, isInterleave);
+  Future<void> _convert(List<SegulFile> inputFiles) async {
     try {
+      String outputFmt =
+          getOutputFmt(ctr.outputFormatController!, isInterleave);
+      final files = IOServices()
+          .convertPathsToString(inputFiles, SegulType.standardSequence);
       await SequenceServices(
-        files: ctr.files,
+        inputFiles: files,
         dir: ctr.dirPath.text,
         outputDir: ctr.outputDir.text,
         inputFmt: ctr.inputFormatController!,
@@ -155,7 +187,7 @@ class _ConvertPageState extends State<ConvertPage> {
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
       task: SupportedTask.alignmentConversion,

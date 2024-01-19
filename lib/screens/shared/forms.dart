@@ -1,37 +1,44 @@
-import 'package:flutter/foundation.dart';
+// ignore: unused_import
+import 'dart:isolate';
+
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/shared/controllers.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 
-class SharedSequenceInputForm extends StatefulWidget {
+class SharedSequenceInputForm extends ConsumerStatefulWidget {
   const SharedSequenceInputForm({
     super.key,
     required this.ctr,
+    required this.xTypeGroup,
+    this.allowMultiple = true,
     this.isDatatypeEnabled = true,
+    this.hasSecondaryPicker = false,
   });
 
   final IOController ctr;
+  final bool allowMultiple;
+  final XTypeGroup xTypeGroup;
   final bool isDatatypeEnabled;
+  final bool hasSecondaryPicker;
 
   @override
-  State<SharedSequenceInputForm> createState() =>
-      _SharedSequenceInputFormState();
+  SharedSequenceInputFormState createState() => SharedSequenceInputFormState();
 }
 
-class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
+class SharedSequenceInputFormState
+    extends ConsumerState<SharedSequenceInputForm> {
   @override
   Widget build(BuildContext context) {
     return FormCard(
       children: [
         InputSelectorForm(
           ctr: widget.ctr,
-          onFilePressed: (value) {
-            setState(() {
-              widget.ctr.files = value;
-            });
-          },
+          allowMultiple: widget.allowMultiple,
+          xTypeGroup: widget.xTypeGroup,
+          hasSecondaryPicker: widget.isDatatypeEnabled,
         ),
         SharedDropdownField(
           value: widget.ctr.inputFormatController,
@@ -43,6 +50,10 @@ class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
             });
           },
         ),
+        Visibility(
+            visible: widget.ctr.inputFormatController == 'Auto',
+            child: Text('Auto-detect format based on file extension.',
+                style: Theme.of(context).textTheme.labelSmall)),
         SharedDropdownField(
           value: widget.ctr.dataTypeController,
           label: 'Data Type',
@@ -61,6 +72,69 @@ class _SharedSequenceInputFormState extends State<SharedSequenceInputForm> {
   }
 }
 
+class SharedInfoForm extends StatelessWidget {
+  const SharedInfoForm({
+    super.key,
+    required this.description,
+    required this.onClosed,
+    required this.onExpanded,
+    required this.isShowingInfo,
+  });
+
+  final VoidCallback onExpanded;
+  final VoidCallback onClosed;
+  final String? description;
+  final bool isShowingInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Visibility(
+              visible: isShowingInfo,
+              child: CommonCard(
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const Icon(Icons.info_outline_rounded),
+                    const SizedBox(height: 4),
+                    Text(
+                      description ?? '',
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 2),
+            Center(
+              child: IconButton(
+                tooltip: isShowingInfo ? 'Hide info' : 'Show info',
+                icon: Icon(
+                  isShowingInfo
+                      ? Icons.expand_less_outlined
+                      : Icons.expand_more_outlined,
+                ),
+                onPressed: () {
+                  if (isShowingInfo) {
+                    onClosed();
+                  } else {
+                    onExpanded();
+                  }
+                },
+              ),
+            )
+          ],
+        ));
+  }
+}
+
 class FormView extends StatelessWidget {
   const FormView({super.key, required this.children});
 
@@ -69,9 +143,11 @@ class FormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppPageView(
-      child: ListView(
-        shrinkWrap: true,
-        children: children,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: children,
+        ),
       ),
     );
   }
@@ -79,14 +155,22 @@ class FormView extends StatelessWidget {
 
 class AppPageView extends StatelessWidget {
   const AppPageView({super.key, required this.child});
+
   final Widget child;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      constraints: const BoxConstraints(maxWidth: 500),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
+    final windowWidth = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Container(
+        height: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        constraints: BoxConstraints(maxWidth: windowWidth > 1500 ? 500 : 500),
+        padding: const EdgeInsets.all(16),
         child: child,
       ),
     );
@@ -115,6 +199,7 @@ class FormCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CommonCard(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -126,16 +211,23 @@ class FormCard extends StatelessWidget {
 }
 
 class CommonCard extends StatelessWidget {
-  const CommonCard({super.key, required this.child});
+  const CommonCard({
+    super.key,
+    required this.child,
+    required this.backgroundColor,
+  });
   final Widget child;
+  final Color backgroundColor;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Color.lerp(Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.surface, 0.95),
+        color: Color.lerp(
+            backgroundColor, Theme.of(context).colorScheme.surface, 0.9),
       ),
       child: child,
     );
@@ -212,181 +304,6 @@ class SharedDropdownField extends StatelessWidget {
           .toList(),
       onChanged: enabled ? onChanged : null,
     );
-  }
-}
-
-class InputSelectorForm extends StatelessWidget {
-  const InputSelectorForm({
-    super.key,
-    required this.onFilePressed,
-    required this.ctr,
-  });
-
-  final void Function(List<String>) onFilePressed;
-  final IOController ctr;
-
-  @override
-  Widget build(BuildContext context) {
-    return SharedFilePicker(
-      label: 'Select input files',
-      paths: ctr.files,
-      onPressed: onFilePressed,
-    );
-  }
-}
-
-class SharedOutputDirField extends StatelessWidget {
-  const SharedOutputDirField({
-    super.key,
-    required this.ctr,
-    required this.onChanged,
-  });
-
-  final TextEditingController ctr;
-  final void Function() onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Platform.isIOS
-        ? SharedTextField(
-            label: 'Directory name',
-            hint: 'Enter output directory name',
-            controller: ctr,
-          )
-        : SelectDirField(
-            label: 'Select output directory',
-            dirPath: ctr,
-            onChanged: onChanged,
-          );
-  }
-}
-
-class SelectDirField extends StatelessWidget {
-  const SelectDirField({
-    super.key,
-    required this.label,
-    required this.dirPath,
-    required this.onChanged,
-  });
-
-  final String label;
-  final TextEditingController dirPath;
-  final void Function() onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            dirPath.text.isEmpty ? '$label: ' : dirPath.text,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          icon: dirPath.text.isEmpty
-              ? const Icon(Icons.folder)
-              : const Icon(Icons.folder_open),
-          onPressed: () async {
-            final dir = await _selectDir();
-            if (dir != null) {
-              dirPath.text = dir.path;
-              onChanged();
-            }
-          },
-        ),
-      ],
-    );
-  }
-
-  Future<Directory?> _selectDir() async {
-    final result = await FilePicker.platform.getDirectoryPath();
-    if (result != null) {
-      if (kDebugMode) {
-        print('Selected directory: $result');
-      }
-      return Directory(result);
-    }
-    return null;
-  }
-}
-
-class SharedFilePicker extends StatefulWidget {
-  const SharedFilePicker({
-    super.key,
-    required this.label,
-    required this.paths,
-    required this.onPressed,
-  });
-
-  final String label;
-  final List<String> paths;
-  final Function(List<String>) onPressed;
-
-  @override
-  State<SharedFilePicker> createState() => _SharedFilePickerState();
-}
-
-class _SharedFilePickerState extends State<SharedFilePicker> {
-  bool _isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            widget.paths.isEmpty
-                ? '${widget.label}: '
-                : '${widget.paths.length} files selected',
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: 10),
-        _isLoading
-            ? const SizedBox(
-                height: 10,
-                width: 10,
-                child: CircularProgressIndicator(),
-              )
-            : IconButton(
-                icon: widget.paths.isEmpty
-                    ? const Icon(Icons.folder)
-                    : const Icon(Icons.folder_open),
-                onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  try {
-                    final paths = await _selectFile();
-                    if (paths.isNotEmpty) {
-                      widget.onPressed(paths);
-                    }
-                  } catch (e) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        showSharedSnackBar(context, e.toString()),
-                      );
-                    }
-                  }
-                  setState(() {
-                    _isLoading = false;
-                  });
-                },
-              ),
-      ],
-    );
-  }
-
-  Future<List<String>> _selectFile() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result != null) {
-      return result.paths.map((e) => e ?? '').toList();
-    } else {
-      return [];
-    }
   }
 }
 

@@ -90,8 +90,9 @@ class ShareButton extends StatelessWidget {
             )
           : Icon(Icons.adaptive.share),
       onPressed: onPressed,
-      label:
-          isRunning ? const Text('Compressing files...') : const Text('Share'),
+      label: isRunning
+          ? const Text('Compressing files...')
+          : const Text('Quick Share'),
     );
   }
 }
@@ -199,6 +200,30 @@ class QuickActionButton extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ShowMoreButton extends StatelessWidget {
+  const ShowMoreButton({
+    super.key,
+    required this.onPressed,
+    required this.isShowMore,
+  });
+
+  final bool isShowMore;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: TextButton(
+          onPressed: onPressed,
+          child: Text(isShowMore ? 'Show less' : 'Show more'),
         ),
       ),
     );

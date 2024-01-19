@@ -3,8 +3,8 @@ enum PlatformType { isDesktop, isMobile }
 enum GenomicOperationType { readSummary, contigSummary }
 
 const Map<GenomicOperationType, String> genomicOperationMap = {
-  GenomicOperationType.readSummary: 'Read Summary Statistics',
-  GenomicOperationType.contigSummary: 'Contig Summary Statistics',
+  GenomicOperationType.readSummary: 'Summarize genomic reads',
+  GenomicOperationType.contigSummary: 'Summarize genomic contigs',
 };
 
 const List<String> sequenceReadFormat = [
@@ -25,19 +25,36 @@ const List<String> sequenceReadSummaryMode = [
   'Complete',
 ];
 
-enum AlignmentOperationType { concat, summary, convert }
+enum AlignmentOperationType {
+  concatenation,
+  conversion,
+  partition,
+  summary,
+  split,
+}
 
 const Map<AlignmentOperationType, String> alignmentOperationMap = {
-  AlignmentOperationType.concat: 'Concatenate',
-  AlignmentOperationType.summary: 'Summary',
-  AlignmentOperationType.convert: 'Convert',
+  AlignmentOperationType.concatenation: 'Concatenate alignments',
+  AlignmentOperationType.conversion: 'Convert alignments',
+  AlignmentOperationType.partition: 'Convert partition',
+  AlignmentOperationType.split: 'Split alignments',
+  AlignmentOperationType.summary: 'Summarize alignments',
 };
 
-enum SequenceOperationType { translation, uniqueID }
+enum SequenceOperationType {
+  extraction,
+  idExtraction,
+  idRenaming,
+  removal,
+  translation,
+}
 
 const Map<SequenceOperationType, String> sequenceOperationMap = {
-  SequenceOperationType.translation: 'Translation',
-  SequenceOperationType.uniqueID: 'Unique ID',
+  SequenceOperationType.extraction: 'Extract sequences',
+  SequenceOperationType.idExtraction: 'Extract and map sequence IDs',
+  SequenceOperationType.idRenaming: 'Rename sequence IDs',
+  SequenceOperationType.removal: 'Remove sequences',
+  SequenceOperationType.translation: 'Translate sequences',
 };
 
 const List<String> inputFormat = [
@@ -52,6 +69,8 @@ const List<String> outputFormat = [
   'NEXUS',
   'PHYLIP',
 ];
+
+enum PartitionFormat { charset, nexus, raxml }
 
 const List<String> partitionFormat = [
   'Charset',
