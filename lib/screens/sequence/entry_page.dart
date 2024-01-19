@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
-import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
@@ -45,7 +44,7 @@ class SequenceContentPage extends ConsumerWidget {
                   .setOperation(value);
             }
           }),
-      const SizedBox(height: 20),
+      const SizedBox(height: 8),
       SequenceOptions(
         analysis: ref.watch(sequenceOperationSelectionProvider),
       ),

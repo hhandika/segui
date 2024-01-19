@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/genomics/contig.dart';
 import 'package:segui/screens/genomics/read_summary.dart';
-import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
@@ -46,7 +45,7 @@ class GenomicContentPage extends ConsumerWidget {
           }
         },
       ),
-      const SizedBox(height: 20),
+      const SizedBox(height: 8),
       GenomicOptions(
         analysis: ref.watch(genomicOperationSelectionProvider),
       ),

@@ -12,25 +12,6 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
-class QuickTranslatePage extends StatelessWidget {
-  const QuickTranslatePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sequence Translation'),
-      ),
-      body: const SingleChildScrollView(
-        child: AppPageView(
-            child: SingleChildScrollView(
-          child: TranslatePage(),
-        )),
-      ),
-    );
-  }
-}
-
 class TranslatePage extends ConsumerStatefulWidget {
   const TranslatePage({super.key});
 

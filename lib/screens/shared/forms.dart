@@ -135,48 +135,6 @@ class SharedInfoForm extends StatelessWidget {
   }
 }
 
-class FormView extends StatelessWidget {
-  const FormView({super.key, required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppPageView(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: children,
-        ),
-      ),
-    );
-  }
-}
-
-class AppPageView extends StatelessWidget {
-  const AppPageView({super.key, required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final windowWidth = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: Theme.of(context).colorScheme.surface,
-        ),
-        constraints: BoxConstraints(maxWidth: windowWidth > 1800 ? 600 : 500),
-        padding: const EdgeInsets.all(16),
-        child: child,
-      ),
-    );
-  }
-}
-
 class CardTitle extends StatelessWidget {
   const CardTitle({super.key, required this.title});
 

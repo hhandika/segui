@@ -6,7 +6,6 @@ import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/split.dart';
 import 'package:segui/screens/alignment/summary.dart';
-import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
@@ -49,7 +48,7 @@ class AlignmentContentPage extends ConsumerWidget {
             }
             ref.invalidate(fileOutputProvider);
           }),
-      const SizedBox(height: 20),
+      const SizedBox(height: 8),
       AlignmentOptions(
         analysis: ref.watch(alignmentOperationSelectionProvider),
       ),
