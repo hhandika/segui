@@ -13,7 +13,7 @@ class LargeScreenView extends ConsumerStatefulWidget {
 }
 
 class LargeScreenViewState extends ConsumerState<LargeScreenView> {
-  bool isUsingNavigationRail = true;
+  bool isUsingNavigationRail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,8 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
           children: [
             screenWidth > 840 && !isUsingNavigationRail
                 ? NavigationDrawer(
-                    tilePadding: const EdgeInsets.symmetric(horizontal: 4),
+                    tilePadding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                     elevation: 0,
                     backgroundColor: Color.lerp(
                         Theme.of(context).colorScheme.primary,
@@ -55,27 +56,19 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
                         Theme.of(context).colorScheme.primaryContainer,
                     indicatorShape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.horizontal(
-                          right: Radius.circular(16), left: Radius.circular(8)),
+                        right: Radius.circular(16),
+                        left: Radius.circular(8),
+                      ),
                     ),
                     selectedIndex: ref.watch(tabSelectionProvider),
-                    children: [
+                    children: const [
                       ...navigationDrawerTargets,
-                      const Divider(
+                      Divider(
                         thickness: 2,
                         indent: 8,
                         endIndent: 8,
                       ),
-                      ListTile(
-                        title: const Text('Settings'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Settings(),
-                            ),
-                          );
-                        },
-                      ),
+                      SettingMenuTile(),
                     ],
                     onDestinationSelected: (int index) {
                       ref.read(tabSelectionProvider.notifier).setTab(index);
@@ -155,6 +148,47 @@ class LargeScreenContentView extends StatelessWidget {
             )),
           ]),
         ),
+      ),
+    );
+  }
+}
+
+class SettingMenuTile extends StatelessWidget {
+  const SettingMenuTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SecondaryMenuTile(
+      text: 'Settings',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Settings(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SecondaryMenuTile extends StatelessWidget {
+  const SecondaryMenuTile({
+    super.key,
+    required this.text,
+    required this.onTap,
+  });
+
+  final String text;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 2),
+      child: ListTile(
+        title: Text(text, style: Theme.of(context).textTheme.labelLarge),
+        onTap: onTap,
       ),
     );
   }
