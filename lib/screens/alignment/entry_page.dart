@@ -4,6 +4,7 @@ import 'package:segui/providers/io.dart';
 import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
+import 'package:segui/screens/alignment/partition.dart';
 import 'package:segui/screens/alignment/split.dart';
 import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/shared/pages.dart';
@@ -67,12 +68,14 @@ class AlignmentOptions extends ConsumerWidget {
     switch (analysis) {
       case AlignmentOperationType.concatenation:
         return const ConcatPage();
-      case AlignmentOperationType.summary:
-        return const AlignmentSummaryPage();
       case AlignmentOperationType.conversion:
         return const ConvertPage();
       case AlignmentOperationType.split:
         return const SplitAlignmentPage();
+      case AlignmentOperationType.partition:
+        return const PartitionConversionPage();
+      case AlignmentOperationType.summary:
+        return const AlignmentSummaryPage();
       default:
         return const SizedBox();
     }

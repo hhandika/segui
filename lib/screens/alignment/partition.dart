@@ -1,19 +1,41 @@
-/// Convert partition to a different format
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/screens/shared/controllers.dart';
+import 'package:segui/screens/shared/forms.dart';
 
-
-
-
-class  extends StatefulWidget {
-  const ({super.key});
+class PartitionConversionPage extends ConsumerStatefulWidget {
+  const PartitionConversionPage({super.key});
 
   @override
-  State<> createState() => _State();
+  PartitionConversionPageState createState() => PartitionConversionPageState();
 }
 
-class _State extends State<> {
+class PartitionConversionPageState
+    extends ConsumerState<PartitionConversionPage> {
+  IOController _ctr = IOController.empty();
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SharedInfoForm(
+          description: 'Convert partition format from one to another.',
+          isShowingInfo: _ctr.isShowingInfo,
+          onClosed: () {
+            setState(() {
+              _ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              _ctr.isShowingInfo = true;
+            });
+          },
+        ),
+      ],
+    );
   }
 }

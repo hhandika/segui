@@ -19,7 +19,7 @@ class ConcatPage extends ConsumerStatefulWidget {
 }
 
 class ConcatPageState extends ConsumerState<ConcatPage> {
-  IOController ctr = IOController.empty();
+  IOController _ctr = IOController.empty();
   String _partitionFormatController = partitionFormat[1];
   bool isCodon = false;
   bool isInterleave = false;
@@ -32,7 +32,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
 
   @override
   void dispose() {
-    ctr.dispose();
+    _ctr.dispose();
     super.dispose();
   }
 
@@ -47,47 +47,47 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
           description: 'Concatenate multiple alignments '
               'and generate partition '
               'for the concatenated alignment.',
-          isShowingInfo: ctr.isShowingInfo,
+          isShowingInfo: _ctr.isShowingInfo,
           onClosed: () {
             setState(() {
-              ctr.isShowingInfo = false;
+              _ctr.isShowingInfo = false;
             });
           },
           onExpanded: () {
             setState(() {
-              ctr.isShowingInfo = true;
+              _ctr.isShowingInfo = true;
             });
           },
         ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
-          ctr: ctr,
+          ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-            ctr: ctr.outputDir,
+            ctr: _ctr.outputDir,
             onChanged: () {
               setState(() {});
             },
           ),
           SharedTextField(
-            controller: ctr.outputController,
+            controller: _ctr.outputController,
             label: 'Prefix',
             hint: 'E.g.: concat, species_concat, etc.',
           ),
           // Default to NEXUS if user does not select
           SharedDropdownField(
-            value: ctr.outputFormatController,
+            value: _ctr.outputFormatController,
             label: 'Format',
             items: outputFormat,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
-                  ctr.outputFormatController = value;
-                  ctr.isSuccess = false;
+                  _ctr.outputFormatController = value;
+                  _ctr.isSuccess = false;
                 }
               });
             },
@@ -140,24 +140,24 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         Center(
           child: ExecutionButton(
             label: 'Concatenate',
-            isRunning: ctr.isRunning,
-            controller: ctr,
-            isSuccess: ctr.isSuccess,
+            isRunning: _ctr.isRunning,
+            controller: _ctr,
+            isSuccess: _ctr.isSuccess,
             onNewRun: () => setState(() {}),
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
                       return null;
                     } else {
-                      return ctr.isRunning || !_validate()
+                      return _ctr.isRunning || !_validate()
                           ? null
                           : () async {
                               String dir = await getOutputDir(
-                                  ctr.outputDir.text,
+                                  _ctr.outputDir.text,
                                   SupportedTask.alignmentConcatenation);
                               setState(() {
-                                ctr.isRunning = true;
-                                ctr.outputDir.text = dir;
+                                _ctr.isRunning = true;
+                                _ctr.outputDir.text = dir;
                               });
                               await _concat(value);
                             };
@@ -180,28 +180,28 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   }
 
   bool _validate() {
-    if (ctr.outputFormatController == null) {
-      ctr.outputFormatController == outputFormat[0];
+    if (_ctr.outputFormatController == null) {
+      _ctr.outputFormatController == outputFormat[0];
     }
-    return ctr.isValid();
+    return _ctr.isValid();
   }
 
   Future<void> _concat(List<SegulFile> inputFiles) async {
     try {
       String outputFmt =
-          getOutputFmt(ctr.outputFormatController!, isInterleave);
+          getOutputFmt(_ctr.outputFormatController!, isInterleave);
       String partitionFmt =
           getPartitionFmt(_partitionFormatController, isCodon);
       final files = IOServices()
           .convertPathsToString(inputFiles, SegulType.standardSequence);
       await AlignmentServices(
-        dir: ctr.dirPath.text,
+        dir: _ctr.dirPath.text,
         inputFiles: files,
-        inputFmt: ctr.inputFormatController!,
-        datatype: ctr.dataTypeController,
-        outputDir: ctr.outputDir.text,
+        inputFmt: _ctr.inputFormatController!,
+        datatype: _ctr.dataTypeController,
+        outputDir: _ctr.outputDir.text,
       ).concatAlignment(
-        outFname: ctr.outputController.text,
+        outFname: _ctr.outputController.text,
         outFmtStr: outputFmt,
         partitionFmt: partitionFmt,
       );
@@ -214,8 +214,8 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
     XFile outputPath = await io.archiveOutput(
-      dir: Directory(ctr.outputDir.text),
-      fileName: ctr.outputController.text,
+      dir: Directory(_ctr.outputDir.text),
+      fileName: _ctr.outputController.text,
       task: SupportedTask.alignmentConcatenation,
     );
 
@@ -226,7 +226,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
 
   void _showError(String error) {
     setState(() {
-      ctr.isRunning = false;
+      _ctr.isRunning = false;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, error),
       );
@@ -235,13 +235,13 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
 
   void _setSuccess() {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = true;
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
             'Concatenation successful! 🎉 \n'
-            'Output path: ${showOutputDir(ctr.outputDir.text)}'),
+            'Output path: ${showOutputDir(_ctr.outputDir.text)}'),
       );
     });
   }
