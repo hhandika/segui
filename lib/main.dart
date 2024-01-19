@@ -19,7 +19,7 @@ Future<void> main() async {
     await initLogger(logDir: logDir.path);
   } catch (e) {
     if (kDebugMode) {
-      print('Failed to initialize logger: $e');
+      print('Failed to initialize logger. It may have been initiated');
     }
   }
   runApp(ProviderScope(

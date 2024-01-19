@@ -26,6 +26,17 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   bool _isShowMore = false;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    ctr.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -69,7 +80,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
           ),
           // Default to NEXUS if user does not select
           SharedDropdownField(
-            value: ctr.outputFormatController ?? outputFormat[1],
+            value: ctr.outputFormatController,
             label: 'Format',
             items: outputFormat,
             onChanged: (String? value) {
@@ -169,8 +180,10 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   }
 
   bool _validate() {
-    bool isInputValid = ctr.outputFormatController != null;
-    return isInputValid && ctr.isValid();
+    if (ctr.outputFormatController == null) {
+      ctr.outputFormatController == outputFormat[0];
+    }
+    return ctr.isValid();
   }
 
   Future<void> _concat(List<SegulFile> inputFiles) async {
