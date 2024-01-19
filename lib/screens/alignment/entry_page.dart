@@ -46,6 +46,7 @@ class AlignmentContentPage extends ConsumerWidget {
                   .read(alignmentOperationSelectionProvider.notifier)
                   .setOperation(value);
             }
+            ref.invalidate(fileInputProvider);
             ref.invalidate(fileOutputProvider);
           }),
       const SizedBox(height: 8),
@@ -71,9 +72,6 @@ class AlignmentOptions extends ConsumerWidget {
       case AlignmentOperationType.conversion:
         return const ConvertPage();
       case AlignmentOperationType.split:
-        // Remove input when switching to split
-        // because it is not compatible with other operations
-        ref.invalidate(fileInputProvider);
         return const SplitAlignmentPage();
       default:
         return const SizedBox();
