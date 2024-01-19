@@ -1,1 +1,0 @@
-sudo cp build/macos/Build/Products/Release/segul_api.dylib /usr/local/lib/
