@@ -354,73 +354,73 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
   @override
   Widget build(BuildContext context) {
     final type = matchTypeByXTypeGroup(widget.xTypeGroup);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ref.watch(fileInputProvider).when(
-              data: (data) => data.isEmpty
-                  ? Text(
-                      '${widget.label}: ',
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )
-                  : RichText(
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      text: TextSpan(children: [
-                        const WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Icon(Icons.folder_open),
-                        ),
-                        const WidgetSpan(
-                          child: SizedBox(width: 4),
-                        ),
-                        TextSpan(
-                          text:
-                              '${IOServices().countFiles(data, type)} selected files',
+    return ref.watch(fileInputProvider).when(
+          data: (value) {
+            final data = value.where((e) => e.type == type).toList();
+            return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  data.isEmpty
+                      ? Text(
+                          '${widget.label}: ',
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodyMedium,
+                        )
+                      : RichText(
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          text: TextSpan(children: [
+                            const WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: Icon(Icons.folder_open),
+                            ),
+                            const WidgetSpan(
+                              child: SizedBox(width: 4),
+                            ),
+                            TextSpan(
+                              text:
+                                  '${IOServices().countFiles(data, type)} selected files',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ])),
+                  const SizedBox(width: 8),
+                  _isLoading
+                      ? const SizedBox(
+                          height: 8,
+                          width: 8,
+                          child: CircularProgressIndicator(),
+                        )
+                      : IconButton(
+                          icon: data.isEmpty
+                              ? const Icon(Icons.folder)
+                              : const Icon(Icons.add_rounded),
+                          onPressed: data.isNotEmpty && !widget.allowMultiple
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+                                  try {
+                                    await _selectFiles(data.isEmpty);
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        showSharedSnackBar(
+                                            context, e.toString()),
+                                      );
+                                    }
+                                  }
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                },
                         ),
-                      ])),
-              loading: () => const SizedBox.shrink(),
-              error: (err, stack) => Text(err.toString()),
-            ),
-        const SizedBox(width: 8),
-        _isLoading
-            ? const SizedBox(
-                height: 8,
-                width: 8,
-                child: CircularProgressIndicator(),
-              )
-            : ref.watch(fileInputProvider).when(
-                  data: (data) => IconButton(
-                    icon: data.isEmpty
-                        ? const Icon(Icons.folder)
-                        : const Icon(Icons.add_rounded),
-                    onPressed: data.isNotEmpty && !widget.allowMultiple
-                        ? null
-                        : () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            try {
-                              await _selectFiles(data.isEmpty);
-                            } catch (e) {
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  showSharedSnackBar(context, e.toString()),
-                                );
-                              }
-                            }
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                  ),
-                  loading: () => const Icon(Icons.folder),
-                  error: (err, stack) => const Icon(Icons.folder),
-                ),
-      ],
-    );
+                ]);
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (err, stack) => Text(err.toString()),
+        );
   }
 
   Future<void> _selectFiles(bool isAddNew) async {
