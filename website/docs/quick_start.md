@@ -20,23 +20,22 @@ The fastest installation route for CLI is using the pre-compiled binaries [here]
 
 ## Usage quick links
 
-| Feature                        | Quick Link                                                                                                                                |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_concat)                 |
-| Alignment conversion           | [CLI](https://docs.page/hhandika/segul-docs/usage_convert) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_convert)               |
-| Alignment filtering            | [CLI](https://docs.page/hhandika/segul-docs/usage_filter) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_filter)                 |
-| Alignment splitting            | [CLI](https://docs.page/hhandika/segul-docs/usage_split) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_split)                   |
-| Alignment partition conversion | [CLI](https://docs.page/hhandika/segul-docs/usage_part) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_part)                     |
-| Alignment summary statistics   | [CLI](https://docs.page/hhandika/segul-docs/usage_summary) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_summary)               |
-| Contig summary statistics      | [CLI](https://docs.page/hhandika/segul-docs/usage_contig_summary) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_contig_summary) |
-| Raw read summary statistics    | [CLI](https://docs.page/hhandika/segul-docs/usage_raw_summary) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_raw_summary)       |
-| Sample distribution mapping    | [CLI](https://docs.page/hhandika/segul-docs/usage_map) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_map)                       |
-| Sequence extraction            | [CLI](https://docs.page/hhandika/segul-docs/usage_extract) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_extract)               |
-| Sequence ID parsing            | [CLI](https://docs.page/hhandika/segul-docs/usage_id) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_id)                         |
-| Sequence ID renaming           | [CLI](https://docs.page/hhandika/segul-docs/usage_rename) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_rename)                 |
-| Sequence removal               | [CLI](https://docs.page/hhandika/segul-docs/usage_remove) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_remove)                 |
-| Sequence translation           | [CLI](https://docs.page/hhandika/segul-docs/usage_translate) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_translate)           |
-| Log file                       | [CLI](https://docs.page/hhandika/segul-docs/usage_log) / [GUI](https://docs.page/hhandika/segul-docs/gui_usage_log)                       |
+| Feature                        | Quick Link                                                                                            |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- | --- |
+| Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](./gui-usage/concat)             |
+| Alignment conversion           | [CLI](./cli-usage/convert) / [GUI](./gui-usage/convert)           |
+| Alignment filtering            | [CLI](./cli-usage/filter) / [GUI](./gui-usage/filter)             |
+| Alignment splitting            | [CLI](./cli-usage/split) / [GUI](./gui-usage/split)               |
+| Alignment partition conversion | [CLI](./cli-usage/partition) / [GUI](./gui-usage/part)            |
+| Alignment summary statistics   | [CLI](./cli-usage/summary) / [GUI](./gui-usage/summary)           |
+| Genomic summary statistics     | [CLI](./cli-usage/genomic.md) / [GUI](./gui-usage/contig_summary) |     |
+| Sequence extraction            | [CLI](http) / [GUI](./gui-usage/extract)                          |
+| Sequence ID extraction         | [CLI](./cli-usage/id) / [GUI](./gui-usage/id)                     |
+| Sequence ID mapping            | [CLI](./cli-usage/map.md) / [GUI](./gui-usage/id)                 |
+| Sequence ID renaming           | [CLI](./cli-usage/rename) / [GUI](./gui-usage/rename)             |
+| Sequence removal               | [CLI](./cli-usage/remove) / [GUI](./gui-usage/remove)             |
+| Sequence translation           | [CLI](./cli-usage/translate) / [GUI](./gui-usage/translate)       |
+| Log file                       | [CLI](./cli-usage/log) / [GUI](./gui-usage/log)                   |
 
 ## CLI Command List
 

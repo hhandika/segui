@@ -22,10 +22,9 @@ Documentation: [[EN]](https://docs.page/hhandika/segul-docs/gui_overview)
 | Alignment conversion           | :white_check_mark: |
 | Alignment filtering            | :wrench:           |
 | Alignment partition conversion | :wrench:           |
-| Alignment splitting            | :wrench:           |
+| Alignment splitting            | :white_check_mark: |
 | Alignment summary statistics   | :white_check_mark: |
-| Contig summary statistics      | :white_check_mark: |
-| Raw read summary statistics    | :white_check_mark: |
+| Genomic summary statistics     | :white_check_mark: |
 | Sequence extraction            | :wrench:           |
 | Sequence ID extraction         | :white_check_mark: |
 | Sequence ID renaming           | :wrench:           |
