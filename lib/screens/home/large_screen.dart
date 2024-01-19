@@ -27,7 +27,9 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
         leading: screenWidth < 840
             ? null
             : IconButton(
-                icon: const Icon(Icons.menu),
+                icon: Icon(
+                  isUsingNavigationRail ? Icons.menu : Icons.menu_open_outlined,
+                ),
                 onPressed: () {
                   setState(() {
                     isUsingNavigationRail = !isUsingNavigationRail;
