@@ -177,6 +177,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     setState(() {
       _ctr.isRunning = false;
       _ctr.isSuccess = true;
+      ref.read(fileOutputProvider.notifier).refresh();
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
