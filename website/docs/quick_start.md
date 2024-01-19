@@ -21,14 +21,14 @@ The fastest installation route for CLI is using the pre-compiled binaries [here]
 ## Usage quick links
 
 | Feature                        | Quick Link                                                  |
-| ------------------------------ | ----------------------------------------------------------- | --- |
+| ------------------------------ | ----------------------------------------------------------- |
 | Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](./gui-usage/concat)       |
 | Alignment conversion           | [CLI](./cli-usage/convert) / [GUI](./gui-usage/convert)     |
 | Alignment filtering            | [CLI](./cli-usage/filter) / [GUI](./gui-usage/filter)       |
 | Alignment splitting            | [CLI](./cli-usage/split) / [GUI](./gui-usage/split)         |
 | Alignment partition conversion | [CLI](./cli-usage/partition) / [GUI](./gui-usage/partition) |
 | Alignment summary statistics   | [CLI](./cli-usage/summary) / [GUI](./gui-usage/summary)     |
-| Genomic summary statistics     | [CLI](./cli-usage/genomic) / [GUI](./gui-usage/genomic)     |     |
+| Genomic summary statistics     | [CLI](./cli-usage/genomic) / [GUI](./gui-usage/genomic)     |
 | Sequence extraction            | [CLI](./cli-usage/extract) / [GUI](./gui-usage/extract)     |
 | Sequence ID extraction         | [CLI](./cli-usage/id) / [GUI](./gui-usage/id)               |
 | Sequence ID mapping            | [CLI](./cli-usage/map.md) / [GUI](./gui-usage/id)           |
