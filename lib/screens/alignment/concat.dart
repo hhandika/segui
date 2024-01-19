@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
@@ -50,7 +51,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
-          xTypeGroup: const [sequenceTypeGroup],
+          xTypeGroup: sequenceTypeGroup,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
@@ -178,7 +179,8 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
           getOutputFmt(ctr.outputFormatController!, isInterleave);
       String partitionFmt =
           getPartitionFmt(_partitionFormatController, isCodon);
-      final files = inputFiles.map((e) => e.file.path).toList();
+      final files = IOServices()
+          .convertPathsToString(inputFiles, SegulType.standardSequence);
       await AlignmentServices(
         dir: ctr.dirPath.text,
         inputFiles: files,
@@ -198,7 +200,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
       task: SupportedTask.alignmentConcatenation,

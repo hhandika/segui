@@ -19,7 +19,7 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
 
   final IOController ctr;
   final bool allowMultiple;
-  final List<XTypeGroup> xTypeGroup;
+  final XTypeGroup xTypeGroup;
   final bool isDatatypeEnabled;
 
   @override

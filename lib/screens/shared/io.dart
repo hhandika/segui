@@ -104,7 +104,9 @@ class InputScreen extends ConsumerWidget {
     return SizedBox(
       height: double.infinity,
       child: ref.watch(fileInputProvider).when(
-            data: (data) => IOList(title: 'Input Files', files: data),
+            data: (data) => InputFileList(
+              files: data,
+            ),
             loading: () => const Center(
               child: CircularProgressIndicator(),
             ),
@@ -114,46 +116,16 @@ class InputScreen extends ConsumerWidget {
   }
 }
 
-class OutputScreen extends ConsumerWidget {
-  const OutputScreen({super.key});
+class InputFileList extends ConsumerWidget {
+  const InputFileList({super.key, required this.files});
+
+  final List<SegulFile> files;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: double.infinity,
-      child: ref.watch(fileOutputProvider).when(
-            data: (data) => IOList(title: 'Output Files', files: data),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            error: (err, stack) => Text(err.toString()),
-          ),
-    );
-  }
-}
-
-class IOList extends ConsumerWidget {
-  const IOList({
-    super.key,
-    required this.title,
-    required this.files,
-  });
-
-  final String title;
-  final List<XFile> files;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        Flexible(
-            child: ListView.separated(
+    return IOListContainer(
+        title: 'Input Files',
+        child: ListView.separated(
           separatorBuilder: (context, index) => const Divider(
             height: 1,
             indent: 36,
@@ -163,13 +135,13 @@ class IOList extends ConsumerWidget {
           itemCount: files.length,
           padding: const EdgeInsets.all(8),
           itemBuilder: (context, index) {
-            final file = files[index];
+            final data = files[index];
             return ListTile(
               minVerticalPadding: 2,
               leading: const Icon(Icons.attach_file_outlined),
-              title: Text(file.name),
+              title: Text(data.file.name),
               subtitle: FutureBuilder<String>(
-                future: getFileSize(file),
+                future: getFileSize(data.file),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Text(snapshot.data!);
@@ -181,12 +153,106 @@ class IOList extends ConsumerWidget {
               trailing: IconButton(
                 icon: const Icon(Icons.delete_outline),
                 onPressed: () {
-                  ref.read(fileInputProvider.notifier).removeFile(file);
+                  ref.read(fileInputProvider.notifier).removeFile(data);
                 },
               ),
             );
           },
-        ))
+        ));
+  }
+}
+
+class OutputScreen extends ConsumerWidget {
+  const OutputScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      height: double.infinity,
+      child: ref.watch(fileOutputProvider).when(
+            data: (data) => OutputFileList(files: data),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            error: (err, stack) => Text(err.toString()),
+          ),
+    );
+  }
+}
+
+class OutputFileList extends StatelessWidget {
+  const OutputFileList({
+    super.key,
+    required this.files,
+  });
+
+  final List<XFile> files;
+
+  @override
+  Widget build(BuildContext context) {
+    return IOListContainer(
+        title: 'Output Files',
+        child: ListView.separated(
+          separatorBuilder: (context, index) => const Divider(
+            height: 1,
+            indent: 36,
+            endIndent: 40,
+          ),
+          shrinkWrap: true,
+          itemCount: files.length,
+          padding: const EdgeInsets.all(8),
+          itemBuilder: (context, index) {
+            final data = files[index];
+            return ListTile(
+              minVerticalPadding: 2,
+              leading: const Icon(Icons.attach_file_outlined),
+              title: Text(data.name),
+              subtitle: FutureBuilder<String>(
+                future: getFileSize(data),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(snapshot.data!);
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.adaptive.share_outlined),
+                onPressed: () {
+                  IOServices().shareFile(context, data);
+                },
+              ),
+            );
+          },
+        ));
+  }
+}
+
+class IOListContainer extends StatelessWidget {
+  const IOListContainer({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  final String title;
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        Flexible(
+          child: child,
+        )
       ],
     );
   }
@@ -358,7 +424,7 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
   }
 
   Future<void> _selectFiles(bool isAddNew) async {
-    List<XFile> result = await FileSelectionServices(ref)
+    List<SegulFile> result = await FileSelectionServices(ref)
         .selectFiles(widget.xTypeGroup, widget.allowMultiple);
     final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {

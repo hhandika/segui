@@ -31,7 +31,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
-          xTypeGroup: const [sequenceTypeGroup],
+          xTypeGroup: sequenceTypeGroup,
           isDatatypeEnabled: false,
         ),
         const SizedBox(height: 16),
@@ -93,9 +93,10 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
     );
   }
 
-  Future<void> _parseId(List<XFile> inputFiles) async {
+  Future<void> _parseId(List<SegulFile> inputFiles) async {
     try {
-      final files = inputFiles.map((e) => e.path).toList();
+      final files = IOServices()
+          .convertPathsToString(inputFiles, SegulType.standardSequence);
       await SequenceServices(
         inputFiles: files,
         dir: ctr.dirPath.text,
@@ -114,7 +115,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
       task: SupportedTask.sequenceUniqueId,

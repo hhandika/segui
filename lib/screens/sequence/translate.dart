@@ -53,7 +53,7 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
-          xTypeGroup: const [sequenceTypeGroup],
+          xTypeGroup: sequenceTypeGroup,
           isDatatypeEnabled: false,
         ),
         const SizedBox(height: 16),
@@ -150,11 +150,14 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
     );
   }
 
-  Future<void> _translate(List<XFile> inputFiles) async {
+  Future<void> _translate(List<SegulFile> inputFiles) async {
     try {
       String outputFmt =
           getOutputFmt(ctr.outputFormatController!, isInterleave);
-      final files = inputFiles.map((e) => e.path).toList();
+      final files = IOServices().convertPathsToString(
+        inputFiles,
+        SegulType.standardSequence,
+      );
       await SequenceServices(
         inputFiles: files,
         dir: ctr.dirPath.text,
@@ -173,7 +176,7 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
       task: SupportedTask.sequenceTranslation,

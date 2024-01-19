@@ -31,7 +31,7 @@ class ContigPageState extends ConsumerState<ContigPage> {
           const CardTitle(title: 'Input'),
           FormCard(children: [
             InputSelectorForm(
-              xTypeGroup: const [genomicTypeGroup],
+              xTypeGroup: genomicTypeGroup,
               allowMultiple: true,
               ctr: ctr,
             ),
@@ -114,9 +114,10 @@ class ContigPageState extends ConsumerState<ContigPage> {
         ]);
   }
 
-  Future<void> _summarize(List<XFile> inputFiles) async {
+  Future<void> _summarize(List<SegulFile> inputFiles) async {
     try {
-      final files = inputFiles.map((e) => e.path).toList();
+      final files = IOServices()
+          .convertPathsToString(inputFiles, SegulType.genomicContig);
       await ContigServices(
         files: files,
         dirPath: ctr.dirPath.text,
@@ -138,7 +139,7 @@ class ContigPageState extends ConsumerState<ContigPage> {
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
       task: SupportedTask.genomicContigSummary,

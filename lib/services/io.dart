@@ -123,18 +123,23 @@ class FileSelectionServices {
     }).toList();
   }
 
-  Future<XFile?> _selectSingleFile(XTypeGroup allowedExtension) async {
+  Future<SegulFile?> _selectSingleFile(XTypeGroup allowedExtension) async {
     final result = await openFile(
       acceptedTypeGroups: [allowedExtension],
     );
-    return result;
+    return result == null
+        ? null
+        : SegulFile(
+            file: result,
+            type: matchTypeByXTypeGroup(allowedExtension),
+          );
   }
 }
 
 class IOServices {
   IOServices();
 
-  Future<File> archiveOutput({
+  Future<XFile> archiveOutput({
     required Directory dir,
     required String? fileName,
     required SupportedTask task,
@@ -149,19 +154,23 @@ class IOServices {
       filename: outputPath,
     );
 
-    return File(outputPath);
+    return XFile(outputPath);
   }
 
-  Future<void> shareFile(BuildContext context, File file) async {
+  Future<void> shareFile(BuildContext context, XFile file) async {
     final box = context.findRenderObject() as RenderBox?;
     await Share.shareXFiles(
-      [XFile(file.path)],
+      [file],
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
   }
 
   int countFiles(List<SegulFile> files, SegulType type) {
     return files.where((e) => e.type == type).length;
+  }
+
+  List<String> convertPathsToString(List<SegulFile> files, SegulType type) {
+    return files.where((e) => e.type == type).map((e) => e.file.path).toList();
   }
 
   Future<Directory?> selectDir() async {

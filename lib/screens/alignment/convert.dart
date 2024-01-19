@@ -48,7 +48,7 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: ctr,
-          xTypeGroup: const [sequenceTypeGroup],
+          xTypeGroup: sequenceTypeGroup,
         ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
@@ -157,7 +157,8 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
     try {
       String outputFmt =
           getOutputFmt(ctr.outputFormatController!, isInterleave);
-      final files = inputFiles.map((e) => e.file.path).toList();
+      final files = IOServices()
+          .convertPathsToString(inputFiles, SegulType.standardSequence);
       await SequenceServices(
         inputFiles: files,
         dir: ctr.dirPath.text,
@@ -186,7 +187,7 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(ctr.outputDir.text),
       fileName: ctr.outputController.text,
       task: SupportedTask.alignmentConversion,

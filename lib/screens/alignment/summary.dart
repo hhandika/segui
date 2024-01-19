@@ -60,7 +60,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
-          xTypeGroup: const [sequenceTypeGroup],
+          xTypeGroup: sequenceTypeGroup,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
@@ -133,11 +133,12 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     );
   }
 
-  Future<void> _summarize(List<XFile> files) async {
+  Future<void> _summarize(List<SegulFile> files) async {
     try {
-      final allFiles = files.map((e) => e.path).toList();
+      final inputFiles =
+          IOServices().convertPathsToString(files, SegulType.standardSequence);
       await AlignmentServices(
-        inputFiles: allFiles,
+        inputFiles: inputFiles,
         dir: _ctr.dirPath.text,
         outputDir: _ctr.outputDir.text,
         inputFmt: _ctr.inputFormatController!,
@@ -153,7 +154,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
 
   Future<void> _shareOutput() async {
     IOServices io = IOServices();
-    File outputPath = await io.archiveOutput(
+    XFile outputPath = await io.archiveOutput(
       dir: Directory(_ctr.outputDir.text),
       fileName: _ctr.outputController.text,
       task: SupportedTask.alignmentSummary,
