@@ -169,7 +169,7 @@ class AppPageView extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           color: Theme.of(context).colorScheme.surface,
         ),
-        constraints: BoxConstraints(maxWidth: windowWidth > 1500 ? 500 : 500),
+        constraints: BoxConstraints(maxWidth: windowWidth > 1800 ? 600 : 500),
         padding: const EdgeInsets.all(16),
         child: child,
       ),
