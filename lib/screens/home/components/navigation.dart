@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:segui/providers/navigation.dart';
+import 'package:segui/screens/settings/settings.dart';
 
 class NavigationTarget {
   const NavigationTarget({
@@ -58,3 +61,120 @@ const List<NavigationDrawerDestination> navigationDrawerTargets = [
     selectedIcon: Icon(BoxIcons.bx_dna),
   ),
 ];
+
+class ExpandedScreenDrawer extends ConsumerWidget {
+  const ExpandedScreenDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return NavigationDrawer(
+      tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      elevation: 0,
+      backgroundColor: Color.lerp(Theme.of(context).colorScheme.primary,
+          Theme.of(context).colorScheme.surface, 0.9),
+      indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+      indicatorShape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.horizontal(
+          right: Radius.circular(16),
+          left: Radius.circular(8),
+        ),
+      ),
+      selectedIndex: ref.watch(tabSelectionProvider),
+      children: const [
+        ...navigationDrawerTargets,
+        Divider(
+          thickness: 2,
+          indent: 8,
+          endIndent: 8,
+        ),
+        SettingMenuTile(),
+      ],
+      onDestinationSelected: (int index) {
+        ref.read(tabSelectionProvider.notifier).setTab(index);
+      },
+    );
+  }
+}
+
+class MediumScreenRail extends ConsumerWidget {
+  const MediumScreenRail({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return NavigationRail(
+      backgroundColor: Color.lerp(Theme.of(context).colorScheme.primary,
+          Theme.of(context).colorScheme.surface, 0.9),
+      labelType: NavigationRailLabelType.all,
+      indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+      destinations: navigationTargets
+          .map((e) => NavigationRailDestination(
+                icon: e.icon,
+                selectedIcon: e.selectedIcon,
+                label: Text(e.label),
+              ))
+          .toList(),
+      selectedIndex: ref.watch(tabSelectionProvider),
+      onDestinationSelected: (int index) {
+        ref.read(tabSelectionProvider.notifier).setTab(index);
+      },
+      groupAlignment: BorderSide.strokeAlignCenter,
+      trailing: Expanded(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Settings(),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingMenuTile extends StatelessWidget {
+  const SettingMenuTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SecondaryMenuTile(
+      text: 'Settings',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Settings(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SecondaryMenuTile extends StatelessWidget {
+  const SecondaryMenuTile({
+    super.key,
+    required this.text,
+    required this.onTap,
+  });
+
+  final String text;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 2),
+      child: ListTile(
+        title: Text(text, style: Theme.of(context).textTheme.labelLarge),
+        onTap: onTap,
+      ),
+    );
+  }
+}
