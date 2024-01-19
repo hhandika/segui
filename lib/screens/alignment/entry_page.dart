@@ -57,13 +57,13 @@ class AlignmentContentPage extends ConsumerWidget {
   }
 }
 
-class AlignmentOptions extends StatelessWidget {
+class AlignmentOptions extends ConsumerWidget {
   const AlignmentOptions({super.key, required this.analysis});
 
   final AlignmentOperationType analysis;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     switch (analysis) {
       case AlignmentOperationType.concatenation:
         return const ConcatPage();
@@ -72,6 +72,9 @@ class AlignmentOptions extends StatelessWidget {
       case AlignmentOperationType.conversion:
         return const ConvertPage();
       case AlignmentOperationType.split:
+        // Remove input when switching to split
+        // because it is not compatible with other operations
+        ref.invalidate(fileInputProvider);
         return const SplitAlignmentPage();
       default:
         return const SizedBox();

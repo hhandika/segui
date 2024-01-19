@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/src/rust/api/sequence.dart';
 
 class SplitAlignmentPage extends ConsumerStatefulWidget {
   const SplitAlignmentPage({super.key});
@@ -18,6 +20,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String? _partitionFormatController;
+  bool _isUnchecked = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -114,6 +117,14 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
               });
             },
           ),
+          SwitchForm(
+              label: 'Check partition for errors',
+              value: _isUnchecked,
+              onPressed: (value) {
+                setState(() {
+                  _isUnchecked = value;
+                });
+              }),
         ]),
         const SizedBox(height: 16),
         Center(
@@ -125,12 +136,68 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
           onNewRun: () => setState(() {
             _ctr.isRunning = true;
           }),
-          onExecuted: () => setState(() {
-            _ctr.isRunning = false;
-          }),
+          onExecuted: ref.read(fileInputProvider).when(
+                data: (value) {
+                  if (value.isEmpty) {
+                    return null;
+                  } else {
+                    return _ctr.isRunning || !_ctr.isValid()
+                        ? null
+                        : () async {
+                            setState(() {
+                              _ctr.isRunning = true;
+                            });
+                            await _split(value);
+                            setState(() {
+                              _ctr.isRunning = false;
+                              _ctr.isSuccess = true;
+                            });
+                          };
+                  }
+                },
+                loading: () => null,
+                error: (error, stack) => null,
+              ),
           onShared: () {},
         ))
       ],
     );
+  }
+
+  Future<void> _split(List<SegulFile> inputFile) async {
+    try {
+      final inputSequence =
+          inputFile.firstWhere((e) => e.type == SegulType.standardSequence);
+      final inputPartition =
+          inputFile.firstWhere((e) => e.type == SegulType.alignmentPartition);
+      await SplitAlignmentServices(
+        inputFile: inputSequence.file.path,
+        inputFmt: _ctr.inputFormatController ?? 'Auto',
+        inputPartitionFmt: _partitionFormatController ?? 'Charset',
+        inputPartition: inputPartition.file.path,
+        datatype: _ctr.dataTypeController,
+        outputDir: _ctr.outputDir.text,
+        prefix: _ctr.outputController.text,
+        outputFmt: _ctr.outputFormatController ?? 'NEXUS',
+        isUncheck: _isUnchecked,
+      ).splitAlignment();
+    } catch (e) {
+      _showError(e.toString());
+      setState(() {
+        _ctr.isRunning = false;
+        _ctr.isSuccess = false;
+      });
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+          context,
+          message,
+        ),
+      );
+    }
   }
 }
