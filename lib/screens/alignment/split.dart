@@ -57,6 +57,8 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         FormCard(children: [
           SharedSequenceInputForm(
             ctr: _ctr,
+            allowMultiple: false,
+            hasSecondaryPicker: true,
             xTypeGroup: sequenceTypeGroup,
           ),
         ]),
@@ -81,6 +83,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
             child: const SharedFilePicker(
               label: 'Select partition file',
               allowMultiple: false,
+              hasSecondaryPicker: true,
               xTypeGroup: partitionTypeGroup,
             ),
           )

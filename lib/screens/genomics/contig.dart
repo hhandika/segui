@@ -34,6 +34,7 @@ class ContigPageState extends ConsumerState<ContigPage> {
               xTypeGroup: genomicTypeGroup,
               allowMultiple: true,
               ctr: ctr,
+              hasSecondaryPicker: false,
             ),
             SharedDropdownField(
               value: ctr.inputFormatController,

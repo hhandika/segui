@@ -15,12 +15,14 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
     required this.xTypeGroup,
     this.allowMultiple = true,
     this.isDatatypeEnabled = true,
+    this.hasSecondaryPicker = false,
   });
 
   final IOController ctr;
   final bool allowMultiple;
   final XTypeGroup xTypeGroup;
   final bool isDatatypeEnabled;
+  final bool hasSecondaryPicker;
 
   @override
   SharedSequenceInputFormState createState() => SharedSequenceInputFormState();
@@ -36,6 +38,7 @@ class SharedSequenceInputFormState
           ctr: widget.ctr,
           allowMultiple: widget.allowMultiple,
           xTypeGroup: widget.xTypeGroup,
+          hasSecondaryPicker: widget.isDatatypeEnabled,
         ),
         SharedDropdownField(
           value: widget.ctr.inputFormatController,

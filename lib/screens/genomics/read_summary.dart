@@ -35,6 +35,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
             xTypeGroup: genomicTypeGroup,
             allowMultiple: true,
             ctr: ctr,
+            hasSecondaryPicker: false,
           ),
           SharedDropdownField(
             value: ctr.inputFormatController,

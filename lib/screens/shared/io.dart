@@ -316,11 +316,13 @@ class InputSelectorForm extends StatelessWidget {
     required this.ctr,
     required this.allowMultiple,
     required this.xTypeGroup,
+    required this.hasSecondaryPicker,
   });
 
   final IOController ctr;
   final bool allowMultiple;
   final XTypeGroup xTypeGroup;
+  final bool hasSecondaryPicker;
 
   @override
   Widget build(BuildContext context) {
@@ -328,6 +330,7 @@ class InputSelectorForm extends StatelessWidget {
       label: 'Select input files',
       allowMultiple: allowMultiple,
       xTypeGroup: xTypeGroup,
+      hasSecondaryPicker: hasSecondaryPicker,
     );
   }
 }
@@ -338,11 +341,13 @@ class SharedFilePicker extends ConsumerStatefulWidget {
     required this.label,
     required this.allowMultiple,
     required this.xTypeGroup,
+    required this.hasSecondaryPicker,
   });
 
   final String label;
   final bool allowMultiple;
   final XTypeGroup xTypeGroup;
+  final bool hasSecondaryPicker;
 
   @override
   SharedMultiFilePickerState createState() => SharedMultiFilePickerState();
@@ -355,8 +360,8 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
   Widget build(BuildContext context) {
     final type = matchTypeByXTypeGroup(widget.xTypeGroup);
     return ref.watch(fileInputProvider).when(
-          data: (value) {
-            final data = value.where((e) => e.type == type).toList();
+          data: (data) {
+            final isAddNew = data.where((e) => e.type == type).toList().isEmpty;
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -391,17 +396,18 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
                           child: CircularProgressIndicator(),
                         )
                       : IconButton(
-                          icon: data.isEmpty
+                          icon: isAddNew
                               ? const Icon(Icons.folder)
                               : const Icon(Icons.add_rounded),
-                          onPressed: data.isNotEmpty && !widget.allowMultiple
+                          onPressed: !isAddNew && !widget.allowMultiple
                               ? null
                               : () async {
                                   setState(() {
                                     _isLoading = true;
                                   });
                                   try {
-                                    await _selectFiles(data.isEmpty);
+                                    await _selectFiles(
+                                        isAddNew && !widget.hasSecondaryPicker);
                                   } catch (e) {
                                     if (mounted) {
                                       ScaffoldMessenger.of(context)
