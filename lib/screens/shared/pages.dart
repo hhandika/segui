@@ -7,7 +7,7 @@ import 'package:segui/screens/shared/io.dart';
 const mdMediumScreenSize = 840;
 
 /// A page that shows a shared operation.
-/// to swicht layout between compact and expanded screen.
+/// to switch layout between compact and expanded screen.
 class SharedOperationPage extends StatelessWidget {
   const SharedOperationPage({
     super.key,

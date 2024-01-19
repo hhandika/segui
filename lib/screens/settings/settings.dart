@@ -32,43 +32,52 @@ class Settings extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Settings'),
         ),
-        body: Center(
-            child: SettingsList(sections: [
-          SettingsSection(
-            tiles: [
-              SettingsTile.navigation(
-                title: const Text('Log files'),
-                leading: const Icon(Icons.admin_panel_settings),
-                onPressed: (context) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LogScreen(),
-                  ),
-                ),
+        body: const SettingPages());
+  }
+}
+
+class SettingPages extends StatelessWidget {
+  const SettingPages({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: SettingsList(sections: [
+      SettingsSection(
+        tiles: [
+          SettingsTile.navigation(
+            title: const Text('Log files'),
+            leading: const Icon(Icons.admin_panel_settings),
+            onPressed: (context) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LogScreen(),
               ),
-              SettingsTile.navigation(
-                title: const Text('Theme'),
-                leading: const Icon(Icons.color_lens_outlined),
-                onPressed: (context) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ThemeSettings(),
-                  ),
-                ),
+            ),
+          ),
+          SettingsTile.navigation(
+            title: const Text('Theme'),
+            leading: const Icon(Icons.color_lens_outlined),
+            onPressed: (context) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ThemeSettings(),
               ),
-              SettingsTile.navigation(
-                leading: const Icon(Icons.info_outline),
-                title: const Text('About'),
-                onPressed: (context) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AppAbout(),
-                  ),
-                ),
+            ),
+          ),
+          SettingsTile.navigation(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About'),
+            onPressed: (context) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AppAbout(),
               ),
-            ],
-          )
-        ])));
+            ),
+          ),
+        ],
+      )
+    ]));
   }
 }
 

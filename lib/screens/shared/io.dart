@@ -25,28 +25,30 @@ class _IOCompactScreenState extends State<IOCompactScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 3,
-        child: Scaffold(
-            appBar: const TabBar(
-              tabs: [
-                Tab(
-                  icon: Icon(Icons.play_circle_outline),
-                ),
-                Tab(
-                  icon: Icon(Icons.input),
-                ),
-                Tab(
-                  icon: Icon(Icons.output),
-                ),
-              ],
+      length: 3,
+      child: Scaffold(
+        appBar: const TabBar(
+          tabs: [
+            Tab(
+              icon: Icon(Icons.play_circle_outline),
             ),
-            body: TabBarView(
-              children: [
-                widget.child,
-                const InputScreen(),
-                const OutputScreen(),
-              ],
-            )));
+            Tab(
+              icon: Icon(Icons.input),
+            ),
+            Tab(
+              icon: Icon(Icons.output),
+            ),
+          ],
+        ),
+        body: TabBarView(
+          children: [
+            widget.child,
+            const InputScreen(),
+            const OutputScreen(),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -61,15 +63,12 @@ class _IOExpandedScreenState extends State<IOExpandedScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 1,
-            ),
+            color: Theme.of(context).colorScheme.surface,
           ),
           child: const DefaultTabController(
             length: 2,

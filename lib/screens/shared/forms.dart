@@ -143,12 +143,13 @@ class FormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppPageView(
-        child: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: children,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: children,
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -164,7 +165,11 @@ class AppPageView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Container(
         height: double.infinity,
-        constraints: BoxConstraints(maxWidth: windowWidth > 1500 ? 800 : 500),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        constraints: BoxConstraints(maxWidth: windowWidth > 1500 ? 500 : 500),
         padding: const EdgeInsets.all(16),
         child: child,
       ),
