@@ -15,7 +15,6 @@ use segul::handler::sequence::translate::Translate;
 use segul::helper::files::create_output_fname_from_path;
 use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{log_input_partition, AlignSeqLogger};
-use segul::helper::partition::construct_partition_path;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, utils};
@@ -451,7 +450,7 @@ impl PartitionServices {
         self.input_files.iter().map(Path::new).for_each(|input| {
             log_input_partition(Some(input), self.input_files.len());
             let file_stem = self.extract_partition_fname(input);
-            let output_path = construct_partition_path(output, &out_part_fmt);
+            let output_path = self.create_final_output_path(output, &file_stem);
             let converter = PartConverter::new(input, &input_fmt, &output_path, &out_part_fmt);
             converter.convert(&datatype, self.is_uncheck);
         });
@@ -464,6 +463,10 @@ impl PartitionServices {
             .to_str()
             .expect("Invalid input file stem")
             .to_string()
+    }
+
+    fn create_final_output_path(&self, output: &Path, file_stem: &str) -> PathBuf {
+        output.join(file_stem)
     }
 }
 
