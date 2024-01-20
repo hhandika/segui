@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/sequence.dart';
+
+const SupportedTask task = SupportedTask.alignmentSummary;
 
 class AlignmentSummaryPage extends ConsumerStatefulWidget {
   const AlignmentSummaryPage({super.key});
@@ -66,10 +68,8 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-              ctr: _ctr.outputDir,
-              onChanged: () {
-                setState(() {});
-              }),
+            ctr: _ctr.outputDir,
+          ),
           SharedTextField(
             controller: _ctr.outputController,
             label: 'Output Prefix',
@@ -95,11 +95,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             isRunning: _ctr.isRunning,
             isSuccess: _ctr.isSuccess,
             controller: _ctr,
-            onNewRun: () => setState(() {
-              _ctr.isSuccess = false;
-              ref.invalidate(fileInputProvider);
-              ref.invalidate(fileOutputProvider);
-            }),
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
@@ -108,10 +104,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
                       return _ctr.isRunning || !_ctr.isValid()
                           ? null
                           : () async {
-                              setState(() {
-                                _ctr.isRunning = true;
-                              });
-                              await _summarize(value);
+                              await _execute(value);
                             };
                     }
                   },
@@ -120,47 +113,80 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
                     return null;
                   },
                 ),
-            onShared: () {
-              try {
-                _shareOutput();
-              } catch (e) {
-                _showError(e.toString());
-              }
-            },
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ),
         ),
       ],
     );
   }
 
-  Future<void> _summarize(List<SegulInputFile> files) async {
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return await ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _summarize(inputFiles, value.directory!);
+            }
+          },
+          loading: () => null,
+          error: (e, s) => _showError(e.toString()),
+        );
+  }
+
+  Future<void> _summarize(
+      List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
-      final inputFiles =
-          IOServices().convertPathsToString(files, SegulType.standardSequence);
-      await AlignmentServices(
+      _setRunning();
+      await AlignmentSummaryRunner(
         inputFiles: inputFiles,
-        dir: _ctr.dirPath.text,
-        outputDir: _ctr.outputDir.text,
         inputFmt: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
-      ).summarizeAlignment(
-          outputPrefix: _ctr.outputController.text,
-          interval: int.tryParse(_interval) ?? 5);
+        outputDir: outputDir,
+        outputPrefix: _ctr.outputController.text,
+        outputFmt: _ctr.outputFormatController!,
+        interval: int.tryParse(_interval) ?? 5,
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
     }
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(_ctr.outputDir.text),
-      fileName: _ctr.outputController.text,
-      task: SupportedTask.alignmentSummary,
-    );
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
+
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
   }
 
@@ -170,6 +196,21 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, error),
       );
+    });
+  }
+
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = true;
+    });
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
     });
   }
 

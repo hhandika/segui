@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/tasks/genomics.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/reads.dart';
+
+const SupportedTask task = SupportedTask.genomicRawReadSummary;
 
 class ReadSummaryPage extends ConsumerStatefulWidget {
   const ReadSummaryPage({super.key});
@@ -20,7 +22,7 @@ class ReadSummaryPage extends ConsumerStatefulWidget {
 }
 
 class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
-  IOController ctr = IOController.empty();
+  final IOController _ctr = IOController.empty();
   String mode = sequenceReadSummaryMode[0];
 
   @override
@@ -34,16 +36,16 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
           InputSelectorForm(
             xTypeGroup: genomicTypeGroup,
             allowMultiple: true,
-            ctr: ctr,
+            ctr: _ctr,
             hasSecondaryPicker: false,
           ),
           SharedDropdownField(
-            value: ctr.inputFormatController,
+            value: _ctr.inputFormatController,
             label: 'Format',
             items: sequenceReadFormat,
             onChanged: (String? value) {
               setState(() {
-                ctr.inputFormatController = value;
+                _ctr.inputFormatController = value;
               });
             },
           ),
@@ -52,10 +54,8 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onChanged: () {
-                setState(() {});
-              }),
+            ctr: _ctr.outputDir,
+          ),
           SharedDropdownField(
             value: mode,
             label: 'Summary Mode',
@@ -72,26 +72,20 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
         const SizedBox(height: 16),
         Center(
           child: ExecutionButton(
-            isRunning: ctr.isRunning,
-            isSuccess: ctr.isSuccess,
-            controller: ctr,
+            isRunning: _ctr.isRunning,
+            isSuccess: _ctr.isSuccess,
+            controller: _ctr,
             label: 'Summarize',
-            onNewRun: () => setState(() {}),
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
                 data: (value) {
                   if (value.isEmpty) {
                     return null;
                   } else {
-                    return ctr.isRunning || !ctr.isValid()
+                    return _ctr.isRunning || !_ctr.isValid()
                         ? null
                         : () async {
-                            String dir = await getOutputDir(ctr.outputDir.text,
-                                SupportedTask.genomicRawReadSummary);
-                            setState(() {
-                              ctr.isRunning = true;
-                              ctr.outputDir.text = dir;
-                            });
-                            await _summarize(value);
+                            await _execute(value);
                           };
                   }
                 },
@@ -100,68 +94,114 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
                   _showError(e.toString());
                   return null;
                 }),
-            onShared: () {
-              try {
-                _shareOutput();
-              } catch (e) {
-                _showError(e.toString());
-              }
-            },
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ),
         )
       ],
     );
   }
 
-  Future<void> _summarize(List<SegulInputFile> inputFiles) async {
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return await ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _summarize(inputFiles, value.directory!);
+            }
+          },
+          loading: () => null,
+          error: (e, s) => _showError(e.toString()),
+        );
+  }
+
+  Future<void> _summarize(
+      List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
-      final files =
-          IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);
-      await RawReadServices(
-        files: files,
-        dirPath: ctr.dirPath.text,
-        outputDir: ctr.outputDir.text,
-        fileFmt: ctr.inputFormatController!,
-      ).summarize(
+      _setRunning();
+      await ReadSummaryRunner(
+        inputFiles: inputFiles,
+        inputFmt: _ctr.inputFormatController!,
+        outputDir: outputDir,
         mode: mode,
-      );
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
     }
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(ctr.outputDir.text),
-      fileName: ctr.outputController.text,
-      task: SupportedTask.genomicRawReadSummary,
-    );
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
+
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
   }
 
-  void _showError(String error) {
+  void _setRunning() {
     setState(() {
-      ctr.isRunning = false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error),
-        ),
-      );
+      _ctr.isRunning = true;
+    });
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
     });
   }
 
   void _setSuccess() {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = true;
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Summarization complete'),
+        showSharedSnackBar(
+          context,
+          'Genomic read summarization successful! 🎉 \n'
+          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
         ),
+      );
+    });
+  }
+
+  void _showError(String error) {
+    setState(() {
+      _ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, error),
       );
     });
   }

@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/sequence.dart';
+
+const SupportedTask task = SupportedTask.sequenceUniqueId;
 
 class IDExtractionPage extends ConsumerStatefulWidget {
   const IDExtractionPage({super.key});
@@ -19,7 +21,7 @@ class IDExtractionPage extends ConsumerStatefulWidget {
 }
 
 class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
-  IOController ctr = IOController.empty();
+  final IOController _ctr = IOController.empty();
   bool _isMap = false;
 
   @override
@@ -30,7 +32,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
       children: [
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
-          ctr: ctr,
+          ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           isDatatypeEnabled: false,
         ),
@@ -38,10 +40,11 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-              ctr: ctr.outputDir, onChanged: () => setState(() {})),
+            ctr: _ctr.outputDir,
+          ),
           SharedTextField(
-            controller: ctr.outputController,
-            label: 'Filename',
+            controller: _ctr.outputController,
+            label: 'Prefix',
             hint: 'Enter output filename',
           ),
           SwitchForm(
@@ -57,94 +60,138 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
         Center(
           child: ExecutionButton(
             label: 'Parse IDs',
-            isRunning: ctr.isRunning,
-            isSuccess: ctr.isSuccess,
-            controller: ctr,
-            onNewRun: () => setState(() {}),
+            isRunning: _ctr.isRunning,
+            isSuccess: _ctr.isSuccess,
+            controller: _ctr,
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
                       return null;
                     } else {
-                      return ctr.isRunning || !ctr.isValid()
+                      return _ctr.isRunning || !_ctr.isValid()
                           ? null
                           : () async {
-                              try {
-                                await _parseId(value);
-                              } catch (e) {
-                                _showError(e.toString());
-                              }
+                              await _execute(value);
                             };
                     }
                   },
                   loading: () => null,
                   error: (e, _) => null,
                 ),
-            onShared: () async {
-              try {
-                await _shareOutput();
-              } catch (e) {
-                _showError(e.toString());
-              }
-            },
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ),
         )
       ],
     );
   }
 
-  Future<void> _parseId(List<SegulInputFile> inputFiles) async {
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _extractId(inputFiles, value.directory!);
+            }
+          },
+          loading: () => null,
+          error: (e, s) {
+            _showError(e.toString());
+          },
+        );
+  }
+
+  Future<void> _extractId(
+      List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
-      final files = IOServices()
-          .convertPathsToString(inputFiles, SegulType.standardSequence);
-      await SequenceServices(
-        inputFiles: files,
-        dir: ctr.dirPath.text,
-        outputDir: ctr.outputDir.text,
-        inputFmt: ctr.inputFormatController!,
-        datatype: ctr.dataTypeController,
-      ).parseSequenceId(
+      _setRunning();
+      await SequenceIdExtractionRunner(
+        inputFiles: inputFiles,
+        inputFmt: _ctr.inputFormatController!,
+        datatype: _ctr.dataTypeController,
+        outputDir: outputDir,
+        prefix: _ctr.outputController.text,
         isMap: _isMap,
-        outputFname: ctr.outputController.text,
-      );
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
     }
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(ctr.outputDir.text),
-      fileName: ctr.outputController.text,
-      task: SupportedTask.sequenceUniqueId,
-    );
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
+
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
+  }
+
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = true;
+    });
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
+    });
   }
 
   void _setSuccess() {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = true;
-      ScaffoldMessenger.of(context).showSnackBar(showSharedSnackBar(
-        context,
-        'Successfully parsed sequence ID! 🎉 \n'
-        'Output Path: ${showOutputDir(ctr.outputDir.text)}',
-      ));
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+          context,
+          'ID extraction successful! 🎉 \n'
+          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
+        ),
+      );
     });
   }
 
   void _showError(String error) {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = false;
+      _ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, error),
+      );
     });
-    ScaffoldMessenger.of(context).showSnackBar(showSharedSnackBar(
-      context,
-      'Failed to parse sequence ID: $error',
-    ));
   }
 }

@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/src/rust/api/sequence.dart';
+
+const SupportedTask task = SupportedTask.alignmentConversion;
 
 class SplitAlignmentPage extends ConsumerStatefulWidget {
   const SplitAlignmentPage({super.key});
@@ -99,9 +101,6 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
-            onChanged: () {
-              setState(() {});
-            },
           ),
           SharedTextField(
             controller: _ctr.outputController,
@@ -131,66 +130,86 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         ]),
         const SizedBox(height: 16),
         Center(
-            child: ExecutionButton(
-          label: 'Split',
-          controller: _ctr,
-          isSuccess: _ctr.isSuccess,
-          isRunning: _ctr.isRunning,
-          onNewRun: () => setState(() {
-            _ctr.isRunning = true;
-            _ctr.isSuccess = false;
-          }),
-          onExecuted: ref.read(fileInputProvider).when(
-                data: (value) {
-                  if (value.isEmpty) {
-                    return null;
-                  } else {
-                    return _ctr.isRunning || !_ctr.isValid()
-                        ? null
-                        : () async {
-                            setState(() {
-                              _ctr.isRunning = true;
-                            });
-                            await _split(value);
-                            setState(() {
-                              _ctr.isRunning = false;
-                              _ctr.isSuccess = true;
-                            });
-                          };
-                  }
-                },
-                loading: () => null,
-                error: (error, stack) => null,
-              ),
-          onShared: () async {
-            try {
-              await _shareOutput();
-            } catch (e) {
-              _showError(e.toString());
-            }
-          },
-        ))
+          child: ExecutionButton(
+            label: 'Split',
+            controller: _ctr,
+            isSuccess: _ctr.isSuccess,
+            isRunning: _ctr.isRunning,
+            onNewRun: _setNewRun,
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _execute(value);
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (error, stack) => null,
+                ),
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
+          ),
+        )
       ],
     );
   }
 
+  Future<void> _execute(List<SegulInputFile> inputFile) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return await ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _split(inputFile);
+            }
+          },
+          loading: () => null,
+          error: (e, _) => null,
+        );
+  }
+
   Future<void> _split(List<SegulInputFile> inputFile) async {
     try {
+      _setRunning();
       final inputSequence =
           inputFile.firstWhere((e) => e.type == SegulType.standardSequence);
       final inputPartition =
           inputFile.firstWhere((e) => e.type == SegulType.alignmentPartition);
-      await SplitAlignmentServices(
+      await SplitAlignmentRunner(
         inputFile: inputSequence.file.path,
-        inputFmt: _ctr.inputFormatController ?? 'Auto',
-        inputPartitionFmt: _partitionFormatController ?? 'Charset',
+        inputFmt: _ctr.inputFormatController!,
+        inputPartitionFmt: _partitionFormatController!,
         inputPartition: inputPartition.file.path,
         datatype: _ctr.dataTypeController,
         outputDir: _ctr.outputDir.text,
         prefix: _ctr.outputController.text,
-        outputFmt: _ctr.outputFormatController ?? 'NEXUS',
+        outputFmt: _ctr.outputFormatController!,
         isUncheck: _isUnchecked,
-      ).splitAlignment();
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
+      _setSuccess();
     } catch (e) {
       _showError(e.toString());
       setState(() {
@@ -200,20 +219,43 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     }
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(_ctr.outputDir.text),
-      fileName: _ctr.outputController.text,
-      task: SupportedTask.alignmentConcatenation,
-    );
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
 
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
   }
 
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = true;
+    });
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
+    });
+  }
+
   void _showError(String message) {
+    setState(() {
+      _ctr.isRunning = false;
+    });
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
@@ -222,5 +264,19 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         ),
       );
     }
+  }
+
+  void _setSuccess() {
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+          context,
+          'Alignment Splitting successful! 🎉 \n'
+          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
+        ),
+      );
+    });
   }
 }

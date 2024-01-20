@@ -38,7 +38,7 @@ class SelectDirField extends ConsumerWidget {
             final dir = await _selectDir();
             if (dir != null) {
               dirPath.text = dir.path;
-              ref.read(fileOutputProvider.notifier).addFiles(dir);
+              ref.read(fileOutputProvider.notifier).add(dir);
             }
           },
         ),

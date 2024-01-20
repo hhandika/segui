@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/src/rust/api/sequence.dart';
+
+const SupportedTask task = SupportedTask.partitionConversion;
 
 class PartitionConversionPage extends ConsumerStatefulWidget {
   const PartitionConversionPage({super.key});
@@ -24,11 +26,6 @@ class PartitionConversionPageState
   final IOController _ctr = IOController.empty();
   String? _partitionFormatController;
   bool _isUnchecked = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -97,9 +94,6 @@ class PartitionConversionPageState
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
-            onChanged: () {
-              setState(() {});
-            },
           ),
           SharedDropdownField(
             value: _ctr.outputFormatController,
@@ -129,15 +123,7 @@ class PartitionConversionPageState
             controller: _ctr,
             isRunning: _ctr.isRunning,
             isSuccess: _ctr.isSuccess,
-            onNewRun: () {
-              setState(() {
-                _ctr.reset();
-                ref.invalidate(fileInputProvider);
-                ref.invalidate(fileOutputProvider);
-                _ctr.isRunning = false;
-                _ctr.isSuccess = false;
-              });
-            },
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
@@ -146,49 +132,70 @@ class PartitionConversionPageState
                       return _ctr.isRunning || !_isValid
                           ? null
                           : () async {
-                              _setRunning();
-                              await _convert(value);
-                              _setSuccess();
+                              await _execute(value);
                             };
                     }
                   },
                   loading: () => null,
                   error: (e, s) => null,
                 ),
-            onShared: () async {
-              try {
-                _setRunning();
-                await _shareOutput();
-                _stopRunning();
-              } catch (e) {
-                _showError(e.toString());
-                _stopRunning();
-              }
-            },
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ),
         )
       ],
     );
   }
 
-  Future<void> _convert(List<SegulInputFile> inputFiles) async {
-    try {
-      final inputPartitions = inputFiles
-          .where((e) => e.type == SegulType.alignmentPartition)
-          .map((e) => e.file.path)
-          .toList();
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return await ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _convert(inputFiles, value.directory!);
+            }
+          },
+          loading: () => null,
+          error: (e, s) => null,
+        );
+  }
 
-      await PartitionServices(
-        inputFiles: inputPartitions,
-        inputPartFmt: _partitionFormatController!,
-        output: _ctr.outputDir.text,
-        outputPartFmt: _ctr.outputFormatController!,
+  Future<void> _convert(
+    List<SegulInputFile> inputFiles,
+    Directory directory,
+  ) async {
+    try {
+      _setRunning();
+      await PartConversionRunnerServices(
+        inputFiles: inputFiles,
+        inputFormat: _ctr.inputFormatController!,
+        outputDir: directory,
+        outputFormat: _ctr.outputFormatController!,
         datatype: _ctr.dataTypeController,
-        isUncheck: _isUnchecked,
-      ).convertPartition();
+        isUnchecked: _isUnchecked,
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
+      _setSuccess();
     } catch (e) {
       _showError(e.toString());
-      _stopRunning();
     }
   }
 
@@ -199,17 +206,40 @@ class PartitionConversionPageState
     return isInputValid && _ctr.isValid();
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(_ctr.outputDir.text),
-      fileName: _ctr.outputController.text,
-      task: SupportedTask.alignmentConcatenation,
-    );
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
 
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
+    });
+  }
+
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = false;
+    });
+    setState(() {
+      _ctr.isRunning = true;
+    });
   }
 
   void _showError(String message) {
@@ -223,22 +253,17 @@ class PartitionConversionPageState
     }
   }
 
-  void _setRunning() {
-    setState(() {
-      _ctr.isRunning = true;
-    });
-  }
-
-  void _stopRunning() {
-    setState(() {
-      _ctr.isRunning = false;
-    });
-  }
-
   void _setSuccess() {
     setState(() {
       _ctr.isRunning = false;
       _ctr.isSuccess = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+          context,
+          'Partition conversion successful! 🎉 \n'
+          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
+        ),
+      );
     });
   }
 }

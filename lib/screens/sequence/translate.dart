@@ -8,9 +8,11 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
+import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/sequence.dart';
+
+const SupportedTask task = SupportedTask.sequenceTranslation;
 
 class TranslatePage extends ConsumerStatefulWidget {
   const TranslatePage({super.key});
@@ -20,8 +22,8 @@ class TranslatePage extends ConsumerStatefulWidget {
 }
 
 class TranslatePageState extends ConsumerState<TranslatePage> {
-  IOController ctr = IOController.empty();
-  bool isInterleave = false;
+  final IOController _ctr = IOController.empty();
+  bool _isInterleave = false;
   String _readingFrame = readingFrame[0];
   int _tableIndex = 0;
 
@@ -33,7 +35,7 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
       children: [
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
-          ctr: ctr,
+          ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           isDatatypeEnabled: false,
         ),
@@ -41,28 +43,26 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onChanged: () {
-                setState(() {});
-              }),
+            ctr: _ctr.outputDir,
+          ),
           SharedDropdownField(
-            value: ctr.outputFormatController,
+            value: _ctr.outputFormatController,
             label: 'Format',
             items: outputFormat,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
-                  ctr.outputFormatController = value;
+                  _ctr.outputFormatController = value;
                 }
               });
             },
           ),
           SwitchForm(
               label: 'Set interleaved format',
-              value: isInterleave,
+              value: _isInterleave,
               onPressed: (value) {
                 setState(() {
-                  isInterleave = value;
+                  _isInterleave = value;
                 });
               }),
           SharedDropdownField(
@@ -94,22 +94,19 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
         Center(
           child: ExecutionButton(
             label: 'Translate',
-            isRunning: ctr.isRunning,
-            isSuccess: ctr.isSuccess,
-            controller: ctr,
-            onNewRun: () => setState(() {}),
+            isRunning: _ctr.isRunning,
+            isSuccess: _ctr.isSuccess,
+            controller: _ctr,
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
                       return null;
                     } else {
-                      return ctr.isRunning || !ctr.isValid()
+                      return _ctr.isRunning || !_ctr.isValid()
                           ? null
                           : () async {
-                              setState(() {
-                                ctr.isRunning = true;
-                              });
-                              await _translate(value);
+                              await _execute(value);
                             };
                     }
                   },
@@ -118,73 +115,119 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
                     return null;
                   },
                 ),
-            onShared: () async {
-              try {
-                await _shareOutput();
-              } catch (e) {
-                _showError(e.toString());
-              }
-            },
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ),
         )
       ],
     );
   }
 
-  Future<void> _translate(List<SegulInputFile> inputFiles) async {
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _translate(inputFiles, value.directory!);
+            }
+          },
+          loading: () => null,
+          error: (e, s) {
+            _showError(e.toString());
+          },
+        );
+  }
+
+  Future<void> _translate(
+      List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
-      String outputFmt =
-          getOutputFmt(ctr.outputFormatController!, isInterleave);
-      final files = IOServices().convertPathsToString(
-        inputFiles,
-        SegulType.standardSequence,
-      );
-      await SequenceServices(
-        inputFiles: files,
-        dir: ctr.dirPath.text,
-        outputDir: ctr.outputDir.text,
-        inputFmt: ctr.inputFormatController!,
-        datatype: ctr.dataTypeController,
-      ).translateSequence(
-          table: _tableIndex.toString(),
-          readingFrame: int.tryParse(_readingFrame) ?? 1,
-          outputFmt: outputFmt);
+      _setRunning();
+      await SequenceTranslationRunner(
+        inputFiles: inputFiles,
+        inputFmt: _ctr.inputFormatController!,
+        datatype: _ctr.dataTypeController,
+        outputDir: outputDir,
+        outputFmt: _ctr.outputFormatController!,
+        tableIndex: _tableIndex,
+        readingFrame: _readingFrame,
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
     }
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(ctr.outputDir.text),
-      fileName: ctr.outputController.text,
-      task: SupportedTask.sequenceTranslation,
-    );
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
+
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
   }
 
-  void _showError(String error) {
+  void _setRunning() {
     setState(() {
-      ctr.isRunning = false;
+      _ctr.isRunning = true;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      showSharedSnackBar(context, error),
-    );
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
+    });
   }
 
   void _setSuccess() {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = true;
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
-            context,
-            'Translation complete! 🎉 \n'
-            'Output path: ${showOutputDir(ctr.outputDir.text)}'),
+          context,
+          'Sequence translation successful! 🎉 \n'
+          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
+        ),
+      );
+    });
+  }
+
+  void _showError(String error) {
+    setState(() {
+      _ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, error),
       );
     });
   }

@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/archive.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/reads.dart';
@@ -55,10 +56,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignmentServices dco_decode_alignment_services(dynamic raw);
 
   @protected
+  ArchiveServices dco_decode_archive_services(dynamic raw);
+
+  @protected
   bool dco_decode_bool(dynamic raw);
 
   @protected
   AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw);
+
+  @protected
+  ArchiveServices dco_decode_box_autoadd_archive_services(dynamic raw);
 
   @protected
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
@@ -172,10 +179,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignmentServices sse_decode_alignment_services(SseDeserializer deserializer);
 
   @protected
+  ArchiveServices sse_decode_archive_services(SseDeserializer deserializer);
+
+  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
   AlignmentServices sse_decode_box_autoadd_alignment_services(
+      SseDeserializer deserializer);
+
+  @protected
+  ArchiveServices sse_decode_box_autoadd_archive_services(
       SseDeserializer deserializer);
 
   @protected
@@ -304,11 +318,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AlignmentServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_archive_services(
+      ArchiveServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_alignment_services(
       AlignmentServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_archive_services(
+      ArchiveServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_contig_services(

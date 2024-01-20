@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/src/rust/api/sequence.dart';
+
+const SupportedTask task = SupportedTask.alignmentConversion;
 
 class ConvertPage extends ConsumerStatefulWidget {
   const ConvertPage({super.key});
@@ -20,10 +22,16 @@ class ConvertPage extends ConsumerStatefulWidget {
 }
 
 class ConvertPageState extends ConsumerState<ConvertPage> {
-  IOController ctr = IOController.empty();
-  bool isSortSequence = false;
-  bool isInterleave = false;
+  final IOController _ctr = IOController.empty();
+  bool _isSortSequence = false;
+  bool _isInterleave = false;
   bool _isShowMore = false;
+
+  @override
+  void dispose() {
+    _ctr.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,40 +41,37 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
       children: [
         SharedInfoForm(
           description: 'Convert sequence alignment to other formats.',
-          isShowingInfo: ctr.isShowingInfo,
+          isShowingInfo: _ctr.isShowingInfo,
           onClosed: () {
             setState(() {
-              ctr.isShowingInfo = false;
+              _ctr.isShowingInfo = false;
             });
           },
           onExpanded: () {
             setState(() {
-              ctr.isShowingInfo = true;
+              _ctr.isShowingInfo = true;
             });
           },
         ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
-          ctr: ctr,
+          ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
         ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
-            ctr: ctr.outputDir,
-            onChanged: () {
-              setState(() {});
-            },
+            ctr: _ctr.outputDir,
           ),
           SharedDropdownField(
-            value: ctr.outputFormatController,
+            value: _ctr.outputFormatController,
             label: 'Format',
             items: outputFormat,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
-                  ctr.outputFormatController = value;
+                  _ctr.outputFormatController = value;
                 }
               });
             },
@@ -75,10 +80,10 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
             visible: _isShowMore,
             child: SwitchForm(
                 label: 'Set interleaved format',
-                value: isInterleave,
+                value: _isInterleave,
                 onPressed: (value) {
                   setState(() {
-                    isInterleave = value;
+                    _isInterleave = value;
                   });
                 }),
           ),
@@ -86,10 +91,10 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
             visible: _isShowMore,
             child: SwitchForm(
               label: 'Sort by sequence ID',
-              value: isSortSequence,
+              value: _isSortSequence,
               onPressed: (value) {
                 setState(() {
-                  isSortSequence = value;
+                  _isSortSequence = value;
                 });
               },
             ),
@@ -107,106 +112,138 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
         Center(
           child: ExecutionButton(
             label: 'Convert',
-            isRunning: ctr.isRunning,
-            isSuccess: ctr.isSuccess,
-            controller: ctr,
-            onNewRun: () => setState(() {}),
+            isRunning: _ctr.isRunning,
+            isSuccess: _ctr.isSuccess,
+            controller: _ctr,
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
                       return null;
                     } else {
-                      return ctr.isRunning || !ctr.isValid()
+                      return _ctr.isRunning || !_ctr.isValid()
                           ? null
                           : () async {
-                              String dir = await getOutputDir(
-                                  ctr.outputDir.text,
-                                  SupportedTask.alignmentConversion);
-                              setState(() {
-                                ctr.isRunning = true;
-                                ctr.outputDir.text = dir;
-                              });
-                              await _convert(value);
+                              await _execute(value);
                             };
                     }
                   },
                   loading: () => null,
                   error: (e, _) => null,
                 ),
-            onShared: () async {
-              try {
-                await _shareOutput();
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    showSharedSnackBar(
-                      context,
-                      'Sharing failed!: $e',
-                    ),
-                  );
-                }
-              }
-            },
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ),
         )
       ],
     );
   }
 
-  Future<void> _convert(List<SegulInputFile> inputFiles) async {
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return await ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _convert(inputFiles, value.directory!);
+            }
+          },
+          loading: () => null,
+          error: (e, _) => null,
+        );
+  }
+
+  Future<void> _convert(
+    List<SegulInputFile> inputFiles,
+    Directory outputDir,
+  ) async {
     try {
-      String outputFmt =
-          getOutputFmt(ctr.outputFormatController!, isInterleave);
-      final files = IOServices()
-          .convertPathsToString(inputFiles, SegulType.standardSequence);
-      await SequenceServices(
-        inputFiles: files,
-        dir: ctr.dirPath.text,
-        outputDir: ctr.outputDir.text,
-        inputFmt: ctr.inputFormatController!,
-        datatype: ctr.dataTypeController,
-      ).convertSequence(
-        outputFmt: outputFmt,
-        sort: isSortSequence,
-      );
+      _setRunning();
+      await AlignConversionRunnerServices(
+        inputFiles: inputFiles,
+        inputFormat: _ctr.inputFormatController!,
+        datatype: _ctr.dataTypeController,
+        outputDir: outputDir,
+        outputFormat: _ctr.outputFormatController!,
+        isInterleave: _isInterleave,
+        isSorted: _isSortSequence,
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
     }
   }
 
-  void _showError(String error) {
-    setState(() {
-      ctr.isRunning = false;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(context, error),
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
       );
+      XFile outputPath = await archive.write();
+
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
+    }
+  }
+
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = true;
     });
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(ctr.outputDir.text),
-      fileName: ctr.outputController.text,
-      task: SupportedTask.alignmentConversion,
-    );
-    if (mounted) {
-      await io.shareFile(context, outputPath);
-    }
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
+    });
   }
 
   void _setSuccess() {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = true;
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
           'Conversion successful! 🎉 \n'
-          'Output Path: ${showOutputDir(ctr.outputDir.text)}',
+          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
         ),
+      );
+    });
+  }
+
+  void _showError(String error) {
+    setState(() {
+      _ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, error),
       );
     });
   }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
-import 'package:segui/services/alignments/sequences.dart';
+import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
@@ -140,64 +140,74 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
             isRunning: _ctr.isRunning,
             controller: _ctr,
             isSuccess: _ctr.isSuccess,
-            onNewRun: () => setState(() {}),
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
                       return null;
                     } else {
-                      return _ctr.isRunning || !_validate()
+                      return _ctr.isRunning || !_isValid
                           ? null
                           : () async {
-                              setState(() {
-                                _ctr.isRunning = true;
-                              });
-                              await _concat(value);
+                              await _execute(value);
                             };
                     }
                   },
                   loading: () => null,
                   error: (e, _) => null,
                 ),
-            onShared: () async {
-              try {
-                await _shareOutput();
-              } catch (e) {
-                _showError(e.toString());
-              }
-            },
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_isValid
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ),
         )
       ],
     );
   }
 
-  bool _validate() {
+  bool get _isValid {
     if (_ctr.outputFormatController == null) {
       _ctr.outputFormatController == outputFormat[0];
     }
     return _ctr.isValid();
   }
 
-  Future<void> _concat(List<SegulInputFile> inputFiles) async {
-    _updateOutputDir();
-    return ref.read(fileOutputProvider).when(
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(
+        ref, _ctr.outputDir.text, SupportedTask.alignmentConcatenation);
+    return await ref.read(fileOutputProvider).when(
         data: (value) async {
           if (value.directory == null) {
             return _showError('Output directory is not selected.');
           } else {
-            _execute(inputFiles, value.directory!);
+            await _convert(inputFiles, value.directory!);
           }
         },
         loading: () => null,
         error: (e, _) => _showError(e.toString()));
   }
 
-  Future<void> _execute(
+  Future<void> _convert(
     List<SegulInputFile> inputFiles,
     Directory outputDir,
   ) async {
     try {
+      _setRunning();
       await ConcatRunnerServices(
         inputFiles: inputFiles,
         inputFormat: _ctr.inputFormatController!,
@@ -209,31 +219,28 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         isCodonModel: isCodon,
         isInterleave: isInterleave,
       ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
     }
   }
 
-  void _updateOutputDir() {
-    if (Platform.isAndroid || Platform.isIOS) {
-      ref.read(fileOutputProvider.notifier).addMobile(
-            _ctr.outputDir.text,
-            SupportedTask.alignmentConcatenation,
-          );
-    }
-  }
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(_ctr.outputDir.text),
-      fileName: _ctr.outputController.text,
-      task: SupportedTask.alignmentConcatenation,
-    );
-
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
   }
 
@@ -243,6 +250,21 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, error),
       );
+    });
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
+    });
+  }
+
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = true;
     });
   }
 

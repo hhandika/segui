@@ -2,20 +2,23 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
-import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/src/rust/api/archive.dart';
 import 'package:share_plus/share_plus.dart';
 
 enum SupportedTask {
   alignmentConcatenation,
   alignmentConversion,
+  alignmentSplit,
   alignmentSummary,
   genomicRawReadSummary,
   genomicContigSummary,
+  partitionConversion,
   sequenceTranslation,
   sequenceUniqueId,
 }
@@ -23,9 +26,11 @@ enum SupportedTask {
 const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.alignmentConcatenation: 'segui-alignment-concatenation',
   SupportedTask.alignmentConversion: 'segui-alignment-conversion',
+  SupportedTask.alignmentSplit: 'segui-alignment-split',
   SupportedTask.alignmentSummary: 'segui-alignment-summary',
   SupportedTask.genomicRawReadSummary: 'segui-genomic-raw-read-summary',
   SupportedTask.genomicContigSummary: 'segui-genomic-contig-summary',
+  SupportedTask.partitionConversion: 'segui-partition-conversion',
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
 };
@@ -178,26 +183,31 @@ class FileSelectionServices {
   }
 }
 
-class IOServices {
-  IOServices();
+class ArchiveRunner {
+  const ArchiveRunner({
+    required this.outputDir,
+    required this.outputFiles,
+  });
 
-  Future<XFile> archiveOutput({
-    required Directory dir,
-    required String? fileName,
-    required SupportedTask task,
-  }) async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String outputFilename = '${fileName ?? defaultOutputDir[task]!}.zip';
-    String outputPath = p.join(appDocDir.path, outputFilename);
+  final Directory outputDir;
+  final List<XFile> outputFiles;
 
-    ZipFileEncoder encoder = ZipFileEncoder();
-    encoder.zipDirectory(
-      dir,
-      filename: outputPath,
-    );
+  Future<XFile> write() async {
+    String outputFilename = '${outputDir.path}.zip';
+    String outputPath = p.join(outputDir.path, outputFilename);
+    List<String> inputFiles = outputFiles.map((e) => e.path).toList();
+    await ArchiveServices(
+      inputDirectory: outputDir.path,
+      inputFiles: inputFiles,
+      outputPath: outputPath,
+    ).zip();
 
     return XFile(outputPath);
   }
+}
+
+class IOServices {
+  IOServices();
 
   Future<void> shareFile(BuildContext context, XFile file) async {
     final box = context.findRenderObject() as RenderBox?;
@@ -264,6 +274,15 @@ PlatformType get runningPlatform {
     return PlatformType.isMobile;
   } else {
     return PlatformType.isDesktop;
+  }
+}
+
+void updateOutputDir(WidgetRef ref, String dirName, SupportedTask task) {
+  if (Platform.isAndroid || Platform.isIOS) {
+    ref.read(fileOutputProvider.notifier).addMobile(
+          dirName,
+          SupportedTask.alignmentConcatenation,
+        );
   }
 }
 

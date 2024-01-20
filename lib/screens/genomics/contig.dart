@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/tasks/genomics.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/src/rust/api/contig.dart';
+
+const SupportedTask task = SupportedTask.genomicContigSummary;
 
 class ContigPage extends ConsumerStatefulWidget {
   const ContigPage({super.key});
@@ -20,7 +22,7 @@ class ContigPage extends ConsumerStatefulWidget {
 }
 
 class ContigPageState extends ConsumerState<ContigPage> {
-  IOController ctr = IOController.empty();
+  final IOController _ctr = IOController.empty();
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +35,16 @@ class ContigPageState extends ConsumerState<ContigPage> {
             InputSelectorForm(
               xTypeGroup: genomicTypeGroup,
               allowMultiple: true,
-              ctr: ctr,
+              ctr: _ctr,
               hasSecondaryPicker: false,
             ),
             SharedDropdownField(
-              value: ctr.inputFormatController,
+              value: _ctr.inputFormatController,
               label: 'Format',
               items: contigFormat,
               onChanged: (value) {
                 setState(() {
-                  ctr.inputFormatController = value;
+                  _ctr.inputFormatController = value;
                 });
               },
             ),
@@ -51,13 +53,10 @@ class ContigPageState extends ConsumerState<ContigPage> {
           const CardTitle(title: 'Output'),
           FormCard(children: [
             SharedOutputDirField(
-              ctr: ctr.outputDir,
-              onChanged: () {
-                setState(() {});
-              },
+              ctr: _ctr.outputDir,
             ),
             SharedTextField(
-              controller: ctr.outputController,
+              controller: _ctr.outputController,
               label: 'Output Filename',
               hint: 'Enter output filename',
             ),
@@ -65,100 +64,133 @@ class ContigPageState extends ConsumerState<ContigPage> {
           const SizedBox(height: 16),
           Center(
               child: ExecutionButton(
-            isRunning: ctr.isRunning,
-            isSuccess: ctr.isSuccess,
-            controller: ctr,
+            isRunning: _ctr.isRunning,
+            isSuccess: _ctr.isSuccess,
+            controller: _ctr,
             label: 'Summarize',
-            onNewRun: () => setState(() {}),
+            onNewRun: _setNewRun,
             onExecuted: ref.read(fileInputProvider).when(
-                data: (value) {
-                  if (value.isEmpty) {
-                    return null;
-                  } else {
-                    return ctr.isRunning || !ctr.isValid()
-                        ? null
-                        : () async {
-                            String dir = await getOutputDir(ctr.outputDir.text,
-                                SupportedTask.genomicContigSummary);
-                            setState(() {
-                              ctr.isRunning = true;
-                              ctr.outputDir.text = dir;
-                            });
-                            await _summarize(value);
-                          };
-                  }
-                },
-                loading: () => null,
-                error: (e, s) {
-                  return () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(e.toString()),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  };
-                }),
-            onShared: () {
-              try {
-                _shareOutput();
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(e.toString()),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _execute(value);
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, s) => null,
+                ),
+            onShared: ref.read(fileOutputProvider).when(
+                  data: (value) {
+                    if (value.directory == null) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              await _shareOutput(
+                                value.directory!,
+                                value.newFiles,
+                              );
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, _) => null,
+                ),
           ))
         ]);
   }
 
-  Future<void> _summarize(List<SegulInputFile> inputFiles) async {
+  Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    updateOutputDir(ref, _ctr.outputDir.text, task);
+    return await ref.read(fileOutputProvider).when(
+          data: (value) async {
+            if (value.directory == null) {
+              return;
+            } else {
+              await _summarize(inputFiles, value.directory!);
+            }
+          },
+          loading: () => null,
+          error: (e, s) => _showError(e.toString()),
+        );
+  }
+
+  Future<void> _summarize(
+    List<SegulInputFile> inputFiles,
+    Directory outputDir,
+  ) async {
     try {
-      final files = IOServices()
-          .convertPathsToString(inputFiles, SegulType.genomicContig);
-      await ContigServices(
-        files: files,
-        dirPath: ctr.dirPath.text,
-        fileFmt: ctr.inputFormatController!,
-        outputDir: ctr.outputDir.text,
-      ).summarize();
+      _setRunning();
+      await ContigSummaryRunner(
+        inputFiles: inputFiles,
+        inputFmt: _ctr.inputFormatController!,
+        outputDir: outputDir,
+      ).run();
+      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess();
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      _showError(e.toString());
     }
   }
 
-  Future<void> _shareOutput() async {
-    IOServices io = IOServices();
-    XFile outputPath = await io.archiveOutput(
-      dir: Directory(ctr.outputDir.text),
-      fileName: ctr.outputController.text,
-      task: SupportedTask.genomicContigSummary,
-    );
-    if (mounted) {
-      await io.shareFile(context, outputPath);
+  Future<void> _shareOutput(
+      Directory outputDir, List<XFile> newOutputFiles) async {
+    try {
+      IOServices io = IOServices();
+      ArchiveRunner archive = ArchiveRunner(
+        outputDir: outputDir,
+        outputFiles: newOutputFiles,
+      );
+      XFile outputPath = await archive.write();
+
+      if (mounted) {
+        await io.shareFile(context, outputPath);
+      }
+    } catch (e) {
+      _showError(e.toString());
     }
+  }
+
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = true;
+    });
+  }
+
+  void _setNewRun() {
+    setState(() {
+      _ctr.reset();
+      _ctr.isSuccess = false;
+      ref.invalidate(fileInputProvider);
+      ref.invalidate(fileOutputProvider);
+    });
   }
 
   void _setSuccess() {
     setState(() {
-      ctr.isRunning = false;
-      ctr.isSuccess = true;
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Summarization complete!'),
-          backgroundColor: Colors.green,
+        showSharedSnackBar(
+          context,
+          'Contig summarization successful! 🎉 \n'
+          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
         ),
+      );
+    });
+  }
+
+  void _showError(String error) {
+    setState(() {
+      _ctr.isRunning = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, error),
       );
     });
   }
