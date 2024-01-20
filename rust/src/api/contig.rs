@@ -1,11 +1,10 @@
 use std::path::{Path, PathBuf};
 
 use segul::handler::contig::summarize::ContigSummaryHandler;
-use segul::helper::finder::ContigFileFinder;
 use segul::helper::logger::ContigLogger;
 use segul::helper::types::ContigFmt;
+
 pub struct ContigServices {
-    pub dir_path: Option<String>,
     pub files: Vec<String>,
     pub file_fmt: String,
     pub output_dir: String,
@@ -14,7 +13,6 @@ pub struct ContigServices {
 impl ContigServices {
     pub fn new() -> ContigServices {
         ContigServices {
-            dir_path: None,
             files: Vec::new(),
             file_fmt: String::new(),
             output_dir: String::new(),
@@ -23,7 +21,7 @@ impl ContigServices {
 
     pub fn summarize(&self) {
         let input_fmt = self.match_input_fmt();
-        let files = self.find_input_files(&input_fmt);
+        let files = self.find_input_files();
         let output_path = Path::new(&self.output_dir);
         let task = "Contig Summary";
         ContigLogger::new(None, &input_fmt, files.len()).log(task);
@@ -38,17 +36,7 @@ impl ContigServices {
             .expect("Invalid input format")
     }
 
-    fn find_input_files(&self, input_fmt: &ContigFmt) -> Vec<PathBuf> {
-        if self.files.is_empty() {
-            match self.dir_path {
-                Some(ref path) => {
-                    let path = Path::new(&path);
-                    ContigFileFinder::new(path).find(input_fmt)
-                }
-                None => panic!("No input files found"),
-            }
-        } else {
-            self.files.iter().map(PathBuf::from).collect()
-        }
+    fn find_input_files(&self) -> Vec<PathBuf> {
+        self.files.iter().map(PathBuf::from).collect()
     }
 }
