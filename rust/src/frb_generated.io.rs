@@ -8,8 +8,6 @@ use crate::api::sequence::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::{Handler, IntoIntoDart};
-use segul::handler::sequence::extract::ExtractOpts;
-use segul::handler::sequence::rename::RenameOpts;
 
 // Section: boilerplate
 

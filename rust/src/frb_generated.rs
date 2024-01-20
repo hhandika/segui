@@ -1992,7 +1992,5 @@ pub use io::*;
 #[cfg(target_family = "wasm")]
 #[path = "frb_generated.web.rs"]
 mod web;
-use segul::handler::sequence::extract::ExtractOpts;
-use segul::handler::sequence::rename::RenameOpts;
 #[cfg(target_family = "wasm")]
 pub use web::*;

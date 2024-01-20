@@ -449,8 +449,9 @@ impl PartitionServices {
 
         log_input_partition(input_dir.as_deref(), self.input_files.len());
         self.input_files.iter().map(Path::new).for_each(|input| {
-            let output_path = construct_partition_path(input, &out_part_fmt);
-            let converter = PartConverter::new(&output_path, &input_fmt, output, &out_part_fmt);
+            log_input_partition(Some(input), self.input_files.len());
+            let output_path = construct_partition_path(output, &out_part_fmt);
+            let converter = PartConverter::new(input, &input_fmt, &output_path, &out_part_fmt);
             converter.convert(&datatype, self.is_uncheck);
         });
     }
