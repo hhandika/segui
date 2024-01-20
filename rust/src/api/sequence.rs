@@ -15,6 +15,7 @@ use segul::handler::sequence::translate::Translate;
 use segul::helper::files::create_output_fname_from_path;
 use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{log_input_partition, AlignSeqLogger};
+use segul::helper::partition::construct_partition_path;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, utils};
@@ -451,7 +452,8 @@ impl PartitionServices {
             log_input_partition(Some(input), self.input_files.len());
             let file_stem = self.extract_partition_fname(input);
             let output_path = self.create_final_output_path(output, &file_stem);
-            let converter = PartConverter::new(input, &input_fmt, &output_path, &out_part_fmt);
+            let final_path = construct_partition_path(&output_path, &out_part_fmt);
+            let converter = PartConverter::new(input, &input_fmt, &final_path, &out_part_fmt);
             converter.convert(&datatype, self.is_uncheck);
         });
     }

@@ -61,7 +61,7 @@ class PartitionConversionPageState
         FormCard(children: [
           const SharedFilePicker(
             label: 'Select partition file',
-            allowMultiple: false,
+            allowMultiple: true,
             hasSecondaryPicker: false,
             xTypeGroup: partitionTypeGroup,
           ),
@@ -142,17 +142,12 @@ class PartitionConversionPageState
                     if (value.isEmpty) {
                       return null;
                     } else {
-                      return _ctr.isRunning || !_ctr.isValid()
+                      return _ctr.isRunning || !_isValid
                           ? null
                           : () async {
-                              setState(() {
-                                _ctr.isRunning = true;
-                              });
+                              _setRunning();
                               await _convert(value);
-                              setState(() {
-                                _ctr.isRunning = false;
-                                _ctr.isSuccess = true;
-                              });
+                              _setSuccess();
                             };
                     }
                   },
@@ -161,18 +156,12 @@ class PartitionConversionPageState
                 ),
             onShared: () async {
               try {
-                setState(() {
-                  _ctr.isRunning = true;
-                });
+                _setRunning();
                 await _shareOutput();
-                setState(() {
-                  _ctr.isRunning = false;
-                });
+                _stopRunning();
               } catch (e) {
                 _showError(e.toString());
-                setState(() {
-                  _ctr.isRunning = false;
-                });
+                _stopRunning();
               }
             },
           ),
@@ -198,10 +187,15 @@ class PartitionConversionPageState
       ).convertPartition();
     } catch (e) {
       _showError(e.toString());
-      setState(() {
-        _ctr.isRunning = false;
-      });
+      _stopRunning();
     }
+  }
+
+  bool get _isValid {
+    bool hasPartitionFormat = _partitionFormatController != null;
+    bool hasOutputFormat = _ctr.outputFormatController != null;
+    bool isInputValid = hasPartitionFormat && hasOutputFormat;
+    return isInputValid && _ctr.isValid();
   }
 
   Future<void> _shareOutput() async {
@@ -226,5 +220,24 @@ class PartitionConversionPageState
         ),
       );
     }
+  }
+
+  void _setRunning() {
+    setState(() {
+      _ctr.isRunning = true;
+    });
+  }
+
+  void _stopRunning() {
+    setState(() {
+      _ctr.isRunning = false;
+    });
+  }
+
+  void _setSuccess() {
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
+    });
   }
 }
