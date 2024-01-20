@@ -143,8 +143,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
         outputDir: outputDir,
         mode: mode,
       ).run();
-      ref.read(fileOutputProvider.notifier).refresh();
-      _setSuccess();
+      _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
     }
@@ -183,17 +182,20 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
     });
   }
 
-  void _setSuccess() {
-    setState(() {
-      _ctr.isRunning = false;
-      _ctr.isSuccess = true;
+  void _setSuccess(Directory directory) {
+    ref.read(fileOutputProvider.notifier).refresh();
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
           'Genomic read summarization successful! 🎉 \n'
-          'Output Path: ${showOutputDir(ref)}',
+          'Output Path: ${showOutputDir(directory)}',
         ),
       );
+    }
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
     });
   }
 

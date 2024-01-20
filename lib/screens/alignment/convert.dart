@@ -187,8 +187,7 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
         isInterleave: _isInterleave,
         isSorted: _isSortSequence,
       ).run();
-      ref.read(fileOutputProvider.notifier).refresh();
-      _setSuccess();
+      _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
     }
@@ -227,17 +226,20 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
     });
   }
 
-  void _setSuccess() {
-    setState(() {
-      _ctr.isRunning = false;
-      _ctr.isSuccess = true;
+  void _setSuccess(Directory outputDir) {
+    ref.read(fileOutputProvider.notifier).refresh();
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
           'Conversion successful! 🎉 \n'
-          'Output Path: ${showOutputDir(ref)}',
+          'Output Path: ${showOutputDir(outputDir)}',
         ),
       );
+    }
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
     });
   }
 

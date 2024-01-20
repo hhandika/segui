@@ -166,7 +166,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         interval: int.tryParse(_interval) ?? 5,
       ).run();
       ref.read(fileOutputProvider.notifier).refresh();
-      _setSuccess();
+      _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
     }
@@ -214,17 +214,17 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     });
   }
 
-  void _setSuccess() {
+  void _setSuccess(Directory outputDir) {
+    ref.read(fileOutputProvider.notifier).refresh();
+    ScaffoldMessenger.of(context).showSnackBar(
+      showSharedSnackBar(
+          context,
+          'Summarization complete! 🎉 \n'
+          'Output Path: ${showOutputDir(outputDir)}'),
+    );
     setState(() {
       _ctr.isRunning = false;
       _ctr.isSuccess = true;
-      ref.read(fileOutputProvider.notifier).refresh();
-      ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-            context,
-            'Summarization complete! 🎉 \n'
-            'Output Path: ${showOutputDir(ref)}'),
-      );
     });
   }
 }

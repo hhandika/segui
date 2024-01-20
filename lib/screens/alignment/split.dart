@@ -182,7 +182,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
             if (value.directory == null) {
               return;
             } else {
-              await _split(inputFile);
+              await _split(inputFile, value.directory!);
             }
           },
           loading: () => null,
@@ -190,7 +190,8 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         );
   }
 
-  Future<void> _split(List<SegulInputFile> inputFile) async {
+  Future<void> _split(
+      List<SegulInputFile> inputFile, Directory outputDir) async {
     try {
       _setRunning();
       final inputSequence =
@@ -203,13 +204,12 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         inputPartitionFmt: _partitionFormatController!,
         inputPartition: inputPartition.file.path,
         datatype: _ctr.dataTypeController,
-        outputDir: _ctr.outputDir.text,
+        outputDir: outputDir.path,
         prefix: _ctr.outputController.text,
         outputFmt: _ctr.outputFormatController!,
         isUncheck: _isUnchecked,
       ).run();
-      ref.read(fileOutputProvider.notifier).refresh();
-      _setSuccess();
+      _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
       setState(() {
@@ -266,17 +266,20 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     }
   }
 
-  void _setSuccess() {
-    setState(() {
-      _ctr.isRunning = false;
-      _ctr.isSuccess = true;
+  void _setSuccess(Directory directory) {
+    ref.read(fileOutputProvider.notifier).refresh();
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
           'Alignment Splitting successful! 🎉 \n'
-          'Output Path: ${showOutputDir(ref)}',
+          'Output Path: ${showOutputDir(directory)}',
         ),
       );
+    }
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
     });
   }
 }

@@ -197,8 +197,7 @@ class PartitionConversionPageState
         datatype: _ctr.dataTypeController,
         isUnchecked: _isUnchecked,
       ).run();
-      ref.read(fileOutputProvider.notifier).refresh();
-      _setSuccess();
+      _setSuccess(directory);
     } catch (e) {
       _showError(e.toString());
     }
@@ -251,17 +250,20 @@ class PartitionConversionPageState
     }
   }
 
-  void _setSuccess() {
-    setState(() {
-      _ctr.isRunning = false;
-      _ctr.isSuccess = true;
+  void _setSuccess(Directory directory) {
+    ref.read(fileOutputProvider.notifier).refresh();
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
           'Partition conversion successful! 🎉 \n'
-          'Output Path: ${showOutputDir(ref)}',
+          'Output Path: ${showOutputDir(directory)}',
         ),
       );
+    }
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
     });
   }
 }

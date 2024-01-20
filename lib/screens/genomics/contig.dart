@@ -135,8 +135,8 @@ class ContigPageState extends ConsumerState<ContigPage> {
         inputFmt: _ctr.inputFormatController!,
         outputDir: outputDir,
       ).run();
-      ref.read(fileOutputProvider.notifier).refresh();
-      _setSuccess();
+
+      _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
     }
@@ -175,17 +175,20 @@ class ContigPageState extends ConsumerState<ContigPage> {
     });
   }
 
-  void _setSuccess() {
-    setState(() {
-      _ctr.isRunning = false;
-      _ctr.isSuccess = true;
+  void _setSuccess(Directory directory) {
+    ref.read(fileOutputProvider.notifier).refresh();
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
           'Contig summarization successful! 🎉 \n'
-          'Output Path: ${showOutputDir(ref)}',
+          'Output Path: ${showOutputDir(directory)}',
         ),
       );
+    }
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
     });
   }
 

@@ -217,8 +217,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         isCodonModel: isCodon,
         isInterleave: isInterleave,
       ).run();
-      ref.read(fileOutputProvider.notifier).refresh();
-      _setSuccess();
+      _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
     }
@@ -266,16 +265,19 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
     });
   }
 
-  void _setSuccess() {
-    setState(() {
-      _ctr.isRunning = false;
-      _ctr.isSuccess = true;
+  Future<void> _setSuccess(Directory directory) async {
+    ref.read(fileOutputProvider.notifier).refresh();
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
             'Concatenation successful! 🎉 \n'
-            'Output path: ${showOutputDir(ref)}'),
+            'Output path: ${showOutputDir(directory)}'),
       );
+    }
+    setState(() {
+      _ctr.isRunning = false;
+      _ctr.isSuccess = true;
     });
   }
 }
