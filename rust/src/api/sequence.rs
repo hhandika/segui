@@ -450,10 +450,20 @@ impl PartitionServices {
         log_input_partition(input_dir.as_deref(), self.input_files.len());
         self.input_files.iter().map(Path::new).for_each(|input| {
             log_input_partition(Some(input), self.input_files.len());
+            let file_stem = self.extract_partition_fname(input);
             let output_path = construct_partition_path(output, &out_part_fmt);
             let converter = PartConverter::new(input, &input_fmt, &output_path, &out_part_fmt);
             converter.convert(&datatype, self.is_uncheck);
         });
+    }
+
+    fn extract_partition_fname(&self, input: &Path) -> String {
+        input
+            .file_stem()
+            .expect("No input file stem")
+            .to_str()
+            .expect("Invalid input file stem")
+            .to_string()
     }
 }
 

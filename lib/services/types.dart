@@ -28,6 +28,7 @@ const List<String> sequenceReadSummaryMode = [
 enum AlignmentOperationType {
   concatenation,
   conversion,
+  filter,
   partition,
   summary,
   split,
@@ -36,6 +37,7 @@ enum AlignmentOperationType {
 const Map<AlignmentOperationType, String> alignmentOperationMap = {
   AlignmentOperationType.concatenation: 'Concatenate alignments',
   AlignmentOperationType.conversion: 'Convert alignments',
+  AlignmentOperationType.filter: 'Filter alignments',
   AlignmentOperationType.partition: 'Convert partition',
   AlignmentOperationType.split: 'Split alignments',
   AlignmentOperationType.summary: 'Summarize alignments',

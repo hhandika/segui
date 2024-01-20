@@ -19,7 +19,7 @@ class ConcatPage extends ConsumerStatefulWidget {
 }
 
 class ConcatPageState extends ConsumerState<ConcatPage> {
-  IOController _ctr = IOController.empty();
+  final IOController _ctr = IOController.empty();
   String _partitionFormatController = partitionFormat[1];
   bool isCodon = false;
   bool isInterleave = false;

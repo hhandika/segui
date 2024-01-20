@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
@@ -135,6 +138,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
           isRunning: _ctr.isRunning,
           onNewRun: () => setState(() {
             _ctr.isRunning = true;
+            _ctr.isSuccess = false;
           }),
           onExecuted: ref.read(fileInputProvider).when(
                 data: (value) {
@@ -158,7 +162,13 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
                 loading: () => null,
                 error: (error, stack) => null,
               ),
-          onShared: () {},
+          onShared: () async {
+            try {
+              await _shareOutput();
+            } catch (e) {
+              _showError(e.toString());
+            }
+          },
         ))
       ],
     );
@@ -187,6 +197,19 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         _ctr.isRunning = false;
         _ctr.isSuccess = false;
       });
+    }
+  }
+
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    XFile outputPath = await io.archiveOutput(
+      dir: Directory(_ctr.outputDir.text),
+      fileName: _ctr.outputController.text,
+      task: SupportedTask.alignmentConcatenation,
+    );
+
+    if (mounted) {
+      await io.shareFile(context, outputPath);
     }
   }
 

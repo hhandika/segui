@@ -1,7 +1,16 @@
+import 'dart:io';
+
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
+import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
+import 'package:segui/services/io.dart';
+import 'package:segui/services/types.dart';
+import 'package:segui/src/rust/api/sequence.dart';
 
 class PartitionConversionPage extends ConsumerStatefulWidget {
   const PartitionConversionPage({super.key});
@@ -12,7 +21,20 @@ class PartitionConversionPage extends ConsumerStatefulWidget {
 
 class PartitionConversionPageState
     extends ConsumerState<PartitionConversionPage> {
-  IOController _ctr = IOController.empty();
+  final IOController _ctr = IOController.empty();
+  String? _partitionFormatController;
+  bool _isUnchecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _ctr.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +57,174 @@ class PartitionConversionPageState
             });
           },
         ),
+        const CardTitle(title: 'Input'),
+        FormCard(children: [
+          const SharedFilePicker(
+            label: 'Select partition file',
+            allowMultiple: false,
+            hasSecondaryPicker: false,
+            xTypeGroup: partitionTypeGroup,
+          ),
+          SharedDropdownField(
+            value: _partitionFormatController,
+            label: 'Format',
+            items: partitionFormat,
+            onChanged: (String? value) {
+              setState(() {
+                if (value != null) {
+                  _partitionFormatController = value;
+                }
+              });
+            },
+          ),
+          SharedDropdownField(
+            value: _ctr.dataTypeController,
+            label: 'Data Type',
+            items: dataType,
+            enabled: true,
+            onChanged: (String? value) {
+              setState(() {
+                if (value != null) {
+                  _ctr.dataTypeController = value;
+                }
+              });
+            },
+          ),
+        ]),
+        const SizedBox(height: 16),
+        const CardTitle(title: 'Output'),
+        FormCard(children: [
+          SharedOutputDirField(
+            ctr: _ctr.outputDir,
+            onChanged: () {
+              setState(() {});
+            },
+          ),
+          SharedDropdownField(
+            value: _ctr.outputFormatController,
+            label: 'Format',
+            items: partitionFormat,
+            onChanged: (String? value) {
+              setState(() {
+                if (value != null) {
+                  _ctr.outputFormatController = value;
+                }
+              });
+            },
+          ),
+          SwitchForm(
+              label: 'Check partition for errors',
+              value: _isUnchecked,
+              onPressed: (value) {
+                setState(() {
+                  _isUnchecked = value;
+                });
+              }),
+        ]),
+        const SizedBox(height: 16),
+        Center(
+          child: ExecutionButton(
+            label: 'Convert',
+            controller: _ctr,
+            isRunning: _ctr.isRunning,
+            isSuccess: _ctr.isSuccess,
+            onNewRun: () {
+              setState(() {
+                _ctr.reset();
+                ref.invalidate(fileInputProvider);
+                ref.invalidate(fileOutputProvider);
+                _ctr.isRunning = false;
+                _ctr.isSuccess = false;
+              });
+            },
+            onExecuted: ref.read(fileInputProvider).when(
+                  data: (value) {
+                    if (value.isEmpty) {
+                      return null;
+                    } else {
+                      return _ctr.isRunning || !_ctr.isValid()
+                          ? null
+                          : () async {
+                              setState(() {
+                                _ctr.isRunning = true;
+                              });
+                              await _convert(value);
+                              setState(() {
+                                _ctr.isRunning = false;
+                                _ctr.isSuccess = true;
+                              });
+                            };
+                    }
+                  },
+                  loading: () => null,
+                  error: (e, s) => null,
+                ),
+            onShared: () async {
+              try {
+                setState(() {
+                  _ctr.isRunning = true;
+                });
+                await _shareOutput();
+                setState(() {
+                  _ctr.isRunning = false;
+                });
+              } catch (e) {
+                _showError(e.toString());
+                setState(() {
+                  _ctr.isRunning = false;
+                });
+              }
+            },
+          ),
+        )
       ],
     );
+  }
+
+  Future<void> _convert(List<SegulFile> inputFiles) async {
+    try {
+      final inputPartitions = inputFiles
+          .where((e) => e.type == SegulType.alignmentPartition)
+          .map((e) => e.file.path)
+          .toList();
+
+      await PartitionServices(
+        inputFiles: inputPartitions,
+        inputPartFmt: _partitionFormatController!,
+        output: _ctr.outputDir.text,
+        outputPartFmt: _ctr.outputFormatController!,
+        datatype: _ctr.dataTypeController,
+        isUncheck: _isUnchecked,
+      ).convertPartition();
+    } catch (e) {
+      _showError(e.toString());
+      setState(() {
+        _ctr.isRunning = false;
+      });
+    }
+  }
+
+  Future<void> _shareOutput() async {
+    IOServices io = IOServices();
+    XFile outputPath = await io.archiveOutput(
+      dir: Directory(_ctr.outputDir.text),
+      fileName: _ctr.outputController.text,
+      task: SupportedTask.alignmentConcatenation,
+    );
+
+    if (mounted) {
+      await io.shareFile(context, outputPath);
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(
+          context,
+          message,
+        ),
+      );
+    }
   }
 }
