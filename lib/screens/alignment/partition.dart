@@ -44,7 +44,8 @@ class PartitionConversionPageState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SharedInfoForm(
-          description: 'Convert partition format from one to another.',
+          description: 'Convert partition files to a different format. '
+              'It can convert multiple files at once.',
           isShowingInfo: _ctr.isShowingInfo,
           onClosed: () {
             setState(() {
