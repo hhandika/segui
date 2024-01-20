@@ -37,8 +37,8 @@ enum AlignmentOperationType {
 const Map<AlignmentOperationType, String> alignmentOperationMap = {
   AlignmentOperationType.concatenation: 'Concatenate alignments',
   AlignmentOperationType.conversion: 'Convert alignments',
-  AlignmentOperationType.filter: 'Filter alignments',
   AlignmentOperationType.partition: 'Convert partition',
+  AlignmentOperationType.filter: 'Filter alignments',
   AlignmentOperationType.split: 'Split alignments',
   AlignmentOperationType.summary: 'Summarize alignments',
 };
