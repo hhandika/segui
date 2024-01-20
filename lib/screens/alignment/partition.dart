@@ -118,49 +118,54 @@ class PartitionConversionPageState
         ]),
         const SizedBox(height: 16),
         Center(
-          child: ExecutionButton(
-            label: 'Convert',
-            controller: _ctr,
-            isRunning: _ctr.isRunning,
-            isSuccess: _ctr.isSuccess,
-            onNewRun: _setNewRun,
-            onExecuted: ref.read(fileInputProvider).when(
-                  data: (value) {
-                    if (value.isEmpty) {
-                      return null;
-                    } else {
-                      return _ctr.isRunning || !_isValid
-                          ? null
-                          : () async {
-                              await _execute(value);
-                            };
-                    }
-                  },
-                  loading: () => null,
-                  error: (e, s) => null,
-                ),
-            onShared: ref.read(fileOutputProvider).when(
-                  data: (value) {
-                    if (value.directory == null) {
-                      return null;
-                    } else {
-                      return _ctr.isRunning || !_ctr.isValid()
-                          ? null
-                          : () async {
-                              await _shareOutput(
-                                value.directory!,
-                                value.newFiles,
-                              );
-                            };
-                    }
-                  },
-                  loading: () => null,
-                  error: (e, _) => null,
-                ),
-          ),
+          child: ref.watch(fileInputProvider).when(
+                data: (value) {
+                  return ExecutionButton(
+                    label: 'Convert',
+                    isRunning: _ctr.isRunning,
+                    isSuccess: _ctr.isSuccess,
+                    controller: _ctr,
+                    onNewRun: _setNewRun,
+                    onExecuted: value.isEmpty || !_isValid
+                        ? null
+                        : () async {
+                            await _execute(value);
+                          },
+                    onShared: ref.read(fileOutputProvider).when(
+                          data: (value) {
+                            if (value.directory == null) {
+                              return null;
+                            } else {
+                              return _ctr.isRunning
+                                  ? null
+                                  : () async {
+                                      await _shareOutput(
+                                        value.directory!,
+                                        value.newFiles,
+                                      );
+                                    };
+                            }
+                          },
+                          loading: () => null,
+                          error: (e, _) => null,
+                        ),
+                  );
+                },
+                loading: () => null,
+                error: (e, s) {
+                  return null;
+                },
+              ),
         )
       ],
     );
+  }
+
+  bool get _isValid {
+    bool hasPartitionFormat = _partitionFormatController != null;
+    bool hasOutputFormat = _ctr.outputFormatController != null;
+    bool isInputValid = hasPartitionFormat && hasOutputFormat;
+    return isInputValid && _ctr.isValid;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -197,13 +202,6 @@ class PartitionConversionPageState
     } catch (e) {
       _showError(e.toString());
     }
-  }
-
-  bool get _isValid {
-    bool hasPartitionFormat = _partitionFormatController != null;
-    bool hasOutputFormat = _ctr.outputFormatController != null;
-    bool isInputValid = hasPartitionFormat && hasOutputFormat;
-    return isInputValid && _ctr.isValid();
   }
 
   Future<void> _shareOutput(
@@ -261,7 +259,7 @@ class PartitionConversionPageState
         showSharedSnackBar(
           context,
           'Partition conversion successful! 🎉 \n'
-          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
+          'Output Path: ${showOutputDir(ref)}',
         ),
       );
     });

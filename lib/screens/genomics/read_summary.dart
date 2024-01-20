@@ -71,51 +71,51 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
         ]),
         const SizedBox(height: 16),
         Center(
-          child: ExecutionButton(
-            isRunning: _ctr.isRunning,
-            isSuccess: _ctr.isSuccess,
-            controller: _ctr,
-            label: 'Summarize',
-            onNewRun: _setNewRun,
-            onExecuted: ref.read(fileInputProvider).when(
+          child: ref.watch(fileInputProvider).when(
                 data: (value) {
-                  if (value.isEmpty) {
-                    return null;
-                  } else {
-                    return _ctr.isRunning || !_ctr.isValid()
+                  return ExecutionButton(
+                    label: 'Summarize',
+                    isRunning: _ctr.isRunning,
+                    isSuccess: _ctr.isSuccess,
+                    controller: _ctr,
+                    onNewRun: _setNewRun,
+                    onExecuted: value.isEmpty || !_isValid
                         ? null
                         : () async {
                             await _execute(value);
-                          };
-                  }
+                          },
+                    onShared: ref.read(fileOutputProvider).when(
+                          data: (value) {
+                            if (value.directory == null) {
+                              return null;
+                            } else {
+                              return _ctr.isRunning
+                                  ? null
+                                  : () async {
+                                      await _shareOutput(
+                                        value.directory!,
+                                        value.newFiles,
+                                      );
+                                    };
+                            }
+                          },
+                          loading: () => null,
+                          error: (e, _) => null,
+                        ),
+                  );
                 },
                 loading: () => null,
                 error: (e, s) {
-                  _showError(e.toString());
                   return null;
-                }),
-            onShared: ref.read(fileOutputProvider).when(
-                  data: (value) {
-                    if (value.directory == null) {
-                      return null;
-                    } else {
-                      return _ctr.isRunning || !_ctr.isValid()
-                          ? null
-                          : () async {
-                              await _shareOutput(
-                                value.directory!,
-                                value.newFiles,
-                              );
-                            };
-                    }
-                  },
-                  loading: () => null,
-                  error: (e, _) => null,
-                ),
-          ),
+                },
+              ),
         )
       ],
     );
+  }
+
+  bool get _isValid {
+    return _ctr.isValid;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -191,7 +191,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
         showSharedSnackBar(
           context,
           'Genomic read summarization successful! 🎉 \n'
-          'Output Path: ${showOutputDir(_ctr.outputDir.text)}',
+          'Output Path: ${showOutputDir(ref)}',
         ),
       );
     });

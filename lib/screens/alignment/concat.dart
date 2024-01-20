@@ -135,46 +135,44 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         ]),
         const SizedBox(height: 16),
         Center(
-          child: ExecutionButton(
-            label: 'Concatenate',
-            isRunning: _ctr.isRunning,
-            controller: _ctr,
-            isSuccess: _ctr.isSuccess,
-            onNewRun: _setNewRun,
-            onExecuted: ref.read(fileInputProvider).when(
-                  data: (value) {
-                    if (value.isEmpty) {
-                      return null;
-                    } else {
-                      return _ctr.isRunning || !_isValid
-                          ? null
-                          : () async {
-                              await _execute(value);
-                            };
-                    }
-                  },
-                  loading: () => null,
-                  error: (e, _) => null,
-                ),
-            onShared: ref.read(fileOutputProvider).when(
-                  data: (value) {
-                    if (value.directory == null) {
-                      return null;
-                    } else {
-                      return _ctr.isRunning || !_isValid
-                          ? null
-                          : () async {
-                              await _shareOutput(
-                                value.directory!,
-                                value.newFiles,
-                              );
-                            };
-                    }
-                  },
-                  loading: () => null,
-                  error: (e, _) => null,
-                ),
-          ),
+          child: ref.watch(fileInputProvider).when(
+                data: (value) {
+                  return ExecutionButton(
+                    label: 'Concatenate',
+                    isRunning: _ctr.isRunning,
+                    isSuccess: _ctr.isSuccess,
+                    controller: _ctr,
+                    onNewRun: _setNewRun,
+                    onExecuted: value.isEmpty || !_isValid
+                        ? null
+                        : () async {
+                            await _execute(value);
+                          },
+                    onShared: ref.read(fileOutputProvider).when(
+                          data: (value) {
+                            if (value.directory == null) {
+                              return null;
+                            } else {
+                              return _ctr.isRunning
+                                  ? null
+                                  : () async {
+                                      await _shareOutput(
+                                        value.directory!,
+                                        value.newFiles,
+                                      );
+                                    };
+                            }
+                          },
+                          loading: () => null,
+                          error: (e, _) => null,
+                        ),
+                  );
+                },
+                loading: () => null,
+                error: (e, s) {
+                  return null;
+                },
+              ),
         )
       ],
     );
@@ -184,7 +182,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
     if (_ctr.outputFormatController == null) {
       _ctr.outputFormatController == outputFormat[0];
     }
-    return _ctr.isValid();
+    return _ctr.isValid;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -276,7 +274,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         showSharedSnackBar(
             context,
             'Concatenation successful! 🎉 \n'
-            'Output path: ${showOutputDir(_ctr.outputDir.text)}'),
+            'Output path: ${showOutputDir(ref)}'),
       );
     });
   }

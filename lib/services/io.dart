@@ -314,11 +314,17 @@ Future<String> getFileSize(XFile path) async {
   }
 }
 
-String showOutputDir(String outputDir) {
+String showOutputDir(WidgetRef ref) {
   if (Platform.isIOS) {
     return 'On My Devices/segui';
   } else {
-    return outputDir;
+    return ref.watch(fileOutputProvider).when(
+          data: (value) {
+            return value.directory!.path;
+          },
+          loading: () => 'Loading...',
+          error: (e, _) => 'Error: $e',
+        );
   }
 }
 

@@ -90,51 +90,52 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         ]),
         const SizedBox(height: 16),
         Center(
-          child: ExecutionButton(
-            label: 'Summarize',
-            isRunning: _ctr.isRunning,
-            isSuccess: _ctr.isSuccess,
-            controller: _ctr,
-            onNewRun: _setNewRun,
-            onExecuted: ref.read(fileInputProvider).when(
-                  data: (value) {
-                    if (value.isEmpty) {
-                      return null;
-                    } else {
-                      return _ctr.isRunning || !_ctr.isValid()
-                          ? null
-                          : () async {
-                              await _execute(value);
-                            };
-                    }
-                  },
-                  loading: () => null,
-                  error: (e, s) {
-                    return null;
-                  },
-                ),
-            onShared: ref.read(fileOutputProvider).when(
-                  data: (value) {
-                    if (value.directory == null) {
-                      return null;
-                    } else {
-                      return _ctr.isRunning || !_ctr.isValid()
-                          ? null
-                          : () async {
-                              await _shareOutput(
-                                value.directory!,
-                                value.newFiles,
-                              );
-                            };
-                    }
-                  },
-                  loading: () => null,
-                  error: (e, _) => null,
-                ),
-          ),
+          child: ref.watch(fileInputProvider).when(
+                data: (value) {
+                  return ExecutionButton(
+                    label: 'Summarize',
+                    isRunning: _ctr.isRunning,
+                    isSuccess: _ctr.isSuccess,
+                    controller: _ctr,
+                    onNewRun: _setNewRun,
+                    onExecuted: value.isEmpty || !_isValid
+                        ? null
+                        : () async {
+                            await _execute(value);
+                          },
+                    onShared: ref.read(fileOutputProvider).when(
+                          data: (value) {
+                            if (value.directory == null) {
+                              return null;
+                            } else {
+                              return _ctr.isRunning
+                                  ? null
+                                  : () async {
+                                      await _shareOutput(
+                                        value.directory!,
+                                        value.newFiles,
+                                      );
+                                    };
+                            }
+                          },
+                          loading: () => null,
+                          error: (e, _) => null,
+                        ),
+                  );
+                },
+                loading: () => null,
+                error: (e, s) {
+                  return null;
+                },
+              ),
         ),
       ],
     );
+  }
+
+  bool get _isValid {
+    bool isPrefixValid = _ctr.outputController.text.isNotEmpty;
+    return _ctr.isValid && isPrefixValid;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -162,7 +163,6 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
         outputPrefix: _ctr.outputController.text,
-        outputFmt: _ctr.outputFormatController!,
         interval: int.tryParse(_interval) ?? 5,
       ).run();
       ref.read(fileOutputProvider.notifier).refresh();
@@ -223,7 +223,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         showSharedSnackBar(
             context,
             'Summarization complete! 🎉 \n'
-            'Output path: ${showOutputDir(_ctr.outputDir.text)}'),
+            'Output Path: ${showOutputDir(ref)}'),
       );
     });
   }

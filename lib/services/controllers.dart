@@ -34,10 +34,11 @@ class IOController {
         dataTypeController: dataType[0],
       );
 
-  bool isValid() {
-    bool validOutputPath =
-        Platform.isIOS || Platform.isAndroid || outputDir.text.isNotEmpty;
-    return validOutputPath && inputFormatController != null;
+  bool get isValid {
+    bool validOutputPath = Platform.isIOS || Platform.isAndroid
+        ? true
+        : outputController.text.isNotEmpty;
+    return validOutputPath || !isRunning;
   }
 
   void reset() {

@@ -157,7 +157,6 @@ class AlignmentSummaryRunner {
     required this.datatype,
     required this.outputDir,
     required this.outputPrefix,
-    required this.outputFmt,
     required this.interval,
   });
 
@@ -166,7 +165,6 @@ class AlignmentSummaryRunner {
   final String datatype;
   final Directory outputDir;
   final String outputPrefix;
-  final String outputFmt;
   final int interval;
 
   Future<void> run() async {

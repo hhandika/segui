@@ -13,37 +13,48 @@ class SelectDirField extends ConsumerWidget {
   const SelectDirField({
     super.key,
     required this.label,
-    required this.dirPath,
   });
 
   final String label;
-  final TextEditingController dirPath;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            dirPath.text.isEmpty ? '$label: ' : dirPath.text,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: 8),
-        IconButton(
-          icon: dirPath.text.isEmpty
-              ? const Icon(Icons.folder)
-              : const Icon(Icons.folder_open),
-          onPressed: () async {
-            final dir = await _selectDir();
-            if (dir != null) {
-              dirPath.text = dir.path;
-              ref.read(fileOutputProvider.notifier).add(dir);
-            }
+    return ref.watch(fileOutputProvider).when(
+          data: (data) {
+            return Row(
+              children: [
+                Expanded(
+                  child: data.directory == null
+                      ? Text(
+                          '$label: ',
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : PathTextWithOverflow(
+                          path: data.directory!.path,
+                        ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: data.directory == null
+                      ? const Icon(Icons.folder)
+                      : const Icon(Icons.clear),
+                  onPressed: data.directory == null
+                      ? () async {
+                          final dir = await _selectDir();
+                          if (dir != null) {
+                            ref.read(fileOutputProvider.notifier).add(dir);
+                          }
+                        }
+                      : () {
+                          ref.invalidate(fileOutputProvider);
+                        },
+                ),
+              ],
+            );
           },
-        ),
-      ],
-    );
+          loading: () => const SizedBox.shrink(),
+          error: (err, stack) => Text(err.toString()),
+        );
   }
 
   Future<Directory?> _selectDir() async {
@@ -203,9 +214,41 @@ class SharedOutputDirField extends StatelessWidget {
             hint: 'Enter output directory name',
             controller: ctr,
           )
-        : SelectDirField(
+        : const SelectDirField(
             label: 'Select output directory',
-            dirPath: ctr,
           );
+  }
+}
+
+/// Display a path full when it is short
+/// Display a path with overflow when it is long
+/// The overflowed path is displayed in a tooltip
+class PathTextWithOverflow extends StatelessWidget {
+  const PathTextWithOverflow({
+    super.key,
+    required this.path,
+  });
+
+  final String path;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+        message: path,
+        child: Row(
+          children: [
+            const Icon(Icons.folder_open),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                // Substring the last 40 characters
+                path.length > 40
+                    ? '...${path.substring(path.length - 40)}'
+                    : path,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ));
   }
 }
