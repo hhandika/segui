@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/services/alignments/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/src/rust/api/sequence.dart';
 
 class ConcatPage extends ConsumerStatefulWidget {
   const ConcatPage({super.key});
@@ -69,9 +69,6 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
-            onChanged: () {
-              setState(() {});
-            },
           ),
           SharedTextField(
             controller: _ctr.outputController,
@@ -152,12 +149,8 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
                       return _ctr.isRunning || !_validate()
                           ? null
                           : () async {
-                              String dir = await getOutputDir(
-                                  _ctr.outputDir.text,
-                                  SupportedTask.alignmentConcatenation);
                               setState(() {
                                 _ctr.isRunning = true;
-                                _ctr.outputDir.text = dir;
                               });
                               await _concat(value);
                             };
@@ -187,27 +180,47 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   }
 
   Future<void> _concat(List<SegulInputFile> inputFiles) async {
+    _updateOutputDir();
+    return ref.read(fileOutputProvider).when(
+        data: (value) async {
+          if (value.directory == null) {
+            return _showError('Output directory is not selected.');
+          } else {
+            _execute(inputFiles, value.directory!);
+          }
+        },
+        loading: () => null,
+        error: (e, _) => _showError(e.toString()));
+  }
+
+  Future<void> _execute(
+    List<SegulInputFile> inputFiles,
+    Directory outputDir,
+  ) async {
     try {
-      String outputFmt =
-          getOutputFmt(_ctr.outputFormatController!, isInterleave);
-      String partitionFmt =
-          getPartitionFmt(_partitionFormatController, isCodon);
-      final files = IOServices()
-          .convertPathsToString(inputFiles, SegulType.standardSequence);
-      await AlignmentServices(
-        dir: _ctr.dirPath.text,
-        inputFiles: files,
-        inputFmt: _ctr.inputFormatController!,
+      await ConcatRunnerServices(
+        inputFiles: inputFiles,
+        inputFormat: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
-        outputDir: _ctr.outputDir.text,
-      ).concatAlignment(
-        outFname: _ctr.outputController.text,
-        outFmtStr: outputFmt,
-        partitionFmt: partitionFmt,
-      );
+        outputDir: outputDir,
+        outputPrefix: _ctr.outputController.text,
+        outputFormat: _ctr.outputFormatController!,
+        partitionFormat: _partitionFormatController,
+        isCodonModel: isCodon,
+        isInterleave: isInterleave,
+      ).run();
       _setSuccess();
     } catch (e) {
       _showError(e.toString());
+    }
+  }
+
+  void _updateOutputDir() {
+    if (Platform.isAndroid || Platform.isIOS) {
+      ref.read(fileOutputProvider.notifier).addMobile(
+            _ctr.outputDir.text,
+            SupportedTask.alignmentConcatenation,
+          );
     }
   }
 

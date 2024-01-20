@@ -267,20 +267,16 @@ PlatformType get runningPlatform {
   }
 }
 
-Future<String> getOutputDir(String outputCtr, SupportedTask task) async {
-  if (Platform.isIOS || outputCtr.isEmpty) {
-    return getOutputDirForTask(outputCtr, task);
-  } else {
-    return outputCtr;
-  }
-}
-
-Future<String> getOutputDirForTask(String dir, SupportedTask task) async {
+Future<Directory> getOutputDir(String dirName, SupportedTask task) async {
   Directory appDocDir = await getApplicationDocumentsDirectory();
-  String directory = dir.isEmpty ? defaultOutputDir[task]! : dir;
+  String directory = dirName.isEmpty ? defaultOutputDir[task]! : dirName;
   Directory outputDir = Directory(p.join(appDocDir.path, directory));
 
-  return outputDir.path;
+  if (!await outputDir.exists()) {
+    await outputDir.create(recursive: true);
+  }
+
+  return outputDir;
 }
 
 // Count file size. Returns in kb, mb, or gb.

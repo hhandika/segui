@@ -35,7 +35,8 @@ class IOController {
       );
 
   bool isValid() {
-    bool validOutputPath = Platform.isIOS || outputDir.text.isNotEmpty;
+    bool validOutputPath =
+        Platform.isIOS || Platform.isAndroid || outputDir.text.isNotEmpty;
     return validOutputPath && inputFormatController != null;
   }
 

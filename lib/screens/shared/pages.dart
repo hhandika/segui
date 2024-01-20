@@ -323,7 +323,7 @@ class OutputFileTiles extends StatelessWidget {
         },
       ),
       trailing: IconButton(
-        icon: const Icon(Icons.share),
+        icon: Icon(Icons.adaptive.share),
         onPressed: () {
           IOServices().shareFile(context, file);
         },

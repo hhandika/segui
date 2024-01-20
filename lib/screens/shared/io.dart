@@ -14,12 +14,10 @@ class SelectDirField extends ConsumerWidget {
     super.key,
     required this.label,
     required this.dirPath,
-    required this.onChanged,
   });
 
   final String label;
   final TextEditingController dirPath;
-  final void Function() onChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,7 +39,6 @@ class SelectDirField extends ConsumerWidget {
             if (dir != null) {
               dirPath.text = dir.path;
               ref.read(fileOutputProvider.notifier).addFiles(dir);
-              onChanged();
             }
           },
         ),
@@ -194,15 +191,13 @@ class SharedOutputDirField extends StatelessWidget {
   const SharedOutputDirField({
     super.key,
     required this.ctr,
-    required this.onChanged,
   });
 
   final TextEditingController ctr;
-  final void Function() onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
+    return Platform.isIOS || Platform.isAndroid
         ? SharedTextField(
             label: 'Directory name',
             hint: 'Enter output directory name',
@@ -211,7 +206,6 @@ class SharedOutputDirField extends StatelessWidget {
         : SelectDirField(
             label: 'Select output directory',
             dirPath: ctr,
-            onChanged: onChanged,
           );
   }
 }

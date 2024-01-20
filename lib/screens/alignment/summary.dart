@@ -68,9 +68,6 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
           SharedOutputDirField(
               ctr: _ctr.outputDir,
               onChanged: () {
-                ref
-                    .read(fileOutputProvider.notifier)
-                    .addFiles(Directory(_ctr.outputDir.text));
                 setState(() {});
               }),
           SharedTextField(

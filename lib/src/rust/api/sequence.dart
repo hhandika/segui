@@ -48,14 +48,12 @@ class RenameOpts extends RustOpaque {
 }
 
 class AlignmentServices {
-  final String? dir;
   final List<String> inputFiles;
   final String inputFmt;
   final String datatype;
   final String outputDir;
 
   const AlignmentServices({
-    this.dir,
     required this.inputFiles,
     required this.inputFmt,
     required this.datatype,
@@ -89,7 +87,6 @@ class AlignmentServices {
 
   @override
   int get hashCode =>
-      dir.hashCode ^
       inputFiles.hashCode ^
       inputFmt.hashCode ^
       datatype.hashCode ^
@@ -100,7 +97,6 @@ class AlignmentServices {
       identical(this, other) ||
       other is AlignmentServices &&
           runtimeType == other.runtimeType &&
-          dir == other.dir &&
           inputFiles == other.inputFiles &&
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&
@@ -108,7 +104,6 @@ class AlignmentServices {
 }
 
 class FilteringServices {
-  final String? dir;
   final List<String> inputFiles;
   final String inputFmt;
   final String datatype;
@@ -116,7 +111,6 @@ class FilteringServices {
   final bool isConcat;
 
   const FilteringServices({
-    this.dir,
     required this.inputFiles,
     required this.inputFmt,
     required this.datatype,
@@ -156,7 +150,6 @@ class FilteringServices {
 
   @override
   int get hashCode =>
-      dir.hashCode ^
       inputFiles.hashCode ^
       inputFmt.hashCode ^
       datatype.hashCode ^
@@ -168,7 +161,6 @@ class FilteringServices {
       identical(this, other) ||
       other is FilteringServices &&
           runtimeType == other.runtimeType &&
-          dir == other.dir &&
           inputFiles == other.inputFiles &&
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&
@@ -369,14 +361,12 @@ class SequenceRenaming {
 }
 
 class SequenceServices {
-  final String? dir;
   final List<String> inputFiles;
   final String inputFmt;
   final String datatype;
   final String outputDir;
 
   const SequenceServices({
-    this.dir,
     required this.inputFiles,
     required this.inputFmt,
     required this.datatype,
@@ -416,7 +406,6 @@ class SequenceServices {
 
   @override
   int get hashCode =>
-      dir.hashCode ^
       inputFiles.hashCode ^
       inputFmt.hashCode ^
       datatype.hashCode ^
@@ -427,7 +416,6 @@ class SequenceServices {
       identical(this, other) ||
       other is SequenceServices &&
           runtimeType == other.runtimeType &&
-          dir == other.dir &&
           inputFiles == other.inputFiles &&
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&
@@ -435,7 +423,6 @@ class SequenceServices {
 }
 
 class SplitAlignmentServices {
-  final String? dir;
   final String inputFile;
   final String inputFmt;
   final String datatype;
@@ -447,7 +434,6 @@ class SplitAlignmentServices {
   final bool isUncheck;
 
   const SplitAlignmentServices({
-    this.dir,
     required this.inputFile,
     required this.inputFmt,
     required this.datatype,
@@ -470,7 +456,6 @@ class SplitAlignmentServices {
 
   @override
   int get hashCode =>
-      dir.hashCode ^
       inputFile.hashCode ^
       inputFmt.hashCode ^
       datatype.hashCode ^
@@ -486,7 +471,6 @@ class SplitAlignmentServices {
       identical(this, other) ||
       other is SplitAlignmentServices &&
           runtimeType == other.runtimeType &&
-          dir == other.dir &&
           inputFile == other.inputFile &&
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&

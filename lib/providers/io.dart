@@ -59,13 +59,29 @@ class FileOutput extends _$FileOutput {
 
   /// Add the files in the output directory.
   /// This is use after the use selects the output directory.
-  Future<void> addFiles(Directory? outputDir) async {
+  Future<void> add(Directory? outputDir) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (outputDir == null) {
         return SegulOutputFile.empty();
       }
       return SegulOutputFile.fromDirectory(outputDir);
+    });
+  }
+
+  /// Add files for mobile iOS and Android.
+  /// Android and iOS does not allow to write
+  /// files outside the app directory.
+  /// So we save the files in the app directory
+  Future<void> addMobile(
+    String dirName,
+    SupportedTask task,
+  ) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      Directory dir =
+          await getOutputDir(dirName, SupportedTask.alignmentConcatenation);
+      return SegulOutputFile.fromDirectory(dir);
     });
   }
 

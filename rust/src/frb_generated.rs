@@ -1064,13 +1064,11 @@ impl SseDecode for String {
 impl SseDecode for crate::api::sequence::AlignmentServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_dir = <Option<String>>::sse_decode(deserializer);
         let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         return crate::api::sequence::AlignmentServices {
-            dir: var_dir,
             input_files: var_inputFiles,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
@@ -1112,14 +1110,12 @@ impl SseDecode for f64 {
 impl SseDecode for crate::api::sequence::FilteringServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_dir = <Option<String>>::sse_decode(deserializer);
         let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         let mut var_isConcat = <bool>::sse_decode(deserializer);
         return crate::api::sequence::FilteringServices {
-            dir: var_dir,
             input_files: var_inputFiles,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
@@ -1287,13 +1283,11 @@ impl SseDecode for crate::api::sequence::SequenceRenaming {
 impl SseDecode for crate::api::sequence::SequenceServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_dir = <Option<String>>::sse_decode(deserializer);
         let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         return crate::api::sequence::SequenceServices {
-            dir: var_dir,
             input_files: var_inputFiles,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
@@ -1305,7 +1299,6 @@ impl SseDecode for crate::api::sequence::SequenceServices {
 impl SseDecode for crate::api::sequence::SplitAlignmentServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_dir = <Option<String>>::sse_decode(deserializer);
         let mut var_inputFile = <String>::sse_decode(deserializer);
         let mut var_inputFmt = <String>::sse_decode(deserializer);
         let mut var_datatype = <String>::sse_decode(deserializer);
@@ -1316,7 +1309,6 @@ impl SseDecode for crate::api::sequence::SplitAlignmentServices {
         let mut var_outputFmt = <String>::sse_decode(deserializer);
         let mut var_isUncheck = <bool>::sse_decode(deserializer);
         return crate::api::sequence::SplitAlignmentServices {
-            dir: var_dir,
             input_file: var_inputFile,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
@@ -1483,7 +1475,6 @@ impl
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::AlignmentServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.dir.into_into_dart().into_dart(),
             self.input_files.into_into_dart().into_dart(),
             self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
@@ -1530,7 +1521,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::contig::ContigServices>
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::FilteringServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.dir.into_into_dart().into_dart(),
             self.input_files.into_into_dart().into_dart(),
             self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
@@ -1679,7 +1669,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceRenaming>
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.dir.into_into_dart().into_dart(),
             self.input_files.into_into_dart().into_dart(),
             self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
@@ -1703,7 +1692,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceServices>
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::SplitAlignmentServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.dir.into_into_dart().into_dart(),
             self.input_file.into_into_dart().into_dart(),
             self.input_fmt.into_into_dart().into_dart(),
             self.datatype.into_into_dart().into_dart(),
@@ -1775,7 +1763,6 @@ impl SseEncode for String {
 impl SseEncode for crate::api::sequence::AlignmentServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Option<String>>::sse_encode(self.dir, serializer);
         <Vec<String>>::sse_encode(self.input_files, serializer);
         <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
@@ -1810,7 +1797,6 @@ impl SseEncode for f64 {
 impl SseEncode for crate::api::sequence::FilteringServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Option<String>>::sse_encode(self.dir, serializer);
         <Vec<String>>::sse_encode(self.input_files, serializer);
         <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
@@ -1931,7 +1917,6 @@ impl SseEncode for crate::api::sequence::SequenceRenaming {
 impl SseEncode for crate::api::sequence::SequenceServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Option<String>>::sse_encode(self.dir, serializer);
         <Vec<String>>::sse_encode(self.input_files, serializer);
         <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);
@@ -1942,7 +1927,6 @@ impl SseEncode for crate::api::sequence::SequenceServices {
 impl SseEncode for crate::api::sequence::SplitAlignmentServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Option<String>>::sse_encode(self.dir, serializer);
         <String>::sse_encode(self.input_file, serializer);
         <String>::sse_encode(self.input_fmt, serializer);
         <String>::sse_encode(self.datatype, serializer);

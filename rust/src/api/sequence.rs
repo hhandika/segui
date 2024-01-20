@@ -20,6 +20,8 @@ use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, utils};
 
+const INPUT_DIRECTORY: Option<&str> = None;
+
 pub fn show_dna_uppercase() -> String {
     alphabet::DNA_STR_UPPERCASE.to_string()
 }
@@ -82,7 +84,6 @@ trait Partition {
 }
 
 pub struct SequenceServices {
-    pub dir: Option<String>,
     pub input_files: Vec<String>,
     pub input_fmt: String,
     pub datatype: String,
@@ -95,7 +96,6 @@ impl Partition for SequenceServices {}
 impl SequenceServices {
     pub fn new() -> SequenceServices {
         SequenceServices {
-            dir: None,
             input_files: Vec::new(),
             input_fmt: String::new(),
             datatype: String::new(),
@@ -108,7 +108,7 @@ impl SequenceServices {
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let task = "Sequence Conversion";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
@@ -124,7 +124,7 @@ impl SequenceServices {
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         let log = AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len());
         let id = Id::new(&input_fmt, &datatype, &output_path);
         if !is_map {
@@ -154,7 +154,7 @@ impl SequenceServices {
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let mut input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         let output_fmt = self.match_output_fmt(&output_fmt);
         let translation_table = self.match_translation_table(table);
         let task = "Sequence Translation";
@@ -171,7 +171,6 @@ impl SequenceServices {
 }
 
 pub struct AlignmentServices {
-    pub dir: Option<String>,
     pub input_files: Vec<String>,
     pub input_fmt: String,
     pub datatype: String,
@@ -184,7 +183,6 @@ impl Partition for AlignmentServices {}
 impl AlignmentServices {
     pub fn new() -> AlignmentServices {
         AlignmentServices {
-            dir: None,
             input_files: Vec::new(),
             input_fmt: String::new(),
             datatype: String::new(),
@@ -197,8 +195,7 @@ impl AlignmentServices {
         let output_path = PathBuf::from(&self.output_dir).join(out_fname);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
-        let mut input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+        let mut input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
         let output_fmt = self.match_output_fmt(&out_fmt_str);
         self.check_file_count(input_files.len());
         let final_path = create_output_fname_from_path(&output_path, &output_fmt);
@@ -215,8 +212,7 @@ impl AlignmentServices {
         let output_path = PathBuf::from(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
-        let mut input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+        let mut input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
         let task = "Alignment Summary";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
@@ -225,7 +221,6 @@ impl AlignmentServices {
 }
 
 pub struct SplitAlignmentServices {
-    pub dir: Option<String>,
     pub input_file: String,
     pub input_fmt: String,
     pub datatype: String,
@@ -245,7 +240,6 @@ impl Partition for SplitAlignmentServices {}
 impl SplitAlignmentServices {
     pub fn new() -> SplitAlignmentServices {
         SplitAlignmentServices {
-            dir: None,
             input_file: String::new(),
             input_fmt: String::new(),
             datatype: String::new(),
@@ -287,7 +281,6 @@ impl SplitAlignmentServices {
 }
 
 pub struct FilteringServices {
-    pub dir: Option<String>,
     pub input_files: Vec<String>,
     pub input_fmt: String,
     pub datatype: String,
@@ -301,7 +294,6 @@ impl Partition for FilteringServices {}
 impl FilteringServices {
     pub fn new() -> FilteringServices {
         FilteringServices {
-            dir: None,
             input_files: Vec::new(),
             input_fmt: String::new(),
             datatype: String::new(),
@@ -315,7 +307,7 @@ impl FilteringServices {
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         self.check_file_count(input_files.len());
         let task = "Alignment Filtering";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
@@ -332,7 +324,7 @@ impl FilteringServices {
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         self.check_file_count(input_files.len());
         let task = "Alignment Filtering";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
@@ -347,7 +339,7 @@ impl FilteringServices {
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         self.check_file_count(input_files.len());
         let task = "Alignment Filtering";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
@@ -362,7 +354,7 @@ impl FilteringServices {
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let input_files =
-            self.find_input_input_files(&self.input_files, self.dir.as_deref(), &input_fmt);
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         self.check_file_count(input_files.len());
         let task = "Alignment Filtering";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);

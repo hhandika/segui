@@ -998,14 +998,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AlignmentServices dco_decode_alignment_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return AlignmentServices(
-      dir: dco_decode_opt_String(arr[0]),
-      inputFiles: dco_decode_list_String(arr[1]),
-      inputFmt: dco_decode_String(arr[2]),
-      datatype: dco_decode_String(arr[3]),
-      outputDir: dco_decode_String(arr[4]),
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
     );
   }
 
@@ -1106,15 +1105,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FilteringServices dco_decode_filtering_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return FilteringServices(
-      dir: dco_decode_opt_String(arr[0]),
-      inputFiles: dco_decode_list_String(arr[1]),
-      inputFmt: dco_decode_String(arr[2]),
-      datatype: dco_decode_String(arr[3]),
-      outputDir: dco_decode_String(arr[4]),
-      isConcat: dco_decode_bool(arr[5]),
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
+      isConcat: dco_decode_bool(arr[4]),
     );
   }
 
@@ -1235,14 +1233,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SequenceServices dco_decode_sequence_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return SequenceServices(
-      dir: dco_decode_opt_String(arr[0]),
-      inputFiles: dco_decode_list_String(arr[1]),
-      inputFmt: dco_decode_String(arr[2]),
-      datatype: dco_decode_String(arr[3]),
-      outputDir: dco_decode_String(arr[4]),
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
     );
   }
 
@@ -1250,19 +1247,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 10)
-      throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
     return SplitAlignmentServices(
-      dir: dco_decode_opt_String(arr[0]),
-      inputFile: dco_decode_String(arr[1]),
-      inputFmt: dco_decode_String(arr[2]),
-      datatype: dco_decode_String(arr[3]),
-      inputPartition: dco_decode_opt_String(arr[4]),
-      inputPartitionFmt: dco_decode_String(arr[5]),
-      outputDir: dco_decode_String(arr[6]),
-      prefix: dco_decode_opt_String(arr[7]),
-      outputFmt: dco_decode_String(arr[8]),
-      isUncheck: dco_decode_bool(arr[9]),
+      inputFile: dco_decode_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      inputPartition: dco_decode_opt_String(arr[3]),
+      inputPartitionFmt: dco_decode_String(arr[4]),
+      outputDir: dco_decode_String(arr[5]),
+      prefix: dco_decode_opt_String(arr[6]),
+      outputFmt: dco_decode_String(arr[7]),
+      isUncheck: dco_decode_bool(arr[8]),
     );
   }
 
@@ -1331,13 +1327,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AlignmentServices sse_decode_alignment_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_dir = sse_decode_opt_String(deserializer);
     var var_inputFiles = sse_decode_list_String(deserializer);
     var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     return AlignmentServices(
-        dir: var_dir,
         inputFiles: var_inputFiles,
         inputFmt: var_inputFmt,
         datatype: var_datatype,
@@ -1450,14 +1444,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FilteringServices sse_decode_filtering_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_dir = sse_decode_opt_String(deserializer);
     var var_inputFiles = sse_decode_list_String(deserializer);
     var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     var var_isConcat = sse_decode_bool(deserializer);
     return FilteringServices(
-        dir: var_dir,
         inputFiles: var_inputFiles,
         inputFmt: var_inputFmt,
         datatype: var_datatype,
@@ -1614,13 +1606,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   SequenceServices sse_decode_sequence_services(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_dir = sse_decode_opt_String(deserializer);
     var var_inputFiles = sse_decode_list_String(deserializer);
     var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     return SequenceServices(
-        dir: var_dir,
         inputFiles: var_inputFiles,
         inputFmt: var_inputFmt,
         datatype: var_datatype,
@@ -1631,7 +1621,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SplitAlignmentServices sse_decode_split_alignment_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_dir = sse_decode_opt_String(deserializer);
     var var_inputFile = sse_decode_String(deserializer);
     var var_inputFmt = sse_decode_String(deserializer);
     var var_datatype = sse_decode_String(deserializer);
@@ -1642,7 +1631,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_outputFmt = sse_decode_String(deserializer);
     var var_isUncheck = sse_decode_bool(deserializer);
     return SplitAlignmentServices(
-        dir: var_dir,
         inputFile: var_inputFile,
         inputFmt: var_inputFmt,
         datatype: var_datatype,
@@ -1719,7 +1707,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_alignment_services(
       AlignmentServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_opt_String(self.dir, serializer);
     sse_encode_list_String(self.inputFiles, serializer);
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
@@ -1828,7 +1815,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_filtering_services(
       FilteringServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_opt_String(self.dir, serializer);
     sse_encode_list_String(self.inputFiles, serializer);
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
@@ -1949,7 +1935,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_sequence_services(
       SequenceServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_opt_String(self.dir, serializer);
     sse_encode_list_String(self.inputFiles, serializer);
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
@@ -1960,7 +1945,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_split_alignment_services(
       SplitAlignmentServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_opt_String(self.dir, serializer);
     sse_encode_String(self.inputFile, serializer);
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
