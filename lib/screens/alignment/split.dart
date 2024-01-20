@@ -174,7 +174,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     );
   }
 
-  Future<void> _split(List<SegulFile> inputFile) async {
+  Future<void> _split(List<SegulInputFile> inputFile) async {
     try {
       final inputSequence =
           inputFile.firstWhere((e) => e.type == SegulType.standardSequence);

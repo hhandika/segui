@@ -11,7 +11,7 @@ String _$fileInputHash() => r'2d6e19a3aa0ce68eaaee7b8b41a251265a939550';
 /// See also [FileInput].
 @ProviderFor(FileInput)
 final fileInputProvider =
-    AsyncNotifierProvider<FileInput, List<SegulFile>>.internal(
+    AsyncNotifierProvider<FileInput, List<SegulInputFile>>.internal(
   FileInput.new,
   name: r'fileInputProvider',
   debugGetCreateSourceHash:
@@ -20,7 +20,7 @@ final fileInputProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$FileInput = AsyncNotifier<List<SegulFile>>;
+typedef _$FileInput = AsyncNotifier<List<SegulInputFile>>;
 String _$fileOutputHash() => r'3797fa4746f37f3871c92207908e875ce706ac1f';
 
 /// See also [FileOutput].

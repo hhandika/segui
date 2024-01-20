@@ -133,7 +133,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     );
   }
 
-  Future<void> _summarize(List<SegulFile> files) async {
+  Future<void> _summarize(List<SegulInputFile> files) async {
     try {
       final inputFiles =
           IOServices().convertPathsToString(files, SegulType.standardSequence);

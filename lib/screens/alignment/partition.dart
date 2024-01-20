@@ -171,7 +171,7 @@ class PartitionConversionPageState
     );
   }
 
-  Future<void> _convert(List<SegulFile> inputFiles) async {
+  Future<void> _convert(List<SegulInputFile> inputFiles) async {
     try {
       final inputPartitions = inputFiles
           .where((e) => e.type == SegulType.alignmentPartition)

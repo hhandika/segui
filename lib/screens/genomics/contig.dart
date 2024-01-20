@@ -115,7 +115,7 @@ class ContigPageState extends ConsumerState<ContigPage> {
         ]);
   }
 
-  Future<void> _summarize(List<SegulFile> inputFiles) async {
+  Future<void> _summarize(List<SegulInputFile> inputFiles) async {
     try {
       final files = IOServices()
           .convertPathsToString(inputFiles, SegulType.genomicContig);

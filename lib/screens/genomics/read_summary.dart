@@ -113,7 +113,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
     );
   }
 
-  Future<void> _summarize(List<SegulFile> inputFiles) async {
+  Future<void> _summarize(List<SegulInputFile> inputFiles) async {
     try {
       final files =
           IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);

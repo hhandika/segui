@@ -37,8 +37,8 @@ enum SegulType {
   alignmentPartition,
 }
 
-class SegulFile {
-  SegulFile({
+class SegulInputFile {
+  SegulInputFile({
     required this.file,
     required this.type,
   });
@@ -99,7 +99,7 @@ class FileSelectionServices {
 
   final WidgetRef ref;
 
-  Future<List<SegulFile>> selectFiles(
+  Future<List<SegulInputFile>> selectFiles(
     XTypeGroup allowedExtension,
     bool allowMultiple,
   ) async {
@@ -111,25 +111,26 @@ class FileSelectionServices {
     }
   }
 
-  Future<List<SegulFile>> _selectMultiFiles(XTypeGroup allowedExtension) async {
+  Future<List<SegulInputFile>> _selectMultiFiles(
+      XTypeGroup allowedExtension) async {
     final fileList = await openFiles(
       acceptedTypeGroups: [allowedExtension],
     );
     return fileList.map((e) {
-      return SegulFile(
+      return SegulInputFile(
         file: e,
         type: matchTypeByXTypeGroup(allowedExtension),
       );
     }).toList();
   }
 
-  Future<SegulFile?> _selectSingleFile(XTypeGroup allowedExtension) async {
+  Future<SegulInputFile?> _selectSingleFile(XTypeGroup allowedExtension) async {
     final result = await openFile(
       acceptedTypeGroups: [allowedExtension],
     );
     return result == null
         ? null
-        : SegulFile(
+        : SegulInputFile(
             file: result,
             type: matchTypeByXTypeGroup(allowedExtension),
           );
@@ -165,11 +166,12 @@ class IOServices {
     );
   }
 
-  int countFiles(List<SegulFile> files, SegulType type) {
+  int countFiles(List<SegulInputFile> files, SegulType type) {
     return files.where((e) => e.type == type).length;
   }
 
-  List<String> convertPathsToString(List<SegulFile> files, SegulType type) {
+  List<String> convertPathsToString(
+      List<SegulInputFile> files, SegulType type) {
     return files.where((e) => e.type == type).map((e) => e.file.path).toList();
   }
 

@@ -185,7 +185,7 @@ class InputScreen extends ConsumerWidget {
 class InputFileList extends ConsumerWidget {
   const InputFileList({super.key, required this.files});
 
-  final List<SegulFile> files;
+  final List<SegulInputFile> files;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

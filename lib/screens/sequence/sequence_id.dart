@@ -93,7 +93,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
     );
   }
 
-  Future<void> _parseId(List<SegulFile> inputFiles) async {
+  Future<void> _parseId(List<SegulInputFile> inputFiles) async {
     try {
       final files = IOServices()
           .convertPathsToString(inputFiles, SegulType.standardSequence);

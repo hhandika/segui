@@ -181,7 +181,7 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
   }
 
   Future<void> _selectFiles(bool isAddNew) async {
-    List<SegulFile> result = await FileSelectionServices(ref)
+    List<SegulInputFile> result = await FileSelectionServices(ref)
         .selectFiles(widget.xTypeGroup, widget.allowMultiple);
     final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {

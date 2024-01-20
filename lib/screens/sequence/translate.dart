@@ -131,7 +131,7 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
     );
   }
 
-  Future<void> _translate(List<SegulFile> inputFiles) async {
+  Future<void> _translate(List<SegulInputFile> inputFiles) async {
     try {
       String outputFmt =
           getOutputFmt(ctr.outputFormatController!, isInterleave);

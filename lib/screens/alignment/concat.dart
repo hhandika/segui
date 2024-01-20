@@ -186,7 +186,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
     return _ctr.isValid();
   }
 
-  Future<void> _concat(List<SegulFile> inputFiles) async {
+  Future<void> _concat(List<SegulInputFile> inputFiles) async {
     try {
       String outputFmt =
           getOutputFmt(_ctr.outputFormatController!, isInterleave);

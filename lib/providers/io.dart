@@ -9,11 +9,11 @@ part 'io.g.dart';
 @Riverpod(keepAlive: true)
 class FileInput extends _$FileInput {
   @override
-  FutureOr<List<SegulFile>> build() {
+  FutureOr<List<SegulInputFile>> build() {
     return [];
   }
 
-  Future<void> addFiles(List<SegulFile> inputFiles) async {
+  Future<void> addFiles(List<SegulInputFile> inputFiles) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (inputFiles.isEmpty) {
@@ -24,7 +24,7 @@ class FileInput extends _$FileInput {
     });
   }
 
-  Future<void> addMoreFiles(List<SegulFile> inputFiles) async {
+  Future<void> addMoreFiles(List<SegulInputFile> inputFiles) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null) {
@@ -35,7 +35,7 @@ class FileInput extends _$FileInput {
     });
   }
 
-  Future<void> removeFile(SegulFile file) async {
+  Future<void> removeFile(SegulInputFile file) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null) {
