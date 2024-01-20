@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_selector/file_selector.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:segui/services/io.dart';
 
@@ -48,38 +47,39 @@ class FileInput extends _$FileInput {
   }
 }
 
+/// The output directory.
+/// This is use to store the output files.
 @Riverpod(keepAlive: true)
 class FileOutput extends _$FileOutput {
   @override
-  FutureOr<List<XFile>> build() {
-    return [];
+  FutureOr<SegulOutputFile> build() {
+    return SegulOutputFile.empty();
   }
 
+  /// Add the files in the output directory.
+  /// This is use after the use selects the output directory.
   Future<void> addFiles(Directory? outputDir) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (outputDir == null) {
-        return [];
+        return SegulOutputFile.empty();
       }
-      // find all files in the directory
-      final files = await outputDir.list().toList();
-      // filter out directories
-      final filesFiltered = files.whereType<File>().toList();
-      // cast to XFile
-      final filesCasted =
-          filesFiltered.map((file) => XFile(file.path)).toList();
-      return filesCasted;
+      return SegulOutputFile.fromDirectory(outputDir);
     });
   }
 
+  /// Update the files in the output directory.
+  /// This is use after the use executes a task.
+  /// We can also do stream with `FileEntity().watch`
+  /// to update the file list.
+  /// But it may slow down the task execution.
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      if (state.value == null) {
-        return [];
+      if (state.value == null || state.value!.directory == null) {
+        return SegulOutputFile.empty();
       }
-      final files = [...state.value!];
-      return files;
+      return SegulOutputFile.updateFiles(state.value!);
     });
   }
 }

@@ -37,6 +37,8 @@ enum SegulType {
   alignmentPartition,
 }
 
+/// A group of file extensions and uniform type identifiers.
+/// Used to filter files by type.
 class SegulInputFile {
   SegulInputFile({
     required this.file,
@@ -45,6 +47,45 @@ class SegulInputFile {
 
   final SegulType type;
   final XFile file;
+}
+
+class SegulOutputFile {
+  SegulOutputFile({
+    required this.directory,
+    required this.oldFiles,
+    required this.newFiles,
+  });
+
+  final Directory? directory;
+  final List<XFile> oldFiles;
+  final List<XFile> newFiles;
+
+  factory SegulOutputFile.empty() {
+    return SegulOutputFile(
+      directory: null,
+      oldFiles: [],
+      newFiles: [],
+    );
+  }
+
+  factory SegulOutputFile.fromDirectory(Directory dir) {
+    return SegulOutputFile(
+      directory: dir,
+      oldFiles: DirectoryCrawler(dir).crawl(),
+      newFiles: [],
+    );
+  }
+
+  factory SegulOutputFile.updateFiles(
+    SegulOutputFile oldFile,
+  ) {
+    return SegulOutputFile(
+        directory: oldFile.directory,
+        oldFiles: oldFile.oldFiles,
+        newFiles: DirectoryCrawler(oldFile.directory!).findNewFiles(
+          oldFile.oldFiles,
+        ));
+  }
 }
 
 SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
@@ -184,6 +225,31 @@ class IOServices {
       return Directory(result);
     }
     return null;
+  }
+}
+
+class DirectoryCrawler {
+  DirectoryCrawler(this.dir);
+
+  final Directory dir;
+
+  List<XFile> crawl() {
+    return _findAllFilesInDir(dir);
+  }
+
+  List<XFile> findNewFiles(List<XFile> oldFiles) {
+    List<XFile> newFiles = _findAllFilesInDir(dir);
+    newFiles.removeWhere((e) => oldFiles.contains(e));
+    return newFiles;
+  }
+
+  List<XFile> _findAllFilesInDir(Directory dir) {
+    List<XFile> files = dir
+        .listSync(recursive: false)
+        .whereType<File>()
+        .map((e) => XFile(e.path))
+        .toList();
+    return files;
   }
 }
 

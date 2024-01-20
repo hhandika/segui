@@ -252,46 +252,66 @@ class OutputFileList extends StatelessWidget {
     required this.files,
   });
 
-  final List<XFile> files;
+  final SegulOutputFile files;
 
   @override
   Widget build(BuildContext context) {
     return IOListContainer(
         title: 'Output Files',
-        child: ListView.separated(
-          separatorBuilder: (context, index) => const Divider(
-            height: 1,
-            indent: 36,
-            endIndent: 40,
-          ),
-          shrinkWrap: true,
-          itemCount: files.length,
-          padding: const EdgeInsets.all(8),
-          itemBuilder: (context, index) {
-            final data = files[index];
-            return ListTile(
-              minVerticalPadding: 2,
-              leading: const Icon(Icons.attach_file_outlined),
-              title: Text(data.name),
-              subtitle: FutureBuilder<String>(
-                future: getFileSize(data),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data!);
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-              trailing: IconButton(
-                icon: Icon(Icons.adaptive.share_outlined),
-                onPressed: () {
-                  IOServices().shareFile(context, data);
-                },
-              ),
-            );
-          },
-        ));
+        child: ListView(children: [
+          ...files.oldFiles
+              .map((e) => OutputFileTiles(isOldFile: true, file: e)),
+          ...files.newFiles
+              .map((e) => OutputFileTiles(isOldFile: false, file: e)),
+        ]));
+  }
+}
+
+class OutputFileTiles extends StatelessWidget {
+  const OutputFileTiles({
+    super.key,
+    required this.isOldFile,
+    required this.file,
+  });
+
+  final bool isOldFile;
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      minVerticalPadding: 2,
+      leading: const Icon(Icons.note_outlined),
+      title: isOldFile
+          ? Text(file.name, style: Theme.of(context).textTheme.labelLarge)
+          : RichText(
+              text: TextSpan(
+              children: [
+                TextSpan(
+                    text: file.name,
+                    style: Theme.of(context).textTheme.labelLarge),
+                const WidgetSpan(
+                  child: Icon(Icons.new_releases_outlined),
+                ),
+              ],
+            )),
+      subtitle: FutureBuilder<String>(
+        future: getFileSize(file),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Text(snapshot.data!);
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
+      trailing: IconButton(
+        icon: const Icon(Icons.share),
+        onPressed: () {
+          IOServices().shareFile(context, file);
+        },
+      ),
+    );
   }
 }
 
