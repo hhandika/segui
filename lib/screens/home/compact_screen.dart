@@ -4,19 +4,23 @@ import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/settings/settings.dart';
+import 'package:segui/styles/decoration.dart';
 
 class SmallScreenView extends ConsumerWidget {
   const SmallScreenView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final Color? mainColor = getSEGULBackgroundColor(context);
     return Scaffold(
         appBar: AppBar(
           title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
+          backgroundColor: mainColor,
           actions: const [
             SettingButtons(),
           ],
         ),
+        backgroundColor: mainColor,
         body: SafeArea(
             child: Center(
           child: pages.elementAt(ref.watch(tabSelectionProvider)),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/home/components/navigation.dart';
+import 'package:segui/styles/decoration.dart';
 
 class LargeScreenView extends ConsumerStatefulWidget {
   const LargeScreenView({super.key});
@@ -17,13 +18,12 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-
+    final Color? mainColor = getSEGULBackgroundColor(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
-        backgroundColor: Color.lerp(Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.surface, 0.9),
+        backgroundColor: mainColor,
         leading: screenWidth < 840
             ? null
             : IconButton(
@@ -37,8 +37,7 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
                 },
               ),
       ),
-      backgroundColor: Color.lerp(Theme.of(context).colorScheme.primary,
-          Theme.of(context).colorScheme.surface, 0.9),
+      backgroundColor: mainColor,
       body: SafeArea(
         bottom: false,
         top: false,
