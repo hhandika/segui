@@ -98,7 +98,11 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             isRunning: _ctr.isRunning,
             isSuccess: _ctr.isSuccess,
             controller: _ctr,
-            onNewRun: () => setState(() {}),
+            onNewRun: () => setState(() {
+              _ctr.isSuccess = false;
+              ref.invalidate(fileInputProvider);
+              ref.invalidate(fileOutputProvider);
+            }),
             onExecuted: ref.read(fileInputProvider).when(
                   data: (value) {
                     if (value.isEmpty) {
@@ -110,7 +114,6 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
                               setState(() {
                                 _ctr.isRunning = true;
                               });
-
                               await _summarize(value);
                             };
                     }

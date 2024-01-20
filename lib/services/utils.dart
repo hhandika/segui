@@ -19,3 +19,7 @@ String get greetingIconPack {
     return 'assets/images/night.svg';
   }
 }
+
+String get emptyDirIcon {
+  return 'assets/images/empty-folder.svg';
+}

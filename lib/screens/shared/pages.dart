@@ -1,8 +1,10 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 
 /// Standard screen size for medium devices (tablets, small laptops, etc.)
@@ -170,9 +172,13 @@ class InputScreen extends ConsumerWidget {
     return SizedBox(
       height: double.infinity,
       child: ref.watch(fileInputProvider).when(
-            data: (data) => InputFileList(
-              files: data,
-            ),
+            data: (data) => data.isEmpty
+                ? const EmptyScreen(
+                    title: 'No input files selected.',
+                    description:
+                        'Select one or more input files to start the analysis.',
+                  )
+                : InputFileList(files: data),
             loading: () => const Center(
               child: CircularProgressIndicator(),
             ),
@@ -236,7 +242,13 @@ class OutputScreen extends ConsumerWidget {
     return SizedBox(
       height: double.infinity,
       child: ref.watch(fileOutputProvider).when(
-            data: (data) => OutputFileList(files: data),
+            data: (data) => data.directory == null
+                ? const EmptyScreen(
+                    title: 'No output directory selected.',
+                    description:
+                        'Select an output directory to store output files.',
+                  )
+                : OutputFileList(files: data),
             loading: () => const Center(
               child: CircularProgressIndicator(),
             ),
@@ -259,10 +271,10 @@ class OutputFileList extends StatelessWidget {
     return IOListContainer(
         title: 'Output Files',
         child: ListView(children: [
-          ...files.oldFiles
-              .map((e) => OutputFileTiles(isOldFile: true, file: e)),
           ...files.newFiles
               .map((e) => OutputFileTiles(isOldFile: false, file: e)),
+          ...files.oldFiles
+              .map((e) => OutputFileTiles(isOldFile: true, file: e)),
         ]));
   }
 }
@@ -285,16 +297,21 @@ class OutputFileTiles extends StatelessWidget {
       title: isOldFile
           ? Text(file.name, style: Theme.of(context).textTheme.labelLarge)
           : RichText(
+              overflow: TextOverflow.ellipsis,
               text: TextSpan(
-              children: [
-                TextSpan(
-                    text: file.name,
-                    style: Theme.of(context).textTheme.labelLarge),
-                const WidgetSpan(
-                  child: Icon(Icons.new_releases_outlined),
-                ),
-              ],
-            )),
+                children: [
+                  TextSpan(
+                      text: file.name,
+                      style: Theme.of(context).textTheme.labelLarge),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.bottom,
+                    child: Icon(
+                      Icons.fiber_new_outlined,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
+              )),
       subtitle: FutureBuilder<String>(
         future: getFileSize(file),
         builder: (context, snapshot) {
@@ -358,5 +375,43 @@ class TabContainer extends StatelessWidget {
           decoration: getContainerDecoration(context),
           child: child,
         ));
+  }
+}
+
+class EmptyScreen extends StatelessWidget {
+  const EmptyScreen({
+    super.key,
+    required this.title,
+    required this.description,
+  });
+
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          emptyDirIcon,
+          height: 80,
+          colorFilter: ColorFilter.mode(
+            Theme.of(context).colorScheme.primary.withAlpha(120),
+            BlendMode.srcIn,
+          ),
+        ),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        Text(
+          description,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ],
+    );
   }
 }

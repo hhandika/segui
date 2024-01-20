@@ -238,8 +238,14 @@ class DirectoryCrawler {
   }
 
   List<XFile> findNewFiles(List<XFile> oldFiles) {
-    List<XFile> newFiles = _findAllFilesInDir(dir);
-    newFiles.removeWhere((e) => oldFiles.contains(e));
+    List<XFile> newFiles = [];
+
+    dir.listSync(recursive: false).whereType<File>().forEach((e) {
+      if (!oldFiles.any((oldFile) => oldFile.path == e.path)) {
+        newFiles.add(XFile(e.path));
+      }
+    });
+
     return newFiles;
   }
 

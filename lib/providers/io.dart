@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:segui/services/io.dart';
 
@@ -79,7 +80,16 @@ class FileOutput extends _$FileOutput {
       if (state.value == null || state.value!.directory == null) {
         return SegulOutputFile.empty();
       }
-      return SegulOutputFile.updateFiles(state.value!);
+      if (kDebugMode) {
+        print(
+            'Refreshing files... Older files: ${state.value!.oldFiles.length}');
+      }
+      final updates = SegulOutputFile.updateFiles(state.value!);
+      if (kDebugMode) {
+        print('Refreshing files... New files: ${updates.newFiles.length}');
+      }
+
+      return updates;
     });
   }
 }
