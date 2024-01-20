@@ -28,7 +28,7 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
             ? null
             : IconButton(
                 icon: Icon(
-                  isUsingNavigationRail ? Icons.menu : Icons.menu_open_outlined,
+                  isUsingNavigationRail ? Icons.menu_open_outlined : Icons.menu,
                 ),
                 onPressed: () {
                   setState(() {
