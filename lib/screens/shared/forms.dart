@@ -4,7 +4,7 @@ import 'dart:isolate';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/screens/shared/controllers.dart';
+import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
 
