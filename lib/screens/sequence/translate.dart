@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
@@ -38,6 +39,22 @@ class TranslatePageState extends ConsumerState<TranslatePage>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
+        SharedInfoForm(
+          description:
+              'Translate nucleotide sequences to amino acid sequences. '
+              'Allow to translate multiple files at once.',
+          isShowingInfo: _ctr.isShowingInfo,
+          onClosed: () {
+            setState(() {
+              _ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              _ctr.isShowingInfo = true;
+            });
+          },
+        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,

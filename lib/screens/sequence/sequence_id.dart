@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -35,6 +36,25 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SharedInfoForm(
+          description: 'Extract unique IDs '
+              'across multiple sequence files. '
+              'The output file is a '
+              'list of unique sequence IDs. '
+              'The map option will map sample '
+              'distribution across the input dataset.',
+          isShowingInfo: _ctr.isShowingInfo,
+          onClosed: () {
+            setState(() {
+              _ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              _ctr.isShowingInfo = true;
+            });
+          },
+        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/genomics.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -36,6 +37,24 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SharedInfoForm(
+          description: 'Summarize raw genomic reads by '
+              'calculating the number '
+              'of reads, base counts, GC and AT content, '
+              'low Q-score counts, '
+              'and other relevant statistics.',
+          isShowingInfo: _ctr.isShowingInfo,
+          onClosed: () {
+            setState(() {
+              _ctr.isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              _ctr.isShowingInfo = true;
+            });
+          },
+        ),
         const CardTitle(title: 'Input'),
         FormCard(children: [
           InputSelectorForm(

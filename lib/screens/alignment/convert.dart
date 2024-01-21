@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/io.dart';
@@ -45,7 +46,8 @@ class ConvertPageState extends ConsumerState<ConvertPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SharedInfoForm(
-          description: 'Convert sequence alignment to other formats.',
+          description: 'Convert sequence alignment to other formats. '
+              'It can convert multiple files at once.',
           isShowingInfo: _ctr.isShowingInfo,
           onClosed: () {
             setState(() {
