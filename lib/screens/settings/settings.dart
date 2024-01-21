@@ -44,15 +44,16 @@ class SettingPages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Theme.of(context).colorScheme.surface,
-            ),
-            child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(minWidth: 200, maxWidth: 800),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Theme.of(context).colorScheme.surface,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -101,8 +102,8 @@ class SettingPages extends StatelessWidget {
                   ),
                 ],
               ),
-            )),
-      ),
+            ),
+          )),
     );
   }
 }
