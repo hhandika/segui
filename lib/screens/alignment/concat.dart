@@ -179,9 +179,6 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   }
 
   bool get _isValid {
-    if (_ctr.outputFormatController == null) {
-      _ctr.outputFormatController == outputFormat[0];
-    }
     return _ctr.isValid;
   }
 
