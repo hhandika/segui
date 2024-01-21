@@ -150,10 +150,20 @@ class FileSelectionServices {
     bool allowMultiple,
   ) async {
     if (allowMultiple) {
-      return _selectMultiFiles(allowedExtension);
+      if (Platform.isAndroid) {
+        return _selectMultiFileAndroid(allowedExtension);
+      } else {
+        return _selectMultiFiles(allowedExtension);
+      }
     } else {
-      final result = await _selectSingleFile(allowedExtension);
-      return result == null ? [] : [result];
+      if (Platform.isAndroid) {
+        final results = await _selectSingleFileAndroid(allowedExtension);
+        return results == null ? [] : [results];
+      } else {
+        return _selectSingleFile(allowedExtension).then((value) {
+          return value == null ? [] : [value];
+        });
+      }
     }
   }
 
@@ -178,6 +188,40 @@ class FileSelectionServices {
         ? null
         : SegulInputFile(
             file: result,
+            type: matchTypeByXTypeGroup(allowedExtension),
+          );
+  }
+
+  Future<List<SegulInputFile>> _selectMultiFileAndroid(
+      XTypeGroup allowedExtension) async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: allowedExtension.extensions,
+    );
+
+    return result == null
+        ? []
+        : result.files.map((e) {
+            return SegulInputFile(
+              file: XFile(e.path!),
+              type: matchTypeByXTypeGroup(allowedExtension),
+            );
+          }).toList();
+  }
+
+  Future<SegulInputFile?> _selectSingleFileAndroid(
+      XTypeGroup allowedExtension) async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: allowedExtension.extensions,
+    );
+
+    return result == null
+        ? null
+        : SegulInputFile(
+            file: XFile(result.files.single.path!),
             type: matchTypeByXTypeGroup(allowedExtension),
           );
   }
