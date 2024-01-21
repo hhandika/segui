@@ -3,7 +3,6 @@ use std::path::{Path, PathBuf};
 
 pub struct ArchiveServices {
     pub output_path: String,
-    pub input_directory: String,
     pub input_files: Vec<String>,
 }
 
@@ -11,7 +10,6 @@ impl ArchiveServices {
     pub fn new() -> ArchiveServices {
         ArchiveServices {
             output_path: String::new(),
-            input_directory: String::new(),
             input_files: Vec::new(),
         }
     }
@@ -24,7 +22,7 @@ impl ArchiveServices {
             .map(PathBuf::from)
             .collect::<Vec<PathBuf>>();
 
-        let zip = Archive::new(output_path, &self.input_directory, &input_files);
+        let zip = Archive::new(output_path, &input_files);
         zip.zip().expect("Failed to zip files");
     }
 }

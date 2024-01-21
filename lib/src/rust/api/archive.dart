@@ -8,12 +8,10 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 class ArchiveServices {
   final String outputPath;
-  final String inputDirectory;
   final List<String> inputFiles;
 
   const ArchiveServices({
     required this.outputPath,
-    required this.inputDirectory,
     required this.inputFiles,
   });
 
@@ -25,8 +23,7 @@ class ArchiveServices {
       );
 
   @override
-  int get hashCode =>
-      outputPath.hashCode ^ inputDirectory.hashCode ^ inputFiles.hashCode;
+  int get hashCode => outputPath.hashCode ^ inputFiles.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -34,6 +31,5 @@ class ArchiveServices {
       other is ArchiveServices &&
           runtimeType == other.runtimeType &&
           outputPath == other.outputPath &&
-          inputDirectory == other.inputDirectory &&
           inputFiles == other.inputFiles;
 }

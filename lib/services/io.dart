@@ -237,7 +237,6 @@ class ArchiveRunner {
     String outputPath = p.join(outputDir.path, outputFilename);
     List<String> inputFiles = outputFiles.map((e) => e.path).toList();
     await ArchiveServices(
-      inputDirectory: outputDir.path,
       inputFiles: inputFiles,
       outputPath: outputPath,
     ).zip();

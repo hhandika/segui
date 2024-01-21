@@ -1144,11 +1144,9 @@ impl SseDecode for crate::api::archive::ArchiveServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_outputPath = <String>::sse_decode(deserializer);
-        let mut var_inputDirectory = <String>::sse_decode(deserializer);
         let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
         return crate::api::archive::ArchiveServices {
             output_path: var_outputPath,
-            input_directory: var_inputDirectory,
             input_files: var_inputFiles,
         };
     }
@@ -1574,7 +1572,6 @@ impl flutter_rust_bridge::IntoDart for crate::api::archive::ArchiveServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.output_path.into_into_dart().into_dart(),
-            self.input_directory.into_into_dart().into_dart(),
             self.input_files.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -1869,7 +1866,6 @@ impl SseEncode for crate::api::archive::ArchiveServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.output_path, serializer);
-        <String>::sse_encode(self.input_directory, serializer);
         <Vec<String>>::sse_encode(self.input_files, serializer);
     }
 }

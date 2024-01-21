@@ -1068,12 +1068,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ArchiveServices dco_decode_archive_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return ArchiveServices(
       outputPath: dco_decode_String(arr[0]),
-      inputDirectory: dco_decode_String(arr[1]),
-      inputFiles: dco_decode_list_String(arr[2]),
+      inputFiles: dco_decode_list_String(arr[1]),
     );
   }
 
@@ -1415,12 +1414,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ArchiveServices sse_decode_archive_services(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_outputPath = sse_decode_String(deserializer);
-    var var_inputDirectory = sse_decode_String(deserializer);
     var var_inputFiles = sse_decode_list_String(deserializer);
     return ArchiveServices(
-        outputPath: var_outputPath,
-        inputDirectory: var_inputDirectory,
-        inputFiles: var_inputFiles);
+        outputPath: var_outputPath, inputFiles: var_inputFiles);
   }
 
   @protected
@@ -1802,7 +1798,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ArchiveServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.outputPath, serializer);
-    sse_encode_String(self.inputDirectory, serializer);
     sse_encode_list_String(self.inputFiles, serializer);
   }
 
