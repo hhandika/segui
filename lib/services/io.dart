@@ -194,11 +194,8 @@ class FileSelectionServices {
 
   Future<List<SegulInputFile>> _selectMultiFileAndroid(
       XTypeGroup allowedExtension) async {
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: FileType.custom,
-      allowedExtensions: allowedExtension.extensions,
-    );
+    final result = await FilePicker.platform
+        .pickFiles(allowMultiple: true, type: FileType.any);
 
     return result == null
         ? []
@@ -214,8 +211,7 @@ class FileSelectionServices {
       XTypeGroup allowedExtension) async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
-      type: FileType.custom,
-      allowedExtensions: allowedExtension.extensions,
+      type: FileType.any,
     );
 
     return result == null
