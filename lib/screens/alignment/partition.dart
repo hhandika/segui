@@ -22,10 +22,14 @@ class PartitionConversionPage extends ConsumerStatefulWidget {
 }
 
 class PartitionConversionPageState
-    extends ConsumerState<PartitionConversionPage> {
+    extends ConsumerState<PartitionConversionPage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String? _partitionFormatController;
   bool _isUnchecked = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -35,6 +39,7 @@ class PartitionConversionPageState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,

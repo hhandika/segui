@@ -19,7 +19,8 @@ class ConcatPage extends ConsumerStatefulWidget {
   ConcatPageState createState() => ConcatPageState();
 }
 
-class ConcatPageState extends ConsumerState<ConcatPage> {
+class ConcatPageState extends ConsumerState<ConcatPage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String _partitionFormatController = partitionFormat[1];
   bool isCodon = false;
@@ -27,9 +28,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   bool _isShowMore = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
+  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -39,6 +38,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,

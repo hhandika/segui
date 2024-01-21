@@ -21,12 +21,17 @@ class ReadSummaryPage extends ConsumerStatefulWidget {
   ReadSummaryPageState createState() => ReadSummaryPageState();
 }
 
-class ReadSummaryPageState extends ConsumerState<ReadSummaryPage> {
+class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String mode = sequenceReadSummaryMode[0];
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,

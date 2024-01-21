@@ -20,12 +20,17 @@ class IDExtractionPage extends ConsumerStatefulWidget {
   IDExtractionPageState createState() => IDExtractionPageState();
 }
 
-class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
+class IDExtractionPageState extends ConsumerState<IDExtractionPage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   bool _isMap = false;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -21,14 +21,19 @@ class TranslatePage extends ConsumerStatefulWidget {
   TranslatePageState createState() => TranslatePageState();
 }
 
-class TranslatePageState extends ConsumerState<TranslatePage> {
+class TranslatePageState extends ConsumerState<TranslatePage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   bool _isInterleave = false;
   String _readingFrame = readingFrame[0];
   int _tableIndex = 0;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,

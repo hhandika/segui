@@ -21,11 +21,22 @@ class ContigPage extends ConsumerStatefulWidget {
   ContigPageState createState() => ContigPageState();
 }
 
-class ContigPageState extends ConsumerState<ContigPage> {
+class ContigPageState extends ConsumerState<ContigPage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _ctr.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,

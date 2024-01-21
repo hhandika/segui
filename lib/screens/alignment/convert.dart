@@ -21,11 +21,15 @@ class ConvertPage extends ConsumerStatefulWidget {
   ConvertPageState createState() => ConvertPageState();
 }
 
-class ConvertPageState extends ConsumerState<ConvertPage> {
+class ConvertPageState extends ConsumerState<ConvertPage>
+    with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   bool _isSortSequence = false;
   bool _isInterleave = false;
   bool _isShowMore = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -35,6 +39,7 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
