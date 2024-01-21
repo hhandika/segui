@@ -102,7 +102,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
                   return ExecutionButton(
-                    label: 'Summarize',
+                    label: 'Translate',
                     isRunning: _ctr.isRunning,
                     isSuccess: _ctr.isSuccess,
                     controller: _ctr,

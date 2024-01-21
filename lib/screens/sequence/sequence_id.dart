@@ -67,7 +67,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
                   return ExecutionButton(
-                    label: 'Summarize',
+                    label: 'Extract',
                     isRunning: _ctr.isRunning,
                     isSuccess: _ctr.isSuccess,
                     controller: _ctr,
