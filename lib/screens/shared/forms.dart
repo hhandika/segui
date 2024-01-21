@@ -4,8 +4,10 @@ import 'dart:ffi';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/io.dart';
+import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
 
 class SharedSequenceInputForm extends ConsumerStatefulWidget {
@@ -13,6 +15,7 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
     super.key,
     required this.ctr,
     required this.xTypeGroup,
+    required this.task,
     this.allowMultiple = true,
     this.isDatatypeEnabled = true,
     this.hasSecondaryPicker = false,
@@ -23,6 +26,7 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
   final XTypeGroup xTypeGroup;
   final bool isDatatypeEnabled;
   final bool hasSecondaryPicker;
+  final SupportedTask task;
 
   @override
   SharedSequenceInputFormState createState() => SharedSequenceInputFormState();
@@ -39,6 +43,7 @@ class SharedSequenceInputFormState
           allowMultiple: widget.allowMultiple,
           xTypeGroup: widget.xTypeGroup,
           hasSecondaryPicker: widget.isDatatypeEnabled,
+          task: task,
         ),
         SharedDropdownField(
           value: widget.ctr.inputFormatController,

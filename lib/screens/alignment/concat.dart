@@ -3,6 +3,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
@@ -63,6 +64,7 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
+          task: task,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),

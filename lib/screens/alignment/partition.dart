@@ -62,6 +62,7 @@ class PartitionConversionPageState
             allowMultiple: true,
             hasSecondaryPicker: false,
             xTypeGroup: partitionTypeGroup,
+            task: task,
           ),
           SharedDropdownField(
             value: _partitionFormatController,

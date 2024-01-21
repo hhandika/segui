@@ -57,6 +57,7 @@ class ConvertPageState extends ConsumerState<ConvertPage> {
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
+          task: task,
         ),
         const SizedBox(height: 20),
         const CardTitle(title: 'Output'),

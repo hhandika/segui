@@ -74,7 +74,7 @@ class FileOutput extends _$FileOutput {
   /// files outside the app directory.
   /// So we save the files in the app directory
   Future<void> addMobile(
-    String dirName,
+    String? dirName,
     SupportedTask task,
   ) async {
     state = const AsyncValue.loading();

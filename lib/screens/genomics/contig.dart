@@ -37,6 +37,7 @@ class ContigPageState extends ConsumerState<ContigPage> {
               allowMultiple: true,
               ctr: _ctr,
               hasSecondaryPicker: false,
+              task: task,
             ),
             SharedDropdownField(
               value: _ctr.inputFormatController,

@@ -67,6 +67,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
           allowMultiple: false,
           hasSecondaryPicker: true,
           xTypeGroup: sequenceTypeGroup,
+          task: task,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Input Partition'),
@@ -91,6 +92,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
               allowMultiple: false,
               hasSecondaryPicker: true,
               xTypeGroup: partitionTypeGroup,
+              task: task,
             ),
           )
         ]),

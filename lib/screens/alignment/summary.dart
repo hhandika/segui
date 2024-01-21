@@ -63,6 +63,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
+          task: task,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),

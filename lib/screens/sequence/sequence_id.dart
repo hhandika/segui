@@ -35,6 +35,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage> {
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           isDatatypeEnabled: false,
+          task: task,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),

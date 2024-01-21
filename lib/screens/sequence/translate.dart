@@ -38,6 +38,7 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           isDatatypeEnabled: false,
+          task: task,
         ),
         const SizedBox(height: 16),
         const CardTitle(title: 'Output'),

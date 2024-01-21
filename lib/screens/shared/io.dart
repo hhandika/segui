@@ -76,12 +76,14 @@ class InputSelectorForm extends StatelessWidget {
     required this.allowMultiple,
     required this.xTypeGroup,
     required this.hasSecondaryPicker,
+    required this.task,
   });
 
   final IOController ctr;
   final bool allowMultiple;
   final XTypeGroup xTypeGroup;
   final bool hasSecondaryPicker;
+  final SupportedTask task;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +92,7 @@ class InputSelectorForm extends StatelessWidget {
       allowMultiple: allowMultiple,
       xTypeGroup: xTypeGroup,
       hasSecondaryPicker: hasSecondaryPicker,
+      task: task,
     );
   }
 }
@@ -101,12 +104,14 @@ class SharedFilePicker extends ConsumerStatefulWidget {
     required this.allowMultiple,
     required this.xTypeGroup,
     required this.hasSecondaryPicker,
+    required this.task,
   });
 
   final String label;
   final bool allowMultiple;
   final XTypeGroup xTypeGroup;
   final bool hasSecondaryPicker;
+  final SupportedTask task;
 
   @override
   SharedMultiFilePickerState createState() => SharedMultiFilePickerState();
@@ -194,6 +199,10 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
     final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {
       isAddNew ? notifier.addFiles(result) : notifier.addMoreFiles(result);
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      ref.read(fileOutputProvider.notifier).addMobile(null, widget.task);
     }
   }
 }

@@ -326,9 +326,10 @@ void updateOutputDir(WidgetRef ref, String dirName, SupportedTask task) {
   }
 }
 
-Future<Directory> getOutputDir(String dirName, SupportedTask task) async {
+Future<Directory> getOutputDir(String? dirName, SupportedTask task) async {
   Directory appDocDir = await getApplicationDocumentsDirectory();
-  String directory = dirName.isEmpty ? defaultOutputDir[task]! : dirName;
+  String directory =
+      dirName == null || dirName.isEmpty ? defaultOutputDir[task]! : dirName;
   Directory outputDir = Directory(p.join(appDocDir.path, directory));
 
   if (!await outputDir.exists()) {
