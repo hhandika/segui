@@ -74,16 +74,11 @@ class _LogScreenState extends State<LogScreen> {
   Future<List<XFile>> _findLogs() async {
     final dir = await getApplicationDocumentsDirectory();
     final files = await dir.list().toList();
-    final List<XFile> logs = [];
-    // Assign file to xFile and get the file length
-    for (final file in files) {
-      final xFile = XFile(file.path);
-      final length = await xFile.length();
-      if (length > 0) {
-        logs.add(xFile);
-      }
-    }
-    return logs;
+
+    return files
+        .where((element) => element.path.endsWith('.log'))
+        .map((e) => XFile(e.path))
+        .toList();
   }
 }
 

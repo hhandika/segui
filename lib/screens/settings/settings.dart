@@ -48,14 +48,13 @@ class SettingPages extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Container(
-            constraints: const BoxConstraints(maxWidth: 500),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               color: Theme.of(context).colorScheme.surface,
             ),
             child: SingleChildScrollView(
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
