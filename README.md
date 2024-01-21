@@ -21,7 +21,7 @@ Documentation: [[EN]](https://segul.app)
 | Alignment concatenation        | :white_check_mark: |
 | Alignment conversion           | :white_check_mark: |
 | Alignment filtering            | :wrench:           |
-| Alignment partition conversion | :wrench:           |
+| Alignment partition conversion | :white_check_mark: |
 | Alignment splitting            | :white_check_mark: |
 | Alignment summary statistics   | :white_check_mark: |
 | Genomic summary statistics     | :white_check_mark: |
