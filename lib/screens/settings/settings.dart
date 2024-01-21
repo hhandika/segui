@@ -54,10 +54,8 @@ class SettingPages extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 color: Theme.of(context).colorScheme.surface,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: ListView(
+                shrinkWrap: true,
                 children: [
                   SettingTile(
                     title: 'Logs',

@@ -39,6 +39,7 @@ class _LogScreenState extends State<LogScreen> {
                         separatorBuilder: (context, index) =>
                             const SettingDividers(),
                         itemCount: logs!.length,
+                        shrinkWrap: true,
                         itemBuilder: (context, index) {
                           final log = logs[index];
                           return ListTile(
@@ -46,6 +47,14 @@ class _LogScreenState extends State<LogScreen> {
                               log.name,
                               style: Theme.of(context).textTheme.titleMedium,
                               overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Tooltip(
+                              message: log.path,
+                              child: Text(
+                                log.path,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                             leading: const Icon(Icons.list_alt_outlined),
                             trailing: const Icon(Icons.chevron_right),
