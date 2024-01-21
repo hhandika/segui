@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:segui/services/types.dart';
 
@@ -24,7 +22,7 @@ class IOController {
   String? outputFormatController;
   bool isRunning;
   bool isSuccess;
-  bool isShowingInfo;
+  bool isShowingInfo = true;
 
   factory IOController.empty() => IOController(
         outputController: TextEditingController(),
@@ -35,10 +33,7 @@ class IOController {
       );
 
   bool get isValid {
-    bool validOutputPath = Platform.isIOS || Platform.isAndroid
-        ? true
-        : outputController.text.isNotEmpty;
-    return validOutputPath && !isRunning;
+    return !isRunning;
   }
 
   void reset() {

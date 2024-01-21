@@ -78,43 +78,42 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
-                data: (value) {
-                  return ExecutionButton(
-                    label: 'Summarize',
-                    isRunning: _ctr.isRunning,
-                    isSuccess: _ctr.isSuccess,
-                    controller: _ctr,
-                    onNewRun: _setNewRun,
-                    onExecuted: value.isEmpty || !_isValid
-                        ? null
-                        : () async {
-                            await _execute(value);
-                          },
-                    onShared: ref.read(fileOutputProvider).when(
-                          data: (value) {
-                            if (value.directory == null) {
-                              return null;
-                            } else {
-                              return _ctr.isRunning
-                                  ? null
-                                  : () async {
-                                      await _shareOutput(
-                                        value.directory!,
-                                        value.newFiles,
-                                      );
-                                    };
-                            }
-                          },
-                          loading: () => null,
-                          error: (e, _) => null,
-                        ),
-                  );
-                },
-                loading: () => null,
-                error: (e, s) {
-                  return null;
-                },
-              ),
+              data: (value) {
+                return ExecutionButton(
+                  label: 'Summarize',
+                  isRunning: _ctr.isRunning,
+                  isSuccess: _ctr.isSuccess,
+                  controller: _ctr,
+                  onNewRun: _setNewRun,
+                  onExecuted: value.isEmpty || !_isValid
+                      ? null
+                      : () async {
+                          await _execute(value);
+                        },
+                  onShared: ref.read(fileOutputProvider).when(
+                        data: (value) {
+                          if (value.directory == null) {
+                            return null;
+                          } else {
+                            return _ctr.isRunning
+                                ? null
+                                : () async {
+                                    await _shareOutput(
+                                      value.directory!,
+                                      value.newFiles,
+                                    );
+                                  };
+                          }
+                        },
+                        loading: () => null,
+                        error: (e, _) => () {
+                          _showError(e.toString());
+                        },
+                      ),
+                );
+              },
+              loading: () => null,
+              error: (e, s) => null),
         )
       ],
     );
