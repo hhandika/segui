@@ -176,7 +176,6 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
   }
 
   Future<void> _execute(List<SegulInputFile> inputFile) async {
-    updateOutputDir(ref, _ctr.outputDir.text, task);
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {

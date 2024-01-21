@@ -38,7 +38,7 @@ class IOController {
     bool validOutputPath = Platform.isIOS || Platform.isAndroid
         ? true
         : outputController.text.isNotEmpty;
-    return validOutputPath || !isRunning;
+    return validOutputPath && !isRunning;
   }
 
   void reset() {

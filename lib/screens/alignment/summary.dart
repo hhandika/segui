@@ -83,6 +83,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
               setState(() {
                 if (value != null) {
                   _interval = value;
+                  _reset();
                 }
               });
             },
@@ -139,7 +140,6 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
-    updateOutputDir(ref, _ctr.outputDir.text, task);
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
@@ -196,6 +196,13 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, error),
       );
+    });
+  }
+
+  void _reset() {
+    setState(() {
+      _ctr.isSuccess = false;
+      _ctr.isRunning = false;
     });
   }
 

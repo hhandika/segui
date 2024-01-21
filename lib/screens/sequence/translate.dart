@@ -85,6 +85,7 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
               setState(() {
                 if (value != null) {
                   _readingFrame = value;
+                  _reset();
                 }
               });
             },
@@ -140,7 +141,6 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
-    updateOutputDir(ref, _ctr.outputDir.text, task);
     return ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
@@ -222,6 +222,13 @@ class TranslatePageState extends ConsumerState<TranslatePage> {
     setState(() {
       _ctr.isRunning = false;
       _ctr.isSuccess = true;
+    });
+  }
+
+  void _reset() {
+    setState(() {
+      _ctr.isSuccess = false;
+      _ctr.isRunning = false;
     });
   }
 

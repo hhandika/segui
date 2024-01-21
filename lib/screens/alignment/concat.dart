@@ -183,8 +183,6 @@ class ConcatPageState extends ConsumerState<ConcatPage> {
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
-    updateOutputDir(
-        ref, _ctr.outputDir.text, SupportedTask.alignmentConcatenation);
     return await ref.read(fileOutputProvider).when(
         data: (value) async {
           if (value.directory == null) {

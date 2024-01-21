@@ -198,7 +198,7 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
   }
 }
 
-class SharedOutputDirField extends StatelessWidget {
+class SharedOutputDirField extends ConsumerWidget {
   const SharedOutputDirField({
     super.key,
     required this.ctr,
@@ -207,12 +207,16 @@ class SharedOutputDirField extends StatelessWidget {
   final TextEditingController ctr;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Platform.isIOS || Platform.isAndroid
         ? SharedTextField(
             label: 'Directory name',
             hint: 'Enter output directory name',
             controller: ctr,
+            onSubmitted: () {
+              updateOutputDir(
+                  ref, ctr.text, SupportedTask.alignmentConcatenation);
+            },
           )
         : const SelectDirField(
             label: 'Select output directory',

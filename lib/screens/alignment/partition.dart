@@ -169,7 +169,6 @@ class PartitionConversionPageState
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
-    updateOutputDir(ref, _ctr.outputDir.text, task);
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {

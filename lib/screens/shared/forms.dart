@@ -1,5 +1,5 @@
 // ignore: unused_import
-import 'dart:isolate';
+import 'dart:ffi';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
@@ -198,11 +198,13 @@ class SharedTextField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.controller,
+    this.onSubmitted,
   });
 
   final String label;
   final String hint;
   final TextEditingController controller;
+  final VoidCallback? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -222,6 +224,9 @@ class SharedTextField extends StatelessWidget {
       ),
       onSubmitted: (value) {
         controller.text = value;
+        if (onSubmitted != null) {
+          onSubmitted!();
+        }
       },
     );
   }
