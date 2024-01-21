@@ -44,59 +44,67 @@ class SettingPages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Center(
+      child: Padding(
         padding: const EdgeInsets.all(16),
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 300),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Theme.of(context).colorScheme.surface,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ListTile(
-                title: const Text('Log files'),
-                leading: const Icon(Icons.admin_panel_settings),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LogScreen(),
-                    ),
-                  );
-                },
+            constraints: const BoxConstraints(maxWidth: 500),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Theme.of(context).colorScheme.surface,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SettingTile(
+                    title: 'Logs',
+                    subtitle: 'View logs from previous tasks',
+                    icon: Icons.list_alt_outlined,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LogScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SettingDividers(),
+                  SettingTile(
+                    title: 'Theme',
+                    subtitle: 'Change app theme',
+                    icon: Icons.color_lens_outlined,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ThemeSettings(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SettingDividers(),
+                  SettingTile(
+                    title: 'About',
+                    subtitle: 'View app information',
+                    icon: Icons.info_outline,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AppAbout(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-              const SettingDividers(),
-              ListTile(
-                title: const Text('Theme'),
-                leading: const Icon(Icons.color_lens_outlined),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ThemeSettings(),
-                    ),
-                  );
-                },
-              ),
-              const SettingDividers(),
-              ListTile(
-                title: const Text('About'),
-                leading: const Icon(Icons.info_outline),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AppAbout(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ));
+            )),
+      ),
+    );
   }
 }
 
@@ -151,9 +159,44 @@ class SettingDividers extends StatelessWidget {
     return Divider(
       thickness: 2,
       height: 2,
-      indent: 4,
-      endIndent: 2,
       color: getSEGULBackgroundColor(context),
+    );
+  }
+}
+
+class SettingTile extends StatelessWidget {
+  const SettingTile({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.titleMedium,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        subtitle,
+        style: Theme.of(context).textTheme.bodyMedium,
+        overflow: TextOverflow.ellipsis,
+      ),
+      leading: Icon(
+        icon,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
     );
   }
 }
