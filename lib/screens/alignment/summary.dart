@@ -26,7 +26,7 @@ class AlignmentSummaryPage extends ConsumerStatefulWidget {
 class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
-  String _interval = '5';
+  String? _interval;
 
   @override
   bool get wantKeepAlive => true;
@@ -164,7 +164,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
         outputPrefix: _ctr.outputController.text,
-        interval: int.tryParse(_interval) ?? 5,
+        interval: int.tryParse(_interval ?? '5') ?? 5,
       ).run();
       ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess(outputDir);
