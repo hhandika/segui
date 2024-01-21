@@ -15,12 +15,14 @@ class SmallScreenView extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
-          backgroundColor: mainColor,
+          backgroundColor:
+              ref.watch(tabSelectionProvider) == 0 ? null : mainColor,
           actions: const [
             SettingButtons(),
           ],
         ),
-        backgroundColor: mainColor,
+        backgroundColor:
+            ref.watch(tabSelectionProvider) == 0 ? null : mainColor,
         body: SafeArea(
             child: Center(
           child: pages.elementAt(ref.watch(tabSelectionProvider)),
