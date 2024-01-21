@@ -14,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 enum SupportedTask {
   alignmentConcatenation,
   alignmentConversion,
+  alignmentFiltering,
   alignmentSplit,
   alignmentSummary,
   genomicRawReadSummary,
@@ -26,6 +27,7 @@ enum SupportedTask {
 const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.alignmentConcatenation: 'segui-alignment-concatenation',
   SupportedTask.alignmentConversion: 'segui-alignment-conversion',
+  SupportedTask.alignmentFiltering: 'segui-alignment-filtering',
   SupportedTask.alignmentSplit: 'segui-alignment-split',
   SupportedTask.alignmentSummary: 'segui-alignment-summary',
   SupportedTask.genomicRawReadSummary: 'segui-genomic-raw-read-summary',

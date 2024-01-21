@@ -6,7 +6,7 @@ import 'package:segui/providers/io.dart';
 import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/info.dart';
-import 'package:segui/services/tasks/sequences.dart';
+import 'package:segui/services/tasks/alignment.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
