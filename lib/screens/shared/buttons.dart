@@ -166,23 +166,25 @@ class QuickActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        height: 120,
-        width: 120,
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              20,
-            ),
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double containerSize = getContainerSize(screenWidth);
+    return Container(
+      height: containerSize,
+      width: containerSize,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            20,
+          ),
 
-            // Lerp colors
-            color: Color.lerp(
-              Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.primaryContainer,
-              0.5,
-            )),
+          // Lerp colors
+          color: Color.lerp(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.primaryContainer,
+            0.5,
+          )),
+      child: InkWell(
+        onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -203,6 +205,11 @@ class QuickActionButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  double getContainerSize(double screenWidth) {
+    bool isSmallerThanScreen = screenWidth < ((120 * 4) + (16 * 2));
+    return isSmallerThanScreen ? (screenWidth / 4) - (16 * 2) : 120;
   }
 }
 

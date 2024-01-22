@@ -24,7 +24,9 @@ class _SegulHomeState extends State<SegulHome> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    showLargeScreenView = MediaQuery.of(context).size.width >= 720;
+    // Show large screen view for screen width >= 600 dp
+    // which is the recommended screen size for tablets.
+    showLargeScreenView = MediaQuery.of(context).size.width >= 600;
   }
 
   @override
@@ -45,43 +47,48 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-        height: MediaQuery.sizeOf(context).height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: Theme.of(context).colorScheme.surface,
-        ),
-        child: SingleChildScrollView(
+    final screenHeight = MediaQuery.of(context).size.height;
+    final bool isExpanded = screenHeight >= expandedScreenSize;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+      child: Center(
+        child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            height: isExpanded ? screenHeight - 80 : null,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Theme.of(context).colorScheme.surface,
+            ),
             child: Column(
-          children: [
-            Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-                child: SvgPicture.asset(
-                  greetingIconPack,
-                  height: 80,
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
-                )),
-            Text(greeting, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 40),
-            Text(
-              'Quick Actions',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            Icon(
-              Icons.arrow_drop_down,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-            const SizedBox(height: 15),
-            const QuickActionContainer(),
-            const SizedBox(height: 30),
-            const ResourceTiles(),
-          ],
-        )),
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                    child: SvgPicture.asset(
+                      greetingIconPack,
+                      height: 80,
+                      colorFilter: ColorFilter.mode(
+                          Theme.of(context).colorScheme.onSurface,
+                          BlendMode.srcIn),
+                    )),
+                Text(greeting, style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 40),
+                Text(
+                  'Quick Actions',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+                const SizedBox(height: 15),
+                const QuickActionContainer(),
+                const SizedBox(height: 30),
+                const ResourceTiles(),
+              ],
+            )),
       ),
     );
   }
@@ -92,13 +99,17 @@ class QuickActionContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 250, maxHeight: 250),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isExpandedScreen = screenWidth >= expandedScreenSize;
+    return SizedBox(
+        height: isExpandedScreen ? 140 : 240,
+        width: isExpandedScreen ? 600 : 240,
         child: GridView.count(
-          crossAxisCount: 2,
+          crossAxisCount: isExpandedScreen ? 4 : 2,
           physics: const NeverScrollableScrollPhysics(),
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          shrinkWrap: true,
           children: [
             QuickActionButton(
               icon: Icons.compare_arrows,

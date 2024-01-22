@@ -1,3 +1,10 @@
+/// Material You design system recommend screen size
+/// Desktop/Expanded screen: 840dp
+/// Tablet/Medium screen: 600dp
+/// Mobile/Compact screen: 360dp
+const double expandedScreenSize = 840;
+const double mediumScreenSize = 600;
+
 String get greeting {
   int hour = DateTime.now().hour;
   if (hour < 12) {
