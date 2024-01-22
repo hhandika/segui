@@ -20,12 +20,12 @@ Documentation: [[EN]](https://segul.app)
 | ------------------------------ | ------------------ |
 | Alignment concatenation        | :white_check_mark: |
 | Alignment conversion           | :white_check_mark: |
-| Alignment filtering            | :wrench:           |
+| Alignment filtering            | :white_check_mark: |
 | Alignment partition conversion | :white_check_mark: |
 | Alignment splitting            | :white_check_mark: |
 | Alignment summary statistics   | :white_check_mark: |
 | Genomic summary statistics     | :white_check_mark: |
-| Sequence extraction            | :wrench:           |
+| Sequence extraction            | :white_check_mark: |
 | Sequence ID extraction         | :white_check_mark: |
 | Sequence ID renaming           | :wrench:           |
 | Sequence removal               | :wrench:           |
