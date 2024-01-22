@@ -71,7 +71,7 @@ class SettingPages extends StatelessWidget {
                       );
                     },
                   ),
-                  const SettingDividers(),
+                  const CommonDivider(),
                   SettingTile(
                     title: 'Theme',
                     subtitle: 'Change app theme',
@@ -85,7 +85,7 @@ class SettingPages extends StatelessWidget {
                       );
                     },
                   ),
-                  const SettingDividers(),
+                  const CommonDivider(),
                   SettingTile(
                     title: 'About',
                     subtitle: 'View app information',

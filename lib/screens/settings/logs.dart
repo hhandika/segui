@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:segui/screens/shared/components.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/styles/decoration.dart';
 
 class LogScreen extends StatefulWidget {
@@ -37,7 +40,7 @@ class _LogScreenState extends State<LogScreen> {
                       ),
                       child: ListView.separated(
                         separatorBuilder: (context, index) =>
-                            const SettingDividers(),
+                            const CommonDivider(),
                         itemCount: logs!.length,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
@@ -84,10 +87,14 @@ class _LogScreenState extends State<LogScreen> {
     final dir = await getApplicationDocumentsDirectory();
     final files = await dir.list().toList();
 
-    return files
+    final results = files
         .where((element) => element.path.endsWith('.log'))
-        .map((e) => XFile(e.path))
+        .map((e) => File(e.path))
         .toList();
+    // Sort by date
+    results
+        .sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
+    return results.map((e) => XFile(e.path)).toList();
   }
 }
 
@@ -101,25 +108,10 @@ class LogViewer extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Log Viewer'),
+        backgroundColor: getSEGULBackgroundColor(context),
       ),
-      body: Center(
-        child: FutureBuilder(
-            future: _readLog(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final log = snapshot.data as String;
-                return SingleChildScrollView(
-                  child: SelectableText(log),
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            }),
-      ),
+      backgroundColor: getSEGULBackgroundColor(context),
+      body: PlainTextViewer(file: log),
     );
-  }
-
-  Future<String> _readLog() async {
-    return await log.readAsString();
   }
 }
