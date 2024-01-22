@@ -69,7 +69,9 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
           description: 'Filter alignment by minimal alignment length, '
               'data matrix completeness, '
               'count of parsimony informative sites, '
-              'and percentage of parsimony informative sites.',
+              'and percentage of parsimony informative sites. '
+              // TODO: Remove after adding concat options.
+              'Concatenate option is only available for CLI app version.',
           isShowingInfo: _ctr.isShowingInfo,
           onClosed: () {
             setState(() {
@@ -128,15 +130,17 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
             SharedOutputDirField(
               ctr: _ctr.outputDir,
             ),
-            SwitchForm(
-              label: 'Concatenate output',
-              value: _isConcatenated,
-              onPressed: (value) {
-                setState(() {
-                  _isConcatenated = value;
-                });
-              },
-            )
+            // TODO: Add output prefix.
+            // TODO: Add concat options.
+            // SwitchForm(
+            //   label: 'Concatenate output',
+            //   value: _isConcatenated,
+            //   onPressed: (value) {
+            //     setState(() {
+            //       _isConcatenated = value;
+            //     });
+            //   },
+            // )
           ],
         ),
         const SizedBox(height: 16),
@@ -262,7 +266,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
-            'Concatenation successful! 🎉 \n'
+            'Alignment filtering successful! 🎉 \n'
             'Output path: ${showOutputDir(directory)}'),
       );
     }
