@@ -45,7 +45,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   final IOController _ctr = IOController.empty();
   final TextEditingController _valueController = TextEditingController();
   FilteringOptions _filteringOptionsController = FilteringOptions.minimalTaxa;
-  bool _isConcatenated = false;
+  final bool _isConcatenated = false;
 
   @override
   bool get wantKeepAlive => true;
