@@ -105,6 +105,7 @@ impl SequenceServices {
     }
 
     pub fn convert_sequence(&self, output_fmt: String, sort: bool) {
+        let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -115,10 +116,13 @@ impl SequenceServices {
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
         concat.convert(&input_files, output_path);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     // TODO: handle output directory creation in the SEGUL API
     pub fn parse_sequence_id(&self, output_fname: String, is_map: bool) {
+        let time = Instant::now();
         let output_path = Path::new(&self.output_dir)
             .join(output_fname)
             .with_extension("txt");
@@ -148,9 +152,12 @@ impl SequenceServices {
                 .with_extension("txt");
             id.map_id(&input_files, &mapped_path);
         }
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     pub fn translate_sequence(&self, table: String, reading_frame: usize, output_fmt: String) {
+        let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -162,6 +169,8 @@ impl SequenceServices {
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let translate = Translate::new(&translation_table, &input_fmt, &datatype, &output_fmt);
         translate.translate_all(&mut input_files, reading_frame, &output_path);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     fn match_translation_table(&self, table: String) -> GeneticCodes {
@@ -210,6 +219,7 @@ impl AlignmentServices {
     }
 
     pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
+        let time = Instant::now();
         let output_path = PathBuf::from(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -218,6 +228,8 @@ impl AlignmentServices {
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
         summary.summarize_all(&mut input_files, &Some(output_prefix));
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 }
 
@@ -254,6 +266,7 @@ impl SplitAlignmentServices {
     }
 
     pub fn split_alignment(&self) {
+        let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -270,6 +283,8 @@ impl SplitAlignmentServices {
             &self.prefix,
             self.is_uncheck,
         );
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     // Assume the partition in the input file if none supplied.
@@ -307,6 +322,7 @@ impl FilteringServices {
     }
 
     pub fn filter_minimal_taxa(&self, percent: f64, taxon_count: Option<usize>) {
+        let time = Instant::now();
         let output_path = PathBuf::from(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -321,6 +337,8 @@ impl FilteringServices {
         self.log_min_taxa_param(min_taxa, taxon_count, percent);
         let mut filter = SeqFilter::new(&input_files, &input_fmt, &datatype, &output_path, &params);
         filter.filter_aln();
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     pub fn filter_minimal_length(&self, length: usize) {
@@ -444,6 +462,7 @@ impl PartitionServices {
     }
 
     pub fn convert_partition(&self) {
+        let time = Instant::now();
         let input_dir = None::<PathBuf>;
         let output = Path::new(&self.output);
         let input_fmt = self.match_partition_fmt(&self.input_part_fmt);
@@ -459,6 +478,8 @@ impl PartitionServices {
             let converter = PartConverter::new(input, &input_fmt, &final_path, &out_part_fmt);
             converter.convert(&datatype, self.is_uncheck);
         });
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     fn extract_partition_fname(&self, input: &Path) -> String {
@@ -501,6 +522,7 @@ impl SequenceRemoval {
     }
 
     pub fn remove_sequence(&self) {
+        let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -518,6 +540,8 @@ impl SequenceRemoval {
             &remove_opts,
         );
         remove_handle.remove(&input_files);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     fn match_removal_type(&self) -> RemoveOpts {
@@ -560,6 +584,7 @@ impl SequenceRenaming {
     }
 
     pub fn rename_sequence(&self) {
+        let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -576,6 +601,8 @@ impl SequenceRenaming {
             &self.params,
         );
         rename_handle.rename(&input_files);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 }
 
@@ -611,6 +638,7 @@ impl SequenceExtraction {
     }
 
     pub fn extract(&self) {
+        let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
@@ -622,6 +650,8 @@ impl SequenceExtraction {
         let params = self.match_params();
         let extract_handle = Extract::new(&params, &input_fmt, &datatype);
         extract_handle.extract_sequences(&input_files, output_path, &output_fmt);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 
     fn match_params(&self) -> ExtractOpts {
