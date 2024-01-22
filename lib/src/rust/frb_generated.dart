@@ -164,14 +164,6 @@ abstract class RustLibApi extends BaseApi {
   Future<String> showDnaUppercase({dynamic hint});
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_ExtractOpts;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_ExtractOpts;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ExtractOptsPtr;
-
-  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_RenameOpts;
 
   RustArcDecrementStrongCountFnType
@@ -997,14 +989,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
-      get rust_arc_increment_strong_count_ExtractOpts => wire
-          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts;
-
-  RustArcDecrementStrongCountFnType
-      get rust_arc_decrement_strong_count_ExtractOpts => wire
-          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts;
-
-  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_RenameOpts => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts;
 
@@ -1013,27 +997,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts;
 
   @protected
-  ExtractOpts
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ExtractOpts.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
   RenameOpts
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return RenameOpts.dcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  ExtractOpts
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ExtractOpts.dcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1260,10 +1228,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       datatype: dco_decode_String(arr[2]),
       outputDir: dco_decode_String(arr[3]),
       outputFmt: dco_decode_String(arr[4]),
-      params:
-          dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-              arr[5]),
+      params: dco_decode_sequence_extraction_params(arr[5]),
     );
+  }
+
+  @protected
+  SequenceExtractionParams dco_decode_sequence_extraction_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SequenceExtractionParams_Id(
+          dco_decode_list_String(raw[1]),
+        );
+      case 1:
+        return SequenceExtractionParams_File(
+          dco_decode_String(raw[1]),
+        );
+      case 2:
+        return SequenceExtractionParams_Regex(
+          dco_decode_String(raw[1]),
+        );
+      case 3:
+        return const SequenceExtractionParams_None();
+      default:
+        throw Exception("unreachable");
+    }
   }
 
   @protected
@@ -1353,29 +1342,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ExtractOpts
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ExtractOpts.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
   RenameOpts
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return RenameOpts.sseDecode(
-        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  ExtractOpts
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return ExtractOpts.sseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -1631,9 +1602,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_datatype = sse_decode_String(deserializer);
     var var_outputDir = sse_decode_String(deserializer);
     var var_outputFmt = sse_decode_String(deserializer);
-    var var_params =
-        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-            deserializer);
+    var var_params = sse_decode_sequence_extraction_params(deserializer);
     return SequenceExtraction(
         inputFiles: var_inputFiles,
         inputFmt: var_inputFmt,
@@ -1641,6 +1610,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         outputDir: var_outputDir,
         outputFmt: var_outputFmt,
         params: var_params);
+  }
+
+  @protected
+  SequenceExtractionParams sse_decode_sequence_extraction_params(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_list_String(deserializer);
+        return SequenceExtractionParams_Id(var_field0);
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return SequenceExtractionParams_File(var_field0);
+      case 2:
+        var var_field0 = sse_decode_String(deserializer);
+        return SequenceExtractionParams_Regex(var_field0);
+      case 3:
+        return const SequenceExtractionParams_None();
+      default:
+        throw UnimplementedError('');
+    }
   }
 
   @protected
@@ -1747,26 +1739,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          ExtractOpts self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
           RenameOpts self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(self.sseEncode(move: true), serializer);
-  }
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          ExtractOpts self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(self.sseEncode(move: null), serializer);
   }
 
   @protected
@@ -1994,8 +1970,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.datatype, serializer);
     sse_encode_String(self.outputDir, serializer);
     sse_encode_String(self.outputFmt, serializer);
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-        self.params, serializer);
+    sse_encode_sequence_extraction_params(self.params, serializer);
+  }
+
+  @protected
+  void sse_encode_sequence_extraction_params(
+      SequenceExtractionParams self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SequenceExtractionParams_Id(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_list_String(field0, serializer);
+      case SequenceExtractionParams_File(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+      case SequenceExtractionParams_Regex(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_String(field0, serializer);
+      case SequenceExtractionParams_None():
+        sse_encode_i_32(3, serializer);
+    }
   }
 
   @protected

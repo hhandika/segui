@@ -19,6 +19,7 @@ use segul::helper::partition::construct_partition_path;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, utils};
+use segul::parser::txt;
 
 const INPUT_DIRECTORY: Option<&str> = None;
 
@@ -578,13 +579,21 @@ impl SequenceRenaming {
     }
 }
 
+// A boiler plate to get FRB
+// recognized the enum.
+pub enum SequenceExtractionParams {
+    Id(Vec<String>),
+    File(String),
+    Regex(String),
+    None,
+}
 pub struct SequenceExtraction {
     pub input_files: Vec<String>,
     pub input_fmt: String,
     pub datatype: String,
     pub output_dir: String,
     pub output_fmt: String,
-    pub params: ExtractOpts,
+    pub params: SequenceExtractionParams,
 }
 
 impl Sequence for SequenceExtraction {}
@@ -597,7 +606,7 @@ impl SequenceExtraction {
             datatype: String::new(),
             output_dir: String::new(),
             output_fmt: String::new(),
-            params: ExtractOpts::None,
+            params: SequenceExtractionParams::None,
         }
     }
 
@@ -610,7 +619,31 @@ impl SequenceExtraction {
         let task = "Sequence Extraction";
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let extract_handle = Extract::new(&self.params, &input_fmt, &datatype);
+        let params = self.match_params();
+        let extract_handle = Extract::new(&params, &input_fmt, &datatype);
         extract_handle.extract_sequences(&input_files, output_path, &output_fmt);
+    }
+
+    fn match_params(&self) -> ExtractOpts {
+        match &self.params {
+            SequenceExtractionParams::Id(id) => {
+                log::info!("{:18}: {:?}\n", "Regex", id);
+                ExtractOpts::Id(id.to_vec())
+            }
+            SequenceExtractionParams::Regex(regex) => {
+                log::info!("{:18}: {}\n", "Regex", regex);
+                ExtractOpts::Regex(regex.to_string())
+            }
+            SequenceExtractionParams::File(file) => {
+                log::info!("{:18}: {}\n", "File", file);
+                let ids = self.parse_file(file);
+                ExtractOpts::Id(ids)
+            }
+            SequenceExtractionParams::None => ExtractOpts::None,
+        }
+    }
+
+    fn parse_file<P: AsRef<Path>>(&self, path: P) -> Vec<String> {
+        txt::parse_text_file(path.as_ref())
     }
 }

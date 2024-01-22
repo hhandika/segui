@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/providers/navigation.dart';
+import 'package:segui/screens/sequence/extract.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/pages.dart';
@@ -63,10 +64,12 @@ class SequenceOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (analysis) {
-      case SequenceOperationType.translation:
-        return const TranslatePage();
+      case SequenceOperationType.extraction:
+        return const ExtractSequencePage();
       case SequenceOperationType.idExtraction:
         return const IDExtractionPage();
+      case SequenceOperationType.translation:
+        return const TranslatePage();
       default:
         return const SizedBox();
     }

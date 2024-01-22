@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
@@ -68,5 +70,87 @@ class SequenceTranslationRunner {
       table: table,
       readingFrame: int.tryParse(readingFrame) ?? 1,
     );
+  }
+}
+
+enum ExtractionOptions { regex, file, id }
+
+const Map<ExtractionOptions, String> extractionOptionsMap = {
+  ExtractionOptions.regex: 'Write regular expression',
+  ExtractionOptions.file: 'Input file',
+  ExtractionOptions.id: 'Input sequence ID',
+};
+
+class SequenceExtractionRunner {
+  const SequenceExtractionRunner(
+    this.ref, {
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.params,
+    required this.outputFmt,
+    required this.paramsText,
+  });
+
+  final WidgetRef ref;
+  final List<SegulInputFile> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final Directory outputDir;
+  final String outputFmt;
+  final ExtractionOptions params;
+  final String paramsText;
+
+  Future<void> run() async {
+    List<String> finalInputFiles = IOServices()
+        .convertPathsToString(inputFiles, SegulType.standardSequence);
+
+    await SequenceExtraction(
+      inputFiles: finalInputFiles,
+      inputFmt: inputFmt,
+      datatype: datatype,
+      outputDir: outputDir.path,
+      outputFmt: outputFmt,
+      params: await _matchParameters(),
+    ).extract();
+  }
+
+  Future<SequenceExtractionParams> _matchParameters() async {
+    switch (params) {
+      case ExtractionOptions.regex:
+        return SequenceExtractionParams.regex(paramsText);
+      case ExtractionOptions.file:
+        return SequenceExtractionParams.file(await inputFileIds ?? '');
+      case ExtractionOptions.id:
+        List<String> ids = parseInputIds();
+        return SequenceExtractionParams.id(ids);
+    }
+  }
+
+  List<String> parseInputIds() {
+    return paramsText.split(';');
+  }
+
+  Future<String?> get inputFileIds async {
+    return await ref.read(fileInputProvider).when(
+          data: (value) {
+            final inputId =
+                value.where((element) => element.type == SegulType.plainText);
+            if (value.isEmpty || inputId.isEmpty) {
+              return throw Exception(
+                'No input files selected.',
+              );
+            } else if (inputId.length > 1) {
+              return throw Exception(
+                'More than one input file for parameters selected.',
+              );
+            } else {
+              return inputId.first.file.path;
+            }
+          },
+          loading: () => null,
+          error: (e, _) => throw Exception(e.toString()),
+        );
   }
 }

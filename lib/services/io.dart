@@ -20,8 +20,9 @@ enum SupportedTask {
   genomicRawReadSummary,
   genomicContigSummary,
   partitionConversion,
-  sequenceTranslation,
+  sequenceExtraction,
   sequenceUniqueId,
+  sequenceTranslation,
 }
 
 const Map<SupportedTask, String> defaultOutputDir = {
@@ -33,8 +34,9 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.genomicRawReadSummary: 'segui-genomic-raw-read-summary',
   SupportedTask.genomicContigSummary: 'segui-genomic-contig-summary',
   SupportedTask.partitionConversion: 'segui-partition-conversion',
-  SupportedTask.sequenceTranslation: 'segui-sequence-translation',
+  SupportedTask.sequenceExtraction: 'segui-sequence-extraction',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
+  SupportedTask.sequenceTranslation: 'segui-sequence-translation',
 };
 
 enum SegulType {
@@ -42,6 +44,7 @@ enum SegulType {
   genomicContig,
   standardSequence,
   alignmentPartition,
+  plainText,
 }
 
 /// A group of file extensions and uniform type identifiers.
@@ -103,10 +106,20 @@ SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
       return SegulType.standardSequence;
     case partitionTypeGroup:
       return SegulType.alignmentPartition;
+    case plainTextTypeGroup:
+      return SegulType.plainText;
     default:
       return SegulType.standardSequence;
   }
 }
+
+const XTypeGroup plainTextTypeGroup = XTypeGroup(
+  label: 'Text',
+  extensions: ['txt', 'text'],
+  uniformTypeIdentifiers: [
+    'public.plain-text',
+  ],
+);
 
 const XTypeGroup genomicTypeGroup = XTypeGroup(
   label: 'Sequence Read',

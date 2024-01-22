@@ -22,26 +22,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.portManager,
   });
 
-  CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_ExtractOptsPtr => wire
-          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOptsPtr;
-
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_RenameOptsPtr =>
       wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOptsPtr;
 
   @protected
-  ExtractOpts
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          dynamic raw);
-
-  @protected
   RenameOpts
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
-          dynamic raw);
-
-  @protected
-  ExtractOpts
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
           dynamic raw);
 
   @protected
@@ -132,6 +118,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SequenceExtraction dco_decode_sequence_extraction(dynamic raw);
 
   @protected
+  SequenceExtractionParams dco_decode_sequence_extraction_params(dynamic raw);
+
+  @protected
   SequenceRemoval dco_decode_sequence_removal(dynamic raw);
 
   @protected
@@ -153,18 +142,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_usize(dynamic raw);
 
   @protected
-  ExtractOpts
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          SseDeserializer deserializer);
-
-  @protected
   RenameOpts
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
-          SseDeserializer deserializer);
-
-  @protected
-  ExtractOpts
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
           SseDeserializer deserializer);
 
   @protected
@@ -266,6 +245,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SequenceExtractionParams sse_decode_sequence_extraction_params(
+      SseDeserializer deserializer);
+
+  @protected
   SequenceRemoval sse_decode_sequence_removal(SseDeserializer deserializer);
 
   @protected
@@ -292,18 +275,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          ExtractOpts self, SseSerializer serializer);
-
-  @protected
-  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
           RenameOpts self, SseSerializer serializer);
-
-  @protected
-  void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-          ExtractOpts self, SseSerializer serializer);
 
   @protected
   void
@@ -411,6 +384,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SequenceExtraction self, SseSerializer serializer);
 
   @protected
+  void sse_encode_sequence_extraction_params(
+      SequenceExtractionParams self, SseSerializer serializer);
+
+  @protected
   void sse_encode_sequence_removal(
       SequenceRemoval self, SseSerializer serializer);
 
@@ -452,38 +429,6 @@ class RustLibWire implements BaseWire {
   /// The symbols are looked up in [dynamicLibrary].
   RustLibWire(ffi.DynamicLibrary dynamicLibrary)
       : _lookup = dynamicLibrary.lookup;
-
-  void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-      ptr,
-    );
-  }
-
-  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOptsPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts');
-  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts =
-      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOptsPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
-
-  void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-    ffi.Pointer<ffi.Void> ptr,
-  ) {
-    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-      ptr,
-    );
-  }
-
-  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOptsPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts');
-  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts =
-      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOptsPtr
-          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void
       rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(

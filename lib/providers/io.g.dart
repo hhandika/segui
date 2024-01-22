@@ -21,9 +21,12 @@ final fileInputProvider =
 );
 
 typedef _$FileInput = AsyncNotifier<List<SegulInputFile>>;
-String _$fileOutputHash() => r'b2956f4dc37eebc92d1d5b0a7ec30be225b459cf';
+String _$fileOutputHash() => r'77190a6f427cfb82a133400c0df85de3c38625cf';
 
-/// See also [FileOutput].
+/// The output directory.
+/// This is use to store the output files.
+///
+/// Copied from [FileOutput].
 @ProviderFor(FileOutput)
 final fileOutputProvider =
     AsyncNotifierProvider<FileOutput, SegulOutputFile>.internal(

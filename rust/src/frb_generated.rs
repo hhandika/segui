@@ -23,8 +23,6 @@ use crate::api::sequence::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::{Handler, IntoIntoDart};
-use segul::handler::sequence::extract::ExtractOpts;
-use segul::handler::sequence::rename::RenameOpts;
 
 // Section: boilerplate
 
@@ -1068,23 +1066,10 @@ fn wire_show_dna_uppercase_impl(
 // Section: related_funcs
 
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::rust_async::RwLock<ExtractOpts>
-);
-flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>
 );
 
 // Section: dart2rust
-
-impl SseDecode for ExtractOpts {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::rust_async::RwLock<ExtractOpts>,
-        >>::sse_decode(deserializer);
-        return inner.rust_auto_opaque_decode_owned();
-    }
-}
 
 impl SseDecode for RenameOpts {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1093,16 +1078,6 @@ impl SseDecode for RenameOpts {
             flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>,
         >>::sse_decode(deserializer);
         return inner.rust_auto_opaque_decode_owned();
-    }
-}
-
-impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<ExtractOpts>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <usize>::sse_decode(deserializer);
-        return decode_rust_opaque_moi(inner);
     }
 }
 
@@ -1297,7 +1272,8 @@ impl SseDecode for crate::api::sequence::SequenceExtraction {
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         let mut var_outputFmt = <String>::sse_decode(deserializer);
-        let mut var_params = <ExtractOpts>::sse_decode(deserializer);
+        let mut var_params =
+            <crate::api::sequence::SequenceExtractionParams>::sse_decode(deserializer);
         return crate::api::sequence::SequenceExtraction {
             input_files: var_inputFiles,
             input_fmt: var_inputFmt,
@@ -1306,6 +1282,33 @@ impl SseDecode for crate::api::sequence::SequenceExtraction {
             output_fmt: var_outputFmt,
             params: var_params,
         };
+    }
+}
+
+impl SseDecode for crate::api::sequence::SequenceExtractionParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 = <Vec<String>>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceExtractionParams::Id(var_field0);
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceExtractionParams::File(var_field0);
+            }
+            2 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceExtractionParams::Regex(var_field0);
+            }
+            3 => {
+                return crate::api::sequence::SequenceExtractionParams::None;
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -1486,36 +1489,6 @@ fn pde_ffi_dispatcher_sync_impl(
 
 // Section: rust2dart
 
-pub struct Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-    ExtractOpts,
-);
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart
-    for Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts
-{
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
-            .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts
-{
-}
-impl
-    flutter_rust_bridge::IntoIntoDart<
-        Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts,
-    > for ExtractOpts
-{
-    fn into_into_dart(
-        self,
-    ) -> Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts
-    {
-        Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockExtractOpts(
-            self,
-        )
-    }
-}
 pub struct Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
     RenameOpts,
 );
@@ -1707,6 +1680,34 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceExtraction>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceExtractionParams {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::sequence::SequenceExtractionParams::Id(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::SequenceExtractionParams::File(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::SequenceExtractionParams::Regex(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::SequenceExtractionParams::None => [3.into_dart()].into_dart(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sequence::SequenceExtractionParams
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceExtractionParams>
+    for crate::api::sequence::SequenceExtractionParams
+{
+    fn into_into_dart(self) -> crate::api::sequence::SequenceExtractionParams {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceRemoval {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1809,28 +1810,10 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SplitAlignmentServi
     }
 }
 
-impl SseEncode for ExtractOpts {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<ExtractOpts>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
-    }
-}
-
 impl SseEncode for RenameOpts {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
-    }
-}
-
-impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<ExtractOpts>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        let (ptr, size) = self.sse_encode_raw();
-        <usize>::sse_encode(ptr, serializer);
-        <i32>::sse_encode(size, serializer);
     }
 }
 
@@ -1983,7 +1966,30 @@ impl SseEncode for crate::api::sequence::SequenceExtraction {
         <String>::sse_encode(self.datatype, serializer);
         <String>::sse_encode(self.output_dir, serializer);
         <String>::sse_encode(self.output_fmt, serializer);
-        <ExtractOpts>::sse_encode(self.params, serializer);
+        <crate::api::sequence::SequenceExtractionParams>::sse_encode(self.params, serializer);
+    }
+}
+
+impl SseEncode for crate::api::sequence::SequenceExtractionParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::sequence::SequenceExtractionParams::Id(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <Vec<String>>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::SequenceExtractionParams::File(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::SequenceExtractionParams::Regex(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::SequenceExtractionParams::None => {
+                <i32>::sse_encode(3, serializer);
+            }
+        }
     }
 }
 
@@ -2076,5 +2082,6 @@ pub use io::*;
 #[cfg(target_family = "wasm")]
 #[path = "frb_generated.web.rs"]
 mod web;
+use segul::handler::sequence::rename::RenameOpts;
 #[cfg(target_family = "wasm")]
 pub use web::*;

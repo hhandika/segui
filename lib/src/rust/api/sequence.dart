@@ -5,28 +5,11 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'sequence.freezed.dart';
 
 Future<String> showDnaUppercase({dynamic hint}) =>
     RustLib.instance.api.showDnaUppercase(hint: hint);
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<ExtractOpts>>
-@sealed
-class ExtractOpts extends RustOpaque {
-  ExtractOpts.dcoDecode(List<dynamic> wire)
-      : super.dcoDecode(wire, _kStaticData);
-
-  ExtractOpts.sseDecode(int ptr, int externalSizeOnNative)
-      : super.sseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_ExtractOpts,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_ExtractOpts,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_ExtractOptsPtr,
-  );
-}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>>
 @sealed
@@ -221,7 +204,7 @@ class SequenceExtraction {
   final String datatype;
   final String outputDir;
   final String outputFmt;
-  final ExtractOpts params;
+  final SequenceExtractionParams params;
 
   const SequenceExtraction({
     required this.inputFiles,
@@ -260,6 +243,20 @@ class SequenceExtraction {
           outputDir == other.outputDir &&
           outputFmt == other.outputFmt &&
           params == other.params;
+}
+
+@freezed
+sealed class SequenceExtractionParams with _$SequenceExtractionParams {
+  const factory SequenceExtractionParams.id(
+    List<String> field0,
+  ) = SequenceExtractionParams_Id;
+  const factory SequenceExtractionParams.file(
+    String field0,
+  ) = SequenceExtractionParams_File;
+  const factory SequenceExtractionParams.regex(
+    String field0,
+  ) = SequenceExtractionParams_Regex;
+  const factory SequenceExtractionParams.none() = SequenceExtractionParams_None;
 }
 
 class SequenceRemoval {

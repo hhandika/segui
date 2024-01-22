@@ -97,6 +97,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
           children: [
             DropdownButtonFormField(
               value: _filteringOptionsController,
+              isExpanded: true,
               items: filteringOptions.entries
                   .map((e) => DropdownMenuItem(
                         value: e.key,
