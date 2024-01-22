@@ -286,6 +286,9 @@ pub struct FilteringServices {
     pub datatype: String,
     pub output_dir: String,
     pub is_concat: bool,
+    // pub output_fmt: Option<String>,
+    // Output partition format
+    // pub partition_fmt: Option<String>,
 }
 
 impl Sequence for FilteringServices {}
@@ -320,7 +323,7 @@ impl FilteringServices {
     }
 
     pub fn filter_minimal_length(&self, length: usize) {
-        let output_path = PathBuf::from(&self.output_dir);
+        let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let input_files =
@@ -363,6 +366,13 @@ impl FilteringServices {
         let mut filter = SeqFilter::new(&input_files, &input_fmt, &datatype, &output_path, &params);
         filter.filter_aln();
     }
+
+    // fn parse_output_fmt(&self, output_fmt: &Option<String>) -> OutputFmt {
+    //     match output_fmt {
+    //         Some(fmt) => self.match_output_fmt(fmt),
+    //         None => OutputFmt::Nexus,
+    //     }
+    // }
 
     fn count_taxa(
         &self,
