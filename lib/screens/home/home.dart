@@ -11,6 +11,8 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+const String segulDocUrl = 'https://www.segul.app/';
+
 class SegulHome extends StatefulWidget {
   const SegulHome({super.key});
 
@@ -216,7 +218,7 @@ class ResourceTiles extends StatelessWidget {
   }
 
   void launchSegulDocUrl() {
-    String url = 'https://docs.page/hhandika/segul-docs/';
+    String url = segulDocUrl;
     Uri uri = Uri.parse(url);
     launchUrl(uri);
   }
