@@ -272,7 +272,7 @@ class InputFileList extends ConsumerWidget {
             final data = files[index];
             return ListTile(
               minVerticalPadding: 2,
-              leading: const Icon(Icons.attach_file_outlined),
+              leading: FileIcon(file: data.file),
               title: Text(data.file.name),
               subtitle: FutureBuilder<String>(
                 future: getFileSize(data.file),
@@ -355,7 +355,7 @@ class OutputFileTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       minVerticalPadding: 2,
-      leading: const Icon(Icons.file_present),
+      leading: FileIcon(file: file),
       title: isOldFile
           ? Text(file.name, style: Theme.of(context).textTheme.labelLarge)
           : RichText(
@@ -500,5 +500,32 @@ class EmptyScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class FileIcon extends StatelessWidget {
+  const FileIcon({
+    super.key,
+    required this.file,
+  });
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      _matchingIcon,
+      width: 16,
+      height: 16,
+      colorFilter: ColorFilter.mode(
+          Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
+    );
+  }
+
+  String get _matchingIcon {
+    if (isDnaSequenceExtension(file)) {
+      return 'assets/images/dna.svg';
+    }
+    return 'assets/images/file.svg';
   }
 }
