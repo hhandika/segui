@@ -98,8 +98,8 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
                   ? 'Regular expression'
                   : 'Sequence IDs',
               hint: _removalMethodController == RemovalOptions.regex
-                  ? 'E.g.: ^[A-Z]{3}[0-9]{5}'
-                  : 'E.g.: seq1;seq2;seq3',
+                  ? '^[A-Z]{3}[0-9]{5}'
+                  : 'seq1;seq2;seq3',
             ),
           ],
         ),

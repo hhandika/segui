@@ -4,6 +4,7 @@ import 'package:segui/providers/io.dart';
 import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/sequence/extract.dart';
 import 'package:segui/screens/sequence/remove.dart';
+import 'package:segui/screens/sequence/rename.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/pages.dart';
@@ -69,6 +70,8 @@ class SequenceOptions extends StatelessWidget {
         return const ExtractSequencePage();
       case SequenceOperationType.removal:
         return const SequenceRemovalPage();
+      case SequenceOperationType.renaming:
+        return const SequenceRenamingPage();
       case SequenceOperationType.idExtraction:
         return const IDExtractionPage();
       case SequenceOperationType.translation:

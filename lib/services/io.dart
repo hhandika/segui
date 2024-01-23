@@ -22,6 +22,7 @@ enum SupportedTask {
   partitionConversion,
   sequenceExtraction,
   sequenceRemoval,
+  sequenceRenaming,
   sequenceUniqueId,
   sequenceTranslation,
 }
@@ -37,6 +38,7 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.partitionConversion: 'segui-partition-conversion',
   SupportedTask.sequenceExtraction: 'segui-sequence-extraction',
   SupportedTask.sequenceRemoval: 'segui-sequence-removal',
+  SupportedTask.sequenceRenaming: 'segui-sequence-renaming',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
 };

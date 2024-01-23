@@ -212,3 +212,80 @@ class SequenceRemovalRunner {
     }
   }
 }
+
+enum RenamingOptions {
+  renameFile,
+  removeString,
+  removeRegex,
+  replaceString,
+  replaceRegex,
+}
+
+const Map<RenamingOptions, String> renamingOptionsMap = {
+  RenamingOptions.renameFile: 'Input file',
+  RenamingOptions.removeString: 'Remove text',
+  RenamingOptions.removeRegex: 'Remove regex',
+  RenamingOptions.replaceString: 'Find and replace string',
+  RenamingOptions.replaceRegex: 'Find and replace regex',
+};
+
+class SequenceRenamingRunner {
+  const SequenceRenamingRunner({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+    required this.params,
+    // Parameter values.
+    // Use for original text if replacing string.
+    required this.value,
+    required this.replaceWithValue,
+    required this.isRegexMatchAll,
+  });
+  final List<SegulInputFile> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final Directory outputDir;
+  final String outputFmt;
+  final RenamingOptions params;
+  final String? value;
+  final String? replaceWithValue;
+  final bool isRegexMatchAll;
+
+  Future<void> run() async {
+    List<String> finalInputFiles = IOServices()
+        .convertPathsToString(inputFiles, SegulType.standardSequence);
+
+    await SequenceRenaming(
+      inputFiles: finalInputFiles,
+      inputFmt: inputFmt,
+      datatype: datatype,
+      outputDir: outputDir.path,
+      outputFmt: outputFmt,
+      params: _matchParameters(),
+    ).renameSequence();
+  }
+
+  SequenceRenamingParams _matchParameters() {
+    switch (params) {
+      case RenamingOptions.renameFile:
+        return SequenceRenamingParams.renameId(value!);
+      case RenamingOptions.removeString:
+        return SequenceRenamingParams.removeStr(value!);
+      case RenamingOptions.removeRegex:
+        return SequenceRenamingParams.removeRegex(value!, isRegexMatchAll);
+      case RenamingOptions.replaceString:
+        return SequenceRenamingParams.replaceStr(
+          value!,
+          replaceWithValue!,
+        );
+      case RenamingOptions.replaceRegex:
+        return SequenceRenamingParams.replaceRegex(
+          value!,
+          replaceWithValue!,
+          isRegexMatchAll,
+        );
+    }
+  }
+}

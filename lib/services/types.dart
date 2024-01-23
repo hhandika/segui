@@ -46,16 +46,16 @@ const Map<AlignmentOperationType, String> alignmentOperationMap = {
 enum SequenceOperationType {
   extraction,
   idExtraction,
-  idRenaming,
   removal,
+  renaming,
   translation,
 }
 
 const Map<SequenceOperationType, String> sequenceOperationMap = {
   SequenceOperationType.extraction: 'Extract sequences',
   SequenceOperationType.idExtraction: 'Extract and map sequence IDs',
-  SequenceOperationType.idRenaming: 'Rename sequence IDs',
   SequenceOperationType.removal: 'Remove sequences',
+  SequenceOperationType.renaming: 'Rename sequence IDs',
   SequenceOperationType.translation: 'Translate sequences',
 };
 
