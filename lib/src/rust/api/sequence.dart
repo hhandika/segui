@@ -11,25 +11,6 @@ part 'sequence.freezed.dart';
 Future<String> showDnaUppercase({dynamic hint}) =>
     RustLib.instance.api.showDnaUppercase(hint: hint);
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>>
-@sealed
-class RenameOpts extends RustOpaque {
-  RenameOpts.dcoDecode(List<dynamic> wire)
-      : super.dcoDecode(wire, _kStaticData);
-
-  RenameOpts.sseDecode(int ptr, int externalSizeOnNative)
-      : super.sseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_RenameOpts,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_RenameOpts,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_RenameOptsPtr,
-  );
-}
-
 class AlignmentServices {
   final List<String> inputFiles;
   final String inputFmt;
@@ -86,12 +67,36 @@ class AlignmentServices {
           outputDir == other.outputDir;
 }
 
+@freezed
+sealed class FilteringParams with _$FilteringParams {
+  const factory FilteringParams.minTax(
+    double field0,
+  ) = FilteringParams_MinTax;
+  const factory FilteringParams.alnLen(
+    int field0,
+  ) = FilteringParams_AlnLen;
+  const factory FilteringParams.parsInf(
+    int field0,
+  ) = FilteringParams_ParsInf;
+  const factory FilteringParams.percInf(
+    double field0,
+  ) = FilteringParams_PercInf;
+  const factory FilteringParams.taxonAll(
+    List<String> field0,
+  ) = FilteringParams_TaxonAll;
+  const factory FilteringParams.none() = FilteringParams_None;
+}
+
 class FilteringServices {
   final List<String> inputFiles;
   final String inputFmt;
   final String datatype;
   final String outputDir;
   final bool isConcat;
+  final FilteringParams params;
+  final String? outputFmt;
+  final String? prefix;
+  final String? partitionFmt;
 
   const FilteringServices({
     required this.inputFiles,
@@ -99,33 +104,15 @@ class FilteringServices {
     required this.datatype,
     required this.outputDir,
     required this.isConcat,
+    required this.params,
+    this.outputFmt,
+    this.prefix,
+    this.partitionFmt,
   });
 
-  Future<void> filterMinimalLength({required int length, dynamic hint}) =>
-      RustLib.instance.api.filteringServicesFilterMinimalLength(
+  Future<void> filter({dynamic hint}) =>
+      RustLib.instance.api.filteringServicesFilter(
         that: this,
-        length: length,
-      );
-
-  Future<void> filterMinimalTaxa(
-          {required double percent, int? taxonCount, dynamic hint}) =>
-      RustLib.instance.api.filteringServicesFilterMinimalTaxa(
-        that: this,
-        percent: percent,
-        taxonCount: taxonCount,
-      );
-
-  Future<void> filterParsimonyInfCount({required int count, dynamic hint}) =>
-      RustLib.instance.api.filteringServicesFilterParsimonyInfCount(
-        that: this,
-        count: count,
-      );
-
-  Future<void> filterPercentInformative(
-          {required double percent, dynamic hint}) =>
-      RustLib.instance.api.filteringServicesFilterPercentInformative(
-        that: this,
-        percent: percent,
       );
 
   static Future<FilteringServices> newFilteringServices({dynamic hint}) =>
@@ -137,7 +124,11 @@ class FilteringServices {
       inputFmt.hashCode ^
       datatype.hashCode ^
       outputDir.hashCode ^
-      isConcat.hashCode;
+      isConcat.hashCode ^
+      params.hashCode ^
+      outputFmt.hashCode ^
+      prefix.hashCode ^
+      partitionFmt.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -148,7 +139,11 @@ class FilteringServices {
           inputFmt == other.inputFmt &&
           datatype == other.datatype &&
           outputDir == other.outputDir &&
-          isConcat == other.isConcat;
+          isConcat == other.isConcat &&
+          params == other.params &&
+          outputFmt == other.outputFmt &&
+          prefix == other.prefix &&
+          partitionFmt == other.partitionFmt;
 }
 
 class PartitionServices {
@@ -316,7 +311,7 @@ class SequenceRenaming {
   final String datatype;
   final String outputDir;
   final String outputFmt;
-  final RenameOpts params;
+  final SequenceRenamingParams params;
 
   const SequenceRenaming({
     required this.inputFiles,
@@ -355,6 +350,30 @@ class SequenceRenaming {
           outputDir == other.outputDir &&
           outputFmt == other.outputFmt &&
           params == other.params;
+}
+
+@freezed
+sealed class SequenceRenamingParams with _$SequenceRenamingParams {
+  const factory SequenceRenamingParams.renameId(
+    String field0,
+  ) = SequenceRenamingParams_RenameId;
+  const factory SequenceRenamingParams.removeStr(
+    String field0,
+  ) = SequenceRenamingParams_RemoveStr;
+  const factory SequenceRenamingParams.removeRegex(
+    String field0,
+    bool field1,
+  ) = SequenceRenamingParams_RemoveRegex;
+  const factory SequenceRenamingParams.replaceStr(
+    String field0,
+    String field1,
+  ) = SequenceRenamingParams_ReplaceStr;
+  const factory SequenceRenamingParams.replaceRegex(
+    String field0,
+    String field1,
+    bool field2,
+  ) = SequenceRenamingParams_ReplaceRegex;
+  const factory SequenceRenamingParams.none() = SequenceRenamingParams_None;
 }
 
 class SequenceServices {

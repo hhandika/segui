@@ -11,6 +11,7 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/tasks/alignment.dart';
+import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.alignmentFiltering;
 
@@ -44,8 +45,10 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   final TextEditingController _valueController = TextEditingController();
+  final TextEditingController _prefixController = TextEditingController();
+  String? _outputPartitionFmtController;
   FilteringOptions _filteringOptionsController = FilteringOptions.minimalTaxa;
-  final bool _isConcatenated = false;
+  bool _isConcatenated = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -54,6 +57,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   void dispose() {
     _ctr.dispose();
     _valueController.dispose();
+    _prefixController.dispose();
     super.dispose();
   }
 
@@ -69,9 +73,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
           description: 'Filter alignment by minimal alignment length, '
               'data matrix completeness, '
               'count of parsimony informative sites, '
-              'and percentage of parsimony informative sites. '
-              // TODO: Remove after adding concat options.
-              'Concatenate option is only available for CLI app version.',
+              'and percentage of parsimony informative sites. ',
           isShowingInfo: _ctr.isShowingInfo,
           onClosed: () {
             setState(() {
@@ -92,11 +94,14 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
           task: task,
         ),
         const SizedBox(height: 16),
-        const CardTitle(title: 'Filtering options'),
+        const CardTitle(title: 'Filtering parameters'),
         FormCard(
           children: [
             DropdownButtonFormField(
               value: _filteringOptionsController,
+              decoration: const InputDecoration(
+                labelText: 'Select method',
+              ),
               isExpanded: true,
               items: filteringOptions.entries
                   .map((e) => DropdownMenuItem(
@@ -131,17 +136,53 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
             SharedOutputDirField(
               ctr: _ctr.outputDir,
             ),
-            // TODO: Add output prefix.
-            // TODO: Add concat options.
-            // SwitchForm(
-            //   label: 'Concatenate output',
-            //   value: _isConcatenated,
-            //   onPressed: (value) {
-            //     setState(() {
-            //       _isConcatenated = value;
-            //     });
-            //   },
-            // )
+            SwitchForm(
+              label: 'Concatenate output',
+              value: _isConcatenated,
+              onPressed: (value) {
+                setState(() {
+                  _isConcatenated = value;
+                });
+              },
+            ),
+            Visibility(
+              visible: _isConcatenated,
+              child: SharedTextField(
+                controller: _prefixController,
+                label: 'Output prefix',
+                hint: 'E.g., concatenated',
+              ),
+            ),
+            Visibility(
+              visible: _isConcatenated,
+              child: SharedDropdownField(
+                value: _ctr.outputFormatController,
+                label: 'Output format',
+                items: outputFormat,
+                onChanged: (String? value) {
+                  setState(() {
+                    if (value != null) {
+                      _ctr.outputFormatController = value;
+                    }
+                  });
+                },
+              ),
+            ),
+            Visibility(
+              visible: _isConcatenated,
+              child: SharedDropdownField(
+                value: _outputPartitionFmtController,
+                label: 'Partition format',
+                items: partitionFormat,
+                onChanged: (String? value) {
+                  setState(() {
+                    if (value != null) {
+                      _outputPartitionFmtController = value;
+                    }
+                  });
+                },
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -184,6 +225,11 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
 
   bool get _isValid {
     bool filteringOptionsValid = _valueController.text.isNotEmpty;
+    if (_isConcatenated) {
+      filteringOptionsValid = filteringOptionsValid &&
+          _prefixController.text.isNotEmpty &&
+          _outputPartitionFmtController != null;
+    }
     return _ctr.isValid && filteringOptionsValid;
   }
 
@@ -211,7 +257,10 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
         outputDir: outputDir,
         isConcatenated: _isConcatenated,
         filteringOptions: _filteringOptionsController,
-        value: _valueController.text,
+        paramValue: _valueController.text,
+        outputPrefix: _prefixController.text,
+        outputFormat: _ctr.outputFormatController!,
+        partitionFormat: _outputPartitionFmtController,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {

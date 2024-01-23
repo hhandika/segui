@@ -66,7 +66,10 @@ class FilteringRunner {
     required this.outputDir,
     required this.isConcatenated,
     required this.filteringOptions,
-    required this.value,
+    required this.paramValue,
+    required this.outputPrefix,
+    required this.outputFormat,
+    required this.partitionFormat,
   });
 
   final List<SegulInputFile> inputFiles;
@@ -75,7 +78,10 @@ class FilteringRunner {
   final Directory outputDir;
   final bool isConcatenated;
   final FilteringOptions filteringOptions;
-  final String value;
+  final String paramValue;
+  final String? outputPrefix;
+  final String? outputFormat;
+  final String? partitionFormat;
 
   Future<void> run() async {
     List<String> finalInputFiles = IOServices()
@@ -86,28 +92,27 @@ class FilteringRunner {
       datatype: datatype,
       outputDir: outputDir.path,
       isConcat: isConcatenated,
+      params: _matchParams(),
+      prefix: outputPrefix,
+      outputFmt: outputFormat,
+      partitionFmt: partitionFormat,
     );
+
+    await filter.filter();
+  }
+
+  FilteringParams _matchParams() {
     switch (filteringOptions) {
       case FilteringOptions.minimalTaxa:
-        await filter.filterMinimalTaxa(
-          percent: double.tryParse(value) ?? 0,
-        );
-        break;
+        return FilteringParams.minTax(double.tryParse(paramValue) ?? 0);
       case FilteringOptions.minimalLength:
-        await filter.filterMinimalLength(
-          length: int.tryParse(value) ?? 0,
-        );
-        break;
+        return FilteringParams.alnLen(int.parse(paramValue));
       case FilteringOptions.parsimonyInf:
-        await filter.filterParsimonyInfCount(
-          count: int.tryParse(value) ?? 0,
-        );
-        break;
+        return FilteringParams.parsInf(int.parse(paramValue));
       case FilteringOptions.percentParsimonyInf:
-        await filter.filterPercentInformative(
-          percent: double.tryParse(value) ?? 0,
-        );
-        break;
+        return FilteringParams.percInf(double.tryParse(paramValue) ?? 0);
+      default:
+        throw ArgumentError('Invalid filtering option');
     }
   }
 }

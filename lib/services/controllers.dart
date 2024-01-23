@@ -4,7 +4,6 @@ import 'package:segui/services/types.dart';
 class IOController {
   IOController({
     required this.outputController,
-    required this.dirPath,
     required this.outputDir,
     this.inputFormatController,
     required this.dataTypeController,
@@ -15,7 +14,6 @@ class IOController {
   });
 
   final TextEditingController outputController;
-  TextEditingController dirPath;
   TextEditingController outputDir;
   String? inputFormatController;
   String dataTypeController;
@@ -26,7 +24,6 @@ class IOController {
 
   factory IOController.empty() => IOController(
         outputController: TextEditingController(),
-        dirPath: TextEditingController(),
         outputDir: TextEditingController(),
         inputFormatController: inputFormat[0],
         dataTypeController: dataType[0],
@@ -38,7 +35,6 @@ class IOController {
 
   void reset() {
     outputController.clear();
-    dirPath.clear();
     outputDir.clear();
     inputFormatController = inputFormat[0];
     dataTypeController = dataType[0];
@@ -49,7 +45,6 @@ class IOController {
 
   void dispose() {
     outputController.dispose();
-    dirPath.dispose();
     outputDir.dispose();
   }
 }
