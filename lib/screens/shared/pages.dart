@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/components.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/utils.dart';
@@ -354,7 +355,7 @@ class OutputFileTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       minVerticalPadding: 2,
-      leading: const Icon(Icons.note_outlined),
+      leading: const Icon(Icons.file_present),
       title: isOldFile
           ? Text(file.name, style: Theme.of(context).textTheme.labelLarge)
           : RichText(
@@ -390,10 +391,10 @@ class OutputFileTiles extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 OpenViewerButton(file: file),
-                ShareButton(file: file),
+                ShareIconButton(file: file),
               ],
             )
-          : ShareButton(file: file),
+          : ShareIconButton(file: file),
     );
   }
 }
@@ -414,44 +415,6 @@ class PlainTextScreen extends StatelessWidget {
       body: Center(
         child: PlainTextViewer(file: file),
       ),
-    );
-  }
-}
-
-class OpenViewerButton extends StatelessWidget {
-  const OpenViewerButton({super.key, required this.file});
-
-  final XFile file;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'Open in viewer',
-      icon: const Icon(Icons.open_in_new_outlined),
-      onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PlainTextScreen(file: file),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class ShareButton extends StatelessWidget {
-  const ShareButton({super.key, required this.file});
-
-  final XFile file;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'Share file',
-      icon: Icon(Icons.adaptive.share),
-      onPressed: () {
-        IOServices().shareFile(context, file);
-      },
     );
   }
 }

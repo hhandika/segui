@@ -1,5 +1,8 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/controllers.dart';
+import 'package:segui/services/io.dart';
 
 class ExecutionButton extends StatelessWidget {
   const ExecutionButton({
@@ -233,6 +236,44 @@ class ShowMoreButton extends StatelessWidget {
           child: Text(isShowMore ? 'Show less' : 'Show more'),
         ),
       ),
+    );
+  }
+}
+
+class OpenViewerButton extends StatelessWidget {
+  const OpenViewerButton({super.key, required this.file});
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: 'Open in viewer',
+      icon: const Icon(Icons.open_in_new_outlined),
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PlainTextScreen(file: file),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ShareIconButton extends StatelessWidget {
+  const ShareIconButton({super.key, required this.file});
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: 'Share file',
+      icon: Icon(Icons.adaptive.share),
+      onPressed: () {
+        IOServices().shareFile(context, file);
+      },
     );
   }
 }
