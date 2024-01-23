@@ -27,6 +27,6 @@ Documentation: [[EN]](https://segul.app)
 | Genomic summary statistics     | :white_check_mark: |
 | Sequence extraction            | :white_check_mark: |
 | Sequence ID extraction         | :white_check_mark: |
-| Sequence ID renaming           | :wrench:           |
+| Sequence ID renaming           | :white_check_mark: |
 | Sequence removal               | :white_check_mark: |
 | Sequence translation           | :white_check_mark: |
