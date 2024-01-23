@@ -21,6 +21,7 @@ enum SupportedTask {
   genomicContigSummary,
   partitionConversion,
   sequenceExtraction,
+  sequenceRemoval,
   sequenceUniqueId,
   sequenceTranslation,
 }
@@ -35,6 +36,7 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.genomicContigSummary: 'segui-genomic-contig-summary',
   SupportedTask.partitionConversion: 'segui-partition-conversion',
   SupportedTask.sequenceExtraction: 'segui-sequence-extraction',
+  SupportedTask.sequenceRemoval: 'segui-sequence-removal',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
 };

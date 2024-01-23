@@ -1,33 +1,32 @@
 import 'dart:io';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
-import 'package:segui/screens/shared/info.dart';
-import 'package:segui/services/tasks/alignment.dart';
-import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/info.dart';
 import 'package:segui/screens/shared/io.dart';
-import 'package:segui/services/types.dart';
+import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/services/tasks/sequences.dart';
+import 'package:segui/services/types.dart';
 
-const SupportedTask task = SupportedTask.alignmentConcatenation;
+const SupportedTask task = SupportedTask.sequenceRemoval;
 
-class ConcatPage extends ConsumerStatefulWidget {
-  const ConcatPage({super.key});
+class SequenceRemovalPage extends ConsumerStatefulWidget {
+  const SequenceRemovalPage({super.key});
 
   @override
-  ConcatPageState createState() => ConcatPageState();
+  SequenceRemovalPageState createState() => SequenceRemovalPageState();
 }
 
-class ConcatPageState extends ConsumerState<ConcatPage>
+class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
-  String _partitionFormatController = partitionFormat[1];
-  bool isCodon = false;
-  bool isInterleave = false;
-  bool _isShowMore = false;
+  RemovalOptions? _removalMethodController;
+  final TextEditingController _idRegexController = TextEditingController();
 
   @override
   bool get wantKeepAlive => true;
@@ -35,6 +34,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
   @override
   void dispose() {
     _ctr.dispose();
+    _idRegexController.dispose();
     super.dispose();
   }
 
@@ -47,9 +47,9 @@ class ConcatPageState extends ConsumerState<ConcatPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SharedInfoForm(
-          description: 'Concatenate multiple alignments '
-              'and generate partition '
-              'for the concatenated alignment.',
+          description: 'Remove sequences from a collection '
+              'of sequence files based on sequence name. '
+              'Include support for regular expression.',
           isShowingInfo: _ctr.isShowingInfo,
           onClosed: () {
             setState(() {
@@ -69,80 +69,68 @@ class ConcatPageState extends ConsumerState<ConcatPage>
           task: task,
         ),
         const SizedBox(height: 16),
-        const CardTitle(title: 'Output'),
-        FormCard(children: [
-          SharedOutputDirField(
-            ctr: _ctr.outputDir,
-          ),
-          SharedTextField(
-            controller: _ctr.outputController,
-            label: 'Prefix',
-            hint: 'E.g.: concat, species_concat, etc.',
-          ),
-          // Default to NEXUS if user does not select
-          SharedDropdownField(
-            value: _ctr.outputFormatController,
-            label: 'Format',
-            items: outputFormat,
-            onChanged: (String? value) {
-              setState(() {
-                if (value != null) {
-                  _ctr.outputFormatController = value;
-                  _ctr.isSuccess = false;
-                }
-              });
-            },
-          ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
-              label: 'Set interleaved format',
-              value: isInterleave,
-              onPressed: (value) {
+        const CardTitle(title: 'Removal parameters'),
+        FormCard(
+          children: [
+            DropdownButtonFormField(
+              isExpanded: true,
+              decoration: const InputDecoration(
+                labelText: 'Select method',
+                hintText: 'Select removal method',
+              ),
+              value: _removalMethodController,
+              items: removalOptionsMap.entries
+                  .map((MapEntry<RemovalOptions, String> e) =>
+                      DropdownMenuItem<RemovalOptions>(
+                        value: e.key,
+                        child: Text(e.value),
+                      ))
+                  .toList(),
+              onChanged: (RemovalOptions? value) {
                 setState(() {
-                  isInterleave = value;
+                  _removalMethodController = value;
                 });
               },
             ),
-          ),
-          SharedDropdownField(
-            value: _partitionFormatController,
-            label: 'Partition Format',
-            items: partitionFormat,
-            onChanged: (String? value) {
-              setState(() {
-                if (value != null) {
-                  _partitionFormatController = value;
-                }
-              });
-            },
-          ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
-                label: 'Set codon model partition',
-                value: isCodon,
-                onPressed: (value) {
-                  setState(() {
-                    isCodon = value;
-                  });
-                }),
-          ),
-          ShowMoreButton(
-            isShowMore: _isShowMore,
-            onPressed: () {
-              setState(() {
-                _isShowMore = !_isShowMore;
-              });
-            },
-          ),
-        ]),
+            SharedTextField(
+              controller: _idRegexController,
+              label: _removalMethodController == RemovalOptions.regex
+                  ? 'Regular expression'
+                  : 'Sequence IDs',
+              hint: _removalMethodController == RemovalOptions.regex
+                  ? 'E.g.: ^[A-Z]{3}[0-9]{5}'
+                  : 'E.g.: seq1;seq2;seq3',
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        const CardTitle(title: 'Output'),
+        FormCard(
+          children: [
+            SharedOutputDirField(
+              ctr: _ctr.outputDir,
+            ),
+            SharedDropdownField(
+              value: _ctr.outputFormatController,
+              label: 'Format',
+              items: outputFormat,
+              onChanged: (String? value) {
+                setState(() {
+                  if (value != null) {
+                    _ctr.outputFormatController = value;
+                    _ctr.isSuccess = false;
+                  }
+                });
+              },
+            ),
+          ],
+        ),
         const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
                   return ExecutionButton(
-                    label: 'Concatenate',
+                    label: 'Remove',
                     isRunning: _ctr.isRunning,
                     isSuccess: _ctr.isSuccess,
                     controller: _ctr,
@@ -183,7 +171,11 @@ class ConcatPageState extends ConsumerState<ConcatPage>
   }
 
   bool get _isValid {
-    return _ctr.isValid;
+    bool isRemovalMethodValid = _removalMethodController != null &&
+        _ctr.outputFormatController != null &&
+        _idRegexController.text.isNotEmpty;
+
+    return _ctr.isValid && isRemovalMethodValid;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -192,29 +184,25 @@ class ConcatPageState extends ConsumerState<ConcatPage>
           if (value.directory == null) {
             return _showError('Output directory is not selected.');
           } else {
-            await _convert(inputFiles, value.directory!);
+            await _remove(inputFiles, value.directory!);
           }
         },
         loading: () => null,
         error: (e, _) => _showError(e.toString()));
   }
 
-  Future<void> _convert(
-    List<SegulInputFile> inputFiles,
-    Directory outputDir,
-  ) async {
+  Future<void> _remove(
+      List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
       _setRunning();
-      await ConcatRunnerServices(
+      await SequenceRemovalRunner(
         inputFiles: inputFiles,
-        inputFormat: _ctr.inputFormatController!,
+        inputFmt: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
-        outputPrefix: _ctr.outputController.text,
-        outputFormat: _ctr.outputFormatController!,
-        partitionFormat: _partitionFormatController,
-        isCodonModel: isCodon,
-        isInterleave: isInterleave,
+        outputFmt: _ctr.outputFormatController!,
+        params: _removalMethodController!,
+        paramsText: _idRegexController.text,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
@@ -270,7 +258,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
             context,
-            'Concatenation successful! 🎉 \n'
+            'Sequence removal successful! 🎉 \n'
             'Output path: ${showOutputDir(directory)}'),
       );
     }

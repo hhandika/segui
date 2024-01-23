@@ -97,8 +97,8 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                       ? 'Regular expression'
                       : 'Sequence ID',
                   hint: _extractionOptionsController == ExtractionOptions.regex
-                      ? '^Rattus'
-                      : 'Rattus;Mus',
+                      ? 'E.g.: ^Rattus'
+                      : 'E.g.: seq1;seq2;seq3',
                 ),
         ]),
         const SizedBox(height: 16),

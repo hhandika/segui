@@ -154,3 +154,61 @@ class SequenceExtractionRunner {
         );
   }
 }
+
+enum RemovalOptions { id, regex }
+
+const Map<RemovalOptions, String> removalOptionsMap = {
+  RemovalOptions.id: 'Input semicolon-separated IDs',
+  RemovalOptions.regex: 'Write regular expression',
+};
+
+class SequenceRemovalRunner {
+  const SequenceRemovalRunner({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+    required this.params,
+    required this.paramsText,
+  });
+
+  final List<SegulInputFile> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final Directory outputDir;
+  final String outputFmt;
+  final RemovalOptions params;
+  final String paramsText;
+
+  Future<void> run() async {
+    List<String> finalInputFiles = IOServices()
+        .convertPathsToString(inputFiles, SegulType.standardSequence);
+
+    await SequenceRemoval(
+      inputFiles: finalInputFiles,
+      inputFmt: inputFmt,
+      datatype: datatype,
+      outputDir: outputDir.path,
+      outputFmt: outputFmt,
+      removeRegex: regexValue,
+      removeList: ids,
+    ).removeSequence();
+  }
+
+  String? get regexValue {
+    if (params == RemovalOptions.regex) {
+      return paramsText;
+    } else {
+      return null;
+    }
+  }
+
+  List<String>? get ids {
+    if (params == RemovalOptions.id) {
+      return paramsText.split(';');
+    } else {
+      return null;
+    }
+  }
+}

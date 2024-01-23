@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/sequence/extract.dart';
+import 'package:segui/screens/sequence/remove.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/pages.dart';
@@ -66,6 +67,8 @@ class SequenceOptions extends StatelessWidget {
     switch (analysis) {
       case SequenceOperationType.extraction:
         return const ExtractSequencePage();
+      case SequenceOperationType.removal:
+        return const SequenceRemovalPage();
       case SequenceOperationType.idExtraction:
         return const IDExtractionPage();
       case SequenceOperationType.translation:
