@@ -159,6 +159,15 @@ const XTypeGroup partitionTypeGroup = XTypeGroup(
   ],
 );
 
+const List<String> supportedViewerExtensions = [
+  'txt',
+];
+
+bool isSupportedViewerExtension(XFile file) {
+  String extension = p.extension(file.path).substring(1);
+  return supportedViewerExtensions.contains(extension);
+}
+
 class FileSelectionServices {
   const FileSelectionServices(this.ref);
 

@@ -5,7 +5,9 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
 
 void main() {
@@ -16,5 +18,11 @@ void main() {
     final String? indexStr = translationTableMap[index];
 
     expect(indexStr, "1");
+  });
+
+  test('Supported file test', () {
+    final XFile file = XFile("test.txt");
+    bool supported = isSupportedViewerExtension(file);
+    expect(supported, true);
   });
 }

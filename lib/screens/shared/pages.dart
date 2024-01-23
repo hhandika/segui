@@ -383,12 +383,75 @@ class OutputFileTiles extends StatelessWidget {
           }
         },
       ),
-      trailing: IconButton(
-        icon: Icon(Icons.adaptive.share),
-        onPressed: () {
-          IOServices().shareFile(context, file);
-        },
+      trailing: isSupportedViewerExtension(file)
+          ? Wrap(
+              // spacing: 2,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                OpenViewerButton(file: file),
+                ShareButton(file: file),
+              ],
+            )
+          : ShareButton(file: file),
+    );
+  }
+}
+
+class PlainTextScreen extends StatelessWidget {
+  const PlainTextScreen({super.key, required this.file});
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plain Text Viewer'),
+        backgroundColor: getSEGULBackgroundColor(context),
       ),
+      backgroundColor: getSEGULBackgroundColor(context),
+      body: Center(
+        child: PlainTextViewer(file: file),
+      ),
+    );
+  }
+}
+
+class OpenViewerButton extends StatelessWidget {
+  const OpenViewerButton({super.key, required this.file});
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: 'Open in viewer',
+      icon: const Icon(Icons.open_in_new_outlined),
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PlainTextScreen(file: file),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ShareButton extends StatelessWidget {
+  const ShareButton({super.key, required this.file});
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: 'Share file',
+      icon: Icon(Icons.adaptive.share),
+      onPressed: () {
+        IOServices().shareFile(context, file);
+      },
     );
   }
 }
