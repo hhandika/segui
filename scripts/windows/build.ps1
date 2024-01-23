@@ -2,8 +2,8 @@ flutter build windows --release
 
 # Build path
 $target = "Release"
-$buildExe = "build\windows\runner\Release\segui.exe"
-$buildPath = "build\windows\runner\$target"
+$buildExe = "build\windows\x64\runner\Release\segui.exe"
+$buildPath = "build\windows\x64\runner\$target"
 $releasePath = "$env:USERPROFILE\Documents\"
 $exePath = "$env:USERPROFILE\Documents\segui\segui.exe"
 $archivePath = "$env:USERPROFILE\Documents\Releases\"
