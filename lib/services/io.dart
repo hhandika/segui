@@ -92,13 +92,13 @@ class SegulOutputFile {
 
   factory SegulOutputFile.updateFiles(
     SegulOutputFile oldFile,
+    bool isRecursive,
   ) {
     return SegulOutputFile(
         directory: oldFile.directory,
         oldFiles: oldFile.oldFiles,
-        newFiles: DirectoryCrawler(oldFile.directory!).findNewFiles(
-          oldFile.oldFiles,
-        ));
+        newFiles: DirectoryCrawler(oldFile.directory!)
+            .findNewFiles(oldFile.oldFiles, isRecursive));
   }
 }
 
@@ -333,10 +333,9 @@ class DirectoryCrawler {
     return _findAllFilesInDir(dir);
   }
 
-  List<XFile> findNewFiles(List<XFile> oldFiles) {
+  List<XFile> findNewFiles(List<XFile> oldFiles, bool isRecursive) {
     List<XFile> newFiles = [];
-
-    dir.listSync(recursive: false).whereType<File>().forEach((e) {
+    dir.listSync(recursive: isRecursive).whereType<File>().forEach((e) {
       if (!oldFiles.any((oldFile) => oldFile.path == e.path)) {
         newFiles.add(XFile(e.path));
       }

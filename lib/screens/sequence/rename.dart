@@ -311,7 +311,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
-    ref.read(fileOutputProvider.notifier).refresh();
+    ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(

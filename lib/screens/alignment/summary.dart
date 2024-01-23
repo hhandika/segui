@@ -167,7 +167,6 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         outputPrefix: _ctr.outputController.text,
         interval: int.tryParse(_interval ?? '5') ?? 5,
       ).run();
-      ref.read(fileOutputProvider.notifier).refresh();
       _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
@@ -224,7 +223,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   void _setSuccess(Directory outputDir) {
-    ref.read(fileOutputProvider.notifier).refresh();
+    ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     ScaffoldMessenger.of(context).showSnackBar(
       showSharedSnackBar(
           context,

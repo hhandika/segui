@@ -206,7 +206,10 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   }
 
   void _setSuccess(Directory directory) {
-    ref.read(fileOutputProvider.notifier).refresh();
+    // We recurse to include read summary files when user running
+    // complete read summary task.
+    bool isRecursive = mode == sequenceReadSummaryMode[2];
+    ref.read(fileOutputProvider.notifier).refresh(isRecursive: isRecursive);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(

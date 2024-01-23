@@ -199,7 +199,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
   }
 
   void _setSuccess(Directory outputDir) {
-    ref.read(fileOutputProvider.notifier).refresh();
+    ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(

@@ -257,7 +257,7 @@ class PartitionConversionPageState
   }
 
   void _setSuccess(Directory directory) {
-    ref.read(fileOutputProvider.notifier).refresh();
+    ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
