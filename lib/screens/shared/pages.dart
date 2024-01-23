@@ -386,8 +386,8 @@ class OutputFileTiles extends StatelessWidget {
       ),
       trailing: isSupportedViewerExtension(file)
           ? Wrap(
-              // spacing: 2,
               alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 OpenViewerButton(file: file),
@@ -515,17 +515,25 @@ class FileIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       _matchingIcon,
-      width: 16,
-      height: 16,
+      width: 24,
+      height: 24,
       colorFilter: ColorFilter.mode(
-          Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
+        _isDnaSequence
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.secondary,
+        BlendMode.srcIn,
+      ),
     );
   }
 
   String get _matchingIcon {
-    if (isDnaSequenceExtension(file)) {
+    if (_isDnaSequence) {
       return 'assets/images/dna.svg';
     }
     return 'assets/images/file.svg';
+  }
+
+  bool get _isDnaSequence {
+    return isDnaSequenceExtension(file);
   }
 }
