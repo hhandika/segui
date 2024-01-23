@@ -19,7 +19,6 @@
 
 // Section: imports
 
-use crate::api::sequence::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::transform_result_dco;
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -374,7 +373,7 @@ fn wire_AlignmentServices_summarize_alignment_impl(
         },
     )
 }
-fn wire_FilteringServices_filter_minimal_length_impl(
+fn wire_FilteringServices_filter_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -382,7 +381,7 @@ fn wire_FilteringServices_filter_minimal_length_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "FilteringServices_filter_minimal_length",
+            debug_name: "FilteringServices_filter",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -397,130 +396,10 @@ fn wire_FilteringServices_filter_minimal_length_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <crate::api::sequence::FilteringServices>::sse_decode(&mut deserializer);
-            let api_length = <usize>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(
-                        crate::api::sequence::FilteringServices::filter_minimal_length(
-                            &api_that, api_length,
-                        ),
-                    )
-                })())
-            }
-        },
-    )
-}
-fn wire_FilteringServices_filter_minimal_taxa_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "FilteringServices_filter_minimal_taxa",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <crate::api::sequence::FilteringServices>::sse_decode(&mut deserializer);
-            let api_percent = <f64>::sse_decode(&mut deserializer);
-            let api_taxon_count = <Option<usize>>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(
-                        crate::api::sequence::FilteringServices::filter_minimal_taxa(
-                            &api_that,
-                            api_percent,
-                            api_taxon_count,
-                        ),
-                    )
-                })())
-            }
-        },
-    )
-}
-fn wire_FilteringServices_filter_parsimony_inf_count_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "FilteringServices_filter_parsimony_inf_count",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <crate::api::sequence::FilteringServices>::sse_decode(&mut deserializer);
-            let api_count = <usize>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(
-                        crate::api::sequence::FilteringServices::filter_parsimony_inf_count(
-                            &api_that, api_count,
-                        ),
-                    )
-                })())
-            }
-        },
-    )
-}
-fn wire_FilteringServices_filter_percent_informative_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "FilteringServices_filter_percent_informative",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <crate::api::sequence::FilteringServices>::sse_decode(&mut deserializer);
-            let api_percent = <f64>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    Result::<_, ()>::Ok(
-                        crate::api::sequence::FilteringServices::filter_percent_informative(
-                            &api_that,
-                            api_percent,
-                        ),
-                    )
+                    Result::<_, ()>::Ok(crate::api::sequence::FilteringServices::filter(&api_that))
                 })())
             }
         },
@@ -1063,33 +942,7 @@ fn wire_show_dna_uppercase_impl(
     )
 }
 
-// Section: related_funcs
-
-flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>
-);
-
 // Section: dart2rust
-
-impl SseDecode for RenameOpts {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <RustOpaqueMoi<
-            flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>,
-        >>::sse_decode(deserializer);
-        return inner.rust_auto_opaque_decode_owned();
-    }
-}
-
-impl SseDecode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <usize>::sse_decode(deserializer);
-        return decode_rust_opaque_moi(inner);
-    }
-}
 
 impl SseDecode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1155,6 +1008,41 @@ impl SseDecode for f64 {
     }
 }
 
+impl SseDecode for crate::api::sequence::FilteringParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 = <f64>::sse_decode(deserializer);
+                return crate::api::sequence::FilteringParams::MinTax(var_field0);
+            }
+            1 => {
+                let mut var_field0 = <usize>::sse_decode(deserializer);
+                return crate::api::sequence::FilteringParams::AlnLen(var_field0);
+            }
+            2 => {
+                let mut var_field0 = <usize>::sse_decode(deserializer);
+                return crate::api::sequence::FilteringParams::ParsInf(var_field0);
+            }
+            3 => {
+                let mut var_field0 = <f64>::sse_decode(deserializer);
+                return crate::api::sequence::FilteringParams::PercInf(var_field0);
+            }
+            4 => {
+                let mut var_field0 = <Vec<String>>::sse_decode(deserializer);
+                return crate::api::sequence::FilteringParams::TaxonAll(var_field0);
+            }
+            5 => {
+                return crate::api::sequence::FilteringParams::None;
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
+    }
+}
+
 impl SseDecode for crate::api::sequence::FilteringServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1163,12 +1051,20 @@ impl SseDecode for crate::api::sequence::FilteringServices {
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         let mut var_isConcat = <bool>::sse_decode(deserializer);
+        let mut var_params = <crate::api::sequence::FilteringParams>::sse_decode(deserializer);
+        let mut var_outputFmt = <Option<String>>::sse_decode(deserializer);
+        let mut var_prefix = <Option<String>>::sse_decode(deserializer);
+        let mut var_partitionFmt = <Option<String>>::sse_decode(deserializer);
         return crate::api::sequence::FilteringServices {
             input_files: var_inputFiles,
             input_fmt: var_inputFmt,
             datatype: var_datatype,
             output_dir: var_outputDir,
             is_concat: var_isConcat,
+            params: var_params,
+            output_fmt: var_outputFmt,
+            prefix: var_prefix,
+            partition_fmt: var_partitionFmt,
         };
     }
 }
@@ -1202,17 +1098,6 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
-        } else {
-            return None;
-        }
-    }
-}
-
-impl SseDecode for Option<usize> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        if (<bool>::sse_decode(deserializer)) {
-            return Some(<usize>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -1342,7 +1227,8 @@ impl SseDecode for crate::api::sequence::SequenceRenaming {
         let mut var_datatype = <String>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         let mut var_outputFmt = <String>::sse_decode(deserializer);
-        let mut var_params = <RenameOpts>::sse_decode(deserializer);
+        let mut var_params =
+            <crate::api::sequence::SequenceRenamingParams>::sse_decode(deserializer);
         return crate::api::sequence::SequenceRenaming {
             input_files: var_inputFiles,
             input_fmt: var_inputFmt,
@@ -1351,6 +1237,51 @@ impl SseDecode for crate::api::sequence::SequenceRenaming {
             output_fmt: var_outputFmt,
             params: var_params,
         };
+    }
+}
+
+impl SseDecode for crate::api::sequence::SequenceRenamingParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut tag_ = <i32>::sse_decode(deserializer);
+        match tag_ {
+            0 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceRenamingParams::RenameId(var_field0);
+            }
+            1 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceRenamingParams::RemoveStr(var_field0);
+            }
+            2 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                let mut var_field1 = <bool>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceRenamingParams::RemoveRegex(
+                    var_field0, var_field1,
+                );
+            }
+            3 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                let mut var_field1 = <String>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceRenamingParams::ReplaceStr(
+                    var_field0, var_field1,
+                );
+            }
+            4 => {
+                let mut var_field0 = <String>::sse_decode(deserializer);
+                let mut var_field1 = <String>::sse_decode(deserializer);
+                let mut var_field2 = <bool>::sse_decode(deserializer);
+                return crate::api::sequence::SequenceRenamingParams::ReplaceRegex(
+                    var_field0, var_field1, var_field2,
+                );
+            }
+            5 => {
+                return crate::api::sequence::SequenceRenamingParams::None;
+            }
+            _ => {
+                unimplemented!("");
+            }
+        }
     }
 }
 
@@ -1441,29 +1372,16 @@ fn pde_ffi_dispatcher_primary_impl(
         14 => wire_AlignmentServices_concat_alignment_impl(port, ptr, rust_vec_len, data_len),
         13 => wire_AlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
         15 => wire_AlignmentServices_summarize_alignment_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_FilteringServices_filter_minimal_length_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_FilteringServices_filter_minimal_taxa_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_FilteringServices_filter_parsimony_inf_count_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
-        22 => wire_FilteringServices_filter_percent_informative_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
+        19 => wire_FilteringServices_filter_impl(port, ptr, rust_vec_len, data_len),
         18 => wire_FilteringServices_new_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_PartitionServices_convert_partition_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_PartitionServices_new_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire_SequenceExtraction_extract_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire_SequenceExtraction_new_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_SequenceRemoval_new_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_SequenceRemoval_remove_sequence_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire_SequenceRenaming_new_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire_SequenceRenaming_rename_sequence_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_PartitionServices_convert_partition_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_PartitionServices_new_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_SequenceExtraction_extract_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_SequenceExtraction_new_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_SequenceRemoval_new_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_SequenceRemoval_remove_sequence_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_SequenceRenaming_new_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_SequenceRenaming_rename_sequence_impl(port, ptr, rust_vec_len, data_len),
         10 => wire_SequenceServices_convert_sequence_impl(port, ptr, rust_vec_len, data_len),
         9 => wire_SequenceServices_new_impl(port, ptr, rust_vec_len, data_len),
         11 => wire_SequenceServices_parse_sequence_id_impl(port, ptr, rust_vec_len, data_len),
@@ -1489,34 +1407,6 @@ fn pde_ffi_dispatcher_sync_impl(
 
 // Section: rust2dart
 
-pub struct Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(
-    RenameOpts,
-);
-// Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart
-    for Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts
-{
-    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
-            .into_dart()
-    }
-}
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts
-{
-}
-impl
-    flutter_rust_bridge::IntoIntoDart<
-        Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts,
-    > for RenameOpts
-{
-    fn into_into_dart(
-        self,
-    ) -> Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts
-    {
-        Local_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockRenameOpts(self)
-    }
-}
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::AlignmentServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
@@ -1584,6 +1474,40 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::contig::ContigServices>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::FilteringParams {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::sequence::FilteringParams::MinTax(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::FilteringParams::AlnLen(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::FilteringParams::ParsInf(field0) => {
+                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::FilteringParams::PercInf(field0) => {
+                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::FilteringParams::TaxonAll(field0) => {
+                [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::FilteringParams::None => [5.into_dart()].into_dart(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sequence::FilteringParams
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::FilteringParams>
+    for crate::api::sequence::FilteringParams
+{
+    fn into_into_dart(self) -> crate::api::sequence::FilteringParams {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::FilteringServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1592,6 +1516,10 @@ impl flutter_rust_bridge::IntoDart for crate::api::sequence::FilteringServices {
             self.datatype.into_into_dart().into_dart(),
             self.output_dir.into_into_dart().into_dart(),
             self.is_concat.into_into_dart().into_dart(),
+            self.params.into_into_dart().into_dart(),
+            self.output_fmt.into_into_dart().into_dart(),
+            self.prefix.into_into_dart().into_dart(),
+            self.partition_fmt.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1759,6 +1687,50 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceRenaming>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceRenamingParams {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            crate::api::sequence::SequenceRenamingParams::RenameId(field0) => {
+                [0.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::SequenceRenamingParams::RemoveStr(field0) => {
+                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
+            }
+            crate::api::sequence::SequenceRenamingParams::RemoveRegex(field0, field1) => [
+                2.into_dart(),
+                field0.into_into_dart().into_dart(),
+                field1.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::sequence::SequenceRenamingParams::ReplaceStr(field0, field1) => [
+                3.into_dart(),
+                field0.into_into_dart().into_dart(),
+                field1.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::sequence::SequenceRenamingParams::ReplaceRegex(field0, field1, field2) => [
+                4.into_dart(),
+                field0.into_into_dart().into_dart(),
+                field1.into_into_dart().into_dart(),
+                field2.into_into_dart().into_dart(),
+            ]
+            .into_dart(),
+            crate::api::sequence::SequenceRenamingParams::None => [5.into_dart()].into_dart(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sequence::SequenceRenamingParams
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SequenceRenamingParams>
+    for crate::api::sequence::SequenceRenamingParams
+{
+    fn into_into_dart(self) -> crate::api::sequence::SequenceRenamingParams {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::SequenceServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1810,24 +1782,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SplitAlignmentServi
     }
 }
 
-impl SseEncode for RenameOpts {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
-    }
-}
-
-impl SseEncode
-    for RustOpaqueMoi<flutter_rust_bridge::for_generated::rust_async::RwLock<RenameOpts>>
-{
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        let (ptr, size) = self.sse_encode_raw();
-        <usize>::sse_encode(ptr, serializer);
-        <i32>::sse_encode(size, serializer);
-    }
-}
-
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1876,6 +1830,37 @@ impl SseEncode for f64 {
     }
 }
 
+impl SseEncode for crate::api::sequence::FilteringParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::sequence::FilteringParams::MinTax(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <f64>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::FilteringParams::AlnLen(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <usize>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::FilteringParams::ParsInf(field0) => {
+                <i32>::sse_encode(2, serializer);
+                <usize>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::FilteringParams::PercInf(field0) => {
+                <i32>::sse_encode(3, serializer);
+                <f64>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::FilteringParams::TaxonAll(field0) => {
+                <i32>::sse_encode(4, serializer);
+                <Vec<String>>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::FilteringParams::None => {
+                <i32>::sse_encode(5, serializer);
+            }
+        }
+    }
+}
+
 impl SseEncode for crate::api::sequence::FilteringServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1884,6 +1869,10 @@ impl SseEncode for crate::api::sequence::FilteringServices {
         <String>::sse_encode(self.datatype, serializer);
         <String>::sse_encode(self.output_dir, serializer);
         <bool>::sse_encode(self.is_concat, serializer);
+        <crate::api::sequence::FilteringParams>::sse_encode(self.params, serializer);
+        <Option<String>>::sse_encode(self.output_fmt, serializer);
+        <Option<String>>::sse_encode(self.prefix, serializer);
+        <Option<String>>::sse_encode(self.partition_fmt, serializer);
     }
 }
 
@@ -1913,16 +1902,6 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
-        }
-    }
-}
-
-impl SseEncode for Option<usize> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <bool>::sse_encode(self.is_some(), serializer);
-        if let Some(value) = self {
-            <usize>::sse_encode(value, serializer);
         }
     }
 }
@@ -2014,7 +1993,42 @@ impl SseEncode for crate::api::sequence::SequenceRenaming {
         <String>::sse_encode(self.datatype, serializer);
         <String>::sse_encode(self.output_dir, serializer);
         <String>::sse_encode(self.output_fmt, serializer);
-        <RenameOpts>::sse_encode(self.params, serializer);
+        <crate::api::sequence::SequenceRenamingParams>::sse_encode(self.params, serializer);
+    }
+}
+
+impl SseEncode for crate::api::sequence::SequenceRenamingParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        match self {
+            crate::api::sequence::SequenceRenamingParams::RenameId(field0) => {
+                <i32>::sse_encode(0, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::SequenceRenamingParams::RemoveStr(field0) => {
+                <i32>::sse_encode(1, serializer);
+                <String>::sse_encode(field0, serializer);
+            }
+            crate::api::sequence::SequenceRenamingParams::RemoveRegex(field0, field1) => {
+                <i32>::sse_encode(2, serializer);
+                <String>::sse_encode(field0, serializer);
+                <bool>::sse_encode(field1, serializer);
+            }
+            crate::api::sequence::SequenceRenamingParams::ReplaceStr(field0, field1) => {
+                <i32>::sse_encode(3, serializer);
+                <String>::sse_encode(field0, serializer);
+                <String>::sse_encode(field1, serializer);
+            }
+            crate::api::sequence::SequenceRenamingParams::ReplaceRegex(field0, field1, field2) => {
+                <i32>::sse_encode(4, serializer);
+                <String>::sse_encode(field0, serializer);
+                <String>::sse_encode(field1, serializer);
+                <bool>::sse_encode(field2, serializer);
+            }
+            crate::api::sequence::SequenceRenamingParams::None => {
+                <i32>::sse_encode(5, serializer);
+            }
+        }
     }
 }
 
@@ -2082,6 +2096,5 @@ pub use io::*;
 #[cfg(target_family = "wasm")]
 #[path = "frb_generated.web.rs"]
 mod web;
-use segul::handler::sequence::rename::RenameOpts;
 #[cfg(target_family = "wasm")]
 pub use web::*;

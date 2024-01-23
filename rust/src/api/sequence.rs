@@ -12,14 +12,14 @@ use segul::handler::sequence::partition::PartConverter;
 use segul::handler::sequence::remove::{Remove, RemoveOpts};
 use segul::handler::sequence::rename::{Rename, RenameOpts};
 use segul::handler::sequence::translate::Translate;
-use segul::helper::files::create_output_fname_from_path;
+use segul::helper::files::{self, create_output_fname_from_path};
 use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{log_input_partition, AlignSeqLogger};
 use segul::helper::partition::construct_partition_path;
 use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, utils};
-use segul::parser::txt;
+use segul::parser::{delimited, txt};
 
 const INPUT_DIRECTORY: Option<&str> = None;
 
@@ -296,15 +296,28 @@ impl SplitAlignmentServices {
     }
 }
 
+pub enum FilteringParams {
+    MinTax(f64),
+    AlnLen(usize),
+    ParsInf(usize),
+    PercInf(f64),
+    TaxonAll(Vec<String>),
+    None,
+}
+
 pub struct FilteringServices {
     pub input_files: Vec<String>,
     pub input_fmt: String,
     pub datatype: String,
     pub output_dir: String,
     pub is_concat: bool,
-    // pub output_fmt: Option<String>,
+    pub params: FilteringParams,
+    pub output_fmt: Option<String>,
+    // Prefix when user wants to
+    // concatenate the results
+    pub prefix: Option<String>,
     // Output partition format
-    // pub partition_fmt: Option<String>,
+    pub partition_fmt: Option<String>,
 }
 
 impl Sequence for FilteringServices {}
@@ -317,11 +330,15 @@ impl FilteringServices {
             input_fmt: String::new(),
             datatype: String::new(),
             output_dir: String::new(),
+            params: FilteringParams::None,
             is_concat: false,
+            output_fmt: None,
+            prefix: None,
+            partition_fmt: None,
         }
     }
 
-    pub fn filter_minimal_taxa(&self, percent: f64, taxon_count: Option<usize>) {
+    pub fn filter(&self) {
         let time = Instant::now();
         let output_path = PathBuf::from(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
@@ -331,105 +348,64 @@ impl FilteringServices {
         self.check_file_count(input_files.len());
         let task = "Alignment Filtering";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let taxon_count = self.count_taxa(&taxon_count, &input_files, &input_fmt, &datatype);
-        let min_taxa = self.count_min_tax(percent, taxon_count);
-        let params = Params::MinTax(min_taxa);
-        self.log_min_taxa_param(min_taxa, taxon_count, percent);
+        let params = self.match_parameters(&input_files, &input_fmt, &datatype);
         let mut filter = SeqFilter::new(&input_files, &input_fmt, &datatype, &output_path, &params);
-        filter.filter_aln();
+
+        if self.is_concat {
+            let output_fmt =
+                self.match_output_fmt(&self.output_fmt.as_ref().expect("No output format"));
+            let partition_fmt = self
+                .match_partition_fmt(&self.partition_fmt.as_ref().expect("No partition format"));
+
+            let prefix = Path::new(self.prefix.as_ref().expect("No prefix"));
+            let final_output_path = files::create_output_fname(&output_path, prefix, &output_fmt);
+            filter.set_concat(&final_output_path, &output_fmt, &partition_fmt);
+            filter.filter_aln();
+        } else {
+            filter.filter_aln();
+        }
+
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
 
-    pub fn filter_minimal_length(&self, length: usize) {
-        let output_path = Path::new(&self.output_dir);
-        let input_fmt = self.match_input_fmt(&self.input_fmt);
-        let datatype = self.match_datatype(&self.datatype);
-        let input_files =
-            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
-        self.check_file_count(input_files.len());
-        let task = "Alignment Filtering";
-        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let params = Params::AlnLen(length);
-        self.log_other_params(&params);
-        let mut filter = SeqFilter::new(&input_files, &input_fmt, &datatype, &output_path, &params);
-        filter.filter_aln();
-    }
-
-    pub fn filter_parsimony_inf_count(&self, count: usize) {
-        let output_path = PathBuf::from(&self.output_dir);
-        let input_fmt = self.match_input_fmt(&self.input_fmt);
-        let datatype = self.match_datatype(&self.datatype);
-        let input_files =
-            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
-        self.check_file_count(input_files.len());
-        let task = "Alignment Filtering";
-        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let params = Params::ParsInf(count);
-        self.log_other_params(&params);
-        let mut filter = SeqFilter::new(&input_files, &input_fmt, &datatype, &output_path, &params);
-        filter.filter_aln();
-    }
-
-    pub fn filter_percent_informative(&self, percent: f64) {
-        let output_path = PathBuf::from(&self.output_dir);
-        let input_fmt = self.match_input_fmt(&self.input_fmt);
-        let datatype = self.match_datatype(&self.datatype);
-        let input_files =
-            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
-        self.check_file_count(input_files.len());
-        let task = "Alignment Filtering";
-        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let params = Params::PercInf(percent);
-        self.log_other_params(&params);
-        let mut filter = SeqFilter::new(&input_files, &input_fmt, &datatype, &output_path, &params);
-        filter.filter_aln();
-    }
-
-    // fn parse_output_fmt(&self, output_fmt: &Option<String>) -> OutputFmt {
-    //     match output_fmt {
-    //         Some(fmt) => self.match_output_fmt(fmt),
-    //         None => OutputFmt::Nexus,
-    //     }
-    // }
-
-    fn count_taxa(
+    fn match_parameters(
         &self,
-        &taxon_count: &Option<usize>,
         input_files: &[PathBuf],
         input_fmt: &InputFmt,
         datatype: &DataType,
-    ) -> usize {
-        match taxon_count {
-            Some(count) => count,
-            None => IDs::new(input_files, input_fmt, datatype).id_unique().len(),
+    ) -> Params {
+        self.log_info();
+        match &self.params {
+            FilteringParams::MinTax(percent) => {
+                let taxon_count = IDs::new(input_files, input_fmt, datatype).id_unique().len();
+                let min_taxa = self.count_min_tax(*percent, taxon_count);
+                log::info!("{:18}: {}%", "Percent", percent * 100.0);
+                log::info!("{:18}: {}\n", "Min tax", min_taxa);
+                Params::MinTax(min_taxa)
+            }
+            FilteringParams::AlnLen(len) => {
+                log::info!("{:18}: {} bp\n", "Min aln len", len);
+                Params::AlnLen(*len)
+            }
+            FilteringParams::ParsInf(inf) => {
+                log::info!("{:18}: {}\n", "Min pars. inf", inf);
+                Params::ParsInf(*inf)
+            }
+            FilteringParams::PercInf(perc_inf) => {
+                log::info!("{:18}: {}%\n", "% pars. inf", perc_inf * 100.0);
+                Params::PercInf(*perc_inf)
+            }
+            FilteringParams::TaxonAll(taxon_id) => {
+                log::info!("{:18}: {} taxa\n", "Taxon id", taxon_id.len());
+                Params::TaxonAll(taxon_id.to_vec())
+            }
+            FilteringParams::None => unreachable!("Invalid params"),
         }
     }
 
     fn count_min_tax(&self, percent: f64, taxon_count: usize) -> usize {
         (percent * taxon_count as f64).floor() as usize
-    }
-
-    fn log_min_taxa_param(&self, min_taxa: usize, taxon_count: usize, percent: f64) {
-        self.log_info();
-        log::info!("{:18}: {}", "Taxon count", taxon_count);
-        log::info!("{:18}: {}%", "Percent", percent * 100.0);
-        log::info!("{:18}: {}\n", "Min tax", min_taxa);
-    }
-
-    fn log_other_params(&self, params: &Params) {
-        self.log_info();
-        match params {
-            Params::AlnLen(len) => log::info!("{:18}: {} bp\n", "Min aln len", len),
-            Params::ParsInf(inf) => log::info!("{:18}: {}\n", "Min pars. inf", inf),
-            Params::PercInf(perc_inf) => {
-                log::info!("{:18}: {}%\n", "% pars. inf", perc_inf * 100.0)
-            }
-            Params::TaxonAll(taxon_id) => {
-                log::info!("{:18}: {} taxa\n", "Taxon id", taxon_id.len())
-            }
-            _ => unreachable!("Invalid params"),
-        }
     }
 
     fn log_info(&self) {
@@ -560,13 +536,32 @@ impl SequenceRemoval {
     }
 }
 
+// Holder for FRB generated code.
+// Parse later for rust input.
+// The same as FilteringParams
+// and SequenceExtractionParams
+pub enum SequenceRenamingParams {
+    // Tabulated file renaming
+    RenameId(String),
+    // Remove string
+    RemoveStr(String),
+    // Remove regex.
+    // bool is for any string match
+    RemoveRegex(String, bool),
+    // Replace String
+    ReplaceStr(String, String),
+    // Replace regex
+    ReplaceRegex(String, String, bool),
+    None,
+}
+
 pub struct SequenceRenaming {
     pub input_files: Vec<String>,
     pub input_fmt: String,
     pub datatype: String,
     pub output_dir: String,
     pub output_fmt: String,
-    pub params: RenameOpts,
+    pub params: SequenceRenamingParams,
 }
 
 impl Sequence for SequenceRenaming {}
@@ -579,7 +574,7 @@ impl SequenceRenaming {
             datatype: String::new(),
             output_dir: String::new(),
             output_fmt: String::new(),
-            params: RenameOpts::None,
+            params: SequenceRenamingParams::None,
         }
     }
 
@@ -593,16 +588,43 @@ impl SequenceRenaming {
         let task = "Sequence Renaming";
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let rename_handle = Rename::new(
-            &input_fmt,
-            &datatype,
-            output_path,
-            &output_fmt,
-            &self.params,
-        );
+        let params = self.match_params();
+        let rename_handle = Rename::new(&input_fmt, &datatype, output_path, &output_fmt, &params);
         rename_handle.rename(&input_files);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
+    }
+
+    fn match_params(&self) -> RenameOpts {
+        match &self.params {
+            SequenceRenamingParams::RenameId(path) => {
+                log::info!("{:18}: {}\n", "Rename id", "Options");
+                log::info!("{:18}, {:?}\n", "Path", path);
+                let id_list = delimited::parse_delimited_text(Path::new(path));
+                RenameOpts::RnId(id_list)
+            }
+            SequenceRenamingParams::RemoveStr(remove_str) => {
+                log::info!("{:18}: {}\n", "Remove str", "Options");
+                log::info!("{:18}, {}\n", "Values", remove_str);
+                RenameOpts::RmStr(remove_str.clone())
+            }
+            SequenceRenamingParams::RemoveRegex(remove_regex, is_all_matches) => {
+                log::info!("{:18}: {}\n", "Remove regex", "Options");
+                log::info!("{:18}, {}\n", "Values", remove_regex);
+                RenameOpts::RmRegex(remove_regex.clone(), *is_all_matches)
+            }
+            SequenceRenamingParams::ReplaceStr(old_str, new_str) => {
+                log::info!("{:18}: {}\n", "Replace str", "Options");
+                log::info!("{:18}, {}, {}\n", "Values", old_str, new_str);
+                RenameOpts::RpStr(old_str.to_string(), new_str.to_string())
+            }
+            SequenceRenamingParams::ReplaceRegex(old_regex, new_regex, is_all_match) => {
+                log::info!("{:18}: {}\n", "Replace regex", "Options");
+                log::info!("{:18}, {}, {}\n", "Values", old_regex, new_regex);
+                RenameOpts::RpRegex(old_regex.to_string(), new_regex.to_string(), *is_all_match)
+            }
+            SequenceRenamingParams::None => RenameOpts::None,
+        }
     }
 }
 
