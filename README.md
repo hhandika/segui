@@ -28,5 +28,5 @@ Documentation: [[EN]](https://segul.app)
 | Sequence extraction            | :white_check_mark: |
 | Sequence ID extraction         | :white_check_mark: |
 | Sequence ID renaming           | :wrench:           |
-| Sequence removal               | :wrench:           |
+| Sequence removal               | :white_check_mark: |
 | Sequence translation           | :white_check_mark: |
