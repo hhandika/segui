@@ -56,21 +56,22 @@ class TabulatedFileViewerBody extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final content = snapshot.data;
-            return InteractiveViewer(
-              constrained: false,
-              scaleEnabled: false,
-              child: DataTable(
-                columns: content![0]
-                    .map((e) => DataColumn(label: Text(e.toString())))
-                    .toList(),
-                rows: content
-                    .sublist(1)
-                    .map((e) => DataRow(
-                        cells: e
-                            .map((e) => DataCell(Text(e.toString())))
-                            .toList()))
-                    .toList(),
-              ),
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: DataTable(
+                    columns: content![0]
+                        .map((e) => DataColumn(label: Text(e.toString())))
+                        .toList(),
+                    rows: content
+                        .sublist(1)
+                        .map((e) => DataRow(
+                            cells: e
+                                .map((e) => DataCell(Text(e.toString())))
+                                .toList()))
+                        .toList(),
+                  )),
             );
           } else {
             return const Center(child: CircularProgressIndicator());
