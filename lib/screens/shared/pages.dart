@@ -116,6 +116,7 @@ class PlainTextViewer extends StatelessWidget {
                     if (snapshot.hasData) {
                       return SizedBox(
                         height: containerHeight - 112,
+                        width: double.infinity,
                         child: SelectableText(
                           snapshot.data!,
                           style: Theme.of(context).textTheme.bodyMedium,
