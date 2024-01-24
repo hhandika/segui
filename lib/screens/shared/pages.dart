@@ -286,6 +286,7 @@ class InputFileList extends ConsumerWidget {
                 },
               ),
               trailing: IconButton(
+                tooltip: 'Remove file',
                 icon: const Icon(Icons.delete_outline),
                 onPressed: () {
                   ref.read(fileInputProvider.notifier).removeFile(data);
