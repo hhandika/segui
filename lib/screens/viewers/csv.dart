@@ -1,5 +1,6 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:segui/screens/shared/components.dart';
 import 'package:segui/services/viewers/csv.dart';
 import 'package:segui/styles/decoration.dart';
 
@@ -12,12 +13,32 @@ class TabulatedFileViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(file.name),
+        title: const Text('CSV Viewer'),
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: Center(
-        child: TabulatedFileViewerBody(file: file),
+        child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Container(
+                decoration: getContainerDecoration(context),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        file.name,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    const TopDivider(),
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: TabulatedFileViewerBody(file: file),
+                    )),
+                  ],
+                ))),
       ),
     );
   }
@@ -35,20 +56,22 @@ class TabulatedFileViewerBody extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final content = snapshot.data;
-            return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: content![0]
-                      .map((e) => DataColumn(label: Text(e.toString())))
-                      .toList(),
-                  rows: content
-                      .sublist(1)
-                      .map((e) => DataRow(
-                          cells: e
-                              .map((e) => DataCell(Text(e.toString())))
-                              .toList()))
-                      .toList(),
-                ));
+            return InteractiveViewer(
+              constrained: false,
+              scaleEnabled: false,
+              child: DataTable(
+                columns: content![0]
+                    .map((e) => DataColumn(label: Text(e.toString())))
+                    .toList(),
+                rows: content
+                    .sublist(1)
+                    .map((e) => DataRow(
+                        cells: e
+                            .map((e) => DataCell(Text(e.toString())))
+                            .toList()))
+                    .toList(),
+              ),
+            );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
