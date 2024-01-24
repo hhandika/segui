@@ -35,6 +35,9 @@ class SelectDirField extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 IconButton(
+                  tooltip: data.directory == null
+                      ? 'Select directory'
+                      : 'Clear directory',
                   icon: data.directory == null
                       ? const Icon(Icons.folder)
                       : const Icon(Icons.clear),
@@ -160,6 +163,7 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
                           child: CircularProgressIndicator(),
                         )
                       : IconButton(
+                          tooltip: isAddNew ? 'Select files' : 'Add more files',
                           icon: isAddNew
                               ? const Icon(Icons.folder)
                               : const Icon(Icons.add_rounded),

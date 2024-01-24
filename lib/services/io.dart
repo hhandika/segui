@@ -130,20 +130,21 @@ const XTypeGroup plainTextTypeGroup = XTypeGroup(
 
 const XTypeGroup genomicTypeGroup = XTypeGroup(
   label: 'Sequence Read',
-  extensions: ['fasta', 'fastq', 'gz', 'gzip'],
+  extensions: ['fasta', 'fsa', 'fa', 'fna', 'fastq', 'fq', 'gz', 'gzip'],
   uniformTypeIdentifiers: [
     'com.segui.genomicSequence',
-    'com.segui.genomicGzipSequence'
+    'org.gnu.gnu-zip-archive'
   ],
 );
 
 const XTypeGroup sequenceTypeGroup = XTypeGroup(
-  label: 'Alignment',
+  label: 'Sequence',
   extensions: [
     'fasta',
     'fa',
     'fas',
     'fsa',
+    'fna',
     'nexus',
     'nex',
     'phylip',

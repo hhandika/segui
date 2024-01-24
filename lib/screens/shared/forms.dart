@@ -157,6 +157,7 @@ class SharedTextField extends StatelessWidget {
         hintText: hint,
         suffix: controller.text.isNotEmpty
             ? IconButton(
+                tooltip: 'Clear',
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   controller.clear();
