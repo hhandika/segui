@@ -269,3 +269,50 @@ class PathTextWithOverflow extends StatelessWidget {
         ));
   }
 }
+
+class FileIOTitle extends StatelessWidget {
+  const FileIOTitle({super.key, required this.file});
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: file.path,
+      child: Text(
+        file.name,
+        style: Theme.of(context).textTheme.labelLarge,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
+class FileIOSubtitle extends StatelessWidget {
+  const FileIOSubtitle({super.key, required this.file});
+
+  final XFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<({String size, String lastModified})>(
+      future: _metadata,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // We use interpunction to separate the size and last modified
+          return Text(
+            '${snapshot.data!.size} · modified ${snapshot.data!.lastModified}',
+            style: Theme.of(context).textTheme.bodyMedium,
+            overflow: TextOverflow.ellipsis,
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  Future<({String size, String lastModified})> get _metadata async {
+    return FileMetadata(file: file).metadata;
+  }
+}

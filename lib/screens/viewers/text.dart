@@ -1,10 +1,10 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:segui/screens/shared/components.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
 
-class PlainTextScreen extends StatelessWidget {
-  const PlainTextScreen({super.key, required this.file});
+class PlainTextViewer extends StatelessWidget {
+  const PlainTextViewer({super.key, required this.file});
 
   final XFile file;
 
@@ -17,14 +17,14 @@ class PlainTextScreen extends StatelessWidget {
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: Center(
-        child: PlainTextViewer(file: file),
+        child: PlainTextViewerBody(file: file),
       ),
     );
   }
 }
 
-class PlainTextViewer extends StatelessWidget {
-  const PlainTextViewer({super.key, required this.file});
+class PlainTextViewerBody extends StatelessWidget {
+  const PlainTextViewerBody({super.key, required this.file});
 
   final XFile file;
 
@@ -56,6 +56,7 @@ class PlainTextViewer extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: FutureBuilder<String>(
                   future: _readFile(),
+                  initialData: 'Loading...',
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return SizedBox(
@@ -67,7 +68,7 @@ class PlainTextViewer extends StatelessWidget {
                         ),
                       );
                     } else {
-                      return const CircularProgressIndicator();
+                      return const Text('Error');
                     }
                   },
                 ),

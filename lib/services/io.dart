@@ -241,8 +241,12 @@ class FileAssociation {
   }
 
   String get _fileExtension {
-    return p.extension(file.path).substring(1);
+    return getFileExtension(file);
   }
+}
+
+String getFileExtension(XFile file) {
+  return p.extension(file.path).substring(1);
 }
 
 class FileSelectionServices {
@@ -442,19 +446,55 @@ Future<Directory> getOutputDir(String? dirName, SupportedTask task) async {
   return outputDir;
 }
 
+class FileMetadata {
+  FileMetadata({
+    required this.file,
+  });
+
+  final XFile file;
+
+  Future<({String size, String lastModified})> get metadata async {
+    File handler = File(file.path);
+    String size = await getSize(handler);
+    String lastModified = await getLastModified(handler);
+    return (size: size, lastModified: lastModified);
+  }
+
 // Count file size. Returns in kb, mb, or gb.
-Future<String> getFileSize(XFile path) async {
-  File file = File(path.path);
-  int bytes = await file.length();
-  double kb = bytes / 1024;
-  double mb = kb / 1024;
-  double gb = mb / 1024;
-  if (gb >= 1) {
-    return '${gb.toStringAsFixed(2)} Gb';
-  } else if (mb >= 1) {
-    return '${mb.toStringAsFixed(2)} Mb';
-  } else {
-    return '${kb.toStringAsFixed(2)} Kb';
+  Future<String> getSize(File handler) async {
+    int bytes = await handler.length();
+    double kb = bytes / 1024;
+    double mb = kb / 1024;
+    double gb = mb / 1024;
+    if (gb >= 1) {
+      return '${gb.toStringAsFixed(2)} Gb';
+    } else if (mb >= 1) {
+      return '${mb.toStringAsFixed(2)} Mb';
+    } else {
+      return '${kb.toStringAsFixed(2)} Kb';
+    }
+  }
+
+  Future<String> getLastModified(File handler) async {
+    DateTime lastModified = await handler.lastModified();
+    DateTime now = DateTime.now();
+    // Format to show days to seconds ago.
+    Duration duration = now.difference(lastModified);
+    if (duration.inDays > 365) {
+      return '${duration.inDays ~/ 365} years ago';
+    } else if (duration.inDays > 30) {
+      return '${duration.inDays ~/ 30} months ago';
+    } else if (duration.inDays > 0) {
+      return '${duration.inDays} days ago';
+    } else if (duration.inHours > 0) {
+      return '${duration.inHours} hours ago';
+    } else if (duration.inMinutes > 0) {
+      return '${duration.inMinutes} minutes ago';
+    } else if (duration.inSeconds > 0) {
+      return '${duration.inSeconds} seconds ago';
+    } else {
+      return 'just now';
+    }
   }
 }
 

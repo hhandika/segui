@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
-import 'package:segui/screens/shared/components.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
 
 class SettingButtons extends StatelessWidget {

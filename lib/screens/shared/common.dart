@@ -47,9 +47,7 @@ class FileIcon extends StatelessWidget {
       width: 24,
       height: 24,
       colorFilter: ColorFilter.mode(
-        association.isSequenceFile
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.secondary,
+        Theme.of(context).colorScheme.primary.withAlpha(240),
         BlendMode.srcIn,
       ),
     );

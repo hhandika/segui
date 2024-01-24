@@ -1,6 +1,6 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:segui/screens/shared/components.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/viewers/csv.dart';
 import 'package:segui/styles/decoration.dart';
 

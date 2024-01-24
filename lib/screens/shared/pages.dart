@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
-import 'package:segui/screens/shared/components.dart';
+import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/info.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/utils.dart';
@@ -200,6 +202,7 @@ class InputFileList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return IOListContainer(
         title: 'Input Files',
+        infoText: 'List of input files to be analyzed.',
         child: ListView.separated(
           separatorBuilder: (context, index) => const Divider(
             height: 1,
@@ -214,17 +217,8 @@ class InputFileList extends ConsumerWidget {
             return ListTile(
               minVerticalPadding: 2,
               leading: FileIcon(file: data.file),
-              title: Text(data.file.name),
-              subtitle: FutureBuilder<String>(
-                future: getFileSize(data.file),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data!);
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
+              title: FileIOTitle(file: data.file),
+              subtitle: FileIOSubtitle(file: data.file),
               trailing: IconButton(
                 tooltip: 'Remove file',
                 icon: const Icon(Icons.delete_outline),
@@ -274,6 +268,9 @@ class OutputFileList extends StatelessWidget {
   Widget build(BuildContext context) {
     return IOListContainer(
         title: 'Output Files',
+        infoText: 'List of files in the output directory. '
+            'Newly created files are marked with a new icon. '
+            'Click on a file to view its content.',
         child: ListView(children: [
           ...files.newFiles
               .map((e) => OutputFileTiles(isOldFile: false, file: e)),
@@ -300,14 +297,14 @@ class OutputFileTiles extends StatelessWidget {
       minVerticalPadding: 2,
       leading: FileIcon(file: file),
       title: isOldFile
-          ? Text(file.name, style: Theme.of(context).textTheme.labelLarge)
+          ? FileIOTitle(file: file)
           : RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(
                 children: [
-                  TextSpan(
-                      text: file.name,
-                      style: Theme.of(context).textTheme.labelLarge),
+                  WidgetSpan(
+                    child: FileIOTitle(file: file),
+                  ),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.bottom,
                     child: Icon(
@@ -317,44 +314,39 @@ class OutputFileTiles extends StatelessWidget {
                   ),
                 ],
               )),
-      subtitle: FutureBuilder<String>(
-        future: getFileSize(file),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data!);
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      ),
-      trailing: association.isSupportedViewerExtension
-          ? Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                OpenViewerButton(
-                  file: file,
-                  type: association.commonFileTYpe,
-                ),
-                ShareIconButton(file: file),
-              ],
-            )
-          : ShareIconButton(file: file),
+      subtitle: FileIOSubtitle(file: file),
+      trailing: ShareIconButton(file: file),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => FileViewer(
+              file: file,
+              type: association.commonFileTYpe,
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-class IOListContainer extends StatelessWidget {
+class IOListContainer extends StatefulWidget {
   const IOListContainer({
     super.key,
     required this.title,
+    required this.infoText,
     required this.child,
   });
 
   final String title;
-
+  final String infoText;
   final Widget child;
+  @override
+  State<IOListContainer> createState() => _IOListContainerState();
+}
+
+class _IOListContainerState extends State<IOListContainer> {
+  bool isShowingInfo = false;
 
   @override
   Widget build(BuildContext context) {
@@ -362,12 +354,51 @@ class IOListContainer extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 8),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
+        RichText(
+          text: TextSpan(
+            children: [
+              WidgetSpan(
+                child: Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              WidgetSpan(
+                child: IconButton(
+                  icon: Icon(
+                    size: 18,
+                    Icons.info_outline,
+                    color: Theme.of(context).disabledColor,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isShowingInfo = !isShowingInfo;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(height: 8),
+        isShowingInfo
+            ? SharedInfoForm(
+                description: widget.infoText,
+                isShowingInfo: isShowingInfo,
+                onClosed: () {
+                  setState(() {
+                    isShowingInfo = false;
+                  });
+                },
+                onExpanded: () {
+                  setState(() {
+                    isShowingInfo = true;
+                  });
+                },
+              )
+            : const SizedBox.shrink(),
         Flexible(
-          child: child,
+          child: widget.child,
         )
       ],
     );
