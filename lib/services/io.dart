@@ -219,6 +219,19 @@ class FileAssociation {
     }
   }
 
+  String get matchingIcon {
+    switch (commonFileTYpe) {
+      case CommonFileType.sequence:
+        return 'assets/images/dna.svg';
+      case CommonFileType.plainText:
+        return 'assets/images/text.svg';
+      case CommonFileType.tabulated:
+        return 'assets/images/table.svg';
+      case CommonFileType.other:
+        return 'assets/images/unknown.svg';
+    }
+  }
+
   bool get isSequenceFile {
     return sequenceExtensions.contains(_fileExtension);
   }

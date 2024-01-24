@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/components.dart';
 import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/utils.dart';
@@ -425,50 +426,5 @@ class EmptyScreen extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class FileIcon extends StatelessWidget {
-  const FileIcon({
-    super.key,
-    required this.file,
-  });
-
-  final XFile file;
-
-  @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      _matchingIcon,
-      width: 24,
-      height: 24,
-      colorFilter: ColorFilter.mode(
-        _isSequenceFile
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.secondary,
-        BlendMode.srcIn,
-      ),
-    );
-  }
-
-  String get _matchingIcon {
-    switch (_fileType) {
-      case CommonFileType.sequence:
-        return 'assets/images/dna.svg';
-      case CommonFileType.plainText:
-        return 'assets/images/file.svg';
-      case CommonFileType.tabulated:
-        return 'assets/images/table.svg';
-      case CommonFileType.other:
-        return 'assets/images/document.svg';
-    }
-  }
-
-  bool get _isSequenceFile {
-    return FileAssociation(file: file).isSequenceFile;
-  }
-
-  CommonFileType get _fileType {
-    return FileAssociation(file: file).commonFileTYpe;
   }
 }
