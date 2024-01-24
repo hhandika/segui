@@ -1,6 +1,7 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/styles/decoration.dart';
 
 class PlainTextViewer extends StatelessWidget {
@@ -12,7 +13,7 @@ class PlainTextViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Plain Text Viewer'),
+        title: Text(file.name),
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
@@ -46,9 +47,13 @@ class PlainTextViewerBody extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text(
-                  file.name,
-                  style: Theme.of(context).textTheme.titleLarge,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FileIcon(file: file),
+                    const SizedBox(width: 8),
+                    FileIOSubtitle(file: file),
+                  ],
                 ),
               ),
               const TopDivider(),
