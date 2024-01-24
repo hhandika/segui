@@ -13,7 +13,7 @@ class TabulatedFileViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CSV Viewer'),
+        title: const Text('Table Viewer'),
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
