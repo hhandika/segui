@@ -22,7 +22,7 @@ void main() {
 
   test('Supported file test', () {
     final XFile file = XFile("test.txt");
-    bool supported = isSupportedViewerExtension(file);
+    bool supported = FileAssociation(file: file).isSupportedViewerExtension;
     expect(supported, true);
   });
 }

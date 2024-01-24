@@ -1,6 +1,5 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:segui/screens/viewers/plain_text.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
 
@@ -236,27 +235,6 @@ class ShowMoreButton extends StatelessWidget {
           child: Text(isShowMore ? 'Show less' : 'Show more'),
         ),
       ),
-    );
-  }
-}
-
-class OpenViewerButton extends StatelessWidget {
-  const OpenViewerButton({super.key, required this.file});
-
-  final XFile file;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'Open in viewer',
-      icon: const Icon(Icons.open_in_new),
-      onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PlainTextScreen(file: file),
-          ),
-        );
-      },
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
@@ -293,6 +294,7 @@ class OutputFileTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FileAssociation association = FileAssociation(file: file);
     return ListTile(
       minVerticalPadding: 2,
       leading: FileIcon(file: file),
@@ -324,13 +326,16 @@ class OutputFileTiles extends StatelessWidget {
           }
         },
       ),
-      trailing: isSupportedViewerExtension(file)
+      trailing: association.isSupportedViewerExtension
           ? Wrap(
               alignment: WrapAlignment.center,
               runAlignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                OpenViewerButton(file: file),
+                OpenViewerButton(
+                  file: file,
+                  type: association.commonFileTYpe,
+                ),
                 ShareIconButton(file: file),
               ],
             )
@@ -450,9 +455,9 @@ class FileIcon extends StatelessWidget {
     switch (_fileType) {
       case CommonFileType.sequence:
         return 'assets/images/dna.svg';
-      case CommonFileType.text:
+      case CommonFileType.plainText:
         return 'assets/images/file.svg';
-      case CommonFileType.table:
+      case CommonFileType.tabulated:
         return 'assets/images/table.svg';
       case CommonFileType.other:
         return 'assets/images/document.svg';
@@ -460,10 +465,10 @@ class FileIcon extends StatelessWidget {
   }
 
   bool get _isSequenceFile {
-    return isSequenceFile(file);
+    return FileAssociation(file: file).isSequenceFile;
   }
 
   CommonFileType get _fileType {
-    return getCommonFileType(file);
+    return FileAssociation(file: file).commonFileTYpe;
   }
 }

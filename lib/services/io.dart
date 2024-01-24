@@ -186,39 +186,48 @@ const List<String> supportedTextExtensions = [
   'text',
 ];
 
-const List<String> supportedViewerExtensions = [
-  'txt',
-];
-
-bool isSupportedViewerExtension(XFile file) {
-  String extension = p.extension(file.path).substring(1);
-  return supportedViewerExtensions.contains(extension);
-}
-
 /// Common file type to match
 /// file type with icons.
 enum CommonFileType {
   sequence,
-  text,
-  table,
+  plainText,
+  tabulated,
   other,
 }
 
-bool isSequenceFile(XFile file) {
-  String extension = p.extension(file.path).substring(1);
-  return sequenceExtensions.contains(extension);
-}
+class FileAssociation {
+  FileAssociation({required this.file});
 
-CommonFileType getCommonFileType(XFile file) {
-  String extension = p.extension(file.path).substring(1);
-  if (sequenceExtensions.contains(extension)) {
-    return CommonFileType.sequence;
-  } else if (tabularExtensions.contains(extension)) {
-    return CommonFileType.table;
-  } else if (supportedTextExtensions.contains(extension)) {
-    return CommonFileType.text;
-  } else {
-    return CommonFileType.other;
+  final XFile file;
+
+  bool get isSupportedViewerExtension {
+    final fileType = commonFileTYpe;
+    return fileType == CommonFileType.plainText;
+  }
+
+  CommonFileType get commonFileTYpe {
+    String ext = _fileExtension;
+    if (sequenceExtensions.contains(ext)) {
+      return CommonFileType.sequence;
+    } else if (tabularExtensions.contains(ext)) {
+      return CommonFileType.tabulated;
+    } else if (supportedTextExtensions.contains(ext)) {
+      return CommonFileType.plainText;
+    } else {
+      return CommonFileType.other;
+    }
+  }
+
+  bool get isSequenceFile {
+    return sequenceExtensions.contains(_fileExtension);
+  }
+
+  bool get isTabularFile {
+    return tabularExtensions.contains(_fileExtension);
+  }
+
+  String get _fileExtension {
+    return p.extension(file.path).substring(1);
   }
 }
 
