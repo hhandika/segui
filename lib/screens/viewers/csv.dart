@@ -35,23 +35,27 @@ class TabulatedFileViewerBody extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final content = snapshot.data;
-            return InteractiveViewer(
+            return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
                 child: DataTable(
-              columns:
-                  content![0].map((e) => DataColumn(label: Text(e))).toList(),
-              rows: content
-                  .sublist(1)
-                  .map((e) =>
-                      DataRow(cells: e.map((e) => DataCell(Text(e))).toList()))
-                  .toList(),
-            ));
+                  columns: content![0]
+                      .map((e) => DataColumn(label: Text(e.toString())))
+                      .toList(),
+                  rows: content
+                      .sublist(1)
+                      .map((e) => DataRow(
+                          cells: e
+                              .map((e) => DataCell(Text(e.toString())))
+                              .toList()))
+                      .toList(),
+                ));
           } else {
             return const Center(child: CircularProgressIndicator());
           }
         });
   }
 
-  Future<List<List<String>>> _parseContent() async {
+  Future<List<List<dynamic>>> _parseContent() async {
     return await CsvParser(file: file).parse();
   }
 }
