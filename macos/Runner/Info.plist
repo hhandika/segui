@@ -55,6 +55,7 @@
 					<string>fa</string>
 					<string>fas</string>
 					<string>fsa</string>
+					<string>fna</string>
 					<string>nexus</string>
 					<string>nex</string>
 					<string>phy</string>
@@ -81,24 +82,6 @@
 					<string>fsa</string>
 					<string>fastq</string>
 					<string>fq</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.segui.genomicGzipSequence</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>org.gnu.gnu-zip-archive</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>DNA Sequence Files</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>gzip</string>
-					<string>gz</string>
 				</array>
 			</dict>
 		</dict>
@@ -148,24 +131,6 @@
 					<string>fsa</string>
 					<string>fastq</string>
 					<string>fq</string>
-				</array>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.segui.genomicGzipSequence</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>org.gnu.gnu-zip-archive</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>DNA Sequence Files</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>gzip</string>
-					<string>gz</string>
 				</array>
 			</dict>
 		</dict>
