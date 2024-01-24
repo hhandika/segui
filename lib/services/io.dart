@@ -43,6 +43,9 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
 };
 
+/// Match all file extensions,
+/// Use mostly for determining file
+/// input.
 enum SegulType {
   genomicReads,
   genomicContig,
@@ -159,7 +162,7 @@ const XTypeGroup partitionTypeGroup = XTypeGroup(
   ],
 );
 
-const List<String> dnaSequenceExtensions = [
+const List<String> sequenceExtensions = [
   'fasta',
   'fa',
   'fas',
@@ -173,6 +176,15 @@ const List<String> dnaSequenceExtensions = [
   'gzip'
 ];
 
+const List<String> tabularExtensions = [
+  'csv',
+];
+
+const List<String> supportedTextExtensions = [
+  'txt',
+  'text',
+];
+
 const List<String> supportedViewerExtensions = [
   'txt',
 ];
@@ -182,9 +194,31 @@ bool isSupportedViewerExtension(XFile file) {
   return supportedViewerExtensions.contains(extension);
 }
 
-bool isDnaSequenceExtension(XFile file) {
+/// Common file type to match
+/// file type with icons.
+enum CommonFileType {
+  sequence,
+  text,
+  table,
+  other,
+}
+
+bool isSequenceFile(XFile file) {
   String extension = p.extension(file.path).substring(1);
-  return dnaSequenceExtensions.contains(extension);
+  return sequenceExtensions.contains(extension);
+}
+
+CommonFileType getCommonFileType(XFile file) {
+  String extension = p.extension(file.path).substring(1);
+  if (sequenceExtensions.contains(extension)) {
+    return CommonFileType.sequence;
+  } else if (tabularExtensions.contains(extension)) {
+    return CommonFileType.table;
+  } else if (supportedTextExtensions.contains(extension)) {
+    return CommonFileType.text;
+  } else {
+    return CommonFileType.other;
+  }
 }
 
 class FileSelectionServices {

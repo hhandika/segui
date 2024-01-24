@@ -249,7 +249,7 @@ class OpenViewerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       tooltip: 'Open in viewer',
-      icon: const Icon(Icons.open_in_new_outlined),
+      icon: const Icon(Icons.open_in_new),
       onPressed: () {
         Navigator.of(context).push(
           MaterialPageRoute(

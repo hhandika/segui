@@ -518,7 +518,7 @@ class FileIcon extends StatelessWidget {
       width: 24,
       height: 24,
       colorFilter: ColorFilter.mode(
-        _isDnaSequence
+        _isSequenceFile
             ? Theme.of(context).colorScheme.primary
             : Theme.of(context).colorScheme.secondary,
         BlendMode.srcIn,
@@ -527,13 +527,23 @@ class FileIcon extends StatelessWidget {
   }
 
   String get _matchingIcon {
-    if (_isDnaSequence) {
-      return 'assets/images/dna.svg';
+    switch (_fileType) {
+      case CommonFileType.sequence:
+        return 'assets/images/dna.svg';
+      case CommonFileType.text:
+        return 'assets/images/file.svg';
+      case CommonFileType.table:
+        return 'assets/images/table.svg';
+      case CommonFileType.other:
+        return 'assets/images/document.svg';
     }
-    return 'assets/images/file.svg';
   }
 
-  bool get _isDnaSequence {
-    return isDnaSequenceExtension(file);
+  bool get _isSequenceFile {
+    return isSequenceFile(file);
+  }
+
+  CommonFileType get _fileType {
+    return getCommonFileType(file);
   }
 }
