@@ -287,7 +287,9 @@ class FileInputServices {
   }
 
   Future<void> addDirectory() async {
-    final result = await _getDirectory();
+    final result = Platform.isAndroid
+        ? await _pickDirectory()
+        : await _pickDirectoryFilePicker();
 
     if (result != null) {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
@@ -302,8 +304,16 @@ class FileInputServices {
     }
   }
 
-  Future<Directory?> _getDirectory() async {
+  Future<Directory?> _pickDirectory() async {
     final result = await getDirectoryPath();
+    if (result != null) {
+      return Directory(result);
+    }
+    return null;
+  }
+
+  Future<Directory?> _pickDirectoryFilePicker() async {
+    final result = await FilePicker.platform.getDirectoryPath();
     if (result != null) {
       return Directory(result);
     }
