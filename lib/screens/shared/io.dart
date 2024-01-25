@@ -167,7 +167,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                           ? IconButton(
                               tooltip: 'Add file',
                               icon: const Icon(Icons.add_rounded),
-                              onPressed: !isAddNew && !widget.allowMultiple
+                              onPressed: !widget.allowMultiple
                                   ? null
                                   : () async {
                                       await _selectFiles(
@@ -242,8 +242,8 @@ class InputSelector extends StatefulWidget {
   });
 
   final bool isAddNew;
-  final VoidCallback? onFileSelected;
-  final VoidCallback? onDirectorySelected;
+  final VoidCallback onFileSelected;
+  final VoidCallback onDirectorySelected;
 
   @override
   State<InputSelector> createState() => _InputSelectorState();
@@ -252,41 +252,42 @@ class InputSelector extends StatefulWidget {
 class _InputSelectorState extends State<InputSelector> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return constraints.maxWidth < mediumScreenSize
-            ? IconButton(
-                tooltip: 'Select input method',
-                icon: const Icon(Icons.more_vert_rounded),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return ListView(
+    final isSmallScreen = MediaQuery.of(context).size.width < mediumScreenSize;
+    return isSmallScreen
+        ? IconButton(
+            tooltip: 'Select input method',
+            icon: Icon(Icons.adaptive.more_rounded),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                showDragHandle: true,
+                builder: (context) {
+                  return Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 2, 16, 32),
+                      child: ListView(
                         shrinkWrap: true,
                         children: [
                           SelectFileButton(
                             isAddNew: widget.isAddNew,
                             onFileSelected: widget.onFileSelected,
                           ),
-                          SelectDirectoryButton(
-                            isAddNew: widget.isAddNew,
-                            onDirectorySelected: widget.onDirectorySelected,
-                          ),
+                          if (!Platform.isIOS)
+                            SelectDirectoryButton(
+                              isAddNew: widget.isAddNew,
+                              onDirectorySelected: widget.onDirectorySelected,
+                            ),
                           if (!widget.isAddNew) const ClearAllButton(),
                         ],
-                      );
-                    },
-                  );
+                      ));
                 },
-              )
-            : InputActionMenu(
-                isAddNew: widget.isAddNew,
-                onFileSelected: widget.onFileSelected,
-                onDirectorySelected: widget.onDirectorySelected,
               );
-      },
-    );
+            },
+          )
+        : InputActionMenu(
+            isAddNew: widget.isAddNew,
+            onFileSelected: widget.onFileSelected,
+            onDirectorySelected: widget.onDirectorySelected,
+          );
   }
 }
 
@@ -299,8 +300,8 @@ class InputActionMenu extends ConsumerWidget {
   });
 
   final bool isAddNew;
-  final VoidCallback? onFileSelected;
-  final VoidCallback? onDirectorySelected;
+  final VoidCallback onFileSelected;
+  final VoidCallback onDirectorySelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -315,11 +316,12 @@ class InputActionMenu extends ConsumerWidget {
               isAddNew: isAddNew,
               onFileSelected: onFileSelected,
             )),
-            PopupMenuItem(
-                child: SelectDirectoryButton(
-              isAddNew: isAddNew,
-              onDirectorySelected: onDirectorySelected,
-            )),
+            if (!Platform.isIOS)
+              PopupMenuItem(
+                  child: SelectDirectoryButton(
+                isAddNew: isAddNew,
+                onDirectorySelected: onDirectorySelected,
+              )),
             if (!isAddNew)
               const PopupMenuItem(
                 child: ClearAllButton(),
@@ -337,14 +339,20 @@ class SelectFileButton extends StatelessWidget {
   });
 
   final bool isAddNew;
-  final VoidCallback? onFileSelected;
+  final VoidCallback onFileSelected;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.add_rounded),
-      title: Text(isAddNew ? 'Select files' : 'Add more files'),
-      onTap: onFileSelected,
+      title: Text(
+        isAddNew ? 'Select files' : 'Add more files',
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        onFileSelected();
+      },
     );
   }
 }
@@ -357,14 +365,20 @@ class SelectDirectoryButton extends StatelessWidget {
   });
 
   final bool isAddNew;
-  final VoidCallback? onDirectorySelected;
+  final VoidCallback onDirectorySelected;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.folder_outlined),
-      title: Text(isAddNew ? 'Add from directory' : 'More from directory'),
-      onTap: onDirectorySelected,
+      title: Text(
+        isAddNew ? 'Add from directory' : 'More from directory',
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        onDirectorySelected();
+      },
     );
   }
 }
@@ -376,8 +390,12 @@ class ClearAllButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
       leading: const Icon(Icons.clear_rounded),
-      title: const Text('Clear all'),
+      title: Text(
+        'Clear all',
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
       onTap: () {
+        Navigator.of(context).pop();
         ref.invalidate(fileInputProvider);
       },
     );
