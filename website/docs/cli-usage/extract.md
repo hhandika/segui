@@ -52,7 +52,7 @@ For lots of ID, you can generate all the ID first using `segul` [sequence ID ext
 
 This is the most flexible option to extract sequence from a collection of alignments. `segul` use the Rust [regex](https://docs.rs/regex/latest/regex/) library to parse regular expression syntax. The syntax is similar to Perl-style regex syntax (details [here](https://docs.rs/regex/latest/regex/#syntax)). You can use [this website](https://regex101.com/) to test your syntax.
 
-To use regular expression, use the option `--re=` and put the syntax in either a single or double quatation. For example, our sequence id is named this way `genus_species_voucherNo`. We want to extract the sequences from the same genus: `Mus`. We could write a regular expression that search for sequence ID that starts with `Mus` as below:
+To use regular expression, use the option `--re=` and put the syntax in either a single or double quotation. For example, our sequence id is named this way `genus_species_voucherNo`. We want to extract the sequences from the same genus: `Mus`. We could write a regular expression that search for sequence ID that starts with `Mus` as below:
 
 ```Bash
 segul extract --dir alignments/ --input-format nexus --re="^Mus"

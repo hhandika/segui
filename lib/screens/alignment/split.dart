@@ -68,6 +68,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
           allowMultiple: false,
           hasSecondaryPicker: true,
           xTypeGroup: sequenceTypeGroup,
+          allowDirectorySelection: false,
           task: task,
         ),
         const SizedBox(height: 16),
@@ -94,7 +95,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
               hasSecondaryPicker: true,
               xTypeGroup: partitionTypeGroup,
               task: task,
-              allowDirectorySelection: true,
+              allowDirectorySelection: false,
             ),
           )
         ]),

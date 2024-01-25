@@ -19,6 +19,7 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
     this.allowMultiple = true,
     this.isDatatypeEnabled = true,
     this.hasSecondaryPicker = false,
+    this.allowDirectorySelection = true,
   });
 
   final IOController ctr;
@@ -26,6 +27,7 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
   final XTypeGroup xTypeGroup;
   final bool isDatatypeEnabled;
   final bool hasSecondaryPicker;
+  final bool allowDirectorySelection;
   final SupportedTask task;
 
   @override
@@ -43,6 +45,7 @@ class SharedSequenceInputFormState
           allowMultiple: widget.allowMultiple,
           xTypeGroup: widget.xTypeGroup,
           hasSecondaryPicker: widget.isDatatypeEnabled,
+          allowDirectorySelection: widget.allowDirectorySelection,
           task: task,
         ),
         SharedDropdownField(

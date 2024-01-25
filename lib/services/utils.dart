@@ -4,6 +4,7 @@
 /// Mobile/Compact screen: 360dp
 const double expandedScreenSize = 840;
 const double mediumScreenSize = 600;
+const double compactScreenSize = 360;
 
 String get greeting {
   int hour = DateTime.now().hour;

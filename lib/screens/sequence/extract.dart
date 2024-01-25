@@ -91,7 +91,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                   allowMultiple: false,
                   task: task,
                   hasSecondaryPicker: true,
-                  allowDirectorySelection: true,
+                  allowDirectorySelection: false,
                 )
               : SharedTextField(
                   controller: _idRegexController,

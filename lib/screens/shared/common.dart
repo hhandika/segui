@@ -31,6 +31,19 @@ class TopDivider extends StatelessWidget {
   }
 }
 
+class SharedProgressIndicator extends StatelessWidget {
+  const SharedProgressIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      height: 8,
+      width: 8,
+      child: CircularProgressIndicator(),
+    );
+  }
+}
+
 class FileIcon extends StatelessWidget {
   const FileIcon({
     super.key,

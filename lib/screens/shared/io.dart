@@ -3,6 +3,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
@@ -37,7 +38,7 @@ class SelectDirField extends ConsumerWidget {
                     ? 'Select directory'
                     : 'Clear directory',
                 icon: data.directory == null
-                    ? const Icon(Icons.folder)
+                    ? const Icon(Icons.folder_outlined)
                     : const Icon(Icons.clear),
                 onPressed: data.directory == null
                     ? () async {
@@ -77,6 +78,7 @@ class InputSelectorForm extends StatelessWidget {
     required this.allowMultiple,
     required this.xTypeGroup,
     required this.hasSecondaryPicker,
+    required this.allowDirectorySelection,
     required this.task,
   });
 
@@ -85,15 +87,16 @@ class InputSelectorForm extends StatelessWidget {
   final XTypeGroup xTypeGroup;
   final bool hasSecondaryPicker;
   final SupportedTask task;
+  final bool allowDirectorySelection;
 
   @override
   Widget build(BuildContext context) {
     return SharedFilePicker(
-      label: 'Add input files',
+      label: 'Add files',
       allowMultiple: allowMultiple,
       xTypeGroup: xTypeGroup,
       hasSecondaryPicker: hasSecondaryPicker,
-      allowDirectorySelection: ctr.allDirectorySelection,
+      allowDirectorySelection: allowDirectorySelection,
       task: task,
     );
   }
@@ -158,18 +161,11 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                           ])),
                   const SizedBox(width: 8),
                   _isLoading
-                      ? const SizedBox(
-                          height: 8,
-                          width: 8,
-                          child: CircularProgressIndicator(),
-                        )
+                      ? const SharedProgressIndicator()
                       : !widget.allowDirectorySelection
                           ? IconButton(
-                              tooltip:
-                                  isAddNew ? 'Select files' : 'Add more files',
-                              icon: isAddNew
-                                  ? const Icon(Icons.folder)
-                                  : const Icon(Icons.add_rounded),
+                              tooltip: 'Add file',
+                              icon: const Icon(Icons.add_rounded),
                               onPressed: !isAddNew && !widget.allowMultiple
                                   ? null
                                   : () async {
@@ -180,12 +176,18 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                                     },
                             )
                           : PopupMenuButton(
+                              elevation: 2,
                               color: Theme.of(context).colorScheme.background,
+                              tooltip: 'Select input method',
                               itemBuilder: (context) {
                                 return [
                                   PopupMenuItem(
-                                    value: true,
-                                    child: const Text('Select files'),
+                                    child: ListTile(
+                                      leading: const Icon(Icons.add_rounded),
+                                      title: Text(isAddNew
+                                          ? 'Select files'
+                                          : 'Add more files'),
+                                    ),
                                     onTap: () async {
                                       await _selectFiles(
                                           isAddNew &&
@@ -194,8 +196,16 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                                     },
                                   ),
                                   PopupMenuItem(
-                                    value: false,
-                                    child: const Text('Select directory'),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        isAddNew
+                                            ? Icons.folder_outlined
+                                            : Icons.folder_open_outlined,
+                                      ),
+                                      title: Text(isAddNew
+                                          ? 'Add from directory'
+                                          : 'More from directory'),
+                                    ),
                                     onTap: () async {
                                       await _selectFiles(
                                           isAddNew &&
@@ -203,6 +213,16 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                                           isFileSelection: false);
                                     },
                                   ),
+                                  if (!isAddNew)
+                                    PopupMenuItem(
+                                      child: const ListTile(
+                                        leading: Icon(Icons.delete_outline),
+                                        title: Text('Clear input files'),
+                                      ),
+                                      onTap: () {
+                                        ref.invalidate(fileInputProvider);
+                                      },
+                                    ),
                                 ];
                               },
                               onSelected: (value) async {}),
