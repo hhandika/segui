@@ -288,8 +288,8 @@ class FileInputServices {
 
   Future<void> addDirectory() async {
     final result = Platform.isAndroid
-        ? await _pickDirectory()
-        : await _pickDirectoryFilePicker();
+        ? await _pickDirectoryFilePicker()
+        : await _pickDirectory();
 
     if (result != null) {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
