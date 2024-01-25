@@ -167,7 +167,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                           ? IconButton(
                               tooltip: 'Add file',
                               icon: const Icon(Icons.add_rounded),
-                              onPressed: !widget.allowMultiple
+                              onPressed: !widget.allowMultiple && !isAddNew
                                   ? null
                                   : () async {
                                       await _selectFiles(
@@ -486,13 +486,13 @@ class FileIOSubtitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<({String size, String lastModified})>(
+    return FutureBuilder<String>(
       future: _metadata,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           // We use interpunction to separate the size and last modified
           return Text(
-            '${snapshot.data!.size} · modified ${snapshot.data!.lastModified}',
+            snapshot.data!,
             style: Theme.of(context).textTheme.bodyMedium,
             overflow: TextOverflow.ellipsis,
           );
@@ -503,7 +503,7 @@ class FileIOSubtitle extends StatelessWidget {
     );
   }
 
-  Future<({String size, String lastModified})> get _metadata async {
-    return FileMetadata(file: file).metadata;
+  Future<String> get _metadata async {
+    return await FileMetadata(file: file).metadataText;
   }
 }

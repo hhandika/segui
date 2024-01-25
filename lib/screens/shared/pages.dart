@@ -214,6 +214,7 @@ class InputFileList extends ConsumerWidget {
           padding: const EdgeInsets.all(8),
           itemBuilder: (context, index) {
             final data = files[index];
+            final association = FileAssociation(file: data.file);
             return ListTile(
               minVerticalPadding: 2,
               leading: FileIcon(file: data.file),
@@ -226,6 +227,16 @@ class InputFileList extends ConsumerWidget {
                   ref.read(fileInputProvider.notifier).removeFile(data);
                 },
               ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FileViewer(
+                      file: data.file,
+                      type: association.commonFileTYpe,
+                    ),
+                  ),
+                );
+              },
             );
           },
         ));

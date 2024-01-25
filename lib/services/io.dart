@@ -190,6 +190,7 @@ const List<String> supportedTextExtensions = [
   'conf',
   'toml',
   'yaml',
+  'nex',
 ];
 
 /// Common file type to match
@@ -545,13 +546,18 @@ class FileMetadata {
 
   Future<({String size, String lastModified})> get metadata async {
     File handler = File(file.path);
-    String size = await getSize(handler);
-    String lastModified = await getLastModified(handler);
+    String size = await _getSize(handler);
+    String lastModified = await _getLastModified(handler);
     return (size: size, lastModified: lastModified);
   }
 
+  Future<String> get metadataText async {
+    final data = await metadata;
+    return '${data.size} · modified ${data.lastModified}';
+  }
+
 // Count file size. Returns in kb, mb, or gb.
-  Future<String> getSize(File handler) async {
+  Future<String> _getSize(File handler) async {
     int bytes = await handler.length();
     double kb = bytes / 1024;
     double mb = kb / 1024;
@@ -565,7 +571,7 @@ class FileMetadata {
     }
   }
 
-  Future<String> getLastModified(File handler) async {
+  Future<String> _getLastModified(File handler) async {
     DateTime lastModified = await handler.lastModified();
     DateTime now = DateTime.now();
     // Format to show days to seconds ago.
