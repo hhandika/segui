@@ -7,6 +7,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/services/utils.dart';
 
 class SelectDirField extends ConsumerWidget {
   const SelectDirField({
@@ -175,57 +176,19 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                                           isFileSelection: true);
                                     },
                             )
-                          : PopupMenuButton(
-                              elevation: 2,
-                              color: Theme.of(context).colorScheme.background,
-                              tooltip: 'Select input method',
-                              itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                    child: ListTile(
-                                      leading: const Icon(Icons.add_rounded),
-                                      title: Text(isAddNew
-                                          ? 'Select files'
-                                          : 'Add more files'),
-                                    ),
-                                    onTap: () async {
-                                      await _selectFiles(
-                                          isAddNew &&
-                                              !widget.hasSecondaryPicker,
-                                          isFileSelection: true);
-                                    },
-                                  ),
-                                  PopupMenuItem(
-                                    child: ListTile(
-                                      leading: Icon(
-                                        isAddNew
-                                            ? Icons.folder_outlined
-                                            : Icons.folder_open_outlined,
-                                      ),
-                                      title: Text(isAddNew
-                                          ? 'Add from directory'
-                                          : 'More from directory'),
-                                    ),
-                                    onTap: () async {
-                                      await _selectFiles(
-                                          isAddNew &&
-                                              !widget.hasSecondaryPicker,
-                                          isFileSelection: false);
-                                    },
-                                  ),
-                                  if (!isAddNew)
-                                    PopupMenuItem(
-                                      child: const ListTile(
-                                        leading: Icon(Icons.delete_outline),
-                                        title: Text('Clear input files'),
-                                      ),
-                                      onTap: () {
-                                        ref.invalidate(fileInputProvider);
-                                      },
-                                    ),
-                                ];
+                          : InputSelector(
+                              isAddNew: isAddNew,
+                              onFileSelected: () async {
+                                await _selectFiles(
+                                    isAddNew && !widget.hasSecondaryPicker,
+                                    isFileSelection: true);
                               },
-                              onSelected: (value) async {}),
+                              onDirectorySelected: () async {
+                                await _selectFiles(
+                                    isAddNew && !widget.hasSecondaryPicker,
+                                    isFileSelection: false);
+                              },
+                            ),
                 ]);
           },
           loading: () => const SizedBox.shrink(),
@@ -267,6 +230,157 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     setState(() {
       _isLoading = false;
     });
+  }
+}
+
+class InputSelector extends StatefulWidget {
+  const InputSelector({
+    super.key,
+    required this.isAddNew,
+    required this.onFileSelected,
+    required this.onDirectorySelected,
+  });
+
+  final bool isAddNew;
+  final VoidCallback? onFileSelected;
+  final VoidCallback? onDirectorySelected;
+
+  @override
+  State<InputSelector> createState() => _InputSelectorState();
+}
+
+class _InputSelectorState extends State<InputSelector> {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return constraints.maxWidth < mediumScreenSize
+            ? IconButton(
+                tooltip: 'Select input method',
+                icon: const Icon(Icons.more_vert_rounded),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return ListView(
+                        shrinkWrap: true,
+                        children: [
+                          SelectFileButton(
+                            isAddNew: widget.isAddNew,
+                            onFileSelected: widget.onFileSelected,
+                          ),
+                          SelectDirectoryButton(
+                            isAddNew: widget.isAddNew,
+                            onDirectorySelected: widget.onDirectorySelected,
+                          ),
+                          if (!widget.isAddNew) const ClearAllButton(),
+                        ],
+                      );
+                    },
+                  );
+                },
+              )
+            : InputActionMenu(
+                isAddNew: widget.isAddNew,
+                onFileSelected: widget.onFileSelected,
+                onDirectorySelected: widget.onDirectorySelected,
+              );
+      },
+    );
+  }
+}
+
+class InputActionMenu extends ConsumerWidget {
+  const InputActionMenu({
+    super.key,
+    required this.isAddNew,
+    required this.onFileSelected,
+    required this.onDirectorySelected,
+  });
+
+  final bool isAddNew;
+  final VoidCallback? onFileSelected;
+  final VoidCallback? onDirectorySelected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PopupMenuButton(
+        elevation: 2,
+        color: Theme.of(context).colorScheme.background,
+        tooltip: 'Select input method',
+        itemBuilder: (context) {
+          return [
+            PopupMenuItem(
+                child: SelectFileButton(
+              isAddNew: isAddNew,
+              onFileSelected: onFileSelected,
+            )),
+            PopupMenuItem(
+                child: SelectDirectoryButton(
+              isAddNew: isAddNew,
+              onDirectorySelected: onDirectorySelected,
+            )),
+            if (!isAddNew)
+              const PopupMenuItem(
+                child: ClearAllButton(),
+              ),
+          ];
+        });
+  }
+}
+
+class SelectFileButton extends StatelessWidget {
+  const SelectFileButton({
+    super.key,
+    required this.isAddNew,
+    required this.onFileSelected,
+  });
+
+  final bool isAddNew;
+  final VoidCallback? onFileSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.add_rounded),
+      title: Text(isAddNew ? 'Select files' : 'Add more files'),
+      onTap: onFileSelected,
+    );
+  }
+}
+
+class SelectDirectoryButton extends StatelessWidget {
+  const SelectDirectoryButton({
+    super.key,
+    required this.isAddNew,
+    required this.onDirectorySelected,
+  });
+
+  final bool isAddNew;
+  final VoidCallback? onDirectorySelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.folder_outlined),
+      title: Text(isAddNew ? 'Add from directory' : 'More from directory'),
+      onTap: onDirectorySelected,
+    );
+  }
+}
+
+class ClearAllButton extends ConsumerWidget {
+  const ClearAllButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      leading: const Icon(Icons.clear_rounded),
+      title: const Text('Clear all'),
+      onTap: () {
+        ref.invalidate(fileInputProvider);
+      },
+    );
   }
 }
 

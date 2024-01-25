@@ -62,7 +62,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
             allowMultiple: true,
             ctr: _ctr,
             hasSecondaryPicker: false,
-            allowDirectorySelection: false,
+            allowDirectorySelection: true,
             task: task,
           ),
           SharedDropdownField(

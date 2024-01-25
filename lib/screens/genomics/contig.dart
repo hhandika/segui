@@ -65,7 +65,7 @@ class ContigPageState extends ConsumerState<ContigPage>
               allowMultiple: true,
               ctr: _ctr,
               hasSecondaryPicker: false,
-              allowDirectorySelection: false,
+              allowDirectorySelection: true,
               task: task,
             ),
             SharedDropdownField(
