@@ -271,7 +271,7 @@ class _InputSelectorState extends State<InputSelector> {
                             isAddNew: widget.isAddNew,
                             onFileSelected: widget.onFileSelected,
                           ),
-                          if (!Platform.isIOS)
+                          if (!Platform.isIOS || !Platform.isAndroid)
                             SelectDirectoryButton(
                               isAddNew: widget.isAddNew,
                               onDirectorySelected: widget.onDirectorySelected,
@@ -316,7 +316,7 @@ class InputActionMenu extends ConsumerWidget {
               isAddNew: isAddNew,
               onFileSelected: onFileSelected,
             )),
-            if (!Platform.isIOS)
+            if (!Platform.isIOS || !Platform.isAndroid)
               PopupMenuItem(
                   child: SelectDirectoryButton(
                 isAddNew: isAddNew,
