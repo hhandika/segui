@@ -455,8 +455,9 @@ class DirectoryCrawler {
     dir.listSync(recursive: false).whereType<File>().forEach((e) {
       String extension = _getFileExtension(e);
       if (extension.isNotEmpty && type.extensions!.contains(extension)) {
+        final filePath = e.path;
         inputFiles.add(SegulInputFile(
-          file: XFile(e.path),
+          file: XFile(filePath),
           type: matchTypeByXTypeGroup(type),
         ));
       }
