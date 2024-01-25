@@ -54,8 +54,6 @@ enum SegulType {
   plainText,
 }
 
-/// A group of file extensions and uniform type identifiers.
-/// Used to filter files by type.
 class SegulInputFile {
   SegulInputFile({
     required this.file,
@@ -181,9 +179,17 @@ const List<String> tabularExtensions = [
   'csv',
 ];
 
+/// Supported text file extensions.
+/// Used to determine if a file is
+/// a text file.
+/// Allow segui to open text files
 const List<String> supportedTextExtensions = [
   'txt',
   'text',
+  'log',
+  'conf',
+  'toml',
+  'yaml',
 ];
 
 /// Common file type to match
