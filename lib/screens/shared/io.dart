@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'package:file_selector/file_selector.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
-import 'package:file_picker/file_picker.dart';
 
 class SelectDirField extends ConsumerWidget {
   const SelectDirField({
@@ -20,55 +18,55 @@ class SelectDirField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(fileOutputProvider).when(
-          data: (data) {
-            return Row(
-              children: [
-                Expanded(
-                  child: data.directory == null
-                      ? Text(
-                          '$label: ',
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      : PathTextWithOverflow(
-                          path: data.directory!.path,
-                        ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  tooltip: data.directory == null
-                      ? 'Select directory'
-                      : 'Clear directory',
-                  icon: data.directory == null
-                      ? const Icon(Icons.folder)
-                      : const Icon(Icons.clear),
-                  onPressed: data.directory == null
-                      ? () async {
-                          final dir = await _selectDir();
-                          if (dir != null) {
-                            ref.read(fileOutputProvider.notifier).add(dir);
-                          }
-                        }
-                      : () {
-                          ref.invalidate(fileOutputProvider);
-                        },
-                ),
-              ],
-            );
-          },
-          loading: () => const SizedBox.shrink(),
-          error: (err, stack) => Text(err.toString()),
-        );
-  }
-
-  Future<Directory?> _selectDir() async {
-    final result = await FilePicker.platform.getDirectoryPath();
-    if (result != null) {
-      if (kDebugMode) {
-        print('Selected directory: $result');
-      }
-      return Directory(result);
-    }
-    return null;
+        data: (data) {
+          return Row(
+            children: [
+              Expanded(
+                child: data.directory == null
+                    ? Text(
+                        '$label: ',
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : PathTextWithOverflow(
+                        path: data.directory!.path,
+                      ),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                tooltip: data.directory == null
+                    ? 'Select directory'
+                    : 'Clear directory',
+                icon: data.directory == null
+                    ? const Icon(Icons.folder)
+                    : const Icon(Icons.clear),
+                onPressed: data.directory == null
+                    ? () async {
+                        await DirectorySelectionServices(ref).addOutputDir();
+                      }
+                    : () {
+                        ref.invalidate(fileOutputProvider);
+                      },
+              ),
+            ],
+          );
+        },
+        loading: () => const CircularProgressIndicator(),
+        error: (err, stack) {
+          return Column(
+            children: [
+              Text(
+                err.toString(),
+              ),
+              IconButton(
+                tooltip: 'Retry',
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  ref.invalidate(fileOutputProvider);
+                },
+              ),
+            ],
+          );
+        });
   }
 }
 
@@ -91,10 +89,11 @@ class InputSelectorForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SharedFilePicker(
-      label: 'Select input files',
+      label: 'Add input files',
       allowMultiple: allowMultiple,
       xTypeGroup: xTypeGroup,
       hasSecondaryPicker: hasSecondaryPicker,
+      allowDirectorySelection: ctr.allDirectorySelection,
       task: task,
     );
   }
@@ -108,6 +107,7 @@ class SharedFilePicker extends ConsumerStatefulWidget {
     required this.xTypeGroup,
     required this.hasSecondaryPicker,
     required this.task,
+    required this.allowDirectorySelection,
   });
 
   final String label;
@@ -115,12 +115,13 @@ class SharedFilePicker extends ConsumerStatefulWidget {
   final XTypeGroup xTypeGroup;
   final bool hasSecondaryPicker;
   final SupportedTask task;
+  final bool allowDirectorySelection;
 
   @override
-  SharedMultiFilePickerState createState() => SharedMultiFilePickerState();
+  SharedFilePickerState createState() => SharedFilePickerState();
 }
 
-class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
+class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
   bool _isLoading = false;
 
   @override
@@ -162,34 +163,49 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
                           width: 8,
                           child: CircularProgressIndicator(),
                         )
-                      : IconButton(
-                          tooltip: isAddNew ? 'Select files' : 'Add more files',
-                          icon: isAddNew
-                              ? const Icon(Icons.folder)
-                              : const Icon(Icons.add_rounded),
-                          onPressed: !isAddNew && !widget.allowMultiple
-                              ? null
-                              : () async {
-                                  setState(() {
-                                    _isLoading = true;
-                                  });
-                                  try {
-                                    await _selectFiles(
-                                        isAddNew && !widget.hasSecondaryPicker);
-                                  } catch (e) {
-                                    if (mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        showSharedSnackBar(
-                                            context, e.toString()),
-                                      );
-                                    }
-                                  }
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
-                                },
-                        ),
+                      : !widget.allowDirectorySelection
+                          ? IconButton(
+                              tooltip:
+                                  isAddNew ? 'Select files' : 'Add more files',
+                              icon: isAddNew
+                                  ? const Icon(Icons.folder)
+                                  : const Icon(Icons.add_rounded),
+                              onPressed: !isAddNew && !widget.allowMultiple
+                                  ? null
+                                  : () async {
+                                      await _selectFiles(
+                                          isAddNew &&
+                                              !widget.hasSecondaryPicker,
+                                          isFileSelection: true);
+                                    },
+                            )
+                          : PopupMenuButton(
+                              color: Theme.of(context).colorScheme.background,
+                              itemBuilder: (context) {
+                                return [
+                                  PopupMenuItem(
+                                    value: true,
+                                    child: const Text('Select files'),
+                                    onTap: () async {
+                                      await _selectFiles(
+                                          isAddNew &&
+                                              !widget.hasSecondaryPicker,
+                                          isFileSelection: true);
+                                    },
+                                  ),
+                                  PopupMenuItem(
+                                    value: false,
+                                    child: const Text('Select directory'),
+                                    onTap: () async {
+                                      await _selectFiles(
+                                          isAddNew &&
+                                              !widget.hasSecondaryPicker,
+                                          isFileSelection: false);
+                                    },
+                                  ),
+                                ];
+                              },
+                              onSelected: (value) async {}),
                 ]);
           },
           loading: () => const SizedBox.shrink(),
@@ -197,17 +213,40 @@ class SharedMultiFilePickerState extends ConsumerState<SharedFilePicker> {
         );
   }
 
-  Future<void> _selectFiles(bool isAddNew) async {
-    List<SegulInputFile> result = await FileSelectionServices(ref)
-        .selectFiles(widget.xTypeGroup, widget.allowMultiple);
-    final notifier = ref.read(fileInputProvider.notifier);
-    if (result.isNotEmpty) {
-      isAddNew ? notifier.addFiles(result) : notifier.addMoreFiles(result);
-    }
+  Future<void> _selectFiles(bool isAddNew,
+      {required bool isFileSelection}) async {
+    final selection = FileInputServices(
+      ref,
+      allowedExtension: widget.xTypeGroup,
+      isAddNew: isAddNew,
+      allowMultiple: widget.allowMultiple,
+    );
+    setState(() {
+      _isLoading = true;
+    });
 
-    if (Platform.isAndroid || Platform.isIOS) {
-      ref.read(fileOutputProvider.notifier).addMobile(null, widget.task);
+    try {
+      if (isFileSelection) {
+        await selection.selectFiles();
+      } else {
+        await selection.addDirectory();
+      }
+
+      // On mobile, user cannot select the output directory
+      // we add it automatically when they select the input files
+      if (Platform.isAndroid || Platform.isIOS) {
+        ref.read(fileOutputProvider.notifier).addMobile(null, widget.task);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          showSharedSnackBar(context, e.toString()),
+        );
+      }
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
 

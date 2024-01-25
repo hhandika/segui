@@ -94,6 +94,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
               hasSecondaryPicker: true,
               xTypeGroup: partitionTypeGroup,
               task: task,
+              allowDirectorySelection: true,
             ),
           )
         ]),

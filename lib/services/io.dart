@@ -249,31 +249,65 @@ String getFileExtension(XFile file) {
   return p.extension(file.path).substring(1);
 }
 
-class FileSelectionServices {
-  const FileSelectionServices(this.ref);
+class FileInputServices {
+  const FileInputServices(
+    this.ref, {
+    required this.allowedExtension,
+    required this.allowMultiple,
+    required this.isAddNew,
+  });
 
   final WidgetRef ref;
+  final XTypeGroup allowedExtension;
+  final bool allowMultiple;
+  final bool isAddNew;
 
-  Future<List<SegulInputFile>> selectFiles(
-    XTypeGroup allowedExtension,
-    bool allowMultiple,
-  ) async {
+  Future<void> selectFiles() async {
     if (allowMultiple) {
       if (Platform.isAndroid) {
-        return _selectMultiFileAndroid(allowedExtension);
+        var results = _selectMultiFileAndroid(allowedExtension);
+        _updateProvider(await results);
       } else {
-        return _selectMultiFiles(allowedExtension);
+        var results = _selectMultiFiles(allowedExtension);
+        _updateProvider(await results);
       }
     } else {
       if (Platform.isAndroid) {
         final results = await _selectSingleFileAndroid(allowedExtension);
-        return results == null ? [] : [results];
+        if (results != null) {
+          _updateProvider([results]);
+        }
       } else {
-        return _selectSingleFile(allowedExtension).then((value) {
-          return value == null ? [] : [value];
-        });
+        final results = await _selectSingleFile(allowedExtension);
+        if (results != null) {
+          _updateProvider([results]);
+        }
       }
     }
+  }
+
+  Future<void> addDirectory() async {
+    final result = await _getDirectory();
+
+    if (result != null) {
+      final files = DirectoryCrawler(result).crawlByType(allowedExtension);
+      _updateProvider(files);
+    }
+  }
+
+  void _updateProvider(List<SegulInputFile> result) {
+    final notifier = ref.read(fileInputProvider.notifier);
+    if (result.isNotEmpty) {
+      isAddNew ? notifier.addFiles(result) : notifier.addMoreFiles(result);
+    }
+  }
+
+  Future<Directory?> _getDirectory() async {
+    final result = await getDirectoryPath();
+    if (result != null) {
+      return Directory(result);
+    }
+    return null;
   }
 
   Future<List<SegulInputFile>> _selectMultiFiles(
@@ -329,6 +363,27 @@ class FileSelectionServices {
             file: XFile(result.files.single.path!),
             type: matchTypeByXTypeGroup(allowedExtension),
           );
+  }
+}
+
+class DirectorySelectionServices {
+  const DirectorySelectionServices(this.ref);
+
+  final WidgetRef ref;
+
+  Future<void> addOutputDir() async {
+    final result = await _getDirectory();
+    if (result != null) {
+      ref.read(fileOutputProvider.notifier).add(result);
+    }
+  }
+
+  Future<Directory?> _getDirectory() async {
+    final result = await getDirectoryPath();
+    if (result != null) {
+      return Directory(result);
+    }
+    return null;
   }
 }
 
@@ -395,6 +450,20 @@ class DirectoryCrawler {
     return _findAllFilesInDir(dir);
   }
 
+  List<SegulInputFile> crawlByType(XTypeGroup type) {
+    List<SegulInputFile> inputFiles = [];
+    dir.listSync(recursive: false).whereType<File>().forEach((e) {
+      String extension = _getFileExtension(e);
+      if (extension.isNotEmpty && type.extensions!.contains(extension)) {
+        inputFiles.add(SegulInputFile(
+          file: XFile(e.path),
+          type: matchTypeByXTypeGroup(type),
+        ));
+      }
+    });
+    return inputFiles;
+  }
+
   List<XFile> findNewFiles(List<XFile> oldFiles, bool isRecursive) {
     List<XFile> newFiles = [];
     dir.listSync(recursive: isRecursive).whereType<File>().forEach((e) {
@@ -413,6 +482,10 @@ class DirectoryCrawler {
         .map((e) => XFile(e.path))
         .toList();
     return files;
+  }
+
+  String _getFileExtension(File file) {
+    return p.extension(file.path).substring(1);
   }
 }
 

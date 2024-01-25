@@ -104,6 +104,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
                 allowMultiple: false,
                 task: task,
                 hasSecondaryPicker: true,
+                allowDirectorySelection: true,
               ),
             if (_renamingOptionController != RenamingOptions.renameFile)
               SharedTextField(

@@ -80,6 +80,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
             onChanged: (ExtractionOptions? newValue) {
               setState(() {
                 _extractionOptionsController = newValue!;
+                _ctr.isSuccess = false;
               });
             },
           ),
@@ -90,6 +91,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                   allowMultiple: false,
                   task: task,
                   hasSecondaryPicker: true,
+                  allowDirectorySelection: true,
                 )
               : SharedTextField(
                   controller: _idRegexController,

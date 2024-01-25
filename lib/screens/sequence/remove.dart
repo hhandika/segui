@@ -25,7 +25,7 @@ class SequenceRemovalPage extends ConsumerStatefulWidget {
 class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
-  RemovalOptions? _removalMethodController;
+  RemovalOptions _removalMethodController = RemovalOptions.regex;
   final TextEditingController _idRegexController = TextEditingController();
 
   @override
@@ -87,9 +87,11 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
                       ))
                   .toList(),
               onChanged: (RemovalOptions? value) {
-                setState(() {
-                  _removalMethodController = value;
-                });
+                if (value != null) {
+                  setState(() {
+                    _removalMethodController = value;
+                  });
+                }
               },
             ),
             SharedTextField(
@@ -171,8 +173,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
   }
 
   bool get _isValid {
-    bool isRemovalMethodValid = _removalMethodController != null &&
-        _ctr.outputFormatController != null &&
+    bool isRemovalMethodValid = _ctr.outputFormatController != null &&
         _idRegexController.text.isNotEmpty;
 
     return _ctr.isValid && isRemovalMethodValid;
@@ -201,7 +202,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
         outputFmt: _ctr.outputFormatController!,
-        params: _removalMethodController!,
+        params: _removalMethodController,
         paramsText: _idRegexController.text,
       ).run();
       _setSuccess(outputDir);

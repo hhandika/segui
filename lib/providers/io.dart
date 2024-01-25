@@ -79,8 +79,7 @@ class FileOutput extends _$FileOutput {
   ) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      Directory dir =
-          await getOutputDir(dirName, SupportedTask.alignmentConcatenation);
+      Directory dir = await getOutputDir(dirName, task);
       return SegulOutputFile.fromDirectory(dir);
     });
   }

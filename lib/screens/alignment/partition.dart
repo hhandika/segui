@@ -69,6 +69,7 @@ class PartitionConversionPageState
             hasSecondaryPicker: false,
             xTypeGroup: partitionTypeGroup,
             task: task,
+            allowDirectorySelection: true,
           ),
           SharedDropdownField(
             value: _partitionFormatController,
