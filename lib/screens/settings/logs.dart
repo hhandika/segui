@@ -65,7 +65,8 @@ class _LogScreenState extends State<LogScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LogViewer(log: log),
+                                  builder: (context) =>
+                                      PlainTextViewer(file: log),
                                 ),
                               );
                             },
@@ -95,23 +96,5 @@ class _LogScreenState extends State<LogScreen> {
     results
         .sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
     return results.map((e) => XFile(e.path)).toList();
-  }
-}
-
-class LogViewer extends StatelessWidget {
-  const LogViewer({super.key, required this.log});
-
-  final XFile log;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Log Viewer'),
-        backgroundColor: getSEGULBackgroundColor(context),
-      ),
-      backgroundColor: getSEGULBackgroundColor(context),
-      body: PlainTextViewer(file: log),
-    );
   }
 }
