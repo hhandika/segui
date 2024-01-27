@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/settings.dart';
+import 'package:segui/screens/shared/common.dart';
+import 'package:segui/styles/decoration.dart';
 
 class ThemeSettings extends ConsumerStatefulWidget {
   const ThemeSettings({super.key});
@@ -15,41 +17,87 @@ class ThemeSettingsState extends ConsumerState<ThemeSettings> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Theme'),
+        backgroundColor: getSEGULBackgroundColor(context),
       ),
-      body: Center(
-          child: ref.watch(themeSettingProvider).when(
-                data: (theme) => ListView(
-                  children: [
-                    RadioListTile(
-                      value: ThemeMode.light,
-                      title: const Text('Light'),
-                      groupValue: theme,
-                      onChanged: (value) => ref
-                          .read(themeSettingProvider.notifier)
-                          .setTheme(value!),
+      backgroundColor: getSEGULBackgroundColor(context),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 800),
+              decoration: getContainerDecoration(context),
+              child: ref.watch(themeSettingProvider).when(
+                    data: (theme) => ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const CommonDivider(),
+                      itemCount: 3,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) => ThemeSettingTile(
+                        title: index == 0
+                            ? 'System default'
+                            : index == 1
+                                ? 'Light'
+                                : 'Dark',
+                        theme: index == 0
+                            ? ThemeMode.system
+                            : index == 1
+                                ? ThemeMode.light
+                                : ThemeMode.dark,
+                        currentTheme: theme,
+                        icon: index == 0
+                            ? Icons.brightness_auto_outlined
+                            : index == 1
+                                ? Icons.brightness_1_outlined
+                                : Icons.brightness_3_outlined,
+                      ),
                     ),
-                    RadioListTile(
-                      value: ThemeMode.dark,
-                      title: const Text('Dark'),
-                      groupValue: theme,
-                      onChanged: (value) => ref
-                          .read(themeSettingProvider.notifier)
-                          .setTheme(value!),
-                    ),
-                    RadioListTile(
-                      value: ThemeMode.system,
-                      title: const Text('System'),
-                      groupValue: theme,
-                      onChanged: (value) => ref
-                          .read(themeSettingProvider.notifier)
-                          .setTheme(value!),
-                    ),
-                  ],
-                ),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stackTrace) =>
-                    Center(child: Text(error.toString())),
-              )),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (error, stackTrace) =>
+                        Center(child: Text(error.toString())),
+                  ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ThemeSettingTile extends ConsumerWidget {
+  const ThemeSettingTile({
+    super.key,
+    required this.title,
+    required this.theme,
+    required this.currentTheme,
+    required this.icon,
+  });
+
+  final String title;
+  final ThemeMode theme;
+  final ThemeMode currentTheme;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      trailing: theme == currentTheme
+          ? const Icon(
+              Icons.check,
+            )
+          : null,
+      onTap: () {
+        ref.read(themeSettingProvider.notifier).setTheme(theme);
+      },
     );
   }
 }
