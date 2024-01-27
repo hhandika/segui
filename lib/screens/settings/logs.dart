@@ -34,10 +34,7 @@ class _LogScreenState extends State<LogScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Container(
                       constraints: const BoxConstraints(maxWidth: 500),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Theme.of(context).colorScheme.surface,
-                      ),
+                      decoration: getContainerDecoration(context),
                       child: ListView.separated(
                         separatorBuilder: (context, index) =>
                             const CommonDivider(),

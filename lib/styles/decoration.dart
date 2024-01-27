@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 BoxDecoration getContainerDecoration(BuildContext context) {
   return BoxDecoration(
+    border: Border.all(
+      color: Theme.of(context).colorScheme.primary.withAlpha(40),
+      width: 2,
+    ),
     borderRadius: BorderRadius.circular(16),
     color: Theme.of(context).colorScheme.surface,
   );

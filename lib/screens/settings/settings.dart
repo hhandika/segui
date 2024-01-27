@@ -51,12 +51,10 @@ class SettingPages extends StatelessWidget {
           child: Center(
             child: Container(
               constraints: const BoxConstraints(minWidth: 200, maxWidth: 800),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Theme.of(context).colorScheme.surface,
-              ),
-              child: ListView(
-                shrinkWrap: true,
+              decoration: getContainerDecoration(context),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SettingTile(
                     title: 'Logs',

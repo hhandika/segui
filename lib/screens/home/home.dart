@@ -9,6 +9,7 @@ import 'package:segui/screens/home/compact_screen.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/utils.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const String segulDocUrl = 'https://www.segul.app/';
@@ -58,10 +59,7 @@ class _HomePageState extends State<HomePage> {
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             height: isExpanded ? screenHeight - 80 : null,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Theme.of(context).colorScheme.surface,
-            ),
+            decoration: getContainerDecoration(context),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
