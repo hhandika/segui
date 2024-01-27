@@ -124,7 +124,9 @@ class _AppAboutState extends State<AppAbout> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('About'),
+          backgroundColor: getSEGULBackgroundColor(context),
         ),
+        backgroundColor: getSEGULBackgroundColor(context),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
