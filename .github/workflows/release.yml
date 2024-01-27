@@ -1,4 +1,4 @@
-name: SEGUI-Releases
+name: release
 
 on:
   push:
@@ -6,9 +6,11 @@ on:
       - release
 
 jobs:
-  windows:
-    name: Windows x86_64
-    runs-on: windows-latest
+  release:
+    strategy:
+      matrix:
+        os: ["windows-latest", "ubuntu-latest"]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
@@ -32,27 +34,39 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Build release
+      - name: Build
         uses: subosito/flutter-action@v2
+      - if: matrix.os == 'ubuntu-latest'
+        run: |
+          flutter build linux --release
       - run: |
           flutter build windows --release
           flutter build apk --release
 
-      - name: Compress Windows release
-        run: powershell Compress-Archive -Path build\windows\runner\Release -DestinationPath segul.zip
+      - name: Compress
+      - if: matrix.os == 'ubuntu-latest'
+        run: tar -czvf segui.tar.gz build/linux/x64/release/bundle
+      - if: matrix.os == 'windows-latest'
+        run: powershell Compress-Archive -Path build\windows\runner\Release -DestinationPath segui.zip
 
-      - name: Upload Windows release
+      - name: Upload 
         uses: svenstaro/upload-release-action@v2
+      - if: matrix.os == 'ubuntu-latest'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: segul.zip
+          file: segui.tar.gz
+          asset_name: segui-Linux-x86_64.tar.gz
+          tag: ${{ github.ref_name }}
+      - if: matrix.os == 'windows-latest'
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: segui.zip
           asset_name: segui-Windows-x86_64.zip
-          tag: ${{ github.ref }}
-
-      - name: Upload Android release
+          tag: ${{ github.ref_name }}
+      - if: matrix.os == 'windows-latest'
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build\app\outputs\flutter-apk\app-release.apk
           asset_name: segui-Android.apk
-          tag: ${{ github.ref }}
+          tag: ${{ github.ref_name }}

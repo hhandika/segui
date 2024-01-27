@@ -1,4 +1,4 @@
-name: SEGUI-Tests
+name: test
 
 on: push
 
