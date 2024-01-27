@@ -13,7 +13,7 @@ class CommonDivider extends StatelessWidget {
     return Divider(
       thickness: 2,
       height: 2,
-      color: getSEGULBackgroundColor(context),
+      color: getBorderColor(context),
     );
   }
 }
@@ -26,7 +26,7 @@ class TopDivider extends StatelessWidget {
     return Divider(
       thickness: 4,
       height: 4,
-      color: getSEGULBackgroundColor(context),
+      color: getBorderColor(context),
     );
   }
 }

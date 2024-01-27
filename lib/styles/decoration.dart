@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 BoxDecoration getContainerDecoration(BuildContext context) {
   return BoxDecoration(
     border: Border.all(
-      color: Theme.of(context).colorScheme.primary.withAlpha(40),
+      color: getBorderColor(context),
       width: 2,
     ),
     borderRadius: BorderRadius.circular(16),
@@ -14,4 +14,8 @@ BoxDecoration getContainerDecoration(BuildContext context) {
 Color? getSEGULBackgroundColor(BuildContext context) {
   return Color.lerp(Theme.of(context).colorScheme.primary,
       Theme.of(context).colorScheme.surface, 0.9);
+}
+
+Color getBorderColor(BuildContext context) {
+  return Theme.of(context).colorScheme.primary.withAlpha(40);
 }
