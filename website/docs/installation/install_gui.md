@@ -12,7 +12,7 @@ SEGUI works on Android phones and tablets.
 
 Requirements
 
-- Android 5.1 Nougat+ (API 25+)
+- Android 8 Oreo+ (SDK 26)
 
 Download the apk file from [here](https://github.com/hhandika/segui/releases). Then, install the app on your Android device. You may need to allow installation from unknown sources. Depending on your devices, usually you can do this by going to Settings > Apps & notifications > Advanced > Special app access > Install unknown apps. Then, select the browser you use to download the apk file.
 
