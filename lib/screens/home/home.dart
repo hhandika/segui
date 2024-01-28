@@ -51,6 +51,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isPhone = screenWidth < mediumScreenSize;
     final bool isExpanded = screenHeight >= expandedScreenSize;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage> {
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             height: isExpanded ? screenHeight - 80 : null,
-            decoration: getContainerDecoration(context),
+            decoration: isPhone ? null : getContainerDecoration(context),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
