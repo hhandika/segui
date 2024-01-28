@@ -12,7 +12,7 @@ Requirements
 
 - Android 5.1 Nougat+ (API 25+)
 
-Download the apk file from [here](https://github.com/hhandika/segui/releases).
+Download the apk file from [here](https://github.com/hhandika/segui/releases). Then, install the app on your Android device. You may need to allow installation from unknown sources. Depending on your devices, usually you can do this by going to Settings > Apps & notifications > Advanced > Special app access > Install unknown apps. Then, select the browser you use to download the apk file.
 
 ## Apple Devices
 
@@ -30,12 +30,19 @@ Due to Apple's stringent security policy, testing SEGUI requires the installatio
 
 Requirements
 
-- Ubuntu 20.04+ (64-bit)
-- Debian 10+ (64-bit)
+- Ubuntu 20.04+
 - openSUSE Tumbleweed (tested)
-- May work on any Linux distribution with 64-bit architecture
+- Debian 10+
 
-Download the latest release from [here](https://github.com/hhandika/segui/releases).
+The app may work on any Linux distribution with 64-bit architecture. If you are using other Linux distributions, please report any bugs you encounter.
+
+Download the latest release from [here](https://github.com/hhandika/segui/releases). Extract the `segui-Linux-x86_64.tar.gz` file
+
+```bash
+tar -xvzf segui-Linux-x86_64.tar.gz
+```
+
+Then, run the `segui` file.
 
 ## Windows
 
@@ -43,4 +50,4 @@ Requirements
 
 - Windows 10+ (64-bit)
 
-Download the latest release from [here](https://github.com/hhandika/segui/releases).
+Download the latest release from [here](https://github.com/hhandika/segui/releases). Extract the `segui-Windows-x86_64.zip` file to your desired location. Then, run the `segui.exe` file. You can also create a shortcut to the file for easier access.
