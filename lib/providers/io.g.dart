@@ -21,7 +21,7 @@ final fileInputProvider =
 );
 
 typedef _$FileInput = AsyncNotifier<List<SegulInputFile>>;
-String _$fileOutputHash() => r'77190a6f427cfb82a133400c0df85de3c38625cf';
+String _$fileOutputHash() => r'd6af37f5092e26a812c926ce9f2514fe5967ea6d';
 
 /// The output directory.
 /// This is use to store the output files.
