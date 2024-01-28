@@ -8,6 +8,8 @@ The GUI version, SEGUI, is currently in beta. Everyone is welcome to try the app
 
 ## Android
 
+SEGUI works on Android phones and tablets.
+
 Requirements
 
 - Android 5.1 Nougat+ (API 25+)
