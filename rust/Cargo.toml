@@ -8,7 +8,7 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 chrono = "0.4.31"
-flutter_rust_bridge = "=2.0.0-dev.21"
+flutter_rust_bridge = "=2.0.0-dev.22"
 log = "0.*"
 log4rs = "1.2.*"
 segul = { git = "https://github.com/hhandika/segul.git", branch = "dev" }
