@@ -1,9 +1,9 @@
-name: release
+name: releases
 
 on:
   push:
     branches:
-      - release
+      - releases
 
 jobs:
   release:
@@ -36,37 +36,50 @@ jobs:
 
       - name: Build
         uses: subosito/flutter-action@v2
-      - if: matrix.os == 'ubuntu-latest'
+      - if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
+          sudo apt-get install clang cmake git ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
           flutter build linux --release
-      - run: |
+      - if: ${{ matrix.os == 'windows-latest' }}
+        run: |
           flutter build windows --release
           flutter build apk --release
 
-      - name: Compress
-      - if: matrix.os == 'ubuntu-latest'
-        run: tar -czvf segui.tar.gz build/linux/x64/release/bundle
-      - if: matrix.os == 'windows-latest'
-        run: powershell Compress-Archive -Path build\windows\runner\Release -DestinationPath segui.zip
+      - name: Compress Linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          echo "Compressing files..."
+          tar -czvf segui.tar.gz build/linux/x64/release/bundle
 
-      - name: Upload 
+      - name: Compress Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          echo "Compressing files..."
+          powershell Compress-Archive -Path build\windows\x64\runner\Release -DestinationPath segui.zip
+
+      - name: Upload linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: svenstaro/upload-release-action@v2
-      - if: matrix.os == 'ubuntu-latest'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: segui.tar.gz
           asset_name: segui-Linux-x86_64.tar.gz
           tag: ${{ github.ref_name }}
-      - if: matrix.os == 'windows-latest'
+
+      - name: Upload windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: segui.zip
           asset_name: segui-Windows-x86_64.zip
           tag: ${{ github.ref_name }}
-      - if: matrix.os == 'windows-latest'
+
+      - name: Upload android
+        if: ${{ matrix.os == 'windows-latest' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build\app\outputs\flutter-apk\app-release.apk
+          file: build/app/outputs/flutter-apk/app-release.apk
           asset_name: segui-Android.apk
           tag: ${{ github.ref_name }}
