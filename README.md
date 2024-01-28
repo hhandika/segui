@@ -1,6 +1,6 @@
 # SEGUI <img src="https://raw.githubusercontent.com/hhandika/segui/main/assets/launcher/iconDesktop.png" alt="segul logo" align="right" width="150"/>
 
-![Segui-Tests](https://github.com/hhandika/segui/workflows/SEGUI-Tests/badge.svg)
+![Segui-Tests](https://github.com/hhandika/segui/workflows/test/badge.svg)
 [![LoC](https://tokei.rs/b1/github/hhandika/segui?category=code)](https://github.com/XAMPPRocky/tokei)
 
 <!-- ![GH-Downloads](https://img.shields.io/github/downloads/hhandika/segui/total?color=blue&label=gh-release-downloads) -->
