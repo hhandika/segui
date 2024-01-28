@@ -35,6 +35,8 @@ Download the apk file from [here](https://github.com/hhandika/segui/releases).
 
 ## Apple Devices
 
+SEGUI works on iPhones, iPads, and Macs.
+
 Requirements
 
 - iOS 12.0+ (recommended iOS 16.0+)
