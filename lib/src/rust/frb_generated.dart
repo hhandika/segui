@@ -1025,7 +1025,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_String(raw[1]),
         );
       case 5:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -1136,7 +1136,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -1204,7 +1204,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_bool(raw[3]),
         );
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -1413,7 +1413,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
       case 5:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -1550,7 +1550,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return SequenceExtractionParams_Regex(var_field0);
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -1622,7 +1622,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return SequenceRenamingParams_ReplaceRegex(
             var_field0, var_field1, var_field2);
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw UnimplementedError('');
     }
