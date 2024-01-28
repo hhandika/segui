@@ -36,7 +36,7 @@ jobs:
 
       - name: Build
         uses: subosito/flutter-action@v2
-      - if: matrix.os == 'ubuntu-latest'
+      - if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           flutter build linux --release
       - run: |
@@ -44,13 +44,13 @@ jobs:
           flutter build apk --release
 
       - name: Compress
-      - if: matrix.os == 'ubuntu-latest'
+      - if: ${{ matrix.os == 'windows-latest' }}
         run: tar -czvf segui.tar.gz build/linux/x64/release/bundle
       - run: powershell Compress-Archive -Path build\windows\runner\Release -DestinationPath segui.zip
 
       - name: Upload 
         uses: svenstaro/upload-release-action@v2
-      - if: matrix.os == 'ubuntu-latest'
+      - if: ${{ matrix.os == 'ubuntu-latest' }}
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: segui.tar.gz
@@ -64,7 +64,7 @@ jobs:
           
       - name: Upload APK
         uses: svenstaro/upload-release-action@v2
-      - if: matrix.os == 'windows-latest'
+      - if: ${{ matrix.os == 'ubuntu-latest' }}
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build\app\outputs\flutter-apk\app-release.apk
