@@ -6,15 +6,15 @@ sidebar_position: 2
 
 ## CLI or GUI
 
-If your answer is yes to any of the following questions, you should use the CLI version of the app. otherwise, either GUI or CLI will serve your need.
+If your answer is yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your need.
 
-1. Are you planning to run the app on a High-Performance Computing (HPC) cluster or Linux system?
+1. Are you planning to run the app on a High-Performance Computing (HPC) cluster?
 2. Do you run SEGUL as part of a pipeline?
 3. Do you you need the utmost efficiency?
 
 ## Installation
 
-Follow the installation instruction for your operating system. The CLI is available for Linux, MacOS, and Windows. The GUI is available for Windows, macOS, iOS, iPadOS, and Android.
+Follow the installation instruction for your operating system. The CLI is available for Linux, MacOS, and Windows. The GUI is available for Linux, macOS, Windows, iOS, iPadOS, and Android.
 
 The fastest installation route for CLI is using the pre-compiled binaries [here](./installation/install_binary). Get the most up to date link for GUI installation [here](./installation/install_gui).
 
