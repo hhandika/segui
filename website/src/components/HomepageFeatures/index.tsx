@@ -14,11 +14,10 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/easyUse.svg").default,
     description: (
       <>
-        SEGUL features an intuitive command line interface for streamlined
-        operation. For those who favor a visual approach, SEGUL also provides a
-        graphical interface (in beta). Additionally, comprehensive documentation
-        is available for both the application and the API, ensuring a smooth
-        user experience.
+        SEGUL offers an intuitive command line interface for efficient
+        operation, along with a user-friendly, interactive graphical interface
+        (currently in beta). Comprehensive documentation for both the
+        application and the API ensures a seamless user experience.
       </>
     ),
   },
@@ -41,8 +40,8 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         SEGUL delivers high-speed performance while maintaining minimal memory
-        usage. It’s engineered to leverage multi-core CPUs for efficient data
-        handling, all without requiring manual intervention from the users.
+        usage. It’s engineered to leverage multi-core CPUs for rapid data
+        processing, all without requiring manual intervention from the users.
       </>
     ),
   },
