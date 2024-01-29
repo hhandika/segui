@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-title: Build from source
+title: Build SEGUL GUI from source
 ---
 
 ## Build SEGUL GUI from source
