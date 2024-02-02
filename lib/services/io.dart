@@ -332,7 +332,7 @@ class FileInputServices {
     final fileList = await openFiles(
       acceptedTypeGroups: [allowedExtension],
     );
-    return compute(_mapFilesToSegulInputFile, fileList);
+    return _mapFilesToSegulInputFile(fileList);
   }
 
   List<SegulInputFile> _mapFilesToSegulInputFile(List<XFile> files) {
@@ -364,7 +364,7 @@ class FileInputServices {
     if (result == null) {
       return [];
     }
-    return compute(_mapFilesToSegulInputFileAndroid, result.files);
+    return _mapFilesToSegulInputFileAndroid(result.files);
   }
 
   List<SegulInputFile> _mapFilesToSegulInputFileAndroid(
