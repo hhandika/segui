@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Genomic Summary
 
-`segul` can calculate summary statistics for raw reads and contiguous sequences.
+Since version 0.19.0, `segul` can calculate summary statistics for raw reads and contiguous sequences.
 
 ## Raw reads
 
@@ -18,6 +18,8 @@ Example
 ```Bash
 segul raw summary -i raw_reads.fq.gz -o raw_reads_summary
 ```
+
+The output file will be saved as `read-summary.csv`.
 
 ## Contiguous sequences
 

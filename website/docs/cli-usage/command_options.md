@@ -14,35 +14,29 @@ The program name is `segul` on Linux, MacOS, and Windows Subsystem for Linux, an
 
 We try to keep `segul` command consistent:
 
-1. Long options always prefix with double dashes (`--`). For example, the `--input` option.
-2. Short options always prefix with a single dash (`-`). For example, the short option of `--input` is `-i`.
-3. Options with equal sign (`=`), such as `--re=`, require the input values to be in a single or double quotation. For example, `--re="^Genus"`.
-4. Some options are available both in long and short versions. The rest of the options are only available in long versions. `segul` command options will never be available only in a short version.
+1. SEGUL commands consist of parent and child subcommands. For example, `segul sequence convert` and `segul align concat`.
+2. Long options always prefix with double dashes (`--`). For example, the `--input` option.
+3. Short options always prefix with a single dash (`-`). For example, the short option of `--input` is `-i`.
+4. Options with equal sign (`=`), such as `--re=`, require the input values to be in a single or double quotation. For example, `--re="^Genus"`.
+5. Some options are available both in long and short versions. The rest of the options are only available in long versions. `segul` command options will never be available only in a short version.
 
 Below is the details about all the subcommmands, available options and flags.
 
 ```Bash
-USAGE:
-    segul <SUBCOMMAND>
+Usage: segul [OPTIONS] <COMMAND>
 
-OPTIONS:
-    -h, --help       Print help information
-    -V, --version    Print version information
+Commands:
+  read       Sequence read analyses
+  contig     Contiguous sequence analyses
+  align      Alignment analyses
+  partition  Alignment partition conversion
+  sequence   Sequence analyses
+  help       Print this message or the help of the given subcommand(s)
 
-SUBCOMMANDS:
-    concat       Concatenate alignments
-    convert      Convert sequence formats
-    extract      Extract sequences from a collection of alignments
-    filter       Filter alignments based on min taxon completeness, alignment length, and
-                     parsimony informative sites
-    help         Print this message or the help of the given subcommand(s)
-    id           Get sample ids from multiple alignments
-    partition    Convert partition formats
-    remove       Remove sequence based on user-defined IDs
-    rename       Batch renaming sequence IDs in alignments
-    split        Split alignments by partitions
-    summary      Compute alignment summary statistics
-    translate    Translate DNA sequences to amino acid sequences
+Options:
+      --log <LOG>  Log file path [default: segul.log]
+  -h, --help       Print help
+  -V, --version    Print version
 ```
 
 ## Help options
