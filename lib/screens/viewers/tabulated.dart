@@ -87,6 +87,6 @@ class TabulatedFileViewerBody extends StatelessWidget {
   }
 
   Future<List<List<dynamic>>> _parseContent() async {
-    return await CsvParser(file: file).parse();
+    return await CsvParser().parse(file);
   }
 }

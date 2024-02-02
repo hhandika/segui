@@ -4,13 +4,16 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:csv/csv_settings_autodetection.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 
 class CsvParser {
-  CsvParser({required this.file});
+  CsvParser();
 
-  final XFile file;
+  Future<List<List<dynamic>>> parse(XFile file) async {
+    return await compute(_parse, file);
+  }
 
-  Future<List<List<dynamic>>> parse() async {
+  Future<List<List<dynamic>>> _parse(XFile file) async {
     final handler = File(file.path).openRead();
     const eolDetector = FirstOccurrenceSettingsDetector(
       eols: ['\r\n', '\n'],

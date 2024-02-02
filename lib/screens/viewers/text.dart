@@ -2,6 +2,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io.dart';
+import 'package:segui/services/viewers/text.dart';
 import 'package:segui/styles/decoration.dart';
 
 class PlainTextViewer extends StatelessWidget {
@@ -60,7 +61,7 @@ class PlainTextViewerBody extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: FutureBuilder<String>(
-                  future: _readFile(),
+                  future: TextParser().parse(file),
                   initialData: 'Loading...',
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
@@ -83,9 +84,5 @@ class PlainTextViewerBody extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<String> _readFile() async {
-    return await file.readAsString();
   }
 }
