@@ -332,7 +332,11 @@ class FileInputServices {
     final fileList = await openFiles(
       acceptedTypeGroups: [allowedExtension],
     );
-    return fileList.map((e) {
+    return compute(_mapFilesToSegulInputFile, fileList);
+  }
+
+  List<SegulInputFile> _mapFilesToSegulInputFile(List<XFile> files) {
+    return files.map((e) {
       return SegulInputFile(
         file: e,
         type: matchTypeByXTypeGroup(allowedExtension),
@@ -357,14 +361,20 @@ class FileInputServices {
     final result = await FilePicker.platform
         .pickFiles(allowMultiple: true, type: FileType.any);
 
-    return result == null
-        ? []
-        : result.files.map((e) {
-            return SegulInputFile(
-              file: XFile(e.path!),
-              type: matchTypeByXTypeGroup(allowedExtension),
-            );
-          }).toList();
+    if (result == null) {
+      return [];
+    }
+    return compute(_mapFilesToSegulInputFileAndroid, result.files);
+  }
+
+  List<SegulInputFile> _mapFilesToSegulInputFileAndroid(
+      List<PlatformFile> files) {
+    return files.map((e) {
+      return SegulInputFile(
+        file: XFile(e.path!),
+        type: matchTypeByXTypeGroup(allowedExtension),
+      );
+    }).toList();
   }
 
   Future<SegulInputFile?> _selectSingleFileAndroid(
