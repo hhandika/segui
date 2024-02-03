@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,24 +15,30 @@ class FileInput extends _$FileInput {
     return [];
   }
 
-  Future<void> addFiles(List<SegulInputFile> inputFiles) async {
+  Future<void> addFiles(List<XFile> inputFiles, XTypeGroup xTypeGroup) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (inputFiles.isEmpty) {
         return [];
       }
-      final files = [...inputFiles];
+      final files = inputFiles.map((file) {
+        return SegulInputFile.fromXFile(file, xTypeGroup);
+      }).toList();
       return files;
     });
   }
 
-  Future<void> addMoreFiles(List<SegulInputFile> inputFiles) async {
+  Future<void> addMoreFiles(
+      List<XFile> inputFiles, XTypeGroup xTypeGroup) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null) {
         return [];
       }
-      final files = [...state.value!, ...inputFiles];
+      final files = [...state.value!];
+      files.addAll(inputFiles.map((file) {
+        return SegulInputFile.fromXFile(file, xTypeGroup);
+      }));
       return files;
     });
   }

@@ -62,6 +62,20 @@ class SegulInputFile {
 
   final SegulType type;
   final File file;
+
+  factory SegulInputFile.fromXFile(XFile file, XTypeGroup xTypeGroup) {
+    return SegulInputFile(
+      file: File(file.path),
+      type: matchTypeByXTypeGroup(xTypeGroup),
+    );
+  }
+
+  factory SegulInputFile.addMoreFiles(SegulInputFile oldFile, XFile file) {
+    return SegulInputFile(
+      file: File(file.path),
+      type: oldFile.type,
+    );
+  }
 }
 
 class SegulOutputFile {
@@ -306,7 +320,7 @@ class FileInputServices {
       } else {
         final results = await _selectSingleFile(allowedExtension);
         if (results != null) {
-          _updateProvider([results]);
+          _updateProvider([XFile(results.file.path)]);
         }
       }
     }
@@ -319,14 +333,18 @@ class FileInputServices {
 
     if (result != null) {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
-      _updateProvider(files);
+      _updateProvider(files.map((e) => XFile(e.path)).toList());
     }
   }
 
-  void _updateProvider(List<SegulInputFile> result) {
+  void _updateProvider(List<XFile> result) {
     final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {
-      isAddNew ? notifier.addFiles(result) : notifier.addMoreFiles(result);
+      if (isAddNew) {
+        notifier.addFiles(result, allowedExtension);
+      } else {
+        notifier.addMoreFiles(result, allowedExtension);
+      }
     }
   }
 
@@ -346,19 +364,19 @@ class FileInputServices {
     return null;
   }
 
-  Future<List<SegulInputFile>> _selectMultiFiles(
-      XTypeGroup allowedExtension) async {
+  Future<List<XFile>> _selectMultiFiles(XTypeGroup allowedExtension) async {
     final fileList = await openFiles(
       acceptedTypeGroups: [allowedExtension],
     );
-    return _mapFilesToSegulInputFile(fileList);
+    return fileList;
   }
 
-  List<SegulInputFile> _mapFilesToSegulInputFile(List<XFile> files) {
+  List<SegulInputFile> mapFilesToSegulInputFile(
+      List<XFile> files, XTypeGroup xTypeGroup) {
     return files.map((e) {
       return SegulInputFile(
         file: File(e.path),
-        type: matchTypeByXTypeGroup(allowedExtension),
+        type: matchTypeByXTypeGroup(xTypeGroup),
       );
     }).toList();
   }
@@ -375,7 +393,20 @@ class FileInputServices {
           );
   }
 
-  Future<List<SegulInputFile>> _selectMultiFileAndroid(
+  Future<XFile?> _selectSingleFileAndroid(XTypeGroup allowedExtension) async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: allowedExtension.extensions,
+    );
+
+    if (result == null) {
+      return null;
+    }
+    return XFile(result.files.first.path!);
+  }
+
+  Future<List<XFile>> _selectMultiFileAndroid(
       XTypeGroup allowedExtension) async {
     final result = await FilePicker.platform
         .pickFiles(allowMultiple: true, type: FileType.any);
@@ -383,32 +414,7 @@ class FileInputServices {
     if (result == null) {
       return [];
     }
-    return _mapFilesToSegulInputFileAndroid(result.files);
-  }
-
-  List<SegulInputFile> _mapFilesToSegulInputFileAndroid(
-      List<PlatformFile> files) {
-    return files.map((e) {
-      return SegulInputFile(
-        file: File(e.path!),
-        type: matchTypeByXTypeGroup(allowedExtension),
-      );
-    }).toList();
-  }
-
-  Future<SegulInputFile?> _selectSingleFileAndroid(
-      XTypeGroup allowedExtension) async {
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: false,
-      type: FileType.any,
-    );
-
-    return result == null
-        ? null
-        : SegulInputFile(
-            file: File(result.files.single.path!),
-            type: matchTypeByXTypeGroup(allowedExtension),
-          );
+    return result.files.map((e) => XFile(e.path!)).toList();
   }
 }
 
@@ -496,16 +502,12 @@ class DirectoryCrawler {
     return _findAllFilesInDir(dir, recursive);
   }
 
-  List<SegulInputFile> crawlByType(XTypeGroup type) {
-    List<SegulInputFile> inputFiles = [];
+  List<File> crawlByType(XTypeGroup type) {
+    List<File> inputFiles = [];
     dir.listSync(recursive: false).whereType<File>().forEach((e) {
       String extension = _getFileExtension(e);
       if (extension.isNotEmpty && type.extensions!.contains(extension)) {
-        final filePath = e.path;
-        inputFiles.add(SegulInputFile(
-          file: File(filePath),
-          type: matchTypeByXTypeGroup(type),
-        ));
+        inputFiles.add(e);
       }
     });
     return inputFiles;
