@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
@@ -42,11 +44,11 @@ class Settings extends StatelessWidget {
   }
 }
 
-class SettingPages extends StatelessWidget {
+class SettingPages extends ConsumerWidget {
   const SettingPages({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       child: Padding(
           padding: const EdgeInsets.all(16),
@@ -95,6 +97,7 @@ class SettingPages extends StatelessWidget {
                         subtitle: snapshot.data as String,
                         icon: Icons.data_usage_outlined,
                         onTap: () {
+                          ref.read(fileOutputProvider.notifier).addFromAppDir();
                           Navigator.push(
                             context,
                             MaterialPageRoute(

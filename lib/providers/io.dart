@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:segui/services/io.dart';
 
@@ -35,7 +36,7 @@ class FileInput extends _$FileInput {
     });
   }
 
-  Future<void> removeFile(SegulInputFile file) async {
+  Future<void> removeFromList(SegulInputFile file) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null) {
@@ -84,6 +85,14 @@ class FileOutput extends _$FileOutput {
     });
   }
 
+  Future<void> addFromAppDir() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      Directory dir = await getApplicationDocumentsDirectory();
+      return SegulOutputFile.fromDirectory(dir, isRecursive: true);
+    });
+  }
+
   /// Update the files in the output directory.
   /// This is use after the use executes a task.
   /// We can also do stream with `FileEntity().watch`
@@ -105,6 +114,34 @@ class FileOutput extends _$FileOutput {
       }
 
       return updates;
+    });
+  }
+
+  Future<void> removeFile(File file) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      if (state.value == null) {
+        return SegulOutputFile.empty();
+      }
+      final files = [...state.value!.oldFiles];
+      files.remove(file);
+      file.delete();
+      return SegulOutputFile.deleteFile(state.value!, file);
+    });
+  }
+
+  Future<void> removeAllFiles() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      if (state.value == null) {
+        return SegulOutputFile.empty();
+      }
+      final files = [...state.value!.oldFiles];
+      final log = await FileCleaningService().removeAllFiles(files);
+      if (log != null) {
+        return SegulOutputFile.refresh(state.value!, [log]);
+      }
+      return SegulOutputFile.empty();
     });
   }
 }

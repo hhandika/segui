@@ -1,19 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/pages.dart';
-import 'package:segui/services/io.dart';
 import 'package:segui/styles/decoration.dart';
 
-class DataUsageScreen extends StatefulWidget {
+class DataUsageScreen extends ConsumerStatefulWidget {
   const DataUsageScreen({super.key});
 
   @override
-  State<DataUsageScreen> createState() => _DataUsageScreenState();
+  DataUsageScreenState createState() => DataUsageScreenState();
 }
 
-class _DataUsageScreenState extends State<DataUsageScreen> {
+class DataUsageScreenState extends ConsumerState<DataUsageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,38 +32,62 @@ class _DataUsageScreenState extends State<DataUsageScreen> {
                 child: Container(
                   decoration: getContainerDecoration(context),
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: FutureBuilder(
-                    future: _findAllFiles(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        final files = snapshot.data;
-                        return files!.isEmpty
-                            ? const Center(
-                                child: Text('No data found'),
-                              )
-                            : ListView.builder(
-                                itemCount: files.length,
-                                itemBuilder: (context, index) {
-                                  final file = files[index];
-                                  return OutputFileTiles(
-                                    isOldFile: true,
-                                    file: file,
-                                  );
-                                });
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-                      return const CircularProgressIndicator();
-                    },
-                  ),
+                  child: ref.watch(fileOutputProvider).when(
+                        data: (outputFile) {
+                          final files = outputFile.oldFiles;
+                          return files.isEmpty
+                              ? const Center(
+                                  child: Text('No data found'),
+                                )
+                              : ListView.builder(
+                                  itemCount: files.length,
+                                  itemBuilder: (context, index) {
+                                    final file = files[index];
+                                    return OutputFileTiles(
+                                      isOldFile: true,
+                                      file: file,
+                                    );
+                                  });
+                        },
+                        loading: () => const CircularProgressIndicator(),
+                        error: (error, stackTrace) => Text(
+                          'Error: $error',
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ),
                 ),
               ),
               const SizedBox(height: 16),
               TextButton(
                   onPressed: () {
-                    setState(() {
-                      _clearAllData();
-                    });
+                    // Show dialog to confirm the action
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Clear all data'),
+                          content: const Text(
+                            'Permanently delete all data except the latest log file. '
+                            'Continue?',
+                          ),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel')),
+                            TextButton(
+                                onPressed: () {
+                                  ref
+                                      .read(fileOutputProvider.notifier)
+                                      .removeAllFiles();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Clear all data'))
+                          ],
+                        );
+                      },
+                    );
                   },
                   child: const Text('Clear all data'))
             ],
@@ -73,15 +95,5 @@ class _DataUsageScreenState extends State<DataUsageScreen> {
         ),
       ),
     );
-  }
-
-  Future<List<File>> _findAllFiles() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-
-    return DirectoryCrawler(appDocDir).crawl(recursive: true);
-  }
-
-  void _clearAllData() async {
-    FileCleaningService().deleteAllFilesInAppDocDir();
   }
 }

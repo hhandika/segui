@@ -102,6 +102,24 @@ class SegulOutputFile {
         newFiles: DirectoryCrawler(oldFile.directory!)
             .findNewFiles(oldFile.oldFiles, isRecursive));
   }
+
+  // Update the list without accounting new files.
+  factory SegulOutputFile.refresh(
+      SegulOutputFile file, List<File> updatedFiles) {
+    return SegulOutputFile(
+      directory: file.directory,
+      oldFiles: updatedFiles,
+      newFiles: [],
+    );
+  }
+
+  factory SegulOutputFile.deleteFile(SegulOutputFile oldFile, File file) {
+    return SegulOutputFile(
+      directory: oldFile.directory,
+      oldFiles: oldFile.oldFiles..remove(file),
+      newFiles: oldFile.newFiles,
+    );
+  }
 }
 
 SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
@@ -656,20 +674,52 @@ String getPartitionFmt(String partitionFormat, bool isCodon) {
 class FileCleaningService {
   FileCleaningService();
 
-  Future<void> deleteAllFilesInAppDocDir() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    // Delete all except the segui log file.
-    final files = await appDocDir.list().toList();
+  Future<File?> removeAllFiles(List<File> files) async {
+    final latestLogFile = _getTheLastLogFile(files);
+    if (latestLogFile != null) {
+      // remove latest log file from the list
+      files.remove(latestLogFile);
+    }
+    _removeAll(files);
+
+    return latestLogFile;
+  }
+
+  void _removeAll(List<File> files) {
     for (var file in files) {
-      if (!file.path.endsWith('.log')) {
-        await file.delete();
-      }
+      file.delete();
     }
   }
 
-  Future<void> deleteAllFiles(List<File> files) async {
-    for (var file in files) {
-      await file.delete();
-    }
+  File? _getTheLastLogFile(List<File> files) {
+    FileLoggingService service = FileLoggingService();
+    return service.findLatestLog(files);
+  }
+}
+
+class FileLoggingService {
+  FileLoggingService();
+
+  Future<List<File>> findLogs() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final files = await dir.list().toList();
+    final results = files
+        .where((element) => element.path.endsWith('.log'))
+        .map((e) => File(e.path))
+        .toList();
+
+    return _sortLogsByDate(results);
+  }
+
+  File? findLatestLog(List<File> files) {
+    final logs =
+        files.where((element) => element.path.endsWith('.log')).toList();
+    final sortedLogs = _sortLogsByDate(logs);
+    return sortedLogs.isNotEmpty ? sortedLogs.first : null;
+  }
+
+  List<File> _sortLogsByDate(List<File> logs) {
+    logs.sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
+    return logs;
   }
 }

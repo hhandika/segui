@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/text.dart';
+import 'package:segui/services/io.dart';
 import 'package:segui/styles/decoration.dart';
 
 class LogScreen extends StatefulWidget {
@@ -88,16 +88,6 @@ class _LogScreenState extends State<LogScreen> {
   }
 
   Future<List<File>> _findLogs() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final files = await dir.list().toList();
-
-    final results = files
-        .where((element) => element.path.endsWith('.log'))
-        .map((e) => File(e.path))
-        .toList();
-    // Sort by date
-    results
-        .sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
-    return results;
+    return FileLoggingService().findLogs();
   }
 }

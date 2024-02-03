@@ -224,7 +224,7 @@ class InputFileList extends ConsumerWidget {
                 tooltip: 'Remove file',
                 icon: const Icon(Icons.delete_outline),
                 onPressed: () {
-                  ref.read(fileInputProvider.notifier).removeFile(data);
+                  ref.read(fileInputProvider.notifier).removeFromList(data);
                 },
               ),
               onTap: () {
@@ -326,7 +326,14 @@ class OutputFileTiles extends StatelessWidget {
                 ],
               )),
       subtitle: FileIOSubtitle(file: file),
-      trailing: ShareIconButton(file: file),
+      trailing: Wrap(
+        alignment: WrapAlignment.end,
+        spacing: 4,
+        children: [
+          ShareIconButton(file: file),
+          SharedDeleteButton(file: file),
+        ],
+      ),
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/providers/io.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
 
@@ -252,6 +254,48 @@ class ShareIconButton extends StatelessWidget {
       icon: Icon(Icons.adaptive.share),
       onPressed: () {
         IOServices().shareFile(context, file);
+      },
+    );
+  }
+}
+
+class SharedDeleteButton extends ConsumerWidget {
+  const SharedDeleteButton({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      tooltip: 'Delete file',
+      icon: const Icon(Icons.delete_outline),
+      onPressed: () {
+        // Ask for confirmation
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Delete file'),
+              content: const Text(
+                  'Deleting this file will remove it permanently. Are you sure?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    ref.read(fileOutputProvider.notifier).removeFile(file);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          },
+        );
       },
     );
   }
