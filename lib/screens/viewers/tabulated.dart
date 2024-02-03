@@ -1,5 +1,7 @@
-import 'package:file_selector/file_selector.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/viewers/csv.dart';
@@ -8,13 +10,13 @@ import 'package:segui/styles/decoration.dart';
 class TabulatedFileViewer extends StatelessWidget {
   const TabulatedFileViewer({super.key, required this.file});
 
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(file.name),
+        title: Text(basename(file.path)),
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
@@ -52,7 +54,7 @@ class TabulatedFileViewer extends StatelessWidget {
 class TabulatedFileViewerBody extends StatelessWidget {
   const TabulatedFileViewerBody({super.key, required this.file});
 
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {

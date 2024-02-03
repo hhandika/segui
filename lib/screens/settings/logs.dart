@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/text.dart';
@@ -44,7 +44,7 @@ class _LogScreenState extends State<LogScreen> {
                           final log = logs[index];
                           return ListTile(
                             title: Text(
-                              log.name,
+                              basename(log.path),
                               style: Theme.of(context).textTheme.titleMedium,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -81,7 +81,7 @@ class _LogScreenState extends State<LogScreen> {
     );
   }
 
-  Future<List<XFile>> _findLogs() async {
+  Future<List<File>> _findLogs() async {
     final dir = await getApplicationDocumentsDirectory();
     final files = await dir.list().toList();
 
@@ -92,6 +92,6 @@ class _LogScreenState extends State<LogScreen> {
     // Sort by date
     results
         .sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
-    return results.map((e) => XFile(e.path)).toList();
+    return results;
   }
 }

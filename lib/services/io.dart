@@ -61,7 +61,7 @@ class SegulInputFile {
   });
 
   final SegulType type;
-  final XFile file;
+  final File file;
 }
 
 class SegulOutputFile {
@@ -72,8 +72,8 @@ class SegulOutputFile {
   });
 
   final Directory? directory;
-  final List<XFile> oldFiles;
-  final List<XFile> newFiles;
+  final List<File> oldFiles;
+  final List<File> newFiles;
 
   factory SegulOutputFile.empty() {
     return SegulOutputFile(
@@ -205,7 +205,7 @@ enum CommonFileType {
 class FileAssociation {
   FileAssociation({required this.file});
 
-  final XFile file;
+  final File file;
 
   bool get isSupportedViewerExtension {
     final fileType = commonFileTYpe;
@@ -252,7 +252,7 @@ class FileAssociation {
   }
 }
 
-String getFileExtension(XFile file) {
+String getFileExtension(File file) {
   return p.extension(file.path).substring(1);
 }
 
@@ -338,7 +338,7 @@ class FileInputServices {
   List<SegulInputFile> _mapFilesToSegulInputFile(List<XFile> files) {
     return files.map((e) {
       return SegulInputFile(
-        file: e,
+        file: File(e.path),
         type: matchTypeByXTypeGroup(allowedExtension),
       );
     }).toList();
@@ -351,7 +351,7 @@ class FileInputServices {
     return result == null
         ? null
         : SegulInputFile(
-            file: result,
+            file: File(result.path),
             type: matchTypeByXTypeGroup(allowedExtension),
           );
   }
@@ -371,7 +371,7 @@ class FileInputServices {
       List<PlatformFile> files) {
     return files.map((e) {
       return SegulInputFile(
-        file: XFile(e.path!),
+        file: File(e.path!),
         type: matchTypeByXTypeGroup(allowedExtension),
       );
     }).toList();
@@ -387,7 +387,7 @@ class FileInputServices {
     return result == null
         ? null
         : SegulInputFile(
-            file: XFile(result.files.single.path!),
+            file: File(result.files.single.path!),
             type: matchTypeByXTypeGroup(allowedExtension),
           );
   }
@@ -421,9 +421,9 @@ class ArchiveRunner {
   });
 
   final Directory outputDir;
-  final List<XFile> outputFiles;
+  final List<File> outputFiles;
 
-  Future<XFile> write() async {
+  Future<File> write() async {
     String outputFilename = '${outputDir.path}.zip';
     String outputPath = p.join(outputDir.path, outputFilename);
     List<String> inputFiles = outputFiles.map((e) => e.path).toList();
@@ -432,17 +432,17 @@ class ArchiveRunner {
       outputPath: outputPath,
     ).zip();
 
-    return XFile(outputPath);
+    return File(outputPath);
   }
 }
 
 class IOServices {
   IOServices();
 
-  Future<void> shareFile(BuildContext context, XFile file) async {
+  Future<void> shareFile(BuildContext context, File file) async {
     final box = context.findRenderObject() as RenderBox?;
     await Share.shareXFiles(
-      [file],
+      [XFile(file.path)],
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
   }
@@ -473,7 +473,7 @@ class DirectoryCrawler {
 
   final Directory dir;
 
-  List<XFile> crawl() {
+  List<File> crawl() {
     return _findAllFilesInDir(dir);
   }
 
@@ -484,7 +484,7 @@ class DirectoryCrawler {
       if (extension.isNotEmpty && type.extensions!.contains(extension)) {
         final filePath = e.path;
         inputFiles.add(SegulInputFile(
-          file: XFile(filePath),
+          file: File(filePath),
           type: matchTypeByXTypeGroup(type),
         ));
       }
@@ -492,23 +492,20 @@ class DirectoryCrawler {
     return inputFiles;
   }
 
-  List<XFile> findNewFiles(List<XFile> oldFiles, bool isRecursive) {
-    List<XFile> newFiles = [];
+  List<File> findNewFiles(List<File> oldFiles, bool isRecursive) {
+    List<File> newFiles = [];
     dir.listSync(recursive: isRecursive).whereType<File>().forEach((e) {
       if (!oldFiles.any((oldFile) => oldFile.path == e.path)) {
-        newFiles.add(XFile(e.path));
+        newFiles.add(e);
       }
     });
 
     return newFiles;
   }
 
-  List<XFile> _findAllFilesInDir(Directory dir) {
-    List<XFile> files = dir
-        .listSync(recursive: false)
-        .whereType<File>()
-        .map((e) => XFile(e.path))
-        .toList();
+  List<File> _findAllFilesInDir(Directory dir) {
+    List<File> files =
+        dir.listSync(recursive: false).whereType<File>().toList();
     return files;
   }
 
@@ -552,12 +549,11 @@ class FileMetadata {
     required this.file,
   });
 
-  final XFile file;
+  final File file;
 
   Future<({String size, String lastModified})> get metadata async {
-    File handler = File(file.path);
-    String size = await _getSize(handler);
-    String lastModified = await _getLastModified(handler);
+    String size = await _getSize(file);
+    String lastModified = await _getLastModified(file);
     return (size: size, lastModified: lastModified);
   }
 

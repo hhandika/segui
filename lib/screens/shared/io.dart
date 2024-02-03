@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as path;
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/controllers.dart';
@@ -464,14 +465,14 @@ class PathTextWithOverflow extends StatelessWidget {
 class FileIOTitle extends StatelessWidget {
   const FileIOTitle({super.key, required this.file});
 
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {
     return Tooltip(
       message: file.path,
       child: Text(
-        file.name,
+        path.basename(file.path),
         style: Theme.of(context).textTheme.labelLarge,
         overflow: TextOverflow.ellipsis,
       ),
@@ -482,7 +483,7 @@ class FileIOTitle extends StatelessWidget {
 class FileIOSubtitle extends StatelessWidget {
   const FileIOSubtitle({super.key, required this.file});
 
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {

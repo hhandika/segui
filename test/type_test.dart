@@ -5,7 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:file_selector/file_selector.dart';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
@@ -21,7 +22,7 @@ void main() {
   });
 
   test('Supported file test', () {
-    final XFile file = XFile("test.txt");
+    final File file = File("test.txt");
     bool supported = FileAssociation(file: file).isSupportedViewerExtension;
     expect(supported, true);
   });

@@ -1,4 +1,5 @@
-import 'package:file_selector/file_selector.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
@@ -242,7 +243,7 @@ class ShowMoreButton extends StatelessWidget {
 class ShareIconButton extends StatelessWidget {
   const ShareIconButton({super.key, required this.file});
 
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {

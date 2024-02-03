@@ -1,4 +1,5 @@
-import 'package:file_selector/file_selector.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/screens/viewers/text.dart';
@@ -12,7 +13,7 @@ class FileViewer extends StatelessWidget {
     required this.type,
   });
 
-  final XFile file;
+  final File file;
   final CommonFileType type;
 
   @override

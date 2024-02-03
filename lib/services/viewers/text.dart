@@ -1,12 +1,12 @@
-import 'package:file_selector/file_selector.dart';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 class TextParser {
-  Future<String> parse(XFile file) async {
+  Future<String> parse(File file) async {
     return compute(parseTextFile, file);
   }
 
-  Future<String> parseTextFile(XFile file) async {
+  Future<String> parseTextFile(File file) async {
     return await file.readAsString();
   }
 }

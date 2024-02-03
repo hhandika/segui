@@ -1,4 +1,4 @@
-import 'package:file_selector/file_selector.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -299,7 +299,7 @@ class OutputFileTiles extends StatelessWidget {
   });
 
   final bool isOldFile;
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {

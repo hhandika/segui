@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
@@ -174,14 +172,14 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   }
 
   Future<void> _shareOutput(
-      Directory outputDir, List<XFile> newOutputFiles) async {
+      Directory outputDir, List<File> newOutputFiles) async {
     try {
       IOServices io = IOServices();
       ArchiveRunner archive = ArchiveRunner(
         outputDir: outputDir,
         outputFiles: newOutputFiles,
       );
-      XFile outputPath = await archive.write();
+      File outputPath = await archive.write();
 
       if (mounted) {
         await io.shareFile(context, outputPath);

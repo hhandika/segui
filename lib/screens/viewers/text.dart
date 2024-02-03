@@ -1,5 +1,7 @@
-import 'package:file_selector/file_selector.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/viewers/text.dart';
@@ -8,13 +10,13 @@ import 'package:segui/styles/decoration.dart';
 class PlainTextViewer extends StatelessWidget {
   const PlainTextViewer({super.key, required this.file});
 
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(file.name),
+        title: Text(basename(file.path)),
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
@@ -28,7 +30,7 @@ class PlainTextViewer extends StatelessWidget {
 class PlainTextViewerBody extends StatelessWidget {
   const PlainTextViewerBody({super.key, required this.file});
 
-  final XFile file;
+  final File file;
 
   @override
   Widget build(BuildContext context) {
