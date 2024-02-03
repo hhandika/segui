@@ -1,3 +1,7 @@
+import 'package:url_launcher/url_launcher.dart';
+
+const String segulDocUrl = 'https://www.segul.app/';
+
 /// Material You design system recommend screen size
 /// Desktop/Expanded screen: 840dp
 /// Tablet/Medium screen: 600dp
@@ -30,4 +34,10 @@ String get greetingIconPack {
 
 String get emptyDirIcon {
   return 'assets/images/empty-folder.svg';
+}
+
+void launchSegulDocUrl() {
+  String url = segulDocUrl;
+  Uri uri = Uri.parse(url);
+  launchUrl(uri);
 }
