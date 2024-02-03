@@ -254,6 +254,7 @@ class _InputSelectorState extends State<InputSelector> {
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.of(context).size.width < mediumScreenSize;
+    final isMobile = Platform.isAndroid || Platform.isIOS;
     return isSmallScreen
         ? IconButton(
             tooltip: 'Select input method',
@@ -261,6 +262,7 @@ class _InputSelectorState extends State<InputSelector> {
             onPressed: () {
               showModalBottomSheet(
                 context: context,
+                barrierLabel: 'Select input method',
                 showDragHandle: true,
                 builder: (context) {
                   return Padding(
@@ -272,7 +274,7 @@ class _InputSelectorState extends State<InputSelector> {
                             isAddNew: widget.isAddNew,
                             onFileSelected: widget.onFileSelected,
                           ),
-                          if (!Platform.isIOS || !Platform.isAndroid)
+                          if (!isMobile)
                             SelectDirectoryButton(
                               isAddNew: widget.isAddNew,
                               onDirectorySelected: widget.onDirectorySelected,
@@ -306,6 +308,7 @@ class InputActionMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isMobile = Platform.isAndroid || Platform.isIOS;
     return PopupMenuButton(
         elevation: 2,
         color: Theme.of(context).colorScheme.background,
@@ -317,7 +320,7 @@ class InputActionMenu extends ConsumerWidget {
               isAddNew: isAddNew,
               onFileSelected: onFileSelected,
             )),
-            if (!Platform.isIOS || !Platform.isAndroid)
+            if (!isMobile)
               PopupMenuItem(
                   child: SelectDirectoryButton(
                 isAddNew: isAddNew,
@@ -373,7 +376,7 @@ class SelectDirectoryButton extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.folder_outlined),
       title: Text(
-        isAddNew ? 'Add from directory' : 'More from directory',
+        isAddNew ? 'Select directory' : 'More from directory',
         style: Theme.of(context).textTheme.titleMedium,
       ),
       onTap: () {
