@@ -83,10 +83,11 @@ class SegulOutputFile {
     );
   }
 
-  factory SegulOutputFile.fromDirectory(Directory dir) {
+  factory SegulOutputFile.fromDirectory(Directory dir,
+      {bool isRecursive = false}) {
     return SegulOutputFile(
       directory: dir,
-      oldFiles: DirectoryCrawler(dir).crawl(),
+      oldFiles: DirectoryCrawler(dir).crawl(recursive: isRecursive),
       newFiles: [],
     );
   }
@@ -473,8 +474,8 @@ class DirectoryCrawler {
 
   final Directory dir;
 
-  List<File> crawl() {
-    return _findAllFilesInDir(dir);
+  List<File> crawl({required bool recursive}) {
+    return _findAllFilesInDir(dir, recursive);
   }
 
   List<SegulInputFile> crawlByType(XTypeGroup type) {
@@ -503,9 +504,9 @@ class DirectoryCrawler {
     return newFiles;
   }
 
-  List<File> _findAllFilesInDir(Directory dir) {
+  List<File> _findAllFilesInDir(Directory dir, bool isRecursive) {
     List<File> files =
-        dir.listSync(recursive: false).whereType<File>().toList();
+        dir.listSync(recursive: isRecursive).whereType<File>().toList();
     return files;
   }
 
@@ -544,6 +545,30 @@ Future<Directory> getOutputDir(String? dirName, SupportedTask task) async {
   return outputDir;
 }
 
+class DataUsageServices {
+  DataUsageServices();
+
+  Future<String> calculateUsage() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    final files = await appDocDir.list().toList();
+    final fileCount = files.length;
+    final totalSize = await _calculateTotalSize(files);
+    return _getUsageText(fileCount, totalSize);
+  }
+
+  Future<int> _calculateTotalSize(List<FileSystemEntity> files) async {
+    int totalSize = 0;
+    for (var file in files) {
+      totalSize += await file.stat().then((value) => value.size);
+    }
+    return totalSize;
+  }
+
+  String _getUsageText(int fileCount, int totalSize) {
+    return '$fileCount files · ${formatSize(totalSize)}';
+  }
+}
+
 class FileMetadata {
   FileMetadata({
     required this.file,
@@ -565,16 +590,7 @@ class FileMetadata {
 // Count file size. Returns in kb, mb, or gb.
   Future<String> _getSize(File handler) async {
     int bytes = await handler.length();
-    double kb = bytes / 1024;
-    double mb = kb / 1024;
-    double gb = mb / 1024;
-    if (gb >= 1) {
-      return '${gb.toStringAsFixed(2)} Gb';
-    } else if (mb >= 1) {
-      return '${mb.toStringAsFixed(2)} Mb';
-    } else {
-      return '${kb.toStringAsFixed(2)} Kb';
-    }
+    return formatSize(bytes);
   }
 
   Future<String> _getLastModified(File handler) async {
@@ -600,6 +616,19 @@ class FileMetadata {
   }
 }
 
+String formatSize(int size) {
+  double kb = size / 1024;
+  double mb = kb / 1024;
+  double gb = mb / 1024;
+  if (gb >= 1) {
+    return '${gb.toStringAsFixed(2)} Gb';
+  } else if (mb >= 1) {
+    return '${mb.toStringAsFixed(2)} Mb';
+  } else {
+    return '${kb.toStringAsFixed(2)} Kb';
+  }
+}
+
 String showOutputDir(Directory directory) {
   if (Platform.isIOS) {
     return 'On My Devices/segui';
@@ -621,5 +650,26 @@ String getPartitionFmt(String partitionFormat, bool isCodon) {
     return '$partitionFormat-codon';
   } else {
     return partitionFormat;
+  }
+}
+
+class FileCleaningService {
+  FileCleaningService();
+
+  Future<void> deleteAllFilesInAppDocDir() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    // Delete all except the segui log file.
+    final files = await appDocDir.list().toList();
+    for (var file in files) {
+      if (!file.path.endsWith('.log')) {
+        await file.delete();
+      }
+    }
+  }
+
+  Future<void> deleteAllFiles(List<File> files) async {
+    for (var file in files) {
+      await file.delete();
+    }
   }
 }
