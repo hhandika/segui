@@ -221,8 +221,8 @@ SnackBar showSharedSnackBar(BuildContext context, String text) {
     content: Text(text, style: Theme.of(context).textTheme.labelSmall),
     duration: const Duration(seconds: 10),
     showCloseIcon: true,
-    closeIconColor: Theme.of(context).colorScheme.onPrimaryContainer,
-    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+    closeIconColor: Theme.of(context).colorScheme.onTertiaryContainer,
+    backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
   );
 }
 
