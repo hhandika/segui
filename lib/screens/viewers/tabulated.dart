@@ -51,11 +51,17 @@ class TabulatedFileViewer extends StatelessWidget {
   }
 }
 
-class TabulatedFileViewerBody extends StatelessWidget {
+class TabulatedFileViewerBody extends StatefulWidget {
   const TabulatedFileViewerBody({super.key, required this.file});
 
   final File file;
 
+  @override
+  State<TabulatedFileViewerBody> createState() =>
+      _TabulatedFileViewerBodyState();
+}
+
+class _TabulatedFileViewerBodyState extends State<TabulatedFileViewerBody> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -63,6 +69,9 @@ class TabulatedFileViewerBody extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final content = snapshot.data;
+            if (snapshot.data!.isEmpty) {
+              return const Center(child: Text('Failed to parse file.'));
+            }
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               clipBehavior: Clip.antiAlias,
@@ -89,6 +98,11 @@ class TabulatedFileViewerBody extends StatelessWidget {
   }
 
   Future<List<List<dynamic>>> _parseContent() async {
-    return await CsvParser().parse(file);
+    try {
+      final parser = CsvParser();
+      return await parser.parse(widget.file);
+    } catch (e) {
+      return [];
+    }
   }
 }
