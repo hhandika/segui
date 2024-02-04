@@ -312,7 +312,7 @@ class FileInputServices {
         _updateProvider(await results);
       }
     } else {
-      if (Platform.isAndroid || Platform.isIOS) {
+      if (Platform.isAndroid) {
         final results = await _selectUsingFilePicker(allowedExtension);
         if (results != null) {
           _updateProvider([results]);
