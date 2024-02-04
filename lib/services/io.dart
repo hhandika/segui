@@ -305,15 +305,15 @@ class FileInputServices {
   Future<void> selectFiles() async {
     if (allowMultiple) {
       if (Platform.isAndroid) {
-        var results = _selectMultiFileAndroid(allowedExtension);
+        var results = _selectMultiUsingFilePicker(allowedExtension);
         _updateProvider(await results);
       } else {
         var results = _selectMultiFiles(allowedExtension);
         _updateProvider(await results);
       }
     } else {
-      if (Platform.isAndroid) {
-        final results = await _selectSingleFileAndroid(allowedExtension);
+      if (Platform.isAndroid || Platform.isIOS) {
+        final results = await _selectUsingFilePicker(allowedExtension);
         if (results != null) {
           _updateProvider([results]);
         }
@@ -393,12 +393,12 @@ class FileInputServices {
           );
   }
 
-  Future<XFile?> _selectSingleFileAndroid(XTypeGroup allowedExtension) async {
+  // Do selection without data.
+  Future<XFile?> _selectUsingFilePicker(XTypeGroup allowedExtension) async {
     final result = await FilePicker.platform.pickFiles(
-      allowMultiple: false,
-      type: FileType.custom,
-      allowedExtensions: allowedExtension.extensions,
-    );
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: allowedExtension.extensions);
 
     if (result == null) {
       return null;
@@ -406,7 +406,8 @@ class FileInputServices {
     return XFile(result.files.first.path!);
   }
 
-  Future<List<XFile>> _selectMultiFileAndroid(
+  // Do selection without data.
+  Future<List<XFile>> _selectMultiUsingFilePicker(
       XTypeGroup allowedExtension) async {
     final result = await FilePicker.platform
         .pickFiles(allowMultiple: true, type: FileType.any);
