@@ -395,10 +395,8 @@ class FileInputServices {
 
   // Do selection without data.
   Future<XFile?> _selectUsingFilePicker(XTypeGroup allowedExtension) async {
-    final result = await FilePicker.platform.pickFiles(
-        allowMultiple: false,
-        type: FileType.custom,
-        allowedExtensions: allowedExtension.extensions);
+    final result = await FilePicker.platform
+        .pickFiles(allowMultiple: false, type: FileType.any);
 
     if (result == null) {
       return null;
