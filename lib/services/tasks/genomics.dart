@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:segui/services/io.dart';
 import 'package:segui/src/rust/api/contig.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -17,7 +16,8 @@ class ContigSummaryRunner {
 
   Future<void> run() async {
     List<String> finalInputFiles =
-        IOServices().convertPathsToString(inputFiles, SegulType.genomicContig);
+        IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);
+
     await ContigServices(
       files: finalInputFiles,
       fileFmt: inputFmt,
