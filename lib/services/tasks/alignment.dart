@@ -31,6 +31,9 @@ class ConcatRunnerServices {
     String partitionFmt = getPartitionFmt(partitionFormat, isCodonModel);
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
     await AlignmentServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFormat,
@@ -86,6 +89,9 @@ class FilteringRunner {
   Future<void> run() async {
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
     final filter = FilteringServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFormat,
@@ -140,6 +146,9 @@ class AlignConversionRunnerServices {
     String outputFmt = getOutputFmt(outputFormat, isInterleave);
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
     await SequenceServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFormat,
@@ -174,6 +183,9 @@ class PartConversionRunnerServices {
         .where((e) => e.type == SegulType.alignmentPartition)
         .map((e) => e.file.path)
         .toList();
+    if (inputPartitions.isEmpty) {
+      throw 'No input files';
+    }
     await PartitionServices(
       inputFiles: inputPartitions,
       inputPartFmt: inputFormat,
@@ -243,6 +255,9 @@ class AlignmentSummaryRunner {
   Future<void> run() async {
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
     await AlignmentServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFmt,

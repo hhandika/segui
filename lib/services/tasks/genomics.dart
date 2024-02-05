@@ -17,6 +17,9 @@ class ContigSummaryRunner {
   Future<void> run() async {
     List<String> finalInputFiles =
         IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
 
     await ContigServices(
       files: finalInputFiles,
@@ -42,6 +45,9 @@ class ReadSummaryRunner {
   Future<void> run() async {
     List<String> finalInputFiles =
         IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
     await RawReadServices(
       files: finalInputFiles,
       fileFmt: inputFmt,
