@@ -10,23 +10,28 @@
 
 A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memory-efficient application for phylogenomic data manipulation and sequence summary statistics. It carries similar performance to the CLI version of the app with the convenient of GUI, while still retaining reproducibility through logging support. The GUI version will also support iOS, iPadOS and Android, in addition to macOS, Windows, and Linux.
 
-Our first goal is to offer all the SEGUL features in the GUI version. In the future, we will take advantage of the GUI to offer more features that are not possible in the CLI version, such as interactive data visualization.
+## Installation
 
-Documentation: [[EN]](https://segul.app)
+- Windows: [[Try Beta]](https://github.com/hhandika/segui/releases/)
+- Android: [[Try Beta]](https://github.com/hhandika/segui/releases/)
+- iOS/iPadOS/macOS: [[Try Beta]](https://testflight.apple.com/join/LSJD5D0i)
 
-## Feature Tracker
+Learn more about device requirements and GUI app installation in the [official documentation](https://www.segul.app/docs/installation/install_gui).
 
-| Feature                        | Status             |
-| ------------------------------ | ------------------ |
-| Alignment concatenation        | :white_check_mark: |
-| Alignment conversion           | :white_check_mark: |
-| Alignment filtering            | :white_check_mark: |
-| Alignment partition conversion | :white_check_mark: |
-| Alignment splitting            | :white_check_mark: |
-| Alignment summary statistics   | :white_check_mark: |
-| Genomic summary statistics     | :white_check_mark: |
-| Sequence extraction            | :white_check_mark: |
-| Sequence ID extraction         | :white_check_mark: |
-| Sequence ID renaming           | :white_check_mark: |
-| Sequence removal               | :white_check_mark: |
-| Sequence translation           | :white_check_mark: |
+## Quick Links
+
+| Feature                        | Quick Link                                             |
+| ------------------------------ | ------------------------------------------------------ |
+| Alignment concatenation        | [Docs](https://www.segul.app/docs/gui-usage/concat)    |
+| Alignment conversion           | [Docs](https://www.segul.app/docs/gui-usage/convert)   |
+| Alignment filtering            | [Docs](https://www.segul.app/docs/gui-usage/filter)    |
+| Alignment splitting            | [Docs](https://www.segul.app/docs/gui-usage/split)     |
+| Alignment partition conversion | [Docs](https://www.segul.app/docs/gui-usage/part)      |
+| Alignment summary statistics   | [Docs](https://www.segul.app/docs/gui-usage/summary)   |
+| Genomic summary statistics     | [Docs](https://www.segul.app/docs/gui-usage/genomic)   |
+| Sample distribution mapping    | [Docs](https://www.segul.app/docs/gui-usage/map)       |
+| Sequence extraction            | [Docs](https://www.segul.app/docs/gui-usage/extract)   |
+| Sequence ID parsing            | [Docs](https://www.segul.app/docs/gui-usage/id)        |
+| Sequence ID renaming           | [Docs](https://www.segul.app/docs/gui-usage/rename)    |
+| Sequence removal               | [Docs](https://www.segul.app/docs/gui-usage/remove)    |
+| Sequence translation           | [Docs](https://www.segul.app/docs/gui-usage/translate) |
