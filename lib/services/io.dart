@@ -189,9 +189,7 @@ const XTypeGroup sequenceTypeGroup = XTypeGroup(
 const XTypeGroup partitionTypeGroup = XTypeGroup(
   label: 'Partition',
   extensions: ['nexus', 'nex', 'txt', 'part', 'partition'],
-  uniformTypeIdentifiers: [
-    'com.segui.partition',
-  ],
+  uniformTypeIdentifiers: ['com.segui.partition', 'public.plain-text'],
 );
 
 const List<String> sequenceExtensions = [
