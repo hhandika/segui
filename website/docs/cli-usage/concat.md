@@ -5,16 +5,8 @@ sidebar_position: 3
 
 `segul` provides an easy way to concat multiple alignments and generate the partition setting at the same time.
 
-For version 0.19.0+
-
 ```Bash
 segul align concat <input-argument> [input-path] --input-format [sequence-format]
-```
-
-For version 0.18.0 and below:
-
-```Bash
-segul concat <input-argument> [input-path] --input-format [sequence-format]
 ```
 
 For example, we will concat all the alignments in this folder:
@@ -28,30 +20,14 @@ alignments/
 
 We can do it in two ways. First, using `--dir` argument to input alignment files:
 
-For version 0.19.0+
-
 ```Bash
 segul align concat --dir alignments/
 ```
 
-For version 0.18.0 and below:
-
-```Bash
-segul concat --dir alignments/ --input-format nexus
-```
-
 Second, we can use the `--input` argument to input the alignment files. We will rely on wildcard and the OS to find all the alignment files. We do not need to specify the input format for `.nexus` file extension:
-
-For version 0.19.0+
 
 ```Bash
 segul align concat --input alignments/*.nexus
-```
-
-For version 0.18.0 and below:
-
-```Bash
-segul concat --input alignments/*.nexus
 ```
 
 `segul` will generate two files saved in `SEGUL-concat` directory, consisting of the concatenated alignments and the partition settings:
@@ -64,30 +40,14 @@ SEGUL-concat/
 
 To specify the name of the output directory, use the `--output` or `-o` option. Below, we will name our output directory `aln-concat`.
 
-For version 0.19.0+
-
 ```Bash
 segul align concat --input alignments/*.nexus --output aln-concat
 ```
 
-For version 0.18.0 and below:
-
-```Bash
-segul concat --input alignments/*.nexus --output aln-concat
-```
-
 To specify the prefix of the file names use the `--prefix` option. Below, our output filenames will start with concat:
-
-For version 0.19.0+
 
 ```Bash
 segul align concat --input alignments/*.nexus --output aln-concat --prefix concat
-```
-
-For version 0.18.0 and below:
-
-```Bash
-segul concat --input alignments/*.nexus --output aln-concat --prefix concat
 ```
 
 The resulting output directory will contain files as below:
@@ -113,16 +73,8 @@ You can specify the partition format using `--part` or `-p` option.
 
 For example, to use raxml format:
 
-For version 0.19.0+
-
 ```Bash
 segul align concat --input alignments/*.nexus --output concat --prefix concat --part raxml
-```
-
-For version 0.18.0 and below:
-
-```Bash
-segul concat --input alignments/*.nexus --output concat --prefix concat --part raxml
 ```
 
 The resulting partioned will be formatted in raxml style:
