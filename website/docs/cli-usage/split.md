@@ -4,18 +4,18 @@ sidebar_position: 6
 
 # Alignment Splitting
 
-To split an alignment, you need two input files: the concatenated alignment and the partition file. If you skip inputing partition file, the app will assume the partition is embedded in the alignment file.
+To split an alignment, you need two input files: the concatenated alignment and the partition file. If you skip inputting partition file, the app will assume the partition is embedded in the alignment file.
 
 The command is as below:
 
 ```Bash
-segul split --input <path-to-alignment> --input-partition <path-to-partition-file>
+segul align split --input <path-to-alignment> --input-partition <path-to-partition-file>
 ```
 
 For example:
 
 ```Bash
-segul split --input concat-alignment.nexus --input-partition concat-alignment-partition.nex
+segul align split --input concat-alignment.nexus --input-partition concat-alignment-partition.nex
 ```
 
 ## Supported partition format for splitting alignment

@@ -3,7 +3,7 @@ sidebar_position: 17
 ---
 # Log File
 
-With the exception of the spinning emoji and the program progress messages, all the terminal output is written to `segul.log` file saved in the current working directory. In the log output, however, it is also include the time and the log status. For example, our terminal output is as folow:
+With the exception of the spinning emoji and the program progress messages, all the terminal output is written to `segul.log` file saved in the current working directory. In the log output, however, it is also include the time and the log status. For example, our terminal output is as follow:
 
 ```Text
 =========================================================

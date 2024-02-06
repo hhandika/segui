@@ -16,29 +16,29 @@ The table must contain two columns with a header for each column. Both the heade
 If you need to rename a lot of sequence ID, you can simplify the process by [generating the unique IDs first](./id). Then, copy the IDs that you would like to rename in the `csv` or `tsv` input. To input this file, we will use the `--name` or `-n` option. `segul` will infer the file format based on its extension. The full command is structure as below:
 
 ```Bash
-segul rename -d [alignment-dir] -f [sequence-format-keyword] -n [file-path-to-IDs]
+segul sequence rename -d [alignment-dir] -f [sequence-format-keyword] -n [file-path-to-IDs]
 ```
 
 For example:
 
 ```Bash
-segul rename -d alignments/ -f nexus -n new_names.csv
+segul sequence rename -d alignments/ -f nexus -n new_names.csv
 ```
 
 You can use `--dry-run` option to check if the input names are parsed correctly:
 
 ```Bash
-segul rename -d alignments/ -f nexus -n new_names.csv --dry-run
+segul sequence rename -d alignments/ -f nexus -n new_names.csv --dry-run
 ```
 
 By default, `segul` will write the result in `SEGUL-Rename` directory. To change the output directory, use the `--output` or `-o` option.
 
 ```Bash
-segul rename -d alignments/ --input-format nexus --name new_names.csv --output new_seq_names/
+segul sequence rename -d alignments/ --input-format nexus --name new_names.csv --output new_seq_names/
 ```
 
 Like other functions, `segul` will not overwrite your original files. The output files will be default to nexus. To change the output format use the `--output-format` or `-F` function:
 
 ```Bash
-segul rename -d alignments/ --input-format nexus --name new_names.csv --output new_seq_names/ --output-format fasta
+segul sequence rename -d alignments/ --input-format nexus --name new_names.csv --output new_seq_names/ --output-format fasta
 ```

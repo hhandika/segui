@@ -11,13 +11,13 @@ Based on a list of IDs, you can remove sequences in a collection of alignments. 
 You can remove sequences based on a list of IDs. The list of IDs should be a text file with one ID per line. The IDs should be the same as the IDs in the alignment files. The IDs are case-sensitive.
 
 ```Bash
-segul remove --dir [alignment-dir] -f [sequence-format-keyword] --id [list-of-id]
+segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --id [list-of-id]
 ```
 
 Example:
 
 ```Bash
-segul remove --dir ./data/ -f fasta --id ./data/id.txt
+segul sequence remove --dir ./data/ -f fasta --id ./data/id.txt
 ```
 
 ## Remove sequences based on a regular expression
@@ -25,7 +25,7 @@ segul remove --dir ./data/ -f fasta --id ./data/id.txt
 Using regular expression:
 
 ```Bash
-segul remove --dir [alignment-dir] -f [sequence-format-keyword] --re=["regex"]
+segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --re=["regex"]
 ```
 
 Example:
@@ -33,5 +33,5 @@ Example:
 Command below will remove all sequences whose IDs with the name started with `Homo`.
 
 ```Bash
-segul remove --dir ./data/ -f fasta --re="^Homo"
+segul sequence remove --dir ./data/ -f fasta --re="^Homo"
 ```

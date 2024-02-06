@@ -7,7 +7,7 @@ sidebar_position: 7
 `segul` generates different summary statistics for DNA and amino acid sequences. By default, the datatype is set to DNA sequence. In general, the command is as below:
 
 ```Bash
-segul summary <input-option> [alignment-path] --input-format [sequence-format-keyword] --datatype [datatype]
+segul align summary <input-option> [alignment-path] --input-format [sequence-format-keyword] --datatype [datatype]
 ```
 
 The `summary` function produces three summary statistics:
@@ -23,13 +23,13 @@ Learn more about specifying the output directory and filenames [here](./summary#
 Because `segul` datatype is default to DNA, we don't need to pass the `--datatype` option in the command. For example, to generate summary statistics for alignments in the folder `alignments/`:
 
 ```Bash
-segul summary -d alignments/ -f nexus
+segul align summary -d alignments/ -f nexus
 ```
 
 If we use the `--input` or `-i` option, the command will be:
 
 ```Bash
-segul summary -i alignments/*.nexus
+segul align summary -i alignments/*.nexus
 ```
 
 Below is an example of segul terminal output for DNA sequence summary statistics. This output is based on alignments from [Oliveros et al. (2019)](https://www.pnas.org/content/116/16/7916.short). An example of csv file generated from the same dataset can be found through this [link](https://github.com/hhandika/segul/blob/main/examples/SEGUL-Stats_per_locus_DNA_sample_file.csv).
@@ -122,23 +122,23 @@ Execution time    : 4.3725607s
 To compute the summary statistics for amino acid sequences, we need to use the `--datatype aa` option. For example:
 
 ```Bash
-segul summary -d alignments/ -f nexus --datatype aa
+segul align summary -d alignments/ -f nexus --datatype aa
 ```
 
 If we use the `--input` or `-i` option, the command will be:
 
 ```Bash
-segul summary -i alignments/*.nexus --datatype aa
+segul align summary -i alignments/*.nexus --datatype aa
 ```
 
 ### Setting up data matrix completeness interval
 
-By default, `segul` will print the percentage of data matrix completeness with decrement interval 5 percent. It starts from 100% until it reaches all alignment coverage or near zero percent completeness. With the dafault interval, if `segul` never reaches all alignment coverage, it will stop printing the result when the result reaches 5%. In the Oliveros et al. (2019) dataset [above](./summary#computing-sequence-summary-statistics-for-dna-sequences), `segul` stops printing the data matrix completeness at 80% because it already cover the total number of alignments (4,060 alignments).
+By default, `segul` will print the percentage of data matrix completeness with decrement interval 5 percent. It starts from 100% until it reaches all alignment coverage or near zero percent completeness. With the default interval, if `segul` never reaches all alignment coverage, it will stop printing the result when the result reaches 5%. In the Oliveros et al. (2019) dataset [above](./summary#computing-sequence-summary-statistics-for-dna-sequences), `segul` stops printing the data matrix completeness at 80% because it already cover the total number of alignments (4,060 alignments).
 
 To change the interval setting use the `--interval` option. For example:
 
 ```Bash
-segul summary -i alignments/*.nexus --interval 1
+segul align summary -i alignments/*.nexus --interval 1
 ```
 
 `segul` support interval 1, 2, 5, and 10. Using Oliveros et al. (2019) dataset, the data matrix completeness result will be as below:
@@ -173,13 +173,13 @@ Data Matrix Completeness
 By default, the two csv files are saved in `SEGUL-Stats` directory. You can change the directory name by using `--output` or `-o` option. For example:
 
 ```Bash
-segul summary -d alignments/ -f nexus -o alignment_stats
+segul align summary -d alignments/ -f nexus -o alignment_stats
 ```
 
 You can also add prefix to the csv filenames using `--prefix` option. For example:
 
 ```Bash
-segul summary -d alignments/ -f nexus -o alignment_stats --prefix my_alignment
+segul align summary -d alignments/ -f nexus -o alignment_stats --prefix my_alignment
 ```
 
 The command above will crate a directory name `alignment_stats/` and write the csv output files in it. Using the `--prefix` option, the output filename for taxon summary will be `my_alignment_taxon_summary.csv` and for the locus summary will be `my_alignment_locus_summary.csv`. Note that, as mention [above](./summary#computing-sequence-summary-statistics-for-dna-sequences), the summary stats for all alignment will be written to the log file `segul.log`.
