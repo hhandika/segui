@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Welcome
+# Introduction
 
 **Thank you for using SEGUL!** 🙏🏻
 
