@@ -6,7 +6,7 @@ sidebar_position: 1
 
 **Thank you for using SEGUL!** 🙏🏻
 
-We develop `segul` to fill the need for a high-performance and accessible phylogenomic tools. The program is designed to be fast, memory-efficient, cross-platform, and easy to use. It is suitable for large-scale phylogenomic projects, especially for those who work with thousands of loci and hundreds of samples.
+We develop `segul` to fill the need for a high-performance and accessible phylogenomic tool. The program is designed to be fast, memory-efficient, cross-platform, and easy to use. It is suitable for large-scale phylogenomic projects, especially for those who work with thousands of loci and hundreds of samples.
 
 ## Citation
 
@@ -46,8 +46,6 @@ If your answer is yes to any of the following questions, you should use the CLI 
 Follow the installation instruction for your operating system. The fastest installation route for CLI is using the pre-compiled binaries [here](./installation/install_binary). Get the most up to date link for GUI installation [here](./installation/install_gui).
 
 ### Usage
-
-#### Usage quick links
 
 | Feature                        | Quick Link                                                  |
 | ------------------------------ | ----------------------------------------------------------- |
