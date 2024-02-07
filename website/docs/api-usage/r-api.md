@@ -21,16 +21,16 @@ install.packages("rextendr")
 
 ### Load `rextendr`
 
-```r
+```python
 library(rextendr)
 ```
 
 ### Check Rust installation
 
-```r
+```python
 rust_sitrep()
 
-Rust infrastructure sitrep:
+# Rust infrastructure sitrep:
 # ✔ "rustup": 1.26.0 (5af9b9484 2023-04-05)
 # ✔ "cargo": 1.75.0 (1d8b05cdd 2023-11-20)
 # ℹ host: aarch64-apple-darwin
@@ -56,7 +56,7 @@ rust_source(code = segul_code, dependencies = list(segul = "*"))
 
 ### Call SEGUL function in R
 
-```r
+```python
 alphabet()
 
 # [1] "?-ACGTNRYSWKMBDHV."
