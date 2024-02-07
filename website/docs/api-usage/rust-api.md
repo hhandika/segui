@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-title: Rust API
+title: Rust
 ---
 
 ## Using SEGUL API in Rust
