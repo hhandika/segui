@@ -68,12 +68,14 @@ Follow the installation instruction for your operating system. The fastest insta
 
 1. Open the app.
 2. Use the navigation bar to select the feature you want to use. For example, if you want to concatenate alignments, click the "Alignments" button.
-3. Use the dropdown menu to select the task. For example, if you want to concatenate alignments, select "Concatenate alignments".
-4. Add the input files by clicking the "Add file" button. On desktop platforms, you can also input a directory by clicking the "Add directory" button. The app will look for matching files in the directory. All the input files will be displayed in the input tab bar.
-5. Add the output directory by clicking the "Add output directory" button. On mobile platforms, the directory will be the default directory for the app.
-6. For some tasks, you also need to add the parameters. For example, if you want to filter alignments, you need to add the filtering parameters.
-7. Click the "Run" button to start the task.
-8. Once it's done, the app will display the output in the output tab bar. You can also tab the file to open it in the app file viewer. Current version only support plain text and comma-separated (CSV) data.
+3. Use the dropdown menu to select the task. For alignment concatenation, select "Concatenate alignments".
+4. Add the input files by clicking the "Add file" button. On desktop platforms, you can also input a directory by clicking the "Add directory" button. The app will look for matching files in the directory.
+5. All the input files will be displayed in the input tab bar. You can remove the file by clicking the "Remove" button. Removing the file will only remove it from input list and not from the file system.
+6. Add the output directory by clicking the "Add output directory" button. On mobile platforms, the directory will be the default directory for the app.
+7. For some tasks, you also need to add the parameters. For example, if you want to filter alignments, you need to add the filtering parameters.
+8. Click the "Run" button to start the task.
+9. Once it's done, the app will display the output in the output tab bar. You can also tab the file to open it in the app file viewer. Current version only support plain text and comma-separated (CSV) data.
+10. You can also share the output. There are two share options. The quick share will create a zip file containing the output and share it using the system share sheet. You can also share individual files by clicking the share button on the file output viewer.
 
 :::note
 The GUI version is still in beta. If you encounter any issues, please report them to the [issue tracker](https://github.com/hhandika/segui/issues).
@@ -84,7 +86,7 @@ The GUI version is still in beta. If you encounter any issues, please report the
 `segul` command is structured as follows:
 
 ```bash
-segul <parent-subcommand> <child-subcommand> --option1 value1 --option2 value2
+segul <command> <subcommand> --option1 value1 --option2 value2
 ```
 
 For example, to concatenate alignments:
@@ -96,7 +98,7 @@ segul align concat --input alignments/*.nexus --output aln-concat
 See the [command usage](./cli-usage/command_options.md) section for more detailed usage.
 
 :::warning
-Command below expect SEGUL version 0.19.0+. If you are using lower version, ignore the parent subcommands and dir input option required input format.
+The commands below expect SEGUL version 0.19.0+. If you are using lower version, the subcommand become the command and dir input option required input format.
 
 For example:
 
@@ -104,7 +106,7 @@ For example:
 segul alignment concat -d <input-directory>
 ```
 
-should be:
+In the version lower than 0.19.0, the command above will be:
 
 ```bash
 segul concat -d <input-directory> -f <input-format>
@@ -129,8 +131,8 @@ segul concat -d <input-directory> -f <input-format>
 | Sequence removal               | `segul sequence remove -d <input-directory>`                       |
 | Sequence translation           | `segul sequence translate -d <input-directory>`                    |
 | Main help                      | `segul --help`                                                     |
-| Parent subcommand help         | `segul <subcommand> --help`                                        |
-| Child subcommand help          | `segul <subcommand> <subcommand> --help`                           |
+| Command help         | `segul <command> --help`                                        |
+| Subcommand help          | `segul <command> <subcommand> --help`                           |
 
 ## Additional Resources
 

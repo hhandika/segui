@@ -12,18 +12,22 @@ The GUI version of `segul` is available for all major desktop and mobile platfor
 
 | Platform                          | GUI | CLI |
 | --------------------------------- | --- | --- |
-| Linux                             | ✅   | ✅   |
-| MacOS                             | ✅   | ✅   |
-| Windows                           | ✅   | ✅   |
-| Windows Subsystem for Linux (WSL) | ✅   | ✅   |
+| Linux                             | ✅  | ✅  |
+| MacOS                             | ✅  | ✅  |
+| Windows                           | ✅  | ✅  |
+| Windows Subsystem for Linux (WSL) | ❌  | ✅  |
 
 ### Mobile
 
 | Platform | GUI | CLI |
 | -------- | --- | --- |
-| iOS      | ✅   | ❌   |
-| iPadOS   | ✅   | ❌   |
-| Android  | ✅   | ❌   |
+| iOS      | ✅  | ❌  |
+| iPadOS   | ✅  | ❌  |
+| Android  | ✅  | ❌  |
+
+:::note
+The CLI version works on Android using [Termux](https://termux.dev/). However, we recommend using the GUI version instead.
+:::
 
 ## Features comparison
 
@@ -31,11 +35,11 @@ All the main features are supported in both CLI and GUI. However, there are some
 
 | Feature                                              | CLI | GUI |
 | ---------------------------------------------------- | --- | --- |
-| Text and table viewer                                | ❌   | ✅   |
-| Mobile OS support                                    | ❌   | ✅   |
-| `--dry-run` option for some commands                 | ✅   | ❌   |
-| Filter out alignment with multiple percentage values | ✅   | ❌   |
-| Handling complex directory structure                 | ✅   | ❌   |
+| Text and table viewer                                | ❌  | ✅  |
+| Mobile OS support                                    | ❌  | ✅  |
+| `--dry-run` option for some commands                 | ✅  | ❌  |
+| Filter out alignment with multiple percentage values | ✅  | ❌  |
+| Handling complex directory structure                 | ✅  | ❌  |
 
 ## Task Group
 

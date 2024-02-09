@@ -2,7 +2,21 @@
 sidebar_position: 0
 ---
 
-# General Guideline
+# General Guidelines
+
+This page provides general guidelines for using SEGUI. It covers the following topics:
+
+- [General Guidelines](#general-guidelines)
+  - [File Input](#file-input)
+    - [Input from selected files (mobile and desktop)](#input-from-selected-files-mobile-and-desktop)
+    - [Input from a directory (desktop only)](#input-from-a-directory-desktop-only)
+    - [Adding more files](#adding-more-files)
+    - [Removing files](#removing-files)
+    - [Specific Guideline for Smartphone Users](#specific-guideline-for-smartphone-users)
+    - [Specific Guideline for macOS Users](#specific-guideline-for-macos-users)
+  - [Optional Parameters](#optional-parameters)
+  - [Output](#output)
+  - [Sharing Output](#sharing-output)
 
 ## File Input
 
@@ -10,24 +24,36 @@ The GUI version offer two input options for the desktop application and one inpu
 
 ### Input from selected files (mobile and desktop)
 
-This option allows users to select files from their local storage. You can use the `Select All` button on mobile devices to select all files. On desktop platforms, you can use the `Ctrl/Cmd` or `Shift` key to select multiple files or use `Ctrl/Cmd + A` to select all files.
+This option requires users to select file individually. You can use the `Select All` button on mobile devices to select all files in a directory. On desktop platforms, you can use the `Ctrl/Cmd` or `Shift` key to select multiple files or use `Ctrl/Cmd + A` to select all files.
 
 ### Input from a directory (desktop only)
 
 This option allows users to select a directory. The app will look for files that match the supported file extensions in the directory. Recursive search is not yet supported.
 
+### Adding more files
+
+For tasks that allow multiple input files, you can add more files to the input list by clicking the `Add files` button. This button is available on both mobile and desktop platforms. On desktop platforms, it also allows you to add files from a directory.
+
+### Removing files
+
+To remove a file, select the input tab. You can remove files from the input list by clicking the `remove` button. Removing files will not delete the files from your storage. It only removes them from the input list.
+
+### Specific Guideline for Smartphone Users
+
+Phylogenomic datasets typically consist of over a thousand files. Mobile operating systems, including Android since SDK 30, forbid direct access to a file for security reasons. The app to cache input files to the app designated temporary directory. This process can be slow and may cause the app to crash if the device's RAM is insufficient. We suggest dividing the files into smaller batches for optimal performance. Our tests show that the app can handle up to 1,500 files at once on a [Xiaomi Redmi Note 12](https://www.gsmarena.com/xiaomi_redmi_note_12-12063.php) with 8 Gb of RAM. Smaller batches will make the input process faster and more stable. Future updates will include support for compressed files, which will allow users to input large datasets more efficiently.
+
+### Specific Guideline for macOS Users
+
+Our app prioritizes security by utilizing [App Sandbox](https://developer.apple.com/documentation/security/app_sandbox), which inherently limits its access to your file system to protect your data. During our testing phase on macOS Sonoma, we found that the app encountered issues when processing thousands of files stored in the document folder. However, it functioned as expected when the data was located in the download folder or an external drive. You can allow full disk access to the app by going to `System Preferences > Security & Privacy > Privacy > Full Disk Access` and adding the app to the list. This will allow the app to access your files in the document folder. However, we do not recommend this approach due to the security risks it poses. We are working on a solution to improve the app's performance when accessing files in the document folder.
+
+## Optional Parameters
+
+Some tasks have optional parameters. Follow the task's documentation to learn more about the parameters and their usage.
+
 ## Output
 
 On desktop platforms, the application saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To copy the output or share it with other applications or devices, simply utilize the 'Share' button. The quick share button will compress output files and share it as a single file, whereas the 'Share' button the `Output` window allows you to share the output individually.
 
-## Specific Guideline for Smartphone Users
+## Sharing Output
 
-SEGUI is engineered to function seamlessly on both Android and iOS devices. We’ve conducted tests on both platforms, but due to limited resources, we couldn’t test the app on all devices. If you come across any bugs, we encourage you to report them to us. Here are a few considerations for using the app:
-
-Phylogenomic datasets typically consist of over a thousand files. The file input interface may not support loading all of them simultaneously. We suggest dividing the files into smaller batches for optimal performance. Our tests show that the app can handle up to 1,500 files at once on a [Xiaomi Redmi Note 12](https://www.gsmarena.com/xiaomi_redmi_note_12-12063.php) with 8 Gb of RAM.
-
-## Specific Guideline for macOS Users
-
-Our app prioritizes security by utilizing [App Sandbox](https://developer.apple.com/documentation/security/app_sandbox), which inherently limits its access to your file system to protect your data. During our testing phase on macOS Sonoma, we found that the app encountered issues when processing thousands of files stored in the document folder. However, it functioned as expected when the data was located in the download folder or an external drive. Recent update on macOS Sonoma/Xcode seems to have resolved this issue. Nonetheless, if you experience permission issues while running the app with a large number of files, we recommend moving the files to the download folder or an external drive as a workaround.
-
-Looking ahead, we plan to enhance our app's functionality by supporting input of compressed files (e.g., zip, tar.gz). This feature will enable users to process large datasets more efficiently by reducing the number of files.
+The app allows you to share the output files with other apps, such as OneDrive, DropBox, etc. or devices. For instance, using AirDrop for macOS. After the app finish executing a task, the "Run" button will be replace by the `Quick Share` button. Pressing this button will compress the output files and share them as a single file. You can also use the `Share` button in the `Output` window to share the output files individally.

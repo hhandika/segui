@@ -13,28 +13,54 @@ The pre-compiled binary is available in [the release page](https://github.com/hh
 
 See specific details below:
 
-## Linux/WSL/MacOS
+## Linux/WSL
 
-We provide two versions of the app for Linux. The zip file labeled with `musl` is a fully static library. If you are running the app in HPC, you should use this version. The other version (labeled `Linux` only) is compiled using [Ubuntu 20.04 LTS (Kernel version 5.8)](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md). You should use this version if you are using a more up to date Linux distribution. This version also works on WSL. In simple words, if you encounter [GLIBC](https://www.gnu.org/software/libc/) error, try using the `musl` version. If the issue still persists, try to [install the app using cargo](https://docs.page/hhandika/segul-docs/install_cargo).
+SEGUL is highly optimized to be as fast and efficient as possible. For this reason, we provide two versions of the app for Linux:
 
-For MacOS, the executables are available for Intel Macs and Apple ARM Macs, such as Apple M1 series. The ARM version is labeled with `arm64`. If you are using an Intel Mac, you should use the version labeled with `x86_64`.
+- **Fully static executable** using [musl libc](https://musl.libc.org/). This version is suitable for running the app on old Linux distributions or some HPC systems. The file is named `segul-Linux-musl-x86_64.tar.gz`.
+- **Dinamically linked executable** using [glibc](https://www.gnu.org/software/libc/). This version is suitable for running the app on modern Linux distributions. The file is named `segul-Linux-x86_64.tar.gz`.
 
-Here, we use the version 0.18.1 as an example. You should replace the link with the most up to date version available in the release page.
+Check GLIBC version:
 
-- Download the binary.
-
-```Bash
-
-wget https://github.com/hhandika/segul/releases/download/v0.18.1/segul-macOS-arm64.tar.gz
+```python
+ldd --version
 ```
 
-- Unzip the file.
+Output example:
 
-```Bash
-tar xfvz segul-macOS-arm64.tar.gz
+```python
+# ldd (Ubuntu GLIBC 2.35-0ubuntu3.1) 2.35
+# Copyright (C) 2022 Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.  There is NO
+# warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# Written by Roland McGrath and Ulrich Drepper.
 ```
 
-- Make it executable. This step may not be necessary. However, if your terminal app does not recognize the binary, you can try this step.
+If your version is **glibc 2.17+**, you can use the version labeled `Linux`. If your version is older, you should use the version labeled `Linux-musl`.
+
+- Download the binary
+
+Here, we use the version 0.20.2 as an example. You should replace the link with the most up to date version available in the release page.
+
+```Bash
+wget https://github.com/hhandika/segul/releases/download/v0.20.2/segul-Linux-x86_64.tar.gz
+```
+
+Using curl:
+
+```Bash
+curl -LJO https://github.com/hhandika/segul/releases/download/v0.20.2/segul-Linux-x86_64.tar.gz
+```
+
+- Uncompress the file
+
+```Bash
+tar xfvz segul-Linux-x86_64.tar.gz
+```
+
+- Make it executable (optional)
+
+It may not be necessary. However, if your terminal app does not recognize the binary, you can try this step.
 
 ```Bash
 chmod +x segul
@@ -46,7 +72,59 @@ If you would like the binary executable for all users:
 chmod a+x segul
 ```
 
-The next step is putting the binary in a folder registered in your PATH variable. Copy SEGUL executable to the folder. Then, try call SEGUL from anywhere in your system:
+- Put it in a folder registered in your PATH variable
+
+Copy SEGUL executable to the folder. Then, try call SEGUL from anywhere in your system:
+
+```Bash
+segul --version
+```
+
+## MacOS
+
+For MacOS, the executables are available for Intel Macs and Apple ARM M series processor.
+
+- **Intel Macs**. The file is named `segul-macOS-x86_64.tar.gz`.
+- **Apple ARM M series CPUs**. The file is named `segul-macOS-arm64.tar.gz`.
+
+- Download the binary
+
+Here, we use the version 0.20.2 for Apple ARM processors as an example. You should replace the link with the most up to date version available in the release page.
+
+```Bash
+
+wget https://github.com/hhandika/segul/releases/download/v0.20.2/segul-macOS-arm64.tar.gz
+```
+
+Using curl:
+
+```Bash
+curl -LJO https://github.com/hhandika/segul/releases/download/v0.20.2/segul-macOS-arm64.tar.gz
+```
+
+- Uncompress the file
+
+```Bash
+tar xfvz segul-macOS-arm64.tar.gz
+```
+
+- Make it executable (optional)
+
+This step may not be necessary. However, if your terminal app does not recognize the binary, you can try this step.
+
+```Bash
+chmod +x segul
+```
+
+If you would like the binary executable for all users:
+
+```Bash
+chmod a+x segul
+```
+
+- Put it in a folder registered in your PATH variable
+
+Copy SEGUL executable to the folder. Then, try call SEGUL from anywhere in your system:
 
 ```Bash
 segul --version
@@ -54,12 +132,14 @@ segul --version
 
 It should show the SEGUL version number.
 
-> **Pro Tips**:
-> It is best to avoid registering too many paths in your environment variable. It will slow down your terminal startup. If you already used a single executable cli app, the chance is that you may already have a folder registered in your path variable. Copy `segul` executable to the folder instead. For MacOS users, we recommend using [iTerm2](https://iterm2.com/) for easier navigation in the Terminal.
+:::tip
+It is best to avoid registering too many paths in your environment variable. It will slow down your terminal startup. If you already used a single executable cli app, the chance is that you may already have a folder registered in your path variable. Copy `segul` executable to the folder instead. For MacOS users, we recommend using [iTerm2](https://iterm2.com/) or [warp](https://www.warp.dev/) for easier navigation in the Terminal.
+:::
 
 ## Windows
 
 This instruction is for running SEGUL native on Windows. If you are using WSL, you install the Linux version of the app by following the instruction above. However, running SEGUL on native Windows is more efficient due to a better access to the hardware than the WSL. The installation procedure is similar to the MacOS or Linux. After downloading the zip file for Windows and extracting it, you will setup your environment variable pointing to the path where you will put the executable. In Windows, this is usually done using GUI. Follow this amazing guideline from the stakoverflow [to setup the environment variable](https://stackoverflow.com/questions/44272416/how-to-add-a-folder-to-path-environment-variable-in-windows-10-with-screensho). After setup, copy the segul.exe file to the folder.
 
-> **Windows Pro Tips**:
-> We recommend using a combination of [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) and [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) for easy navigation in the terminal. Windows terminal comes pre-installed on Windows 11. It is available on Microsoft Store for Windows 10 users. You can also use [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the Linux version of SEGUL. Keep in mind that, if your data is big and it is in the Windows partition, WSL 1 will be 2-3 times faster than WSL 2. If you are using WSL 2, you should put your data in the Linux partition. Learn more about WSL [here](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
+:::tip
+We recommend using a combination of [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) and [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) for easy navigation in the terminal. Windows terminal comes pre-installed on Windows 11. It is available on Microsoft Store for Windows 10 users. You can also use [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the Linux version of SEGUL. Keep in mind that, if your data is big and it is in the Windows partition, WSL 1 will be 2-3 times faster than WSL 2. If you are using WSL 2, you should put your data in the Linux partition. Learn more about WSL [here](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
+:::
