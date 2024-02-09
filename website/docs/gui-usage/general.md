@@ -6,6 +6,10 @@ sidebar_position: 0
 
 This page provides general guidelines for using SEGUI. It covers the following topics:
 
+- [Task Selection](#task-selection)
+  - [Alignments](#alignments)
+  - [Genomic](#genomic)
+  - [Sequences](#sequences)
 - [File Input](#file-input)
   - [Input from selected files (mobile and desktop)](#input-from-selected-files-mobile-and-desktop)
   - [Input from a directory (desktop only)](#input-from-a-directory-desktop-only)
@@ -16,6 +20,38 @@ This page provides general guidelines for using SEGUI. It covers the following t
 - [Optional Parameters](#optional-parameters)
 - [Output](#output)
 - [Sharing Output](#sharing-output)
+
+## Task Selection
+
+The app allows you to select a task from the navigation bar. Task categories include:
+
+### Alignments
+
+For tasks related to multiple sequence alignments, such as concatenation, conversion, filtering, and splitting.
+
+- [Alignment concatenation](./concat)
+- [Alignment conversion](./convert)
+- [Alignment filtering](./filter)
+- [Alignment splitting](./split)
+- [Alignment partition conversion](./partition)
+- [Alignment summary statistics](./summary)
+
+### Genomic
+
+For tasks related to genomic data, such as sequence read and contig.
+
+- [Sequence read summary statistics](./read-summary)
+- [Contig summary statistics](./contig-summary)
+
+### Sequences
+
+For tasks related to sequence data that already processed. The input can also be alignment files.
+
+- [Sequence extraction](./sequence-extract)
+- [Sequence ID extraction](./sequence-id)
+- [Sequence ID mapping](./sequence-id-map)
+- [Sequence removal](./sequence-remove)
+- [Sequence translation](./sequence-translate)
 
 ## File Input
 
@@ -67,7 +103,7 @@ List of supported file extensions for genomic tasks:
 - Compressed sequence read: `.fastq.gz`, `.fq.gz`
 - Contig: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
 
-## Data Type (Alignment and standard sequence only)
+## Data Type (alignment and standard sequence only)
 
 The app supports both nucleotide and amino acid sequences. By default, it sets to `DNA`. You can also use `Ignore` to ignore the data type.
 
