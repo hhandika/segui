@@ -36,4 +36,29 @@ We recommend using the `Ignore` option only if you are sure the file is intact a
 
 ### Output
 
-The app saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To copy the output or share it with other applications or devices, simply utilize the 'Share' button. The quick share button will compress output files and share it as a single file, whereas the 'Share' button the `Output` window allows you to share the output individually.
+On desktop, you can add the output directory by clicking the `Add output directory` button. On mobile, the directory will be the default directory for the app. The directory name input will create a new directory if it doesn't exist inside the default directory.
+
+#### Prefix
+
+The app will use the prefix to name the output file. In the CLI version, the app has a default prefix. However, for the GUI version, you need to set the prefix manually. The prefix will be used as the output file name for the concatenated alignment and the partition file.
+
+For example, if you set the prefix to `concat`, for nexus output and RAxML partition, the app will create two files: `concat.nex` and `concat_partitions.txt`.
+
+#### Output format
+
+The app supports FASTA, NEXUS, and PHYLIP output formats. By default, it sets to non-interleaved format. You can set it to interleaved format by clicking the `set interleave format` button. Use the `show more` button to see the options.
+
+#### Partition format
+
+The app supports Charset, NEXUS, and RAxML. The charset option only works when the output is NEXUS. It also allows to set to codon model partition. Use the `show more` button to see the options.
+
+### Running the task
+
+Click the `Run` button labeled `Concatenate` to start the task. We recommend to not leave the app window while the task is running. The app will display the output in the output tab bar once it's done.
+
+#### Output file
+
+- Concatenated alignment file
+- Partition file (optional)
+
+For charset partition, the partition will be in the same file as the alignment.
