@@ -7,20 +7,20 @@ sidebar_position: 2
 `segul` command is structured this way:
 
 ```Bash
-<PROGRAM-NAME> <SUBCOMMAND> <OPTIONS> [VALUES] <FLAGS>
+<PROGRAM-NAME> <COMMAND> <SUBCOMMAND> <OPTIONS> [VALUES] <FLAGS>
 ```
 
 The program name is `segul` on Linux, MacOS, and Windows Subsystem for Linux, and `segul.exe` on Windows. `segul` features are available using the subcommands. Each of the subcommands has options, and some of them also have flags. Options require users to input the value, such as the `--dir` option that requires users to input the path to the alignment directory: `--dir alignment_path/` . Some options are available across all subcommands, whereas the other options are specific to certain subcommands (see below). Flags are used without a value, such as `--sort` flag in the `convert` subcommand that is used to sort sequences in the output files.
 
 We try to keep `segul` command consistent:
 
-1. SEGUL commands consist of parent and child subcommands. For example, `segul sequence convert` and `segul align concat`.
+1. SEGUL CLI consist of command and subcommands. For example, `segul sequence convert` and `segul align concat`.
 2. Long options always prefix with double dashes (`--`). For example, the `--input` option.
 3. Short options always prefix with a single dash (`-`). For example, the short option of `--input` is `-i`.
 4. Options with equal sign (`=`), such as `--re=`, require the input values to be in a single or double quotation. For example, `--re="^Genus"`.
 5. Some options are available both in long and short versions. The rest of the options are only available in long versions. `segul` command options will never be available only in a short version.
 
-Below is the details about all the subcommmands, available options and flags.
+Below is the details about all the commands, available options and flags.
 
 ```Bash
 Usage: segul [OPTIONS] <COMMAND>
@@ -41,33 +41,38 @@ Options:
 
 ## Help options
 
-To show available subcommands, you can type just `segul`, `segul --help`, or `segul -h`. It will show all the available subcommands and their functions.
+To show available commands, you can type just `segul`, `segul --help`, or `segul -h`. It will show all the available commands and their functions.
 
-To show available options in each of the subcommands, use `segul <SUBCOMMAND> --help` or `segul <SUBCOMMAND> -h`. The help function will show all the options, default value (if available) or possible values you can input when it is limited by the program.
+To show available subcommands in each of the commands, use `segul <COMMAND> <SUBCOMMAND> --help` or `segul <COMMAND> <SUBCOMMAND> -h`. The help function will show all the options, default value (if available) or possible values you can input when it is limited by the program.
 
 For example, terminal output for `segul convert -h`:
 
 ```Bash
-segul-convert
 Convert sequence formats
 
-USAGE:
-    segul convert [OPTIONS] --output <STRING> --input-format <SEQ-FORMAT> --datatype <DATATYPE>
+Usage: segul align convert [OPTIONS]
 
-OPTIONS:
-    -d, --dir <PATH>                    Input a directory path
-        --datatype <DATATYPE>           Specify data type [default: dna] [possible values: dna, aa,
-                                        ignore]
-    -f, --input-format <SEQ-FORMAT>     Specify an input format [default: auto] [possible values:
-                                        auto, fasta, nexus, phylip]
-    -F, --output-format <SEQ-FORMAT>    Specify an output sequence format [default: nexus] [possible
-                                        values: nexus, phylip, fasta, fasta-int, nexus-int, phylip-
-                                        int]
-    -h, --help                          Print help information
-    -i, --input <INPUT-PATH>...         Input path (include wildcard support)
-    -o, --output <STRING>               Specify an output directory [default: SEGUL-Convert]
-        --overwrite                     Remove existing output file(s)/directory
-        --sort                          Sort the alignments
+Options:
+  -d, --dir <PATH>
+          Input a directory
+  -i, --input <INPUT>...
+          Input a path (allow wildcard)
+      --force
+          Force overwriting existing output files/directory
+  -f, --input-format <SEQUENCE INPUT FORMAT>
+          Specify input format [default: auto] [possible values: auto, fasta, nexus, phylip]
+      --datatype <DATATYPE>
+          Specify sequence datatype [default: dna] [possible values: dna, aa, ignore]
+  -F, --output-format <OUTPUT_FMT>
+          Specify output format [default: nexus] [possible values: fasta, nexus, phylip, fasta-int, nexus-int, phylip-int]
+      --log <LOG>
+          Log file path [default: segul.log]
+  -o, --output <OUTPUT>
+          Output path [default: Align-Convert]
+      --sort
+          Sort sequences by IDs alphabetically
+  -h, --help
+          Print help
 ```
 
 ## Input options
@@ -82,7 +87,7 @@ The standard input option is reserved for complex folder structure or when your 
 For example, your alignment files are stored in multiple folders and you would like to generate summary statistics for all of them. Instead of running SEGUL multiple times, you can generate the statistics in a single run using the wildcard option:
 
 ```Bash
-segul summary -i folder_1/*.nex folder_2/*.nex folder_3/*.nex
+segul align summary -i folder_1/*.nex folder_2/*.nex folder_3/*.nex
 ```
 
 Below are several other examples on using `--input` (or `-i` in short format):
@@ -90,19 +95,19 @@ Below are several other examples on using `--input` (or `-i` in short format):
 Inputing multiple file in a directory using wildcard:
 
 ```Bash
-segul <SUBCOMMAND> -i alignment-dir/*.fasta
+segul <COMMAND> <SUBCOMMAND> -i alignment-dir/*.fasta
 ```
 
 Inputing multiple files in multiple directories:
 
 ```Bash
-segul <SUBCOMMAND> -i alignment-dir1/*.fasta alignment-dir2/*.fasta
+segul <COMMAND> <SUBCOMMAND> -i alignment-dir1/*.fasta alignment-dir2/*.fasta
 ```
 
 For unusual file extensions or if the app failed to detect the file format, specify the input format:
 
 ```Bash
-segul <SUBCOMMAND> -i alignment-dir/*.aln -f fasta
+segul <COMMAND> <SUBCOMMAND> -i alignment-dir/*.aln -f fasta
 ```
 
 ## Input format
@@ -111,7 +116,7 @@ Arguments: `-f` or `--input-format`
 
 Availabilities: all subcommands
 
-It is used to specify the input format and support both sequential and interleave format. If you use the standard input `--input` or `-i`, for most cases, you don't need to specify the input format. `segul` will infer it based on the file extension. Specify the input format if your file extension is unsual, for example `.aln` instead of `.fasta` or `.fas`.
+It is used to specify the input format and support both sequential and interleave format. If you use the standard input `--input` or `-i`, for most cases, you don't need to specify the input format. `segul` will infer it based on the file extension. Specify the input format if your file extension is unusual, for example `.aln` instead of `.fasta` or `.fas`.
 
 Input format options (all in lowercase):
 
