@@ -92,13 +92,13 @@ segul align summary -i folder_1/*.nex folder_2/*.nex folder_3/*.nex
 
 Below are several other examples on using `--input` (or `-i` in short format):
 
-Inputing multiple file in a directory using wildcard:
+Inputting multiple file in a directory using wildcard:
 
 ```Bash
 segul <COMMAND> <SUBCOMMAND> -i alignment-dir/*.fasta
 ```
 
-Inputing multiple files in multiple directories:
+Inputting multiple files in multiple directories:
 
 ```Bash
 segul <COMMAND> <SUBCOMMAND> -i alignment-dir1/*.fasta alignment-dir2/*.fasta
