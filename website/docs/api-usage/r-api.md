@@ -41,6 +41,18 @@ rust_sitrep()
 
 ### Write SEGUL code in R
 
+For example, to call the `alphabet` function from the `segul` crate:
+
+```rust
+use segul::helper::alphabet;
+
+fn alphabet() -> String {
+    alphabet::DNA_STR_UPPERCASE.to_string()
+}
+```
+
+In R, you can use the `rust_source` function from `rextendr` to call the SEGUL function.
+
 ```r
 segul_code <- r"(
 use segul::helper::alphabet;
