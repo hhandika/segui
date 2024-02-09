@@ -4,7 +4,7 @@ sidebar_position: 14
 
 # Sequence Extraction
 
-This page provides guidelines for extracting sequences using SEGUI. We recommend checking the [general guidelines](./general) before using the app. This page covers the following topics:
+Extract sequences from alignment files based on sequence IDs or regular expression.
 
 - [Steps](#steps)
 - [Parameters](#parameters)

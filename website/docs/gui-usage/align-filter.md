@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Alignment Filtering
 
-This page provides guidelines for filtering multiple sequence alignments using SEGUI. We recommend checking the [general guidelines](./general) before using the app. This page covers the following topics:
+Filtering alignments based on the length (sites), taxa completeness, parsimony informative sites, or percent of parsimony informative sites.
 
 - [Steps](#steps)
 - [Parameters](#parameters)
@@ -45,4 +45,4 @@ The value is counted based on to highest number of parsimony informative sites a
 
 ## Concatenating the output
 
-You can opt to concatenate the output by clicking the `Concatenate output` button. It will show the parameters to concatenate the output. It similar to the [alignment concatenation](./concat.md) parameters. The app will concatenate the output based on the parameters you set. The app will also create a partition file.
+You can opt to concatenate the output by clicking the `Concatenate output` button. It will show the parameters to concatenate the output. It similar to the [alignment concatenation](./align-concat) parameters. The app will concatenate the output based on the parameters you set. The app will also create a partition file.

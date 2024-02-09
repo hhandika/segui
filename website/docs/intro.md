@@ -49,19 +49,19 @@ Follow the installation instruction for your operating system. The fastest insta
 
 | Feature                        | Quick Link                                                  |
 | ------------------------------ | ----------------------------------------------------------- |
-| Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](./gui-usage/concat)       |
-| Alignment conversion           | [CLI](./cli-usage/convert) / [GUI](./gui-usage/convert)     |
-| Alignment filtering            | [CLI](./cli-usage/filter) / [GUI](./gui-usage/filter)       |
-| Alignment splitting            | [CLI](./cli-usage/split) / [GUI](./gui-usage/split)         |
-| Alignment partition conversion | [CLI](./cli-usage/partition) / [GUI](./gui-usage/partition) |
-| Alignment summary statistics   | [CLI](./cli-usage/summary) / [GUI](./gui-usage/summary)     |
+| Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](./gui-usage/align-concat)       |
+| Alignment conversion           | [CLI](./cli-usage/convert) / [GUI](./gui-usage/align-convert)     |
+| Alignment filtering            | [CLI](./cli-usage/filter) / [GUI](./gui-usage/align-filter)       |
+| Alignment splitting            | [CLI](./cli-usage/split) / [GUI](./gui-usage/align-split)         |
+| Alignment partition conversion | [CLI](./cli-usage/partition) / [GUI](./gui-usage/align-partition) |
+| Alignment summary statistics   | [CLI](./cli-usage/summary) / [GUI](./gui-usage/align-summary)     |
 | Genomic summary statistics     | [CLI](./cli-usage/genomic) / [GUI](./gui-usage/genomic)     |
-| Sequence extraction            | [CLI](./cli-usage/extract) / [GUI](./gui-usage/extract)     |
-| Sequence ID extraction         | [CLI](./cli-usage/id) / [GUI](./gui-usage/id)               |
-| Sequence ID mapping            | [CLI](./cli-usage/map.md) / [GUI](./gui-usage/id)           |
-| Sequence ID renaming           | [CLI](./cli-usage/rename) / [GUI](./gui-usage/rename)       |
-| Sequence removal               | [CLI](./cli-usage/remove) / [GUI](./gui-usage/remove)       |
-| Sequence translation           | [CLI](./cli-usage/translate) / [GUI](./gui-usage/translate) |
+| Sequence extraction            | [CLI](./cli-usage/extract) / [GUI](./gui-usage/sequence-extract)     |
+| Sequence ID extraction         | [CLI](./cli-usage/id) / [GUI](./gui-usage/sequence-id)               |
+| Sequence ID mapping            | [CLI](./cli-usage/map.md) / [GUI](./gui-usage/sequence-id-map)           |
+| Sequence ID renaming           | [CLI](./cli-usage/rename) / [GUI](./gui-usage/sequence-rename)       |
+| Sequence removal               | [CLI](./cli-usage/remove) / [GUI](./gui-usage/sequence-remove)       |
+| Sequence translation           | [CLI](./cli-usage/translate) / [GUI](./gui-usage/sequence-translate) |
 | Log file                       | [CLI](./cli-usage/log) / [GUI](./gui-usage/log)             |
 
 #### GUI Usage

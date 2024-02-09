@@ -3,13 +3,12 @@ sidebar_position: 3
 ---
 # Alignment Concatenation
 
-This page provides guidelines for concatenating multiple sequence alignments using SEGUI. We recommend checking the [general guidelines](./general) before using the app. This page covers the following topics:
+Concatenate multiple alignments into a single alignment with partition output.
 
 - [Steps](#steps)
 - [Prefix](#prefix)
 - [Output format](#output-format)
 - [Partition format](#partition-format)
-- [Running the task](#running-the-task)
 - [Output file](#output-file)
 
 ## Steps
@@ -39,10 +38,6 @@ The app supports FASTA, NEXUS, and PHYLIP output formats. By default, it sets to
 ## Partition format
 
 The app supports Charset, NEXUS, and RAxML. The charset option only works when the output is NEXUS. It also allows to set to codon model partition. Use the `show more` button to see the options.
-
-## Running the task
-
-Click the `Run` button labeled `Concatenate` to start the task. We recommend to not leave the app window while the task is running. The app will display the output in the output tab bar once it's done.
 
 ## Output file
 

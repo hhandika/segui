@@ -29,19 +29,19 @@ The app allows you to select a task from the navigation bar. Task categories inc
 
 For tasks related to multiple sequence alignments, such as concatenation, conversion, filtering, and splitting.
 
-- [Alignment concatenation](./concat)
-- [Alignment conversion](./convert)
-- [Alignment filtering](./filter)
-- [Alignment splitting](./split)
-- [Alignment partition conversion](./partition)
-- [Alignment summary statistics](./summary)
+- [Alignment concatenation](./align-concat)
+- [Alignment conversion](./align-convert)
+- [Alignment filtering](./align-filter)
+- [Alignment splitting](./align-split)
+- [Alignment partition conversion](./align-partition)
+- [Alignment summary statistics](./align-summary)
 
 ### Genomic
 
 For tasks related to genomic data, such as sequence read and contig.
 
-- [Sequence read summary statistics](./read-summary)
-- [Contig summary statistics](./contig-summary)
+- [Sequence read summary statistics](./genomic#sequence-read-summary-statistics)
+- [Contig summary statistics](./genomic#contig-summary-statistics)
 
 ### Sequences
 

@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Alignment Conversion
 
-This page provides guidelines for converting multiple sequence alignments using SEGUI. We recommend checking the [general guidelines](./general) before using the app. This page covers the following topics:
+Convert alignment from one format to another.
 
 - [Steps](#steps)
 - [Output](#output)

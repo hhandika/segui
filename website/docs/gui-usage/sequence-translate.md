@@ -4,33 +4,26 @@ sidebar_position: 16
 
 # Sequence Translation
 
-To translate dna alignment to amino acid:
+Translate DNA sequences to amino acid sequences.
 
-```Bash
-segul sequence translate -d [path-to-alignment-files] -f [sequence-format-keyword]
-```
+## Steps
 
-By default, the app will use the standard code table (NCBI Table 1). To set the translation table, use the `--table` option. For example, to translate dna sequences using NCBI Table 2 (vertebrate MtDNA):
+1. Select the `Sequence` button from the navigation bar.
+2. Select `Translate sequences` from the dropdown menu.
+3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
+4. Select the output directory by clicking the `Add directory` button.
+5. Select the output sequence format.
+6. Select the translation table. The default is the standard genetic code.
+7. Select the reading frame. The default is the first reading frame.
+8. Click the `Run` button labeled `Translate` to start the task.
 
-```Bash
-segul sequence translate -d loci/ -f fasta --table 2
-```
+## Output
 
-You can also set the reading frame using the `--rf` option:
+The app will generate a file containing the translated sequences. The default name is the input file.
 
-```Bash
-segul sequence translate -d loci/ -f fasta --table 2 --rf 2
-```
+## Supported translation Table
 
-To show all the table options, use the `--show-tables` flag:
-
-```Bash
-segul sequence translate --show-tables
-```
-
-## Supported Translation Tables
-
-Sources: [NCBI Genetic Code Tables](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#top):
+The app supports the following [translation tables](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi):
 
 | Table No | Genetic Code                                                                                 |
 | -------- | -------------------------------------------------------------------------------------------- |
