@@ -45,7 +45,7 @@ For tasks related to genomic data, such as sequence read and contig.
 
 ### Sequences
 
-For tasks related to sequence data that already processed. The input can also be alignment files.
+For tasks related to sequence data that already processed. The input can also be alignment files. We refer the input for these tasks as **standard sequence files**.
 
 - [Sequence extraction](./sequence-extract)
 - [Sequence ID extraction](./sequence-id)
