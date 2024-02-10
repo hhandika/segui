@@ -97,14 +97,8 @@ locus_3 = 1474-2000
 
 You can also use `charset` format. In this format, the partition will be written at the end of the sequence and only available for the nexus output. This format is usually required for phylogenetic programs, such PAUP and BEAST. To use `charset` format:
 
-For version 0.19.0+
-
 ```Bash
 segul align concat --input alignments/*.nexus --output concat --prefix concat --part charset
-```
-
-```Bash
-segul concat --input alignments/*.nexus --output concat --prefix concat --part charset
 ```
 
 You can also write the partition to a codon model format by using the flag `--codon`. You may not need this option for genomic datasets. We reserve this function for Sanger datasets.

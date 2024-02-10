@@ -6,20 +6,26 @@ sidebar_position: 0
 
 This page provides general guidelines for using SEGUI. It covers the following topics:
 
-- [Task Selection](#task-selection)
-  - [Alignments](#alignments)
-  - [Genomic](#genomic)
-  - [Sequences](#sequences)
-- [File Input](#file-input)
-  - [Input from selected files (mobile and desktop)](#input-from-selected-files-mobile-and-desktop)
-  - [Input from a directory (desktop only)](#input-from-a-directory-desktop-only)
-  - [Adding more files](#adding-more-files)
-  - [Removing files](#removing-files)
-  - [Specific Guideline for Smartphone Users](#specific-guideline-for-smartphone-users)
-  - [Specific Guideline for macOS Users](#specific-guideline-for-macos-users)
-- [Optional Parameters](#optional-parameters)
-- [Output](#output)
-- [Sharing Output](#sharing-output)
+- [General Guidelines](#general-guidelines)
+  - [Task Selection](#task-selection)
+    - [Alignments](#alignments)
+    - [Genomic](#genomic)
+    - [Sequences](#sequences)
+  - [File Input](#file-input)
+    - [Input from selected files (mobile and desktop)](#input-from-selected-files-mobile-and-desktop)
+    - [Input from a directory (desktop only)](#input-from-a-directory-desktop-only)
+    - [Adding more files](#adding-more-files)
+    - [Removing files](#removing-files)
+    - [Specific Guideline for Smartphone Users](#specific-guideline-for-smartphone-users)
+    - [Specific Guideline for macOS Users](#specific-guideline-for-macos-users)
+  - [Input format](#input-format)
+    - [Supported file extensions](#supported-file-extensions)
+      - [Alignment and standard sequence files](#alignment-and-standard-sequence-files)
+      - [Genomic data files](#genomic-data-files)
+  - [Data Type (alignment and standard sequence only)](#data-type-alignment-and-standard-sequence-only)
+  - [Optional Parameters](#optional-parameters)
+  - [Output](#output)
+  - [Sharing Output](#sharing-output)
 
 ## Task Selection
 
@@ -45,7 +51,7 @@ For tasks related to genomic data, such as sequence read and contig.
 
 ### Sequences
 
-For tasks related to sequence data that already processed. The input can also be alignment files. We refer the input for these tasks as **standard sequence files**.
+For works in sequence basis. The input can also be alignment files. We refer the input for these tasks throughout the documentation as **standard sequence files**.
 
 - [Sequence extraction](./sequence-extract)
 - [Sequence ID extraction](./sequence-id)
@@ -83,7 +89,11 @@ Our app prioritizes security by utilizing [App Sandbox](https://developer.apple.
 
 ## Input format
 
-SEGUI supports NEXUS, FASTA, and PHYLIP file formats. By default it sets to `Auto`. However, you can manually set the input format by clicking the `Format` button. The `Auto` option will automatically detect the file format based on the file extension. In most cases, the `Auto` is sufficient. The app will not allow you to add files with unsupported formats. If you encounter any issues with the input format, please report it to us.
+SEGUI supports NEXUS, FASTA, and PHYLIP file formats. By default it sets to `Auto`. However, you can manually set the input format by clicking the `Format` button. The `Auto` option will automatically detect the file format based on the file extension. Unlike, the CLI version, the GUI version will not allow inputting non-standard file extensions. If you have a non-standard file extension, you can change the file extension to one of the supported file extensions or use the CLI version.
+
+:::note
+The Android version may still allow non-standard file extensions. However, we recommend using the supported file extensions to avoid potential issues. Future updates may only support the standard file extensions.
+:::
 
 ### Supported file extensions
 

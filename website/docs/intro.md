@@ -6,7 +6,7 @@ sidebar_position: 1
 
 **Thank you for using SEGUL!** 🙏🏻
 
-We develop `segul` to fill the need for a high-performance and accessible phylogenomic tool. The program is designed to be fast, memory-efficient, cross-platform, and easy to use. It is suitable for large-scale phylogenomic projects, especially for those who work with thousands of loci and hundreds of samples.
+We have developed **SEGUL (Sequence and Genomics Utilities)** to address the need for a high-performance and accessible phylogenomic tool. This program is designed to be fast, memory-efficient, cross-platform, and user-friendly. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
 
 ## Citation
 
@@ -37,9 +37,11 @@ We develop `segul` to fill the need for a high-performance and accessible phylog
 
 If your answer is yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your need.
 
-1. Are you planning to run the app on a High-Performance Computing (HPC) cluster?
+1. Are you planning to run the app on non-GUI environment, such as a High-Performance Computing (HPC) cluster?
 2. Do you run SEGUL as part of a pipeline?
 3. Do you you need the utmost efficiency?
+
+Learn more about the differences between the CLI and GUI version [here](./cli_gui.md).
 
 ### Installation
 
