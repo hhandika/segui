@@ -18,18 +18,18 @@ We develop `segul` to fill the need for a high-performance and accessible phylog
 
 | Platform                          | GUI | CLI |
 | --------------------------------- | --- | --- |
-| Linux                             | ✅   | ✅   |
-| MacOS                             | ✅   | ✅   |
-| Windows                           | ✅   | ✅   |
-| Windows Subsystem for Linux (WSL) | ❌   | ✅   |
+| Linux                             | ✅  | ✅  |
+| MacOS                             | ✅  | ✅  |
+| Windows                           | ✅  | ✅  |
+| Windows Subsystem for Linux (WSL) | ❌  | ✅  |
 
 ### Mobile
 
 | Platform | GUI | CLI |
 | -------- | --- | --- |
-| iOS      | ✅   | ❌   |
-| iPadOS   | ✅   | ❌   |
-| Android  | ✅   | ❌   |
+| iOS      | ✅  | ❌  |
+| iPadOS   | ✅  | ❌  |
+| Android  | ✅  | ❌  |
 
 ## Quick Start ⏱️
 
@@ -47,22 +47,22 @@ Follow the installation instruction for your operating system. The fastest insta
 
 ### Usage
 
-| Feature                        | Quick Link                                                  |
-| ------------------------------ | ----------------------------------------------------------- |
-| Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](./gui-usage/align-concat)       |
-| Alignment conversion           | [CLI](./cli-usage/convert) / [GUI](./gui-usage/align-convert)     |
-| Alignment filtering            | [CLI](./cli-usage/filter) / [GUI](./gui-usage/align-filter)       |
-| Alignment splitting            | [CLI](./cli-usage/split) / [GUI](./gui-usage/align-split)         |
-| Alignment partition conversion | [CLI](./cli-usage/partition) / [GUI](./gui-usage/align-partition) |
-| Alignment summary statistics   | [CLI](./cli-usage/summary) / [GUI](./gui-usage/align-summary)     |
-| Genomic summary statistics     | [CLI](./cli-usage/genomic) / [GUI](./gui-usage/genomic)     |
+| Feature                        | Quick Link                                                           |
+| ------------------------------ | -------------------------------------------------------------------- |
+| Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](./gui-usage/align-concat)          |
+| Alignment conversion           | [CLI](./cli-usage/convert) / [GUI](./gui-usage/align-convert)        |
+| Alignment filtering            | [CLI](./cli-usage/filter) / [GUI](./gui-usage/align-filter)          |
+| Alignment splitting            | [CLI](./cli-usage/split) / [GUI](./gui-usage/align-split)            |
+| Alignment partition conversion | [CLI](./cli-usage/partition) / [GUI](./gui-usage/align-partition)    |
+| Alignment summary statistics   | [CLI](./cli-usage/summary) / [GUI](./gui-usage/align-summary)        |
+| Genomic summary statistics     | [CLI](./cli-usage/genomic) / [GUI](./gui-usage/genomic)              |
 | Sequence extraction            | [CLI](./cli-usage/extract) / [GUI](./gui-usage/sequence-extract)     |
 | Sequence ID extraction         | [CLI](./cli-usage/id) / [GUI](./gui-usage/sequence-id)               |
-| Sequence ID mapping            | [CLI](./cli-usage/map.md) / [GUI](./gui-usage/sequence-id-map)           |
+| Sequence ID mapping            | [CLI](./cli-usage/map.md) / [GUI](./gui-usage/sequence-id-map)       |
 | Sequence ID renaming           | [CLI](./cli-usage/rename) / [GUI](./gui-usage/sequence-rename)       |
 | Sequence removal               | [CLI](./cli-usage/remove) / [GUI](./gui-usage/sequence-remove)       |
 | Sequence translation           | [CLI](./cli-usage/translate) / [GUI](./gui-usage/sequence-translate) |
-| Log file                       | [CLI](./cli-usage/log) / [GUI](./gui-usage/log)             |
+| Log file                       | [CLI](./cli-usage/log) / [GUI](./gui-usage/log)                      |
 
 #### GUI Usage
 
@@ -123,7 +123,7 @@ segul concat -d <input-directory> -f <input-format>
 | Alignment partition conversion | `segul partition convert -d <input-directory>`                     |
 | Alignment summary statistics   | `segul align summary -d <input-directory>`                         |
 | Contig summary statistics      | `segul contig summary -d <input-directory>`                        |
-| Read summary statistics    | `segul read summary -d <input-directory>`                          |
+| Read summary statistics        | `segul read summary -d <input-directory>`                          |
 | Sequence extraction            | `segul sequence extract -d <input-directory> <extraction-options>` |
 | Sequence ID extraction         | `segul sequence id -d <input-directory>`                           |
 | Sequence ID mapping            | `segul sequence id --map -d <input-directory>`                     |
@@ -131,8 +131,8 @@ segul concat -d <input-directory> -f <input-format>
 | Sequence removal               | `segul sequence remove -d <input-directory>`                       |
 | Sequence translation           | `segul sequence translate -d <input-directory>`                    |
 | Main help                      | `segul --help`                                                     |
-| Command help         | `segul <command> --help`                                        |
-| Subcommand help          | `segul <command> <subcommand> --help`                           |
+| Command help                   | `segul <command> --help`                                           |
+| Subcommand help                | `segul <command> <subcommand> --help`                              |
 
 ## Additional Resources
 
