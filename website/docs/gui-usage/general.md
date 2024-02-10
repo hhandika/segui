@@ -1,31 +1,29 @@
 ---
 sidebar_position: 0
+title: General Guidelines
 ---
-
-# General Guidelines
 
 This page provides general guidelines for using SEGUI. It covers the following topics:
 
-- [General Guidelines](#general-guidelines)
-  - [Task Selection](#task-selection)
-    - [Alignments](#alignments)
-    - [Genomic](#genomic)
-    - [Sequences](#sequences)
-  - [File Input](#file-input)
-    - [Input from selected files (mobile and desktop)](#input-from-selected-files-mobile-and-desktop)
-    - [Input from a directory (desktop only)](#input-from-a-directory-desktop-only)
-    - [Adding more files](#adding-more-files)
-    - [Removing files](#removing-files)
-    - [Specific Guideline for Smartphone Users](#specific-guideline-for-smartphone-users)
-    - [Specific Guideline for macOS Users](#specific-guideline-for-macos-users)
-  - [Input format](#input-format)
-    - [Supported file extensions](#supported-file-extensions)
-      - [Alignment and standard sequence files](#alignment-and-standard-sequence-files)
-      - [Genomic data files](#genomic-data-files)
-  - [Data Type (alignment and standard sequence only)](#data-type-alignment-and-standard-sequence-only)
-  - [Optional Parameters](#optional-parameters)
-  - [Output](#output)
-  - [Sharing Output](#sharing-output)
+- [Task Selection](#task-selection)
+  - [Alignments](#alignments)
+  - [Genomic](#genomic)
+  - [Sequences](#sequences)
+- [File Input](#file-input)
+  - [Input from selected files (mobile and desktop)](#input-from-selected-files-mobile-and-desktop)
+  - [Input from a directory (desktop only)](#input-from-a-directory-desktop-only)
+  - [Adding more files](#adding-more-files)
+  - [Removing files](#removing-files)
+  - [Specific Guideline for Smartphone Users](#specific-guideline-for-smartphone-users)
+  - [Specific Guideline for macOS Users](#specific-guideline-for-macos-users)
+- [Input format](#input-format)
+  - [Supported file extensions](#supported-file-extensions)
+    - [Alignment and standard sequence files](#alignment-and-standard-sequence-files)
+    - [Genomic data files](#genomic-data-files)
+- [Data Type (alignment and standard sequence only)](#data-type-alignment-and-standard-sequence-only)
+- [Optional Parameters](#optional-parameters)
+- [Output](#output)
+- [Sharing Output](#sharing-output)
 
 ## Task Selection
 
