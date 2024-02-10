@@ -123,10 +123,10 @@ segul concat -d <input-directory> -f <input-format>
 | Alignment partition conversion | `segul partition convert -d <input-directory>`                     |
 | Alignment summary statistics   | `segul align summary -d <input-directory>`                         |
 | Contig summary statistics      | `segul contig summary -d <input-directory>`                        |
-| Raw read summary statistics    | `segul read summary -d <input-directory>`                          |
-| Sample distribution            | `segul sequence id --map -d <input-directory>`                     |
+| Read summary statistics    | `segul read summary -d <input-directory>`                          |
 | Sequence extraction            | `segul sequence extract -d <input-directory> <extraction-options>` |
-| Sequence ID parsing            | `segul sequence id -d <input-directory>`                           |
+| Sequence ID extraction         | `segul sequence id -d <input-directory>`                           |
+| Sequence ID mapping            | `segul sequence id --map -d <input-directory>`                     |
 | Sequence ID renaming           | `segul sequence rename -d <input-directory>`                       |
 | Sequence removal               | `segul sequence remove -d <input-directory>`                       |
 | Sequence translation           | `segul sequence translate -d <input-directory>`                    |
