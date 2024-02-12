@@ -5,7 +5,7 @@ title: Building SEGUL Documentation
 
 ## Overview
 
-SEGUL documentation is built using docusaurus. The documentation is written in markdown and the website is built using TypeScript with React.
+SEGUL documentation is built using docusaurus and deployed using [Vercel](https://vercel.com/). The documentation is written in markdown and the website is built using React written in TypeScript.
 
 ## Prerequisites
 
@@ -28,9 +28,7 @@ git clone https://github.com/hhandika/segui.git
 
 ## Install dependencies
 
-Install the dependencies:
-
-Install nodejs dependencies:
+Install nodejs:
 
 First, intall nodejs by following the instructions [here](https://nodejs.org/en/)
 
