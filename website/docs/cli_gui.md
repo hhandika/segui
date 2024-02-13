@@ -35,7 +35,13 @@ The CLI version is faster and more memory-efficient than the GUI version. It is 
 
 Below is a performance comparison for concatenating alignments across different platforms. We include [AMAS](https://github.com/marekborowiec/AMAS) and [goalign](https://github.com/evolbioinfo/goalign) to provide more context about the performance of SEGUL.
 
-![Concatenation performance comparison](./img/summary_docs1.png)
+### Execution time comparison
+
+![Execution time comparison](./img/execution_graph.png)
+
+### RAM usage comparison
+
+![RAM usage comparison](./img/ram_graph.png)
 
 ## Features comparison
 
