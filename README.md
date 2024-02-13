@@ -20,10 +20,6 @@ Learn more about device requirements and GUI app installation in the [official d
 
 ## Quick Links
 
-| Feature                        | Quick Link                                             |
-
-## Features
-
 | Feature                        | Quick Link                                                                                                             |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | Alignment concatenation        | [CLI](https://www.segul.app/docs/cli-usage/concat) / [GUI](https://www.segul.app/docs/gui-usage/align-concat)          |
