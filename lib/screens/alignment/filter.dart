@@ -93,7 +93,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
           task: task,
         ),
         const SizedBox(height: 16),
-        const CardTitle(title: 'Filtering parameters'),
+        const CardTitle(title: 'Parameters'),
         FormCard(
           children: [
             DropdownButtonFormField(
