@@ -6,7 +6,6 @@ import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/common.dart';
-import 'package:segui/services/io.dart';
 import 'package:segui/styles/decoration.dart';
 
 class SettingButtons extends StatelessWidget {
@@ -53,86 +52,74 @@ class SettingPages extends ConsumerWidget {
       child: Padding(
           padding: const EdgeInsets.all(16),
           child: Center(
-              child: Container(
-            constraints: const BoxConstraints(minWidth: 200, maxWidth: 800),
-            decoration: getContainerDecoration(context),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SettingTile(
-                  title: 'Logs',
-                  subtitle: 'View logs from previous tasks',
-                  icon: Icons.list_alt_outlined,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LogScreen(),
-                      ),
-                    );
-                  },
-                ),
-                const CommonDivider(),
-                SettingTile(
-                  title: 'Theme',
-                  subtitle: 'Change app theme',
-                  icon: Icons.color_lens_outlined,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ThemeSettings(),
-                      ),
-                    );
-                  },
-                ),
-                const CommonDivider(),
-                FutureBuilder(
-                  future: getUsage(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return SettingTile(
-                        title: 'Data Usage',
-                        subtitle: snapshot.data as String,
-                        icon: Icons.data_usage_outlined,
-                        onTap: () {
-                          ref.read(fileOutputProvider.notifier).addFromAppDir();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const DataUsageScreen(),
-                            ),
-                          );
-                        },
+            child: Container(
+              constraints: const BoxConstraints(minWidth: 200, maxWidth: 800),
+              decoration: getContainerDecoration(context),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SettingTile(
+                    title: 'Logs',
+                    subtitle: 'View logs from previous tasks',
+                    icon: Icons.list_alt_outlined,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LogScreen(),
+                        ),
                       );
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  },
-                ),
-                const CommonDivider(),
-                SettingTile(
-                  title: 'About',
-                  subtitle: 'View app information',
-                  icon: Icons.info_outline,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AppAbout(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                    },
+                  ),
+                  const CommonDivider(),
+                  SettingTile(
+                    title: 'Theme',
+                    subtitle: 'Change app theme',
+                    icon: Icons.color_lens_outlined,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ThemeSettings(),
+                        ),
+                      );
+                    },
+                  ),
+                  const CommonDivider(),
+                  SettingTile(
+                    title: 'Data Usage',
+                    subtitle: 'View and manage app data',
+                    icon: Icons.data_usage_outlined,
+                    onTap: () {
+                      ref.read(fileOutputProvider.notifier).addFromAppDir();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DataUsageScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const CommonDivider(),
+                  SettingTile(
+                    title: 'About',
+                    subtitle: 'View app information',
+                    icon: Icons.info_outline,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AppAbout(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ))),
+          )),
     );
-  }
-
-  Future<String> getUsage() async {
-    return await DataUsageServices().calculateUsage();
   }
 }
 
