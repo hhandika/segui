@@ -74,7 +74,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
           task: task,
         ),
         const SizedBox(height: 16),
-        const CardTitle(title: 'Renaming parameters'),
+        const CardTitle(title: 'Parameters'),
         FormCard(
           children: [
             DropdownButtonFormField(

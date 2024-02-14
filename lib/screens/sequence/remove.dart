@@ -68,7 +68,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
           task: task,
         ),
         const SizedBox(height: 16),
-        const CardTitle(title: 'Removal parameters'),
+        const CardTitle(title: 'Parameters'),
         FormCard(
           children: [
             DropdownButtonFormField(
