@@ -25,10 +25,14 @@ bool isMediumScreen(BuildContext context) {
   return MediaQuery.of(context).size.width >= mediumScreenSize;
 }
 
+bool isPhoneScreen(BuildContext context) {
+  return MediaQuery.of(context).size.width < mediumScreenSize;
+}
+
 // Large screen is defined as screen width >= 840 dp
 // Based on Material Design guidelines for expanded screen.
 // https://material.io/blog/material-you-large-screens
-bool isExpandedScreen(BuildContext context) {
+bool isTabletScreen(BuildContext context) {
   return MediaQuery.of(context).size.width >= expandedScreenSize;
 }
 

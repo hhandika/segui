@@ -348,7 +348,7 @@ class OutputActionMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = !isMediumScreen(context);
+    final isSmallScreen = isPhoneScreen(context);
     return isSmallScreen
         ? IconButton(
             icon: Icon(Icons.adaptive.more_rounded),

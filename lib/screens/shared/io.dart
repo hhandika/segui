@@ -253,7 +253,7 @@ class InputSelector extends StatefulWidget {
 class _InputSelectorState extends State<InputSelector> {
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = !isMediumScreen(context);
+    final isSmallScreen = isPhoneScreen(context);
     final isMobile = Platform.isAndroid || Platform.isIOS;
     return isSmallScreen
         ? IconButton(

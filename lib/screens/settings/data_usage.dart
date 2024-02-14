@@ -85,7 +85,7 @@ class AppDataStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isSmallScreen = !isMediumScreen(context);
+    final bool isSmallScreen = isPhoneScreen(context);
     return FutureBuilder(
       future: DataUsageServices().calculateUsage(),
       builder: (context, snapshot) {

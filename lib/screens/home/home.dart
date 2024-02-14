@@ -47,15 +47,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isPhone = screenWidth < mediumScreenSize;
-    final bool isExpanded = screenHeight >= expandedScreenSize;
+    final isSmallScreen = isPhoneScreen(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      height: isExpanded ? screenHeight - 80 : null,
-      decoration: isPhone ? null : getContainerDecoration(context),
+      decoration: isSmallScreen ? null : getContainerDecoration(context),
       child: Center(
         child: SingleChildScrollView(
             child: Column(
@@ -98,13 +94,22 @@ class QuickActionContainer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final bool isExpandedScreen = screenWidth >= expandedScreenSize;
+    final bool isExpandedScreen = isTabletScreen(context);
+    final double containerHeight = isExpandedScreen ? 140 : 240;
+    final double containerWidth = isExpandedScreen ? 600 : 240;
+    const double twoColumnWidth = 240 + 16;
     return SizedBox(
-        height: isExpandedScreen ? 140 : 240,
-        width: isExpandedScreen ? 600 : 240,
+        height: containerHeight,
+        width: containerWidth,
         child: GridView.count(
-          crossAxisCount: isExpandedScreen ? 4 : 2,
-          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: isExpandedScreen
+              ? 4
+              : screenWidth < twoColumnWidth
+                  ? 1
+                  : 2,
+          physics: screenWidth > twoColumnWidth
+              ? const NeverScrollableScrollPhysics()
+              : const AlwaysScrollableScrollPhysics(),
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           shrinkWrap: true,
