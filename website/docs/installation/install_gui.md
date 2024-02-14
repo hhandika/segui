@@ -32,7 +32,7 @@ Due to Apple's stringent security policy, testing SEGUI requires the installatio
 
 Requirements
 
-- Ubuntu 20.04+
+- Ubuntu 22.04+
 - openSUSE Tumbleweed (tested)
 - Debian 10+
 
