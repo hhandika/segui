@@ -19,3 +19,18 @@ Color? getSEGULBackgroundColor(BuildContext context) {
 Color getBorderColor(BuildContext context) {
   return Theme.of(context).colorScheme.primary.withAlpha(40);
 }
+
+bool isMediumScreen(BuildContext context) {
+  return MediaQuery.of(context).size.width >= 600;
+}
+
+// Large screen is defined as screen width >= 840 dp
+// Based on Material Design guidelines for expanded screen.
+// https://material.io/blog/material-you-large-screens
+bool isExpandedScreen(BuildContext context) {
+  return MediaQuery.of(context).size.width >= 840;
+}
+
+bool isDesktopScreen(BuildContext context) {
+  return MediaQuery.of(context).size.width >= 1200;
+}
