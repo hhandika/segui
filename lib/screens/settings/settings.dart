@@ -82,14 +82,14 @@ class _SettingMenuState extends State<SettingMenu> {
   }
 }
 
-class LargeScreenSettings extends StatefulWidget {
+class LargeScreenSettings extends ConsumerStatefulWidget {
   const LargeScreenSettings({super.key});
 
   @override
-  State<LargeScreenSettings> createState() => _LargeScreenSettingsState();
+  LargeScreenSettingsState createState() => LargeScreenSettingsState();
 }
 
-class _LargeScreenSettingsState extends State<LargeScreenSettings> {
+class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
   int _selectedIndex = 0;
 
   @override
@@ -115,6 +115,9 @@ class _LargeScreenSettingsState extends State<LargeScreenSettings> {
           ],
           onDestinationSelected: (value) {
             setState(() {
+              if (value == 2) {
+                ref.read(fileOutputProvider.notifier).addFromAppDir();
+              }
               _selectedIndex = value;
             });
           },
