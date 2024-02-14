@@ -34,15 +34,25 @@ Requirements
 
 - Ubuntu 22.04+
 - openSUSE Tumbleweed (tested)
-- Debian 10+
 
-The app may work on any Linux distribution with 64-bit architecture. If you are using other Linux distributions, please report any bugs you encounter.
+Download the latest release from [here](https://github.com/hhandika/segui/releases). Extract the `segui-Linux-x86_64.tar.gz` file to your desired location.
 
-Download the latest release from [here](https://github.com/hhandika/segui/releases). Extract the `segui-Linux-x86_64.tar.gz` file
+Open terminal and extract the file using the following command:
 
 ```bash
 tar -xvzf segui-Linux-x86_64.tar.gz
 ```
+
+:::info
+The app may work on any Linux distribution with 64-bit architecture and GLIBC 2.34+.
+
+To check your GLIBC version, run the following command in the terminal:
+
+```bash
+ldd --version
+```
+
+:::
 
 Then, run the `segui` file.
 

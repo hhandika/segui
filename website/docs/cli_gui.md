@@ -4,29 +4,37 @@ sidebar_position: 2
 
 # CLI vs GUI
 
+## Overview
+
+SEGUL is available in two versions: Command Line Interface (CLI) and Graphical User Interface (GUI). Both versions have the same core functionality, but they are designed to cater to different use cases and user preferences. The CLI version is suitable for users who prefer automation, fast and memory-efficient execution, dealing with complex directory structure, and/or non-standard file extension. The GUI version is suitable for users who prefer interactive and user-friendly features. However, having both versions installed is beneficial for users who want to take advantage of the strengths of both versions. They each have their own contained environment and do not interfere with each other.
+
 ## Platform Support
 
-The GUI version of `segul` is available for all major desktop and mobile platforms. The CLI version is available for all major desktop platforms and Windows Subsystem for Linux (WSL). Here is a summary of the platform support for both versions:
+The GUI version is available for all major desktop and mobile platforms. The CLI version is available for all major desktop platforms and Windows Subsystem for Linux (WSL). Here is a summary of the platform support for both versions:
 
 ### Desktop
 
 | Platform                          | GUI | CLI |
 | --------------------------------- | --- | --- |
-| Linux                             | ✅  | ✅  |
-| MacOS                             | ✅  | ✅  |
-| Windows                           | ✅  | ✅  |
-| Windows Subsystem for Linux (WSL) | ❌  | ✅  |
+| Linux                             | ✅   | ✅   |
+| MacOS                             | ✅   | ✅   |
+| Windows                           | ✅   | ✅   |
+| Windows Subsystem for Linux (WSL) | ❌   | ✅   |
+
+:::note
+ The GUI version on Linux required GLIBC 2.34+. The CLI works in any Linux distribution. We provide fully static binary for older Linux and dynamically linked binary to GLIBC for newer distributions. See [GUI](./installation/install_gui) and [CLI](./installation/install_binary) installation instruction for more details.
+:::
 
 ### Mobile
 
 | Platform | GUI | CLI |
 | -------- | --- | --- |
-| iOS      | ✅  | ❌  |
-| iPadOS   | ✅  | ❌  |
-| Android  | ✅  | ❌  |
+| iOS      | ✅   | ❌   |
+| iPadOS   | ✅   | ❌   |
+| Android  | ✅   | ❌   |
 
 :::note
-The CLI version works on Android using [Termux](https://termux.dev/). However, we recommend using the GUI version instead.
+The CLI version works on Android using [Termux](https://termux.dev/). However, we recommend using the GUI version for better access to file system.
 :::
 
 ## Performance
@@ -45,16 +53,16 @@ Below is a performance comparison for concatenating alignments across different 
 
 ## Features comparison
 
-All the main features are supported in both CLI and GUI. However, there are some differences between the two versions. In general, the GUI version provides interactive and user-friendly features, while the CLI version is more suitable for fast and memory efficient execution, automation, CLI only environment (e.g., HPC), large-scale projects, and/or dealing with complex directory structure. Here is a summary of the differences:
+All the main features are supported in both CLI and GUI. However, there are some differences between the two versions. Here is a summary of the differences:
 
 | Feature                                              | CLI | GUI |
 | ---------------------------------------------------- | --- | --- |
-| Text and table viewer                                | ❌  | ✅  |
-| Mobile OS support                                    | ❌  | ✅  |
-| `--dry-run` option for some commands                 | ✅  | ❌  |
-| Filter out alignment with multiple percentage values | ✅  | ❌  |
-| Handling complex directory structure                 | ✅  | ❌  |
-| Non-standard file extensions                         | ✅  | ❌  |
+| Text and table viewer                                | ❌   | ✅   |
+| Mobile OS support                                    | ❌   | ✅   |
+| `--dry-run` option for some commands                 | ✅   | ❌   |
+| Filter out alignment with multiple percentage values | ✅   | ❌   |
+| Handling complex directory structure                 | ✅   | ❌   |
+| Non-standard file extensions                         | ✅   | ❌   |
 
 ## Task Group
 
