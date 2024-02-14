@@ -314,10 +314,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-            context,
-            'Sequence renaming successful! 🎉 \n'
-            'Output path: ${showOutputDir(directory)}'),
+        showSharedSnackBar(context, 'Sequence renaming successful! 🎉'),
       );
     }
     setState(() {

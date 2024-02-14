@@ -313,11 +313,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-            context,
-            'Alignment filtering successful! 🎉 \n'
-            'Output path: ${showOutputDir(directory)}'),
-      );
+          showSharedSnackBar(context, 'Filtering successful! 🎉'));
     }
     setState(() {
       _ctr.isRunning = false;

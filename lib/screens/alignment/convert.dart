@@ -236,11 +236,7 @@ class ConvertPageState extends ConsumerState<ConvertPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-          context,
-          'Conversion successful! 🎉 \n'
-          'Output Path: ${showOutputDir(outputDir)}',
-        ),
+        showSharedSnackBar(context, 'Conversion successful! 🎉'),
       );
     }
     setState(() {

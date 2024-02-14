@@ -273,11 +273,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-          context,
-          'Alignment Splitting successful! 🎉 \n'
-          'Output Path: ${showOutputDir(directory)}',
-        ),
+        showSharedSnackBar(context, 'Splitting successful! 🎉'),
       );
     }
     setState(() {

@@ -211,11 +211,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: isRecursive);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-          context,
-          'Genomic read summarization successful! 🎉 \n'
-          'Output Path: ${showOutputDir(directory)}',
-        ),
+        showSharedSnackBar(context, 'Read summarization successful! 🎉'),
       );
     }
     setState(() {

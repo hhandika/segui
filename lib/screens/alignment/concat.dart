@@ -267,11 +267,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-            context,
-            'Concatenation successful! 🎉 \n'
-            'Output path: ${showOutputDir(directory)}'),
-      );
+          showSharedSnackBar(context, 'Concatenation successful! 🎉'));
     }
     setState(() {
       _ctr.isRunning = false;

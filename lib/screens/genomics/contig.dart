@@ -207,11 +207,7 @@ class ContigPageState extends ConsumerState<ContigPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-          context,
-          'Contig summarization successful! 🎉 \n'
-          'Output Path: ${showOutputDir(directory)}',
-        ),
+        showSharedSnackBar(context, 'Contig summarization successful! 🎉'),
       );
     }
     setState(() {

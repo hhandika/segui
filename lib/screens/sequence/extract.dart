@@ -251,11 +251,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-            context,
-            'Sequence extraction successful! 🎉 \n'
-            'Output path: ${showOutputDir(directory)}'),
-      );
+          showSharedSnackBar(context, 'Sequence extraction successful! 🎉'));
     }
     setState(() {
       _ctr.isRunning = false;

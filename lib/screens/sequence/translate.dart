@@ -234,11 +234,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-          context,
-          'Sequence translation successful! 🎉 \n'
-          'Output Path: ${showOutputDir(outputDir)}',
-        ),
+        showSharedSnackBar(context, 'Sequence translation successful! 🎉'),
       );
     }
     setState(() {

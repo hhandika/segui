@@ -201,11 +201,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
     ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        showSharedSnackBar(
-          context,
-          'ID extraction successful! 🎉 \n'
-          'Output Path: ${showOutputDir(outputDir)}',
-        ),
+        showSharedSnackBar(context, 'ID extraction successful! 🎉'),
       );
     }
     setState(() {
