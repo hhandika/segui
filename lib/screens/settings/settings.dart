@@ -115,6 +115,8 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
           ],
           onDestinationSelected: (value) {
             setState(() {
+              // Add data usage to file output provider
+              // When user selects data usage
               if (value == 2) {
                 ref.read(fileOutputProvider.notifier).addFromAppDir();
               }
