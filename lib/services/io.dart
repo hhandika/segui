@@ -746,7 +746,7 @@ class FileLoggingService {
 }
 
 Future<Directory> getSeguiDirectory() async {
-  const appDir = 'segui';
+  const appDir = 'segui-data';
   final dir = await getApplicationDocumentsDirectory();
   final seguiDir = Directory(p.join(dir.path, appDir));
   if (!await seguiDir.exists()) {
