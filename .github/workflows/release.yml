@@ -49,13 +49,18 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           echo "Compressing files..."
-          tar -czvf segui.tar.gz build/linux/x64/release/bundle
+          mkdir segui
+          mv build/linux/x64/release/bundle/* segui
+          tar -czvf segui.tar.gz segui
 
       - name: Compress Windows
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
+          echo "Creating folder..."
+          mkdir segui
           echo "Compressing files..."
-          powershell Compress-Archive -Path build\windows\x64\runner\Release -DestinationPath segui.zip
+          mv build\windows\x64\runner\Release\* segui
+          powershell Compress-Archive -Path segui -DestinationPath segui.zip
 
       - name: Upload linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
