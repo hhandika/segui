@@ -24,9 +24,7 @@ class _LogScreenState extends State<LogScreen> {
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: const SafeArea(
-        child: Center(
-          child: LogListViewer(),
-        ),
+        child: LogListViewer(),
       ),
     );
   }
