@@ -167,38 +167,42 @@ class ClearAppDataButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TextButton(
-        onPressed: () {
-          // Show dialog to confirm the action
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Clear all data'),
-                content: const Text(
-                  'Permanently delete all data except the latest log file. '
-                  'Continue?',
-                ),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Cancel')),
-                  TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Theme.of(context).disabledColor,
-                      ),
-                      onPressed: () {
-                        ref.read(fileOutputProvider.notifier).removeAllFiles();
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Clear all data'))
-                ],
+    return Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: TextButton(
+            onPressed: () {
+              // Show dialog to confirm the action
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Clear all data'),
+                    content: const Text(
+                      'Permanently delete all data except the latest log file. '
+                      'Continue?',
+                    ),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel')),
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Theme.of(context).disabledColor,
+                          ),
+                          onPressed: () {
+                            ref
+                                .read(fileOutputProvider.notifier)
+                                .removeAllFiles();
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Clear all data'))
+                    ],
+                  );
+                },
               );
             },
-          );
-        },
-        child: const Text('Clear app data'));
+            child: const Text('Clear app data')));
   }
 }
