@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:segui/services/io.dart';
 
@@ -95,7 +94,7 @@ class FileOutput extends _$FileOutput {
   Future<void> addFromAppDir() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      Directory dir = await getApplicationDocumentsDirectory();
+      Directory dir = await getSeguiDirectory();
       return SegulOutputFile.fromDirectory(dir, isRecursive: true);
     });
   }

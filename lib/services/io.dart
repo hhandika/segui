@@ -550,7 +550,7 @@ void updateOutputDir(WidgetRef ref, String dirName, SupportedTask task) {
 }
 
 Future<Directory> getOutputDir(String? dirName, SupportedTask task) async {
-  Directory appDocDir = await getApplicationDocumentsDirectory();
+  Directory appDocDir = await getSeguiDirectory();
   String directory =
       dirName == null || dirName.isEmpty ? defaultOutputDir[task]! : dirName;
   Directory outputDir = Directory(p.join(appDocDir.path, directory));
@@ -566,7 +566,7 @@ class DataUsageServices {
   DataUsageServices();
 
   Future<String> calculateUsage() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
+    Directory appDocDir = await getSeguiDirectory();
     final files = await appDocDir.list().toList();
     final fileCount = files.length;
     final totalSize = await _calculateTotalSize(files);
@@ -700,7 +700,7 @@ class FileLoggingService {
   FileLoggingService();
 
   Future<List<File>> findLogs() async {
-    final dir = await getApplicationDocumentsDirectory();
+    final dir = await getSeguiDirectory();
     final files = await dir.list().toList();
     final results = files
         .where((element) => element.path.endsWith('.log'))
@@ -721,4 +721,14 @@ class FileLoggingService {
     logs.sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
     return logs;
   }
+}
+
+Future<Directory> getSeguiDirectory() async {
+  const appDir = 'segui';
+  final dir = await getApplicationDocumentsDirectory();
+  final seguiDir = Directory(p.join(dir.path, appDir));
+  if (!await seguiDir.exists()) {
+    await seguiDir.create(recursive: true);
+  }
+  return seguiDir;
 }
