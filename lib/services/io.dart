@@ -562,27 +562,59 @@ Future<Directory> getOutputDir(String? dirName, SupportedTask task) async {
   return outputDir;
 }
 
-class DataUsageServices {
-  DataUsageServices();
+class FileUtils {
+  FileUtils();
 
-  Future<String> calculateUsage() async {
-    Directory appDocDir = await getSeguiDirectory();
-    final files = await appDocDir.list().toList();
-    final fileCount = files.length;
-    final totalSize = await _calculateTotalSize(files);
-    return _getUsageText(fileCount, totalSize);
+  Future<void> deleteFile(File file) async {
+    await file.delete();
   }
 
-  Future<int> _calculateTotalSize(List<FileSystemEntity> files) async {
+  Future<int> calculateTotalSize(List<File> files) async {
     int totalSize = 0;
     for (var file in files) {
-      totalSize += await file.stat().then((value) => value.size);
+      totalSize += await file.length();
     }
     return totalSize;
   }
 
-  String _getUsageText(int fileCount, int totalSize) {
-    return '$fileCount files · ${formatSize(totalSize)}';
+  Future<void> deleteFiles(List<File> files) async {
+    for (var file in files) {
+      await file.delete();
+    }
+  }
+}
+
+class DataUsageServices extends FileUtils {
+  DataUsageServices();
+
+  Future<({String count, String size})> calculateUsage() async {
+    Directory appDocDir = await getSeguiDirectory();
+    final files =
+        appDocDir.listSync(recursive: true).whereType<File>().toList();
+    final fileCount = files.length;
+    final totalSize = await calculateTotalSize(files);
+    return _getUsageText(fileCount, totalSize);
+  }
+
+  ({String count, String size}) _getUsageText(int fileCount, int totalSize) {
+    return (count: '$fileCount files', size: formatSize(totalSize));
+  }
+}
+
+class TempDataServices extends FileUtils {
+  TempDataServices();
+
+  Future<String> calculateAppTempDirUsage() async {
+    final dir = await getTemporaryDirectory();
+    final files = dir.listSync().whereType<File>().toList();
+    final totalSize = await calculateTotalSize(files);
+    return formatSize(totalSize);
+  }
+
+  Future<void> clearTempData() async {
+    final dir = await getTemporaryDirectory();
+    final files = dir.listSync().whereType<File>().toList();
+    await deleteFiles(files);
   }
 }
 
@@ -646,14 +678,6 @@ String formatSize(int size) {
   }
 }
 
-String showOutputDir(Directory directory) {
-  if (Platform.isIOS) {
-    return 'On My Devices/segui';
-  } else {
-    return directory.path;
-  }
-}
-
 String getOutputFmt(String outputFormat, bool isInterleave) {
   if (isInterleave) {
     return '$outputFormat-int';
@@ -701,11 +725,9 @@ class FileLoggingService {
 
   Future<List<File>> findLogs() async {
     final dir = await getSeguiDirectory();
-    final files = await dir.list().toList();
-    final results = files
-        .where((element) => element.path.endsWith('.log'))
-        .map((e) => File(e.path))
-        .toList();
+    final files = dir.listSync().whereType<File>().toList();
+    final results =
+        files.where((element) => element.path.endsWith('.log')).toList();
 
     return _sortLogsByDate(results);
   }
