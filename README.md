@@ -16,7 +16,7 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 - Android: [[Try Beta]](https://github.com/hhandika/segui/releases/)
 - iOS/iPadOS/macOS: [[Try Beta]](https://testflight.apple.com/join/LSJD5D0i)
 
-Learn more about device requirements and GUI app installation in the [official documentation](https://www.segul.app/docs/installation/install_gui).
+Learn more about device requirements and GUI app installation in the [documentation](https://www.segul.app/docs/installation/install_gui).
 
 ## Quick Links
 
