@@ -22,14 +22,14 @@ Color getBorderColor(BuildContext context) {
 }
 
 bool isMediumScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width >= 600;
+  return MediaQuery.of(context).size.width >= mediumScreenSize;
 }
 
 // Large screen is defined as screen width >= 840 dp
 // Based on Material Design guidelines for expanded screen.
 // https://material.io/blog/material-you-large-screens
 bool isExpandedScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width >= mediumScreenSize;
+  return MediaQuery.of(context).size.width >= expandedScreenSize;
 }
 
 bool isDesktopScreen(BuildContext context) {

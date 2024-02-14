@@ -37,21 +37,10 @@ class DataUsageViewer extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: double.infinity,
-            decoration: getContainerDecoration(context),
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: const Column(
-              children: [
-                AppDataStats(),
-                SizedBox(height: 4),
-                ClearAppDataButton(),
-              ],
-            ),
-          ),
+          const AppDataStats(),
           const SizedBox(height: 8),
           Expanded(
             child: Container(
@@ -82,6 +71,9 @@ class DataUsageViewer extends ConsumerWidget {
                   ),
             ),
           ),
+          const Center(
+            child: ClearAppDataButton(),
+          ),
         ],
       ),
     );
@@ -93,39 +85,80 @@ class AppDataStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isSmallScreen = !isMediumScreen(context);
     return FutureBuilder(
       future: DataUsageServices().calculateUsage(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else {
-          return Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('File count:'),
-                  Text(
-                    snapshot.data!.count,
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('App data:'),
-                  Text(
-                    snapshot.data!.size,
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                ],
-              ),
-            ],
-          );
+          return isSmallScreen
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FileCountTile(count: snapshot.data!.count),
+                    FileSizeTile(totalSize: snapshot.data!.size),
+                  ],
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FileCountTile(count: snapshot.data!.count),
+                    FileSizeTile(totalSize: snapshot.data!.size),
+                  ],
+                );
         }
       },
     );
+  }
+}
+
+class FileCountTile extends StatelessWidget {
+  const FileCountTile({super.key, required this.count});
+
+  final String count;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: ListTile(
+        leading: Icon(
+          Icons.file_copy_outlined,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        title: Text(
+          'File count',
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        subtitle: Text(count),
+      ),
+    );
+  }
+}
+
+class FileSizeTile extends StatelessWidget {
+  const FileSizeTile({super.key, required this.totalSize});
+
+  final String totalSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: 200,
+        child: ListTile(
+          leading: Icon(
+            Icons.data_usage_outlined,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          title: Text(
+            'Total size',
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          subtitle: Text(totalSize),
+        ));
   }
 }
 
@@ -135,9 +168,6 @@ class ClearAppDataButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return TextButton(
-        style: TextButton.styleFrom(
-          foregroundColor: Theme.of(context).disabledColor,
-        ),
         onPressed: () {
           // Show dialog to confirm the action
           showDialog(

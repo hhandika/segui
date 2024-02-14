@@ -61,7 +61,7 @@ class _SettingMenuState extends State<SettingMenu> {
     super.didChangeDependencies();
     // Show large screen view for screen width >= 600 dp
     // which is the recommended screen size for tablets.
-    showLargeScreenSettings = isMediumScreen(context);
+    showLargeScreenSettings = isExpandedScreen(context);
   }
 
   @override

@@ -45,9 +45,12 @@ class LogListViewer extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    constraints: const BoxConstraints(maxWidth: 500),
+                    width: double.infinity,
                     decoration: getContainerDecoration(context),
                     child: ListView.separated(
                       separatorBuilder: (context, index) =>
@@ -70,7 +73,10 @@ class LogListViewer extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          leading: const Icon(Icons.list_alt_outlined),
+                          leading: Icon(
+                            Icons.list_alt_outlined,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           trailing: const Icon(Icons.chevron_right),
                           onTap: () {
                             Navigator.push(
