@@ -19,6 +19,19 @@ class CommonDivider extends StatelessWidget {
   }
 }
 
+class DrawerDivider extends StatelessWidget {
+  const DrawerDivider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Divider(
+      thickness: 2,
+      indent: 8,
+      endIndent: 8,
+    );
+  }
+}
+
 class TopDivider extends StatelessWidget {
   const TopDivider({super.key});
 
@@ -28,6 +41,31 @@ class TopDivider extends StatelessWidget {
       thickness: 4,
       height: 4,
       color: getBorderColor(context),
+    );
+  }
+}
+
+class SecondaryMenuTile extends StatelessWidget {
+  const SecondaryMenuTile({
+    super.key,
+    required this.text,
+    required this.onTap,
+  });
+
+  final String text;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 2),
+      child: ListTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        title: Text(text, style: Theme.of(context).textTheme.labelLarge),
+        onTap: onTap,
+      ),
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:segui/providers/navigation.dart';
 import 'package:segui/screens/settings/settings.dart';
+import 'package:segui/screens/shared/common.dart';
+import 'package:segui/styles/decoration.dart';
 
 class NavigationTarget {
   const NavigationTarget({
@@ -70,24 +72,20 @@ class ExpandedScreenDrawer extends ConsumerWidget {
     return NavigationDrawer(
       tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       elevation: 0,
-      backgroundColor: Color.lerp(Theme.of(context).colorScheme.primary,
-          Theme.of(context).colorScheme.surface, 0.9),
-      indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: getSEGULBackgroundColor(context),
+      // indicatorColor: Theme.of(context).colorScheme.primaryContainer,
       indicatorShape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.horizontal(
           right: Radius.circular(16),
-          left: Radius.circular(8),
+          left: Radius.circular(16),
         ),
       ),
       selectedIndex: ref.watch(tabSelectionProvider),
       children: const [
         ...navigationDrawerTargets,
-        Divider(
-          thickness: 2,
-          indent: 8,
-          endIndent: 8,
-        ),
+        DrawerDivider(),
         SettingMenuTile(),
+        AboutMenuTile(),
       ],
       onDestinationSelected: (int index) {
         ref.read(tabSelectionProvider.notifier).setTab(index);
@@ -127,7 +125,7 @@ class MediumScreenRail extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Settings(),
+                  builder: (context) => const SettingMenu(),
                 ),
               );
             },
@@ -149,32 +147,10 @@ class SettingMenuTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const Settings(),
+            builder: (context) => const SettingMenu(),
           ),
         );
       },
-    );
-  }
-}
-
-class SecondaryMenuTile extends StatelessWidget {
-  const SecondaryMenuTile({
-    super.key,
-    required this.text,
-    required this.onTap,
-  });
-
-  final String text;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 2),
-      child: ListTile(
-        title: Text(text, style: Theme.of(context).textTheme.labelLarge),
-        onTap: onTap,
-      ),
     );
   }
 }

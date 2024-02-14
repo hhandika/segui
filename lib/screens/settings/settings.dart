@@ -19,7 +19,7 @@ class SettingButtons extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const Settings(),
+            builder: (context) => const SettingMenu(),
           ),
         );
       },
@@ -27,24 +27,130 @@ class SettingButtons extends StatelessWidget {
   }
 }
 
-class Settings extends StatelessWidget {
-  const Settings({super.key});
+class AboutMenuTile extends StatelessWidget {
+  const AboutMenuTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SecondaryMenuTile(
+      text: 'About',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AppAbout(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SettingMenu extends StatefulWidget {
+  const SettingMenu({super.key});
+
+  @override
+  State<SettingMenu> createState() => _SettingMenuState();
+}
+
+class _SettingMenuState extends State<SettingMenu> {
+  late bool showLargeScreenSettings;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Show large screen view for screen width >= 600 dp
+    // which is the recommended screen size for tablets.
+    showLargeScreenSettings = isMediumScreen(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     final mainColor = getSEGULBackgroundColor(context);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Settings'),
-          backgroundColor: mainColor,
-        ),
+      appBar: AppBar(
+        title: const Text('Settings'),
         backgroundColor: mainColor,
-        body: const MobileSettings());
+      ),
+      backgroundColor: mainColor,
+      body: SafeArea(
+        child: showLargeScreenSettings
+            ? const LargeScreenSettings()
+            : const SmallScreenSettings(),
+      ),
+    );
   }
 }
 
-class MobileSettings extends ConsumerWidget {
-  const MobileSettings({super.key});
+class LargeScreenSettings extends StatefulWidget {
+  const LargeScreenSettings({super.key});
+
+  @override
+  State<LargeScreenSettings> createState() => _LargeScreenSettingsState();
+}
+
+class _LargeScreenSettingsState extends State<LargeScreenSettings> {
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        NavigationDrawer(
+          backgroundColor: getSEGULBackgroundColor(context),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          indicatorShape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.horizontal(
+              right: Radius.circular(16),
+              left: Radius.circular(16),
+            ),
+          ),
+          elevation: 0,
+          selectedIndex: _selectedIndex,
+          children: const [
+            ...settingsDrawerDestinations,
+            DrawerDivider(),
+          ],
+          onDestinationSelected: (value) {
+            setState(() {
+              _selectedIndex = value;
+            });
+          },
+        ),
+        Expanded(
+          child: _selectedIndex == 0
+              ? const LogListViewer()
+              : _selectedIndex == 1
+                  ? const ThemeSettingView()
+                  : const DataUsageViewer(),
+        ),
+      ],
+    );
+  }
+}
+
+const List<NavigationDrawerDestination> settingsDrawerDestinations = [
+  NavigationDrawerDestination(
+    label: Text('Logs'),
+    icon: Icon(Icons.list_alt_outlined),
+    selectedIcon: Icon(Icons.list_alt_rounded),
+  ),
+  NavigationDrawerDestination(
+    label: Text('Theme'),
+    icon: Icon(Icons.color_lens_outlined),
+    selectedIcon: Icon(Icons.color_lens_rounded),
+  ),
+  NavigationDrawerDestination(
+    label: Text('Data Usage'),
+    icon: Icon(Icons.data_usage_outlined),
+    selectedIcon: Icon(Icons.data_usage_rounded),
+  ),
+];
+
+class SmallScreenSettings extends ConsumerWidget {
+  const SmallScreenSettings({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -159,28 +265,6 @@ class SettingTile extends StatelessWidget {
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
-    );
-  }
-}
-
-class AboutButton extends StatelessWidget {
-  const AboutButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const AppAbout(),
-          ),
-        );
-      },
-      child: Text(
-        'About',
-        style: Theme.of(context).textTheme.labelLarge,
-      ),
     );
   }
 }

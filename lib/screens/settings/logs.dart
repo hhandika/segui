@@ -23,68 +23,75 @@ class _LogScreenState extends State<LogScreen> {
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: SafeArea(
+      body: const SafeArea(
         child: Center(
-          child: FutureBuilder(
-              future: _findLogs(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final logs = snapshot.data;
-                  return Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Container(
-                          constraints: const BoxConstraints(maxWidth: 500),
-                          decoration: getContainerDecoration(context),
-                          child: ListView.separated(
-                            separatorBuilder: (context, index) =>
-                                const CommonDivider(),
-                            itemCount: logs!.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final log = logs[index];
-                              return ListTile(
-                                title: Text(
-                                  basename(log.path),
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                subtitle: Tooltip(
-                                  message: log.path,
-                                  child: Text(
-                                    log.path,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                leading: const Icon(Icons.list_alt_outlined),
-                                trailing: const Icon(Icons.chevron_right),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          PlainTextViewer(file: log),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              }),
+          child: LogListViewer(),
         ),
       ),
     );
+  }
+}
+
+class LogListViewer extends StatelessWidget {
+  const LogListViewer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _findLogs(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final logs = snapshot.data;
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    decoration: getContainerDecoration(context),
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const CommonDivider(),
+                      itemCount: logs!.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final log = logs[index];
+                        return ListTile(
+                          title: Text(
+                            basename(log.path),
+                            style: Theme.of(context).textTheme.titleMedium,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Tooltip(
+                            message: log.path,
+                            child: Text(
+                              log.path,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          leading: const Icon(Icons.list_alt_outlined),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PlainTextViewer(file: log),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            );
+          } else {
+            return const CircularProgressIndicator();
+          }
+        });
   }
 
   Future<List<File>> _findLogs() async {

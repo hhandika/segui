@@ -4,14 +4,9 @@ import 'package:segui/providers/settings.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
 
-class ThemeSettings extends ConsumerStatefulWidget {
+class ThemeSettings extends StatelessWidget {
   const ThemeSettings({super.key});
 
-  @override
-  ThemeSettingsState createState() => ThemeSettingsState();
-}
-
-class ThemeSettingsState extends ConsumerState<ThemeSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,46 +15,51 @@ class ThemeSettingsState extends ConsumerState<ThemeSettings> {
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 800),
-              decoration: getContainerDecoration(context),
-              child: ref.watch(themeSettingProvider).when(
-                    data: (theme) => ListView.separated(
-                      separatorBuilder: (context, index) =>
-                          const CommonDivider(),
-                      itemCount: 3,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => ThemeSettingTile(
-                        title: index == 0
-                            ? 'System default'
-                            : index == 1
-                                ? 'Light'
-                                : 'Dark',
-                        theme: index == 0
-                            ? ThemeMode.system
-                            : index == 1
-                                ? ThemeMode.light
-                                : ThemeMode.dark,
-                        currentTheme: theme,
-                        icon: index == 0
-                            ? Icons.brightness_auto_outlined
-                            : index == 1
-                                ? Icons.brightness_1_outlined
-                                : Icons.brightness_3_outlined,
-                      ),
-                    ),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    error: (error, stackTrace) =>
-                        Center(child: Text(error.toString())),
-                  ),
+      body: const SingleChildScrollView(
+        child: ThemeSettingView(),
+      ),
+    );
+  }
+}
+
+class ThemeSettingView extends ConsumerWidget {
+  const ThemeSettingView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 800),
+        decoration: getContainerDecoration(context),
+        child: ref.watch(themeSettingProvider).when(
+              data: (theme) => ListView.separated(
+                separatorBuilder: (context, index) => const CommonDivider(),
+                itemCount: 3,
+                shrinkWrap: true,
+                itemBuilder: (context, index) => ThemeSettingTile(
+                  title: index == 0
+                      ? 'System default'
+                      : index == 1
+                          ? 'Light'
+                          : 'Dark',
+                  theme: index == 0
+                      ? ThemeMode.system
+                      : index == 1
+                          ? ThemeMode.light
+                          : ThemeMode.dark,
+                  currentTheme: theme,
+                  icon: index == 0
+                      ? Icons.brightness_auto_outlined
+                      : index == 1
+                          ? Icons.brightness_1_outlined
+                          : Icons.brightness_3_outlined,
+                ),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stackTrace) =>
+                  Center(child: Text(error.toString())),
             ),
-          ),
-        ),
       ),
     );
   }

@@ -2,6 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:segui/styles/decoration.dart';
 
+class AboutButton extends StatelessWidget {
+  const AboutButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AppAbout(),
+          ),
+        );
+      },
+      child: Text(
+        'About',
+        style: Theme.of(context).textTheme.labelLarge,
+      ),
+    );
+  }
+}
+
 class AppAbout extends StatefulWidget {
   const AppAbout({super.key});
 
@@ -24,25 +46,34 @@ class _AppAboutState extends State<AppAbout> {
           backgroundColor: getSEGULBackgroundColor(context),
         ),
         backgroundColor: getSEGULBackgroundColor(context),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FutureBuilder<PackageInfo>(
-                future: PackageInfo.fromPlatform(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                        '${snapshot.data!.appName} ${snapshot.data!.version}+${snapshot.data!.buildNumber}');
-                  } else {
-                    return const Text('Loading...');
-                  }
-                },
-              ),
-              const Text('A GUI version of the SEGUL genomic tool'),
-              const Text('Heru Handika & Jacob A. Esselstyn'),
-            ],
-          ),
+        body: const Center(
+          child: AboutContent(),
         ));
+  }
+}
+
+class AboutContent extends StatelessWidget {
+  const AboutContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text(
+                  '${snapshot.data!.appName} ${snapshot.data!.version}+${snapshot.data!.buildNumber}');
+            } else {
+              return const Text('Loading...');
+            }
+          },
+        ),
+        const Text('A GUI version of the SEGUL genomic tool'),
+        const Text('Heru Handika & Jacob A. Esselstyn'),
+      ],
+    );
   }
 }
