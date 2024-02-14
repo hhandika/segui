@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/settings/about.dart';
 import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
@@ -39,132 +39,90 @@ class Settings extends StatelessWidget {
           backgroundColor: mainColor,
         ),
         backgroundColor: mainColor,
-        body: const SettingPages());
+        body: const MobileSettings());
   }
 }
 
-class SettingPages extends ConsumerWidget {
-  const SettingPages({super.key});
+class MobileSettings extends ConsumerWidget {
+  const MobileSettings({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(minWidth: 200, maxWidth: 800),
-              decoration: getContainerDecoration(context),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SettingTile(
-                    title: 'Logs',
-                    subtitle: 'View logs from previous tasks',
-                    icon: Icons.list_alt_outlined,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LogScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const CommonDivider(),
-                  SettingTile(
-                    title: 'Theme',
-                    subtitle: 'Change app theme',
-                    icon: Icons.color_lens_outlined,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ThemeSettings(),
-                        ),
-                      );
-                    },
-                  ),
-                  const CommonDivider(),
-                  SettingTile(
-                    title: 'Data Usage',
-                    subtitle: 'View and manage app data',
-                    icon: Icons.data_usage_outlined,
-                    onTap: () {
-                      ref.read(fileOutputProvider.notifier).addFromAppDir();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const DataUsageScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const CommonDivider(),
-                  SettingTile(
-                    title: 'About',
-                    subtitle: 'View app information',
-                    icon: Icons.info_outline,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AppAbout(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          )),
+        padding: EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MainSettings(),
+              SizedBox(height: 16),
+              AboutButton(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
-class AppAbout extends StatefulWidget {
-  const AppAbout({super.key});
+class MainSettings extends ConsumerWidget {
+  const MainSettings({super.key});
 
   @override
-  State<AppAbout> createState() => _AppAboutState();
-}
-
-class _AppAboutState extends State<AppAbout> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsFlutterBinding.ensureInitialized();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('About'),
-          backgroundColor: getSEGULBackgroundColor(context),
-        ),
-        backgroundColor: getSEGULBackgroundColor(context),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FutureBuilder<PackageInfo>(
-                future: PackageInfo.fromPlatform(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                        '${snapshot.data!.appName} ${snapshot.data!.version}+${snapshot.data!.buildNumber}');
-                  } else {
-                    return const Text('Loading...');
-                  }
-                },
-              ),
-              const Text('A GUI version of the SEGUL genomic tool'),
-              const Text('Heru Handika & Jacob A. Esselstyn'),
-            ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      decoration: getContainerDecoration(context),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SettingTile(
+            title: 'Logs',
+            subtitle: 'View logs from previous tasks',
+            icon: Icons.list_alt_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LogScreen(),
+                ),
+              );
+            },
           ),
-        ));
+          const CommonDivider(),
+          SettingTile(
+            title: 'Theme',
+            subtitle: 'Change app theme',
+            icon: Icons.color_lens_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ThemeSettings(),
+                ),
+              );
+            },
+          ),
+          const CommonDivider(),
+          SettingTile(
+            title: 'Data Usage',
+            subtitle: 'View and manage app data',
+            icon: Icons.data_usage_outlined,
+            onTap: () {
+              ref.read(fileOutputProvider.notifier).addFromAppDir();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DataUsageScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -201,6 +159,28 @@ class SettingTile extends StatelessWidget {
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
+    );
+  }
+}
+
+class AboutButton extends StatelessWidget {
+  const AboutButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AppAbout(),
+          ),
+        );
+      },
+      child: Text(
+        'About',
+        style: Theme.of(context).textTheme.labelLarge,
+      ),
     );
   }
 }
