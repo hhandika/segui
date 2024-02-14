@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/services/utils.dart';
 
 BoxDecoration getContainerDecoration(BuildContext context) {
   return BoxDecoration(
@@ -28,9 +29,9 @@ bool isMediumScreen(BuildContext context) {
 // Based on Material Design guidelines for expanded screen.
 // https://material.io/blog/material-you-large-screens
 bool isExpandedScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width >= 840;
+  return MediaQuery.of(context).size.width >= mediumScreenSize;
 }
 
 bool isDesktopScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width >= 1200;
+  return MediaQuery.of(context).size.width >= largeScreenSize;
 }

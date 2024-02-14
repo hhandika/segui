@@ -8,7 +8,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
-import 'package:segui/services/utils.dart';
+import 'package:segui/styles/decoration.dart';
 
 class SelectDirField extends ConsumerWidget {
   const SelectDirField({
@@ -253,7 +253,7 @@ class InputSelector extends StatefulWidget {
 class _InputSelectorState extends State<InputSelector> {
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = MediaQuery.of(context).size.width < mediumScreenSize;
+    final isSmallScreen = !isMediumScreen(context);
     final isMobile = Platform.isAndroid || Platform.isIOS;
     return isSmallScreen
         ? IconButton(

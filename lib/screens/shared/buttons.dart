@@ -274,26 +274,90 @@ class SharedDeleteButton extends ConsumerWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Delete file'),
-              content: const Text(
-                  'Deleting this file will remove it permanently. Are you sure?'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    ref.read(fileOutputProvider.notifier).removeFile(file);
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Delete'),
-                ),
-              ],
-            );
+            return DeleteAlert(file: file);
+          },
+        );
+      },
+    );
+  }
+}
+
+class DeleteAlert extends ConsumerWidget {
+  const DeleteAlert({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AlertDialog(
+      title: const Text('Delete file'),
+      content: const Text(
+          'Deleting this file will remove it permanently. Continue?'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            ref.read(fileOutputProvider.notifier).removeFile(file);
+            Navigator.of(context).pop();
+          },
+          child: const Text('Delete'),
+        ),
+      ],
+    );
+  }
+}
+
+class CommonShareTile extends StatelessWidget {
+  const CommonShareTile({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      leading: Icon(Icons.adaptive.share_rounded),
+      title: const Text('Share'),
+      onTap: () {
+        Navigator.pop(context);
+        IOServices().shareFile(context, file);
+      },
+    );
+  }
+}
+
+class CommonDeleteTile extends StatelessWidget {
+  const CommonDeleteTile({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      leading: Icon(
+        Icons.delete_outline_rounded,
+        color: Theme.of(context).colorScheme.error,
+      ),
+      title: Text(
+        'Delete',
+        style: TextStyle(color: Theme.of(context).colorScheme.error),
+      ),
+      onTap: () {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return DeleteAlert(file: file);
           },
         );
       },

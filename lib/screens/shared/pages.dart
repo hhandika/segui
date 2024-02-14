@@ -326,14 +326,7 @@ class OutputFileTiles extends StatelessWidget {
                 ],
               )),
       subtitle: FileIOSubtitle(file: file),
-      trailing: Wrap(
-        alignment: WrapAlignment.end,
-        spacing: 4,
-        children: [
-          ShareIconButton(file: file),
-          SharedDeleteButton(file: file),
-        ],
-      ),
+      trailing: OutputActionMenu(file: file),
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -345,6 +338,53 @@ class OutputFileTiles extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class OutputActionMenu extends StatelessWidget {
+  const OutputActionMenu({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context) {
+    final isSmallScreen = !isMediumScreen(context);
+    return isSmallScreen
+        ? IconButton(
+            icon: Icon(Icons.adaptive.more_rounded),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CommonShareTile(file: file),
+                        const SizedBox(height: 16),
+                        CommonDeleteTile(file: file),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          )
+        : PopupMenuButton<PopupMenuItem>(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  child: CommonShareTile(file: file),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  child: CommonDeleteTile(file: file),
+                ),
+              ];
+            },
+          );
   }
 }
 

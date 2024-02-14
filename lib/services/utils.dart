@@ -6,6 +6,7 @@ const String segulDocUrl = 'https://www.segul.app/';
 /// Desktop/Expanded screen: 840dp
 /// Tablet/Medium screen: 600dp
 /// Mobile/Compact screen: 360dp
+const double largeScreenSize = 1200;
 const double expandedScreenSize = 840;
 const double mediumScreenSize = 600;
 const double compactScreenSize = 360;
