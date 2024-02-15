@@ -73,7 +73,8 @@ class ExpandedScreenDrawer extends ConsumerWidget {
       tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       elevation: 0,
       backgroundColor: getSEGULBackgroundColor(context),
-      // indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+      indicatorColor:
+          Theme.of(context).colorScheme.primaryContainer.withAlpha(240),
       indicatorShape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.horizontal(
           right: Radius.circular(16),

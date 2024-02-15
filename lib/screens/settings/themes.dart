@@ -34,6 +34,7 @@ class ThemeSettingView extends ConsumerWidget {
         decoration: getContainerDecoration(context),
         child: ref.watch(themeSettingProvider).when(
               data: (theme) => Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   ThemeSettingTile(
                     title: 'System default',

@@ -48,41 +48,45 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = isPhoneScreen(context);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      decoration: isSmallScreen ? null : getContainerDecoration(context),
-      child: Center(
-        child: SingleChildScrollView(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-                child: SvgPicture.asset(
-                  greetingIconPack,
-                  height: 80,
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
-                )),
-            Text(greeting, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 40),
-            Text(
-              'Quick Actions',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            Icon(
-              Icons.arrow_drop_down,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-            const SizedBox(height: 15),
-            const QuickActionContainer(),
-            const SizedBox(height: 30),
-            const ResourceTiles(),
-          ],
-        )),
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        decoration: isSmallScreen ? null : getContainerDecoration(context),
+        child: Center(
+          child: SingleChildScrollView(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                  child: SvgPicture.asset(
+                    greetingIconPack,
+                    height: 80,
+                    colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.onSurface,
+                        BlendMode.srcIn),
+                  )),
+              Text(greeting, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 40),
+              Text(
+                'Quick Actions',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              const SizedBox(height: 15),
+              const QuickActionContainer(),
+              const SizedBox(height: 30),
+              const ResourceTiles(),
+            ],
+          )),
+        ),
       ),
     );
   }
