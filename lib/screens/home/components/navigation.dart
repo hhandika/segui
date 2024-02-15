@@ -74,7 +74,7 @@ class ExpandedScreenDrawer extends ConsumerWidget {
       elevation: 0,
       backgroundColor: getSEGULBackgroundColor(context),
       indicatorColor:
-          Theme.of(context).colorScheme.primaryContainer.withAlpha(240),
+          Theme.of(context).colorScheme.primaryContainer.withAlpha(120),
       indicatorShape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.horizontal(
           right: Radius.circular(16),
@@ -104,7 +104,8 @@ class MediumScreenRail extends ConsumerWidget {
       backgroundColor: Color.lerp(Theme.of(context).colorScheme.primary,
           Theme.of(context).colorScheme.surface, 0.9),
       labelType: NavigationRailLabelType.all,
-      indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+      indicatorColor:
+          Theme.of(context).colorScheme.primaryContainer.withAlpha(120),
       destinations: navigationTargets
           .map((e) => NavigationRailDestination(
                 icon: e.icon,

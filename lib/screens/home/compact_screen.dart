@@ -30,7 +30,7 @@ class SmallScreenView extends ConsumerWidget {
         )),
         bottomNavigationBar: NavigationBar(
           backgroundColor: Colors.transparent,
-          indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+          indicatorColor: Theme.of(context).colorScheme.primary.withAlpha(120),
           elevation: 4,
           destinations: navigationTargets
               .map((e) => NavigationDestination(

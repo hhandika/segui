@@ -74,7 +74,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
     super.build(context);
     return SingleChildScrollView(
         child: Column(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
