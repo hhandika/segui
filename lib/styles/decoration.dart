@@ -17,6 +17,10 @@ Color? getSEGULBackgroundColor(BuildContext context) {
       Theme.of(context).colorScheme.surface, 0.9);
 }
 
+Color? getIndicatorColor(BuildContext context) {
+  return Theme.of(context).colorScheme.primary.withAlpha(80);
+}
+
 Color getBorderColor(BuildContext context) {
   return Theme.of(context).colorScheme.primary.withAlpha(40);
 }
