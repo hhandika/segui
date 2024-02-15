@@ -18,7 +18,7 @@ class AboutButton extends StatelessWidget {
       },
       child: Text(
         'About',
-        style: Theme.of(context).textTheme.labelLarge,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
     );
   }

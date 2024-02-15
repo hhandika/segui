@@ -168,7 +168,7 @@ class SmallScreenSettings extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MainSettings(),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               AboutButton(),
             ],
           ),
