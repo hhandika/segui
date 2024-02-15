@@ -100,8 +100,7 @@ class MediumScreenRail extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return NavigationRail(
-      backgroundColor: Color.lerp(Theme.of(context).colorScheme.primary,
-          Theme.of(context).colorScheme.surface, 0.9),
+      backgroundColor: getSEGULBackgroundColor(context),
       labelType: NavigationRailLabelType.all,
       indicatorColor: getIndicatorColor(context),
       destinations: navigationTargets
