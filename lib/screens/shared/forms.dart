@@ -87,10 +87,12 @@ class CardTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleMedium,
-    );
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ));
   }
 }
 
@@ -125,7 +127,7 @@ class CommonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 16),
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),

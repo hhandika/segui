@@ -52,11 +52,9 @@ class FormView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: children,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: children,
     );
   }
 }
@@ -95,7 +93,7 @@ class _IOExpandedScreenState extends State<IOExpandedScreen> {
     return Padding(
         padding: const EdgeInsets.all(8),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(8),
           decoration: getContainerDecoration(context),
           child: const DefaultTabController(
             length: 2,
@@ -156,10 +154,7 @@ class _IOCompactScreenState extends State<IOCompactScreen> {
         ),
         body: TabBarView(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: widget.child,
-            ),
+            widget.child,
             const InputScreen(),
             const OutputScreen(),
           ],

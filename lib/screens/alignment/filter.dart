@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/info.dart';
@@ -32,6 +33,43 @@ const Map<FilteringOptions, InputDecoration> filteringOptionsInput = {
     hintText: 'E.g., 0.5, .2, 1.0, etc.',
   ),
 };
+
+class AlignmentFilteringViewer extends StatefulWidget {
+  const AlignmentFilteringViewer({super.key});
+
+  @override
+  State<AlignmentFilteringViewer> createState() =>
+      _AlignmentFilteringViewerState();
+}
+
+class _AlignmentFilteringViewerState extends State<AlignmentFilteringViewer> {
+  bool _isShowingInfo = false;
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      AlignmentTaskSelection(
+        infoContent: SharedInfoForm(
+          description: 'Filter alignment by minimal alignment length, '
+              'data matrix completeness, '
+              'count of parsimony informative sites, '
+              'and percentage of parsimony informative sites. ',
+          isShowingInfo: _isShowingInfo,
+          onClosed: () {
+            setState(() {
+              _isShowingInfo = false;
+            });
+          },
+          onExpanded: () {
+            setState(() {
+              _isShowingInfo = true;
+            });
+          },
+        ),
+      ),
+      const Expanded(child: AlignmentFilteringPage()),
+    ]);
+  }
+}
 
 class AlignmentFilteringPage extends ConsumerStatefulWidget {
   const AlignmentFilteringPage({super.key});
@@ -63,28 +101,12 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SharedInfoForm(
-          description: 'Filter alignment by minimal alignment length, '
-              'data matrix completeness, '
-              'count of parsimony informative sites, '
-              'and percentage of parsimony informative sites. ',
-          isShowingInfo: _ctr.isShowingInfo,
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
@@ -92,7 +114,6 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
           allowMultiple: true,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Parameters'),
         FormCard(
           children: [
@@ -128,7 +149,6 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
             ),
           ],
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(
           children: [
@@ -184,7 +204,6 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
             ),
           ],
         ),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
               data: (value) {
@@ -220,7 +239,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
               error: (e, _) => null),
         ),
       ],
-    );
+    ));
   }
 
   bool get _isValid {

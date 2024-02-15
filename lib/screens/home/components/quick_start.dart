@@ -34,7 +34,6 @@ class _QuickStartPageState extends State<QuickStartPage> {
                       'From there, use the top dropdown menu to '
                       'select the task you want to perform. ',
                 ),
-                SizedBox(height: 16),
                 CardTitle(title: 'Input'),
                 HelpContent(
                   text: 'Use the input form to provide the required data. '
@@ -45,14 +44,12 @@ class _QuickStartPageState extends State<QuickStartPage> {
                       'the app will find all matching files '
                       'in the directory. Recursive search is not yet supported.',
                 ),
-                SizedBox(height: 16),
                 CardTitle(title: 'Output'),
                 HelpContent(
                   text: 'On desktop, you can select the output directory. '
                       'On mobile, the app will use the default app directory. '
                       'The app will create a new directory ',
                 ),
-                SizedBox(height: 16),
                 CardTitle(title: 'Parameters'),
                 HelpContent(
                   text:
@@ -60,13 +57,11 @@ class _QuickStartPageState extends State<QuickStartPage> {
                       'The parameters are specific to the task you are performing. '
                       'Not all tasks require parameters. ',
                 ),
-                SizedBox(height: 16),
                 CardTitle(title: 'Run'),
                 HelpContent(
                   text: 'Click the Run button to start the task. '
                       ' Keep the same screen open until the task is complete. ',
                 ),
-                SizedBox(height: 16),
                 CardTitle(title: 'Results'),
                 HelpContent(
                   text: 'The app will display the results of the task '

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/alignment.dart';
@@ -13,6 +14,43 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 
 const SupportedTask task = SupportedTask.alignmentSummary;
+
+class AlignmentSummaryViewer extends StatefulWidget {
+  const AlignmentSummaryViewer({super.key});
+
+  @override
+  State<AlignmentSummaryViewer> createState() => _AlignmentSummaryViewerState();
+}
+
+class _AlignmentSummaryViewerState extends State<AlignmentSummaryViewer> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        AlignmentTaskSelection(
+          infoContent: SharedInfoForm(
+            isShowingInfo: _isShowingInfo,
+            description: 'Summarize alignments by calculating the number of '
+                'sequences, sites, and parsimony informative sites, etc.',
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: AlignmentSummaryPage()),
+      ],
+    );
+  }
+}
 
 class AlignmentSummaryPage extends ConsumerStatefulWidget {
   const AlignmentSummaryPage({super.key});
@@ -40,32 +78,17 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedInfoForm(
-          isShowingInfo: _ctr.isShowingInfo,
-          description: 'Summarize alignments by calculating the number of '
-              'sequences, sites, and parsimony informative sites, etc.',
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -90,7 +113,6 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             },
           ),
         ]),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
@@ -134,7 +156,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
               ),
         ),
       ],
-    );
+    ));
   }
 
   bool get _isValid {

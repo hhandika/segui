@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/alignment.dart';
@@ -13,6 +14,45 @@ import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.alignmentConversion;
+
+class SplitAlignmentViewer extends StatefulWidget {
+  const SplitAlignmentViewer({super.key});
+
+  @override
+  State<SplitAlignmentViewer> createState() => _SplitAlignmentViewerState();
+}
+
+class _SplitAlignmentViewerState extends State<SplitAlignmentViewer> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        AlignmentTaskSelection(
+          infoContent: SharedInfoForm(
+            description: 'Split a concatenated alignment into multiple files '
+                'based in its individual partition.'
+                ' The input partition can be in a separate file as a RaXML or NEXUS format,'
+                ' or in the same file as a Charset format.',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: SplitAlignmentPage())
+      ],
+    );
+  }
+}
 
 class SplitAlignmentPage extends ConsumerStatefulWidget {
   const SplitAlignmentPage({super.key});
@@ -39,28 +79,12 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      mainAxisSize: MainAxisSize.max,
+    return SingleChildScrollView(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedInfoForm(
-          isShowingInfo: _ctr.isShowingInfo,
-          description: 'Split a concatenated alignment into multiple files '
-              'based in its individual partition.'
-              ' The input partition can be in a separate file as a RaXML or NEXUS format,'
-              ' or in the same file as a Charset format.',
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input Sequence'),
         SharedSequenceInputForm(
           ctr: _ctr,
@@ -70,7 +94,6 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
           allowDirectorySelection: false,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Input Partition'),
         FormCard(children: [
           SharedDropdownField(
@@ -85,7 +108,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
               });
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Visibility(
             visible: _partitionFormatController != 'Charset',
             child: const SharedFilePicker(
@@ -98,7 +121,6 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
             ),
           )
         ]),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -130,7 +152,6 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
                 });
               }),
         ]),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
@@ -174,7 +195,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
               ),
         )
       ],
-    );
+    ));
   }
 
   bool get _isValid {

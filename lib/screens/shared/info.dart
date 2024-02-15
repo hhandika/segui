@@ -17,49 +17,47 @@ class SharedInfoForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 2),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Visibility(
-              visible: isShowingInfo,
-              child: CommonCard(
-                backgroundColor: Theme.of(context).colorScheme.tertiary,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const Icon(Icons.info_outline_rounded),
-                    const SizedBox(height: 4),
-                    Text(
-                      description ?? '',
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                  ],
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Visibility(
+          visible: isShowingInfo,
+          child: CommonCard(
+            backgroundColor: Theme.of(context).colorScheme.tertiary,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Icon(Icons.info_outline_rounded),
+                const SizedBox(height: 4),
+                Text(
+                  description ?? '',
+                  style: Theme.of(context).textTheme.labelMedium,
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 2),
-            Center(
-              child: IconButton(
-                tooltip: isShowingInfo ? 'Hide info' : 'Show info',
-                icon: Icon(
-                  isShowingInfo
-                      ? Icons.expand_less_outlined
-                      : Icons.expand_more_outlined,
-                ),
-                onPressed: () {
-                  if (isShowingInfo) {
-                    onClosed();
-                  } else {
-                    onExpanded();
-                  }
-                },
-              ),
-            )
-          ],
-        ));
+          ),
+        ),
+        const SizedBox(height: 2),
+        Center(
+          child: IconButton(
+            tooltip: isShowingInfo ? 'Hide info' : 'Show info',
+            icon: Icon(
+              isShowingInfo
+                  ? Icons.expand_less_outlined
+                  : Icons.expand_more_outlined,
+            ),
+            onPressed: () {
+              if (isShowingInfo) {
+                onClosed();
+              } else {
+                onExpanded();
+              }
+            },
+          ),
+        )
+      ],
+    );
   }
 }

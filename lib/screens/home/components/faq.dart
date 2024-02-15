@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/styles/decoration.dart';
 
 class FaqPage extends StatefulWidget {
   const FaqPage({super.key});
@@ -16,7 +17,9 @@ class _FaqPageState extends State<FaqPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('FAQ'),
+        backgroundColor: getSEGULBackgroundColor(context),
       ),
+      backgroundColor: getSEGULBackgroundColor(context),
       body: Center(
           child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -55,16 +58,15 @@ class MarkdownViewer extends StatelessWidget {
       itemCount: data.length,
       itemBuilder: (context, index) {
         if (data[index].startsWith('##')) {
-          return Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
-              child: CardTitle(
-                title: data[index].replaceAll('##', ''),
-              ));
+          return CardTitle(
+            title: data[index].replaceAll('##', ''),
+          );
         } else if (data[index].isEmpty | data[index].startsWith('#')) {
           return const SizedBox.shrink();
         } else {
-          return CommonCard(
-            backgroundColor: Theme.of(context).colorScheme.surface,
+          return Container(
+            decoration: getContainerDecoration(context),
+            padding: const EdgeInsets.all(16),
             child: Text(
               data[index],
               style: Theme.of(context).textTheme.bodyLarge,

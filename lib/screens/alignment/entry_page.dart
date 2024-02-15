@@ -11,24 +11,22 @@ import 'package:segui/screens/alignment/summary.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
-class AlignmentPage extends StatefulWidget {
+class AlignmentPage extends ConsumerWidget {
   const AlignmentPage({super.key});
 
   @override
-  State<AlignmentPage> createState() => _AlignmentPageState();
-}
-
-class _AlignmentPageState extends State<AlignmentPage> {
-  @override
-  Widget build(BuildContext context) {
-    return const SharedOperationPage(
-      child: AlignmentContentPage(),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SharedOperationPage(
+        child: AlignmentOptions(
+      analysis: ref.watch(alignmentOperationSelectionProvider),
+    ));
   }
 }
 
-class AlignmentContentPage extends ConsumerWidget {
-  const AlignmentContentPage({super.key});
+class AlignmentTaskSelection extends ConsumerWidget {
+  const AlignmentTaskSelection({super.key, required this.infoContent});
+
+  final Widget infoContent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,10 +49,7 @@ class AlignmentContentPage extends ConsumerWidget {
             ref.invalidate(fileInputProvider);
             ref.invalidate(fileOutputProvider);
           }),
-      const SizedBox(height: 8),
-      AlignmentOptions(
-        analysis: ref.watch(alignmentOperationSelectionProvider),
-      ),
+      infoContent,
     ]);
   }
 }
@@ -68,17 +63,17 @@ class AlignmentOptions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     switch (analysis) {
       case AlignmentOperationType.concatenation:
-        return const ConcatPage();
+        return const ConcatViewer();
       case AlignmentOperationType.conversion:
-        return const ConvertPage();
+        return const ConvertViewer();
       case AlignmentOperationType.filter:
-        return const AlignmentFilteringPage();
-      case AlignmentOperationType.split:
-        return const SplitAlignmentPage();
+        return const AlignmentFilteringViewer();
       case AlignmentOperationType.partition:
-        return const PartitionConversionPage();
+        return const PartitionConversionViewer();
+      case AlignmentOperationType.split:
+        return const SplitAlignmentViewer();
       case AlignmentOperationType.summary:
-        return const AlignmentSummaryPage();
+        return const AlignmentSummaryViewer();
       default:
         return const SizedBox();
     }

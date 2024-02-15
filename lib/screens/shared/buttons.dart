@@ -28,22 +28,25 @@ class ExecutionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isSuccess
-        ? Wrap(
-            spacing: 16,
-            children: [
-              NewRunButton(
-                controller: controller,
-                onPressed: onNewRun,
-              ),
-              ShareButton(
-                isRunning: isRunning,
-                onPressed: onShared,
-              ),
-            ],
-          )
-        : PrimaryButton(
-            label: label, onPressed: onExecuted, isRunning: isRunning);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
+      child: isSuccess
+          ? Wrap(
+              spacing: 16,
+              children: [
+                NewRunButton(
+                  controller: controller,
+                  onPressed: onNewRun,
+                ),
+                ShareButton(
+                  isRunning: isRunning,
+                  onPressed: onShared,
+                ),
+              ],
+            )
+          : PrimaryButton(
+              label: label, onPressed: onExecuted, isRunning: isRunning),
+    );
   }
 }
 
