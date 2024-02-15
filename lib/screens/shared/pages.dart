@@ -203,12 +203,7 @@ class InputFileList extends ConsumerWidget {
     return IOListContainer(
         title: 'Input Files',
         infoText: 'List of input files to be analyzed.',
-        child: ListView.separated(
-          separatorBuilder: (context, index) => const Divider(
-            height: 1,
-            indent: 36,
-            endIndent: 40,
-          ),
+        child: ListView.builder(
           shrinkWrap: true,
           itemCount: files.length,
           padding: const EdgeInsets.all(8),
@@ -252,14 +247,13 @@ class OutputScreen extends ConsumerWidget {
       height: double.infinity,
       child: ref.watch(fileOutputProvider).when(
             data: (data) {
-              final files = getFiles(data);
               return data.directory == null
                   ? const EmptyScreen(
                       title: 'No output directory selected.',
                       description:
                           'Select an output directory to store output files.',
                     )
-                  : OutputFileList(files: files);
+                  : OutputFileList(data: data);
             },
             loading: () => const Center(
               child: CircularProgressIndicator(),
@@ -268,26 +262,15 @@ class OutputScreen extends ConsumerWidget {
           ),
     );
   }
-
-  List<File> getFiles(SegulOutputFile data) {
-    if (data.newFiles.isNotEmpty) {
-      List<File> files = [];
-      files.addAll(data.newFiles);
-      files.addAll(data.oldFiles);
-      return files;
-    } else {
-      return data.oldFiles;
-    }
-  }
 }
 
 class OutputFileList extends StatelessWidget {
   const OutputFileList({
     super.key,
-    required this.files,
+    required this.data,
   });
 
-  final List<File> files;
+  final SegulOutputFile data;
 
   @override
   Widget build(BuildContext context) {
@@ -296,17 +279,17 @@ class OutputFileList extends StatelessWidget {
       infoText: 'List of files in the output directory. '
           'Newly created files are marked with a new icon. '
           'Click on a file to view its content.',
-      child: files.isEmpty
+      child: data.files.isEmpty
           ? const EmptyScreen(
               title: 'No output files found.',
               description: 'Run the analysis to generate output files.',
             )
           : ListView.builder(
-              itemCount: files.length,
+              itemCount: data.files.length,
               itemBuilder: (context, index) {
-                final file = files[index];
+                final file = data.files[index].file;
                 return OutputFileTiles(
-                  isOldFile: true,
+                  isOldFile: !data.files[index].isNew,
                   file: file,
                 );
               },

@@ -48,7 +48,7 @@ class DataUsageViewer extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: ref.watch(fileOutputProvider).when(
                     data: (outputFile) {
-                      final files = outputFile.oldFiles;
+                      final files = outputFile.files;
                       return files.isEmpty
                           ? const Center(
                               child: Text('No data found'),
@@ -59,7 +59,7 @@ class DataUsageViewer extends ConsumerWidget {
                                 final file = files[index];
                                 return OutputFileTiles(
                                   isOldFile: true,
-                                  file: file,
+                                  file: file.file,
                                 );
                               });
                     },

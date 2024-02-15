@@ -204,9 +204,10 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
                         data: (value) {
                           return () async {
                             _setRunning();
+                            final newFiles = getNewFilesFromOutput(value);
                             await _shareOutput(
                               value.directory!,
-                              value.newFiles,
+                              newFiles,
                             );
                           };
                         },

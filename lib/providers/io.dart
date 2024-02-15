@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:segui/services/io.dart';
 
@@ -110,14 +109,7 @@ class FileOutput extends _$FileOutput {
       if (state.value == null || state.value!.directory == null) {
         return SegulOutputFile.empty();
       }
-      if (kDebugMode) {
-        print(
-            'Refreshing files... Older files: ${state.value!.oldFiles.length}');
-      }
       final updates = SegulOutputFile.updateFiles(state.value!, isRecursive);
-      if (kDebugMode) {
-        print('Refreshing files... New files: ${updates.newFiles.length}');
-      }
 
       return updates;
     });
@@ -129,8 +121,8 @@ class FileOutput extends _$FileOutput {
       if (state.value == null) {
         return SegulOutputFile.empty();
       }
-      final files = [...state.value!.oldFiles];
-      files.remove(file);
+      final files = [...state.value!.files];
+      files.removeWhere((f) => f.file.path == file.path);
       file.delete();
       return SegulOutputFile.deleteFile(state.value!, file);
     });
@@ -142,7 +134,7 @@ class FileOutput extends _$FileOutput {
       if (state.value == null) {
         return SegulOutputFile.empty();
       }
-      final files = [...state.value!.oldFiles];
+      final files = state.value!.files.map((f) => f.file).toList();
       final log = await FileCleaningService().removeAllFiles(files);
       if (log != null) {
         return SegulOutputFile.refresh(state.value!, [log]);

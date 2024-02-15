@@ -193,9 +193,11 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
                               return _ctr.isRunning
                                   ? null
                                   : () async {
+                                      final newFiles =
+                                          getNewFilesFromOutput(value);
                                       await _shareOutput(
                                         value.directory!,
-                                        value.newFiles,
+                                        newFiles,
                                       );
                                     };
                             }

@@ -81,19 +81,16 @@ class SegulInputFile {
 class SegulOutputFile {
   SegulOutputFile({
     required this.directory,
-    required this.oldFiles,
-    required this.newFiles,
+    required this.files,
   });
 
   final Directory? directory;
-  final List<File> oldFiles;
-  final List<File> newFiles;
+  final List<({File file, bool isNew})> files;
 
   factory SegulOutputFile.empty() {
     return SegulOutputFile(
       directory: null,
-      oldFiles: [],
-      newFiles: [],
+      files: [],
     );
   }
 
@@ -101,8 +98,7 @@ class SegulOutputFile {
       {bool isRecursive = false}) {
     return SegulOutputFile(
       directory: dir,
-      oldFiles: DirectoryCrawler(dir).crawl(recursive: isRecursive),
-      newFiles: [],
+      files: DirectoryCrawler(dir).crawl(recursive: isRecursive),
     );
   }
 
@@ -110,28 +106,28 @@ class SegulOutputFile {
     SegulOutputFile oldFile,
     bool isRecursive,
   ) {
+    List<File> oldFiles = oldFile.files.map((e) => e.file).toList();
     return SegulOutputFile(
         directory: oldFile.directory,
-        oldFiles: oldFile.oldFiles,
-        newFiles: DirectoryCrawler(oldFile.directory!)
-            .findNewFiles(oldFile.oldFiles, isRecursive));
+        files: DirectoryCrawler(oldFile.directory!)
+            .findNewFiles(oldFiles, isRecursive));
   }
 
   // Update the list without accounting new files.
   factory SegulOutputFile.refresh(
       SegulOutputFile file, List<File> updatedFiles) {
+    List<({File file, bool isNew})> newFiles =
+        updatedFiles.map((e) => (file: e, isNew: false)).toList();
     return SegulOutputFile(
       directory: file.directory,
-      oldFiles: updatedFiles,
-      newFiles: [],
+      files: newFiles,
     );
   }
 
   factory SegulOutputFile.deleteFile(SegulOutputFile oldFile, File file) {
     return SegulOutputFile(
       directory: oldFile.directory,
-      oldFiles: oldFile.oldFiles..remove(file),
-      newFiles: oldFile.newFiles,
+      files: oldFile.files.where((f) => f.file.path != file.path).toList(),
     );
   }
 }
@@ -501,8 +497,9 @@ class DirectoryCrawler {
 
   final Directory dir;
 
-  List<File> crawl({required bool recursive}) {
-    return _findAllFilesInDir(dir, recursive);
+  List<({File file, bool isNew})> crawl({required bool recursive}) {
+    const bool isNew = false;
+    return _findAllFilesInDir(dir, recursive, isNew);
   }
 
   List<File> crawlByType(XTypeGroup type) {
@@ -516,13 +513,16 @@ class DirectoryCrawler {
     return inputFiles;
   }
 
-  List<File> findNewFiles(List<File> oldFiles, bool isRecursive) {
-    List<File> newFiles = [];
-    List<File> allFiles = _findAllFilesInDir(dir, isRecursive);
+  List<({File file, bool isNew})> findNewFiles(
+      List<File> oldFiles, bool isRecursive) {
+    List<({File file, bool isNew})> newFiles = [];
+    const bool isNew = true;
+    List<({File file, bool isNew})> allFiles =
+        _findAllFilesInDir(dir, isRecursive, isNew);
     for (var file in allFiles) {
-      if (!oldFiles.any((oldFile) => oldFile.path == file.path)) {
+      if (!oldFiles.any((oldFile) => oldFile.path == file.file.path)) {
         if (kDebugMode) {
-          print('Found file: ${file.path}');
+          print('Found file: ${file.file.path}');
         }
         newFiles.add(file);
       }
@@ -531,15 +531,16 @@ class DirectoryCrawler {
     return newFiles;
   }
 
-  List<File> _findAllFilesInDir(Directory dir, bool isRecursive) {
+  List<({File file, bool isNew})> _findAllFilesInDir(
+      Directory dir, bool isRecursive, bool isNew) {
     List<FileSystemEntity> founds = dir.listSync(recursive: isRecursive);
-    List<File> files = [];
+    List<({File file, bool isNew})> files = [];
     for (var file in founds) {
       if (file is File) {
         if (kDebugMode) {
           print('Found file: ${file.path}');
         }
-        files.add(file);
+        files.add((file: file, isNew: isNew));
       }
     }
     return files;
@@ -694,6 +695,13 @@ String formatSize(int size) {
   } else {
     return '${kb.toStringAsFixed(2)} Kb';
   }
+}
+
+List<File> getNewFilesFromOutput(SegulOutputFile outputFiles) {
+  return outputFiles.files
+      .where((element) => element.isNew)
+      .map((e) => e.file)
+      .toList();
 }
 
 String getOutputFmt(String outputFormat, bool isInterleave) {
