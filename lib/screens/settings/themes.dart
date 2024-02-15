@@ -33,28 +33,29 @@ class ThemeSettingView extends ConsumerWidget {
         constraints: const BoxConstraints(maxWidth: 800),
         decoration: getContainerDecoration(context),
         child: ref.watch(themeSettingProvider).when(
-              data: (theme) => ListView.separated(
-                separatorBuilder: (context, index) => const CommonDivider(),
-                itemCount: 3,
-                shrinkWrap: true,
-                itemBuilder: (context, index) => ThemeSettingTile(
-                  title: index == 0
-                      ? 'System default'
-                      : index == 1
-                          ? 'Light'
-                          : 'Dark',
-                  theme: index == 0
-                      ? ThemeMode.system
-                      : index == 1
-                          ? ThemeMode.light
-                          : ThemeMode.dark,
-                  currentTheme: theme,
-                  icon: index == 0
-                      ? Icons.brightness_auto_outlined
-                      : index == 1
-                          ? Icons.brightness_1_outlined
-                          : Icons.brightness_3_outlined,
-                ),
+              data: (theme) => Column(
+                children: [
+                  ThemeSettingTile(
+                    title: 'System default',
+                    theme: ThemeMode.system,
+                    currentTheme: theme,
+                    icon: Icons.brightness_auto_outlined,
+                  ),
+                  const CommonDivider(),
+                  ThemeSettingTile(
+                    title: 'Light',
+                    theme: ThemeMode.light,
+                    currentTheme: theme,
+                    icon: Icons.brightness_1_outlined,
+                  ),
+                  const CommonDivider(),
+                  ThemeSettingTile(
+                    title: 'Dark',
+                    theme: ThemeMode.dark,
+                    currentTheme: theme,
+                    icon: Icons.brightness_3_outlined,
+                  ),
+                ],
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stackTrace) =>
