@@ -526,7 +526,7 @@ class DirectoryCrawler {
     List<FileSystemEntity> founds = dir.listSync(recursive: isRecursive);
     List<File> files = [];
     for (var file in founds) {
-      if (file is File) {
+      if (file is File && file.existsSync()) {
         files.add(file);
       }
     }
