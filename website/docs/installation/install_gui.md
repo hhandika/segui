@@ -47,7 +47,7 @@ Open terminal and extract the file using the following command:
 tar -xvzf segui-Linux-x86_64.tar.gz
 ```
 
-Then, run the `segui` file.
+Then, run the `segui` executable.
 
 :::info
 The app may work on any Linux distribution with 64-bit architecture and GLIBC 2.34+.
