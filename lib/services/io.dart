@@ -512,18 +512,24 @@ class DirectoryCrawler {
 
   List<File> findNewFiles(List<File> oldFiles, bool isRecursive) {
     List<File> newFiles = [];
-    dir.listSync(recursive: isRecursive).whereType<File>().forEach((e) {
-      if (!oldFiles.any((oldFile) => oldFile.path == e.path)) {
-        newFiles.add(e);
+    List<File> allFiles = _findAllFilesInDir(dir, isRecursive);
+    for (var file in allFiles) {
+      if (!oldFiles.contains(file)) {
+        newFiles.add(file);
       }
-    });
+    }
 
     return newFiles;
   }
 
   List<File> _findAllFilesInDir(Directory dir, bool isRecursive) {
-    List<File> files =
-        dir.listSync(recursive: isRecursive).whereType<File>().toList();
+    List<FileSystemEntity> founds = dir.listSync(recursive: isRecursive);
+    List<File> files = [];
+    for (var file in founds) {
+      if (file is File) {
+        files.add(file);
+      }
+    }
     return files;
   }
 
