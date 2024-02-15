@@ -28,6 +28,9 @@ class SmallScreenView extends ConsumerWidget {
           child: pages.elementAt(ref.watch(tabSelectionProvider)),
         )),
         bottomNavigationBar: NavigationBar(
+          backgroundColor: Colors.transparent,
+          indicatorColor: Theme.of(context).colorScheme.primaryContainer,
+          elevation: 4,
           destinations: navigationTargets
               .map((e) => NavigationDestination(
                     icon: e.icon,
