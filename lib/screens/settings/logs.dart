@@ -24,14 +24,14 @@ class _LogScreenState extends State<LogScreen> {
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: const SafeArea(
-        child: LogListViewer(),
+        child: LogListView(),
       ),
     );
   }
 }
 
-class LogListViewer extends StatelessWidget {
-  const LogListViewer({super.key});
+class LogListView extends StatelessWidget {
+  const LogListView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +80,7 @@ class LogListViewer extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    PlainTextViewer(file: log),
+                                builder: (context) => PlainTextView(file: log),
                               ),
                             );
                           },

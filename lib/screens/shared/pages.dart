@@ -220,7 +220,7 @@ class InputFileList extends ConsumerWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => FileViewer(
+                    builder: (context) => FileView(
                       file: data.file,
                       type: association.commonFileTYpe,
                     ),
@@ -332,7 +332,7 @@ class OutputFileTiles extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => FileViewer(
+            builder: (context) => FileView(
               file: file,
               type: association.commonFileTYpe,
             ),

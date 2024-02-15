@@ -8,8 +8,8 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/styles/decoration.dart';
 
-class UnknownFileViewer extends StatelessWidget {
-  const UnknownFileViewer({super.key, required this.file});
+class UnknownFileView extends StatelessWidget {
+  const UnknownFileView({super.key, required this.file});
 
   final File file;
 
@@ -39,7 +39,7 @@ class UnknownFileViewer extends StatelessWidget {
                   ),
                   const TopDivider(),
                   Expanded(
-                    child: UnknownFileViewerBody(file: file),
+                    child: UnknownFileViewBody(file: file),
                   ),
                 ],
               ),
@@ -49,8 +49,8 @@ class UnknownFileViewer extends StatelessWidget {
   }
 }
 
-class UnknownFileViewerBody extends StatelessWidget {
-  const UnknownFileViewerBody({super.key, required this.file});
+class UnknownFileViewBody extends StatelessWidget {
+  const UnknownFileViewBody({super.key, required this.file});
 
   final File file;
 
@@ -64,7 +64,7 @@ class UnknownFileViewerBody extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const UnknownViewerIcon(),
+                const UnknownViewIcon(),
                 const SizedBox(height: 16),
                 FileIOTitle(file: file),
                 const SizedBox(height: 2),
@@ -78,8 +78,8 @@ class UnknownFileViewerBody extends StatelessWidget {
   }
 }
 
-class UnknownViewerIcon extends StatelessWidget {
-  const UnknownViewerIcon({
+class UnknownViewIcon extends StatelessWidget {
+  const UnknownViewIcon({
     super.key,
   });
 

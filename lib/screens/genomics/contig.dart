@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/genomics/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/genomics.dart';
@@ -13,6 +14,44 @@ import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.genomicContigSummary;
+
+class ContigView extends StatefulWidget {
+  const ContigView({super.key});
+
+  @override
+  State<ContigView> createState() => _ContigViewState();
+}
+
+class _ContigViewState extends State<ContigView> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        GenomicTaskSelection(
+          infoContent: SharedInfoForm(
+            description: 'Summarize contigs by calculating the number of '
+                'contigs, total length, base count N50, '
+                'and other relevant statistics.',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: ContigPage()),
+      ],
+    );
+  }
+}
 
 class ContigPage extends ConsumerStatefulWidget {
   const ContigPage({super.key});
@@ -37,26 +76,11 @@ class ContigPageState extends ConsumerState<ContigPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SharedInfoForm(
-            description: 'Summarize contigs by calculating the number of '
-                'contigs, total length, base count N50, '
-                'and other relevant statistics.',
-            isShowingInfo: _ctr.isShowingInfo,
-            onClosed: () {
-              setState(() {
-                _ctr.isShowingInfo = false;
-              });
-            },
-            onExpanded: () {
-              setState(() {
-                _ctr.isShowingInfo = true;
-              });
-            },
-          ),
+    return SingleChildScrollView(
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
           const CardTitle(title: 'Input'),
           FormCard(children: [
             InputSelectorForm(
@@ -78,7 +102,6 @@ class ContigPageState extends ConsumerState<ContigPage>
               },
             ),
           ]),
-          const SizedBox(height: 16),
           const CardTitle(title: 'Output'),
           FormCard(children: [
             SharedOutputDirField(
@@ -90,7 +113,6 @@ class ContigPageState extends ConsumerState<ContigPage>
               hint: 'Enter output filename',
             ),
           ]),
-          const SizedBox(height: 16),
           Center(
             child: ref.watch(fileInputProvider).when(
                   data: (value) {
@@ -133,7 +155,7 @@ class ContigPageState extends ConsumerState<ContigPage>
                   },
                 ),
           )
-        ]);
+        ]));
   }
 
   bool get _isValid {

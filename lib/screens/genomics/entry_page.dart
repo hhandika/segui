@@ -7,24 +7,26 @@ import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
-class GenomicPage extends ConsumerStatefulWidget {
+class GenomicPage extends ConsumerWidget {
   const GenomicPage({super.key});
 
   @override
-  GenomicPageState createState() => GenomicPageState();
-}
-
-class GenomicPageState extends ConsumerState<GenomicPage> {
-  @override
-  Widget build(BuildContext context) {
-    return const SharedOperationPage(
-      child: GenomicContentPage(),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SharedOperationPage(
+      child: GenomicOptions(
+        analysis: ref.watch(genomicOperationSelectionProvider),
+      ),
     );
   }
 }
 
-class GenomicContentPage extends ConsumerWidget {
-  const GenomicContentPage({super.key});
+class GenomicTaskSelection extends ConsumerWidget {
+  const GenomicTaskSelection({
+    super.key,
+    required this.infoContent,
+  });
+
+  final Widget infoContent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,10 +50,7 @@ class GenomicContentPage extends ConsumerWidget {
           ref.invalidate(fileOutputProvider);
         },
       ),
-      const SizedBox(height: 8),
-      GenomicOptions(
-        analysis: ref.watch(genomicOperationSelectionProvider),
-      ),
+      infoContent,
     ]);
   }
 }
@@ -65,9 +64,9 @@ class GenomicOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (analysis) {
       case GenomicOperationType.readSummary:
-        return const ReadSummaryPage();
+        return const ReadSummaryView();
       case GenomicOperationType.contigSummary:
-        return const ContigPage();
+        return const ContigView();
       default:
         return const SizedBox();
     }

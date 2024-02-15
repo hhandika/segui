@@ -15,14 +15,14 @@ import 'package:segui/services/io.dart';
 
 const SupportedTask task = SupportedTask.alignmentSummary;
 
-class AlignmentSummaryViewer extends StatefulWidget {
-  const AlignmentSummaryViewer({super.key});
+class AlignmentSummaryView extends StatefulWidget {
+  const AlignmentSummaryView({super.key});
 
   @override
-  State<AlignmentSummaryViewer> createState() => _AlignmentSummaryViewerState();
+  State<AlignmentSummaryView> createState() => _AlignmentSummaryViewState();
 }
 
-class _AlignmentSummaryViewerState extends State<AlignmentSummaryViewer> {
+class _AlignmentSummaryViewState extends State<AlignmentSummaryView> {
   bool _isShowingInfo = false;
 
   @override

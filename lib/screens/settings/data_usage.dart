@@ -22,14 +22,14 @@ class DataUsageScreenState extends ConsumerState<DataUsageScreen> {
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: const Center(
-        child: DataUsageViewer(),
+        child: DataUsageView(),
       ),
     );
   }
 }
 
-class DataUsageViewer extends ConsumerWidget {
-  const DataUsageViewer({super.key});
+class DataUsageView extends ConsumerWidget {
+  const DataUsageView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

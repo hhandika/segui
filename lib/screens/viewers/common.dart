@@ -6,8 +6,8 @@ import 'package:segui/screens/viewers/text.dart';
 import 'package:segui/screens/viewers/unknown.dart';
 import 'package:segui/services/io.dart';
 
-class FileViewer extends StatelessWidget {
-  const FileViewer({
+class FileView extends StatelessWidget {
+  const FileView({
     super.key,
     required this.file,
     required this.type,
@@ -20,11 +20,11 @@ class FileViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (type) {
       case CommonFileType.plainText:
-        return PlainTextViewer(file: file);
+        return PlainTextView(file: file);
       case CommonFileType.tabulated:
-        return TabulatedFileViewer(file: file);
+        return TabulatedFileView(file: file);
       default:
-        return UnknownFileViewer(file: file);
+        return UnknownFileView(file: file);
     }
   }
 }

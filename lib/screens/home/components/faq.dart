@@ -27,7 +27,7 @@ class _FaqPageState extends State<FaqPage> {
         child: FutureBuilder(
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return MarkdownViewer(data: snapshot.data!);
+              return MarkdownView(data: snapshot.data!);
             }
             return const CircularProgressIndicator();
           },
@@ -48,8 +48,8 @@ class _FaqPageState extends State<FaqPage> {
   }
 }
 
-class MarkdownViewer extends StatelessWidget {
-  const MarkdownViewer({super.key, required this.data});
+class MarkdownView extends StatelessWidget {
+  const MarkdownView({super.key, required this.data});
 
   final List<String> data;
   @override

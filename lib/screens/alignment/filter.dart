@@ -34,15 +34,14 @@ const Map<FilteringOptions, InputDecoration> filteringOptionsInput = {
   ),
 };
 
-class AlignmentFilteringViewer extends StatefulWidget {
-  const AlignmentFilteringViewer({super.key});
+class AlignmentFilteringView extends StatefulWidget {
+  const AlignmentFilteringView({super.key});
 
   @override
-  State<AlignmentFilteringViewer> createState() =>
-      _AlignmentFilteringViewerState();
+  State<AlignmentFilteringView> createState() => _AlignmentFilteringViewState();
 }
 
-class _AlignmentFilteringViewerState extends State<AlignmentFilteringViewer> {
+class _AlignmentFilteringViewState extends State<AlignmentFilteringView> {
   bool _isShowingInfo = false;
   @override
   Widget build(BuildContext context) {

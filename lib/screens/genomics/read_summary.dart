@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/genomics/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/genomics.dart';
@@ -12,6 +13,46 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 
 const SupportedTask task = SupportedTask.genomicRawReadSummary;
+
+class ReadSummaryView extends StatefulWidget {
+  const ReadSummaryView({super.key});
+
+  @override
+  State<ReadSummaryView> createState() => _ReadSummaryViewState();
+}
+
+class _ReadSummaryViewState extends State<ReadSummaryView> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        GenomicTaskSelection(
+          infoContent: SharedInfoForm(
+            description: 'Summarize raw genomic reads by '
+                'calculating the number '
+                'of reads, base counts, GC and AT content, '
+                'low Q-score counts, '
+                'and other relevant statistics.',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: ReadSummaryPage()),
+      ],
+    );
+  }
+}
 
 class ReadSummaryPage extends ConsumerStatefulWidget {
   const ReadSummaryPage({super.key});
@@ -31,28 +72,11 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedInfoForm(
-          description: 'Summarize raw genomic reads by '
-              'calculating the number '
-              'of reads, base counts, GC and AT content, '
-              'low Q-score counts, '
-              'and other relevant statistics.',
-          isShowingInfo: _ctr.isShowingInfo,
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         FormCard(children: [
           InputSelectorForm(
@@ -74,7 +98,6 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
             },
           ),
         ]),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -93,7 +116,6 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
             },
           ),
         ]),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
               data: (value) {
@@ -136,7 +158,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
               error: (e, s) => null),
         )
       ],
-    );
+    ));
   }
 
   bool get _isValid {

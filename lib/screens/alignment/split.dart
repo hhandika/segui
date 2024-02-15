@@ -15,14 +15,14 @@ import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.alignmentConversion;
 
-class SplitAlignmentViewer extends StatefulWidget {
-  const SplitAlignmentViewer({super.key});
+class SplitAlignmentView extends StatefulWidget {
+  const SplitAlignmentView({super.key});
 
   @override
-  State<SplitAlignmentViewer> createState() => _SplitAlignmentViewerState();
+  State<SplitAlignmentView> createState() => _SplitAlignmentViewState();
 }
 
-class _SplitAlignmentViewerState extends State<SplitAlignmentViewer> {
+class _SplitAlignmentViewState extends State<SplitAlignmentView> {
   bool _isShowingInfo = false;
 
   @override

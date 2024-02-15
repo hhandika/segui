@@ -126,10 +126,10 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
         ),
         Expanded(
           child: _selectedIndex == 0
-              ? const LogListViewer()
+              ? const LogListView()
               : _selectedIndex == 1
                   ? const ThemeSettingView()
-                  : const DataUsageViewer(),
+                  : const DataUsageView(),
         ),
       ],
     );

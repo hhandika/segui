@@ -14,15 +14,15 @@ import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.partitionConversion;
 
-class PartitionConversionViewer extends StatefulWidget {
-  const PartitionConversionViewer({super.key});
+class PartitionConversionView extends StatefulWidget {
+  const PartitionConversionView({super.key});
 
   @override
-  State<PartitionConversionViewer> createState() =>
-      _PartitionConversionViewerState();
+  State<PartitionConversionView> createState() =>
+      _PartitionConversionViewState();
 }
 
-class _PartitionConversionViewerState extends State<PartitionConversionViewer> {
+class _PartitionConversionViewState extends State<PartitionConversionView> {
   bool _isShowingInfo = false;
 
   @override

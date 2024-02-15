@@ -234,7 +234,7 @@ class FileAssociation {
 
   final File file;
 
-  bool get isSupportedViewerExtension {
+  bool get isSupportedViewExtension {
     final fileType = commonFileTYpe;
     return fileType == CommonFileType.plainText ||
         fileType == CommonFileType.tabulated;

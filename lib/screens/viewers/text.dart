@@ -8,8 +8,8 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/viewers/text.dart';
 import 'package:segui/styles/decoration.dart';
 
-class PlainTextViewer extends StatelessWidget {
-  const PlainTextViewer({super.key, required this.file});
+class PlainTextView extends StatelessWidget {
+  const PlainTextView({super.key, required this.file});
 
   final File file;
 
@@ -22,14 +22,14 @@ class PlainTextViewer extends StatelessWidget {
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: Center(
-        child: PlainTextViewerBody(file: file),
+        child: PlainTextViewBody(file: file),
       ),
     );
   }
 }
 
-class PlainTextViewerBody extends StatelessWidget {
-  const PlainTextViewerBody({super.key, required this.file});
+class PlainTextViewBody extends StatelessWidget {
+  const PlainTextViewBody({super.key, required this.file});
 
   final File file;
 

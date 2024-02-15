@@ -14,14 +14,14 @@ import 'package:segui/services/io.dart';
 
 const SupportedTask task = SupportedTask.alignmentConcatenation;
 
-class ConcatViewer extends StatefulWidget {
-  const ConcatViewer({super.key});
+class ConcatView extends StatefulWidget {
+  const ConcatView({super.key});
 
   @override
-  State<ConcatViewer> createState() => _ConcatViewerState();
+  State<ConcatView> createState() => _ConcatViewState();
 }
 
-class _ConcatViewerState extends State<ConcatViewer> {
+class _ConcatViewState extends State<ConcatView> {
   bool _isShowingInfo = false;
 
   @override

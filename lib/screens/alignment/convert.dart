@@ -15,14 +15,14 @@ import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.alignmentConversion;
 
-class ConvertViewer extends StatefulWidget {
-  const ConvertViewer({super.key});
+class ConvertView extends StatefulWidget {
+  const ConvertView({super.key});
 
   @override
-  State<ConvertViewer> createState() => _ConvertViewerState();
+  State<ConvertView> createState() => _ConvertViewState();
 }
 
-class _ConvertViewerState extends State<ConvertViewer> {
+class _ConvertViewState extends State<ConvertView> {
   bool _isShowingInfo = false;
 
   @override

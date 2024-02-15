@@ -63,17 +63,17 @@ class AlignmentOptions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     switch (analysis) {
       case AlignmentOperationType.concatenation:
-        return const ConcatViewer();
+        return const ConcatView();
       case AlignmentOperationType.conversion:
-        return const ConvertViewer();
+        return const ConvertView();
       case AlignmentOperationType.filter:
-        return const AlignmentFilteringViewer();
+        return const AlignmentFilteringView();
       case AlignmentOperationType.partition:
-        return const PartitionConversionViewer();
+        return const PartitionConversionView();
       case AlignmentOperationType.split:
-        return const SplitAlignmentViewer();
+        return const SplitAlignmentView();
       case AlignmentOperationType.summary:
-        return const AlignmentSummaryViewer();
+        return const AlignmentSummaryView();
       default:
         return const SizedBox();
     }

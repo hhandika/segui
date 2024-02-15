@@ -7,8 +7,8 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/viewers/csv.dart';
 import 'package:segui/styles/decoration.dart';
 
-class TabulatedFileViewer extends StatelessWidget {
-  const TabulatedFileViewer({super.key, required this.file});
+class TabulatedFileView extends StatelessWidget {
+  const TabulatedFileView({super.key, required this.file});
 
   final File file;
 
@@ -42,7 +42,7 @@ class TabulatedFileViewer extends StatelessWidget {
                     Expanded(
                         child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: TabulatedFileViewerBody(file: file),
+                      child: TabulatedFileViewBody(file: file),
                     )),
                   ],
                 ))),
@@ -51,17 +51,16 @@ class TabulatedFileViewer extends StatelessWidget {
   }
 }
 
-class TabulatedFileViewerBody extends StatefulWidget {
-  const TabulatedFileViewerBody({super.key, required this.file});
+class TabulatedFileViewBody extends StatefulWidget {
+  const TabulatedFileViewBody({super.key, required this.file});
 
   final File file;
 
   @override
-  State<TabulatedFileViewerBody> createState() =>
-      _TabulatedFileViewerBodyState();
+  State<TabulatedFileViewBody> createState() => _TabulatedFileViewBodyState();
 }
 
-class _TabulatedFileViewerBodyState extends State<TabulatedFileViewerBody> {
+class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(

@@ -23,7 +23,7 @@ void main() {
 
   test('Supported file test', () {
     final File file = File("test.txt");
-    bool supported = FileAssociation(file: file).isSupportedViewerExtension;
+    bool supported = FileAssociation(file: file).isSupportedViewExtension;
     expect(supported, true);
   });
 }
