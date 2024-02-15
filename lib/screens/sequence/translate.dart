@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/controllers.dart';
@@ -13,6 +14,44 @@ import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
 
 const SupportedTask task = SupportedTask.sequenceTranslation;
+
+class TranslateView extends StatefulWidget {
+  const TranslateView({super.key});
+
+  @override
+  State<TranslateView> createState() => _TranslateViewState();
+}
+
+class _TranslateViewState extends State<TranslateView> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SequenceTaskSelection(
+          infoContent: SharedInfoForm(
+            description:
+                'Translate nucleotide sequences to amino acid sequences. '
+                'Allow to translate multiple files at once.',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: TranslatePage()),
+      ],
+    );
+  }
+}
 
 class TranslatePage extends ConsumerStatefulWidget {
   const TranslatePage({super.key});
@@ -34,26 +73,11 @@ class TranslatePageState extends ConsumerState<TranslatePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        SharedInfoForm(
-          description:
-              'Translate nucleotide sequences to amino acid sequences. '
-              'Allow to translate multiple files at once.',
-          isShowingInfo: _ctr.isShowingInfo,
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
@@ -61,7 +85,6 @@ class TranslatePageState extends ConsumerState<TranslatePage>
           isDatatypeEnabled: false,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -113,7 +136,6 @@ class TranslatePageState extends ConsumerState<TranslatePage>
             },
           ),
         ]),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
@@ -157,7 +179,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
               ),
         )
       ],
-    );
+    ));
   }
 
   bool get _isValid {

@@ -34,7 +34,7 @@ class GenomicOperationSelection extends _$GenomicOperationSelection {
 class AlignmentOperationSelection extends _$AlignmentOperationSelection {
   @override
   AlignmentOperationType build() {
-    return AlignmentOperationType.summary;
+    return AlignmentOperationType.concatenation;
   }
 
   void setOperation(AlignmentOperationType operation) {

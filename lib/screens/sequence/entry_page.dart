@@ -10,24 +10,22 @@ import 'package:segui/screens/sequence/translate.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
-class SequencePage extends StatefulWidget {
+class SequencePage extends ConsumerWidget {
   const SequencePage({super.key});
 
   @override
-  State<SequencePage> createState() => _SequencePageState();
-}
-
-class _SequencePageState extends State<SequencePage> {
-  @override
-  Widget build(BuildContext context) {
-    return const SharedOperationPage(
-      child: SequenceContentPage(),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SharedOperationPage(
+      child: SequenceOptions(
+          analysis: ref.watch(sequenceOperationSelectionProvider)),
     );
   }
 }
 
-class SequenceContentPage extends ConsumerWidget {
-  const SequenceContentPage({super.key});
+class SequenceTaskSelection extends ConsumerWidget {
+  const SequenceTaskSelection({super.key, required this.infoContent});
+
+  final Widget infoContent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,10 +48,7 @@ class SequenceContentPage extends ConsumerWidget {
             ref.invalidate(fileInputProvider);
             ref.invalidate(fileOutputProvider);
           }),
-      const SizedBox(height: 8),
-      SequenceOptions(
-        analysis: ref.watch(sequenceOperationSelectionProvider),
-      ),
+      infoContent,
     ]);
   }
 }
@@ -67,15 +62,15 @@ class SequenceOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (analysis) {
       case SequenceOperationType.extraction:
-        return const ExtractSequencePage();
+        return const ExtractSequenceView();
       case SequenceOperationType.removal:
-        return const SequenceRemovalPage();
+        return const SequenceRemovalView();
       case SequenceOperationType.renaming:
-        return const SequenceRenamingPage();
+        return const SequenceRenamingView();
       case SequenceOperationType.idExtraction:
-        return const IDExtractionPage();
+        return const IDExtractionView();
       case SequenceOperationType.translation:
-        return const TranslatePage();
+        return const TranslateView();
       default:
         return const SizedBox();
     }

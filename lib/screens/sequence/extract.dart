@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/info.dart';
@@ -13,6 +14,44 @@ import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.sequenceExtraction;
+
+class ExtractSequenceView extends StatefulWidget {
+  const ExtractSequenceView({super.key});
+
+  @override
+  State<ExtractSequenceView> createState() => _ExtractSequenceViewState();
+}
+
+class _ExtractSequenceViewState extends State<ExtractSequenceView> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SequenceTaskSelection(
+          infoContent: SharedInfoForm(
+            description: 'Extract sequences from multiple files. '
+                'Supports regex, text file, '
+                'and semicolon-separated IDs.',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: ExtractSequencePage()),
+      ],
+    );
+  }
+}
 
 class ExtractSequencePage extends ConsumerStatefulWidget {
   const ExtractSequencePage({super.key});
@@ -33,34 +72,18 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedInfoForm(
-          description: 'Extract sequences from multiple files. '
-              'Supports regex, text file, '
-              'and semicolon-separated IDs.',
-          isShowingInfo: _ctr.isShowingInfo,
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Parameters'),
         FormCard(children: [
           DropdownButtonFormField(
@@ -102,7 +125,6 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                       : 'seq1;seq2;seq3',
                 ),
         ]),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -123,7 +145,6 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
             },
           ),
         ]),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
@@ -167,7 +188,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
               ),
         )
       ],
-    );
+    ));
   }
 
   bool get _isValid {

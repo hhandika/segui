@@ -76,9 +76,9 @@ class SequenceTranslationRunner {
 enum ExtractionOptions { regex, file, id }
 
 const Map<ExtractionOptions, String> extractionOptionsMap = {
-  ExtractionOptions.regex: 'Write regular expression',
-  ExtractionOptions.file: 'Input file',
   ExtractionOptions.id: 'Input sequence ID',
+  ExtractionOptions.file: 'Input file',
+  ExtractionOptions.regex: 'Write regular expression',
 };
 
 class SequenceExtractionRunner {

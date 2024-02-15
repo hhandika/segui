@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/info.dart';
@@ -13,6 +14,45 @@ import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.sequenceRenaming;
+
+class SequenceRenamingView extends StatefulWidget {
+  const SequenceRenamingView({super.key});
+
+  @override
+  State<SequenceRenamingView> createState() => _SequenceRenamingViewState();
+}
+
+class _SequenceRenamingViewState extends State<SequenceRenamingView> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SequenceTaskSelection(
+          infoContent: SharedInfoForm(
+            description: 'Rename sequence ID from a collection '
+                'of sequence files. '
+                'Include support for file, '
+                'text, and regular expression input. ',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: SequenceRenamingPage()),
+      ],
+    );
+  }
+}
 
 class SequenceRenamingPage extends ConsumerStatefulWidget {
   const SequenceRenamingPage({super.key});
@@ -45,35 +85,18 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        SharedInfoForm(
-          description: 'Rename sequence ID from a collection '
-              'of sequence files. '
-              'Include support for file, '
-              'text, and regular expression input. ',
-          isShowingInfo: _ctr.isShowingInfo,
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Parameters'),
         FormCard(
           children: [
@@ -149,7 +172,6 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
                   )),
           ],
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
@@ -170,7 +192,6 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
             },
           ),
         ]),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
@@ -214,7 +235,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
               ),
         )
       ],
-    );
+    ));
   }
 
   bool get _isValid {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/sequences.dart';
@@ -12,6 +13,47 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 
 const SupportedTask task = SupportedTask.sequenceUniqueId;
+
+class IDExtractionView extends StatefulWidget {
+  const IDExtractionView({super.key});
+
+  @override
+  State<IDExtractionView> createState() => _IDExtractionViewState();
+}
+
+class _IDExtractionViewState extends State<IDExtractionView> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SequenceTaskSelection(
+          infoContent: SharedInfoForm(
+            description: 'Extract unique IDs '
+                'across multiple sequence files. '
+                'The output file is a '
+                'list of unique sequence IDs. '
+                'The map option will map sample '
+                'distribution across the input dataset.',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: IDExtractionPage()),
+      ],
+    );
+  }
+}
 
 class IDExtractionPage extends ConsumerStatefulWidget {
   const IDExtractionPage({super.key});
@@ -31,29 +73,11 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      mainAxisSize: MainAxisSize.max,
+    return SingleChildScrollView(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedInfoForm(
-          description: 'Extract unique IDs '
-              'across multiple sequence files. '
-              'The output file is a '
-              'list of unique sequence IDs. '
-              'The map option will map sample '
-              'distribution across the input dataset.',
-          isShowingInfo: _ctr.isShowingInfo,
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
@@ -81,7 +105,6 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
                 });
               }),
         ]),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
@@ -125,7 +148,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
               ),
         )
       ],
-    );
+    ));
   }
 
   bool get _isValid {

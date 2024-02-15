@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/info.dart';
@@ -14,6 +15,44 @@ import 'package:segui/services/types.dart';
 
 const SupportedTask task = SupportedTask.sequenceRemoval;
 
+class SequenceRemovalView extends StatefulWidget {
+  const SequenceRemovalView({super.key});
+
+  @override
+  State<SequenceRemovalView> createState() => _SequenceRemovalViewState();
+}
+
+class _SequenceRemovalViewState extends State<SequenceRemovalView> {
+  bool _isShowingInfo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SequenceTaskSelection(
+          infoContent: SharedInfoForm(
+            description: 'Remove sequences from a collection '
+                'of sequence files based on sequence name. '
+                'Include support for regular expression.',
+            isShowingInfo: _isShowingInfo,
+            onClosed: () {
+              setState(() {
+                _isShowingInfo = false;
+              });
+            },
+            onExpanded: () {
+              setState(() {
+                _isShowingInfo = true;
+              });
+            },
+          ),
+        ),
+        const Expanded(child: SequenceRemovalPage()),
+      ],
+    );
+  }
+}
+
 class SequenceRemovalPage extends ConsumerStatefulWidget {
   const SequenceRemovalPage({super.key});
 
@@ -24,7 +63,7 @@ class SequenceRemovalPage extends ConsumerStatefulWidget {
 class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
-  RemovalOptions _removalMethodController = RemovalOptions.regex;
+  RemovalOptions _removalMethodController = RemovalOptions.id;
   final TextEditingController _idRegexController = TextEditingController();
 
   @override
@@ -40,34 +79,18 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedInfoForm(
-          description: 'Remove sequences from a collection '
-              'of sequence files based on sequence name. '
-              'Include support for regular expression.',
-          isShowingInfo: _ctr.isShowingInfo,
-          onClosed: () {
-            setState(() {
-              _ctr.isShowingInfo = false;
-            });
-          },
-          onExpanded: () {
-            setState(() {
-              _ctr.isShowingInfo = true;
-            });
-          },
-        ),
         const CardTitle(title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Parameters'),
         FormCard(
           children: [
@@ -104,7 +127,6 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
             ),
           ],
         ),
-        const SizedBox(height: 16),
         const CardTitle(title: 'Output'),
         FormCard(
           children: [
@@ -126,7 +148,6 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
             ),
           ],
         ),
-        const SizedBox(height: 16),
         Center(
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
@@ -170,7 +191,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
               ),
         )
       ],
-    );
+    ));
   }
 
   bool get _isValid {
