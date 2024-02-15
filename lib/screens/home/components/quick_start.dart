@@ -21,7 +21,7 @@ class _QuickStartPageState extends State<QuickStartPage> {
         backgroundColor: getSEGULBackgroundColor(context),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             child: ListView(
               children: const [
                 CardTitle(title: 'Task Selection'),
@@ -72,6 +72,7 @@ class _QuickStartPageState extends State<QuickStartPage> {
                       'with a "new" icon.',
                 ),
                 LaunchDocButton(),
+                SizedBox(height: 8),
               ],
             ),
           ),

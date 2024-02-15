@@ -54,26 +54,28 @@ class MarkdownView extends StatelessWidget {
   final List<String> data;
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        if (data[index].startsWith('##')) {
-          return CardTitle(
-            title: data[index].replaceAll('##', ''),
-          );
-        } else if (data[index].isEmpty | data[index].startsWith('#')) {
-          return const SizedBox.shrink();
-        } else {
-          return Container(
-            decoration: getContainerDecoration(context),
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              data[index],
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          );
-        }
-      },
-    );
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: data.length,
+          itemBuilder: (context, index) {
+            if (data[index].startsWith('##')) {
+              return CardTitle(
+                title: data[index].replaceAll('##', ''),
+              );
+            } else if (data[index].isEmpty | data[index].startsWith('#')) {
+              return const SizedBox.shrink();
+            } else {
+              return Container(
+                decoration: getContainerDecoration(context),
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  data[index],
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              );
+            }
+          },
+        ));
   }
 }
