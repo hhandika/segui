@@ -15,6 +15,7 @@ class SmallScreenView extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
+          elevation: 0,
           backgroundColor:
               ref.watch(tabSelectionProvider) == 0 ? null : mainColor,
           actions: const [
