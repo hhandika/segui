@@ -251,19 +251,33 @@ class OutputScreen extends ConsumerWidget {
     return SizedBox(
       height: double.infinity,
       child: ref.watch(fileOutputProvider).when(
-            data: (data) => data.directory == null
-                ? const EmptyScreen(
-                    title: 'No output directory selected.',
-                    description:
-                        'Select an output directory to store output files.',
-                  )
-                : OutputFileList(files: data),
+            data: (data) {
+              final files = getFiles(data);
+              return data.directory == null
+                  ? const EmptyScreen(
+                      title: 'No output directory selected.',
+                      description:
+                          'Select an output directory to store output files.',
+                    )
+                  : OutputFileList(files: files);
+            },
             loading: () => const Center(
               child: CircularProgressIndicator(),
             ),
             error: (err, stack) => Text(err.toString()),
           ),
     );
+  }
+
+  List<File> getFiles(SegulOutputFile data) {
+    if (data.newFiles.isNotEmpty) {
+      List<File> files = [];
+      files.addAll(data.newFiles);
+      files.addAll(data.oldFiles);
+      return files;
+    } else {
+      return data.oldFiles;
+    }
   }
 }
 
@@ -273,21 +287,31 @@ class OutputFileList extends StatelessWidget {
     required this.files,
   });
 
-  final SegulOutputFile files;
+  final List<File> files;
 
   @override
   Widget build(BuildContext context) {
     return IOListContainer(
-        title: 'Output Files',
-        infoText: 'List of files in the output directory. '
-            'Newly created files are marked with a new icon. '
-            'Click on a file to view its content.',
-        child: ListView(children: [
-          ...files.newFiles
-              .map((e) => OutputFileTiles(isOldFile: false, file: e)),
-          ...files.oldFiles
-              .map((e) => OutputFileTiles(isOldFile: true, file: e)),
-        ]));
+      title: 'Output Files',
+      infoText: 'List of files in the output directory. '
+          'Newly created files are marked with a new icon. '
+          'Click on a file to view its content.',
+      child: files.isEmpty
+          ? const EmptyScreen(
+              title: 'No output files found.',
+              description: 'Run the analysis to generate output files.',
+            )
+          : ListView.builder(
+              itemCount: files.length,
+              itemBuilder: (context, index) {
+                final file = files[index];
+                return OutputFileTiles(
+                  isOldFile: true,
+                  file: file,
+                );
+              },
+            ),
+    );
   }
 }
 

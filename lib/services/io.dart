@@ -267,6 +267,8 @@ class FileAssociation {
         return 'assets/images/table.svg';
       case CommonFileType.other:
         return 'assets/images/unknown.svg';
+      default:
+        return 'assets/images/unknown.svg';
     }
   }
 
@@ -284,7 +286,11 @@ class FileAssociation {
 }
 
 String getFileExtension(File file) {
-  return p.extension(file.path).substring(1);
+  final ext = p.extension(file.path);
+  if (ext.isNotEmpty) {
+    return ext.substring(1);
+  }
+  return '';
 }
 
 class FileInputServices {
@@ -514,7 +520,10 @@ class DirectoryCrawler {
     List<File> newFiles = [];
     List<File> allFiles = _findAllFilesInDir(dir, isRecursive);
     for (var file in allFiles) {
-      if (!oldFiles.contains(file)) {
+      if (!oldFiles.any((oldFile) => oldFile.path == file.path)) {
+        if (kDebugMode) {
+          print('Found file: ${file.path}');
+        }
         newFiles.add(file);
       }
     }
@@ -526,7 +535,10 @@ class DirectoryCrawler {
     List<FileSystemEntity> founds = dir.listSync(recursive: isRecursive);
     List<File> files = [];
     for (var file in founds) {
-      if (file is File && file.existsSync()) {
+      if (file is File) {
+        if (kDebugMode) {
+          print('Found file: ${file.path}');
+        }
         files.add(file);
       }
     }
