@@ -1,10 +1,14 @@
 ---
 sidebar_position: 2
+title: GUI Installation
 ---
 
-# GUI Installation
-
 The GUI version, SEGUI, is currently in beta. Everyone is welcome to try the application and report bugs.
+
+- [Android](#android)
+- [Apple Devices](#apple-devices)
+- [Linux](#linux)
+- [Windows](#windows)
 
 ## Android
 
@@ -43,6 +47,8 @@ Open terminal and extract the file using the following command:
 tar -xvzf segui-Linux-x86_64.tar.gz
 ```
 
+Then, run the `segui` file.
+
 :::info
 The app may work on any Linux distribution with 64-bit architecture and GLIBC 2.34+.
 
@@ -53,8 +59,6 @@ ldd --version
 ```
 
 :::
-
-Then, run the `segui` file.
 
 ## Windows
 
