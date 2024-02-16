@@ -38,7 +38,7 @@ final genomicOperationSelectionProvider =
 
 typedef _$GenomicOperationSelection = Notifier<GenomicOperationType>;
 String _$alignmentOperationSelectionHash() =>
-    r'0e951db33d44f683b191fef1f63045637ce4aa8a';
+    r'a04b7ec50cc9f6c3e88ee1abb16b4ed061e4df9f';
 
 /// See also [AlignmentOperationSelection].
 @ProviderFor(AlignmentOperationSelection)

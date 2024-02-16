@@ -5,5 +5,6 @@
 pub mod archive;
 pub mod common;
 pub mod contig;
+pub mod csv;
 pub mod reads;
 pub mod sequence;

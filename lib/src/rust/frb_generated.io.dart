@@ -6,6 +6,7 @@
 import 'api/archive.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
+import 'api/csv.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
 import 'dart:async';
@@ -21,6 +22,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.generalizedFrbRustBinding,
     required super.portManager,
   });
+
+  @protected
+  Map<String, int> dco_decode_Map_String_usize(dynamic raw);
 
   @protected
   String dco_decode_String(dynamic raw);
@@ -45,6 +49,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw);
+
+  @protected
+  LocusSummaryServices dco_decode_box_autoadd_locus_summary_services(
+      dynamic raw);
 
   @protected
   PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
@@ -87,6 +95,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<(String, int)> dco_decode_list_record_string_usize(dynamic raw);
+
+  @protected
+  LocusSummaryServices dco_decode_locus_summary_services(dynamic raw);
+
+  @protected
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
@@ -97,6 +111,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RawReadServices dco_decode_raw_read_services(dynamic raw);
+
+  @protected
+  (String, int) dco_decode_record_string_usize(dynamic raw);
 
   @protected
   SequenceExtraction dco_decode_sequence_extraction(dynamic raw);
@@ -129,6 +146,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_usize(dynamic raw);
 
   @protected
+  Map<String, int> sse_decode_Map_String_usize(SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
@@ -154,6 +174,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   FilteringServices sse_decode_box_autoadd_filtering_services(
+      SseDeserializer deserializer);
+
+  @protected
+  LocusSummaryServices sse_decode_box_autoadd_locus_summary_services(
       SseDeserializer deserializer);
 
   @protected
@@ -203,6 +227,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<(String, int)> sse_decode_list_record_string_usize(
+      SseDeserializer deserializer);
+
+  @protected
+  LocusSummaryServices sse_decode_locus_summary_services(
+      SseDeserializer deserializer);
+
+  @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
@@ -213,6 +245,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RawReadServices sse_decode_raw_read_services(SseDeserializer deserializer);
+
+  @protected
+  (String, int) sse_decode_record_string_usize(SseDeserializer deserializer);
 
   @protected
   SequenceExtraction sse_decode_sequence_extraction(
@@ -252,6 +287,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
+  void sse_encode_Map_String_usize(
+      Map<String, int> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
@@ -280,6 +319,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_filtering_services(
       FilteringServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_locus_summary_services(
+      LocusSummaryServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_partition_services(
@@ -332,6 +375,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_record_string_usize(
+      List<(String, int)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_locus_summary_services(
+      LocusSummaryServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
@@ -344,6 +395,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_raw_read_services(
       RawReadServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_usize(
+      (String, int) self, SseSerializer serializer);
 
   @protected
   void sse_encode_sequence_extraction(

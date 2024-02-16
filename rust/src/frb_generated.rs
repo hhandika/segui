@@ -196,6 +196,106 @@ fn wire_ContigServices_summarize_impl(
         },
     )
 }
+fn wire_LocusSummaryServices_get_line_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "LocusSummaryServices_get_line",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <crate::api::csv::LocusSummaryServices>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::csv::LocusSummaryServices::get_line(&api_that))
+                })())
+            }
+        },
+    )
+}
+fn wire_LocusSummaryServices_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "LocusSummaryServices_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_input_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::csv::LocusSummaryServices::new(api_input_path))
+                })())
+            }
+        },
+    )
+}
+fn wire_LocusSummaryServices_parse_columns_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "LocusSummaryServices_parse_columns",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <crate::api::csv::LocusSummaryServices>::sse_decode(&mut deserializer);
+            let api_col_name = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::csv::LocusSummaryServices::parse_columns(
+                        &api_that,
+                        api_col_name,
+                    ))
+                })())
+            }
+        },
+    )
+}
 fn wire_RawReadServices_new_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -944,6 +1044,14 @@ fn wire_show_dna_uppercase_impl(
 
 // Section: dart2rust
 
+impl SseDecode for std::collections::HashMap<String, usize> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <Vec<(String, usize)>>::sse_decode(deserializer);
+        return inner.into_iter().collect();
+    }
+}
+
 impl SseDecode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1093,6 +1201,28 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<(String, usize)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<(String, usize)>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for crate::api::csv::LocusSummaryServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_inputPath = <String>::sse_decode(deserializer);
+        return crate::api::csv::LocusSummaryServices {
+            input_path: var_inputPath,
+        };
+    }
+}
+
 impl SseDecode for Option<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1146,6 +1276,15 @@ impl SseDecode for crate::api::reads::RawReadServices {
             file_fmt: var_fileFmt,
             output_dir: var_outputDir,
         };
+    }
+}
+
+impl SseDecode for (String, usize) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        let mut var_field1 = <usize>::sse_decode(deserializer);
+        return (var_field0, var_field1);
     }
 }
 
@@ -1367,28 +1506,31 @@ fn pde_ffi_dispatcher_primary_impl(
         3 => wire_init_logger_impl(port, ptr, rust_vec_len, data_len),
         4 => wire_ContigServices_new_impl(port, ptr, rust_vec_len, data_len),
         5 => wire_ContigServices_summarize_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire_RawReadServices_new_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_RawReadServices_summarize_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_AlignmentServices_concat_alignment_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire_AlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_AlignmentServices_summarize_alignment_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_FilteringServices_filter_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_FilteringServices_new_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_PartitionServices_convert_partition_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_PartitionServices_new_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire_SequenceExtraction_extract_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_SequenceExtraction_new_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_SequenceRemoval_new_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_SequenceRemoval_remove_sequence_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_SequenceRenaming_new_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_SequenceRenaming_rename_sequence_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire_SequenceServices_convert_sequence_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_SequenceServices_new_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_SequenceServices_parse_sequence_id_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_SequenceServices_translate_sequence_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_SplitAlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_SplitAlignmentServices_split_alignment_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_LocusSummaryServices_get_line_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire_LocusSummaryServices_new_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_LocusSummaryServices_parse_columns_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_RawReadServices_new_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire_RawReadServices_summarize_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_AlignmentServices_concat_alignment_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_AlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_AlignmentServices_summarize_alignment_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_FilteringServices_filter_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_FilteringServices_new_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_PartitionServices_convert_partition_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_PartitionServices_new_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire_SequenceExtraction_extract_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire_SequenceExtraction_new_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_SequenceRemoval_new_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_SequenceRemoval_remove_sequence_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_SequenceRenaming_new_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_SequenceRenaming_rename_sequence_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_SequenceServices_convert_sequence_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire_SequenceServices_new_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_SequenceServices_parse_sequence_id_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_SequenceServices_translate_sequence_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_SplitAlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_SplitAlignmentServices_split_alignment_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1532,6 +1674,23 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::FilteringServices>
     for crate::api::sequence::FilteringServices
 {
     fn into_into_dart(self) -> crate::api::sequence::FilteringServices {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::csv::LocusSummaryServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.input_path.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::csv::LocusSummaryServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::csv::LocusSummaryServices>
+    for crate::api::csv::LocusSummaryServices
+{
+    fn into_into_dart(self) -> crate::api::csv::LocusSummaryServices {
         self
     }
 }
@@ -1782,6 +1941,13 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::SplitAlignmentServi
     }
 }
 
+impl SseEncode for std::collections::HashMap<String, usize> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<(String, usize)>>::sse_encode(self.into_iter().collect(), serializer);
+    }
+}
+
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1896,6 +2062,23 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<(String, usize)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(String, usize)>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for crate::api::csv::LocusSummaryServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.input_path, serializer);
+    }
+}
+
 impl SseEncode for Option<String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1934,6 +2117,14 @@ impl SseEncode for crate::api::reads::RawReadServices {
         <Vec<String>>::sse_encode(self.files, serializer);
         <String>::sse_encode(self.file_fmt, serializer);
         <String>::sse_encode(self.output_dir, serializer);
+    }
+}
+
+impl SseEncode for (String, usize) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+        <usize>::sse_encode(self.1, serializer);
     }
 }
 
