@@ -90,7 +90,7 @@ abstract class RustLibApi extends BaseApi {
       required CsvSegulType segulType,
       dynamic hint});
 
-  Future<Map<String, int>> csvSummaryServicesParseColumns(
+  Future<Map<String, String>> csvSummaryServicesParseColumns(
       {required CsvSummaryServices that,
       required String colName,
       dynamic hint});
@@ -385,7 +385,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Map<String, int>> csvSummaryServicesParseColumns(
+  Future<Map<String, String>> csvSummaryServicesParseColumns(
       {required CsvSummaryServices that,
       required String colName,
       dynamic hint}) {
@@ -398,7 +398,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             funcId: 9, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_Map_String_usize,
+        decodeSuccessData: sse_decode_Map_String_String,
         decodeErrorData: null,
       ),
       constMeta: kCsvSummaryServicesParseColumnsConstMeta,
@@ -1006,9 +1006,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @protected
-  Map<String, int> dco_decode_Map_String_usize(dynamic raw) {
+  Map<String, String> dco_decode_Map_String_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return Map.fromEntries(dco_decode_list_record_string_usize(raw)
+    return Map.fromEntries(dco_decode_list_record_string_string(raw)
         .map((e) => MapEntry(e.$1, e.$2)));
   }
 
@@ -1185,7 +1185,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_String(raw[1]),
         );
       case 5:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -1229,9 +1229,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(String, int)> dco_decode_list_record_string_usize(dynamic raw) {
+  List<(String, String)> dco_decode_list_record_string_string(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_record_string_usize).toList();
+    return (raw as List<dynamic>).map(dco_decode_record_string_string).toList();
   }
 
   @protected
@@ -1276,7 +1276,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  (String, int) dco_decode_record_string_usize(dynamic raw) {
+  (String, String) dco_decode_record_string_string(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
     if (arr.length != 2) {
@@ -1284,7 +1284,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     }
     return (
       dco_decode_String(arr[0]),
-      dco_decode_usize(arr[1]),
+      dco_decode_String(arr[1]),
     );
   }
 
@@ -1321,7 +1321,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -1389,7 +1389,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_bool(raw[3]),
         );
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -1447,9 +1447,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Map<String, int> sse_decode_Map_String_usize(SseDeserializer deserializer) {
+  Map<String, String> sse_decode_Map_String_String(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_list_record_string_usize(deserializer);
+    var inner = sse_decode_list_record_string_string(deserializer);
     return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2)));
   }
 
@@ -1629,7 +1630,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
       case 5:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -1686,14 +1687,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(String, int)> sse_decode_list_record_string_usize(
+  List<(String, String)> sse_decode_list_record_string_string(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <(String, int)>[];
+    var ans_ = <(String, String)>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_record_string_usize(deserializer));
+      ans_.add(sse_decode_record_string_string(deserializer));
     }
     return ans_;
   }
@@ -1750,10 +1751,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  (String, int) sse_decode_record_string_usize(SseDeserializer deserializer) {
+  (String, String) sse_decode_record_string_string(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_field0 = sse_decode_String(deserializer);
-    var var_field1 = sse_decode_usize(deserializer);
+    var var_field1 = sse_decode_String(deserializer);
     return (var_field0, var_field1);
   }
 
@@ -1793,7 +1795,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return SequenceExtractionParams_Regex(var_field0);
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -1865,7 +1867,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return SequenceRenamingParams_ReplaceRegex(
             var_field0, var_field1, var_field2);
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -1928,10 +1930,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_Map_String_usize(
-      Map<String, int> self, SseSerializer serializer) {
+  void sse_encode_Map_String_String(
+      Map<String, String> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_record_string_usize(
+    sse_encode_list_record_string_string(
         self.entries.map((e) => (e.key, e.value)).toList(), serializer);
   }
 
@@ -2142,12 +2144,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_record_string_usize(
-      List<(String, int)> self, SseSerializer serializer) {
+  void sse_encode_list_record_string_string(
+      List<(String, String)> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
-      sse_encode_record_string_usize(item, serializer);
+      sse_encode_record_string_string(item, serializer);
     }
   }
 
@@ -2194,11 +2196,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_record_string_usize(
-      (String, int) self, SseSerializer serializer) {
+  void sse_encode_record_string_string(
+      (String, String) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.$1, serializer);
-    sse_encode_usize(self.$2, serializer);
+    sse_encode_String(self.$2, serializer);
   }
 
   @protected

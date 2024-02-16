@@ -28,6 +28,8 @@ pub enum CsvSegulType {
     ContigSummary,
 }
 
+const ID_COLOMN: [&str; 4] = ["locus", "taxon", "name", "path"];
+
 trait PolarDataFrame {
     fn get_dataframe(&self, input_path: &Path) -> PolarsResult<DataFrame> {
         let df = CsvReader::from_path(input_path)?
@@ -64,14 +66,15 @@ impl CsvSummaryServices {
         let df: DataFrame = self
             .get_dataframe(Path::new(&self.input_path))
             .expect("Error parsing file.");
-
+        // Filter column names that is not id column
         df.get_column_names()
             .iter()
             .map(|s| s.to_string())
+            .filter(|s| !self.is_id_column_names(s))
             .collect()
     }
 
-    pub fn parse_columns(&self, col_name: String) -> HashMap<String, usize> {
+    pub fn parse_columns(&self, col_name: String) -> HashMap<String, String> {
         let col_names = self.match_type_id_column(col_name);
         let mut map = HashMap::new();
         let new_df = self
@@ -79,8 +82,7 @@ impl CsvSummaryServices {
             .expect("Error parsing file.");
         new_df.iter().for_each(|s| {
             let file = s.get(0).expect("Failed getting locus column").to_string();
-            let num_reads =
-                self.parse_string_to_usize(&s.get(1).expect("Failed getting a column").to_string());
+            let num_reads = s.get(1).expect("Failed getting a column").to_string();
             map.insert(file, num_reads);
         });
         map
@@ -101,7 +103,21 @@ impl CsvSummaryServices {
         Ok(df.select(col_names)?)
     }
 
-    fn parse_string_to_usize(&self, value: &str) -> usize {
-        value.parse::<usize>().unwrap_or(0)
+    fn is_id_column_names(&self, col_name: &str) -> bool {
+        ID_COLOMN.contains(&col_name)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_get_line() {
+        let csv = CsvSummaryServices::new(
+            String::from("tests/data/limited_oli_locus_summary.csv"),
+            CsvSegulType::LocusSummary,
+        );
+        assert_eq!(csv.get_line(), 95);
     }
 }

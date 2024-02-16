@@ -51,7 +51,7 @@ class CsvSummaryServices {
       RustLib.instance.api.csvSummaryServicesNew(
           inputPath: inputPath, segulType: segulType, hint: hint);
 
-  Future<Map<String, int>> parseColumns(
+  Future<Map<String, String>> parseColumns(
           {required String colName, dynamic hint}) =>
       RustLib.instance.api.csvSummaryServicesParseColumns(
         that: this,

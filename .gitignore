@@ -54,3 +54,5 @@ src/main/jniLibs/
 .windows.yml
 
 /node_modules
+
+/logs
