@@ -6,37 +6,66 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-class LocusSummaryServices {
-  final String inputPath;
+enum CsvSegulType {
+  /// Locus summary from alignment summary
+  locusSummary,
 
-  const LocusSummaryServices({
+  /// Taxon summary from alignment summary
+  taxonSummary,
+
+  /// Whole read summary from raw read summary
+  /// Add default settings
+  wholeReadSummary,
+
+  /// Per read summary from raw read summary
+  /// When the complete setting is used.
+  perReadSummary,
+
+  /// Contig summary from assembly summary
+  contigSummary,
+}
+
+class CsvSummaryServices {
+  final String inputPath;
+  final CsvSegulType segulType;
+
+  const CsvSummaryServices({
     required this.inputPath,
+    required this.segulType,
   });
 
-  Future<int> getLine({dynamic hint}) =>
-      RustLib.instance.api.locusSummaryServicesGetLine(
+  Future<List<String>> getColumnNames({dynamic hint}) =>
+      RustLib.instance.api.csvSummaryServicesGetColumnNames(
         that: this,
       );
 
-  static Future<LocusSummaryServices> newLocusSummaryServices(
-          {required String inputPath, dynamic hint}) =>
-      RustLib.instance.api
-          .locusSummaryServicesNew(inputPath: inputPath, hint: hint);
+  Future<int> getLine({dynamic hint}) =>
+      RustLib.instance.api.csvSummaryServicesGetLine(
+        that: this,
+      );
+
+  static Future<CsvSummaryServices> newCsvSummaryServices(
+          {required String inputPath,
+          required CsvSegulType segulType,
+          dynamic hint}) =>
+      RustLib.instance.api.csvSummaryServicesNew(
+          inputPath: inputPath, segulType: segulType, hint: hint);
 
   Future<Map<String, int>> parseColumns(
           {required String colName, dynamic hint}) =>
-      RustLib.instance.api.locusSummaryServicesParseColumns(
+      RustLib.instance.api.csvSummaryServicesParseColumns(
         that: this,
         colName: colName,
       );
 
   @override
-  int get hashCode => inputPath.hashCode;
+  int get hashCode => inputPath.hashCode ^ segulType.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LocusSummaryServices &&
+      other is CsvSummaryServices &&
           runtimeType == other.runtimeType &&
-          inputPath == other.inputPath;
+          inputPath == other.inputPath &&
+          segulType == other.segulType;
 }

@@ -47,11 +47,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
 
   @protected
-  FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw);
+  CsvSummaryServices dco_decode_box_autoadd_csv_summary_services(dynamic raw);
 
   @protected
-  LocusSummaryServices dco_decode_box_autoadd_locus_summary_services(
-      dynamic raw);
+  FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw);
 
   @protected
   PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
@@ -79,6 +78,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ContigServices dco_decode_contig_services(dynamic raw);
 
   @protected
+  CsvSegulType dco_decode_csv_segul_type(dynamic raw);
+
+  @protected
+  CsvSummaryServices dco_decode_csv_summary_services(dynamic raw);
+
+  @protected
   double dco_decode_f_64(dynamic raw);
 
   @protected
@@ -88,6 +93,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FilteringServices dco_decode_filtering_services(dynamic raw);
 
   @protected
+  int dco_decode_i_32(dynamic raw);
+
+  @protected
   List<String> dco_decode_list_String(dynamic raw);
 
   @protected
@@ -95,9 +103,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<(String, int)> dco_decode_list_record_string_usize(dynamic raw);
-
-  @protected
-  LocusSummaryServices dco_decode_locus_summary_services(dynamic raw);
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
@@ -172,11 +177,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  FilteringServices sse_decode_box_autoadd_filtering_services(
+  CsvSummaryServices sse_decode_box_autoadd_csv_summary_services(
       SseDeserializer deserializer);
 
   @protected
-  LocusSummaryServices sse_decode_box_autoadd_locus_summary_services(
+  FilteringServices sse_decode_box_autoadd_filtering_services(
       SseDeserializer deserializer);
 
   @protected
@@ -211,6 +216,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ContigServices sse_decode_contig_services(SseDeserializer deserializer);
 
   @protected
+  CsvSegulType sse_decode_csv_segul_type(SseDeserializer deserializer);
+
+  @protected
+  CsvSummaryServices sse_decode_csv_summary_services(
+      SseDeserializer deserializer);
+
+  @protected
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
@@ -220,6 +232,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FilteringServices sse_decode_filtering_services(SseDeserializer deserializer);
 
   @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
@@ -227,10 +242,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<(String, int)> sse_decode_list_record_string_usize(
-      SseDeserializer deserializer);
-
-  @protected
-  LocusSummaryServices sse_decode_locus_summary_services(
       SseDeserializer deserializer);
 
   @protected
@@ -283,9 +294,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_usize(SseDeserializer deserializer);
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
-
-  @protected
   void sse_encode_Map_String_usize(
       Map<String, int> self, SseSerializer serializer);
 
@@ -316,12 +324,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ContigServices self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_filtering_services(
-      FilteringServices self, SseSerializer serializer);
+  void sse_encode_box_autoadd_csv_summary_services(
+      CsvSummaryServices self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_locus_summary_services(
-      LocusSummaryServices self, SseSerializer serializer);
+  void sse_encode_box_autoadd_filtering_services(
+      FilteringServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_partition_services(
@@ -356,6 +364,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ContigServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_csv_segul_type(CsvSegulType self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_csv_summary_services(
+      CsvSummaryServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
@@ -367,6 +382,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FilteringServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
@@ -376,10 +394,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_record_string_usize(
       List<(String, int)> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_locus_summary_services(
-      LocusSummaryServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
@@ -435,9 +449,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 }
 
 // Section: wire_class
