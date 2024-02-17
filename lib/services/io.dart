@@ -95,7 +95,7 @@ class SegulOutputFile {
   }
 
   factory SegulOutputFile.fromDirectory(Directory dir,
-      {bool isRecursive = false}) {
+      {required bool isRecursive}) {
     return SegulOutputFile(
       directory: dir,
       files: DirectoryCrawler(dir).crawl(recursive: isRecursive),
@@ -422,10 +422,12 @@ class DirectorySelectionServices {
 
   final WidgetRef ref;
 
-  Future<void> addOutputDir() async {
+  Future<void> addOutputDir({required bool isRecursive}) async {
     final result = await _getDirectory();
     if (result != null) {
-      ref.read(fileOutputProvider.notifier).add(result);
+      ref
+          .read(fileOutputProvider.notifier)
+          .add(result, isRecursive: isRecursive);
     }
   }
 

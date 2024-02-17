@@ -44,7 +44,8 @@ class SelectDirField extends ConsumerWidget {
                     : const Icon(Icons.clear),
                 onPressed: data.directory == null
                     ? () async {
-                        await DirectorySelectionServices(ref).addOutputDir();
+                        await DirectorySelectionServices(ref)
+                            .addOutputDir(isRecursive: false);
                       }
                     : () {
                         ref.invalidate(fileOutputProvider);
@@ -166,7 +167,8 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                       ? const SharedProgressIndicator()
                       : !widget.allowDirectorySelection
                           ? IconButton(
-                              tooltip: 'Add file',
+                              tooltip:
+                                  isAddNew ? 'Select files' : 'Add more files',
                               icon: const Icon(Icons.add_rounded),
                               onPressed: !widget.allowMultiple && !isAddNew
                                   ? null
@@ -276,7 +278,13 @@ class _InputSelectorState extends State<InputSelector> {
                           ),
                           if (!isMobile)
                             SelectDirectoryButton(
-                              isAddNew: widget.isAddNew,
+                              isRecursive: false,
+                              onDirectorySelected: widget.onDirectorySelected,
+                            ),
+                          if (!isMobile)
+                            // Recursive option
+                            SelectDirectoryButton(
+                              isRecursive: true,
                               onDirectorySelected: widget.onDirectorySelected,
                             ),
                           if (!widget.isAddNew) const ClearAllButton(),
@@ -323,7 +331,14 @@ class InputActionMenu extends ConsumerWidget {
             if (!isMobile)
               PopupMenuItem(
                   child: SelectDirectoryButton(
-                isAddNew: isAddNew,
+                isRecursive: false,
+                onDirectorySelected: onDirectorySelected,
+              )),
+            if (!isMobile)
+              // Recursive option
+              PopupMenuItem(
+                  child: SelectDirectoryButton(
+                isRecursive: true,
                 onDirectorySelected: onDirectorySelected,
               )),
             if (!isAddNew)
@@ -364,11 +379,11 @@ class SelectFileButton extends StatelessWidget {
 class SelectDirectoryButton extends StatelessWidget {
   const SelectDirectoryButton({
     super.key,
-    required this.isAddNew,
+    required this.isRecursive,
     required this.onDirectorySelected,
   });
 
-  final bool isAddNew;
+  final bool isRecursive;
   final VoidCallback onDirectorySelected;
 
   @override
@@ -376,7 +391,7 @@ class SelectDirectoryButton extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.folder_outlined),
       title: Text(
-        isAddNew ? 'Select directory' : 'More from directory',
+        isRecursive ? 'From directory (recursive)' : 'From directory',
         style: Theme.of(context).textTheme.titleMedium,
       ),
       onTap: () {
