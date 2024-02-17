@@ -10,7 +10,22 @@ set RUST_FRB_WEB "rust/src/frb_generated.web.rs"
 echo "Removing old FRB files"
 rm -f $DART_FRB $DART_FRB_IO $DART_FRB_WEB $RUST_FRB $RUST_FRB_IO $RUST_FRB_WEB
 
+echo "Cleaning up flutter project"
+flutter clean
+
+echo "Updating Rust dependencies"
+cd rust
+cargo update
+cd ..
+
+echo "Updating FRB"
+cargo install 'flutter_rust_bridge_codegen@^2.0.0-dev.0'
+
+echo "Updating Dart dependencies"
+flutter pub upgrade
+
 echo "Generating FRB for Dart"
 flutter_rust_bridge_codegen generate
 
+echo "Running Dart fix"
 dart fix --apply
