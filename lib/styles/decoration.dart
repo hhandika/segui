@@ -12,6 +12,15 @@ BoxDecoration getContainerDecoration(BuildContext context) {
   );
 }
 
+RoundedRectangleBorder getIndicatorShape(BuildContext context) {
+  return const RoundedRectangleBorder(
+    borderRadius: BorderRadius.horizontal(
+      right: Radius.circular(16),
+      left: Radius.circular(16),
+    ),
+  );
+}
+
 Color? getSEGULBackgroundColor(BuildContext context) {
   return Color.lerp(Theme.of(context).colorScheme.primary,
       Theme.of(context).colorScheme.surface, 0.9);

@@ -101,12 +101,8 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
         NavigationDrawer(
           backgroundColor: getSEGULBackgroundColor(context),
           tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          indicatorShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.horizontal(
-              right: Radius.circular(16),
-              left: Radius.circular(16),
-            ),
-          ),
+          indicatorColor: getIndicatorColor(context),
+          indicatorShape: getIndicatorShape(context),
           elevation: 0,
           selectedIndex: _selectedIndex,
           children: const [

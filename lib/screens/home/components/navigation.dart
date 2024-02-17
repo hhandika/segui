@@ -74,12 +74,7 @@ class ExpandedScreenDrawer extends ConsumerWidget {
       elevation: 0,
       backgroundColor: getSEGULBackgroundColor(context),
       indicatorColor: getIndicatorColor(context),
-      indicatorShape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(
-          right: Radius.circular(16),
-          left: Radius.circular(16),
-        ),
-      ),
+      indicatorShape: getIndicatorShape(context),
       selectedIndex: ref.watch(tabSelectionProvider),
       children: const [
         ...navigationDrawerTargets,
