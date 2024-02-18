@@ -66,7 +66,7 @@ class AboutContent extends StatelessWidget {
             children: [
               Text(
                   '${snapshot.data!.name} ${snapshot.data!.version}+${snapshot.data!.buildNumber}'),
-              Text('SEGUL API version: ${snapshot.data!.apiVersion}'),
+              Text('API version: ${snapshot.data!.apiVersion}'),
               const Text('A GUI version of the SEGUL genomic tool'),
               const Text('Heru Handika & Jacob A. Esselstyn'),
               // Show license
