@@ -124,6 +124,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
               onChanged: (RenamingOptions? value) {
                 setState(() {
                   _renamingOptionController = value;
+                  _ctr.isSuccess = false;
                 });
               },
             ),
@@ -209,7 +210,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
                     isSuccess: _ctr.isSuccess,
                     controller: _ctr,
                     onNewRun: _setNewRun,
-                    onExecuted: value.isEmpty || !_isValid
+                    onExecuted: value.isEmpty || !_isValid(value)
                         ? null
                         : () async {
                             await _execute(value);
@@ -246,8 +247,20 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
     ));
   }
 
-  bool get _isValid {
-    return _ctr.isValid;
+  bool _isValid(List<SegulInputFile> inputFiles) {
+    final isValid = _ctr.isValid && _ctr.outputFormatController != null;
+    if (_renamingOptionController == RenamingOptions.renameFile) {
+      final hasInputSequence =
+          inputFiles.any((e) => e.type == SegulType.standardSequence);
+      final hasInputText = inputFiles.any((e) => e.type == SegulType.plainText);
+      return isValid && hasInputSequence && hasInputText;
+    } else if (_renamingOptionController == RenamingOptions.removeString) {
+      return isValid && _paramValueController.text.isNotEmpty;
+    } else {
+      return isValid &&
+          _paramValueController.text.isNotEmpty &&
+          _paramReplaceWithController.text.isNotEmpty;
+    }
   }
 
   bool get _isRemove {
