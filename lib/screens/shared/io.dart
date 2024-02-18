@@ -166,11 +166,9 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                   _isLoading
                       ? const SharedProgressIndicator()
                       : !widget.allowDirectorySelection
-                          ? IconButton(
-                              tooltip:
-                                  isAddNew ? 'Select files' : 'Add more files',
-                              icon: const Icon(Icons.add_rounded),
-                              onPressed: !widget.allowMultiple && !isAddNew
+                          ? SingleInputButton(
+                              isAddNew: isAddNew,
+                              onFileSelected: !widget.allowMultiple && !isAddNew
                                   ? null
                                   : () async {
                                       await _selectFiles(
@@ -227,6 +225,26 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     setState(() {
       _isLoading = false;
     });
+  }
+}
+
+class SingleInputButton extends StatelessWidget {
+  const SingleInputButton({
+    super.key,
+    required this.isAddNew,
+    required this.onFileSelected,
+  });
+
+  final bool isAddNew;
+  final VoidCallback? onFileSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: isAddNew ? 'Select files' : 'Add more files',
+      icon: const Icon(Icons.add_rounded),
+      onPressed: onFileSelected,
+    );
   }
 }
 

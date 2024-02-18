@@ -162,7 +162,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                     isSuccess: _ctr.isSuccess,
                     controller: _ctr,
                     onNewRun: _setNewRun,
-                    onExecuted: value.isEmpty || !_isValid
+                    onExecuted: value.isEmpty || !_isValid(value)
                         ? null
                         : () async {
                             await _execute(value);
@@ -199,8 +199,17 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
     ));
   }
 
-  bool get _isValid {
-    return _ctr.isValid;
+  bool _isValid(List<SegulInputFile> inputFiles) {
+    final hasOutputFormat = _ctr.outputFormatController != null;
+    final isValidInput = _ctr.isValid && hasOutputFormat;
+    if (_extractionOptionsController == ExtractionOptions.file) {
+      final hasInputSequences = inputFiles
+          .any((element) => element.type == SegulType.standardSequence);
+      final hasInputText =
+          inputFiles.any((element) => element.type == SegulType.plainText);
+      return isValidInput && hasInputSequences && hasInputText;
+    }
+    return isValidInput && _idRegexController.text.isNotEmpty;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {

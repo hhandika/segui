@@ -32,8 +32,12 @@ class SequenceIdExtractionRunner {
       outputDir: outputDir.path,
     ).parseSequenceId(
       isMap: isMap,
-      outputFname: prefix,
+      outputFname: _prefix,
     );
+  }
+
+  String get _prefix {
+    return prefix.isNotEmpty ? prefix : 'id';
   }
 }
 

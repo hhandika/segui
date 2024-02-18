@@ -110,6 +110,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
               onPressed: (value) {
                 setState(() {
                   _isMap = value;
+                  _ctr.isSuccess = false;
                 });
               }),
         ]),
@@ -117,7 +118,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
           child: ref.watch(fileInputProvider).when(
                 data: (value) {
                   return ExecutionButton(
-                    label: 'Extract',
+                    label: _isMap ? 'Extract and Map ID' : 'Extract ID',
                     isRunning: _ctr.isRunning,
                     isSuccess: _ctr.isSuccess,
                     controller: _ctr,
