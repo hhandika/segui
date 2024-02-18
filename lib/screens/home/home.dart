@@ -26,7 +26,7 @@ class _SegulHomeState extends State<SegulHome> {
     super.didChangeDependencies();
     // Show large screen view for screen width >= 600 dp
     // which is the recommended screen size for tablets.
-    showLargeScreenView = isMediumScreen(context);
+    showLargeScreenView = isTabletScreen(context);
   }
 
   @override

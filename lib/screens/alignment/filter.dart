@@ -12,6 +12,7 @@ import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/tasks/alignment.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.alignmentFiltering;
 
@@ -43,6 +44,19 @@ class AlignmentFilteringView extends StatefulWidget {
 
 class _AlignmentFilteringViewState extends State<AlignmentFilteringView> {
   bool _isShowingInfo = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Show info by default for desktop screens
+    _isShowingInfo = isDesktopScreen(context);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [

@@ -12,6 +12,7 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.sequenceTranslation;
 
@@ -24,6 +25,13 @@ class TranslateView extends StatefulWidget {
 
 class _TranslateViewState extends State<TranslateView> {
   bool _isShowingInfo = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Show info by default for desktop screens
+    _isShowingInfo = isDesktopScreen(context);
+  }
 
   @override
   Widget build(BuildContext context) {

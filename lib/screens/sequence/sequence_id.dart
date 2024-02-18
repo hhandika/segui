@@ -11,6 +11,7 @@ import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.sequenceUniqueId;
 
@@ -23,6 +24,13 @@ class IDExtractionView extends StatefulWidget {
 
 class _IDExtractionViewState extends State<IDExtractionView> {
   bool _isShowingInfo = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Show info by default for desktop screens
+    _isShowingInfo = isDesktopScreen(context);
+  }
 
   @override
   Widget build(BuildContext context) {

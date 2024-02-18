@@ -12,6 +12,7 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.alignmentConversion;
 
@@ -24,6 +25,14 @@ class ConvertView extends StatefulWidget {
 
 class _ConvertViewState extends State<ConvertView> {
   bool _isShowingInfo = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Show large screen view for screen width >= 600 dp
+    // which is the recommended screen size for tablets.
+    _isShowingInfo = isDesktopScreen(context);
+  }
 
   @override
   Widget build(BuildContext context) {

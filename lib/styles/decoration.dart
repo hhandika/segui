@@ -34,10 +34,6 @@ Color getBorderColor(BuildContext context) {
   return Theme.of(context).colorScheme.primary.withAlpha(40);
 }
 
-bool isMediumScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width >= mediumScreenSize;
-}
-
 bool isPhoneScreen(BuildContext context) {
   return MediaQuery.of(context).size.width < mediumScreenSize;
 }
