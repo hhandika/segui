@@ -16,6 +16,7 @@ flutter clean
 echo "Updating Rust dependencies"
 cd rust
 cargo update
+cargo check
 cd ..
 
 echo "Updating FRB"

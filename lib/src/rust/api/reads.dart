@@ -20,10 +20,12 @@ class RawReadServices {
   static Future<RawReadServices> newRawReadServices({dynamic hint}) =>
       RustLib.instance.api.rawReadServicesNew(hint: hint);
 
-  Future<void> summarize({required String mode, dynamic hint}) =>
+  Future<void> summarize(
+          {required String mode, String? prefix, dynamic hint}) =>
       RustLib.instance.api.rawReadServicesSummarize(
         that: this,
         mode: mode,
+        prefix: prefix,
       );
 
   @override

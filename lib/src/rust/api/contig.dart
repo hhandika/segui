@@ -20,9 +20,10 @@ class ContigServices {
   static Future<ContigServices> newContigServices({dynamic hint}) =>
       RustLib.instance.api.contigServicesNew(hint: hint);
 
-  Future<void> summarize({dynamic hint}) =>
+  Future<void> summarize({String? prefix, dynamic hint}) =>
       RustLib.instance.api.contigServicesSummarize(
         that: this,
+        prefix: prefix,
       );
 
   @override

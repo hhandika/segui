@@ -77,7 +77,7 @@ abstract class RustLibApi extends BaseApi {
   Future<ContigServices> contigServicesNew({dynamic hint});
 
   Future<void> contigServicesSummarize(
-      {required ContigServices that, dynamic hint});
+      {required ContigServices that, String? prefix, dynamic hint});
 
   Future<List<String>> csvSummaryServicesGetColumnNames(
       {required CsvSummaryServices that, dynamic hint});
@@ -98,7 +98,10 @@ abstract class RustLibApi extends BaseApi {
   Future<RawReadServices> rawReadServicesNew({dynamic hint});
 
   Future<void> rawReadServicesSummarize(
-      {required RawReadServices that, required String mode, dynamic hint});
+      {required RawReadServices that,
+      required String mode,
+      String? prefix,
+      dynamic hint});
 
   Future<void> alignmentServicesConcatAlignment(
       {required AlignmentServices that,
@@ -278,11 +281,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> contigServicesSummarize(
-      {required ContigServices that, dynamic hint}) {
+      {required ContigServices that, String? prefix, dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_contig_services(that, serializer);
+        sse_encode_opt_String(prefix, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 5, port: port_);
       },
@@ -291,7 +295,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kContigServicesSummarizeConstMeta,
-      argValues: [that],
+      argValues: [that, prefix],
       apiImpl: this,
       hint: hint,
     ));
@@ -299,7 +303,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kContigServicesSummarizeConstMeta => const TaskConstMeta(
         debugName: "ContigServices_summarize",
-        argNames: ["that"],
+        argNames: ["that", "prefix"],
       );
 
   @override
@@ -440,12 +444,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> rawReadServicesSummarize(
-      {required RawReadServices that, required String mode, dynamic hint}) {
+      {required RawReadServices that,
+      required String mode,
+      String? prefix,
+      dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_raw_read_services(that, serializer);
         sse_encode_String(mode, serializer);
+        sse_encode_opt_String(prefix, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 11, port: port_);
       },
@@ -454,7 +462,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kRawReadServicesSummarizeConstMeta,
-      argValues: [that, mode],
+      argValues: [that, mode, prefix],
       apiImpl: this,
       hint: hint,
     ));
@@ -462,7 +470,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kRawReadServicesSummarizeConstMeta => const TaskConstMeta(
         debugName: "RawReadServices_summarize",
-        argNames: ["that", "mode"],
+        argNames: ["that", "mode", "prefix"],
       );
 
   @override
