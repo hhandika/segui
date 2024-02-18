@@ -198,7 +198,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
     return ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
-              return;
+              return _showError('Output directory is not selected.');
             } else {
               await _translate(inputFiles, value.directory!);
             }

@@ -51,7 +51,7 @@ class ExecutionButton extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        '⏳ Executing task.'
+                        '⏳ Executing task. '
                         'Keep this screen open to avoid interruption.',
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
