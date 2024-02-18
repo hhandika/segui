@@ -73,7 +73,7 @@ class LogListView extends StatelessWidget {
                           ),
                           leading: Icon(
                             Icons.list_alt_outlined,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: getIconColor(context),
                           ),
                           trailing: const Icon(Icons.chevron_right),
                           onTap: () {
