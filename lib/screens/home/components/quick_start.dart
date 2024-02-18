@@ -20,60 +20,65 @@ class _QuickStartPageState extends State<QuickStartPage> {
         ),
         backgroundColor: getSEGULBackgroundColor(context),
         body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: ListView(
-              children: const [
-                CardTitle(title: 'Task Selection'),
-                HelpContent(
-                  text: 'Use the navigation bar '
-                      'to select the task category you want to perform. '
-                      'For instance, to perform genomic analysis, '
-                      'click on the Genomics tab. '
-                      'This will take you to the Genomic Analysis page. '
-                      'From there, use the top dropdown menu to '
-                      'select the task you want to perform. ',
-                ),
-                CardTitle(title: 'Input'),
-                HelpContent(
-                  text: 'Use the input form to provide the required data. '
-                      'On mobile, you can only add files. '
-                      'On desktop, you can add files or a directory. '
-                      'The add files option allows you to select multiple files. '
-                      ' When you add a directory,'
-                      'the app will find all matching files '
-                      'in the directory. Recursive search is not yet supported.',
-                ),
-                CardTitle(title: 'Output'),
-                HelpContent(
-                  text: 'On desktop, you can select the output directory. '
-                      'On mobile, the app will use the default app directory. '
-                      'The app will create a new directory ',
-                ),
-                CardTitle(title: 'Parameters'),
-                HelpContent(
-                  text:
-                      'Use the parameter form to provide the required parameters. '
-                      'The parameters are specific to the task you are performing. '
-                      'Not all tasks require parameters. ',
-                ),
-                CardTitle(title: 'Run'),
-                HelpContent(
-                  text: 'Click the Run button to start the task. '
-                      ' Keep the same screen open until the task is complete. ',
-                ),
-                CardTitle(title: 'Results'),
-                HelpContent(
-                  text: 'The app will display the results of the task '
-                      'in the output tab. '
-                      'This tab can contain other files '
-                      'in the output directory. '
-                      'The result from the current task will be highlighted '
-                      'with a "new" icon.',
-                ),
-                LaunchDocButton(),
-                SizedBox(height: 8),
-              ],
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+                maxWidth: 800,
+                maxHeight: MediaQuery.of(context).size.height * 0.8),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: ListView(
+                children: const [
+                  CardTitle(title: 'Task Selection'),
+                  HelpContent(
+                    text: 'Use the navigation bar '
+                        'to select the task category you want to perform. '
+                        'For instance, to perform genomic analysis, '
+                        'click on the Genomics tab. '
+                        'This will take you to the Genomic Analysis page. '
+                        'From there, use the top dropdown menu to '
+                        'select the task you want to perform. ',
+                  ),
+                  CardTitle(title: 'Input'),
+                  HelpContent(
+                    text: 'Use the input form to provide the required data. '
+                        'On mobile, you can only add files. '
+                        'On desktop, you can add files or a directory. '
+                        'The add files option allows you to select multiple files. '
+                        ' When you add a directory,'
+                        'the app will find all matching files '
+                        'in the directory. Recursive search is not yet supported.',
+                  ),
+                  CardTitle(title: 'Output'),
+                  HelpContent(
+                    text: 'On desktop, you can select the output directory. '
+                        'On mobile, the app will use the default app directory. '
+                        'The app will create a new directory ',
+                  ),
+                  CardTitle(title: 'Parameters'),
+                  HelpContent(
+                    text:
+                        'Use the parameter form to provide the required parameters. '
+                        'The parameters are specific to the task you are performing. '
+                        'Not all tasks require parameters. ',
+                  ),
+                  CardTitle(title: 'Run'),
+                  HelpContent(
+                    text: 'Click the Run button to start the task. '
+                        ' Keep the same screen open until the task is complete. ',
+                  ),
+                  CardTitle(title: 'Results'),
+                  HelpContent(
+                    text: 'The app will display the results of the task '
+                        'in the output tab. '
+                        'This tab can contain other files '
+                        'in the output directory. '
+                        'The result from the current task will be highlighted '
+                        'with a "new" icon.',
+                  ),
+                  LaunchDocButton(),
+                  SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
         ));
