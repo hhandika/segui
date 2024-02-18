@@ -246,7 +246,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   void _setSuccess(Directory outputDir) {
-    ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
+    ref.read(fileOutputProvider.notifier).refresh();
     ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, 'Summarization successful! 🎉'));
     setState(() {

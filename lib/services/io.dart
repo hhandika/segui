@@ -102,15 +102,12 @@ class SegulOutputFile {
     );
   }
 
-  factory SegulOutputFile.updateFiles(
-    SegulOutputFile oldFile,
-    bool isRecursive,
-  ) {
-    List<File> oldFiles = oldFile.files.map((e) => e.file).toList();
+  factory SegulOutputFile.updateFiles(SegulOutputFile output,
+      {required bool isRecursive}) {
     return SegulOutputFile(
-        directory: oldFile.directory,
-        files: DirectoryCrawler(oldFile.directory!)
-            .findNewFiles(oldFiles, isRecursive));
+        directory: output.directory,
+        files: DirectoryCrawler(output.directory!)
+            .findNewFiles(output.files, isRecursive));
   }
 
   // Update the list without accounting new files.
@@ -422,12 +419,10 @@ class DirectorySelectionServices {
 
   final WidgetRef ref;
 
-  Future<void> addOutputDir({required bool isRecursive}) async {
+  Future<void> addOutputDir() async {
     final result = await _getDirectory();
     if (result != null) {
-      ref
-          .read(fileOutputProvider.notifier)
-          .add(result, isRecursive: isRecursive);
+      ref.read(fileOutputProvider.notifier).add(result);
     }
   }
 
@@ -516,21 +511,23 @@ class DirectoryCrawler {
   }
 
   List<({File file, bool isNew})> findNewFiles(
-      List<File> oldFiles, bool isRecursive) {
-    List<({File file, bool isNew})> newFiles = [];
+      List<({File file, bool isNew})> oldFiles, bool isRecursive) {
     const bool isNew = true;
+    List<({File file, bool isNew})> destination = [];
+    List<File> origin = oldFiles.map((e) => e.file).toList();
+
     List<({File file, bool isNew})> allFiles =
         _findAllFilesInDir(dir, isRecursive, isNew);
     for (var file in allFiles) {
-      if (!oldFiles.any((oldFile) => oldFile.path == file.file.path)) {
+      if (!origin.any((p) => p.path == file.file.path)) {
         if (kDebugMode) {
           print('Found file: ${file.file.path}');
         }
-        newFiles.add(file);
+        destination.add(file);
       }
     }
-
-    return newFiles;
+    destination.addAll(oldFiles);
+    return destination;
   }
 
   List<({File file, bool isNew})> _findAllFilesInDir(

@@ -65,13 +65,13 @@ class FileOutput extends _$FileOutput {
 
   /// Add the files in the output directory.
   /// This is use after the use selects the output directory.
-  Future<void> add(Directory? outputDir, {required bool isRecursive}) async {
+  Future<void> add(Directory? outputDir) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (outputDir == null) {
         return SegulOutputFile.empty();
       }
-      return SegulOutputFile.fromDirectory(outputDir, isRecursive: isRecursive);
+      return SegulOutputFile.fromDirectory(outputDir, isRecursive: false);
     });
   }
 
@@ -94,7 +94,7 @@ class FileOutput extends _$FileOutput {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       Directory dir = await getSeguiDirectory();
-      return SegulOutputFile.fromDirectory(dir, isRecursive: true);
+      return SegulOutputFile.fromDirectory(dir, isRecursive: false);
     });
   }
 
@@ -103,13 +103,14 @@ class FileOutput extends _$FileOutput {
   /// We can also do stream with `FileEntity().watch`
   /// to update the file list.
   /// But it may slow down the task execution.
-  Future<void> refresh({required bool isRecursive}) async {
+  Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null || state.value!.directory == null) {
         return SegulOutputFile.empty();
       }
-      final updates = SegulOutputFile.updateFiles(state.value!, isRecursive);
+      final updates =
+          SegulOutputFile.updateFiles(state.value!, isRecursive: false);
 
       return updates;
     });

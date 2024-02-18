@@ -44,8 +44,7 @@ class SelectDirField extends ConsumerWidget {
                     : const Icon(Icons.clear),
                 onPressed: data.directory == null
                     ? () async {
-                        await DirectorySelectionServices(ref)
-                            .addOutputDir(isRecursive: false);
+                        await DirectorySelectionServices(ref).addOutputDir();
                       }
                     : () {
                         ref.invalidate(fileOutputProvider);

@@ -329,7 +329,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
-    ref.read(fileOutputProvider.notifier).refresh(isRecursive: false);
+    ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
           showSharedSnackBar(context, 'Filtering successful! 🎉'));
