@@ -200,10 +200,15 @@ class PartitionConversionPageState
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, SupportedTask.partitionConversion);
+    }
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
-              return;
+              return _showError('Output directory is not selected.');
             } else {
               await _convert(inputFiles, value.directory!);
             }

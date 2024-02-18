@@ -52,6 +52,13 @@ class FileInput extends _$FileInput {
       return files;
     });
   }
+
+  Future<void> clearAll() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      return [];
+    });
+  }
 }
 
 /// The output directory.

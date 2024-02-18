@@ -154,6 +154,18 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
             SharedOutputDirField(
               ctr: _ctr.outputDir,
             ),
+            SharedDropdownField(
+              value: _ctr.outputFormatController,
+              label: 'Output format',
+              items: outputFormat,
+              onChanged: (String? value) {
+                setState(() {
+                  if (value != null) {
+                    _ctr.outputFormatController = value;
+                  }
+                });
+              },
+            ),
             SwitchForm(
               label: 'Concatenate output',
               value: _isConcatenated,
@@ -169,21 +181,6 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
                 controller: _prefixController,
                 label: 'Output prefix',
                 hint: 'E.g., concatenated',
-              ),
-            ),
-            Visibility(
-              visible: _isConcatenated,
-              child: SharedDropdownField(
-                value: _ctr.outputFormatController,
-                label: 'Output format',
-                items: outputFormat,
-                onChanged: (String? value) {
-                  setState(() {
-                    if (value != null) {
-                      _ctr.outputFormatController = value;
-                    }
-                  });
-                },
               ),
             ),
             Visibility(
@@ -243,15 +240,20 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
 
   bool get _isValid {
     bool filteringOptionsValid = _valueController.text.isNotEmpty;
+    bool isFormatVld = _ctr.outputFormatController != null;
     if (_isConcatenated) {
-      filteringOptionsValid = filteringOptionsValid &&
-          _prefixController.text.isNotEmpty &&
-          _outputPartitionFmtController != null;
+      filteringOptionsValid =
+          filteringOptionsValid && _prefixController.text.isNotEmpty;
     }
-    return _ctr.isValid && filteringOptionsValid;
+    return _ctr.isValid && filteringOptionsValid && isFormatVld;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, SupportedTask.alignmentFiltering);
+    }
     return await ref.read(fileOutputProvider).when(
         data: (value) async {
           if (value.directory == null) {

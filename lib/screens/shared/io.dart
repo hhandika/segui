@@ -391,7 +391,7 @@ class ClearAllButton extends ConsumerWidget {
       ),
       onTap: () {
         Navigator.of(context).pop();
-        ref.invalidate(fileInputProvider);
+        ref.read(fileInputProvider.notifier).clearAll();
       },
     );
   }

@@ -192,6 +192,11 @@ class ConvertPageState extends ConsumerState<ConvertPage>
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, SupportedTask.alignmentConversion);
+    }
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
