@@ -185,14 +185,17 @@ class ConvertPageState extends ConsumerState<ConvertPage>
   }
 
   bool get _isValid {
-    return _ctr.isValid;
+    bool isOutputFmtValid = _ctr.outputFormatController != null;
+    bool isValid = _ctr.isValid && isOutputFmtValid;
+
+    return isValid;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
-              return;
+              return _showError('Output directory is not selected.');
             } else {
               await _convert(inputFiles, value.directory!);
             }

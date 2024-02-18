@@ -3,7 +3,7 @@ import 'package:segui/services/types.dart';
 
 class IOController {
   IOController({
-    required this.outputController,
+    required this.prefixController,
     required this.outputDir,
     this.inputFormatController,
     required this.dataTypeController,
@@ -12,7 +12,7 @@ class IOController {
     this.isSuccess = false,
   });
 
-  final TextEditingController outputController;
+  final TextEditingController prefixController;
   TextEditingController outputDir;
   String? inputFormatController;
   String dataTypeController;
@@ -21,7 +21,7 @@ class IOController {
   bool isSuccess;
 
   factory IOController.empty() => IOController(
-        outputController: TextEditingController(),
+        prefixController: TextEditingController(),
         outputDir: TextEditingController(),
         inputFormatController: inputFormat[0],
         dataTypeController: dataType[0],
@@ -34,7 +34,7 @@ class IOController {
   get isFileSelection => null;
 
   void reset() {
-    outputController.clear();
+    prefixController.clear();
     outputDir.clear();
     inputFormatController = inputFormat[0];
     dataTypeController = dataType[0];
@@ -44,7 +44,7 @@ class IOController {
   }
 
   void dispose() {
-    outputController.dispose();
+    prefixController.dispose();
     outputDir.dispose();
   }
 }

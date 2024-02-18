@@ -8,6 +8,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/styles/decoration.dart';
 
 class SelectDirField extends ConsumerWidget {
@@ -406,7 +407,7 @@ class SharedOutputDirField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Platform.isIOS || Platform.isAndroid
+    return runningPlatform == PlatformType.isMobile
         ? SharedTextField(
             label: 'Directory name',
             hint: 'Enter output directory name',

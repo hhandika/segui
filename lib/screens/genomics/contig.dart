@@ -108,9 +108,9 @@ class ContigPageState extends ConsumerState<ContigPage>
               ctr: _ctr.outputDir,
             ),
             SharedTextField(
-              controller: _ctr.outputController,
-              label: 'Output Filename',
-              hint: 'Enter output filename',
+              controller: _ctr.prefixController,
+              label: 'Prefix',
+              hint: 'contig_summary, species_contig_summary, etc.',
             ),
           ]),
           Center(
@@ -166,7 +166,7 @@ class ContigPageState extends ConsumerState<ContigPage>
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
-              return;
+              return _showError('Output directory is not selected.');
             } else {
               await _summarize(inputFiles, value.directory!);
             }

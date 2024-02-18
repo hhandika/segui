@@ -96,7 +96,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
             ctr: _ctr.outputDir,
           ),
           SharedTextField(
-            controller: _ctr.outputController,
+            controller: _ctr.prefixController,
             label: 'Prefix',
             hint: 'concat, species_concat, etc.',
           ),
@@ -205,7 +205,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
   }
 
   bool get _isValid {
-    bool isPrefixValid = _ctr.outputController.text.isNotEmpty;
+    bool isPrefixValid = _ctr.prefixController.text.isNotEmpty;
     bool isOutputFormatValid = _ctr.outputFormatController != null;
     return _ctr.isValid && isOutputFormatValid && isPrefixValid;
   }
@@ -216,14 +216,14 @@ class ConcatPageState extends ConsumerState<ConcatPage>
           if (value.directory == null) {
             return _showError('Output directory is not selected.');
           } else {
-            await _convert(inputFiles, value.directory!);
+            await _concat(inputFiles, value.directory!);
           }
         },
         loading: () => null,
         error: (e, _) => _showError(e.toString()));
   }
 
-  Future<void> _convert(
+  Future<void> _concat(
     List<SegulInputFile> inputFiles,
     Directory outputDir,
   ) async {
@@ -234,7 +234,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
         inputFormat: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
-        outputPrefix: _ctr.outputController.text,
+        outputPrefix: _ctr.prefixController.text,
         outputFormat: _ctr.outputFormatController!,
         partitionFormat: _partitionFormatController,
         isCodonModel: isCodon,

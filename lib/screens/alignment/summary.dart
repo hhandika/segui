@@ -95,7 +95,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             ctr: _ctr.outputDir,
           ),
           SharedTextField(
-            controller: _ctr.outputController,
+            controller: _ctr.prefixController,
             label: 'Output Prefix',
             hint: 'Enter output prefix',
           ),
@@ -160,7 +160,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   bool get _isValid {
-    bool isPrefixValid = _ctr.outputController.text.isNotEmpty;
+    bool isPrefixValid = _ctr.prefixController.text.isNotEmpty;
     return _ctr.isValid && isPrefixValid;
   }
 
@@ -187,7 +187,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         inputFmt: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
-        outputPrefix: _ctr.outputController.text,
+        outputPrefix: _ctr.prefixController.text,
         interval: int.tryParse(_interval ?? '5') ?? 5,
       ).run();
       _setSuccess(outputDir);

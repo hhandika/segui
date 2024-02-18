@@ -127,7 +127,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
             ctr: _ctr.outputDir,
           ),
           SharedTextField(
-            controller: _ctr.outputController,
+            controller: _ctr.prefixController,
             label: 'Prefix',
             hint: 'E.g., output, split, etc.',
           ),
@@ -206,7 +206,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
-              return;
+              return _showError('Output directory is not selected.');
             } else {
               await _split(inputFile, value.directory!);
             }
@@ -231,7 +231,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         inputPartition: inputPartition.file.path,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir.path,
-        prefix: _ctr.outputController.text,
+        prefix: _ctr.prefixController.text,
         outputFmt: _ctr.outputFormatController!,
         isUncheck: _isUnchecked,
       ).run();

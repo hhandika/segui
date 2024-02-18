@@ -103,6 +103,11 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
           SharedOutputDirField(
             ctr: _ctr.outputDir,
           ),
+          SharedTextField(
+            controller: _ctr.prefixController,
+            label: 'Prefix',
+            hint: 'raw_reads_summary, species_summary, etc.',
+          ),
           SharedDropdownField(
             value: mode,
             label: 'Summary Mode',
@@ -169,7 +174,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
-              return;
+              return _showError('Output directory is not selected.');
             } else {
               await _summarize(inputFiles, value.directory!);
             }

@@ -92,9 +92,9 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
             ctr: _ctr.outputDir,
           ),
           SharedTextField(
-            controller: _ctr.outputController,
+            controller: _ctr.prefixController,
             label: 'Prefix',
-            hint: 'Enter output filename',
+            hint: 'id, species-id, etc.',
           ),
           SwitchForm(
               label: 'Map sequence ID',
@@ -159,7 +159,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
     return ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
-              return;
+              return _showError('Output directory is not selected.');
             } else {
               await _extractId(inputFiles, value.directory!);
             }
@@ -180,7 +180,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
         inputFmt: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
-        prefix: _ctr.outputController.text,
+        prefix: _ctr.prefixController.text,
         isMap: _isMap,
       ).run();
       _setSuccess(outputDir);
