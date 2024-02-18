@@ -79,7 +79,7 @@ To remove a file, select the input tab. You can remove files from the input list
 
 ### Specific Guideline for Smartphone Users
 
-Phylogenomic datasets typically consist of over a thousand files. Mobile operating systems, including Android since SDK 30, forbid direct access to a file for security reasons. The app to cache input files to the app designated temporary directory. This process can be slow and may cause the app to crash if the device's RAM is insufficient. We suggest dividing the files into smaller batches for optimal performance. Our tests show that the app can handle up to 1,500 files at once on a [Xiaomi Redmi Note 12](https://www.gsmarena.com/xiaomi_redmi_note_12-12063.php) with 8 Gb of RAM. Smaller batches will make the input process faster and more stable. Future updates will include support for compressed files, which will allow users to input large datasets more efficiently.
+Phylogenomic datasets typically consist of over a thousand files. Mobile operating systems, including Android since SDK 30, forbid direct access to a file for security reasons. The app needs to cache input files to the app designated temporary directory. This process can be slow and may cause the app to crash if the device's RAM is insufficient. We suggest dividing the files into smaller batches for optimal performance. Our tests show that the app can handle up to 1,500 files at once on a [Xiaomi Redmi Note 12](https://www.gsmarena.com/xiaomi_redmi_note_12-12063.php) with 8 Gb of RAM. Smaller batches will make the input process faster and more stable. Future updates will include support for compressed files, which will allow users to input large datasets more efficiently.
 
 ### Specific Guideline for macOS Users
 
