@@ -168,6 +168,8 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                       : !widget.allowDirectorySelection
                           ? SingleInputButton(
                               isAddNew: isAddNew,
+                              inputFiles: data,
+                              type: type,
                               onFileSelected: !widget.allowMultiple && !isAddNew
                                   ? null
                                   : () async {
@@ -228,23 +230,41 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
   }
 }
 
-class SingleInputButton extends StatelessWidget {
+class SingleInputButton extends ConsumerWidget {
   const SingleInputButton({
     super.key,
     required this.isAddNew,
+    required this.inputFiles,
+    required this.type,
     required this.onFileSelected,
   });
 
   final bool isAddNew;
+  final List<SegulInputFile> inputFiles;
+  final SegulType type;
   final VoidCallback? onFileSelected;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
       tooltip: isAddNew ? 'Select files' : 'Add more files',
-      icon: const Icon(Icons.add_rounded),
-      onPressed: onFileSelected,
+      icon: _hasInputFile
+          ? const Icon(Icons.clear_rounded)
+          : const Icon(Icons.add_rounded),
+      onPressed: _hasInputFile
+          ? () {
+              final file = inputFiles.firstWhere((e) => e.type == type);
+              ref.read(fileInputProvider.notifier).removeFromList(file);
+            }
+          : onFileSelected,
     );
+  }
+
+  bool get _hasInputFile {
+    if (inputFiles.isEmpty) {
+      return false;
+    }
+    return inputFiles.any((element) => element.type == type);
   }
 }
 
