@@ -8,3 +8,6 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<void> initLogger({required String logDir, dynamic hint}) =>
     RustLib.instance.api.initLogger(logDir: logDir, hint: hint);
+
+Future<String> getApiVersion({dynamic hint}) =>
+    RustLib.instance.api.getApiVersion(hint: hint);
