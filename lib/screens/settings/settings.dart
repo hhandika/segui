@@ -262,7 +262,7 @@ class SettingTile extends StatelessWidget {
       ),
       leading: Icon(
         icon,
-        color: Theme.of(context).colorScheme.primary,
+        color: getIconColor(context),
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
