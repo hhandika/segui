@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 
 class AboutButton extends StatelessWidget {
@@ -57,15 +57,16 @@ class AboutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<PackageInfo>(
-      future: PackageInfo.fromPlatform(),
+    return FutureBuilder<SegulVersion>(
+      future: segulVersion,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                  '${snapshot.data!.appName} ${snapshot.data!.version}+${snapshot.data!.buildNumber}'),
+                  '${snapshot.data!.name} ${snapshot.data!.version}+${snapshot.data!.buildNumber}'),
+              Text('SEGUL API version: ${snapshot.data!.apiVersion}'),
               const Text('A GUI version of the SEGUL genomic tool'),
               const Text('Heru Handika & Jacob A. Esselstyn'),
               // Show license
@@ -76,7 +77,7 @@ class AboutContent extends StatelessWidget {
                   onPressed: () {
                     showLicensePage(
                       context: context,
-                      applicationName: snapshot.data!.appName,
+                      applicationName: snapshot.data!.name,
                       applicationVersion: snapshot.data!.version,
                     );
                   },
@@ -90,5 +91,11 @@ class AboutContent extends StatelessWidget {
         }
       },
     );
+  }
+
+  Future<SegulVersion> get segulVersion async {
+    SegulVersion version = SegulVersion.empty();
+    await version.getVersions();
+    return version;
   }
 }

@@ -1,3 +1,5 @@
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:segui/src/rust/api/common.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const String segulDocUrl = 'https://www.segul.app/';
@@ -41,4 +43,36 @@ void launchSegulDocUrl() {
   String url = segulDocUrl;
   Uri uri = Uri.parse(url);
   launchUrl(uri);
+}
+
+class SegulVersion {
+  SegulVersion({
+    required this.name,
+    required this.version,
+    required this.buildNumber,
+    required this.apiVersion,
+  });
+
+  String name;
+  String version;
+  String buildNumber;
+  String apiVersion;
+
+  factory SegulVersion.empty() {
+    return SegulVersion(
+      name: '',
+      version: '',
+      buildNumber: '',
+      apiVersion: '',
+    );
+  }
+
+  Future<void> getVersions() async {
+    PackageInfo guiPackageInfo = await PackageInfo.fromPlatform();
+    String api = await getApiVersion();
+    name = guiPackageInfo.appName;
+    version = guiPackageInfo.version;
+    buildNumber = guiPackageInfo.buildNumber;
+    apiVersion = api;
+  }
 }
