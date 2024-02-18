@@ -175,8 +175,8 @@ class InputScreen extends ConsumerWidget {
             data: (data) => data.isEmpty
                 ? const EmptyScreen(
                     title: 'No input files selected.',
-                    description:
-                        'Select one or more input files to start the analysis.',
+                    description: 'Select one or more input files. '
+                        'The selected files will be shown here.',
                   )
                 : InputFileList(files: data),
             loading: () => const Center(
@@ -197,7 +197,10 @@ class InputFileList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return IOListContainer(
         title: 'Input Files',
-        infoText: 'List of input files to be analyzed.',
+        infoText: 'List of input files. '
+            'Click on a file to view its content. '
+            'Click on the delete icon to remove a file. '
+            'Removing a file will not delete the file from the system.',
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: files.length,
@@ -273,7 +276,9 @@ class OutputFileList extends StatelessWidget {
       title: 'Output Files',
       infoText: 'List of files in the output directory. '
           'Newly created files are marked with a new icon. '
-          'Click on a file to view its content.',
+          'Click on a file to view its content. '
+          'Select menu to share or delete a file. '
+          'Deleting a file will remove it from the system.',
       child: data.files.isEmpty
           ? const EmptyScreen(
               title: 'No output files found.',

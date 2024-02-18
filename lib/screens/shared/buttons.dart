@@ -310,8 +310,7 @@ class DeleteAlert extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       title: const Text('Delete file'),
-      content: const Text(
-          'Deleting this file will remove it permanently. Continue?'),
+      content: const Text('Deleting this file will remove it permanently.'),
       actions: [
         TextButton(
           onPressed: () {
@@ -324,7 +323,8 @@ class DeleteAlert extends ConsumerWidget {
             ref.read(fileOutputProvider.notifier).removeFile(file);
             Navigator.of(context).pop();
           },
-          child: const Text('Delete'),
+          child: Text('Delete',
+              style: TextStyle(color: Theme.of(context).colorScheme.error)),
         ),
       ],
     );

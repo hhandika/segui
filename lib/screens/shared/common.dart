@@ -100,7 +100,7 @@ class FileIcon extends StatelessWidget {
         width: 24,
         height: 24,
         colorFilter: ColorFilter.mode(
-          Theme.of(context).colorScheme.primary.withAlpha(240),
+          Theme.of(context).colorScheme.tertiary.withAlpha(120),
           BlendMode.srcIn,
         ),
       );
