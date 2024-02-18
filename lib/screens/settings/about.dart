@@ -57,23 +57,38 @@ class AboutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FutureBuilder<PackageInfo>(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(
-                  '${snapshot.data!.appName} ${snapshot.data!.version}+${snapshot.data!.buildNumber}');
-            } else {
-              return const Text('Loading...');
-            }
-          },
-        ),
-        const Text('A GUI version of the SEGUL genomic tool'),
-        const Text('Heru Handika & Jacob A. Esselstyn'),
-      ],
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                  '${snapshot.data!.appName} ${snapshot.data!.version}+${snapshot.data!.buildNumber}'),
+              const Text('A GUI version of the SEGUL genomic tool'),
+              const Text('Heru Handika & Jacob A. Esselstyn'),
+              // Show license
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: TextButton(
+                  // Open license
+                  onPressed: () {
+                    showLicensePage(
+                      context: context,
+                      applicationName: snapshot.data!.appName,
+                      applicationVersion: snapshot.data!.version,
+                    );
+                  },
+                  child: const Text('Licenses'),
+                ),
+              ),
+            ],
+          );
+        } else {
+          return const Text('Loading...');
+        }
+      },
     );
   }
 }
