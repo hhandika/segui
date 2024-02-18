@@ -32,7 +32,7 @@ class UnknownFileView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Text(
-                      '${getFileExtension(file).toUpperCase()} '
+                      '${FileUtils().getFileExtension(file).toUpperCase()} '
                       'is unsupported.',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),

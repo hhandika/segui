@@ -226,7 +226,7 @@ enum CommonFileType {
   other,
 }
 
-class FileAssociation {
+class FileAssociation extends FileUtils {
   FileAssociation({required this.file});
 
   final File file;
@@ -276,14 +276,6 @@ class FileAssociation {
   String get _fileExtension {
     return getFileExtension(file);
   }
-}
-
-String getFileExtension(File file) {
-  final ext = p.extension(file.path);
-  if (ext.isNotEmpty) {
-    return ext.substring(1);
-  }
-  return '';
 }
 
 class FileInputServices {
@@ -476,20 +468,9 @@ class IOServices {
       List<SegulInputFile> files, SegulType type) {
     return files.where((e) => e.type == type).map((e) => e.file.path).toList();
   }
-
-  Future<Directory?> selectDir() async {
-    final result = await FilePicker.platform.getDirectoryPath();
-    if (result != null) {
-      if (kDebugMode) {
-        print('Selected directory: $result');
-      }
-      return Directory(result);
-    }
-    return null;
-  }
 }
 
-class DirectoryCrawler {
+class DirectoryCrawler extends FileUtils {
   DirectoryCrawler(this.dir);
 
   final Directory dir;
@@ -501,12 +482,15 @@ class DirectoryCrawler {
 
   List<File> crawlByType(XTypeGroup type) {
     List<File> inputFiles = [];
-    dir.listSync(recursive: false).whereType<File>().forEach((e) {
-      String extension = _getFileExtension(e);
-      if (extension.isNotEmpty && type.extensions!.contains(extension)) {
-        inputFiles.add(e);
+    List<File> foundFiles =
+        dir.listSync(recursive: true).whereType<File>().toList();
+    // Filter files by matching type.
+    for (var file in foundFiles) {
+      final foundExtension = getFileExtension(file);
+      if (type.extensions!.contains(foundExtension)) {
+        inputFiles.add(file);
       }
-    });
+    }
     return inputFiles;
   }
 
@@ -543,10 +527,6 @@ class DirectoryCrawler {
       }
     }
     return files;
-  }
-
-  String _getFileExtension(File file) {
-    return p.extension(file.path).substring(1);
   }
 }
 
@@ -585,6 +565,14 @@ class FileUtils {
 
   Future<void> deleteFile(File file) async {
     await file.delete();
+  }
+
+  String getFileExtension(File file) {
+    final ext = p.extension(file.path);
+    if (ext.isNotEmpty) {
+      return ext.substring(1);
+    }
+    return '';
   }
 
   Future<int> calculateTotalSize(List<File> files) async {
