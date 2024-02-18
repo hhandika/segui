@@ -21,14 +21,15 @@ impl ContigServices {
         }
     }
 
-    pub fn summarize(&self) {
+    pub fn summarize(&self, prefix: Option<String>) {
         let time = Instant::now();
         let input_fmt = self.match_input_fmt();
         let files = self.find_input_files();
         let output_path = Path::new(&self.output_dir);
         let task = "Contig Summary";
         ContigLogger::new(None, &input_fmt, files.len()).log(task);
-        let summary = ContigSummaryHandler::new(&files, &input_fmt, output_path);
+
+        let summary = ContigSummaryHandler::new(&files, &input_fmt, output_path, prefix.as_deref());
         summary.summarize();
         let duration = time.elapsed();
         utils::print_execution_time(duration);

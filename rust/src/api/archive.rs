@@ -1,4 +1,4 @@
-use segul::helper::archive::Archive;
+use segul::writer::archive::Archive;
 use std::path::{Path, PathBuf};
 
 pub struct ArchiveServices {

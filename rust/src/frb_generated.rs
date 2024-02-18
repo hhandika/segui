@@ -187,10 +187,13 @@ fn wire_ContigServices_summarize_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <crate::api::contig::ContigServices>::sse_decode(&mut deserializer);
+            let api_prefix = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::contig::ContigServices::summarize(&api_that))
+                    Result::<_, ()>::Ok(crate::api::contig::ContigServices::summarize(
+                        &api_that, api_prefix,
+                    ))
                 })())
             }
         },
@@ -389,11 +392,12 @@ fn wire_RawReadServices_summarize_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_that = <crate::api::reads::RawReadServices>::sse_decode(&mut deserializer);
             let api_mode = <String>::sse_decode(&mut deserializer);
+            let api_prefix = <Option<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
                     Result::<_, ()>::Ok(crate::api::reads::RawReadServices::summarize(
-                        &api_that, api_mode,
+                        &api_that, api_mode, api_prefix,
                     ))
                 })())
             }
