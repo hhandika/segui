@@ -145,13 +145,11 @@ class SharedTextField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.controller,
-    this.onSubmitted,
   });
 
   final String label;
   final String hint;
   final TextEditingController controller;
-  final VoidCallback? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -170,12 +168,6 @@ class SharedTextField extends StatelessWidget {
               )
             : null,
       ),
-      onSubmitted: (value) {
-        controller.text = value;
-        if (onSubmitted != null) {
-          onSubmitted!();
-        }
-      },
     );
   }
 }

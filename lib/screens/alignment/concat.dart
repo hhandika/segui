@@ -205,7 +205,9 @@ class ConcatPageState extends ConsumerState<ConcatPage>
   }
 
   bool get _isValid {
-    return _ctr.isValid;
+    bool isPrefixValid = _ctr.outputController.text.isNotEmpty;
+    bool isOutputFormatValid = _ctr.outputFormatController != null;
+    return _ctr.isValid && isOutputFormatValid && isPrefixValid;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {

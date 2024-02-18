@@ -217,12 +217,6 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
       } else {
         await selection.addDirectory();
       }
-
-      // On mobile, user cannot select the output directory
-      // we add it automatically when they select the input files
-      if (Platform.isAndroid || Platform.isIOS) {
-        ref.read(fileOutputProvider.notifier).addMobile(null, widget.task);
-      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -418,10 +412,6 @@ class SharedOutputDirField extends ConsumerWidget {
             label: 'Directory name',
             hint: 'Enter output directory name',
             controller: ctr,
-            onSubmitted: () {
-              updateOutputDir(
-                  ref, ctr.text, SupportedTask.alignmentConcatenation);
-            },
           )
         : const SelectDirField(
             label: 'Select output directory',
