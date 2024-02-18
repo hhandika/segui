@@ -8,10 +8,12 @@ class ContigSummaryRunner {
     required this.inputFiles,
     required this.inputFmt,
     required this.outputDir,
+    required this.prefix,
   });
 
   final List<SegulInputFile> inputFiles;
   final String inputFmt;
+  final String prefix;
   final Directory outputDir;
 
   Future<void> run() async {
@@ -25,7 +27,7 @@ class ContigSummaryRunner {
       files: finalInputFiles,
       fileFmt: inputFmt,
       outputDir: outputDir.path,
-    ).summarize();
+    ).summarize(prefix: prefix.isEmpty ? null : prefix);
   }
 }
 
@@ -34,12 +36,14 @@ class ReadSummaryRunner {
     required this.inputFiles,
     required this.inputFmt,
     required this.outputDir,
+    required this.prefix,
     required this.mode,
   });
 
   final List<SegulInputFile> inputFiles;
   final String inputFmt;
   final Directory outputDir;
+  final String prefix;
   final String mode;
 
   Future<void> run() async {
@@ -52,6 +56,6 @@ class ReadSummaryRunner {
       files: finalInputFiles,
       fileFmt: inputFmt,
       outputDir: outputDir.path,
-    ).summarize(mode: mode);
+    ).summarize(mode: mode, prefix: prefix.isEmpty ? null : prefix);
   }
 }

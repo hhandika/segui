@@ -64,7 +64,7 @@ class SplitAlignmentPage extends ConsumerStatefulWidget {
 class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
-  String? _partitionFormatController;
+  String? _partitionFormatController = partitionFormat[1];
   bool _isUnchecked = false;
 
   @override
@@ -161,7 +161,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
                     isSuccess: _ctr.isSuccess,
                     controller: _ctr,
                     onNewRun: _setNewRun,
-                    onExecuted: value.isEmpty || !_isValid
+                    onExecuted: value.isEmpty || !_isValid(value)
                         ? null
                         : () async {
                             await _execute(value);
@@ -198,11 +198,22 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     ));
   }
 
-  bool get _isValid {
-    return _ctr.isValid;
+  bool _isValid(List<SegulInputFile> value) {
+    // Find files contain sequence and partition
+    final hasSequence = value.any((e) => e.type == SegulType.standardSequence);
+    final hasPartition =
+        value.any((e) => e.type == SegulType.alignmentPartition);
+    final hasOutputFormat = _ctr.outputFormatController != null;
+
+    return _ctr.isValid && hasSequence && hasPartition && hasOutputFormat;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFile) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, SupportedTask.alignmentSplitting);
+    }
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {

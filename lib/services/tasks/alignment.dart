@@ -228,7 +228,7 @@ class SplitAlignmentRunner {
       inputPartition: inputPartition,
       datatype: datatype,
       outputDir: outputDir,
-      prefix: prefix,
+      prefix: prefix.isEmpty ? null : prefix,
       outputFmt: outputFmt,
       isUncheck: isUncheck,
     ).splitAlignment();

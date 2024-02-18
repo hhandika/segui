@@ -171,6 +171,11 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, SupportedTask.genomicRawReadSummary);
+    }
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {
@@ -192,6 +197,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         inputFiles: inputFiles,
         inputFmt: _ctr.inputFormatController!,
         outputDir: outputDir,
+        prefix: _ctr.prefixController.text,
         mode: mode,
       ).run();
       _setSuccess(outputDir);

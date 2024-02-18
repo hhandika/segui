@@ -29,24 +29,40 @@ class ExecutionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
-      child: isSuccess
-          ? Wrap(
-              spacing: 16,
-              children: [
-                NewRunButton(
-                  controller: controller,
-                  onPressed: onNewRun,
-                ),
-                ShareButton(
-                  isRunning: isRunning,
-                  onPressed: onShared,
-                ),
-              ],
-            )
-          : PrimaryButton(
-              label: label, onPressed: onExecuted, isRunning: isRunning),
-    );
+        padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
+        child: isSuccess
+            ? Wrap(
+                spacing: 16,
+                children: [
+                  NewRunButton(
+                    controller: controller,
+                    onPressed: onNewRun,
+                  ),
+                  ShareButton(
+                    isRunning: isRunning,
+                    onPressed: onShared,
+                  ),
+                ],
+              )
+            : Column(
+                children: [
+                  Visibility(
+                    visible: isRunning,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        '⏳ Executing task. Keep this screen open.',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ),
+                  ),
+                  PrimaryButton(
+                    label: label,
+                    onPressed: onExecuted,
+                    isRunning: isRunning,
+                  ),
+                ],
+              ));
   }
 }
 

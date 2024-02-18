@@ -186,6 +186,7 @@ class ContigPageState extends ConsumerState<ContigPage>
         inputFiles: inputFiles,
         inputFmt: _ctr.inputFormatController!,
         outputDir: outputDir,
+        prefix: _ctr.prefixController.text,
       ).run();
 
       _setSuccess(outputDir);
