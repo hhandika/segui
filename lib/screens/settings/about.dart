@@ -59,7 +59,7 @@ class AboutContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -69,7 +69,7 @@ class AboutContent extends StatelessWidget {
               width: MediaQuery.of(context).size.width < 800
                   ? MediaQuery.of(context).size.width
                   : 800,
-              height: 420,
+              height: 460,
               padding: const EdgeInsets.fromLTRB(16, 60, 16, 16),
               decoration: getContainerDecoration(context),
               child: FutureBuilder<SegulVersion>(
@@ -85,7 +85,7 @@ class AboutContent extends StatelessWidget {
                             Text('SEGUI',
                                 style: Theme.of(context).textTheme.titleLarge),
                             Text('A GUI version of the SEGUL genomic tool',
-                                style: Theme.of(context).textTheme.titleMedium),
+                                style: Theme.of(context).textTheme.bodyLarge),
                             Text('Heru Handika & Jacob A. Esselstyn',
                                 style: Theme.of(context).textTheme.bodyMedium),
                             const SizedBox(height: 16),
