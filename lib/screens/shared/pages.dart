@@ -519,6 +519,7 @@ class EmptyScreen extends StatelessWidget {
         Text(
           description,
           style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
         ),
       ],
     );
