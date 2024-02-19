@@ -178,8 +178,7 @@ class ClearAppDataButton extends ConsumerWidget {
                   return AlertDialog(
                     title: const Text('Clear all data'),
                     content: const Text(
-                      'Permanently delete all data except the latest log file. '
-                      'Continue?',
+                      'Delete all data except the latest log file.',
                     ),
                     actions: [
                       TextButton(
@@ -187,9 +186,10 @@ class ClearAppDataButton extends ConsumerWidget {
                             Navigator.of(context).pop();
                           },
                           child: const Text('Cancel')),
-                      TextButton(
+                      TextButton.icon(
                           style: TextButton.styleFrom(
-                            foregroundColor: Theme.of(context).disabledColor,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.error,
                           ),
                           onPressed: () {
                             ref
@@ -197,7 +197,8 @@ class ClearAppDataButton extends ConsumerWidget {
                                 .removeAllFiles();
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Clear all data'))
+                          icon: const Icon(Icons.delete_forever_outlined),
+                          label: const Text('Clear all data'))
                     ],
                   );
                 },

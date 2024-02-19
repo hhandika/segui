@@ -47,7 +47,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = isPhoneScreen(context);
+    // Match container decoration with layout changes
+    final isSmallScreen = !isTabletScreen(context);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Container(

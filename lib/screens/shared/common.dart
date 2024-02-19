@@ -109,3 +109,21 @@ class FileIcon extends StatelessWidget {
     }
   }
 }
+
+class FileErrorIcon extends StatelessWidget {
+  const FileErrorIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(8),
+        child: SvgPicture.asset(
+          'assets/images/error.svg',
+          height: 80,
+          colorFilter: ColorFilter.mode(
+            getIconColor(context),
+            BlendMode.srcIn,
+          ),
+        ));
+  }
+}

@@ -264,9 +264,9 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
-      ref
+      await ref
           .read(fileOutputProvider.notifier)
-          .addMobile(_ctr.outputDir.text, SupportedTask.alignmentFiltering);
+          .addMobile(_ctr.outputDir.text, task);
     }
     return await ref.read(fileOutputProvider).when(
         data: (value) async {

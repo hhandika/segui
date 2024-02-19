@@ -19,7 +19,30 @@ class SettingButtons extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const SettingMenu(),
+            builder: (context) => const SettingMenu(
+              isFromNavigationDrawer: false,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SettingMenuTile extends StatelessWidget {
+  const SettingMenuTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SecondaryMenuTile(
+      text: 'Settings',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SettingMenu(
+              isFromNavigationDrawer: true,
+            ),
           ),
         );
       },
@@ -47,7 +70,9 @@ class AboutMenuTile extends StatelessWidget {
 }
 
 class SettingMenu extends StatefulWidget {
-  const SettingMenu({super.key});
+  const SettingMenu({super.key, required this.isFromNavigationDrawer});
+
+  final bool isFromNavigationDrawer;
 
   @override
   State<SettingMenu> createState() => _SettingMenuState();
@@ -61,7 +86,7 @@ class _SettingMenuState extends State<SettingMenu> {
     super.didChangeDependencies();
     // Show large screen view for screen width >= 600 dp
     // which is the recommended screen size for tablets.
-    showLargeScreenSettings = isTabletScreen(context);
+    showLargeScreenSettings = isDesktopScreen(context);
   }
 
   @override
@@ -74,7 +99,7 @@ class _SettingMenuState extends State<SettingMenu> {
       ),
       backgroundColor: mainColor,
       body: SafeArea(
-        child: showLargeScreenSettings
+        child: showLargeScreenSettings && widget.isFromNavigationDrawer
             ? const LargeScreenSettings()
             : const SmallScreenSettings(),
       ),
@@ -155,22 +180,77 @@ class SmallScreenSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          height: MediaQuery.of(context).size.height,
+          child: ListView(
             children: [
-              MainSettings(),
-              SizedBox(height: 8),
-              AboutButton(),
+              Container(
+                decoration: getContainerDecoration(context),
+                child: SettingTile(
+                  title: 'Logs',
+                  subtitle: 'View logs from previous tasks',
+                  icon: Icons.list_alt_outlined,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LogScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SettingTitle(title: 'App Settings'),
+              const MainSettings(),
+              const SettingTitle(title: 'General'),
+              Container(
+                decoration: getContainerDecoration(context),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SettingTile(
+                      title: 'About',
+                      subtitle: 'View app information',
+                      icon: Icons.info_outline,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AppAbout(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class SettingTitle extends StatelessWidget {
+  const SettingTitle({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.labelLarge,
+          textAlign: TextAlign.start,
+        ));
   }
 }
 
@@ -185,20 +265,6 @@ class MainSettings extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SettingTile(
-            title: 'Logs',
-            subtitle: 'View logs from previous tasks',
-            icon: Icons.list_alt_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LogScreen(),
-                ),
-              );
-            },
-          ),
-          const CommonDivider(),
           SettingTile(
             title: 'Theme',
             subtitle: 'Change app theme',

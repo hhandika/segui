@@ -174,9 +174,9 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
-      ref
+      await ref
           .read(fileOutputProvider.notifier)
-          .addMobile(_ctr.outputDir.text, SupportedTask.alignmentSummary);
+          .addMobile(_ctr.outputDir.text, task);
     }
     return await ref.read(fileOutputProvider).when(
           data: (value) async {

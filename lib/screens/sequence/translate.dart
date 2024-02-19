@@ -195,6 +195,11 @@ class TranslatePageState extends ConsumerState<TranslatePage>
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      await ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, task);
+    }
     return ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {

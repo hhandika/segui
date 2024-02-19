@@ -11,6 +11,7 @@ import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.sequenceUniqueId;
@@ -165,6 +166,11 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      await ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, task);
+    }
     return ref.read(fileOutputProvider).when(
           data: (value) async {
             if (value.directory == null) {

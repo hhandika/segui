@@ -101,6 +101,37 @@ fn wire_ArchiveServices_zip_impl(
         },
     )
 }
+fn wire_get_api_version_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_api_version",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::common::get_api_version())
+                })())
+            }
+        },
+    )
+}
 fn wire_init_logger_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1562,35 +1593,36 @@ fn pde_ffi_dispatcher_primary_impl(
     match func_id {
         1 => wire_ArchiveServices_new_impl(port, ptr, rust_vec_len, data_len),
         2 => wire_ArchiveServices_zip_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire_get_api_version_impl(port, ptr, rust_vec_len, data_len),
         3 => wire_init_logger_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire_ContigServices_new_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire_ContigServices_summarize_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_CsvSummaryServices_get_column_names_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_CsvSummaryServices_get_line_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire_CsvSummaryServices_new_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_CsvSummaryServices_parse_columns_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire_RawReadServices_new_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_RawReadServices_summarize_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_AlignmentServices_concat_alignment_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_AlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_AlignmentServices_summarize_alignment_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_FilteringServices_filter_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_FilteringServices_new_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_PartitionServices_convert_partition_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_PartitionServices_new_impl(port, ptr, rust_vec_len, data_len),
-        31 => wire_SequenceExtraction_extract_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire_SequenceExtraction_new_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_SequenceRemoval_new_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire_SequenceRemoval_remove_sequence_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire_SequenceRenaming_new_impl(port, ptr, rust_vec_len, data_len),
-        29 => wire_SequenceRenaming_rename_sequence_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_SequenceServices_convert_sequence_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire_SequenceServices_new_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_SequenceServices_parse_sequence_id_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_SequenceServices_translate_sequence_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_SplitAlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_SplitAlignmentServices_split_alignment_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire_ContigServices_new_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire_ContigServices_summarize_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_CsvSummaryServices_get_column_names_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_CsvSummaryServices_get_line_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_CsvSummaryServices_new_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire_CsvSummaryServices_parse_columns_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_RawReadServices_new_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire_RawReadServices_summarize_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_AlignmentServices_concat_alignment_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_AlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_AlignmentServices_summarize_alignment_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_FilteringServices_filter_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_FilteringServices_new_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_PartitionServices_convert_partition_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_PartitionServices_new_impl(port, ptr, rust_vec_len, data_len),
+        32 => wire_SequenceExtraction_extract_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire_SequenceExtraction_new_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_SequenceRemoval_new_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_SequenceRemoval_remove_sequence_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire_SequenceRenaming_new_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire_SequenceRenaming_rename_sequence_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_SequenceServices_convert_sequence_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_SequenceServices_new_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_SequenceServices_parse_sequence_id_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_SequenceServices_translate_sequence_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_SplitAlignmentServices_new_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_SplitAlignmentServices_split_alignment_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

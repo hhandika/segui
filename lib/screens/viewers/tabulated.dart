@@ -71,25 +71,27 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
             if (snapshot.data!.isEmpty) {
               return const Center(child: Text('Failed to parse file.'));
             }
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              clipBehavior: Clip.antiAlias,
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  clipBehavior: Clip.antiAlias,
-                  child: DataTable(
-                    columns: content![0]
-                        .map((e) => DataColumn(label: Text(e.toString())))
-                        .toList(),
-                    rows: content
-                        .sublist(1)
-                        .map((e) => DataRow(
-                            cells: e
-                                .map((e) => DataCell(Text(e.toString())))
-                                .toList()))
-                        .toList(),
-                  )),
-            );
+            return content!.length > 300
+                ? const BigFileErrors()
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.antiAlias,
+                    child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        clipBehavior: Clip.antiAlias,
+                        child: DataTable(
+                          columns: content[0]
+                              .map((e) => DataColumn(label: Text(e.toString())))
+                              .toList(),
+                          rows: content
+                              .sublist(1)
+                              .map((e) => DataRow(
+                                  cells: e
+                                      .map((e) => DataCell(Text(e.toString())))
+                                      .toList()))
+                              .toList(),
+                        )),
+                  );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -103,5 +105,23 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
     } catch (e) {
       return [];
     }
+  }
+}
+
+class BigFileErrors extends StatelessWidget {
+  const BigFileErrors({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FileErrorIcon(),
+          // SizedBox(height: 8),
+          Text('File too large to display.'),
+        ],
+      ),
+    );
   }
 }

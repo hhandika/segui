@@ -110,41 +110,12 @@ class MediumScreenRail extends ConsumerWidget {
         ref.read(tabSelectionProvider.notifier).setTab(index);
       },
       groupAlignment: BorderSide.strokeAlignCenter,
-      trailing: Expanded(
+      trailing: const Expanded(
         child: Align(
           alignment: Alignment.bottomCenter,
-          child: IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingMenu(),
-                ),
-              );
-            },
-          ),
+          child: SettingButtons(),
         ),
       ),
-    );
-  }
-}
-
-class SettingMenuTile extends StatelessWidget {
-  const SettingMenuTile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SecondaryMenuTile(
-      text: 'Settings',
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SettingMenu(),
-          ),
-        );
-      },
     );
   }
 }
