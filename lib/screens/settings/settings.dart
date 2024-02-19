@@ -155,22 +155,76 @@ class SmallScreenSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MainSettings(),
-              SizedBox(height: 8),
-              AboutButton(),
+              Container(
+                decoration: getContainerDecoration(context),
+                child: SettingTile(
+                  title: 'Logs',
+                  subtitle: 'View logs from previous tasks',
+                  icon: Icons.list_alt_outlined,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LogScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SettingTitle(title: 'App Settings'),
+              const MainSettings(),
+              const SettingTitle(title: 'General'),
+              Container(
+                decoration: getContainerDecoration(context),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SettingTile(
+                      title: 'About',
+                      subtitle: 'View app information',
+                      icon: Icons.info_outline,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AppAbout(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class SettingTitle extends StatelessWidget {
+  const SettingTitle({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ));
   }
 }
 
@@ -185,20 +239,6 @@ class MainSettings extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SettingTile(
-            title: 'Logs',
-            subtitle: 'View logs from previous tasks',
-            icon: Icons.list_alt_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LogScreen(),
-                ),
-              );
-            },
-          ),
-          const CommonDivider(),
           SettingTile(
             title: 'Theme',
             subtitle: 'Change app theme',

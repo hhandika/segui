@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 
@@ -57,39 +58,105 @@ class AboutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SegulVersion>(
-      future: segulVersion,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  '${snapshot.data!.name} ${snapshot.data!.version}+${snapshot.data!.buildNumber}'),
-              Text('API version: ${snapshot.data!.apiVersion}'),
-              const Text('A GUI version of the SEGUL genomic tool'),
-              const Text('Heru Handika & Jacob A. Esselstyn'),
-              // Show license
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: TextButton(
-                  // Open license
-                  onPressed: () {
-                    showLicensePage(
-                      context: context,
-                      applicationName: snapshot.data!.name,
-                      applicationVersion: snapshot.data!.version,
-                    );
-                  },
-                  child: const Text('Licenses'),
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: 56,
+            child: Container(
+              width: MediaQuery.of(context).size.width < 800
+                  ? MediaQuery.of(context).size.width
+                  : 800,
+              height: 420,
+              padding: const EdgeInsets.fromLTRB(16, 60, 16, 16),
+              decoration: getContainerDecoration(context),
+              child: FutureBuilder<SegulVersion>(
+                future: segulVersion,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return SingleChildScrollView(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('SEGUI',
+                                style: Theme.of(context).textTheme.titleLarge),
+                            Text('A GUI version of the SEGUL genomic tool',
+                                style: Theme.of(context).textTheme.titleMedium),
+                            Text('Heru Handika & Jacob A. Esselstyn',
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            const SizedBox(height: 16),
+                            const CommonDivider(),
+                            ListTile(
+                                dense: true,
+                                title: const AboutTitle(title: 'App version'),
+                                subtitle: AboutSubtitle(
+                                    subtitle: 'v${snapshot.data!.version}'),
+                                leading: Icon(
+                                  Icons.widgets_outlined,
+                                  color: getIconColor(context),
+                                )),
+                            const CommonDivider(),
+                            ListTile(
+                                title: const AboutTitle(title: 'Build number'),
+                                subtitle: AboutSubtitle(
+                                    subtitle: snapshot.data!.buildNumber),
+                                leading: Icon(
+                                  Icons.build_outlined,
+                                  color: getIconColor(context),
+                                )),
+                            const CommonDivider(),
+                            ListTile(
+                              title: const AboutTitle(title: 'API version'),
+                              subtitle: AboutSubtitle(
+                                  subtitle: 'v${snapshot.data!.apiVersion}'),
+                              leading: Icon(
+                                Icons.api_outlined,
+                                color: getIconColor(context),
+                              ),
+                            ),
+                            const CommonDivider(),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: TextButton(
+                                onPressed: () {
+                                  showLicensePage(
+                                    context: context,
+                                    applicationName: snapshot.data!.name,
+                                    applicationVersion: snapshot.data!.version,
+                                  );
+                                },
+                                child: const Text('Licenses'),
+                              ),
+                            ),
+                          ],
+                        ));
+                  } else {
+                    return const Text('Loading...');
+                  }
+                },
               ),
-            ],
-          );
-        } else {
-          return const Text('Loading...');
-        }
-      },
+            ),
+          ),
+          Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: getContainerDecoration(context),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Image.asset(
+                    'assets/launcher/icon.png',
+                    width: 100,
+                    height: 100,
+                  ),
+                ),
+              )),
+        ],
+      ),
     );
   }
 
@@ -97,5 +164,33 @@ class AboutContent extends StatelessWidget {
     SegulVersion version = SegulVersion.empty();
     await version.getVersions();
     return version;
+  }
+}
+
+class AboutTitle extends StatelessWidget {
+  const AboutTitle({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.bodyMedium,
+    );
+  }
+}
+
+class AboutSubtitle extends StatelessWidget {
+  const AboutSubtitle({super.key, required this.subtitle});
+
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      subtitle,
+      style: Theme.of(context).textTheme.bodySmall,
+    );
   }
 }

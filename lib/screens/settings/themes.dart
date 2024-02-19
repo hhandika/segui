@@ -86,7 +86,7 @@ class ThemeSettingTile extends ConsumerWidget {
     return ListTile(
       leading: Icon(
         icon,
-        color: Theme.of(context).colorScheme.primary,
+        color: getIconColor(context),
       ),
       title: Text(
         title,
