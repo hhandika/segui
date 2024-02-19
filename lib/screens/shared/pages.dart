@@ -248,8 +248,8 @@ class OutputScreen extends ConsumerWidget {
               return data.directory == null
                   ? const EmptyScreen(
                       title: 'No output directory selected.',
-                      description:
-                          'Select an output directory to store output files.',
+                      description: 'Select an output directory. '
+                          'Files in the output directory will be shown here.',
                     )
                   : OutputFileList(data: data);
             },
@@ -280,10 +280,11 @@ class OutputFileList extends StatelessWidget {
           'Select menu to share or delete a file. '
           'Deleting a file will remove it from the system.',
       child: data.files.isEmpty
-          ? const EmptyScreen(
-              title: 'No output files found.',
-              description: 'Run the analysis to generate output files.',
-            )
+          ? const Center(
+              child: EmptyScreen(
+              title: 'No output files found. ',
+              description: 'Run an analysis to generate output files.',
+            ))
           : ListView.builder(
               itemCount: data.files.length,
               itemBuilder: (context, index) {
@@ -508,7 +509,7 @@ class EmptyScreen extends StatelessWidget {
           emptyDirIcon,
           height: 80,
           colorFilter: ColorFilter.mode(
-            Theme.of(context).colorScheme.primary.withAlpha(120),
+            getIconColor(context),
             BlendMode.srcIn,
           ),
         ),
@@ -516,11 +517,13 @@ class EmptyScreen extends StatelessWidget {
           title,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        Text(
-          description,
-          style: Theme.of(context).textTheme.bodyMedium,
-          textAlign: TextAlign.center,
-        ),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              description,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            )),
       ],
     );
   }
