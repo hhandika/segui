@@ -71,7 +71,7 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
             if (snapshot.data!.isEmpty) {
               return const Center(child: Text('Failed to parse file.'));
             }
-            return content!.length > 800
+            return content!.length > 300
                 ? const Center(child: Text('The file is to big to view'))
                 : SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
