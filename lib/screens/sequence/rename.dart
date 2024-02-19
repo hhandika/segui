@@ -254,7 +254,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
           inputFiles.any((e) => e.type == SegulType.standardSequence);
       final hasInputText = inputFiles.any((e) => e.type == SegulType.plainText);
       return isValid && hasInputSequence && hasInputText;
-    } else if (_renamingOptionController == RenamingOptions.removeString) {
+    } else if (_isRemove) {
       return isValid && _paramValueController.text.isNotEmpty;
     } else {
       return isValid &&
@@ -279,6 +279,11 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
+    if (runningPlatform == PlatformType.isMobile) {
+      await ref
+          .read(fileOutputProvider.notifier)
+          .addMobile(_ctr.outputDir.text, task);
+    }
     return await ref.read(fileOutputProvider).when(
         data: (value) async {
           if (value.directory == null) {

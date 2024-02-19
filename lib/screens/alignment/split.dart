@@ -218,9 +218,9 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
 
   Future<void> _execute(List<SegulInputFile> inputFile) async {
     if (runningPlatform == PlatformType.isMobile) {
-      ref
+      await ref
           .read(fileOutputProvider.notifier)
-          .addMobile(_ctr.outputDir.text, SupportedTask.alignmentSplitting);
+          .addMobile(_ctr.outputDir.text, task);
     }
     return await ref.read(fileOutputProvider).when(
           data: (value) async {
