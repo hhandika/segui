@@ -19,7 +19,30 @@ class SettingButtons extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const SettingMenu(),
+            builder: (context) => const SettingMenu(
+              isFromNavigationDrawer: false,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SettingMenuTile extends StatelessWidget {
+  const SettingMenuTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SecondaryMenuTile(
+      text: 'Settings',
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SettingMenu(
+              isFromNavigationDrawer: true,
+            ),
           ),
         );
       },
@@ -47,7 +70,9 @@ class AboutMenuTile extends StatelessWidget {
 }
 
 class SettingMenu extends StatefulWidget {
-  const SettingMenu({super.key});
+  const SettingMenu({super.key, required this.isFromNavigationDrawer});
+
+  final bool isFromNavigationDrawer;
 
   @override
   State<SettingMenu> createState() => _SettingMenuState();
@@ -61,7 +86,7 @@ class _SettingMenuState extends State<SettingMenu> {
     super.didChangeDependencies();
     // Show large screen view for screen width >= 600 dp
     // which is the recommended screen size for tablets.
-    showLargeScreenSettings = isTabletScreen(context);
+    showLargeScreenSettings = isDesktopScreen(context);
   }
 
   @override
@@ -74,7 +99,7 @@ class _SettingMenuState extends State<SettingMenu> {
       ),
       backgroundColor: mainColor,
       body: SafeArea(
-        child: showLargeScreenSettings
+        child: showLargeScreenSettings && widget.isFromNavigationDrawer
             ? const LargeScreenSettings()
             : const SmallScreenSettings(),
       ),
@@ -155,13 +180,13 @@ class SmallScreenSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          height: MediaQuery.of(context).size.height,
+          child: ListView(
             children: [
               Container(
                 decoration: getContainerDecoration(context),
@@ -223,7 +248,8 @@ class SettingTitle extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
         child: Text(
           title,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.labelLarge,
+          textAlign: TextAlign.start,
         ));
   }
 }

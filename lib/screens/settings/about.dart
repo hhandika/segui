@@ -84,6 +84,7 @@ class AboutContent extends StatelessWidget {
                           children: [
                             Text('SEGUI',
                                 style: Theme.of(context).textTheme.titleLarge),
+                            const SizedBox(height: 4),
                             Text('A GUI version of the SEGUL genomic tool',
                                 style: Theme.of(context).textTheme.bodyLarge),
                             Text('Heru Handika & Jacob A. Esselstyn',
