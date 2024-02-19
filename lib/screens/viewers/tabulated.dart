@@ -71,25 +71,27 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
             if (snapshot.data!.isEmpty) {
               return const Center(child: Text('Failed to parse file.'));
             }
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              clipBehavior: Clip.antiAlias,
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  clipBehavior: Clip.antiAlias,
-                  child: DataTable(
-                    columns: content![0]
-                        .map((e) => DataColumn(label: Text(e.toString())))
-                        .toList(),
-                    rows: content
-                        .sublist(1)
-                        .map((e) => DataRow(
-                            cells: e
-                                .map((e) => DataCell(Text(e.toString())))
-                                .toList()))
-                        .toList(),
-                  )),
-            );
+            return content!.length > 800
+                ? const Center(child: Text('The file is to big to view'))
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.antiAlias,
+                    child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        clipBehavior: Clip.antiAlias,
+                        child: DataTable(
+                          columns: content[0]
+                              .map((e) => DataColumn(label: Text(e.toString())))
+                              .toList(),
+                          rows: content
+                              .sublist(1)
+                              .map((e) => DataRow(
+                                  cells: e
+                                      .map((e) => DataCell(Text(e.toString())))
+                                      .toList()))
+                              .toList(),
+                        )),
+                  );
           } else {
             return const Center(child: CircularProgressIndicator());
           }
