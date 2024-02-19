@@ -72,7 +72,7 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
               return const Center(child: Text('Failed to parse file.'));
             }
             return content!.length > 300
-                ? const Center(child: Text('The file is to big to view'))
+                ? const BigFileErrors()
                 : SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     clipBehavior: Clip.antiAlias,
@@ -105,5 +105,23 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
     } catch (e) {
       return [];
     }
+  }
+}
+
+class BigFileErrors extends StatelessWidget {
+  const BigFileErrors({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FileErrorIcon(),
+          // SizedBox(height: 8),
+          Text('File too large to display.'),
+        ],
+      ),
+    );
   }
 }
