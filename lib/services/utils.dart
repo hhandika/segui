@@ -4,15 +4,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 const String segulDocUrl = 'https://www.segul.app/';
 
-/// Material You design system recommend screen size
-/// Desktop/Expanded screen: 840dp
-/// Tablet/Medium screen: 600dp
-/// Mobile/Compact screen: 360dp
-const double largeScreenSize = 1200;
-const double expandedScreenSize = 840;
-const double mediumScreenSize = 600;
-const double compactScreenSize = 360;
-
 String get greeting {
   int hour = DateTime.now().hour;
   if (hour < 12) {
