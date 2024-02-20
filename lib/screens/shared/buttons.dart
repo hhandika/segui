@@ -430,7 +430,7 @@ class FileInfoTile extends StatelessWidget {
       title: const Text('Details'),
       onTap: () {
         Navigator.pop(context);
-        if (runningPlatform == PlatformType.isMobile) {
+        if (isPhoneScreen(context)) {
           showModalBottomSheet(
             context: context,
             builder: (context) => FileInfoScreen(file: file),
