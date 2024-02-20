@@ -40,13 +40,13 @@
 	<array>
 		<dict>
 			<key>UTTypeIdentifier</key>
-			<string>com.segui.dnaSequence</string>
+			<string>com.segui.fasta</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.plain-text</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>DNA Sequence Files</string>
+			<string>FASTA sequence files</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -65,7 +65,63 @@
 		</dict>
 		<dict>
 			<key>UTTypeIdentifier</key>
-			<string>com.segui.genomicSequence</string>
+			<string>com.segui.nexus</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>FASTA sequence files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>nexus</string>
+					<string>nex</string>
+					<string>nxs</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.phylip</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>FASTA sequence files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>phy</string>
+					<string>phylip</string>
+					<string>ph</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.partition</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>FASTA sequence files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>part</string>
+					<string>partition</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.fastq</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.plain-text</string>
@@ -76,10 +132,6 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>fasta</string>
-					<string>fa</string>
-					<string>fas</string>
-					<string>fsa</string>
 					<string>fastq</string>
 					<string>fq</string>
 				</array>
@@ -90,13 +142,13 @@
 	<array>
 		<dict>
 			<key>UTTypeIdentifier</key>
-			<string>com.segui.dnaSequence</string>
+			<string>com.segui.fasta</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.plain-text</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>DNA Sequence Files</string>
+			<string>FASTA sequence files</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -105,6 +157,7 @@
 					<string>fa</string>
 					<string>fas</string>
 					<string>fsa</string>
+					<string>fna</string>
 					<string>nexus</string>
 					<string>nex</string>
 					<string>phy</string>
@@ -114,7 +167,63 @@
 		</dict>
 		<dict>
 			<key>UTTypeIdentifier</key>
-			<string>com.segui.genomicSequence</string>
+			<string>com.segui.nexus</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>FASTA sequence files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>nexus</string>
+					<string>nex</string>
+					<string>nxs</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.phylip</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>FASTA sequence files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>phy</string>
+					<string>phylip</string>
+					<string>ph</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.partition</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>FASTA sequence files</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>part</string>
+					<string>partition</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.segui.fastq</string>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.plain-text</string>
@@ -125,10 +234,6 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>fasta</string>
-					<string>fa</string>
-					<string>fas</string>
-					<string>fsa</string>
 					<string>fastq</string>
 					<string>fq</string>
 				</array>

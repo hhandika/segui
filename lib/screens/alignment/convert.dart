@@ -9,7 +9,7 @@ import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/tasks/alignment.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/io.dart';
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/styles/decoration.dart';

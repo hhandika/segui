@@ -10,7 +10,7 @@ import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.genomicRawReadSummary;
@@ -88,7 +88,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         const CardTitle(title: 'Input'),
         FormCard(children: [
           InputSelectorForm(
-            xTypeGroup: genomicTypeGroup,
+            xTypeGroup: genomicRawReadTypeGroup,
             allowMultiple: true,
             ctr: _ctr,
             hasSecondaryPicker: false,

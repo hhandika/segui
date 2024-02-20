@@ -45,6 +45,149 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
 };
 
+const XTypeGroup plainTextTypeGroup = XTypeGroup(
+  label: 'Text',
+  extensions: ['txt', 'text'],
+  uniformTypeIdentifiers: [
+    'public.plain-text',
+  ],
+);
+
+const XTypeGroup genomicRawReadTypeGroup = XTypeGroup(
+  label: 'Sequence Read',
+  extensions: [
+    ...fastqExtensions,
+    ...gunzipExtensions,
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.fastq',
+    'org.gnu.gnu-zip-archive',
+  ],
+);
+
+const XTypeGroup genomicContigTypeGroup = XTypeGroup(
+  label: 'Contig',
+  extensions: fastaExtensions,
+  uniformTypeIdentifiers: [
+    'com.segui.genomicContig',
+  ],
+);
+
+const List<String> fastaExtensions = [
+  'fasta',
+  'fa',
+  'fas',
+  'fsa',
+  'fna',
+];
+
+const List<String> nexusExtensions = [
+  'nexus',
+  'nex',
+  'nxs',
+];
+
+const List<String> phylipExtensions = [
+  'phylip',
+  'phy',
+  'ph',
+];
+
+const List<String> fastqExtensions = [
+  'fastq',
+  'fq',
+];
+
+const List<String> gunzipExtensions = [
+  'gz',
+  'gzip',
+];
+
+const XTypeGroup sequenceTypeGroup = XTypeGroup(
+  label: 'Sequence',
+  extensions: [
+    ...fastaExtensions,
+    ...nexusExtensions,
+    ...phylipExtensions,
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.fasta',
+    'com.segui.nexus',
+    'com.segui.phylip',
+  ],
+);
+
+const XTypeGroup partitionTypeGroup = XTypeGroup(
+  label: 'Partition',
+  extensions: [
+    ...nexusExtensions,
+    'txt',
+    'part',
+    'partition',
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.partition',
+    'public.plain-text',
+    'com.segui.nexus',
+  ],
+);
+
+const List<String> sequenceExtensions = [
+  ...fastaExtensions,
+  ...nexusExtensions,
+  ...phylipExtensions,
+  ...fastqExtensions,
+  ...gunzipExtensions,
+];
+
+const List<String> tabularExtensions = [
+  'csv',
+];
+
+/// Supported text file extensions.
+/// Used to determine if a file is
+/// a text file.
+/// Allow segui to open text files
+const List<String> plainTextExtensions = [
+  'txt',
+  'text',
+  'log',
+  'conf',
+  'toml',
+  'yaml',
+  'nex',
+];
+
+const List<String> compressionExtensions = [
+  'zip',
+  'tar',
+  'gz',
+  'gzip',
+  'bz2',
+  'bzip2',
+  'xz',
+  'zst',
+  '7zip',
+];
+
+const Map<CommonFileType, String> commonFileIcons = {
+  CommonFileType.sequence: 'assets/images/dna.svg',
+  CommonFileType.plainText: 'assets/images/text.svg',
+  CommonFileType.tabulated: 'assets/images/table.svg',
+  CommonFileType.zip: 'assets/images/zip.svg',
+  CommonFileType.other: 'assets/images/unknown.svg',
+};
+
+/// Common file type to match
+/// file type with icons.
+enum CommonFileType {
+  sequence,
+  plainText,
+  tabulated,
+  zip,
+  other,
+}
+
 /// Match all file extensions,
 /// Use mostly for determining file
 /// input.
@@ -133,8 +276,10 @@ class SegulOutputFile {
 
 SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
   switch (xTypeGroup) {
-    case genomicTypeGroup:
+    case genomicRawReadTypeGroup:
       return SegulType.genomicReads;
+    case genomicContigTypeGroup:
+      return SegulType.genomicContig;
     case sequenceTypeGroup:
       return SegulType.standardSequence;
     case partitionTypeGroup:
@@ -144,119 +289,6 @@ SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
     default:
       return SegulType.standardSequence;
   }
-}
-
-const XTypeGroup plainTextTypeGroup = XTypeGroup(
-  label: 'Text',
-  extensions: ['txt', 'text'],
-  uniformTypeIdentifiers: [
-    'public.plain-text',
-  ],
-);
-
-const XTypeGroup genomicTypeGroup = XTypeGroup(
-  label: 'Sequence Read',
-  extensions: ['fasta', 'fsa', 'fa', 'fna', 'fastq', 'fq', 'gz', 'gzip'],
-  uniformTypeIdentifiers: [
-    'com.segui.genomicSequence',
-    'org.gnu.gnu-zip-archive'
-  ],
-);
-
-const XTypeGroup sequenceTypeGroup = XTypeGroup(
-  label: 'Sequence',
-  extensions: [
-    'fasta',
-    'fa',
-    'fas',
-    'fsa',
-    'fna',
-    'nexus',
-    'nex',
-    'phylip',
-    'phy',
-  ],
-  uniformTypeIdentifiers: [
-    'com.segui.dnaSequence',
-  ],
-);
-
-const XTypeGroup partitionTypeGroup = XTypeGroup(
-  label: 'Partition',
-  extensions: ['nexus', 'nex', 'txt', 'part', 'partition'],
-  uniformTypeIdentifiers: ['com.segui.partition', 'public.plain-text'],
-);
-
-const List<String> sequenceExtensions = [
-  'fasta',
-  'fa',
-  'fas',
-  'fsa',
-  'nexus',
-  'nex',
-  'phylip',
-  'phy',
-  'fastq',
-  'gz',
-  'gzip'
-];
-
-const List<String> tabularExtensions = [
-  'csv',
-];
-
-/// Supported text file extensions.
-/// Used to determine if a file is
-/// a text file.
-/// Allow segui to open text files
-const List<String> supportedTextExtensions = [
-  'txt',
-  'text',
-  'log',
-  'conf',
-  'toml',
-  'yaml',
-  'nex',
-];
-
-const Map<String, CommonFileType> commonFileTypes = {
-  'fasta': CommonFileType.sequence,
-  'fa': CommonFileType.sequence,
-  'fas': CommonFileType.sequence,
-  'fsa': CommonFileType.sequence,
-  'nexus': CommonFileType.sequence,
-  'nex': CommonFileType.sequence,
-  'phylip': CommonFileType.sequence,
-  'phy': CommonFileType.sequence,
-  'fastq': CommonFileType.sequence,
-  'gz': CommonFileType.sequence,
-  'gzip': CommonFileType.sequence,
-  'csv': CommonFileType.tabulated,
-  'txt': CommonFileType.plainText,
-  'text': CommonFileType.plainText,
-  'log': CommonFileType.plainText,
-  'conf': CommonFileType.plainText,
-  'toml': CommonFileType.plainText,
-  'yaml': CommonFileType.plainText,
-  'zip': CommonFileType.zip,
-};
-
-const Map<CommonFileType, String> commonFileIcons = {
-  CommonFileType.sequence: 'assets/images/dna.svg',
-  CommonFileType.plainText: 'assets/images/text.svg',
-  CommonFileType.tabulated: 'assets/images/table.svg',
-  CommonFileType.zip: 'assets/images/zip.svg',
-  CommonFileType.other: 'assets/images/unknown.svg',
-};
-
-/// Common file type to match
-/// file type with icons.
-enum CommonFileType {
-  sequence,
-  plainText,
-  tabulated,
-  zip,
-  other,
 }
 
 class FileAssociation extends FileUtils {
@@ -271,8 +303,7 @@ class FileAssociation extends FileUtils {
   }
 
   CommonFileType get commonFileTYpe {
-    String ext = _fileExtension;
-    return commonFileTypes[ext] ?? CommonFileType.other;
+    return file.fileType;
   }
 
   String get matchingIconPath {
@@ -281,15 +312,34 @@ class FileAssociation extends FileUtils {
   }
 
   bool get isSequenceFile {
-    return sequenceExtensions.contains(_fileExtension);
+    return sequenceExtensions.contains(file.fileExtension);
   }
 
   bool get isTabularFile {
-    return tabularExtensions.contains(_fileExtension);
+    return tabularExtensions.contains(file.fileExtension);
   }
+}
 
-  String get _fileExtension {
-    return getFileExtension(file);
+extension FileExtension on File {
+  String get fileExtension {
+    return p.extension(path);
+  }
+}
+
+extension FileMatching on File {
+  CommonFileType get fileType {
+    String ext = fileExtension;
+    if (fastaExtensions.any((element) => element == ext)) {
+      return CommonFileType.sequence;
+    } else if (plainTextExtensions.any((element) => element == ext)) {
+      return CommonFileType.plainText;
+    } else if (tabularExtensions.any((element) => element == ext)) {
+      return CommonFileType.tabulated;
+    } else if (compressionExtensions.any((element) => element == ext)) {
+      return CommonFileType.zip;
+    } else {
+      return CommonFileType.other;
+    }
   }
 }
 
@@ -583,7 +633,7 @@ class FileUtils {
   }
 
   String getFileExtension(File file) {
-    final ext = p.extension(file.path);
+    final ext = file.fileExtension;
     if (ext.isNotEmpty) {
       return ext.substring(1);
     }

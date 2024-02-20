@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 
 part 'io.g.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
 class ConcatRunnerServices {

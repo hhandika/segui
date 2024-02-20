@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/pages.dart';
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/styles/decoration.dart';
 
 class DataUsageScreen extends ConsumerStatefulWidget {

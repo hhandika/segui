@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 
 void main() {
   test('Test find files in dir', () {

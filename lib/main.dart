@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/settings.dart';
 import 'package:segui/screens/home/home.dart';
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/src/rust/api/common.dart';
 import 'package:segui/src/rust/frb_generated.dart';
 import 'package:segui/styles/themes.dart';

@@ -7,7 +7,7 @@ import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
-import 'package:segui/services/io.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/styles/decoration.dart';
 

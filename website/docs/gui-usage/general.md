@@ -99,9 +99,9 @@ The Android version may still allow non-standard file extensions. However, we re
 
 List of supported file extensions for alignment and sequence tasks:
 
-- NEXUS: `.nex`, `.nexus`
+- NEXUS: `.nex`, `.nexus`, '.nxs'
 - FASTA: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
-- PHYLIP: `.phy`, `.phylip`
+- PHYLIP: `.phy`, `.phylip`, '.ph'
 
 #### Genomic data files
 
