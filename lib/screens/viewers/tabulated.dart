@@ -118,7 +118,6 @@ class BigFileErrors extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FileErrorIcon(),
-          // SizedBox(height: 8),
           Text('File too large to display.'),
         ],
       ),

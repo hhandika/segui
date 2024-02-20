@@ -10,6 +10,7 @@ import 'package:segui/providers/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/src/rust/api/archive.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum SupportedTask {
   alignmentConcatenation,
@@ -217,12 +218,43 @@ const List<String> supportedTextExtensions = [
   'nex',
 ];
 
+const Map<String, CommonFileType> commonFileTypes = {
+  'fasta': CommonFileType.sequence,
+  'fa': CommonFileType.sequence,
+  'fas': CommonFileType.sequence,
+  'fsa': CommonFileType.sequence,
+  'nexus': CommonFileType.sequence,
+  'nex': CommonFileType.sequence,
+  'phylip': CommonFileType.sequence,
+  'phy': CommonFileType.sequence,
+  'fastq': CommonFileType.sequence,
+  'gz': CommonFileType.sequence,
+  'gzip': CommonFileType.sequence,
+  'csv': CommonFileType.tabulated,
+  'txt': CommonFileType.plainText,
+  'text': CommonFileType.plainText,
+  'log': CommonFileType.plainText,
+  'conf': CommonFileType.plainText,
+  'toml': CommonFileType.plainText,
+  'yaml': CommonFileType.plainText,
+  'zip': CommonFileType.zip,
+};
+
+const Map<CommonFileType, String> commonFileIcons = {
+  CommonFileType.sequence: 'assets/images/dna.svg',
+  CommonFileType.plainText: 'assets/images/text.svg',
+  CommonFileType.tabulated: 'assets/images/table.svg',
+  CommonFileType.zip: 'assets/images/zip.svg',
+  CommonFileType.other: 'assets/images/unknown.svg',
+};
+
 /// Common file type to match
 /// file type with icons.
 enum CommonFileType {
   sequence,
   plainText,
   tabulated,
+  zip,
   other,
 }
 
@@ -239,30 +271,12 @@ class FileAssociation extends FileUtils {
 
   CommonFileType get commonFileTYpe {
     String ext = _fileExtension;
-    if (sequenceExtensions.contains(ext)) {
-      return CommonFileType.sequence;
-    } else if (tabularExtensions.contains(ext)) {
-      return CommonFileType.tabulated;
-    } else if (supportedTextExtensions.contains(ext)) {
-      return CommonFileType.plainText;
-    } else {
-      return CommonFileType.other;
-    }
+    return commonFileTypes[ext] ?? CommonFileType.other;
   }
 
   String get matchingIcon {
-    switch (commonFileTYpe) {
-      case CommonFileType.sequence:
-        return 'assets/images/dna.svg';
-      case CommonFileType.plainText:
-        return 'assets/images/text.svg';
-      case CommonFileType.tabulated:
-        return 'assets/images/table.svg';
-      case CommonFileType.other:
-        return 'assets/images/unknown.svg';
-      default:
-        return 'assets/images/unknown.svg';
-    }
+    final fileType = commonFileTYpe;
+    return commonFileIcons[fileType]!;
   }
 
   bool get isSequenceFile {
@@ -766,4 +780,22 @@ Future<Directory> getSeguiDirectory() async {
     await seguiDir.create(recursive: true);
   }
   return seguiDir;
+}
+
+class UrlLauncherServices {
+  const UrlLauncherServices({required this.file});
+
+  final File file;
+
+  Future<void> launchExternalApp() async {
+    await launchUrl(_uri);
+  }
+
+  Future<bool> canLaunch() async {
+    return await canLaunchUrl(_uri);
+  }
+
+  Uri get _uri {
+    return Uri.file(file.path);
+  }
 }
