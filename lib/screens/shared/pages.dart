@@ -370,9 +370,14 @@ class OutputActionMenu extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CommonShareTile(file: file),
+                        const SizedBox(height: 8),
+                        ExternalAppLauncher(
+                          file: file,
+                          isButton: false,
+                        ),
                         const SizedBox(height: 16),
                         CommonDeleteTile(file: file),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
                       ],
                     ),
                   );
@@ -385,6 +390,12 @@ class OutputActionMenu extends StatelessWidget {
               return [
                 PopupMenuItem(
                   child: CommonShareTile(file: file),
+                ),
+                PopupMenuItem(
+                  child: ExternalAppLauncher(
+                    file: file,
+                    isButton: false,
+                  ),
                 ),
                 const PopupMenuDivider(),
                 PopupMenuItem(

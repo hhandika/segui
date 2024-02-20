@@ -301,11 +301,11 @@ class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
         ? TextButton.icon(
             onPressed: () async => await _openExternalViewer(),
             icon: const Icon(Icons.open_in_new),
-            label: const Text('Open in app...'),
+            label: const Text('Open in app'),
           )
         : ListTile(
             leading: const Icon(Icons.open_in_new),
-            title: const Text('Open in app...'),
+            title: const Text('Open in app'),
             onTap: () async => await _openExternalViewer(),
           );
   }
