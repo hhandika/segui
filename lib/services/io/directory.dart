@@ -4,6 +4,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
 
 const Map<SupportedTask, String> defaultOutputDir = {
@@ -59,8 +60,7 @@ class DirectoryCrawler extends FileUtils {
         dir.listSync(recursive: true).whereType<File>().toList();
     // Filter files by matching type.
     for (var file in foundFiles) {
-      final foundExtension = getFileExtension(file);
-      if (type.extensions!.contains(foundExtension)) {
+      if (type.extensions!.contains(file.fileExtension)) {
         inputFiles.add(file);
       }
     }

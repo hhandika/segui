@@ -178,14 +178,18 @@ class FileAssociation extends FileUtils {
 
 extension FileExtension on File {
   String get fileExtension {
-    return p.extension(path);
+    String ext = p.extension(path);
+    if (ext.isNotEmpty) {
+      return ext.substring(1);
+    }
+    return '';
   }
 }
 
 extension FileMatching on File {
   CommonFileType get fileType {
     String ext = fileExtension;
-    if (fastaExtensions.any((element) => element == ext)) {
+    if (sequenceExtensions.any((element) => element == ext)) {
       return CommonFileType.sequence;
     } else if (plainTextExtensions.any((element) => element == ext)) {
       return CommonFileType.plainText;

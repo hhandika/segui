@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/logging.dart';
 import 'package:segui/services/io/output.dart';
@@ -84,14 +83,6 @@ class FileUtils {
 
   Future<void> deleteFile(File file) async {
     await file.delete();
-  }
-
-  String getFileExtension(File file) {
-    final ext = file.fileExtension;
-    if (ext.isNotEmpty) {
-      return ext.substring(1);
-    }
-    return '';
   }
 
   String formatSize(int size) {

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
 
 class FileMetadata extends FileUtils {
@@ -23,7 +24,7 @@ class FileMetadata extends FileUtils {
       accessed: formatTimestamp(stats.accessed),
       path: file.path,
       name: getBaseName(file),
-      fileExtension: getFileExtension(file).toUpperCase(),
+      fileExtension: file.fileExtension.toUpperCase(),
     );
   }
 
