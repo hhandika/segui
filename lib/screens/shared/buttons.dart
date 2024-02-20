@@ -319,8 +319,8 @@ class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
     if (await launcher.canLaunch()) {
       try {
         await launcher.launchExternalApp();
-      } catch (e) {
-        _showSnackBar(e.toString());
+      } catch (_) {
+        _showSnackBar('An error occurred while opening the file.');
       }
     } else {
       if (mounted) {
