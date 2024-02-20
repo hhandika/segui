@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
+import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
 
@@ -276,6 +277,57 @@ class ShareIconButton extends StatelessWidget {
         IOServices().shareFile(context, file);
       },
     );
+  }
+}
+
+class ExternalAppLauncher extends StatefulWidget {
+  const ExternalAppLauncher({
+    super.key,
+    required this.file,
+    required this.isButton,
+  });
+
+  final File file;
+  final bool isButton;
+
+  @override
+  State<ExternalAppLauncher> createState() => _ExternalAppLauncherState();
+}
+
+class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.isButton
+        ? TextButton.icon(
+            onPressed: () async => await _openExternalViewer(),
+            icon: const Icon(Icons.open_in_new),
+            label: const Text('Open in app...'),
+          )
+        : ListTile(
+            leading: const Icon(Icons.open_in_new),
+            title: const Text('Open in app...'),
+            onTap: () async => await _openExternalViewer(),
+          );
+  }
+
+  Future<void> _openExternalViewer() async {
+    final launcher = UrlLauncherServices(file: widget.file);
+    if (await launcher.canLaunch()) {
+      try {
+        await launcher.launchExternalApp();
+      } catch (e) {
+        _showSnackBar(e.toString());
+      }
+    } else {
+      if (mounted) {
+        _showSnackBar('No app found to open this file.');
+      }
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(showSharedSnackBar(context, message));
   }
 }
 
