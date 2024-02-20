@@ -550,7 +550,7 @@ class FileInfoScreen extends StatelessWidget {
         if (snapshot.hasData && snapshot.data != null) {
           return Container(
               padding: const EdgeInsets.all(16),
-              width: isPhoneScreen(context) ? double.infinity : 400,
+              width: isPhoneScreen(context) ? double.infinity : 480,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -569,7 +569,8 @@ class FileInfoScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
+                  const CommonDivider(),
                   const MetadataSubtitle(subtitle: 'Size'),
                   MetadataContent(
                     content: snapshot.data!.size,
@@ -610,10 +611,10 @@ class MetadataSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 4),
         child: Text(
           subtitle,
-          style: Theme.of(context).textTheme.labelMedium,
+          style: Theme.of(context).textTheme.bodyMedium,
           overflow: TextOverflow.ellipsis,
         ));
   }
@@ -628,7 +629,7 @@ class MetadataContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       content,
-      style: Theme.of(context).textTheme.bodyMedium,
+      style: Theme.of(context).textTheme.bodySmall,
       overflow: TextOverflow.ellipsis,
     );
   }
