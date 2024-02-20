@@ -93,20 +93,41 @@ class FileIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FileAssociation association = FileAssociation(file: file);
     if (file.existsSync()) {
-      return SvgPicture.asset(
-        association.matchingIcon,
-        width: 24,
-        height: 24,
-        colorFilter: ColorFilter.mode(
-          getIconColor(context),
-          BlendMode.srcIn,
-        ),
+      return CostumFileIcon(
+        iconColor: getIconColor(context),
+        file: file,
       );
     } else {
       return const Icon(Icons.error_outline);
     }
+  }
+}
+
+class CostumFileIcon extends StatelessWidget {
+  const CostumFileIcon({
+    super.key,
+    required this.iconColor,
+    required this.file,
+    this.iconSize = 24,
+  });
+
+  final Color iconColor;
+  final File file;
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final FileAssociation association = FileAssociation(file: file);
+    return SvgPicture.asset(
+      association.matchingIconPath,
+      width: iconSize,
+      height: iconSize,
+      colorFilter: ColorFilter.mode(
+        iconColor,
+        BlendMode.srcIn,
+      ),
+    );
   }
 }
 

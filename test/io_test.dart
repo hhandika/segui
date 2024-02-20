@@ -29,8 +29,9 @@ void main() {
   test('Format file size test', () {
     const int fileSize = 1024;
     const int fileSize2 = 1024 * 1024;
-    String size = formatSize(fileSize);
-    String size2 = formatSize(fileSize2);
+    FileUtils utils = FileUtils();
+    String size = utils.formatSize(fileSize);
+    String size2 = utils.formatSize(fileSize2);
     expect(size, "1.00 Kb");
     expect(size2, "1.00 Mb");
   });

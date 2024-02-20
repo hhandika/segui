@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
@@ -274,7 +275,7 @@ class FileAssociation extends FileUtils {
     return commonFileTypes[ext] ?? CommonFileType.other;
   }
 
-  String get matchingIcon {
+  String get matchingIconPath {
     final fileType = commonFileTYpe;
     return commonFileIcons[fileType]!;
   }
@@ -589,6 +590,28 @@ class FileUtils {
     return '';
   }
 
+  String formatSize(int size) {
+    double kb = size / 1024;
+    double mb = kb / 1024;
+    double gb = mb / 1024;
+    if (gb >= 1) {
+      return '${gb.toStringAsFixed(2)} Gb';
+    } else if (mb >= 1) {
+      return '${mb.toStringAsFixed(2)} Mb';
+    } else {
+      return '${kb.toStringAsFixed(2)} Kb';
+    }
+  }
+
+  String formatTimestamp(DateTime date) {
+    final format = DateFormat.yMd().add_jm().format(date);
+    return format.toString();
+  }
+
+  String getBaseName(File file) {
+    return p.basename(file.path);
+  }
+
   Future<int> calculateTotalSize(List<File> files) async {
     int totalSize = 0;
     for (var file in files) {
@@ -638,7 +661,7 @@ class TempDataServices extends FileUtils {
   }
 }
 
-class FileMetadata {
+class FileMetadata extends FileUtils {
   FileMetadata({
     required this.file,
   });
@@ -646,9 +669,21 @@ class FileMetadata {
   final File file;
 
   Future<({String size, String lastModified})> get metadata async {
-    String size = await _getSize(file);
+    String size = await _getSize();
     String lastModified = await _getLastModified(file);
     return (size: size, lastModified: lastModified);
+  }
+
+  Future<CompleteFileMetadata> get completeMetadata async {
+    final stats = await file.stat();
+    return CompleteFileMetadata(
+      size: formatSize(stats.size),
+      lastModified: formatTimestamp(stats.modified),
+      accessed: formatTimestamp(stats.accessed),
+      path: file.path,
+      name: getBaseName(file),
+      fileExtension: getFileExtension(file).toUpperCase(),
+    );
   }
 
   Future<String> get metadataText async {
@@ -657,8 +692,8 @@ class FileMetadata {
   }
 
 // Count file size. Returns in kb, mb, or gb.
-  Future<String> _getSize(File handler) async {
-    int bytes = await handler.length();
+  Future<String> _getSize() async {
+    int bytes = await file.length();
     return formatSize(bytes);
   }
 
@@ -685,17 +720,22 @@ class FileMetadata {
   }
 }
 
-String formatSize(int size) {
-  double kb = size / 1024;
-  double mb = kb / 1024;
-  double gb = mb / 1024;
-  if (gb >= 1) {
-    return '${gb.toStringAsFixed(2)} Gb';
-  } else if (mb >= 1) {
-    return '${mb.toStringAsFixed(2)} Mb';
-  } else {
-    return '${kb.toStringAsFixed(2)} Kb';
-  }
+class CompleteFileMetadata {
+  const CompleteFileMetadata({
+    required this.size,
+    required this.lastModified,
+    required this.path,
+    required this.accessed,
+    required this.name,
+    required this.fileExtension,
+  });
+
+  final String size;
+  final String lastModified;
+  final String accessed;
+  final String path;
+  final String name;
+  final String fileExtension;
 }
 
 List<File> getNewFilesFromOutput(SegulOutputFile outputFiles) {

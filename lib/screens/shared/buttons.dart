@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
@@ -408,6 +409,41 @@ class CommonShareTile extends StatelessWidget {
       onTap: () {
         Navigator.pop(context);
         IOServices().shareFile(context, file);
+      },
+    );
+  }
+}
+
+class FileInfoTile extends StatelessWidget {
+  const FileInfoTile({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      leading: const Icon(Icons.info_outline_rounded),
+      title: const Text('Details'),
+      onTap: () {
+        Navigator.pop(context);
+        if (runningPlatform == PlatformType.isMobile) {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => FileInfoScreen(file: file),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Dialog(
+                child: FileInfoScreen(file: file),
+              );
+            },
+          );
+        }
       },
     );
   }

@@ -536,3 +536,102 @@ class FileIOSubtitle extends StatelessWidget {
     return await FileMetadata(file: file).metadataText;
   }
 }
+
+class FileInfoScreen extends StatelessWidget {
+  const FileInfoScreen({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _getMetadata(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          return Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 4),
+                  CostumFileIcon(
+                      iconColor: Theme.of(context).colorScheme.primary,
+                      file: file,
+                      iconSize: 40),
+                  const SizedBox(height: 4),
+                  Text(
+                    snapshot.data!.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    snapshot.data!.path,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  const MetadataSubtitle(subtitle: 'Size'),
+                  MetadataContent(
+                    content: snapshot.data!.size,
+                  ),
+                  const MetadataSubtitle(subtitle: 'Last accessed'),
+                  MetadataContent(
+                    content: snapshot.data!.accessed,
+                  ),
+                  const MetadataSubtitle(subtitle: 'Last modified'),
+                  MetadataContent(
+                    content: snapshot.data!.lastModified,
+                  ),
+                ],
+              ));
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return const Center(
+            child: Text('Error loading file info'),
+          );
+        }
+      },
+    );
+  }
+
+  Future<CompleteFileMetadata> _getMetadata() async {
+    return await FileMetadata(file: file).completeMetadata;
+  }
+}
+
+class MetadataSubtitle extends StatelessWidget {
+  const MetadataSubtitle({super.key, required this.subtitle});
+
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Text(
+          subtitle,
+          style: Theme.of(context).textTheme.labelMedium,
+          overflow: TextOverflow.ellipsis,
+        ));
+  }
+}
+
+class MetadataContent extends StatelessWidget {
+  const MetadataContent({super.key, required this.content});
+
+  final String content;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      content,
+      style: Theme.of(context).textTheme.bodyMedium,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
