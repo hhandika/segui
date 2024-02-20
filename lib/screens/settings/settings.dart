@@ -280,7 +280,7 @@ class MainSettings extends ConsumerWidget {
           ),
           const CommonDivider(),
           SettingTile(
-            title: 'Data Usage',
+            title: 'Data usage',
             subtitle: 'View and manage app data',
             icon: Icons.data_usage_outlined,
             onTap: () {
