@@ -176,16 +176,6 @@ class FileAssociation extends FileUtils {
   }
 }
 
-extension FileExtension on File {
-  String get fileExtension {
-    String ext = p.extension(path);
-    if (ext.isNotEmpty) {
-      return ext.substring(1);
-    }
-    return '';
-  }
-}
-
 extension FileMatching on File {
   CommonFileType get fileType {
     String ext = fileExtension;
@@ -200,5 +190,16 @@ extension FileMatching on File {
     } else {
       return CommonFileType.other;
     }
+  }
+}
+
+extension FileExtension on File {
+  // Get file extension without the dot.
+  String get fileExtension {
+    String ext = p.extension(path);
+    if (ext.isNotEmpty) {
+      return ext.substring(1);
+    }
+    return '';
   }
 }
