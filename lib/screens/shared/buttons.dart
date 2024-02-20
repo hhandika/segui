@@ -6,6 +6,7 @@ import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/services/types.dart';
 
 class ExecutionButton extends StatelessWidget {
   const ExecutionButton({
@@ -297,6 +298,9 @@ class ExternalAppLauncher extends StatefulWidget {
 class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
   @override
   Widget build(BuildContext context) {
+    if (runningPlatform == PlatformType.isMobile) {
+      return const SizedBox.shrink();
+    }
     return widget.isButton
         ? TextButton.icon(
             onPressed: () async => await _openExternalViewer(),
