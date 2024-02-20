@@ -6,8 +6,8 @@ import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/styles/decoration.dart';
 
-class SmallScreenView extends ConsumerWidget {
-  const SmallScreenView({super.key});
+class CompactScreenView extends ConsumerWidget {
+  const CompactScreenView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,21 +28,6 @@ class SmallScreenView extends ConsumerWidget {
             child: Center(
           child: pages.elementAt(ref.watch(tabSelectionProvider)),
         )),
-        bottomNavigationBar: NavigationBar(
-          backgroundColor: Colors.transparent,
-          indicatorColor: getIndicatorColor(context),
-          elevation: 4,
-          destinations: navigationTargets
-              .map((e) => NavigationDestination(
-                    icon: e.icon,
-                    selectedIcon: e.selectedIcon,
-                    label: e.label,
-                  ))
-              .toList(),
-          selectedIndex: ref.watch(tabSelectionProvider),
-          onDestinationSelected: (value) {
-            ref.read(tabSelectionProvider.notifier).setTab(value);
-          },
-        ));
+        bottomNavigationBar: const CompactScreenNavBar());
   }
 }

@@ -33,7 +33,7 @@ class _SegulHomeState extends State<SegulHome> {
   Widget build(BuildContext context) {
     return showLargeScreenView
         ? const LargeScreenView()
-        : const SmallScreenView();
+        : const CompactScreenView();
   }
 }
 

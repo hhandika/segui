@@ -119,3 +119,27 @@ class MediumScreenRail extends ConsumerWidget {
     );
   }
 }
+
+class CompactScreenNavBar extends ConsumerWidget {
+  const CompactScreenNavBar({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return NavigationBar(
+      backgroundColor: Colors.transparent,
+      indicatorColor: getIndicatorColor(context),
+      elevation: 4,
+      destinations: navigationTargets
+          .map((e) => NavigationDestination(
+                icon: e.icon,
+                selectedIcon: e.selectedIcon,
+                label: e.label,
+              ))
+          .toList(),
+      selectedIndex: ref.watch(tabSelectionProvider),
+      onDestinationSelected: (value) {
+        ref.read(tabSelectionProvider.notifier).setTab(value);
+      },
+    );
+  }
+}
