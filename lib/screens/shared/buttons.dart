@@ -8,6 +8,7 @@ import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/decoration.dart';
 
 class ExecutionButton extends StatelessWidget {
   const ExecutionButton({
@@ -478,5 +479,34 @@ class CommonDeleteTile extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class InfoButton extends StatelessWidget {
+  const InfoButton({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          if (isPhoneScreen(context)) {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) => FileInfoScreen(file: file),
+            );
+          } else {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: FileInfoScreen(file: file),
+                );
+              },
+            );
+          }
+        },
+        icon: const Icon(Icons.info_outline_rounded));
   }
 }

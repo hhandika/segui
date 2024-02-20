@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/services/viewers/csv.dart';
@@ -18,6 +19,9 @@ class TabulatedFileView extends StatelessWidget {
       appBar: AppBar(
         title: Text(basename(file.path)),
         backgroundColor: getSEGULBackgroundColor(context),
+        actions: [
+          InfoButton(file: file),
+        ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: Center(

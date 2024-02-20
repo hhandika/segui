@@ -20,6 +20,9 @@ class UnknownFileView extends StatelessWidget {
       appBar: AppBar(
         title: Text(path.basename(file.path)),
         backgroundColor: getSEGULBackgroundColor(context),
+        actions: [
+          InfoButton(file: file),
+        ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: Center(
@@ -35,7 +38,7 @@ class UnknownFileView extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FileIcon(file: file),
+                        PrimaryFileIcon(file: file),
                         const SizedBox(width: 8),
                         FileIOSubtitle(file: file),
                       ],

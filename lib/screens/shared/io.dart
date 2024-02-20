@@ -550,16 +550,14 @@ class FileInfoScreen extends StatelessWidget {
         if (snapshot.hasData && snapshot.data != null) {
           return Container(
               padding: const EdgeInsets.all(16),
+              width: isPhoneScreen(context) ? double.infinity : 400,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 4),
-                  CostumFileIcon(
-                      iconColor: Theme.of(context).colorScheme.primary,
-                      file: file,
-                      iconSize: 40),
+                  PrimaryFileIcon(file: file, iconSize: 40),
                   const SizedBox(height: 4),
                   Text(
                     snapshot.data!.name,

@@ -104,6 +104,22 @@ class FileIcon extends StatelessWidget {
   }
 }
 
+class PrimaryFileIcon extends StatelessWidget {
+  const PrimaryFileIcon({super.key, required this.file, this.iconSize = 24});
+
+  final File file;
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return CostumFileIcon(
+      iconColor: Theme.of(context).colorScheme.primary,
+      file: file,
+      iconSize: iconSize,
+    );
+  }
+}
+
 class CostumFileIcon extends StatelessWidget {
   const CostumFileIcon({
     super.key,
