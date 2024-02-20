@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:segui/services/io/directory.dart';
+import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
 
 void main() {

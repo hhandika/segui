@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/text.dart';
-import 'package:segui/services/io/io.dart';
+import 'package:segui/services/io/logging.dart';
 import 'package:segui/styles/decoration.dart';
 
 class LogScreen extends StatefulWidget {

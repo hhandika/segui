@@ -6,7 +6,7 @@ import 'package:path/path.dart' as path;
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io.dart';
-import 'package:segui/services/io/io.dart';
+import 'package:segui/services/io/metadata.dart';
 import 'package:segui/styles/decoration.dart';
 
 class UnknownFileView extends StatelessWidget {

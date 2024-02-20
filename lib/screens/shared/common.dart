@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:segui/services/io/io.dart';
+import 'package:segui/services/io/file.dart';
 import 'package:segui/styles/decoration.dart';
 
 class CommonDivider extends StatelessWidget {

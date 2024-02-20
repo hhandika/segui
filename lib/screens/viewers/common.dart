@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/screens/viewers/text.dart';
 import 'package:segui/screens/viewers/unknown.dart';
-import 'package:segui/services/io/io.dart';
+import 'package:segui/services/io/file.dart';
 
 class FileView extends StatelessWidget {
   const FileView({
