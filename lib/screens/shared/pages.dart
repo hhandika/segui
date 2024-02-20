@@ -9,6 +9,7 @@ import 'package:segui/screens/shared/info.dart';
 import 'package:segui/screens/shared/io.dart';
 import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/services/io.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 
@@ -319,6 +320,7 @@ class OutputFileTiles extends StatelessWidget {
           ? FileIOTitle(file: file)
           : RichText(
               overflow: TextOverflow.ellipsis,
+              softWrap: false,
               text: TextSpan(
                 children: [
                   WidgetSpan(
@@ -391,12 +393,13 @@ class OutputActionMenu extends StatelessWidget {
                 PopupMenuItem(
                   child: CommonShareTile(file: file),
                 ),
-                PopupMenuItem(
-                  child: ExternalAppLauncher(
-                    file: file,
-                    fromPopUp: true,
+                if (runningPlatform == PlatformType.isDesktop)
+                  PopupMenuItem(
+                    child: ExternalAppLauncher(
+                      file: file,
+                      fromPopUp: true,
+                    ),
                   ),
-                ),
                 const PopupMenuDivider(),
                 PopupMenuItem(
                   child: CommonDeleteTile(file: file),
