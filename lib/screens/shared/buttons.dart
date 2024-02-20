@@ -284,11 +284,11 @@ class ExternalAppLauncher extends StatefulWidget {
   const ExternalAppLauncher({
     super.key,
     required this.file,
-    required this.isButton,
+    required this.fromPopUp,
   });
 
   final File file;
-  final bool isButton;
+  final bool fromPopUp;
 
   @override
   State<ExternalAppLauncher> createState() => _ExternalAppLauncherState();
@@ -297,20 +297,24 @@ class ExternalAppLauncher extends StatefulWidget {
 class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
   @override
   Widget build(BuildContext context) {
-    return widget.isButton
-        ? TextButton.icon(
-            onPressed: () async => await _openExternalViewer(),
-            icon: const Icon(Icons.open_in_new),
-            label: const Text('Open in app'),
-          )
-        : ListTile(
+    return widget.fromPopUp
+        ? ListTile(
             leading: const Icon(Icons.open_in_new),
             title: const Text('Open in app'),
             onTap: () async => await _openExternalViewer(),
+          )
+        : TextButton.icon(
+            onPressed: () async => await _openExternalViewer(),
+            icon: const Icon(Icons.open_in_new),
+            label: const Text('Open in app'),
           );
   }
 
   Future<void> _openExternalViewer() async {
+    // Close the pop-up first so
+    // the user can see snackbar messages if
+    // the file can't be opened
+    Navigator.pop(context);
     final launcher = UrlLauncherServices(file: widget.file);
     if (await launcher.canLaunch()) {
       try {

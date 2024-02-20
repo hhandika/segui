@@ -74,7 +74,7 @@ class UnknownFileViewBody extends StatelessWidget {
                 ),
                 // Open external viewer
                 const SizedBox(height: 8),
-                ExternalAppLauncher(file: file, isButton: true)
+                ExternalAppLauncher(file: file, fromPopUp: false)
               ],
             );
           } else {

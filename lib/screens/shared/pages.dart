@@ -373,7 +373,7 @@ class OutputActionMenu extends StatelessWidget {
                         const SizedBox(height: 8),
                         ExternalAppLauncher(
                           file: file,
-                          isButton: false,
+                          fromPopUp: true,
                         ),
                         const SizedBox(height: 16),
                         CommonDeleteTile(file: file),
@@ -394,7 +394,7 @@ class OutputActionMenu extends StatelessWidget {
                 PopupMenuItem(
                   child: ExternalAppLauncher(
                     file: file,
-                    isButton: false,
+                    fromPopUp: true,
                   ),
                 ),
                 const PopupMenuDivider(),
