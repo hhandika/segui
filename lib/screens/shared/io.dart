@@ -98,7 +98,7 @@ class InputSelectorForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SharedFilePicker(
-      label: 'Add files',
+      label: 'Select files',
       allowMultiple: allowMultiple,
       xTypeGroup: xTypeGroup,
       hasSecondaryPicker: hasSecondaryPicker,
@@ -161,7 +161,8 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                         TextSpan(
                           text: addNew
                               ? '${widget.label} '
-                              : '${IOServices().countFiles(data, type)} selected files',
+                              : _getFileCountLabel(
+                                  IOServices().countFiles(data, type)),
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ])),
@@ -187,7 +188,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                               addNew: addNew,
                               onFileSelected: () async {
                                 if (newInput) {
-                                  await _addFiles(isDir: true);
+                                  await _addFiles(isDir: false);
                                 } else {
                                   await _addMoreFiles(data, isDir: false);
                                 }
@@ -252,6 +253,10 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
       allowMultiple: widget.allowMultiple,
     );
     return selection;
+  }
+
+  String _getFileCountLabel(int count) {
+    return count == 1 ? '1 file selected' : '$count files selected';
   }
 
   void _startLoading() {
