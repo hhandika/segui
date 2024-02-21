@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/io/output.dart';
 import 'package:segui/styles/decoration.dart';
 
 class DataUsageScreen extends ConsumerStatefulWidget {
@@ -80,38 +81,40 @@ class DataUsageView extends ConsumerWidget {
   }
 }
 
-class AppDataStats extends StatelessWidget {
+class AppDataStats extends ConsumerWidget {
   const AppDataStats({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bool isSmallScreen = isPhoneScreen(context);
-    return FutureBuilder(
-      future: DataUsageServices().calculateUsage(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else {
-          return isSmallScreen
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FileCountTile(count: snapshot.data!.count),
-                    FileSizeTile(totalSize: snapshot.data!.size),
-                  ],
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FileCountTile(count: snapshot.data!.count),
-                    FileSizeTile(totalSize: snapshot.data!.size),
-                  ],
-                );
-        }
-      },
-    );
+    return ref.watch(fileOutputProvider).when(
+          data: (outputFile) {
+            return isSmallScreen
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _getStats(outputFile),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: _getStats(outputFile),
+                  );
+          },
+          loading: () => const CircularProgressIndicator(),
+          error: (error, stackTrace) => Text(
+            'Error: $error',
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+        );
+  }
+
+  List<Widget> _getStats(SegulOutputFile outputFile) {
+    final stats = DataUsageServices().calculateUsage(outputFile);
+    return [
+      FileCountTile(count: stats.count),
+      FileSizeTile(totalSize: stats.size),
+    ];
   }
 }
 

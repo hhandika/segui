@@ -115,6 +115,14 @@ class FileUtils {
     return totalSize;
   }
 
+  int calculateTotalSizeSync(List<File> files) {
+    int totalSize = 0;
+    for (var file in files) {
+      totalSize += file.lengthSync();
+    }
+    return totalSize;
+  }
+
   Future<void> deleteFiles(List<File> files) async {
     for (var file in files) {
       await file.delete();
@@ -125,12 +133,10 @@ class FileUtils {
 class DataUsageServices extends FileUtils {
   DataUsageServices();
 
-  Future<({String count, String size})> calculateUsage() async {
-    Directory appDocDir = await getSeguiDirectory();
-    final files =
-        appDocDir.listSync(recursive: true).whereType<File>().toList();
+  ({String count, String size}) calculateUsage(SegulOutputFile outputFiles) {
+    final files = outputFiles.files.map((e) => e.file).toList();
     final fileCount = files.length;
-    final totalSize = await calculateTotalSize(files);
+    final totalSize = calculateTotalSizeSync(files);
     return _getUsageText(fileCount, totalSize);
   }
 
