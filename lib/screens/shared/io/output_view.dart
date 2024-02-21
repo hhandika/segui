@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
@@ -94,23 +95,17 @@ class OutputFileTiles extends StatelessWidget {
       leading: FileIcon(file: file),
       title: isOldFile
           ? FileIOTitle(file: file)
-          : RichText(
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
-              text: TextSpan(
-                children: [
-                  WidgetSpan(
-                    child: FileIOTitle(file: file),
-                  ),
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.bottom,
-                    child: Icon(
-                      Icons.fiber_new_outlined,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              )),
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                FileIOTitle(file: file),
+                Icon(
+                  Icons.fiber_new_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ],
+            ),
       subtitle: FileIOSubtitle(file: file),
       trailing: OutputActionMenu(file: file),
       onTap: () {
