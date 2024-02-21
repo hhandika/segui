@@ -137,6 +137,8 @@ class AboutContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                   child: Image.asset(
                     'assets/launcher/icon.png',
+                    cacheHeight: 420,
+                    cacheWidth: 420,
                     width: 100,
                     height: 100,
                   ),
