@@ -1,9 +1,16 @@
+//! File association and file type matching.
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:path/path.dart' as p;
 
+/// File type group. Used by the file_selector package
+/// to filter file types.
+/// [label] is the label to display in the file picker.
+/// [extensions] is a list of file extensions to filter.
+/// [uniformTypeIdentifiers] is a list of uniform type identifiers to filter.
+/// It is used by Apple's devices.
 const XTypeGroup plainTextTypeGroup = XTypeGroup(
   label: 'Text',
   extensions: ['txt', 'text'],
@@ -12,6 +19,9 @@ const XTypeGroup plainTextTypeGroup = XTypeGroup(
   ],
 );
 
+/// 'com.segui.fastq' is a custom uniform type identifier
+/// for fastq files. Registered in the info.plist file
+/// as UTExportedTypeDeclarations and UTImportedTypeDeclarations.
 const XTypeGroup genomicRawReadTypeGroup = XTypeGroup(
   label: 'Sequence Read',
   extensions: [
@@ -57,7 +67,7 @@ const XTypeGroup genomicContigTypeGroup = XTypeGroup(
   label: 'Contig',
   extensions: fastaExtensions,
   uniformTypeIdentifiers: [
-    'com.segui.genomicContig',
+    'com.segui.fasta',
   ],
 );
 
