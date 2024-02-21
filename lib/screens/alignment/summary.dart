@@ -254,6 +254,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   void _setNewRun() {
     setState(() {
       _ctr.reset();
+      _interval = null;
       _ctr.isSuccess = false;
       ref.invalidate(fileInputProvider);
       ref.invalidate(fileOutputProvider);
