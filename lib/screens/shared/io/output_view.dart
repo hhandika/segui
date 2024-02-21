@@ -97,8 +97,12 @@ class OutputFileTiles extends StatelessWidget {
           : Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                FileIOTitle(file: file),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: FileIOTitle(file: file),
+                ),
                 Icon(
                   Icons.fiber_new_outlined,
                   color: Theme.of(context).colorScheme.primary,
