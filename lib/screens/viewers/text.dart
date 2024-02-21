@@ -36,7 +36,6 @@ class PlainTextViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
@@ -67,7 +66,6 @@ class PlainTextViewBody extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: SizedBox(
                 width: double.infinity,
-                height: screenHeight * 0.85,
                 child: FutureBuilder<String>(
                   future: TextParser().parse(file),
                   initialData: 'Loading...',
