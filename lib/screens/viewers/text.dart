@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:segui/screens/shared/buttons.dart';
@@ -38,7 +37,6 @@ class PlainTextViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final double containerHeight = screenHeight;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
@@ -64,11 +62,12 @@ class PlainTextViewBody extends StatelessWidget {
               ),
             ),
             const TopDivider(),
-            Padding(
+            Expanded(
+                child: Padding(
               padding: const EdgeInsets.all(16),
               child: SizedBox(
                 width: double.infinity,
-                height: containerHeight - 186,
+                height: screenHeight * 0.85,
                 child: FutureBuilder<String>(
                   future: TextParser().parse(file),
                   initialData: 'Loading...',
@@ -86,7 +85,7 @@ class PlainTextViewBody extends StatelessWidget {
                   },
                 ),
               ),
-            ),
+            )),
           ],
         ),
       ),
