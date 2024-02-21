@@ -192,9 +192,10 @@ class ClearAppDataButton extends ConsumerWidget {
                                 Theme.of(context).colorScheme.error,
                           ),
                           onPressed: () {
+                            ref.read(fileOutputProvider.notifier).clearAll();
                             ref
                                 .read(fileOutputProvider.notifier)
-                                .removeAllFiles();
+                                .refresh(isRecursive: true);
                             Navigator.of(context).pop();
                           },
                           icon: const Icon(Icons.delete_forever_outlined),

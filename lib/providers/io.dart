@@ -112,14 +112,14 @@ class FileOutput extends _$FileOutput {
   /// We can also do stream with `FileEntity().watch`
   /// to update the file list.
   /// But it may slow down the task execution.
-  Future<void> refresh() async {
+  Future<void> refresh({bool isRecursive = false}) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null || state.value!.directory == null) {
         return SegulOutputFile.empty();
       }
       final updates =
-          SegulOutputFile.updateFiles(state.value!, isRecursive: false);
+          SegulOutputFile.updateFiles(state.value!, isRecursive: isRecursive);
 
       return updates;
     });
@@ -138,7 +138,7 @@ class FileOutput extends _$FileOutput {
     });
   }
 
-  Future<void> removeAllFiles() async {
+  Future<void> clearAll() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null) {
