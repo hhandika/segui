@@ -71,49 +71,38 @@ class FileInputServices {
   final bool allowMultiple;
 
   Future<void> selectFiles() async {
+    List<XFile> results = [];
     if (allowMultiple) {
-      // if (Platform.isAndroid) {
-      //   var results = _selectMultiUsingFilePicker(allowedExtension);
-      //   _updateProvider(await results);
-      // } else {
-      var results = _selectMultiFiles(allowedExtension);
-      _updateProvider(await results);
-      // }
+      results = await _selectMultiFileAdaptive();
     } else {
-      // if (Platform.isAndroid) {
-      //   final results = await _selectUsingFilePicker(allowedExtension);
-      //   if (results != null) {
-      //     _updateProvider([results]);
-      //   }
-      // } else {
-      final results = await _selectSingleFile(allowedExtension);
-      if (results != null) {
-        _updateProvider([XFile(results.file.path)]);
-        // }
-      }
+      results = await _selectFileAdaptive();
     }
+    _updateProvider(results);
   }
 
   Future<int> addMoreFiles(List<File> currentFiles) async {
+    List<XFile> results = [];
     if (allowMultiple) {
-      final results = await _selectMultiFiles(allowedExtension);
-      final newFiles = _checkDuplicateFiles(currentFiles, results);
-      _addMoreToProvider(newFiles.files);
-      return newFiles.duplicate;
+      results = await _selectMultiFileAdaptive();
     } else {
-      final results = await _selectSingleFile(allowedExtension);
-      if (results != null) {
-        final newFiles =
-            _checkDuplicateFiles(currentFiles, [XFile(results.file.path)]);
-        _addMoreToProvider(newFiles.files);
-        return newFiles.duplicate;
-      }
-      return 0;
+      results = await _selectFileAdaptive();
+    }
+    final newFiles = _checkDuplicateFiles(currentFiles, results);
+    _addMoreToProvider(newFiles.files);
+    return newFiles.duplicate;
+  }
+
+  Future<void> addDirectory() async {
+    final result = await _selectDirectoryAdaptive();
+
+    if (result != null) {
+      final files = DirectoryCrawler(result).crawlByType(allowedExtension);
+      _updateProvider(files.map((e) => XFile(e.path)).toList());
     }
   }
 
   Future<int> addMoreDirectory(List<File> currentFiles) async {
-    final result = await _pickDirectory();
+    final result = await _selectDirectoryAdaptive();
     if (result != null) {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
       final newFiles = _checkDuplicateFiles(
@@ -124,8 +113,35 @@ class FileInputServices {
     return 0;
   }
 
+  Future<List<XFile>> _selectMultiFileAdaptive() async {
+    if (Platform.isAndroid) {
+      return await _selectMultiUsingFilePicker(allowedExtension);
+    } else {
+      return await _selectMultiFiles(allowedExtension);
+    }
+  }
+
+  Future<List<XFile>> _selectFileAdaptive() async {
+    if (Platform.isAndroid) {
+      return await _selectUsingFilePicker(allowedExtension);
+    } else {
+      return await _selectSingleFile(allowedExtension);
+    }
+  }
+
+  Future<Directory?> _selectDirectoryAdaptive() async {
+    if (Platform.isAndroid) {
+      return await _selectDirectoryFilePicker();
+    } else {
+      return await _selectDirectory();
+    }
+  }
+
   ({List<XFile> files, int duplicate}) _checkDuplicateFiles(
       List<File> current, List<XFile> results) {
+    if (results.isEmpty) {
+      return (files: [], duplicate: 0);
+    }
     final files = current.map((e) => e.path).toSet();
     final newFiles = results
         .where((e) => !files.contains(e.path))
@@ -133,17 +149,6 @@ class FileInputServices {
         .toList();
     final diff = results.length - newFiles.length;
     return (files: newFiles, duplicate: diff);
-  }
-
-  Future<void> addDirectory() async {
-    final result = Platform.isAndroid
-        ? await _pickDirectoryFilePicker()
-        : await _pickDirectory();
-
-    if (result != null) {
-      final files = DirectoryCrawler(result).crawlByType(allowedExtension);
-      _updateProvider(files.map((e) => XFile(e.path)).toList());
-    }
   }
 
   void _addMoreToProvider(List<XFile> result) {
@@ -161,7 +166,7 @@ class FileInputServices {
     }
   }
 
-  Future<Directory?> _pickDirectory() async {
+  Future<Directory?> _selectDirectory() async {
     final result = await getDirectoryPath();
     if (result != null) {
       return Directory(result);
@@ -169,7 +174,7 @@ class FileInputServices {
     return null;
   }
 
-  Future<Directory?> _pickDirectoryFilePicker() async {
+  Future<Directory?> _selectDirectoryFilePicker() async {
     final result = await FilePicker.platform.getDirectoryPath();
     if (result != null) {
       return Directory(result);
@@ -194,27 +199,23 @@ class FileInputServices {
     }).toList();
   }
 
-  Future<SegulInputFile?> _selectSingleFile(XTypeGroup allowedExtension) async {
+  Future<List<XFile>> _selectSingleFile(XTypeGroup allowedExtension) async {
     final result = await openFile(
       acceptedTypeGroups: [allowedExtension],
     );
-    return result == null
-        ? null
-        : SegulInputFile(
-            file: File(result.path),
-            type: matchTypeByXTypeGroup(allowedExtension),
-          );
+    return result == null ? [] : [result];
   }
 
 // Do selection without data.
-  Future<XFile?> _selectUsingFilePicker(XTypeGroup allowedExtension) async {
+  Future<List<XFile>> _selectUsingFilePicker(
+      XTypeGroup allowedExtension) async {
     final result = await FilePicker.platform
         .pickFiles(allowMultiple: false, type: FileType.any);
 
     if (result == null) {
-      return null;
+      return [];
     }
-    return XFile(result.files.first.path!);
+    return [XFile(result.files.first.path!)];
   }
 
 // Do selection without data.
@@ -229,33 +230,3 @@ class FileInputServices {
     return result.files.map((e) => XFile(e.path!)).toList();
   }
 }
-
-// class FileDuplicateService {
-//   const FileDuplicateService({
-//     required this.inputFiles,
-//     required this.outputDir,
-//   });
-
-//   final List<SegulInputFile> inputFiles;
-//   final Directory outputDir;
-
-//   Future<int?> duplicateFiles() async {
-//     final files = inputFiles.map((e) => XFile(e.file.path)).toList();
-//     // Check if the files are unique.
-//     final uniqueFiles = files.toSet().toList();
-//     if (uniqueFiles.length != files.length) {
-//       int duplicateCount = files.length - uniqueFiles.length;
-//       // Find duplicate files
-//       final duplicateFiles =
-//           files.toSet().difference(uniqueFiles.toSet()).toList();
-//       // Write duplicate files to the output directory.
-//       String duplicatePath = duplicateFiles.join('\n');
-//       final filePath = p.join(outputDir.path, duplicateFilename);
-//       final result = File(filePath);
-//       await result.writeAsString(duplicatePath, mode: FileMode.write);
-
-//       return (path: filePath, count: duplicateCount);
-//     }
-//     return null;
-//   }
-// }
