@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path/path.dart' as path;
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
-import 'package:segui/screens/shared/io.dart';
+import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/metadata.dart';
 import 'package:segui/styles/decoration.dart';
 

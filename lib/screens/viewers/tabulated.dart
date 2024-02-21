@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
-import 'package:segui/screens/shared/io.dart';
+import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/viewers/csv.dart';
 import 'package:segui/styles/decoration.dart';
 

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/services/controllers.dart';
-import 'package:segui/screens/shared/io.dart';
+import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 
