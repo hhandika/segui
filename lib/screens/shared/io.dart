@@ -150,7 +150,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: Icon(
-                            newInput
+                            addNew
                                 ? Icons.folder_outlined
                                 : Icons.folder_open_outlined,
                           ),
@@ -159,13 +159,13 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                           child: SizedBox(width: 4),
                         ),
                         TextSpan(
-                          text: newInput
+                          text: addNew
                               ? '${widget.label} '
                               : '${IOServices().countFiles(data, type)} selected files',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ])),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   _isLoading
                       ? const SharedProgressIndicator()
                       : !widget.allowDirectorySelection
