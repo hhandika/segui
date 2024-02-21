@@ -58,6 +58,7 @@ class ExecutionButton extends StatelessWidget {
                         '⏳ Executing task. '
                         'Keep this screen open to avoid interruption.',
                         style: Theme.of(context).textTheme.labelMedium,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
