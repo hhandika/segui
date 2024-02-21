@@ -684,7 +684,7 @@ class MetadataTile extends StatelessWidget {
       leading: icon,
       title: Text(
         title,
-        style: Theme.of(context).textTheme.labelSmall,
+        style: Theme.of(context).textTheme.labelMedium,
       ),
       subtitle: Text(content),
     );
