@@ -93,7 +93,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
-          isDatatypeEnabled: false,
+          isDatatypeEnabled: true,
           task: task,
         ),
         const SizedBox(height: 16),
