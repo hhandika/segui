@@ -64,36 +64,75 @@ class FileInputServices {
     this.ref, {
     required this.allowedExtension,
     required this.allowMultiple,
-    required this.isAddNew,
   });
 
   final WidgetRef ref;
   final XTypeGroup allowedExtension;
   final bool allowMultiple;
-  final bool isAddNew;
 
   Future<void> selectFiles() async {
     if (allowMultiple) {
-      if (Platform.isAndroid) {
-        var results = _selectMultiUsingFilePicker(allowedExtension);
-        _updateProvider(await results);
-      } else {
-        var results = _selectMultiFiles(allowedExtension);
-        _updateProvider(await results);
-      }
+      // if (Platform.isAndroid) {
+      //   var results = _selectMultiUsingFilePicker(allowedExtension);
+      //   _updateProvider(await results);
+      // } else {
+      var results = _selectMultiFiles(allowedExtension);
+      _updateProvider(await results);
+      // }
     } else {
-      if (Platform.isAndroid) {
-        final results = await _selectUsingFilePicker(allowedExtension);
-        if (results != null) {
-          _updateProvider([results]);
-        }
-      } else {
-        final results = await _selectSingleFile(allowedExtension);
-        if (results != null) {
-          _updateProvider([XFile(results.file.path)]);
-        }
+      // if (Platform.isAndroid) {
+      //   final results = await _selectUsingFilePicker(allowedExtension);
+      //   if (results != null) {
+      //     _updateProvider([results]);
+      //   }
+      // } else {
+      final results = await _selectSingleFile(allowedExtension);
+      if (results != null) {
+        _updateProvider([XFile(results.file.path)]);
+        // }
       }
     }
+  }
+
+  Future<int> addMoreFiles(List<File> currentFiles) async {
+    if (allowMultiple) {
+      final results = await _selectMultiFiles(allowedExtension);
+      final newFiles = _checkDuplicateFiles(currentFiles, results);
+      _addMoreToProvider(newFiles.files);
+      return newFiles.duplicate;
+    } else {
+      final results = await _selectSingleFile(allowedExtension);
+      if (results != null) {
+        final newFiles =
+            _checkDuplicateFiles(currentFiles, [XFile(results.file.path)]);
+        _addMoreToProvider(newFiles.files);
+        return newFiles.duplicate;
+      }
+      return 0;
+    }
+  }
+
+  Future<int> addMoreDirectory(List<File> currentFiles) async {
+    final result = await _pickDirectory();
+    if (result != null) {
+      final files = DirectoryCrawler(result).crawlByType(allowedExtension);
+      final newFiles = _checkDuplicateFiles(
+          currentFiles, files.map((e) => XFile(e.path)).toList());
+      _addMoreToProvider(newFiles.files);
+      return newFiles.duplicate;
+    }
+    return 0;
+  }
+
+  ({List<XFile> files, int duplicate}) _checkDuplicateFiles(
+      List<File> current, List<XFile> results) {
+    final files = current.map((e) => e.path).toSet();
+    final newFiles = results
+        .where((e) => !files.contains(e.path))
+        .map((e) => XFile(e.path))
+        .toList();
+    final diff = results.length - newFiles.length;
+    return (files: newFiles, duplicate: diff);
   }
 
   Future<void> addDirectory() async {
@@ -107,14 +146,18 @@ class FileInputServices {
     }
   }
 
-  void _updateProvider(List<XFile> result) {
+  void _addMoreToProvider(List<XFile> result) {
     final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {
-      if (isAddNew) {
-        notifier.addFiles(result, allowedExtension);
-      } else {
-        notifier.addMoreFiles(result, allowedExtension);
-      }
+      notifier.addMoreFiles(result, allowedExtension);
+    }
+  }
+
+  void _updateProvider(List<XFile> result) async {
+    final notifier = ref.read(fileInputProvider.notifier);
+
+    if (result.isNotEmpty) {
+      notifier.addFiles(result, allowedExtension);
     }
   }
 
@@ -163,7 +206,7 @@ class FileInputServices {
           );
   }
 
-  // Do selection without data.
+// Do selection without data.
   Future<XFile?> _selectUsingFilePicker(XTypeGroup allowedExtension) async {
     final result = await FilePicker.platform
         .pickFiles(allowMultiple: false, type: FileType.any);
@@ -174,7 +217,7 @@ class FileInputServices {
     return XFile(result.files.first.path!);
   }
 
-  // Do selection without data.
+// Do selection without data.
   Future<List<XFile>> _selectMultiUsingFilePicker(
       XTypeGroup allowedExtension) async {
     final result = await FilePicker.platform
@@ -186,3 +229,33 @@ class FileInputServices {
     return result.files.map((e) => XFile(e.path!)).toList();
   }
 }
+
+// class FileDuplicateService {
+//   const FileDuplicateService({
+//     required this.inputFiles,
+//     required this.outputDir,
+//   });
+
+//   final List<SegulInputFile> inputFiles;
+//   final Directory outputDir;
+
+//   Future<int?> duplicateFiles() async {
+//     final files = inputFiles.map((e) => XFile(e.file.path)).toList();
+//     // Check if the files are unique.
+//     final uniqueFiles = files.toSet().toList();
+//     if (uniqueFiles.length != files.length) {
+//       int duplicateCount = files.length - uniqueFiles.length;
+//       // Find duplicate files
+//       final duplicateFiles =
+//           files.toSet().difference(uniqueFiles.toSet()).toList();
+//       // Write duplicate files to the output directory.
+//       String duplicatePath = duplicateFiles.join('\n');
+//       final filePath = p.join(outputDir.path, duplicateFilename);
+//       final result = File(filePath);
+//       await result.writeAsString(duplicatePath, mode: FileMode.write);
+
+//       return (path: filePath, count: duplicateCount);
+//     }
+//     return null;
+//   }
+// }

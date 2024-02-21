@@ -138,7 +138,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     final type = matchTypeByXTypeGroup(widget.xTypeGroup);
     return ref.watch(fileInputProvider).when(
           data: (data) {
-            final isAddNew = data.where((e) => e.type == type).toList().isEmpty;
+            final addNew = data.where((e) => e.type == type).toList().isEmpty;
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -170,29 +170,26 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                       ? const SharedProgressIndicator()
                       : !widget.allowDirectorySelection
                           ? SingleInputButton(
-                              isAddNew: isAddNew,
+                              addNew: addNew,
                               inputFiles: data,
                               type: type,
-                              onFileSelected: !widget.allowMultiple && !isAddNew
+                              onFileSelected: !widget.allowMultiple && !addNew
                                   ? null
                                   : () async {
                                       await _selectFiles(
-                                          isAddNew &&
-                                              !widget.hasSecondaryPicker,
-                                          isFileSelection: true);
+                                        addNew && !widget.hasSecondaryPicker,
+                                      );
                                     },
                             )
                           : InputSelector(
-                              isAddNew: isAddNew,
+                              addNew: addNew,
                               onFileSelected: () async {
                                 await _selectFiles(
-                                    isAddNew && !widget.hasSecondaryPicker,
-                                    isFileSelection: true);
+                                    addNew && !widget.hasSecondaryPicker);
                               },
                               onDirectorySelected: () async {
-                                await _selectFiles(
-                                    isAddNew && !widget.hasSecondaryPicker,
-                                    isFileSelection: false);
+                                await _selectDirectory(
+                                    addNew && !widget.hasSecondaryPicker);
                               },
                             ),
                 ]);
@@ -202,31 +199,85 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
         );
   }
 
-  Future<void> _selectFiles(bool isAddNew,
-      {required bool isFileSelection}) async {
+  Future<void> _selectDirectory(bool addNew) async {
+    _startLoading();
+    if (addNew) {
+      try {
+        final selection = _getFileSelection();
+        await selection.addDirectory();
+      } catch (e) {
+        _showError(e.toString());
+      }
+    } else {
+      await _addMore(isDir: true);
+    }
+
+    _stopLoading();
+  }
+
+  Future<void> _selectFiles(bool addNew) async {
+    final selection = _getFileSelection();
+    _startLoading();
+
+    if (addNew) {
+      try {
+        await selection.selectFiles();
+      } catch (e) {
+        _showError(e.toString());
+      }
+    } else {
+      await _addMore(isDir: false);
+    }
+    _stopLoading();
+  }
+
+  Future<void> _addMore({required bool isDir}) async {
+    ref.read(fileInputProvider).when(
+          data: (data) async {
+            final selection = _getFileSelection();
+            final files = data.map((e) => e.file).toList();
+            try {
+              int duplicates = 0;
+              if (isDir) {
+                duplicates = await selection.addMoreDirectory(files);
+              } else {
+                duplicates = await selection.addMoreFiles(files);
+              }
+              if (duplicates > 0) {
+                _showError(
+                    'Skipping $duplicates duplicate file${duplicates > 1 ? 's' : ''}. 🙈');
+              }
+            } catch (e) {
+              _showError(e.toString());
+            }
+          },
+          loading: () => null,
+          error: (err, stack) => _showError(err.toString()),
+        );
+  }
+
+  FileInputServices _getFileSelection() {
     final selection = FileInputServices(
       ref,
       allowedExtension: widget.xTypeGroup,
-      isAddNew: isAddNew,
       allowMultiple: widget.allowMultiple,
     );
+    return selection;
+  }
+
+  void _startLoading() {
     setState(() {
       _isLoading = true;
     });
+  }
 
-    try {
-      if (isFileSelection) {
-        await selection.selectFiles();
-      } else {
-        await selection.addDirectory();
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          showSharedSnackBar(context, e.toString()),
-        );
-      }
-    }
+  void _showError(String error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      showSharedSnackBar(context, error),
+    );
+  }
+
+  void _stopLoading() {
     setState(() {
       _isLoading = false;
     });
@@ -236,13 +287,13 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
 class SingleInputButton extends ConsumerWidget {
   const SingleInputButton({
     super.key,
-    required this.isAddNew,
+    required this.addNew,
     required this.inputFiles,
     required this.type,
     required this.onFileSelected,
   });
 
-  final bool isAddNew;
+  final bool addNew;
   final List<SegulInputFile> inputFiles;
   final SegulType type;
   final VoidCallback? onFileSelected;
@@ -250,7 +301,7 @@ class SingleInputButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
-      tooltip: isAddNew ? 'Select files' : 'Add more files',
+      tooltip: addNew ? 'Select files' : 'Add more files',
       icon: _hasInputFile
           ? const Icon(Icons.clear_rounded)
           : const Icon(Icons.add_rounded),
@@ -274,12 +325,12 @@ class SingleInputButton extends ConsumerWidget {
 class InputSelector extends StatefulWidget {
   const InputSelector({
     super.key,
-    required this.isAddNew,
+    required this.addNew,
     required this.onFileSelected,
     required this.onDirectorySelected,
   });
 
-  final bool isAddNew;
+  final bool addNew;
   final VoidCallback onFileSelected;
   final VoidCallback onDirectorySelected;
 
@@ -308,14 +359,14 @@ class _InputSelectorState extends State<InputSelector> {
                         shrinkWrap: true,
                         children: [
                           SelectFileButton(
-                            isAddNew: widget.isAddNew,
+                            addNew: widget.addNew,
                             onFileSelected: widget.onFileSelected,
                           ),
                           if (!isMobile)
                             SelectDirectoryButton(
                               onDirectorySelected: widget.onDirectorySelected,
                             ),
-                          if (!widget.isAddNew) const ClearAllButton(),
+                          if (!widget.addNew) const ClearAllButton(),
                         ],
                       ));
                 },
@@ -323,7 +374,7 @@ class _InputSelectorState extends State<InputSelector> {
             },
           )
         : InputActionMenu(
-            isAddNew: widget.isAddNew,
+            addNew: widget.addNew,
             onFileSelected: widget.onFileSelected,
             onDirectorySelected: widget.onDirectorySelected,
           );
@@ -333,12 +384,12 @@ class _InputSelectorState extends State<InputSelector> {
 class InputActionMenu extends ConsumerWidget {
   const InputActionMenu({
     super.key,
-    required this.isAddNew,
+    required this.addNew,
     required this.onFileSelected,
     required this.onDirectorySelected,
   });
 
-  final bool isAddNew;
+  final bool addNew;
   final VoidCallback onFileSelected;
   final VoidCallback onDirectorySelected;
 
@@ -353,7 +404,7 @@ class InputActionMenu extends ConsumerWidget {
           return [
             PopupMenuItem(
                 child: SelectFileButton(
-              isAddNew: isAddNew,
+              addNew: addNew,
               onFileSelected: onFileSelected,
             )),
             if (!isMobile)
@@ -361,7 +412,7 @@ class InputActionMenu extends ConsumerWidget {
                   child: SelectDirectoryButton(
                 onDirectorySelected: onDirectorySelected,
               )),
-            if (!isAddNew)
+            if (!addNew)
               const PopupMenuItem(
                 child: ClearAllButton(),
               ),
@@ -373,11 +424,11 @@ class InputActionMenu extends ConsumerWidget {
 class SelectFileButton extends StatelessWidget {
   const SelectFileButton({
     super.key,
-    required this.isAddNew,
+    required this.addNew,
     required this.onFileSelected,
   });
 
-  final bool isAddNew;
+  final bool addNew;
   final VoidCallback onFileSelected;
 
   @override
@@ -385,7 +436,7 @@ class SelectFileButton extends StatelessWidget {
     return ListTile(
       leading: const Icon(Icons.add_rounded),
       title: Text(
-        isAddNew ? 'Select files' : 'Add more files',
+        addNew ? 'Select files' : 'Add more files',
         style: Theme.of(context).textTheme.titleMedium,
       ),
       onTap: () {

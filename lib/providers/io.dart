@@ -36,9 +36,9 @@ class FileInput extends _$FileInput {
         return [];
       }
       final files = [...state.value!];
-      files.addAll(inputFiles.map((file) {
-        return SegulInputFile.fromXFile(file, xTypeGroup);
-      }));
+      files.addAll(inputFiles.map(
+        (file) => SegulInputFile.fromXFile(file, xTypeGroup),
+      ));
       return files;
     });
   }
