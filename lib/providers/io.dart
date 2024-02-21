@@ -74,13 +74,13 @@ class FileOutput extends _$FileOutput {
 
   /// Add the files in the output directory.
   /// This is use after the use selects the output directory.
-  Future<void> add(Directory? outputDir) async {
+  Future<void> add(Directory? outputDir, {bool isRecursive = false}) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (outputDir == null) {
         return SegulOutputFile.empty();
       }
-      return SegulOutputFile.fromDirectory(outputDir, isRecursive: false);
+      return SegulOutputFile.fromDirectory(outputDir, isRecursive: isRecursive);
     });
   }
 
@@ -103,7 +103,7 @@ class FileOutput extends _$FileOutput {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       Directory dir = await getSeguiDirectory();
-      return SegulOutputFile.fromDirectory(dir, isRecursive: false);
+      return SegulOutputFile.fromDirectory(dir, isRecursive: true);
     });
   }
 
