@@ -66,10 +66,10 @@ class AboutContent extends StatelessWidget {
           Positioned(
             top: 56,
             child: Container(
-              width: MediaQuery.of(context).size.width < 800
-                  ? MediaQuery.of(context).size.width
-                  : 800,
-              height: 400,
+              width: MediaQuery.of(context).size.width > 800
+                  ? 800
+                  : MediaQuery.of(context).size.width,
+              height: isPhoneScreen(context) ? 440 : 400,
               padding: const EdgeInsets.fromLTRB(16, 60, 16, 16),
               decoration: getContainerDecoration(context),
               child: FutureBuilder<SegulVersion>(
