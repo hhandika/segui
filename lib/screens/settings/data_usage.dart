@@ -162,11 +162,16 @@ class FileSizeTile extends StatelessWidget {
   }
 }
 
-class ClearAppDataButton extends ConsumerWidget {
+class ClearAppDataButton extends ConsumerStatefulWidget {
   const ClearAppDataButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ClearAppDataButtonState createState() => ClearAppDataButtonState();
+}
+
+class ClearAppDataButtonState extends ConsumerState<ClearAppDataButton> {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.only(top: 8),
         child: TextButton(
@@ -191,12 +196,15 @@ class ClearAppDataButton extends ConsumerWidget {
                             foregroundColor:
                                 Theme.of(context).colorScheme.error,
                           ),
-                          onPressed: () {
-                            ref.read(fileOutputProvider.notifier).clearAll();
+                          onPressed: () async {
+                            await ref
+                                .read(fileOutputProvider.notifier)
+                                .clearAll();
+                            ref.invalidate(fileOutputProvider);
                             ref
                                 .read(fileOutputProvider.notifier)
-                                .refresh(isRecursive: true);
-                            Navigator.of(context).pop();
+                                .addFromAppDir();
+                            _popDialog();
                           },
                           icon: const Icon(Icons.delete_forever_outlined),
                           label: const Text('Clear all data'))
@@ -206,5 +214,9 @@ class ClearAppDataButton extends ConsumerWidget {
               );
             },
             child: const Text('Clear app data')));
+  }
+
+  void _popDialog() {
+    Navigator.of(context).pop();
   }
 }

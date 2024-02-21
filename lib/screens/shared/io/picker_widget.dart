@@ -25,27 +25,15 @@ class SelectDirField extends ConsumerWidget {
             children: [
               Expanded(
                 child: data.directory == null
-                    ? RichText(
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        text: TextSpan(children: [
-                          const WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Icon(Icons.folder_outlined),
-                          ),
-                          const WidgetSpan(
-                            child: SizedBox(width: 4),
-                          ),
-                          TextSpan(
-                            text: label,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ]))
+                    ? Text(
+                        label,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      )
                     : PathTextWithOverflow(
                         path: data.directory!.path,
                       ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 2),
               IconButton(
                 tooltip: data.directory == null
                     ? 'Select directory'
