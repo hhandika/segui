@@ -623,20 +623,28 @@ class FileInfoScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   const CommonDivider(),
-                  const MetadataSubtitle(subtitle: 'Size'),
-                  MetadataContent(
-                    content: snapshot.data!.size,
-                  ),
-                  const MetadataSubtitle(subtitle: 'Last accessed'),
-                  MetadataContent(
-                    content: snapshot.data!.accessed,
-                  ),
-                  const MetadataSubtitle(subtitle: 'Last modified'),
-                  MetadataContent(
-                    content: snapshot.data!.lastModified,
-                  ),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      MetadataTile(
+                        title: 'Size',
+                        content: snapshot.data!.size,
+                        icon: const Icon(Icons.file_copy_outlined),
+                      ),
+                      MetadataTile(
+                        title: 'Last accessed',
+                        content: snapshot.data!.accessed,
+                        icon: const Icon(Icons.access_time_outlined),
+                      ),
+                      MetadataTile(
+                        title: 'Last modified',
+                        content: snapshot.data!.lastModified,
+                        icon: const Icon(Icons.update_outlined),
+                      ),
+                    ],
+                  )
                 ],
               ));
         } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -657,34 +665,28 @@ class FileInfoScreen extends StatelessWidget {
   }
 }
 
-class MetadataSubtitle extends StatelessWidget {
-  const MetadataSubtitle({super.key, required this.subtitle});
+class MetadataTile extends StatelessWidget {
+  const MetadataTile({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.icon,
+  });
 
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: Text(
-          subtitle,
-          style: Theme.of(context).textTheme.labelSmall,
-          overflow: TextOverflow.ellipsis,
-        ));
-  }
-}
-
-class MetadataContent extends StatelessWidget {
-  const MetadataContent({super.key, required this.content});
-
+  final String title;
   final String content;
+  final Icon icon;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      content,
-      style: Theme.of(context).textTheme.bodySmall,
-      overflow: TextOverflow.ellipsis,
+    return ListTile(
+      dense: true,
+      leading: icon,
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.labelSmall,
+      ),
+      subtitle: Text(content),
     );
   }
 }
