@@ -69,7 +69,7 @@ class AboutContent extends StatelessWidget {
               width: MediaQuery.of(context).size.width < 800
                   ? MediaQuery.of(context).size.width
                   : 800,
-              height: 460,
+              height: 400,
               padding: const EdgeInsets.fromLTRB(16, 60, 16, 16),
               decoration: getContainerDecoration(context),
               child: FutureBuilder<SegulVersion>(
@@ -77,7 +77,7 @@ class AboutContent extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return SingleChildScrollView(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.only(top: 16),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,39 +89,25 @@ class AboutContent extends StatelessWidget {
                                 style: Theme.of(context).textTheme.bodyLarge),
                             Text('Heru Handika & Jacob A. Esselstyn',
                                 style: Theme.of(context).textTheme.bodyMedium),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 4),
                             const CommonDivider(),
-                            ListTile(
-                                dense: true,
-                                title: const AboutTitle(title: 'App version'),
-                                subtitle: AboutSubtitle(
-                                    subtitle: 'v${snapshot.data!.version}'),
-                                leading: Icon(
-                                  Icons.widgets_outlined,
-                                  color: getIconColor(context),
-                                )),
-                            const CommonDivider(),
-                            ListTile(
-                                title: const AboutTitle(title: 'Build number'),
-                                subtitle: AboutSubtitle(
-                                    subtitle: snapshot.data!.buildNumber),
-                                leading: Icon(
-                                  Icons.build_outlined,
-                                  color: getIconColor(context),
-                                )),
-                            const CommonDivider(),
-                            ListTile(
-                              title: const AboutTitle(title: 'API version'),
-                              subtitle: AboutSubtitle(
-                                  subtitle: 'v${snapshot.data!.apiVersion}'),
-                              leading: Icon(
-                                Icons.api_outlined,
-                                color: getIconColor(context),
-                              ),
+                            AboutTile(
+                              title: 'App version',
+                              subtitle: 'v${snapshot.data!.version}',
+                              icon: Icons.apps_outlined,
                             ),
-                            const CommonDivider(),
+                            AboutTile(
+                              title: 'Build number',
+                              subtitle: snapshot.data!.buildNumber,
+                              icon: Icons.build_outlined,
+                            ),
+                            AboutTile(
+                              title: 'API version',
+                              subtitle: 'v${snapshot.data!.apiVersion}',
+                              icon: Icons.api_outlined,
+                            ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 16),
+                              padding: const EdgeInsets.only(top: 8),
                               child: TextButton(
                                 onPressed: () {
                                   showLicensePage(
@@ -168,6 +154,29 @@ class AboutContent extends StatelessWidget {
   }
 }
 
+class AboutTile extends StatelessWidget {
+  const AboutTile({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      dense: true,
+      title: Text(title),
+      subtitle: Text(subtitle),
+      leading: Icon(icon, color: getIconColor(context)),
+    );
+  }
+}
+
 class AboutTitle extends StatelessWidget {
   const AboutTitle({super.key, required this.title});
 
@@ -177,7 +186,7 @@ class AboutTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.bodyMedium,
+      style: Theme.of(context).textTheme.labelMedium,
     );
   }
 }
@@ -191,7 +200,6 @@ class AboutSubtitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       subtitle,
-      style: Theme.of(context).textTheme.bodySmall,
     );
   }
 }
