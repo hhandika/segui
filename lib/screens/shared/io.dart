@@ -30,10 +30,22 @@ class SelectDirField extends ConsumerWidget {
             children: [
               Expanded(
                 child: data.directory == null
-                    ? Text(
-                        '$label: ',
+                    ? RichText(
                         overflow: TextOverflow.ellipsis,
-                      )
+                        textAlign: TextAlign.center,
+                        text: TextSpan(children: [
+                          const WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Icon(Icons.folder_outlined),
+                          ),
+                          const WidgetSpan(
+                            child: SizedBox(width: 4),
+                          ),
+                          TextSpan(
+                            text: label,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ]))
                     : PathTextWithOverflow(
                         path: data.directory!.path,
                       ),
@@ -166,7 +178,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ])),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 2),
                   _isLoading
                       ? const SharedProgressIndicator()
                       : !widget.allowDirectorySelection
