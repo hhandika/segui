@@ -24,6 +24,35 @@ const XTypeGroup genomicRawReadTypeGroup = XTypeGroup(
   ],
 );
 
+const XTypeGroup sequenceTypeGroup = XTypeGroup(
+  label: 'Sequence',
+  extensions: [
+    ...fastaExtensions,
+    ...nexusExtensions,
+    ...phylipExtensions,
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.fasta',
+    'com.segui.nexus',
+    'com.segui.phylip',
+  ],
+);
+
+const XTypeGroup partitionTypeGroup = XTypeGroup(
+  label: 'Partition',
+  extensions: [
+    ...nexusExtensions,
+    'txt',
+    'part',
+    'partition',
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.partition',
+    'public.plain-text',
+    'com.segui.nexus',
+  ],
+);
+
 const XTypeGroup genomicContigTypeGroup = XTypeGroup(
   label: 'Contig',
   extensions: fastaExtensions,
@@ -61,35 +90,6 @@ const List<String> gunzipExtensions = [
   'gz',
   'gzip',
 ];
-
-const XTypeGroup sequenceTypeGroup = XTypeGroup(
-  label: 'Sequence',
-  extensions: [
-    ...fastaExtensions,
-    ...nexusExtensions,
-    ...phylipExtensions,
-  ],
-  uniformTypeIdentifiers: [
-    'com.segui.fasta',
-    'com.segui.nexus',
-    'com.segui.phylip',
-  ],
-);
-
-const XTypeGroup partitionTypeGroup = XTypeGroup(
-  label: 'Partition',
-  extensions: [
-    ...nexusExtensions,
-    'txt',
-    'part',
-    'partition',
-  ],
-  uniformTypeIdentifiers: [
-    'com.segui.partition',
-    'public.plain-text',
-    'com.segui.nexus',
-  ],
-);
 
 const List<String> sequenceExtensions = [
   ...fastaExtensions,

@@ -665,10 +665,10 @@ class MetadataSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: 8),
         child: Text(
           subtitle,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.labelSmall,
           overflow: TextOverflow.ellipsis,
         ));
   }
