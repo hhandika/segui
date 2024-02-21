@@ -166,94 +166,101 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                             ),
                           ])),
                   const SizedBox(width: 8),
-                  _isLoading
-                      ? const SharedProgressIndicator()
-                      : !widget.allowDirectorySelection
-                          ? SingleInputButton(
-                              addNew: addNew,
-                              inputFiles: data,
-                              type: type,
-                              onFileSelected: !widget.allowMultiple && !addNew
-                                  ? null
-                                  : () async {
-                                      await _selectFiles(
-                                        addNew && !widget.hasSecondaryPicker,
-                                      );
+                  ref.watch(fileInputProvider).when(
+                      data: (data) {
+                        return _isLoading
+                            ? const SharedProgressIndicator()
+                            : !widget.allowDirectorySelection
+                                ? SingleInputButton(
+                                    addNew: addNew,
+                                    inputFiles: data,
+                                    type: type,
+                                    onFileSelected: !widget.allowMultiple &&
+                                            !addNew
+                                        ? null
+                                        : () async {
+                                            if (!widget.hasSecondaryPicker &&
+                                                addNew) {
+                                              await _addFiles(isDir: false);
+                                            } else {
+                                              await _addMoreFiles(data,
+                                                  isDir: false);
+                                            }
+                                          },
+                                  )
+                                : InputSelector(
+                                    addNew: addNew,
+                                    onFileSelected: () async {
+                                      if (!widget.hasSecondaryPicker &&
+                                          addNew) {
+                                        await _addFiles(isDir: true);
+                                      } else {
+                                        await _addMoreFiles(data, isDir: false);
+                                      }
                                     },
-                            )
-                          : InputSelector(
-                              addNew: addNew,
-                              onFileSelected: () async {
-                                await _selectFiles(
-                                    addNew && !widget.hasSecondaryPicker);
-                              },
-                              onDirectorySelected: () async {
-                                await _selectDirectory(
-                                    addNew && !widget.hasSecondaryPicker);
-                              },
-                            ),
+                                    onDirectorySelected: () async {
+                                      if (!widget.hasSecondaryPicker &&
+                                          addNew) {
+                                        await _addFiles(isDir: true);
+                                      } else {
+                                        await _addMoreFiles(data, isDir: true);
+                                      }
+                                    },
+                                  );
+                      },
+                      loading: () => const CircularProgressIndicator(),
+                      error: (err, stack) {
+                        return IconButton(
+                          tooltip: 'Retry',
+                          icon: const Icon(Icons.refresh),
+                          onPressed: () {
+                            ref.invalidate(fileInputProvider);
+                          },
+                        );
+                      }),
                 ]);
           },
-          loading: () => const SizedBox.shrink(),
+          loading: () => const SharedProgressIndicator(),
           error: (err, stack) => Text(err.toString()),
         );
   }
 
-  Future<void> _selectDirectory(bool addNew) async {
+  Future<void> _addFiles({required bool isDir}) async {
     _startLoading();
-    if (addNew) {
-      try {
-        final selection = _getFileSelection();
+    try {
+      final selection = _getFileSelection();
+      if (isDir) {
         await selection.addDirectory();
-      } catch (e) {
-        _showError(e.toString());
-      }
-    } else {
-      await _addMore(isDir: true);
-    }
-
-    _stopLoading();
-  }
-
-  Future<void> _selectFiles(bool addNew) async {
-    final selection = _getFileSelection();
-    _startLoading();
-
-    if (addNew) {
-      try {
+      } else {
         await selection.selectFiles();
-      } catch (e) {
-        _showError(e.toString());
       }
-    } else {
-      await _addMore(isDir: false);
+    } catch (e) {
+      _showError(e.toString());
     }
+
     _stopLoading();
   }
 
-  Future<void> _addMore({required bool isDir}) async {
-    ref.read(fileInputProvider).when(
-          data: (data) async {
-            final selection = _getFileSelection();
-            final files = data.map((e) => e.file).toList();
-            try {
-              int duplicates = 0;
-              if (isDir) {
-                duplicates = await selection.addMoreDirectory(files);
-              } else {
-                duplicates = await selection.addMoreFiles(files);
-              }
-              if (duplicates > 0) {
-                _showError(
-                    'Skipping $duplicates duplicate file${duplicates > 1 ? 's' : ''}. 🙈');
-              }
-            } catch (e) {
-              _showError(e.toString());
-            }
-          },
-          loading: () => null,
-          error: (err, stack) => _showError(err.toString()),
-        );
+  Future<void> _addMoreFiles(List<SegulInputFile> currentFiles,
+      {required bool isDir}) async {
+    _startLoading();
+    final selection = _getFileSelection();
+    final files = currentFiles.map((e) => e.file).toList();
+    try {
+      int duplicates = 0;
+      if (isDir) {
+        duplicates = await selection.addMoreDirectory(files);
+      } else {
+        duplicates = await selection.addMoreFiles(files);
+      }
+      if (duplicates > 0) {
+        _showError(
+            'Skipping $duplicates duplicate file${duplicates > 1 ? 's' : ''}. 🙈');
+      }
+    } catch (e) {
+      _showError(e.toString());
+    }
+    _stopLoading();
   }
 
   FileInputServices _getFileSelection() {

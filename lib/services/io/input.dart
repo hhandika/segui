@@ -77,7 +77,7 @@ class FileInputServices {
     } else {
       results = await _selectFileAdaptive();
     }
-    _updateProvider(results);
+    await _updateProvider(results);
   }
 
   Future<int> addMoreFiles(List<File> currentFiles) async {
@@ -88,7 +88,7 @@ class FileInputServices {
       results = await _selectFileAdaptive();
     }
     final newFiles = _checkDuplicateFiles(currentFiles, results);
-    _addMoreToProvider(newFiles.files);
+    await _addMoreToProvider(newFiles.files);
     return newFiles.duplicate;
   }
 
@@ -97,7 +97,7 @@ class FileInputServices {
 
     if (result != null) {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
-      _updateProvider(files.map((e) => XFile(e.path)).toList());
+      await _updateProvider(files.map((e) => XFile(e.path)).toList());
     }
   }
 
@@ -107,7 +107,7 @@ class FileInputServices {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
       final newFiles = _checkDuplicateFiles(
           currentFiles, files.map((e) => XFile(e.path)).toList());
-      _addMoreToProvider(newFiles.files);
+      await _addMoreToProvider(newFiles.files);
       return newFiles.duplicate;
     }
     return 0;
@@ -151,18 +151,18 @@ class FileInputServices {
     return (files: newFiles, duplicate: diff);
   }
 
-  void _addMoreToProvider(List<XFile> result) {
+  Future<void> _addMoreToProvider(List<XFile> result) async {
     final notifier = ref.read(fileInputProvider.notifier);
     if (result.isNotEmpty) {
-      notifier.addMoreFiles(result, allowedExtension);
+      await notifier.addMoreFiles(result, allowedExtension);
     }
   }
 
-  void _updateProvider(List<XFile> result) async {
+  Future<void> _updateProvider(List<XFile> result) async {
     final notifier = ref.read(fileInputProvider.notifier);
 
     if (result.isNotEmpty) {
-      notifier.addFiles(result, allowedExtension);
+      await notifier.addFiles(result, allowedExtension);
     }
   }
 
