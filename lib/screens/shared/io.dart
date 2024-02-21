@@ -139,85 +139,67 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     return ref.watch(fileInputProvider).when(
           data: (data) {
             final addNew = data.where((e) => e.type == type).toList().isEmpty;
+            final newInput = addNew && !widget.hasSecondaryPicker;
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  data.isEmpty
-                      ? Text(
-                          '${widget.label}: ',
-                          overflow: TextOverflow.ellipsis,
+                  RichText(
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      text: TextSpan(children: [
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Icon(
+                            newInput
+                                ? Icons.folder_outlined
+                                : Icons.folder_open_outlined,
+                          ),
+                        ),
+                        const WidgetSpan(
+                          child: SizedBox(width: 4),
+                        ),
+                        TextSpan(
+                          text: newInput
+                              ? '${widget.label} '
+                              : '${IOServices().countFiles(data, type)} selected files',
                           style: Theme.of(context).textTheme.bodyMedium,
-                        )
-                      : RichText(
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          text: TextSpan(children: [
-                            const WidgetSpan(
-                              alignment: PlaceholderAlignment.middle,
-                              child: Icon(Icons.folder_open),
-                            ),
-                            const WidgetSpan(
-                              child: SizedBox(width: 4),
-                            ),
-                            TextSpan(
-                              text:
-                                  '${IOServices().countFiles(data, type)} selected files',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ])),
+                        ),
+                      ])),
                   const SizedBox(width: 8),
-                  ref.watch(fileInputProvider).when(
-                      data: (data) {
-                        return _isLoading
-                            ? const SharedProgressIndicator()
-                            : !widget.allowDirectorySelection
-                                ? SingleInputButton(
-                                    addNew: addNew,
-                                    inputFiles: data,
-                                    type: type,
-                                    onFileSelected: !widget.allowMultiple &&
-                                            !addNew
-                                        ? null
-                                        : () async {
-                                            if (!widget.hasSecondaryPicker &&
-                                                addNew) {
-                                              await _addFiles(isDir: false);
-                                            } else {
-                                              await _addMoreFiles(data,
-                                                  isDir: false);
-                                            }
-                                          },
-                                  )
-                                : InputSelector(
-                                    addNew: addNew,
-                                    onFileSelected: () async {
-                                      if (!widget.hasSecondaryPicker &&
-                                          addNew) {
-                                        await _addFiles(isDir: true);
+                  _isLoading
+                      ? const SharedProgressIndicator()
+                      : !widget.allowDirectorySelection
+                          ? SingleInputButton(
+                              addNew: addNew,
+                              inputFiles: data,
+                              type: type,
+                              onFileSelected: !widget.allowMultiple && !addNew
+                                  ? null
+                                  : () async {
+                                      if (newInput) {
+                                        await _addFiles(isDir: false);
                                       } else {
                                         await _addMoreFiles(data, isDir: false);
                                       }
                                     },
-                                    onDirectorySelected: () async {
-                                      if (!widget.hasSecondaryPicker &&
-                                          addNew) {
-                                        await _addFiles(isDir: true);
-                                      } else {
-                                        await _addMoreFiles(data, isDir: true);
-                                      }
-                                    },
-                                  );
-                      },
-                      loading: () => const CircularProgressIndicator(),
-                      error: (err, stack) {
-                        return IconButton(
-                          tooltip: 'Retry',
-                          icon: const Icon(Icons.refresh),
-                          onPressed: () {
-                            ref.invalidate(fileInputProvider);
-                          },
-                        );
-                      }),
+                            )
+                          : InputSelector(
+                              addNew: addNew,
+                              onFileSelected: () async {
+                                if (newInput) {
+                                  await _addFiles(isDir: true);
+                                } else {
+                                  await _addMoreFiles(data, isDir: false);
+                                }
+                              },
+                              onDirectorySelected: () async {
+                                if (newInput) {
+                                  await _addFiles(isDir: true);
+                                } else {
+                                  await _addMoreFiles(data, isDir: true);
+                                }
+                              },
+                            ),
                 ]);
           },
           loading: () => const SharedProgressIndicator(),
