@@ -48,7 +48,10 @@ class _AppAboutState extends State<AppAbout> {
         ),
         backgroundColor: getSEGULBackgroundColor(context),
         body: const Center(
-          child: AboutContent(),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: AboutContent(),
+          ),
         ));
   }
 }
@@ -58,94 +61,94 @@ class AboutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(
-            top: 56,
-            child: Container(
-              width: MediaQuery.of(context).size.width > 800
-                  ? 800
-                  : MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.fromLTRB(16, 60, 16, 16),
-              decoration: getContainerDecoration(context),
-              child: FutureBuilder<SegulVersion>(
-                future: segulVersion,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return SingleChildScrollView(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('SEGUI',
-                                style: Theme.of(context).textTheme.titleLarge),
-                            const SizedBox(height: 4),
-                            Text('A GUI version of the SEGUL genomic tool',
-                                style: Theme.of(context).textTheme.bodyLarge),
-                            Text('Heru Handika & Jacob A. Esselstyn',
-                                style: Theme.of(context).textTheme.bodyMedium),
-                            const SizedBox(height: 4),
-                            const CommonDivider(),
-                            AboutTile(
-                              title: 'App version',
-                              subtitle: 'v${snapshot.data!.version}',
-                              icon: Icons.apps_outlined,
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Positioned(
+          top: 56,
+          child: Container(
+            // We add extra padding to the width
+            // to account for the container decoration
+            // added to the container
+            width: MediaQuery.of(context).size.width > 840
+                ? 800
+                : MediaQuery.of(context).size.width - 32,
+            padding: const EdgeInsets.fromLTRB(16, 60, 16, 16),
+            decoration: getContainerDecoration(context),
+            child: FutureBuilder<SegulVersion>(
+              future: segulVersion,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return SingleChildScrollView(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('SEGUI',
+                              style: Theme.of(context).textTheme.titleLarge),
+                          const SizedBox(height: 4),
+                          Text('A GUI version of the SEGUL genomic tool',
+                              style: Theme.of(context).textTheme.bodyLarge),
+                          Text('Heru Handika & Jacob A. Esselstyn',
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          const SizedBox(height: 4),
+                          const CommonDivider(),
+                          AboutTile(
+                            title: 'App version',
+                            subtitle: 'v${snapshot.data!.version}',
+                            icon: Icons.apps_outlined,
+                          ),
+                          AboutTile(
+                            title: 'Build number',
+                            subtitle: snapshot.data!.buildNumber,
+                            icon: Icons.build_outlined,
+                          ),
+                          AboutTile(
+                            title: 'API version',
+                            subtitle: 'v${snapshot.data!.apiVersion}',
+                            icon: Icons.api_outlined,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: TextButton(
+                              onPressed: () {
+                                showLicensePage(
+                                  context: context,
+                                  applicationName: snapshot.data!.name,
+                                  applicationVersion: snapshot.data!.version,
+                                );
+                              },
+                              child: const Text('Licenses'),
                             ),
-                            AboutTile(
-                              title: 'Build number',
-                              subtitle: snapshot.data!.buildNumber,
-                              icon: Icons.build_outlined,
-                            ),
-                            AboutTile(
-                              title: 'API version',
-                              subtitle: 'v${snapshot.data!.apiVersion}',
-                              icon: Icons.api_outlined,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: TextButton(
-                                onPressed: () {
-                                  showLicensePage(
-                                    context: context,
-                                    applicationName: snapshot.data!.name,
-                                    applicationVersion: snapshot.data!.version,
-                                  );
-                                },
-                                child: const Text('Licenses'),
-                              ),
-                            ),
-                          ],
-                        ));
-                  } else {
-                    return const Text('Loading...');
-                  }
-                },
-              ),
+                          ),
+                        ],
+                      ));
+                } else {
+                  return const Text('Loading...');
+                }
+              },
             ),
           ),
-          Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: getContainerDecoration(context),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: Image.asset(
-                    'assets/launcher/icon.png',
-                    cacheHeight: 420,
-                    cacheWidth: 420,
-                    width: 100,
-                    height: 100,
-                  ),
+        ),
+        Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: getContainerDecoration(context),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: Image.asset(
+                  'assets/launcher/icon.png',
+                  cacheHeight: 420,
+                  cacheWidth: 420,
+                  width: 100,
+                  height: 100,
                 ),
-              )),
-        ],
-      ),
+              ),
+            )),
+      ],
     );
   }
 
