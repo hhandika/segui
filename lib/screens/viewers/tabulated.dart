@@ -76,7 +76,7 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
               return const Center(child: Text('Failed to parse file.'));
             }
             return content!.length > 300
-                ? const BigFileErrors()
+                ? BigFileErrors(file: widget.file)
                 : SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     clipBehavior: Clip.antiAlias,
@@ -113,16 +113,19 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
 }
 
 class BigFileErrors extends StatelessWidget {
-  const BigFileErrors({super.key});
+  const BigFileErrors({super.key, required this.file});
+
+  final File file;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FileErrorIcon(),
-          Text('File too large to display.'),
+          const FileErrorIcon(),
+          const Text('File too large to display.'),
+          ExternalAppLauncher(file: file, fromPopUp: false)
         ],
       ),
     );

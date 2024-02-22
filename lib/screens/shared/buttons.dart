@@ -299,29 +299,39 @@ class ExternalAppLauncher extends StatefulWidget {
 }
 
 class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
+  final isMobile = runningPlatform == PlatformType.isMobile;
   @override
   Widget build(BuildContext context) {
-    if (runningPlatform == PlatformType.isMobile) {
-      return const SizedBox.shrink();
+    if (widget.fromPopUp) {
+      return isMobile
+          // We do not show the tile if the platform is mobile
+          // because the user can't open the file in an external app
+          // instead there is a share button to share the file
+          ? const SizedBox.shrink()
+          : ListTile(
+              leading: const Icon(Icons.open_in_new),
+              title: const Text('Open in app'),
+              onTap: () async => await _openExternalViewer(),
+            );
+    } else {
+      return Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: TextButton.icon(
+            onPressed: () async =>
+                isMobile ? await _shareFile() : await _openExternalViewer(),
+            icon: Icon(isMobile ? Icons.adaptive.share : Icons.open_in_new),
+            label: Text(isMobile ? 'Share' : 'Open in app'),
+          ));
     }
-    return widget.fromPopUp
-        ? ListTile(
-            leading: const Icon(Icons.open_in_new),
-            title: const Text('Open in app'),
-            onTap: () async => await _openExternalViewer(),
-          )
-        : TextButton.icon(
-            onPressed: () async => await _openExternalViewer(),
-            icon: const Icon(Icons.open_in_new),
-            label: const Text('Open in app'),
-          );
   }
 
   Future<void> _openExternalViewer() async {
-    // Close the pop-up first so
-    // the user can see snackbar messages if
-    // the file can't be opened
-    Navigator.pop(context);
+    if (widget.fromPopUp) {
+      // Close the pop-up first so
+      // the user can see snackbar messages if
+      // the file can't be opened
+      Navigator.pop(context);
+    }
     final launcher = UrlLauncherServices(file: widget.file);
     if (await launcher.canLaunch()) {
       try {
@@ -334,6 +344,10 @@ class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
         _showSnackBar('No app found to open this file.');
       }
     }
+  }
+
+  Future<void> _shareFile() async {
+    await IOServices().shareFile(context, widget.file);
   }
 
   void _showSnackBar(String message) {
