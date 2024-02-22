@@ -431,10 +431,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "5b24061317f850af858ef7151dadbb6eb77c1c449c954c7bb064e8a5e0e7d81f"
+      sha256: a64c5323ac83ed2b7940d2b6288d160aa1753ff271ba9d9b2a86770414aa3eab
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.20"
+    version: "0.6.20+1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -1119,10 +1119,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: c512655380d241a337521703af62d2c122bf7b77a46ff7dd750092aa9433499c
+      sha256: "0ecc004c62fd3ed36a2ffcbe0dd9700aee63bd7532d0b642a488b1ec310f492e"
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.4"
+    version: "6.2.5"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1295,10 +1295,10 @@ packages:
     dependency: transitive
     description:
       name: yaml_edit
-      sha256: "1579d4a0340a83cf9e4d580ea51a16329c916973bffd5bd4b45e911b25d46bfd"
+      sha256: c566f4f804215d84a7a2c377667f546c6033d5b34b4f9e60dfb09d17c4e97826
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.2.0"
 sdks:
-  dart: ">=3.3.0-279.1.beta <4.0.0"
-  flutter: ">=3.16.0"
+  dart: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"

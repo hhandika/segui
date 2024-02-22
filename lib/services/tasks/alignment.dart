@@ -124,8 +124,8 @@ class FilteringRunner {
   }
 }
 
-class AlignConversionRunnerServices {
-  const AlignConversionRunnerServices({
+class ConversionRunnerServices {
+  const ConversionRunnerServices({
     required this.inputFiles,
     required this.inputFormat,
     required this.datatype,
@@ -150,15 +150,14 @@ class AlignConversionRunnerServices {
     if (finalInputFiles.isEmpty) {
       throw 'No input files';
     }
-    await SequenceServices(
+    await SequenceConversionServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFormat,
       datatype: datatype,
       outputDir: outputDir.path,
-    ).convertSequence(
       outputFmt: outputFmt,
       sort: isSorted,
-    );
+    ).convertSequence();
   }
 }
 

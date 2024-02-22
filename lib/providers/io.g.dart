@@ -6,7 +6,7 @@ part of 'io.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fileInputHash() => r'c39722717988ff838a967d962283ff118bb25c99';
+String _$fileInputHash() => r'4e4ac0db307cfe0c2a0da4d031809fed4dc1fbc6';
 
 /// See also [FileInput].
 @ProviderFor(FileInput)
@@ -21,7 +21,7 @@ final fileInputProvider =
 );
 
 typedef _$FileInput = AsyncNotifier<List<SegulInputFile>>;
-String _$fileOutputHash() => r'2298daa901c590f5fc3df8e2675d633601591266';
+String _$fileOutputHash() => r'5d2643f0a0090f14ef20e20433aeef1b1359566e';
 
 /// The output directory.
 /// This is use to store the output files.

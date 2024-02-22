@@ -146,6 +146,53 @@ class FilteringServices {
           partitionFmt == other.partitionFmt;
 }
 
+class IDExtractionServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String? prefix;
+  final bool isMap;
+
+  const IDExtractionServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    this.prefix,
+    required this.isMap,
+  });
+
+  Future<void> extractId({dynamic hint}) =>
+      RustLib.instance.api.idExtractionServicesExtractId(
+        that: this,
+      );
+
+  static Future<IDExtractionServices> newIDExtractionServices({dynamic hint}) =>
+      RustLib.instance.api.idExtractionServicesNew(hint: hint);
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      prefix.hashCode ^
+      isMap.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IDExtractionServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          prefix == other.prefix &&
+          isMap == other.isMap;
+}
+
 class PartitionServices {
   final List<String> inputFiles;
   final String inputPartFmt;
@@ -191,6 +238,54 @@ class PartitionServices {
           outputPartFmt == other.outputPartFmt &&
           datatype == other.datatype &&
           isUncheck == other.isUncheck;
+}
+
+class SequenceConversionServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String outputFmt;
+  final bool sort;
+
+  const SequenceConversionServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+    required this.sort,
+  });
+
+  Future<void> convertSequence({dynamic hint}) =>
+      RustLib.instance.api.sequenceConversionServicesConvertSequence(
+        that: this,
+      );
+
+  static Future<SequenceConversionServices> newSequenceConversionServices(
+          {dynamic hint}) =>
+      RustLib.instance.api.sequenceConversionServicesNew(hint: hint);
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode ^
+      sort.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SequenceConversionServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt &&
+          sort == other.sort;
 }
 
 class SequenceExtraction {
@@ -376,68 +471,6 @@ sealed class SequenceRenamingParams with _$SequenceRenamingParams {
   const factory SequenceRenamingParams.none() = SequenceRenamingParams_None;
 }
 
-class SequenceServices {
-  final List<String> inputFiles;
-  final String inputFmt;
-  final String datatype;
-  final String outputDir;
-
-  const SequenceServices({
-    required this.inputFiles,
-    required this.inputFmt,
-    required this.datatype,
-    required this.outputDir,
-  });
-
-  Future<void> convertSequence(
-          {required String outputFmt, required bool sort, dynamic hint}) =>
-      RustLib.instance.api.sequenceServicesConvertSequence(
-        that: this,
-        outputFmt: outputFmt,
-        sort: sort,
-      );
-
-  static Future<SequenceServices> newSequenceServices({dynamic hint}) =>
-      RustLib.instance.api.sequenceServicesNew(hint: hint);
-
-  Future<void> parseSequenceId(
-          {required String outputFname, required bool isMap, dynamic hint}) =>
-      RustLib.instance.api.sequenceServicesParseSequenceId(
-        that: this,
-        outputFname: outputFname,
-        isMap: isMap,
-      );
-
-  Future<void> translateSequence(
-          {required String table,
-          required int readingFrame,
-          required String outputFmt,
-          dynamic hint}) =>
-      RustLib.instance.api.sequenceServicesTranslateSequence(
-        that: this,
-        table: table,
-        readingFrame: readingFrame,
-        outputFmt: outputFmt,
-      );
-
-  @override
-  int get hashCode =>
-      inputFiles.hashCode ^
-      inputFmt.hashCode ^
-      datatype.hashCode ^
-      outputDir.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SequenceServices &&
-          runtimeType == other.runtimeType &&
-          inputFiles == other.inputFiles &&
-          inputFmt == other.inputFmt &&
-          datatype == other.datatype &&
-          outputDir == other.outputDir;
-}
-
 class SplitAlignmentServices {
   final String inputFile;
   final String inputFmt;
@@ -496,4 +529,55 @@ class SplitAlignmentServices {
           prefix == other.prefix &&
           outputFmt == other.outputFmt &&
           isUncheck == other.isUncheck;
+}
+
+class TranslationServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String outputFmt;
+  final String table;
+  final int readingFrame;
+
+  const TranslationServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+    required this.table,
+    required this.readingFrame,
+  });
+
+  static Future<TranslationServices> newTranslationServices({dynamic hint}) =>
+      RustLib.instance.api.translationServicesNew(hint: hint);
+
+  Future<void> translateSequence({dynamic hint}) =>
+      RustLib.instance.api.translationServicesTranslateSequence(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode ^
+      table.hashCode ^
+      readingFrame.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TranslationServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt &&
+          table == other.table &&
+          readingFrame == other.readingFrame;
 }

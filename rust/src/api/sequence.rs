@@ -84,99 +84,142 @@ trait Partition {
     }
 }
 
-pub struct SequenceServices {
+pub struct TranslationServices {
     pub input_files: Vec<String>,
     pub input_fmt: String,
     pub datatype: String,
     pub output_dir: String,
+    pub output_fmt: String,
+    pub table: String,
+    pub reading_frame: usize,
 }
 
-impl Sequence for SequenceServices {}
-impl Partition for SequenceServices {}
+impl Sequence for TranslationServices {}
 
-impl SequenceServices {
-    pub fn new() -> SequenceServices {
-        SequenceServices {
+impl TranslationServices {
+    pub fn new() -> TranslationServices {
+        TranslationServices {
             input_files: Vec::new(),
             input_fmt: String::new(),
             datatype: String::new(),
             output_dir: String::new(),
+            output_fmt: String::new(),
+            table: String::new(),
+            reading_frame: 1,
         }
     }
 
-    pub fn convert_sequence(&self, output_fmt: String, sort: bool) {
-        let time = Instant::now();
-        let output_path = Path::new(&self.output_dir);
-        let input_fmt = self.match_input_fmt(&self.input_fmt);
-        let datatype = self.match_datatype(&self.datatype);
-        let input_files =
-            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
-        let output_fmt = self.match_output_fmt(&output_fmt);
-        let task = "Sequence Conversion";
-        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, sort);
-        concat.convert(&input_files, output_path);
-        let duration = time.elapsed();
-        utils::print_execution_time(duration);
-    }
-
-    // TODO: handle output directory creation in the SEGUL API
-    pub fn parse_sequence_id(&self, output_fname: String, is_map: bool) {
-        let time = Instant::now();
-        let output_path = Path::new(&self.output_dir)
-            .join(output_fname)
-            .with_extension("txt");
-        let input_fmt = self.match_input_fmt(&self.input_fmt);
-        let datatype = self.match_datatype(&self.datatype);
-        let input_files =
-            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
-        let log = AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len());
-        let id = Id::new(&input_fmt, &datatype, &output_path);
-        if !is_map {
-            let task = "Sequence ID parsing";
-            log.log(task);
-            id.generate_id(&input_files);
-        } else {
-            let task = "Sequence ID mapping";
-            log.log(task);
-            let output_stem = output_path
-                .file_stem()
-                .expect("No output path")
-                .to_str()
-                .expect("Invalid output path");
-            let output_fname = format!("{}_map", output_stem);
-            let mapped_path = output_path
-                .parent()
-                .expect("No output path")
-                .join(output_fname)
-                .with_extension("txt");
-            id.map_id(&input_files, &mapped_path);
-        }
-        let duration = time.elapsed();
-        utils::print_execution_time(duration);
-    }
-
-    pub fn translate_sequence(&self, table: String, reading_frame: usize, output_fmt: String) {
+    pub fn translate_sequence(&self) {
         let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let mut input_files =
             self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
-        let output_fmt = self.match_output_fmt(&output_fmt);
-        let translation_table = self.match_translation_table(table);
+        let output_fmt = self.match_output_fmt(&self.output_fmt);
+        let translation_table = self.match_translation_table(&self.table);
         let task = "Sequence Translation";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let translate = Translate::new(&translation_table, &input_fmt, &datatype, &output_fmt);
-        translate.translate_all(&mut input_files, reading_frame, &output_path);
+        translate.translate_all(&mut input_files, self.reading_frame, &output_path);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
 
-    fn match_translation_table(&self, table: String) -> GeneticCodes {
+    fn match_translation_table(&self, table: &str) -> GeneticCodes {
         table
             .parse::<GeneticCodes>()
             .expect("Invalid translation table")
+    }
+}
+
+pub struct SequenceConversionServices {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    pub output_fmt: String,
+    pub sort: bool,
+}
+
+impl Sequence for SequenceConversionServices {}
+
+impl SequenceConversionServices {
+    pub fn new() -> SequenceConversionServices {
+        SequenceConversionServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+            sort: false,
+        }
+    }
+
+    pub fn convert_sequence(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files =
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
+        let output_fmt = self.match_output_fmt(&self.output_fmt);
+        let task = "Sequence Conversion";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, self.sort);
+        concat.convert(&input_files, output_path);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+}
+
+pub struct IDExtractionServices {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    pub prefix: Option<String>,
+    pub is_map: bool,
+}
+
+impl Sequence for IDExtractionServices {}
+
+impl IDExtractionServices {
+    pub fn new() -> IDExtractionServices {
+        IDExtractionServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            prefix: None,
+            is_map: false,
+        }
+    }
+
+    pub fn extract_id(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files =
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
+        let task = "ID Extraction";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let id = Id::new(
+            &input_files,
+            &input_fmt,
+            &datatype,
+            output_path,
+            self.prefix.as_deref(),
+        );
+        if self.is_map {
+            id.map_id();
+        } else {
+            id.generate_id();
+        }
+
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
     }
 }
 

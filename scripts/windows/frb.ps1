@@ -1,22 +1,27 @@
-rm -r ./lib/src/rust/api/frb_*
-rm -r ./rust/frb_*
+Remove-Item -r ./lib/src/rust/api/frb_*
+Remove-Item -r ./rust/src/frb_*
 
-echo "Cleaning Flutter build files"
+Write-Output "Cleaning Flutter build files"
 flutter clean
 
-echo "Updating Rust dependencies"
-cd rust
+Write-Output "Updating Rust dependencies"
+Set-Location rust
 cargo update
-cd ..
+Set-Location ..
 
-echo "Updating FRB"
+Write-Output "Updating FRB"
 cargo install 'flutter_rust_bridge_codegen@^2.0.0-dev.0'
 
-echo "Updating Dart dependencies"
+Write-Output "Updating Dart dependencies"
 flutter pub upgrade
 
-echo "Generating FRB for Dart"
+Write-Output "Generating FRB for Dart"
 flutter_rust_bridge_codegen generate
 
-echo "Running Dart fix"
+Write-Output "Running Dart fix"
 dart fix --apply
+
+Write-Output "Check Rust code"
+Set-Location rust
+cargo check
+Set-Location ..

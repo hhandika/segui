@@ -26,15 +26,14 @@ class SequenceIdExtractionRunner {
   Future<void> run() async {
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
-    await SequenceServices(
+    await IDExtractionServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFmt,
       datatype: datatype,
       outputDir: outputDir.path,
-    ).parseSequenceId(
       isMap: isMap,
-      outputFname: _prefix,
-    );
+      prefix: _prefix,
+    ).extractId();
   }
 
   String get _prefix {
@@ -65,16 +64,15 @@ class SequenceTranslationRunner {
     String table = '${tableIndex + 1}';
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
-    await SequenceServices(
+    await TranslationServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFmt,
       datatype: datatype,
       outputDir: outputDir.path,
-    ).translateSequence(
       outputFmt: outputFmt,
       table: table,
       readingFrame: int.tryParse(readingFrame) ?? 1,
-    );
+    ).translateSequence();
   }
 }
 

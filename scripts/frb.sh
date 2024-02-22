@@ -16,7 +16,6 @@ flutter clean
 echo "Updating Rust dependencies"
 cd rust
 cargo update
-cargo check
 cd ..
 
 echo "Updating FRB"
@@ -30,3 +29,8 @@ flutter_rust_bridge_codegen generate
 
 echo "Running Dart fix"
 dart fix --apply
+
+echo "Checking Rust code"
+cd rust
+cargo check
+cd ..
