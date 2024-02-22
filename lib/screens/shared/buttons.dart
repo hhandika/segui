@@ -204,9 +204,8 @@ class QuickActionButton extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(
-            20,
+            16,
           ),
-
           // Lerp colors
           color: Color.lerp(
             Theme.of(context).colorScheme.surface,
