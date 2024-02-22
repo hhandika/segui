@@ -86,13 +86,21 @@ class AboutContent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('SEGUI',
-                              style: Theme.of(context).textTheme.titleLarge),
+                          Text(
+                            'SEGUI',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                           const SizedBox(height: 4),
-                          Text('A GUI version of the SEGUL genomic tool',
-                              style: Theme.of(context).textTheme.bodyLarge),
-                          Text('Heru Handika & Jacob A. Esselstyn',
-                              style: Theme.of(context).textTheme.bodyMedium),
+                          Text(
+                            'A GUI version of the SEGUL genomic tool',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            'Heru Handika & Jacob A. Esselstyn',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
                           const SizedBox(height: 4),
                           const CommonDivider(),
                           AboutTile(
