@@ -193,7 +193,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
   }
 
   bool get _isValid {
-    return _ctr.isValid;
+    return _ctr.isValid && _ctr.outputFormatController != null;
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {

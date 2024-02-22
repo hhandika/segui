@@ -36,8 +36,8 @@ class SequenceIdExtractionRunner {
     ).extractId();
   }
 
-  String get _prefix {
-    return prefix.isNotEmpty ? prefix : 'id';
+  String? get _prefix {
+    return prefix.isEmpty ? null : prefix;
   }
 }
 
