@@ -285,22 +285,14 @@ class PathTextWithOverflow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-        message: path,
-        child: Row(
-          children: [
-            const Icon(Icons.folder_open),
-            const SizedBox(width: 4),
-            Expanded(
-              child: Text(
-                // Substring the last 40 characters
-                path.length > 40
-                    ? '...${path.substring(path.length - 40)}'
-                    : path,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ));
+      message: path,
+      child: Text(
+        // Substring the last 40 characters
+        path.length > 40 ? '...${path.substring(path.length - 40)}' : path,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.labelLarge,
+      ),
+    );
   }
 }
 

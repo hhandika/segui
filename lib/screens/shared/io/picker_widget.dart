@@ -24,22 +24,21 @@ class SelectDirField extends ConsumerWidget {
           return Row(
             children: [
               Expanded(
-                child: data.directory == null
-                    ? Text(
-                        label,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      )
-                    : PathTextWithOverflow(
-                        path: data.directory!.path,
-                      ),
-              ),
+                  child: PickerLabel(
+                addNew: data.directory == null,
+                isDir: true,
+                unselectedLabel: label,
+                selectedLabel: PathTextWithOverflow(
+                  path: data.directory?.path ?? '',
+                ),
+              )),
               const SizedBox(width: 2),
               IconButton(
                 tooltip: data.directory == null
                     ? 'Select directory'
                     : 'Clear directory',
                 icon: data.directory == null
-                    ? const Icon(Icons.folder_outlined)
+                    ? const Icon(Icons.add_rounded)
                     : const Icon(Icons.clear),
                 onPressed: data.directory == null
                     ? () async {
@@ -107,29 +106,15 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RichText(
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      text: TextSpan(children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Icon(
-                            addNew
-                                ? Icons.folder_outlined
-                                : Icons.folder_open_outlined,
-                          ),
-                        ),
-                        const WidgetSpan(
-                          child: SizedBox(width: 4),
-                        ),
-                        TextSpan(
-                          text: addNew
-                              ? '${widget.label} '
-                              : _getFileCountLabel(
-                                  IOServices().countFiles(data, type)),
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ])),
+                  PickerLabel(
+                    addNew: addNew,
+                    isDir: false,
+                    unselectedLabel: '${widget.label} ',
+                    selectedLabel: Text(
+                      _getFileCountLabel(data.length),
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ),
                   const SizedBox(width: 2),
                   _isLoading
                       ? const SharedProgressIndicator()
@@ -239,5 +224,52 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     setState(() {
       _isLoading = false;
     });
+  }
+}
+
+class PickerLabel extends StatelessWidget {
+  const PickerLabel({
+    super.key,
+    required this.addNew,
+    required this.isDir,
+    required this.unselectedLabel,
+    required this.selectedLabel,
+  });
+
+  final bool addNew;
+  final bool isDir;
+  final String unselectedLabel;
+  final Widget selectedLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.start,
+        text: TextSpan(children: [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Icon(
+              _icon,
+            ),
+          ),
+          const WidgetSpan(
+            child: SizedBox(width: 4),
+          ),
+          WidgetSpan(
+            child: addNew
+                ? Text(unselectedLabel,
+                    style: Theme.of(context).textTheme.bodyMedium)
+                : selectedLabel,
+          ),
+        ]));
+  }
+
+  IconData get _icon {
+    if (isDir) {
+      return addNew ? Icons.folder_outlined : Icons.folder_open_outlined;
+    } else {
+      return addNew ? Icons.file_copy_outlined : Icons.file_present_outlined;
+    }
   }
 }
