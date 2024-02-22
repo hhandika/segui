@@ -48,14 +48,14 @@ class FileInfoScreen extends StatelessWidget {
                         icon: const Icon(Icons.file_copy_outlined),
                       ),
                       MetadataTile(
-                        title: 'Last accessed',
-                        content: snapshot.data!.accessed,
-                        icon: const Icon(Icons.access_time_outlined),
-                      ),
-                      MetadataTile(
                         title: 'Last modified',
                         content: snapshot.data!.lastModified,
                         icon: const Icon(Icons.update_outlined),
+                      ),
+                      MetadataTile(
+                        title: 'Last accessed',
+                        content: snapshot.data!.accessed,
+                        icon: const Icon(Icons.access_time_outlined),
                       ),
                     ],
                   )
