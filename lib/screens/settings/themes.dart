@@ -5,11 +5,13 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
 
 const List<String> themeTitles = ['System default', 'Light', 'Dark'];
+
 const List<ThemeMode> themes = [
   ThemeMode.system,
   ThemeMode.light,
   ThemeMode.dark
 ];
+
 const List<IconData> themeIcons = [
   Icons.brightness_auto_outlined,
   Icons.brightness_1_outlined,
