@@ -15,9 +15,7 @@ class ThemeSettings extends StatelessWidget {
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: const SingleChildScrollView(
-        child: ThemeSettingView(),
-      ),
+      body: const SingleChildScrollView(child: ThemeSettingView()),
     );
   }
 }
@@ -30,7 +28,6 @@ class ThemeSettingView extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 800),
         decoration: getContainerDecoration(context),
         child: ref.watch(themeSettingProvider).when(
               data: (theme) => Column(
