@@ -315,7 +315,7 @@ class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
             );
     } else {
       return Padding(
-          padding: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.only(top: 2),
           child: TextButton.icon(
             onPressed: () async =>
                 isMobile ? await _shareFile() : await _openExternalViewer(),
