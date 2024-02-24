@@ -32,7 +32,11 @@ If we use the `--input` or `-i` option, the command will be:
 segul align summary -i alignments/*.nexus
 ```
 
-Below is an example of segul terminal output for DNA sequence summary statistics. This output is based on alignments from [Oliveros et al. (2019)](https://www.pnas.org/content/116/16/7916.short). An example of csv file generated from the same dataset can be found through this [link](https://github.com/hhandika/segul/blob/main/examples/SEGUL-Stats_per_locus_DNA_sample_file.csv).
+Below is an example of segul terminal output for DNA sequence summary statistics. This output is based on alignments from [Oliveros et al. (2019)](https://www.pnas.org/content/116/16/7916.short).
+
+:::info
+Since v0.21.0, SEGUL writes the alignment summary to a separate text file (default name: `alignment_summary.txt`) consistent with the GUI version.
+:::
 
 ```Text
 =========================================================

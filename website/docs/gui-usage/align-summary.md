@@ -23,13 +23,9 @@ Summary statistics for many alignments.
 
 The app have three output files:
 
-1. **Alignment summary**: A summary of the input alignment files written to the log file (`segul.log`).
+1. **Alignment summary**: A summary of the input alignments written to a text file (default name: `alignment_summary.txt`).
 2. **Locus summary**: A summary of each alignment/locus written to a csv file (default name: `locus_summary.csv`).
 3. **Taxon summary**: A summary of each taxon written to a csv file (default name: `taxon_summary.csv`).
-
-:::info
-We are working on making SEGUI writes alignment summary to a separate text file in addition to the log file. The log file works well for the CLI version because user can view it directly on the terminal. For the GUI version, you can find the log file in the setting menu.
-:::
 
 ## Prefix
 
