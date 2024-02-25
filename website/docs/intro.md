@@ -6,7 +6,7 @@ sidebar_position: 1
 
 **Thank you for using SEGUL!** 🙏🏻
 
-We develop **SEGUL (Sequence and Genomics Utilities)** to address the need for a high-performance and accessible phylogenomic tool. It is designed to be fast, memory-efficient, cross-platform, and user-friendly. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
+We develop **SEGUL (Sequence and Genomics Utilities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
 
 ## Citation
 
@@ -94,7 +94,7 @@ segul <command> <subcommand> --option1 value1 --option2 value2
 For example, to concatenate alignments:
 
 ```bash
-segul align concat --input alignments/*.nexus --output aln-concat
+segul align concat --dir alignments/ --output aln-concat
 ```
 
 See the [command usage](./cli-usage/command_options.md) section for more detailed usage.
