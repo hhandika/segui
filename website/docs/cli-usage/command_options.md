@@ -12,9 +12,9 @@ sidebar_position: 2
 
 The program name is `segul` on Linux, MacOS, and Windows Subsystem for Linux, and `segul.exe` on Windows. `segul` features are available using the subcommands. Each of the subcommands has options, and some of them also have flags. Options require users to input the value, such as the `--dir` option that requires users to input the path to the alignment directory: `--dir alignment_path/` . Some options are available across all subcommands, whereas the other options are specific to certain subcommands (see below). Flags are used without a value, such as `--sort` flag in the `convert` subcommand that is used to sort sequences in the output files.
 
-We keep `segul` command consistent:
+In summary, we keep `segul` commands, subcommands, and options consistent:
 
-1. SEGUL CLI consist of command and subcommands. For example, `segul sequence convert` and `segul align concat`.
+1. SEGUL CLI consist of command and subcommands. For example, `segul sequence convert` and `segul align concat`. The command is grouped
 2. Long options always prefix with double dashes (`--`). For example, the `--input` option.
 3. Short options always prefix with a single dash (`-`). For example, the short option of `--input` is `-i`.
 4. Options with equal sign (`=`), such as `--re=`, require the input values to be in a single or double quotation. For example, `--re="^Genus"`.
