@@ -3,7 +3,7 @@ sidebar_position: 2
 title: GUI Installation
 ---
 
-The GUI version, SEGUI, is currently in beta. Everyone is welcome to try the application and report bugs.
+The GUI version, SEGUI, is currently in beta. Everyone is welcome to try the application and report bugs. If you would like to build the app from the source code, please refer to the [advanced guide](../advance-guides/build-gui) section.
 
 - [Android](#android)
 - [Apple Devices](#apple-devices)
