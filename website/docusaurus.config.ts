@@ -37,7 +37,7 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          // editUrl: "https://github.com/hhandika/segui/tree/main/website",
+          editUrl: "https://github.com/hhandika/segui/tree/main/website",
         },
         blog: {
           showReadingTime: true,
