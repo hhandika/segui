@@ -16,13 +16,17 @@ The GUI version is available for all major desktop and mobile platforms. The CLI
 
 | Platform                          | GUI | CLI |
 | --------------------------------- | --- | --- |
-| Linux                             | ✅   | ✅   |
+| Linux*                            | ✅   | ✅   |
 | MacOS                             | ✅   | ✅   |
-| Windows                           | ✅   | ✅   |
+| Windows*                          | ✅   | ✅   |
 | Windows Subsystem for Linux (WSL) | ❌   | ✅   |
 
 :::note
- The GUI version on Linux required GLIBC 2.34+. The CLI works in any Linux distribution. We provide fully static binary for older Linux and dynamically linked binary to GLIBC for newer distributions. See [GUI](./installation/install_gui) and [CLI](./installation/install_binary) installation instruction for more details.
+ The GUI version on **Linux** required GLIBC 2.34+. The CLI works in any Linux distribution. We provide fully static binary for older Linux and dynamically linked binary to GLIBC for newer distributions. See [GUI](./installation/install_gui) and [CLI](./installation/install_binary) installation instruction for more details.
+
+ The GUI version on **Windows** is available for Windows 10 and later. The CLI version is available for Windows 7 and later.
+
+ You can also compile the CLI version from the source code for any platform that supports Rust. See [installation from source code](./installation/install_source) for more details.
 :::
 
 ### Mobile

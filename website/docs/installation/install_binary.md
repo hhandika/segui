@@ -42,6 +42,10 @@ Output example:
 
 If your version is **glibc 2.17+**, you can use the version labeled `Linux`. If your version is older, you should use the version labeled `Linux-musl`.
 
+:::info
+We recommend using the dynamically linked executable version if your OS has the supported GLIBC version. It is more optimized by the compiler, which in theory will be faster than the static binary version. See Rust platform [tier list](https://forge.rust-lang.org/platform-support.html) for more information.
+:::
+
 ### Installing Linux binary
 
 #### Download the compressed Linux executable
@@ -177,5 +181,5 @@ segul --version
 ```
 
 :::tip
-We recommend using a combination of [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) and [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) for easy navigation in the terminal. Windows terminal comes pre-installed on Windows 11. It is available on Microsoft Store for Windows 10 users. You can also use [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the Linux version of SEGUL. Keep in mind that, if your data is big and it is in the Windows partition, WSL 1 will be 2-3 times faster than WSL 2. If you are using WSL 2, you should put your data in the Linux partition. Learn more about WSL [here](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
+We recommend using a combination of [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) and [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) for easy navigation in the terminal. Windows terminal comes pre-installed on Windows 11. It is available on Microsoft Store for Windows 10 users. You can also use [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the Linux version of SEGUL. Follow the Linux/WSL installation guideline for installing the Linux binary on WSL. Keep in mind that, if your data is big and it is in the Windows partition, WSL 1 will be 2-3 times faster than WSL 2. If you are using WSL 2, you should put your data in the Linux partition. Learn more about WSL [here](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
 :::
