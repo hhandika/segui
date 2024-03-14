@@ -49,6 +49,8 @@ Follow the installation instruction for your operating system. The fastest insta
 
 ### Usage
 
+#### Feature Quick Links
+
 | Feature                        | Quick Link                                                           |
 | ------------------------------ | -------------------------------------------------------------------- |
 | Alignment concatenation        | [CLI](./cli-usage/concat) / [GUI](./gui-usage/align-concat)          |
@@ -65,6 +67,38 @@ Follow the installation instruction for your operating system. The fastest insta
 | Sequence removal               | [CLI](./cli-usage/remove) / [GUI](./gui-usage/sequence-remove)       |
 | Sequence translation           | [CLI](./cli-usage/translate) / [GUI](./gui-usage/sequence-translate) |
 | Log file                       | [CLI](./cli-usage/log) / [GUI](./gui-usage/log)                      |
+
+#### Supported File Formats
+
+Supported input formats for **Genomic** tasks:
+
+| File Format | Description | Supported extensions |
+| ----------- | ----------- | --------------------- |
+| FASTQ       | For read summary statistics. Support compressed and uncompressed format. | `.fastq`, `.fq` |
+| FASTA       | For contig summary statistics. | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas` |
+
+Supported input and output file formats for **Alignment** and **Sequence** tasks:
+
+| File Format | Description | Supported extensions |
+| ----------- | ----------- | --------------------- |
+| FASTA       | Include support for interleaved format. | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`|
+| PHYLIP      | Support relaxed-phylip only. Include support for interleaved format. Learn the differences [here](https://biopython.org/docs/1.74/api/Bio.AlignIO.PhylipIO.html). | `.phy`, `.phylip`, `.ph` |
+| NEXUS       | Include support for interleaved format. | `.nexus`, `.nex`, `.nxs` |
+
+Supported input and output partition formats:
+
+| File Format | Description | Supported extensions |
+| ----------- | ----------- | --------------------- |
+| RAxML       | RAxML partition file. | `.txt`, `.part`, `.partition` |
+| NEXUS       | NEXUS partition file. | `.nexus`, `.nex`, `.nxs` |
+
+:::info
+SEGUL CLI can handle non-standard file extensions that are not listed above. Use the `--format` option to set the input format. The GUI version will not allow inputting non-standard file extensions. You can change the file extension to one of the supported file extensions or use the CLI version.
+:::
+
+#### Example Dataset
+
+We provide small example datasets to help you get started. You can download the dataset from [SEGUL repository](https://github.com/hhandika/segul/tree/main/examples). The dataset includes small alignment and sequence data in SEGUL supported formats. We do not provide genomic dataset examples. You can download the genomic data from public repositories, such as [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra).
 
 #### GUI Usage
 

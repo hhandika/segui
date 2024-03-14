@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/providers/io.dart';
-import 'package:segui/providers/navigation.dart';
+import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/genomics/contig.dart';
 import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/screens/shared/pages.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/providers/navigation.dart';
+import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/styles/decoration.dart';

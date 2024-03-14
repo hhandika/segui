@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/providers/io.dart';
+import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
 

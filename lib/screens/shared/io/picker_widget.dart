@@ -1,7 +1,7 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/providers/io.dart';
+import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/io.dart';

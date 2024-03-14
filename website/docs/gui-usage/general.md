@@ -101,7 +101,31 @@ List of supported file extensions for alignment and sequence tasks:
 
 - NEXUS: `.nex`, `.nexus`, '.nxs'
 - FASTA: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
-- PHYLIP: `.phy`, `.phylip`, '.ph'
+- PHYLIP*: `.phy`, `.phylip`, '.ph'
+
+:::note
+SEGUL only supports relaxed PHYLIP format. The strict PHYLIP format is not supported.
+
+Example of relaxed PHYLIP format:
+
+```plaintext
+5 10
+Seq1    ATCGATCGATATCGATCGAT
+Seq2    ATCGATCGATATCGATCGAT
+Seq3    ATCGATCGATATCGATCGAT
+```
+
+Example of strict PHYLIP format (note the space between each sequence):
+
+```plaintext
+5 10
+
+Seq1    ATCGATCGAT ATCGATCGAT
+Seq2    ATCGATCGAT ATCGATCGAT
+Seq3    ATCGATCGAT ATCGATCGAT
+```
+
+:::
 
 #### Genomic data files
 

@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:segui/providers/io.dart';
+import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/types.dart';
 
 part 'navigation.g.dart';

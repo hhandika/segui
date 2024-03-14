@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/providers/io.dart';
+import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/settings/about.dart';
 import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/logs.dart';

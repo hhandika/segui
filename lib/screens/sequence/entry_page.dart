@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/providers/io.dart';
-import 'package:segui/providers/navigation.dart';
+import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/sequence/extract.dart';
 import 'package:segui/screens/sequence/remove.dart';
 import 'package:segui/screens/sequence/rename.dart';
