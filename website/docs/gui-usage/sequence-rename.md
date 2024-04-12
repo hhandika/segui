@@ -41,7 +41,7 @@ You can remove a specific text from the sequence IDs. For example, you can remov
 
 Use the regular expression to remove a specific pattern from the sequence IDs. For example, you can remove `^locus[0-9]` from all the sequence IDs. This will remove all the sequence IDs starting with `locus` followed by a number. If you select `remove all matches`, it will remove all the matches found in a sequence ID. Otherwise, it will remove the first match found in a sequence ID, then continue to the next sequence ID.
 
-### Find and replace string
+### Find and replace a matching text
 
 You can find a specific text and replace it with another text. For example, you can replace `locus01` with `locus`.
 
