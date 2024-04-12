@@ -25,7 +25,7 @@ The command above assume the partition following this rule:
 1. The first partition position starts with 1.
 2. The next partition is next number after the end of the previous partition. If codon model, it will check the next locus applies the rule.
 
-To skip the partition check, use the `--skip-check` option:
+To skip the partition check, use the `--skip-checking` option:
 
 ```Bash
 segul align split --input concat-alignment.nexus --input-partition concat-alignment-partition.nex --skip-checking
