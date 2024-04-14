@@ -8,6 +8,10 @@ sidebar_position: 1
 
 We develop **SEGUL (Sequence and Genomics Utilities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
 
+:::info
+We are currently updating the documentation to reflect the latest version of SEGUL. If you encounter any issues, please report them to the [issue tracker](https://github.com/hhandika/segui/issues). If you do not receive a response within two days, feel free to send a reminder to the [project maintainer](https://hhandika.com/contact.html).
+:::
+
 ## Citation
 
 > Heru Handika, Jacob Esselstyn. SEGUL: An ultrafast, memory-efficient alignment manipulation and summary tool for phylogenomics. _Authorea_. May 04, 2022. DOI: [10.22541/au.165167823.30911834/v1](https://www.authorea.com/doi/full/10.22541/au.165167823.30911834/v1).
