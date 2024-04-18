@@ -19,14 +19,14 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--outline button--warning button--lg"
-            to="/docs/intro"
+            to="/docs/installation/overview"
           >
             Learn SEGUL
           </Link>
           &nbsp;&nbsp;&nbsp;
           <Link
             className="button button--primary button--lg"
-            to="/docs/installation"
+            to="/docs/installation/overview"
           >
             Install
           </Link>

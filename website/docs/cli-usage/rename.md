@@ -13,7 +13,7 @@ The table must contain two columns with a header for each column. Both the heade
 | Genus_species2_random | Genus_species2_voucherID |
 
 :::tip
-If you need to rename a lot of sequence ID, you can simplify the process by [generating the unique IDs first](./id). Then, copy the IDs that you would like to rename in the `csv` or `tsv` input. To input this file, we will use the `--name` or `-n` option. `segul` will infer the file format based on its extension. The full command is structure as below:
+If you need to rename a lot of sequence ID, you can simplify the process by [generating the unique IDs first](./id). Then, copy the IDs that you would like to rename in the `csv` or `tsv` input. To input this file, we will use the `--replace-id` option. `segul` will infer the file format based on its extension. The full command is structure as below:
 :::
 
 ```Bash
