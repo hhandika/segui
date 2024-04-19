@@ -4,9 +4,13 @@ sidebar_position: 1
 
 # Overview
 
-If you prefer using a graphical user interface, follow [GUI installation guide](./install_gui). For the command line version (CLI), we offer multiple ways to install the CLI app. Each of the options has pros and cons. Choose the one that suits you best.
+**SEGUL GUI** supports Linux, macOS, Windows, Android, iOS, and iPadOS. Please follow the [GUI installation guide](./install_gui) for more detailed instruction. For those preferring the **command line version** (CLI), we provide  several installation methods for the CLI app. Each method has its own advantages and disadvantages, so we recommend choosing the one that best fits your needs.
 
-1. Using a **pre-compiled binary**. The quickest and the most straightforward installation route for the CLI version.
-2. Using the **Rust package manager**, [cargo](https://doc.rust-lang.org/cargo/). If you already using Rust, this installation route is the best option.
-3. Compiling it from the source in the **Github repository**. It gives you the most up to date version, but the resulting binary may not be fully tested.
-4. Compiling from the **development branch**. We keep new features in the development branch until we finish testing them. This installation method will allow you to test new features before they are released. However, the development branch may be unstable.
+1. Using a **pre-compiled binary**. The quickest and the most straightforward installation route for the CLI version. Learn more about the [pre-compiled binary installation](./install_binary).
+2. Using the **Rust package manager**, [cargo](https://doc.rust-lang.org/cargo/). If you already using Rust, this installation route is the best option. Learn more about the [cargo installation](./install_cargo).
+3. Compiling it from the source code in the **Github repository**. It gives you the most up to date version, but the resulting binary may not be fully tested. Learn more about the [source code installation](./install_source).
+4. Compiling from the **development branch**. We keep new features in the development branch until we finish testing them. This installation method will allow you to test new features before they are released. However, the development branch may be unstable. Learn more about the [development branch installation](./install_dev).
+
+:::info
+Each version of SEGUL is self-contained. This means that for any operating system that supports both versions, you can install both the GUI and CLI versions without encountering any conflicts. Learn more about the differences between the [GUI and CLI versions](../cli_gui).
+:::
