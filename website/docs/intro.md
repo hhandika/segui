@@ -6,7 +6,7 @@ sidebar_position: 1
 
 **Thank you for using SEGUL!** 🙏🏻
 
-We develop **SEGUL (Sequence and Genomics Utilities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
+We develop **SEGUL (SEquence and Genomic UtiLities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
 
 :::info
 We are currently updating the documentation to reflect the latest version of SEGUL. If you encounter any issues, please report them to the [issue tracker](https://github.com/hhandika/segui/issues). If you do not receive a response within two days, feel free to send a reminder to the [project maintainer](https://hhandika.com/contact.html).
@@ -22,18 +22,18 @@ We are currently updating the documentation to reflect the latest version of SEG
 
 | Platform                          | GUI | CLI |
 | --------------------------------- | --- | --- |
-| Linux                             | ✅  | ✅  |
-| MacOS                             | ✅  | ✅  |
-| Windows                           | ✅  | ✅  |
-| Windows Subsystem for Linux (WSL) | ❌  | ✅  |
+| Linux                             | ✅   | ✅   |
+| MacOS                             | ✅   | ✅   |
+| Windows                           | ✅   | ✅   |
+| Windows Subsystem for Linux (WSL) | ❌   | ✅   |
 
 ### Mobile
 
 | Platform | GUI | CLI |
 | -------- | --- | --- |
-| iOS      | ✅  | ❌  |
-| iPadOS   | ✅  | ❌  |
-| Android  | ✅  | ❌  |
+| iOS      | ✅   | ❌   |
+| iPadOS   | ✅   | ❌   |
+| Android  | ✅   | ❌   |
 
 ## Quick Start ⏱️
 
@@ -76,25 +76,25 @@ Follow the installation instruction for your operating system. The fastest insta
 
 Supported input formats for **Genomic** tasks:
 
-| File Format | Description | Supported extensions |
-| ----------- | ----------- | --------------------- |
-| FASTQ       | For read summary statistics. Support compressed and uncompressed format. | `.fastq`, `.fq` |
-| FASTA       | For contig summary statistics. | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas` |
+| File Format | Description                                                              | Supported extensions                    |
+| ----------- | ------------------------------------------------------------------------ | --------------------------------------- |
+| FASTQ       | For read summary statistics. Support compressed and uncompressed format. | `.fastq`, `.fq`                         |
+| FASTA       | For contig summary statistics.                                           | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas` |
 
 Supported input and output file formats for **Alignment** and **Sequence** tasks:
 
-| File Format | Description | Supported extensions |
-| ----------- | ----------- | --------------------- |
-| FASTA       | Include support for interleaved format. | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`|
-| PHYLIP      | Support relaxed-phylip only. Include support for interleaved format. Learn the differences [here](https://biopython.org/docs/1.74/api/Bio.AlignIO.PhylipIO.html). | `.phy`, `.phylip`, `.ph` |
-| NEXUS       | Include support for interleaved format. | `.nexus`, `.nex`, `.nxs` |
+| File Format | Description                                                                                                                                                       | Supported extensions                    |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| FASTA       | Include support for interleaved format.                                                                                                                           | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas` |
+| PHYLIP      | Support relaxed-phylip only. Include support for interleaved format. Learn the differences [here](https://biopython.org/docs/1.74/api/Bio.AlignIO.PhylipIO.html). | `.phy`, `.phylip`, `.ph`                |
+| NEXUS       | Include support for interleaved format.                                                                                                                           | `.nexus`, `.nex`, `.nxs`                |
 
 Supported input and output partition formats:
 
-| File Format | Description | Supported extensions |
-| ----------- | ----------- | --------------------- |
+| File Format | Description           | Supported extensions          |
+| ----------- | --------------------- | ----------------------------- |
 | RAxML       | RAxML partition file. | `.txt`, `.part`, `.partition` |
-| NEXUS       | NEXUS partition file. | `.nexus`, `.nex`, `.nxs` |
+| NEXUS       | NEXUS partition file. | `.nexus`, `.nex`, `.nxs`      |
 
 :::info
 SEGUL CLI can handle non-standard file extensions that are not listed above. Use the `--format` option to set the input format. The GUI version will not allow inputting non-standard file extensions. You can change the file extension to one of the supported file extensions or use the CLI version.
