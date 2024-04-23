@@ -16,6 +16,10 @@ We are currently updating the documentation to reflect the latest version of SEG
 
 > Heru Handika, Jacob Esselstyn. SEGUL: An ultrafast, memory-efficient alignment manipulation and summary tool for phylogenomics. _Authorea_. May 04, 2022. DOI: [10.22541/au.165167823.30911834/v1](https://www.authorea.com/doi/full/10.22541/au.165167823.30911834/v1).
 
+:::info
+SEGUL manuscript has been accepted for publication at _Molecular Ecology Resources_. 🎉 The citation will be updated once the paper is published.
+:::
+
 ## Platform Support
 
 ### Desktop
