@@ -39,20 +39,6 @@ The GUI version is available for all major desktop and mobile platforms. The CLI
 The CLI version works on Android using [Termux](https://termux.dev/). However, we recommend using the GUI version for better access to file system.
 :::
 
-## Performance
-
-The CLI version is faster and more memory-efficient than the GUI version. It is purely written in a high-performance programming language, Rust. For the GUI version, we use Flutter and Dart for the front-end and some light-weight backend code. However, the GUI version is still fast and memory-efficient for most use cases. For GUI version on mobile devices, the input file access would require caching the file in the designated app temporary directory. This process might take longer than running CLI or GUI on desktop operating system and may not be possible for large files.
-
-Below is a performance comparison for concatenating alignments across different platforms. We include [AMAS](https://github.com/marekborowiec/AMAS) and [goalign](https://github.com/evolbioinfo/goalign) to provide more context about the performance of SEGUL.
-
-### Execution time comparison
-
-![Execution time comparison](./img/execution_graph.png)
-
-### RAM usage comparison
-
-![RAM usage comparison](./img/ram_graph.png)
-
 ## Features comparison
 
 All the main features are supported in both CLI and GUI. However, there are some differences between the two versions. Here is a summary of the differences:
@@ -71,3 +57,25 @@ All the main features are supported in both CLI and GUI. However, there are some
 The GUI and CLI version of `segul` have the same task group. The task group is equal to command, whereas the task is equal to subcommand in the CLI version. The name of the task group for CLI version is the same as the GUI version, except for contig summary statistics and partition conversion. The contig summary statistics is available in the contig subcommand. The partition conversion is available in the partition subcommand.
 
 Learn more about [CLI](./cli-usage/command_options) and [GUI](./gui-usage/general) options.
+
+## Performance and Memory Efficiency
+
+Generally, the CLI version outperforms the GUI version in terms of speed and memory efficiency. The CLI version is exclusively developed in [Rust](https://www.rust-lang.org/), a high-performance programming language. On the other hand, while the core functionality of the GUI version utilizes the same code as the CLI version, the GUI code is written in [Dart](https://dart.dev/). Despite this difference, the GUI version maintains similar speed and memory efficiency for the majority of use cases on identical hardware (see below).
+
+Below is a performance comparison for **alignment concatenation**  across different platforms. In this comparison, SEGUL CLI and GUI on Linux ran on identical hardware. We also include [AMAS](https://github.com/marekborowiec/AMAS) and [goalign](https://github.com/evolbioinfo/goalign) to provide additional context about the performance of SEGUL. For more details about the benchmark, check out [SEGUL-Bench](https://github.com/hhandika/segul-bench).
+
+:::info
+For the GUI version on mobile devices, accessing the input file requires caching the file in the app’s designated temporary directory. This process might be more time-consuming compared to running the CLI or GUI on a desktop operating system, and handling large number files may not be feasible. In our test on iOS, we could input up to 1,500 UCE loci on an iPhone 14. On Android, we could input over 4,000 of the UCE loci on a Xiaomi Redmi Note 12 by inputting the file in batches, with a maximum of 1,500 loci per batch. We are working on supporting compressed file input to improve the performance of the GUI version on mobile devices.
+:::
+
+### Execution time comparison
+
+![Execution time comparison](./img/execution_graph.svg)
+
+### RAM usage comparison
+
+![RAM usage comparison](./img/ram_graph.svg)
+
+:::note
+The RAM usage comparison is only available for the desktop versions of SEGUL.
+:::
