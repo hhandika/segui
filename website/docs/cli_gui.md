@@ -1,12 +1,9 @@
 ---
 sidebar_position: 2
+title: CLI vs GUI
 ---
 
-# CLI vs GUI
-
-## Overview
-
-SEGUL is available in two versions: Command Line Interface (CLI) and Graphical User Interface (GUI). Both versions have the same core functionality, but they are designed to cater to different use cases and user preferences. The CLI version is suitable for users who prefer automation, fast and memory-efficient execution, dealing with complex directory structure, and/or non-standard file extension. The GUI version is suitable for users who prefer interactive and user-friendly features. However, having both versions installed is beneficial for users who want to take advantage of the strengths of both versions. They each have their own contained environment and do not interfere with each other.
+For general users, SEGUL is available in two versions: **Command Line Interface** (CLI) and **Graphical User Interface** (GUI). Both versions have the same core functionality, but they are designed to cater to different use cases and user preferences. The CLI version is suitable for users who prefer automation, fast and memory-efficient execution, dealing with complex directory structures, and/or non-standard file extensions. On the other hand, the GUI version is suitable for users who prefer interactive and user-friendly features. However, having both versions installed is beneficial for users who want to take advantage of the strengths of both versions. Importantly, they each have their own contained environment and do not interfere with each other.
 
 ## Platform Support
 
@@ -54,7 +51,7 @@ All the main features are supported in both CLI and GUI. However, there are some
 
 ## Task Group
 
-The GUI and CLI version of `segul` have the same task group. The task group is equal to command, whereas the task is equal to subcommand in the CLI version. The name of the task group for CLI version is the same as the GUI version, except for contig summary statistics and partition conversion. The contig summary statistics is available in the contig subcommand. The partition conversion is available in the partition subcommand.
+The GUI and CLI version of SEGUL have the same task group. The task group is equal to command, whereas the task is equal to subcommand in the CLI version. The name of the task group for CLI version is the same as the GUI version, except for **contig summary statistics** and **partition conversion**. The contig summary statistics is available in the contig subcommand. The partition conversion is available in the partition subcommand.
 
 Learn more about [CLI](./cli-usage/command_options) and [GUI](./gui-usage/general) options.
 
