@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 title: App Design and Architecture
+description: Learn how we design SEGUL app.
 ---
 
 SEGUL is available as a GUI, CLI, and a library. All three versions share the same core functionalities. The SEGUL core library is written in Rust, a systems programming language that is known for its speed, memory safety, and parallelism. The GUI layer uses in [Flutter](https://flutter.dev/) and is written in Dart. The CLI is wrapped around the Rust library and is written in Rust.

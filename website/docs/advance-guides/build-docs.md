@@ -1,9 +1,8 @@
 ---
 sidebar_position: 2
 title: Building SEGUL Documentation
+description: Guides on building SEGUL documentation.
 ---
-
-## Overview
 
 SEGUL documentation is built using docusaurus and deployed using [Vercel](https://vercel.com/). The documentation is written in markdown and the website is built using React written in TypeScript.
 
