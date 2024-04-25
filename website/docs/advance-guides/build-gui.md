@@ -4,7 +4,7 @@ title: Building SEGUL GUI  from source
 description: Learn SEGUL GUI build process.
 ---
 
-In a real-world scenario, you may not need to build the GUI version from source. However, this guide is useful if you want to contribute to the project or build similar apps.
+For most users, building the GUI version from source may not be necessary. However, this guide is useful if you wish to contribute to the project or build similar apps.
 
 ### Prerequisites
 

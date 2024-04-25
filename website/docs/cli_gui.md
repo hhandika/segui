@@ -3,7 +3,29 @@ sidebar_position: 2
 title: CLI vs GUI
 ---
 
-For general users, SEGUL is available in two versions: **Command Line Interface** (CLI) and **Graphical User Interface** (GUI). Both versions have the same core functionality, but they are designed to cater to different use cases and user preferences. The CLI version is suitable for users who prefer automation, fast and memory-efficient execution, dealing with complex directory structures, and/or non-standard file extensions. On the other hand, the GUI version is suitable for users who prefer interactive and user-friendly features. However, having both versions installed is beneficial for users who want to take advantage of the strengths of both versions. Importantly, they each have their own contained environment and do not interfere with each other.
+For general users, SEGUL is available in two versions: **Command Line Interface** (CLI) and **Graphical User Interface** (GUI). Both versions have the same core functionality, but they are designed to cater to different use cases and user preferences. 
+
+Summary of the CLI version advantages:
+
+- Faster and more memory efficient
+- Supports non-GUI platforms, such as HPC clusters.
+- Supports non-standard file extensions
+- Supports complex directory structure
+- Supports filter out alignment with multiple percentage values
+- Supports `--dry-run` option for some commands
+- Supports all major desktop platforms and Windows Subsystem for Linux (WSL)
+- The ability to compile from the source code for any platform that supports Rust
+
+Summary of the GUI version advantages:
+
+- Supports text and table viewer
+- Supports mobile platforms
+- Easier to use for users who are not familiar with the command line
+- Available for all major desktop and mobile platforms, but is limited by the Flutter framework
+
+:::note
+You can install both GUI and CLI versions in the system that supports them. Each version operate in its own contained environment and does not interfere with the other.
+:::
 
 ## Platform Support
 
