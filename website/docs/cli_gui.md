@@ -18,10 +18,11 @@ Summary of the CLI version advantages:
 
 Summary of the GUI version advantages:
 
-- Supports text and table viewer
+- Interactive and user-friendly
+- Supports text and table viewer without third-party software
 - Supports mobile platforms
 - Easier to use for users who are not familiar with the command line
-- Available for all major desktop and mobile platforms, but is limited by the Flutter framework
+- Available for all major desktop and mobile platforms, but is limited by the Flutter framework platform support
 
 :::note
 You can install both GUI and CLI versions in the system that supports them. Each version operate in its own contained environment and does not interfere with the other.
