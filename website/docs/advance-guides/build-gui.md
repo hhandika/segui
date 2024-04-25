@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 title: Building SEGUL GUI  from source
 description: Learn SEGUL GUI build process.
 ---
