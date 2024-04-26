@@ -3,7 +3,7 @@ sidebar_position: 2
 title: CLI vs GUI
 ---
 
-For general users, SEGUL is available in two versions: **Command Line Interface** (CLI) and **Graphical User Interface** (GUI). Both versions have the same core functionality, but they are designed to cater to different use cases and user preferences. 
+For general users, SEGUL is available in two versions: **Command Line Interface** (CLI) and **Graphical User Interface** (GUI). Both versions have the same core functionality, but they are designed to cater to different use cases and user preferences.
 
 Summary of the CLI version advantages:
 
