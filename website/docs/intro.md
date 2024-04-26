@@ -106,7 +106,15 @@ SEGUL CLI can handle non-standard file extensions that are not listed above. Use
 
 #### Example Dataset
 
-We provide small example datasets to help you get started. You can download the dataset from [SEGUL repository](https://github.com/hhandika/segul/tree/main/examples). The dataset includes small alignment and sequence data in SEGUL supported formats. We do not provide genomic dataset examples. You can download the genomic data from public repositories, such as [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra).
+We provide sample datasets to help you get started or test the app if you find any issues using your own datasets. The datasets include small alignments in SEGUL supported formats. Due to the large file sizes, we are unable to provide genomic datasets. You can download the genomic data from public repositories, such as [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra).
+
+| Dataset                    | Link                                                                                |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| FASTA                      | [Download](https://github.com/hhandika/segul/raw/main/examples/data-fasta.zip)      |
+| Nexus                      | [Download](https://github.com/hhandika/segul/raw/main/examples/data-nexus.zip)      |
+| Relaxed-Phylip             | [Download](https://github.com/hhandika/segul/raw/main/examples/data-phylip.zip)     |
+| Interleaved Relaxed-Phylip | [Download](https://github.com/hhandika/segul/raw/main/examples/data-phylip.zip)     |
+| Concatenated Nexus         | [Download](https://github.com/hhandika/segul/raw/main/examples/data-concat-nex.zip) |
 
 #### GUI Usage
 
