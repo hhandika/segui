@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 title: Building SEGUL Documentation
 description: Guides on building SEGUL documentation.
 ---
