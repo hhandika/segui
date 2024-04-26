@@ -1,8 +1,8 @@
 {
-  "label": "Tutorials",
+  "label": "Tutorial Basics",
   "position": 9,
   "link": {
     "type": "generated-index",
-    "description": "Install different versions of SEGUL"
+    "description": "Several tutorial for basic phylogenomic data analysis"
   }
 }
