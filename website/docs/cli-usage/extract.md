@@ -14,17 +14,21 @@ By default, segul will write the results in a nexus format and use the name from
 
 ## Extracting sequences using stdin
 
-This method is useful if you only need to extract a few sequences across all your alignments. To input the list of ID, use `--id` option. It allow as many sequence ID as you can type in your terminal. For a long list, however, we recommend to input the ID in a text file.
+This method is useful if you only need to extract a few sequences across all your alignments. To input the list of ID, use `--id` option. The list of IDs should be separated by semi-colons.
 
 ```Bash
-segul sequence extract <input-option> [alignment-dir] --input-format [seq-format] --id [list-of-sequence-id]
+segul sequence extract <input-option> [alignment-dir] --input-format [seq-format] --id="[list-of-sequence-id]"
 ```
 
 For example, using the command below, we will extract `seq_1`, `seq_2`, and `seq_3` from our alignments stored in `alignments/` directory:
 
 ```Bash
-segul --dir alignments/ --input-format nexus --id seq_1 seq_2 seq_3
+segul --dir alignments/ --input-format nexus --id="seq_1;seq_2;seq_3"
 ```
+
+:::warning
+The equal sign `=` and quotation marks `"` are required to input a list of IDs.
+:::
 
 ## Extracting sequences using an input file
 
