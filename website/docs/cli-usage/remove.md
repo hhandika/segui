@@ -11,7 +11,7 @@ Based on a list of IDs, you can remove sequences in a collection of alignments. 
 You can remove sequences based on a list of sequence IDs. Input a list of IDs as a string separated by semi-colons.
 
 ```Bash
-segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --id [list-of-id]
+segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --id="[list-of-id]"
 ```
 
 Example:
