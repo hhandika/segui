@@ -8,7 +8,7 @@ Based on a list of IDs, you can remove sequences in a collection of alignments. 
 
 ## Remove sequences based on a list of IDs
 
-You can remove sequences based on a list of IDs. The list of IDs should be a text file with one ID per line. The IDs should be the same as the IDs in the alignment files. The IDs are case-sensitive.
+You can remove sequences based on a list of sequence IDs. Input a list of IDs as a string separated by semi-colons.
 
 ```Bash
 segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --id [list-of-id]
@@ -17,8 +17,12 @@ segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --id [l
 Example:
 
 ```Bash
-segul sequence remove --dir ./data/ -f fasta --id ./data/id.txt
+segul sequence remove --dir ./data/ -f fasta --id="seq_1;seq_2;seq_3"
 ```
+
+:::warning
+The equal sign "=" and quotation marks `"` are required to input a list of IDs.
+:::
 
 ## Remove sequences based on a regular expression
 
