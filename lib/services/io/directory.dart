@@ -37,7 +37,7 @@ class DirectorySelectionServices {
   }
 
   Future<Directory?> selectDirectoryAdaptive() async {
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isMacOS) {
       return await _selectDirectoryFilePicker();
     } else {
       return await _selectDirectory();
