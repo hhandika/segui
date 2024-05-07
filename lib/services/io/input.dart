@@ -93,7 +93,8 @@ class FileInputServices {
   }
 
   Future<void> addDirectory() async {
-    final result = await _selectDirectoryAdaptive();
+    final result =
+        await DirectorySelectionServices(ref).selectDirectoryAdaptive();
 
     if (result != null) {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
@@ -102,7 +103,8 @@ class FileInputServices {
   }
 
   Future<int> addMoreDirectory(List<File> currentFiles) async {
-    final result = await _selectDirectoryAdaptive();
+    final result =
+        await DirectorySelectionServices(ref).selectDirectoryAdaptive();
     if (result != null) {
       final files = DirectoryCrawler(result).crawlByType(allowedExtension);
       final newFiles = _checkDuplicateFiles(
@@ -126,14 +128,6 @@ class FileInputServices {
       return await _selectUsingFilePicker(allowedExtension);
     } else {
       return await _selectSingleFile(allowedExtension);
-    }
-  }
-
-  Future<Directory?> _selectDirectoryAdaptive() async {
-    if (Platform.isAndroid) {
-      return await _selectDirectoryFilePicker();
-    } else {
-      return await _selectDirectory();
     }
   }
 
@@ -164,22 +158,6 @@ class FileInputServices {
     if (result.isNotEmpty) {
       await notifier.addFiles(result, allowedExtension);
     }
-  }
-
-  Future<Directory?> _selectDirectory() async {
-    final result = await getDirectoryPath();
-    if (result != null) {
-      return Directory(result);
-    }
-    return null;
-  }
-
-  Future<Directory?> _selectDirectoryFilePicker() async {
-    final result = await FilePicker.platform.getDirectoryPath();
-    if (result != null) {
-      return Directory(result);
-    }
-    return null;
   }
 
   Future<List<XFile>> _selectMultiFiles(XTypeGroup allowedExtension) async {

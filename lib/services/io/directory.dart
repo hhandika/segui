@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,14 +30,30 @@ class DirectorySelectionServices {
   final WidgetRef ref;
 
   Future<void> addOutputDir() async {
-    final result = await _getDirectory();
+    final result = await selectDirectoryAdaptive();
     if (result != null) {
       ref.read(fileOutputProvider.notifier).add(result);
     }
   }
 
-  Future<Directory?> _getDirectory() async {
+  Future<Directory?> selectDirectoryAdaptive() async {
+    if (Platform.isAndroid || Platform.isMacOS) {
+      return await _selectDirectoryFilePicker();
+    } else {
+      return await _selectDirectory();
+    }
+  }
+
+  Future<Directory?> _selectDirectory() async {
     final result = await getDirectoryPath();
+    if (result != null) {
+      return Directory(result);
+    }
+    return null;
+  }
+
+  Future<Directory?> _selectDirectoryFilePicker() async {
+    final result = await FilePicker.platform.getDirectoryPath();
     if (result != null) {
       return Directory(result);
     }
