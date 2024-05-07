@@ -133,8 +133,8 @@ class __$$FilteringParams_MinTaxImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FilteringParams_MinTaxImpl implements FilteringParams_MinTax {
-  const _$FilteringParams_MinTaxImpl(this.field0);
+class _$FilteringParams_MinTaxImpl extends FilteringParams_MinTax {
+  const _$FilteringParams_MinTaxImpl(this.field0) : super._();
 
   @override
   final double field0;
@@ -249,9 +249,10 @@ class _$FilteringParams_MinTaxImpl implements FilteringParams_MinTax {
   }
 }
 
-abstract class FilteringParams_MinTax implements FilteringParams {
+abstract class FilteringParams_MinTax extends FilteringParams {
   const factory FilteringParams_MinTax(final double field0) =
       _$FilteringParams_MinTaxImpl;
+  const FilteringParams_MinTax._() : super._();
 
   double get field0;
   @JsonKey(ignore: true)
@@ -294,8 +295,8 @@ class __$$FilteringParams_AlnLenImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FilteringParams_AlnLenImpl implements FilteringParams_AlnLen {
-  const _$FilteringParams_AlnLenImpl(this.field0);
+class _$FilteringParams_AlnLenImpl extends FilteringParams_AlnLen {
+  const _$FilteringParams_AlnLenImpl(this.field0) : super._();
 
   @override
   final int field0;
@@ -410,9 +411,10 @@ class _$FilteringParams_AlnLenImpl implements FilteringParams_AlnLen {
   }
 }
 
-abstract class FilteringParams_AlnLen implements FilteringParams {
+abstract class FilteringParams_AlnLen extends FilteringParams {
   const factory FilteringParams_AlnLen(final int field0) =
       _$FilteringParams_AlnLenImpl;
+  const FilteringParams_AlnLen._() : super._();
 
   int get field0;
   @JsonKey(ignore: true)
@@ -455,8 +457,8 @@ class __$$FilteringParams_ParsInfImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FilteringParams_ParsInfImpl implements FilteringParams_ParsInf {
-  const _$FilteringParams_ParsInfImpl(this.field0);
+class _$FilteringParams_ParsInfImpl extends FilteringParams_ParsInf {
+  const _$FilteringParams_ParsInfImpl(this.field0) : super._();
 
   @override
   final int field0;
@@ -571,9 +573,10 @@ class _$FilteringParams_ParsInfImpl implements FilteringParams_ParsInf {
   }
 }
 
-abstract class FilteringParams_ParsInf implements FilteringParams {
+abstract class FilteringParams_ParsInf extends FilteringParams {
   const factory FilteringParams_ParsInf(final int field0) =
       _$FilteringParams_ParsInfImpl;
+  const FilteringParams_ParsInf._() : super._();
 
   int get field0;
   @JsonKey(ignore: true)
@@ -616,8 +619,8 @@ class __$$FilteringParams_PercInfImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FilteringParams_PercInfImpl implements FilteringParams_PercInf {
-  const _$FilteringParams_PercInfImpl(this.field0);
+class _$FilteringParams_PercInfImpl extends FilteringParams_PercInf {
+  const _$FilteringParams_PercInfImpl(this.field0) : super._();
 
   @override
   final double field0;
@@ -732,9 +735,10 @@ class _$FilteringParams_PercInfImpl implements FilteringParams_PercInf {
   }
 }
 
-abstract class FilteringParams_PercInf implements FilteringParams {
+abstract class FilteringParams_PercInf extends FilteringParams {
   const factory FilteringParams_PercInf(final double field0) =
       _$FilteringParams_PercInfImpl;
+  const FilteringParams_PercInf._() : super._();
 
   double get field0;
   @JsonKey(ignore: true)
@@ -777,9 +781,10 @@ class __$$FilteringParams_TaxonAllImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FilteringParams_TaxonAllImpl implements FilteringParams_TaxonAll {
+class _$FilteringParams_TaxonAllImpl extends FilteringParams_TaxonAll {
   const _$FilteringParams_TaxonAllImpl(final List<String> field0)
-      : _field0 = field0;
+      : _field0 = field0,
+        super._();
 
   final List<String> _field0;
   @override
@@ -900,9 +905,10 @@ class _$FilteringParams_TaxonAllImpl implements FilteringParams_TaxonAll {
   }
 }
 
-abstract class FilteringParams_TaxonAll implements FilteringParams {
+abstract class FilteringParams_TaxonAll extends FilteringParams {
   const factory FilteringParams_TaxonAll(final List<String> field0) =
       _$FilteringParams_TaxonAllImpl;
+  const FilteringParams_TaxonAll._() : super._();
 
   List<String> get field0;
   @JsonKey(ignore: true)
@@ -928,8 +934,8 @@ class __$$FilteringParams_NoneImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FilteringParams_NoneImpl implements FilteringParams_None {
-  const _$FilteringParams_NoneImpl();
+class _$FilteringParams_NoneImpl extends FilteringParams_None {
+  const _$FilteringParams_NoneImpl() : super._();
 
   @override
   String toString() {
@@ -1033,8 +1039,9 @@ class _$FilteringParams_NoneImpl implements FilteringParams_None {
   }
 }
 
-abstract class FilteringParams_None implements FilteringParams {
+abstract class FilteringParams_None extends FilteringParams {
   const factory FilteringParams_None() = _$FilteringParams_NoneImpl;
+  const FilteringParams_None._() : super._();
 }
 
 /// @nodoc
@@ -1146,9 +1153,10 @@ class __$$SequenceExtractionParams_IdImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SequenceExtractionParams_IdImpl implements SequenceExtractionParams_Id {
+class _$SequenceExtractionParams_IdImpl extends SequenceExtractionParams_Id {
   const _$SequenceExtractionParams_IdImpl(final List<String> field0)
-      : _field0 = field0;
+      : _field0 = field0,
+        super._();
 
   final List<String> _field0;
   @override
@@ -1257,9 +1265,10 @@ class _$SequenceExtractionParams_IdImpl implements SequenceExtractionParams_Id {
   }
 }
 
-abstract class SequenceExtractionParams_Id implements SequenceExtractionParams {
+abstract class SequenceExtractionParams_Id extends SequenceExtractionParams {
   const factory SequenceExtractionParams_Id(final List<String> field0) =
       _$SequenceExtractionParams_IdImpl;
+  const SequenceExtractionParams_Id._() : super._();
 
   List<String> get field0;
   @JsonKey(ignore: true)
@@ -1304,8 +1313,8 @@ class __$$SequenceExtractionParams_FileImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceExtractionParams_FileImpl
-    implements SequenceExtractionParams_File {
-  const _$SequenceExtractionParams_FileImpl(this.field0);
+    extends SequenceExtractionParams_File {
+  const _$SequenceExtractionParams_FileImpl(this.field0) : super._();
 
   @override
   final String field0;
@@ -1409,10 +1418,10 @@ class _$SequenceExtractionParams_FileImpl
   }
 }
 
-abstract class SequenceExtractionParams_File
-    implements SequenceExtractionParams {
+abstract class SequenceExtractionParams_File extends SequenceExtractionParams {
   const factory SequenceExtractionParams_File(final String field0) =
       _$SequenceExtractionParams_FileImpl;
+  const SequenceExtractionParams_File._() : super._();
 
   String get field0;
   @JsonKey(ignore: true)
@@ -1458,8 +1467,8 @@ class __$$SequenceExtractionParams_RegexImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceExtractionParams_RegexImpl
-    implements SequenceExtractionParams_Regex {
-  const _$SequenceExtractionParams_RegexImpl(this.field0);
+    extends SequenceExtractionParams_Regex {
+  const _$SequenceExtractionParams_RegexImpl(this.field0) : super._();
 
   @override
   final String field0;
@@ -1563,10 +1572,10 @@ class _$SequenceExtractionParams_RegexImpl
   }
 }
 
-abstract class SequenceExtractionParams_Regex
-    implements SequenceExtractionParams {
+abstract class SequenceExtractionParams_Regex extends SequenceExtractionParams {
   const factory SequenceExtractionParams_Regex(final String field0) =
       _$SequenceExtractionParams_RegexImpl;
+  const SequenceExtractionParams_Regex._() : super._();
 
   String get field0;
   @JsonKey(ignore: true)
@@ -1597,8 +1606,8 @@ class __$$SequenceExtractionParams_NoneImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceExtractionParams_NoneImpl
-    implements SequenceExtractionParams_None {
-  const _$SequenceExtractionParams_NoneImpl();
+    extends SequenceExtractionParams_None {
+  const _$SequenceExtractionParams_NoneImpl() : super._();
 
   @override
   String toString() {
@@ -1690,10 +1699,10 @@ class _$SequenceExtractionParams_NoneImpl
   }
 }
 
-abstract class SequenceExtractionParams_None
-    implements SequenceExtractionParams {
+abstract class SequenceExtractionParams_None extends SequenceExtractionParams {
   const factory SequenceExtractionParams_None() =
       _$SequenceExtractionParams_NoneImpl;
+  const SequenceExtractionParams_None._() : super._();
 }
 
 /// @nodoc
@@ -1822,8 +1831,8 @@ class __$$SequenceRenamingParams_RenameIdImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceRenamingParams_RenameIdImpl
-    implements SequenceRenamingParams_RenameId {
-  const _$SequenceRenamingParams_RenameIdImpl(this.field0);
+    extends SequenceRenamingParams_RenameId {
+  const _$SequenceRenamingParams_RenameIdImpl(this.field0) : super._();
 
   @override
   final String field0;
@@ -1943,10 +1952,10 @@ class _$SequenceRenamingParams_RenameIdImpl
   }
 }
 
-abstract class SequenceRenamingParams_RenameId
-    implements SequenceRenamingParams {
+abstract class SequenceRenamingParams_RenameId extends SequenceRenamingParams {
   const factory SequenceRenamingParams_RenameId(final String field0) =
       _$SequenceRenamingParams_RenameIdImpl;
+  const SequenceRenamingParams_RenameId._() : super._();
 
   String get field0;
   @JsonKey(ignore: true)
@@ -1992,8 +2001,8 @@ class __$$SequenceRenamingParams_RemoveStrImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceRenamingParams_RemoveStrImpl
-    implements SequenceRenamingParams_RemoveStr {
-  const _$SequenceRenamingParams_RemoveStrImpl(this.field0);
+    extends SequenceRenamingParams_RemoveStr {
+  const _$SequenceRenamingParams_RemoveStrImpl(this.field0) : super._();
 
   @override
   final String field0;
@@ -2113,10 +2122,10 @@ class _$SequenceRenamingParams_RemoveStrImpl
   }
 }
 
-abstract class SequenceRenamingParams_RemoveStr
-    implements SequenceRenamingParams {
+abstract class SequenceRenamingParams_RemoveStr extends SequenceRenamingParams {
   const factory SequenceRenamingParams_RemoveStr(final String field0) =
       _$SequenceRenamingParams_RemoveStrImpl;
+  const SequenceRenamingParams_RemoveStr._() : super._();
 
   String get field0;
   @JsonKey(ignore: true)
@@ -2167,8 +2176,9 @@ class __$$SequenceRenamingParams_RemoveRegexImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceRenamingParams_RemoveRegexImpl
-    implements SequenceRenamingParams_RemoveRegex {
-  const _$SequenceRenamingParams_RemoveRegexImpl(this.field0, this.field1);
+    extends SequenceRenamingParams_RemoveRegex {
+  const _$SequenceRenamingParams_RemoveRegexImpl(this.field0, this.field1)
+      : super._();
 
   @override
   final String field0;
@@ -2292,10 +2302,11 @@ class _$SequenceRenamingParams_RemoveRegexImpl
 }
 
 abstract class SequenceRenamingParams_RemoveRegex
-    implements SequenceRenamingParams {
+    extends SequenceRenamingParams {
   const factory SequenceRenamingParams_RemoveRegex(
           final String field0, final bool field1) =
       _$SequenceRenamingParams_RemoveRegexImpl;
+  const SequenceRenamingParams_RemoveRegex._() : super._();
 
   String get field0;
   bool get field1;
@@ -2347,8 +2358,9 @@ class __$$SequenceRenamingParams_ReplaceStrImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceRenamingParams_ReplaceStrImpl
-    implements SequenceRenamingParams_ReplaceStr {
-  const _$SequenceRenamingParams_ReplaceStrImpl(this.field0, this.field1);
+    extends SequenceRenamingParams_ReplaceStr {
+  const _$SequenceRenamingParams_ReplaceStrImpl(this.field0, this.field1)
+      : super._();
 
   @override
   final String field0;
@@ -2472,10 +2484,11 @@ class _$SequenceRenamingParams_ReplaceStrImpl
 }
 
 abstract class SequenceRenamingParams_ReplaceStr
-    implements SequenceRenamingParams {
+    extends SequenceRenamingParams {
   const factory SequenceRenamingParams_ReplaceStr(
           final String field0, final String field1) =
       _$SequenceRenamingParams_ReplaceStrImpl;
+  const SequenceRenamingParams_ReplaceStr._() : super._();
 
   String get field0;
   String get field1;
@@ -2532,9 +2545,10 @@ class __$$SequenceRenamingParams_ReplaceRegexImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$SequenceRenamingParams_ReplaceRegexImpl
-    implements SequenceRenamingParams_ReplaceRegex {
+    extends SequenceRenamingParams_ReplaceRegex {
   const _$SequenceRenamingParams_ReplaceRegexImpl(
-      this.field0, this.field1, this.field2);
+      this.field0, this.field1, this.field2)
+      : super._();
 
   @override
   final String field0;
@@ -2661,10 +2675,11 @@ class _$SequenceRenamingParams_ReplaceRegexImpl
 }
 
 abstract class SequenceRenamingParams_ReplaceRegex
-    implements SequenceRenamingParams {
+    extends SequenceRenamingParams {
   const factory SequenceRenamingParams_ReplaceRegex(
           final String field0, final String field1, final bool field2) =
       _$SequenceRenamingParams_ReplaceRegexImpl;
+  const SequenceRenamingParams_ReplaceRegex._() : super._();
 
   String get field0;
   String get field1;
@@ -2696,8 +2711,8 @@ class __$$SequenceRenamingParams_NoneImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SequenceRenamingParams_NoneImpl implements SequenceRenamingParams_None {
-  const _$SequenceRenamingParams_NoneImpl();
+class _$SequenceRenamingParams_NoneImpl extends SequenceRenamingParams_None {
+  const _$SequenceRenamingParams_NoneImpl() : super._();
 
   @override
   String toString() {
@@ -2805,7 +2820,8 @@ class _$SequenceRenamingParams_NoneImpl implements SequenceRenamingParams_None {
   }
 }
 
-abstract class SequenceRenamingParams_None implements SequenceRenamingParams {
+abstract class SequenceRenamingParams_None extends SequenceRenamingParams {
   const factory SequenceRenamingParams_None() =
       _$SequenceRenamingParams_NoneImpl;
+  const SequenceRenamingParams_None._() : super._();
 }

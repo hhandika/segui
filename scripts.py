@@ -12,15 +12,13 @@ RUST_FRB_IO = "rust/src/frb_generated.io.rs"
 RUST_FRB = "rust/src/frb_generated.rs"
 RUST_FRB_WEB = "rust/src/frb_generated.web.rs"
 
-FRB_FILES = [
-    DART_FRB, DART_FRB_IO, DART_FRB_WEB,
-    RUST_FRB_IO, RUST_FRB, RUST_FRB_WEB
-]
+FRB_FILES = [DART_FRB, DART_FRB_IO, DART_FRB_WEB, RUST_FRB_IO, RUST_FRB, RUST_FRB_WEB]
 
 DMG_CONFIG = "installer/config.json"
 OUTPUT_DMG = "installer/nahpu.dmg"
 
 FRB_INSTALL_NAME = "flutter_rust_bridge_codegen@^2.0.0-dev.0"
+
 
 class Build:
     def __init__(self):
@@ -39,10 +37,10 @@ class Build:
                 self.build_linux()
             else:
                 print("Unsupported platform")
-            
+
         except Exception as e:
             print(f"Error building project for all platforms: {str(e)}")
-            
+
     def build_apk(self) -> None:
         print("Building for Android...")
         try:
@@ -69,7 +67,7 @@ class Build:
             self._open_dmg()
         except Exception as e:
             print("Error building project for macos:", str(e))
-            
+
     def build_linux(self) -> None:
         print("Building for Linux...")
         try:
@@ -87,7 +85,7 @@ class Build:
         except Exception as e:
             print("Error building project for windows:", str(e))
             return
-    
+
     def _create_dmg(self) -> None:
         print("Creating dmg...")
         try:
@@ -95,7 +93,7 @@ class Build:
             print("Dmg created successfully\n")
         except Exception as e:
             print("Error creating dmg:", str(e))
-    
+
     def _remove_dmg(self) -> None:
         print("Removing dmg...")
         try:
@@ -104,7 +102,7 @@ class Build:
                 print("Dmg removed successfully\n")
         except OSError as e:
             print("Error removing dmg:", str(e))
-    
+
     def _open_dmg(self) -> None:
         print("Opening dmg...")
         try:
@@ -117,17 +115,18 @@ class Build:
 class BuildRust:
     def __init__(self):
         pass
-    
-    def generate_frb_code(self) -> None:
+
+    def generate_frb_code(self, is_clean: bool) -> None:
         print("Generating frb code...")
         try:
-            self.remove_old_frb_code()
+            if is_clean:
+                self.remove_old_frb_code()
             subprocess.run(["flutter_rust_bridge_codegen", "generate"])
             print("Rust code generated successfully\n")
         except Exception as e:
             print("Error generating frb code:", str(e))
             return
-    
+
     def update_frb_executable(self) -> None:
         print("Updating frb executable...")
         try:
@@ -158,7 +157,7 @@ class BuildRust:
         except Exception as e:
             print("Error checking rust dependencies:", str(e))
             return
-    
+
     def update_rust_dependencies(self) -> None:
         print("Updating rust dependencies...")
         try:
@@ -167,7 +166,7 @@ class BuildRust:
         except Exception as e:
             print("Error updating rust dependencies:", str(e))
             return
-           
+
 
 class FlutterUtils:
     def __init__(self):
@@ -181,7 +180,7 @@ class FlutterUtils:
         except Exception as e:
             print("Error cleaning project:", str(e))
             return
-    
+
     def fix_dart_code(self) -> None:
         print("Fixing dart code...")
         try:
@@ -190,7 +189,7 @@ class FlutterUtils:
         except Exception as e:
             print("Error fixing dart code:", str(e))
             return
-    
+
     def update_flutter_dependencies(self) -> None:
         print("Updating flutter dependencies...")
         try:
@@ -199,6 +198,7 @@ class FlutterUtils:
         except Exception as e:
             print("Error updating flutter dependencies:", str(e))
             return
+
 
 class BuildDocs:
     def __init__(self):
@@ -216,7 +216,7 @@ class BuildDocs:
         except Exception as e:
             print("Error building documentation:", str(e))
             return
-    
+
     def build(self) -> None:
         print("Building documentation...")
         command: List[str] = ["yarn", "build"]
@@ -229,15 +229,18 @@ class BuildDocs:
         except Exception as e:
             print("Error building documentation:", str(e))
             return
-        
+
     def upgrade(self) -> None:
         print("Upgrading documentation...")
         command: List[str] = [
-            "yarn", "upgrade", "@docusaurus/core@latest", 
-            "@docusaurus/preset-classic@latest", 
-            "@docusaurus/module-type-aliases@latest", 
-            "@docusaurus/tsconfig@latest", "@docusaurus/types@latest"
-            ]
+            "yarn",
+            "upgrade",
+            "@docusaurus/core@latest",
+            "@docusaurus/preset-classic@latest",
+            "@docusaurus/module-type-aliases@latest",
+            "@docusaurus/tsconfig@latest",
+            "@docusaurus/types@latest",
+        ]
         try:
             if platform.system() == "Windows":
                 subprocess.run(command, cwd="website", shell=True)
@@ -247,19 +250,24 @@ class BuildDocs:
         except Exception as e:
             print("Error upgrading documentation:", str(e))
             return
-        
+
+
 class Args:
     def __init__(self):
         pass
-    
+
     def get_args(self) -> argparse.Namespace:
-        parser = argparse.ArgumentParser(description="Various build scripts for the project")
-        subparsers = parser.add_subparsers(dest="command", help="Commands for build scripts")
+        parser = argparse.ArgumentParser(
+            description="Various build scripts for the project"
+        )
+        subparsers = parser.add_subparsers(
+            dest="command", help="Commands for build scripts"
+        )
         self.get_flutter_build_args(subparsers)
         self.get_flutter_utils_args(subparsers)
         self.get_rust_build_args(subparsers)
         self.get_doc_build_args(subparsers)
-    
+
         return parser.parse_args()
 
     def get_flutter_build_args(self, args: argparse.Namespace) -> None:
@@ -270,25 +278,37 @@ class Args:
         parser.add_argument("--linux", action="store_true", help="Build linux")
         parser.add_argument("--macos", action="store_true", help="Build macos")
         parser.add_argument("--windows", action="store_true", help="Build windows")
-    
+
     def get_flutter_utils_args(self, args: argparse.Namespace) -> None:
         parser = args.add_parser("utils", help="Utilities for Flutter project")
         parser.add_argument("--clean", action="store_true", help="Clean project")
         parser.add_argument("--fix", action="store_true", help="Fix dart code")
-        parser.add_argument("--update", action="store_true", help="Update flutter dependencies")
-    
+        parser.add_argument(
+            "--update", action="store_true", help="Update flutter dependencies"
+        )
+
     def get_rust_build_args(self, args: argparse.Namespace) -> None:
         parser = args.add_parser("frb", help="Build options for Rust project")
         parser.add_argument("--generate", action="store_true", help="Generate frb code")
-        parser.add_argument("--check", action="store_true", help="Check rust dependencies")
-        parser.add_argument("--update", action="store_true", help="Update rust dependencies")
-        parser.add_argument("--upgrade", action="store_true", help="Upgrade frb executable")
-    
+        parser.add_argument(
+            "--check", action="store_true", help="Check rust dependencies"
+        )
+        parser.add_argument(
+            "--update", action="store_true", help="Update rust dependencies"
+        )
+        parser.add_argument(
+            "--upgrade", action="store_true", help="Upgrade frb executable"
+        )
+        parser.add_argument("--clean", action="store_true", help="Clean project")
+
     def get_doc_build_args(self, args: argparse.Namespace) -> None:
         parser = args.add_parser("docs", help="Build documentation")
         parser.add_argument("--run", action="store_true", help="Run documentation")
         parser.add_argument("--build", action="store_true", help="Build documentation")
-        parser.add_argument("--upgrade", action="store_true", help="Upgrade documentation")
+        parser.add_argument(
+            "--upgrade", action="store_true", help="Upgrade documentation"
+        )
+
 
 class Parser:
     def __init__(self, args: argparse.Namespace):
@@ -310,7 +330,7 @@ class Parser:
             build.build_all()
         else:
             print("No platform selected")
-    
+
     def parse_flutter_utils_args(self) -> None:
         utils = FlutterUtils()
         if self.args.clean:
@@ -322,11 +342,11 @@ class Parser:
         else:
             print("No utility option selected")
             return
-    
+
     def parse_rust_build_args(self) -> None:
         rust = BuildRust()
         if self.args.generate:
-            rust.generate_frb_code()
+            rust.generate_frb_code(self.args.clean)
         elif self.args.check:
             rust.check_rust_dependencies()
         elif self.args.update:
@@ -336,7 +356,7 @@ class Parser:
         else:
             print("No build option selected")
             return
-    
+
     def parse_doc_build_args(self) -> None:
         docs = BuildDocs()
         if self.args.run:
@@ -348,7 +368,8 @@ class Parser:
         else:
             print("No documentation option selected")
             return
-    
+
+
 def main() -> None:
     args = Args().get_args()
     parser = Parser(args)
@@ -362,6 +383,7 @@ def main() -> None:
         parser.parse_doc_build_args()
     else:
         print("No command selected")
-    
+
+
 if __name__ == "__main__":
     main()
