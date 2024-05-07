@@ -1,0 +1,14 @@
+.screenshot {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.screenImg {
+  max-width: 720px;
+  align-items: center;
+  border-radius: 4px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
