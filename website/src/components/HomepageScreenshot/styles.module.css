@@ -6,6 +6,7 @@
 
 .screenImg {
   max-width: 720px;
+  height: auto;
   align-items: center;
   border-radius: 8px;
   margin-left: auto;
