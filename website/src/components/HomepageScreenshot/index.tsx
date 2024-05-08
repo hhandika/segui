@@ -6,7 +6,7 @@ export default function HomepageScreenshot(): JSX.Element {
       <div className="container">
         <img
           className={styles.screenImg}
-          src="/img/ipadView.png"
+          src="/img/screenshots.png"
           alt="SEGUL homepage"
         />
       </div>
