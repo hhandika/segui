@@ -258,8 +258,11 @@ class PickerLabel extends StatelessWidget {
           ),
           WidgetSpan(
             child: addNew
-                ? Text(unselectedLabel,
-                    style: Theme.of(context).textTheme.bodyMedium)
+                ? Text(
+                    unselectedLabel,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                  )
                 : selectedLabel,
           ),
         ]));
