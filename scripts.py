@@ -49,6 +49,14 @@ class Build:
         except Exception as e:
             print("Error building project for android:", str(e))
 
+    def build_bundle(self) -> None:
+        print("Building for Android...")
+        try:
+            subprocess.run(["flutter", "build", "appbundle", "--release"])
+            print("Project built successfully\n")
+        except Exception as e:
+            print("Error building project for android:", str(e))
+
     def build_ios(self) -> None:
         print("Building for iOS...")
         try:
@@ -274,6 +282,7 @@ class Args:
         parser = args.add_parser("build", help="Build project")
         parser.add_argument("--all", action="store_true", help="Build all platforms")
         parser.add_argument("--apk", action="store_true", help="Build apk")
+        parser.add_argument("--bundle", action="store_true", help="Build bundle")
         parser.add_argument("--ios", action="store_true", help="Build ios")
         parser.add_argument("--linux", action="store_true", help="Build linux")
         parser.add_argument("--macos", action="store_true", help="Build macos")
@@ -318,6 +327,8 @@ class Parser:
         build = Build()
         if self.args.apk:
             build.build_apk()
+        elif self.args.bundle:
+            build.build_bundle()
         elif self.args.ios:
             build.build_ios()
         elif self.args.linux:

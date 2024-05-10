@@ -16,9 +16,4 @@
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
     <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is on -->
-    <style name="NormalTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Show a splash screen on the activity. Automatically removed when
-             the Flutter engine draws its first frame -->
-        <item name="android:windowBackground">?android:colorBackground</item>
-    </style>
 </resources>

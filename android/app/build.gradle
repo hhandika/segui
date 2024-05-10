@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.hhandika.segui"
-    compileSdkVersion 34
+    compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -81,4 +81,6 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation 'com.google.android.material:material:1.12.0'
+}
