@@ -39,13 +39,13 @@ dependencies:
   flutter_rust_bridge: 2.0.0-dev.33
   freezed_annotation: ^2.2.0
   flex_color_scheme: ^7.0.0
-  file_picker: ^6.0.0
-  package_info_plus: ^5.0.1
+  file_picker: ^8.0.0
+  package_info_plus: ^8.0.0
   path_provider: ^2.0.14
   icons_plus: ^5.0.0
   url_launcher: ^6.1.10
   flutter_markdown: ^0.6.15
-  share_plus: ^7.2.1
+  share_plus: ^9.0.0
   path: ^1.8.3
   rust_builder:
     path: rust_builder
@@ -54,7 +54,7 @@ dependencies:
   flutter_svg: ^2.0.9
   file_selector: ^1.0.2
   dynamic_color: ^1.6.9
-  csv: ^5.1.1
+  csv: ^6.0.0
   shared_preferences: ^2.2.2
   intl: ^0.19.0
 
@@ -96,7 +96,7 @@ flutter_launcher_icons:
 msix_config:
   display_name: SEGUI
   publisher_display_name: hhandika
-  msix_version: 1.0.0.56
+  msix_version: 1.0.0.0
   logo_path: assets\launcher\icon.png
   capabilities: "internetClient,documentsLibrary,removableStorage"
 
