@@ -93,12 +93,7 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/launcher/iconDesktop.png"
-msix_config:
-  display_name: SEGUI
-  publisher_display_name: hhandika
-  msix_version: 1.0.0.0
-  logo_path: assets\launcher\icon.png
-  capabilities: "internetClient,removableStorage"
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
