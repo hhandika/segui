@@ -278,6 +278,7 @@ class EmptyScreen extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.titleMedium,
+          overflow: TextOverflow.ellipsis,
         ),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -285,6 +286,7 @@ class EmptyScreen extends StatelessWidget {
               description,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             )),
       ],
     );

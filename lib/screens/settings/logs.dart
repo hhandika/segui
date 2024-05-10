@@ -47,7 +47,8 @@ class LogListView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
+                  Expanded(
+                      child: Container(
                     width: double.infinity,
                     decoration: getContainerDecoration(context),
                     child: ListView.separated(
@@ -87,7 +88,7 @@ class LogListView extends StatelessWidget {
                         );
                       },
                     ),
-                  )
+                  ))
                 ],
               ),
             );

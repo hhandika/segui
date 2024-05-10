@@ -36,7 +36,10 @@ class SequenceTaskSelection extends ConsumerWidget {
           items: sequenceOperationMap.entries
               .map((e) => DropdownMenuItem(
                     value: e.key,
-                    child: Text(e.value),
+                    child: Text(
+                      e.value,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ))
               .toList(),
           onChanged: (SequenceOperationType? value) {

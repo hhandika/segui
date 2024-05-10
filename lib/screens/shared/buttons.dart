@@ -229,6 +229,7 @@ class QuickActionButton extends StatelessWidget {
               label,
               style: Theme.of(context).textTheme.labelLarge,
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

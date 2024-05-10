@@ -71,11 +71,16 @@ class _HomePageState extends State<HomePage> {
                         Theme.of(context).colorScheme.onSurface,
                         BlendMode.srcIn),
                   )),
-              Text(greeting, style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                greeting,
+                style: Theme.of(context).textTheme.titleLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
               const SizedBox(height: 40),
               Text(
                 'Quick Actions',
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
               ),
               Icon(
                 Icons.arrow_drop_down,
@@ -178,6 +183,7 @@ class ResourceTiles extends StatelessWidget {
             title: Text(
               'FAQ',
               style: Theme.of(context).textTheme.titleMedium,
+              overflow: TextOverflow.ellipsis,
             ),
             trailing: Icon(Icons.arrow_forward_ios,
                 color: Theme.of(context).colorScheme.onSurface),
@@ -187,33 +193,23 @@ class ResourceTiles extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.speed_outlined,
                 color: Theme.of(context).colorScheme.onSurface),
-            title: Text('Quick start',
-                style: Theme.of(context).textTheme.titleMedium),
+            title: Text(
+              'Quick start',
+              style: Theme.of(context).textTheme.titleMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
             trailing: Icon(Icons.arrow_forward_ios,
                 color: Theme.of(context).colorScheme.onSurface),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const QuickStartPage())),
           ),
-          // ListTile(
-          //   leading: Icon(Icons.school_outlined,
-          //       color: Theme.of(context).colorScheme.onSurface),
-          //   title: Text('Learning resources',
-          //       style: Theme.of(context).textTheme.titleMedium),
-          //   trailing: Icon(
-          //     Icons.arrow_forward_ios,
-          //     color: Theme.of(context).colorScheme.onSurface,
-          //   ),
-          //   onTap: () {
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //         builder: (context) => const LearningResourcesPage()));
-          //   },
-          // ),
           ListTile(
               leading: Icon(Icons.description_outlined,
                   color: Theme.of(context).colorScheme.onSurface),
               title: Text(
                 'Documentation',
                 style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
               ),
               trailing: Icon(Icons.arrow_forward_ios,
                   color: Theme.of(context).colorScheme.onSurface),

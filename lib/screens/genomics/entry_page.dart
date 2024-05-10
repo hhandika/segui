@@ -37,7 +37,10 @@ class GenomicTaskSelection extends ConsumerWidget {
         items: genomicOperationMap.entries
             .map((e) => DropdownMenuItem(
                   value: e.key,
-                  child: Text(e.value),
+                  child: Text(
+                    e.value,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ))
             .toList(),
         onChanged: (GenomicOperationType? value) {
