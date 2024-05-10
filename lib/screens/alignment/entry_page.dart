@@ -37,7 +37,10 @@ class AlignmentTaskSelection extends ConsumerWidget {
           items: alignmentOperationMap.entries
               .map((e) => DropdownMenuItem(
                     value: e.key,
-                    child: Text(e.value),
+                    child: Text(
+                      e.value,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ))
               .toList(),
           onChanged: (AlignmentOperationType? value) {

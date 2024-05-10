@@ -23,15 +23,14 @@ class SelectDirField extends ConsumerWidget {
         data: (data) {
           return Row(
             children: [
-              Expanded(
-                  child: PickerLabel(
+              PickerLabel(
                 addNew: data.directory == null,
                 isDir: true,
                 unselectedLabel: label,
                 selectedLabel: PathTextWithOverflow(
                   path: data.directory?.path ?? '',
                 ),
-              )),
+              ),
               const SizedBox(width: 2),
               IconButton(
                 tooltip: data.directory == null
@@ -113,6 +112,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                     selectedLabel: Text(
                       _getFileCountLabel(data.length),
                       style: Theme.of(context).textTheme.labelLarge,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(width: 2),
@@ -243,29 +243,29 @@ class PickerLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.start,
-        text: TextSpan(children: [
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Icon(
-              _icon,
-            ),
-          ),
-          const WidgetSpan(
-            child: SizedBox(width: 4),
-          ),
-          WidgetSpan(
-            child: addNew
-                ? Text(
-                    unselectedLabel,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                : selectedLabel,
-          ),
-        ]));
+    return Expanded(
+        child: RichText(
+            textAlign: TextAlign.start,
+            text: TextSpan(children: [
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Icon(
+                  _icon,
+                ),
+              ),
+              const WidgetSpan(
+                child: SizedBox(width: 4),
+              ),
+              WidgetSpan(
+                child: addNew
+                    ? Text(
+                        unselectedLabel,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : selectedLabel,
+              ),
+            ])));
   }
 
   IconData get _icon {
