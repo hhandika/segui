@@ -126,7 +126,7 @@ class QuickActionContainer extends ConsumerWidget {
           children: [
             QuickActionButton(
               icon: Icons.compare_arrows,
-              label: 'Concatenate Alignments',
+              label: 'Concatenate\nAlignments',
               onTap: () {
                 ref.read(tabSelectionProvider.notifier).setTab(2);
                 ref
@@ -136,7 +136,7 @@ class QuickActionContainer extends ConsumerWidget {
             ),
             QuickActionButton(
               icon: Icons.swap_horiz,
-              label: 'Convert Alignments',
+              label: 'Convert\nAlignments',
               onTap: () {
                 ref.read(tabSelectionProvider.notifier).setTab(2);
                 ref
@@ -146,7 +146,7 @@ class QuickActionContainer extends ConsumerWidget {
             ),
             QuickActionButton(
                 icon: Icons.translate,
-                label: 'Translate Sequences',
+                label: 'Translate\nSequences',
                 onTap: () {
                   ref.read(tabSelectionProvider.notifier).setTab(3);
                   ref
@@ -155,7 +155,7 @@ class QuickActionContainer extends ConsumerWidget {
                 }),
             QuickActionButton(
               icon: Icons.bar_chart,
-              label: 'Summarize Sequences',
+              label: 'Summarize\nSequences',
               onTap: () {
                 ref.read(tabSelectionProvider.notifier).setTab(2);
                 ref
