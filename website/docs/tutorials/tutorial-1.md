@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Tutorial 1: Basic Phylogenomic Analysis
+# Tutorial 1: Phylogenomic data cleaning
 
 ## Introduction
 
