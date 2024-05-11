@@ -19,7 +19,7 @@ class ContigSummaryRunner {
 
   Future<void> run() async {
     List<String> finalInputFiles =
-        IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);
+        IOServices().convertPathsToString(inputFiles, SegulType.genomicContig);
     if (finalInputFiles.isEmpty) {
       throw 'No input files';
     }
