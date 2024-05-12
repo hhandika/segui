@@ -23,7 +23,7 @@ const FeatureList: FeatureItem[] = [
   },
 
   {
-    title: "Repeatable and Reproducible",
+    title: "Accessible and Reproducible",
     Svg: require("@site/static/img/repeatableAndReproducible.svg").default,
     description: (
       <>
