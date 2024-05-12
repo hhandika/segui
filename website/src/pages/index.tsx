@@ -8,6 +8,8 @@ import Heading from "@theme/Heading";
 import styles from "./index.module.css";
 import HomepageScreenshot from "../components/HomepageScreenshot";
 import InstallButton from "../components/DownloadButtons";
+import AllBadges from "../components/DownloadButtons";
+import DownloadOptions from "../components/DownloadButtons";
 
 
 function HomepageHeader() {
@@ -35,16 +37,6 @@ function HomepageHeader() {
         </div>
       </div>
     </header>
-  );
-}
-
-function DownloadOptions() {
-  return (
-    <div className={styles.download}>
-      <Heading as="h2">Install SEGUL</Heading>
-      <InstallButton />
-      <p><Link to="/docs/installation/overview" >Other install options</Link></p>
-    </div>
   );
 }
 
