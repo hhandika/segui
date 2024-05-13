@@ -58,3 +58,5 @@ src/main/jniLibs/
 /logs
 
 *.jks
+
+keys
