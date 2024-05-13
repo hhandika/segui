@@ -56,3 +56,5 @@ src/main/jniLibs/
 /node_modules
 
 /logs
+
+*.jks
