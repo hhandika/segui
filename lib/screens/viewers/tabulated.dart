@@ -102,26 +102,6 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
   }
 }
 
-class BigFileErrors extends StatelessWidget {
-  const BigFileErrors({super.key, required this.file});
-
-  final File file;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const FileErrorIcon(),
-          const Text('File too large to display.'),
-          ExternalAppLauncher(file: file, fromPopUp: false)
-        ],
-      ),
-    );
-  }
-}
-
 class PaginatedTable extends StatefulWidget {
   const PaginatedTable({super.key, required this.content});
 
