@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
@@ -74,14 +75,14 @@ class AppPageView extends StatelessWidget {
   }
 }
 
-class IOExpandedScreen extends StatefulWidget {
+class IOExpandedScreen extends ConsumerStatefulWidget {
   const IOExpandedScreen({super.key});
 
   @override
-  State<IOExpandedScreen> createState() => _IOExpandedScreenState();
+  IOExpandedScreenState createState() => IOExpandedScreenState();
 }
 
-class _IOExpandedScreenState extends State<IOExpandedScreen> {
+class IOExpandedScreenState extends ConsumerState<IOExpandedScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(

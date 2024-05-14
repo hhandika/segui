@@ -120,7 +120,6 @@ class FileOutput extends _$FileOutput {
       }
       final updates =
           SegulOutputFile.updateFiles(state.value!, isRecursive: isRecursive);
-
       return updates;
     });
   }
