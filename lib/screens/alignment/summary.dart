@@ -43,7 +43,8 @@ class _AlignmentSummaryViewState extends State<AlignmentSummaryView> {
           infoContent: SharedInfoForm(
             isShowingInfo: _isShowingInfo,
             description: 'Summarize alignments by calculating the number of '
-                'sequences, sites, and parsimony informative sites, etc.',
+                'sequences, sites, parsimony informative sites, '
+                'and other relevant statistics.',
             onClosed: () {
               setState(() {
                 _isShowingInfo = false;

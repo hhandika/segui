@@ -158,7 +158,7 @@ class InputActionMenu extends ConsumerWidget {
     final isMobile = Platform.isAndroid || Platform.isIOS;
     return PopupMenuButton(
         elevation: 2,
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
         tooltip: 'Select input method',
         itemBuilder: (context) {
           return [
