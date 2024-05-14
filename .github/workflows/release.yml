@@ -41,7 +41,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install clang cmake git ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
           flutter build linux --release
-          flutter build apk --release
 
       - if: ${{ matrix.os == 'windows-latest' }}
         run: |
@@ -80,13 +79,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: segui.zip
           asset_name: segui-Windows-x86_64.zip
-          tag: ${{ github.ref_name }}
-
-      - name: Upload android
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/app/outputs/flutter-apk/app-release.apk
-          asset_name: segui-Android.apk
           tag: ${{ github.ref_name }}
