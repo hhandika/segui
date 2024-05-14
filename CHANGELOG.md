@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.1.0
+
+### New Features
+
+- Now support viewing large tabular data.
+
+### Bug Fixes
+
+- Fix help text not displayed properly.
+- Improve help text description.
+
 ## v0.1.1
 
 - Fix contig summary could not find the contig files
