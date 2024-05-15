@@ -24,6 +24,10 @@ SEGUL is highly optimized to be as fast and efficient as possible. For this reas
 - **Fully static executable** using [musl libc](https://musl.libc.org/). This version is suitable for running the app on old Linux distributions or some HPC systems. The file is named `segul-Linux-musl-x86_64.tar.gz`.
 - **Dinamically linked executable** using [glibc](https://www.gnu.org/software/libc/). This version is suitable for running the app on modern Linux distributions. The file is named `segul-Linux-x86_64.tar.gz`.
 
+:::info
+Since version 0.21.3, the CLI binary is also available for ARM64 architecture on Linux. The file is named `segul-Linux-arm64.tar.gz`.
+:::
+
 Check GLIBC version:
 
 ```python
@@ -156,7 +160,7 @@ It is best to avoid registering too many paths in your environment variable. It 
 
 ## Windows
 
-This instruction is for running SEGUL native on Windows. If you are using WSL, you install the Linux version of the app by following the instruction above. However, running SEGUL on native Windows is more efficient due to a better access to the hardware than the WSL. The installation procedure is similar to the MacOS or Linux. After downloading the zip file for Windows and extracting it, you will setup your environment variable pointing to the path where you will put the executable. In Windows, this is usually done using GUI.
+This instruction is for running SEGUL native on Windows. If you are using WSL, install the Linux version of the app by following the instruction [above](#installing-linux-binary). However, running SEGUL on native Windows is more efficient due to a better access to the hardware than the WSL. The installation procedure is similar to the MacOS or Linux. After downloading the zip file for Windows and extracting it, you will setup your environment variable pointing to the path where you will put the executable. In Windows, this is usually done using GUI.
 
 ### Installing Windows binary
 

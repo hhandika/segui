@@ -7,8 +7,6 @@ import Heading from "@theme/Heading";
 
 import styles from "./index.module.css";
 import HomepageScreenshot from "../components/HomepageScreenshot";
-import InstallButton from "../components/DownloadButtons";
-import AllBadges from "../components/DownloadButtons";
 import DownloadOptions from "../components/DownloadButtons";
 
 
@@ -31,12 +29,28 @@ function HomepageHeader() {
           >
             Learn SEGUL
           </Link>
-          
         </div>
+        <Latest/>
         </div>
         </div>
       </div>
     </header>
+  );
+}
+
+function Latest() {
+  return (
+      <div className={styles.whatsNew}>
+        <Heading as="h2">
+          Latest Updates
+        </Heading>
+        <p className={styles.newMessage}>
+          <ul>
+            <li>SEGUL GUI: Now in stable version! 🎉</li>
+            <li>SEGUL CLI: Available as an ARM64 Linux binary.</li>
+          </ul>
+        </p>
+      </div>
   );
 }
 

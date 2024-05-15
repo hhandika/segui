@@ -47,6 +47,10 @@ The GUI version is available for all major desktop and mobile platforms. The CLI
  You can also compile the CLI version from the source code for any platform that supports Rust. See [installation from source code](./installation/install_source) for more details.
 :::
 
+:::info
+The CLI binary since version 0.21.3 is also available for ARM64 architecture on Linux.
+:::
+
 ### Mobile
 
 | Platform | GUI | CLI |

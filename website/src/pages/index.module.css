@@ -11,7 +11,15 @@
 }
 
 .title {
+  padding-top: 1rem;
+}
+
+.whatsNew {
   padding-top: 4rem;
+}
+
+.newMessage {
+  font-size: 1.4em;
 }
 
 @media screen and (max-width: 996px) {
