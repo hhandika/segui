@@ -15,9 +15,9 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         SEGUL offers an intuitive command line interface for efficient
-        operation, along with a user-friendly, interactive graphical interface
-        (currently in beta). Comprehensive documentation for both the
-        application and the API ensures a seamless user experience.
+        operation, along with a user-friendly, interactive graphical interface.
+        We provide comprehensive documentation to help users with varying levels
+        of technical expertise.
       </>
     ),
   },
@@ -27,10 +27,10 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/repeatableAndReproducible.svg").default,
     description: (
       <>
-        SEGUL operates across a range of devices, from smartphones to
+        SEGUL supports a wide range of devices, from smartphones to
         high-performance computers, without requiring any runtime dependencies.
-        It also negates the need for supplementary applications like Docker,
-        enhancing its user-friendliness and accessibility.
+        It also negates the need for supplementary applications like Docker or
+        Singularity, enhancing its user-friendliness and accessibility.
       </>
     ),
   },

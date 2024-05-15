@@ -81,7 +81,7 @@ const config: Config = {
       ],
     },
     footer: {
-      style: "dark",
+      style: "light",
       copyright: `Copyright © ${new Date().getFullYear()} H. Handika & J. A. Esselstyn.`,
     },
     prism: {
@@ -89,7 +89,6 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
-
 };
 
 export default config;
