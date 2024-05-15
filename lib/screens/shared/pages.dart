@@ -287,7 +287,6 @@ class EmptyScreen extends StatelessWidget {
               description,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
             )),
       ],
     );
