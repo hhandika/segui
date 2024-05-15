@@ -1,6 +1,10 @@
-# Changelog
+# Release Notes
 
-## v0.1.0
+## v1.1.1
+
+- Fix empty window help text not displayed properly.
+
+## v1.1.0
 
 ### New Features
 
@@ -11,7 +15,7 @@
 - Fix help text not displayed properly.
 - Improve help text description.
 
-## v0.1.1
+## v1.0.1
 
 - Fix contig summary could not find the contig files
 - Fix quick action button label improperly displayed
