@@ -1,5 +1,9 @@
 # Release Notes
 
+## v1.1.2
+
+- Improve number formatting for tabular data.
+
 ## v1.1.1
 
 - Fix empty window help text not displayed properly.

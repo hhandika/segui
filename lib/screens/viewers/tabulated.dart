@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
@@ -168,8 +169,10 @@ class ContentSource extends DataTableSource {
 
   // Return two point decimal for double values
   String _formatDouble(dynamic value) {
-    if (value is double) {
-      return value.toStringAsFixed(2);
+    if (value is num) {
+      // Use thousands separator and two decimal points
+      // https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html
+      return NumberFormat("#,###.##").format(value);
     }
     return value.toString();
   }
