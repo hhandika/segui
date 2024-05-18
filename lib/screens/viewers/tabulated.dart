@@ -152,8 +152,9 @@ class ContentSource extends DataTableSource {
       return null;
     }
     return DataRow(
-        cells:
-            content[index].map((e) => DataCell(Text(e.toString()))).toList());
+        cells: content[index]
+            .map((e) => DataCell(Text(_formatDouble(e))))
+            .toList());
   }
 
   @override
@@ -164,4 +165,12 @@ class ContentSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+
+  // Return two point decimal for double values
+  String _formatDouble(dynamic value) {
+    if (value is double) {
+      return value.toStringAsFixed(2);
+    }
+    return value.toString();
+  }
 }
