@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
@@ -152,8 +153,9 @@ class ContentSource extends DataTableSource {
       return null;
     }
     return DataRow(
-        cells:
-            content[index].map((e) => DataCell(Text(e.toString()))).toList());
+        cells: content[index]
+            .map((e) => DataCell(Text(_formatDouble(e))))
+            .toList());
   }
 
   @override
@@ -164,4 +166,14 @@ class ContentSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+
+  // Return two point decimal for double values
+  String _formatDouble(dynamic value) {
+    if (value is num) {
+      // Use thousands separator and two decimal points
+      // https://pub.dev/documentation/intl/latest/intl/NumberFormat-class.html
+      return NumberFormat("#,###.##").format(value);
+    }
+    return value.toString();
+  }
 }
