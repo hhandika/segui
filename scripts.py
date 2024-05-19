@@ -41,16 +41,25 @@ class Build:
         except Exception as e:
             print(f"Error building project for all platforms: {str(e)}")
 
-    def build_apk(self) -> None:
+    def build_android(self) -> None:
         print("Building for Android...")
         try:
-            subprocess.run(["flutter", "build", "apk", "--release"])
+            self.build_bundle()
+            self.build_apk()
             print("Project built successfully\n")
         except Exception as e:
             print("Error building project for android:", str(e))
 
-    def build_bundle(self) -> None:
-        print("Building for Android...")
+    def build_apk(self) -> None:
+        print("Building apk for Android...")
+        try:
+            subprocess.run(["flutter", "build", "apk", "--release", "--split-per-abi"])
+            print("Project built successfully\n")
+        except Exception as e:
+            print("Error building project for android:", str(e))
+
+    def _build_bundle(self) -> None:
+        print("Building appbundle for Android...")
         try:
             subprocess.run(["flutter", "build", "appbundle", "--release"])
             print("Project built successfully\n")
@@ -281,6 +290,7 @@ class Args:
     def get_flutter_build_args(self, args: argparse.Namespace) -> None:
         parser = args.add_parser("build", help="Build project")
         parser.add_argument("--all", action="store_true", help="Build all platforms")
+        parser.add_argument("--android", action="store_true", help="Build android")
         parser.add_argument("--apk", action="store_true", help="Build apk")
         parser.add_argument("--bundle", action="store_true", help="Build bundle")
         parser.add_argument("--ios", action="store_true", help="Build ios")
@@ -325,7 +335,9 @@ class Parser:
 
     def parse_build_args(self) -> None:
         build = Build()
-        if self.args.apk:
+        if self.args.android:
+            build.build_android()
+        elif self.args.apk:
             build.build_apk()
         elif self.args.bundle:
             build.build_bundle()
