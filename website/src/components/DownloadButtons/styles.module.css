@@ -1,6 +1,10 @@
 .install {
-    justify-content: center;
-    padding-top: 2rem;
-    text-align: center;
+  justify-content: center;
+  padding-top: 2rem;
+  text-align: center;
+  margin: 0 0.5rem;
 }
 
+.badge {
+  padding: 0.5rem;
+}
