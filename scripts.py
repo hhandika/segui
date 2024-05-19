@@ -58,7 +58,7 @@ class Build:
         except Exception as e:
             print("Error building project for android:", str(e))
 
-    def _build_bundle(self) -> None:
+    def build_bundle(self) -> None:
         print("Building appbundle for Android...")
         try:
             subprocess.run(["flutter", "build", "appbundle", "--release"])
