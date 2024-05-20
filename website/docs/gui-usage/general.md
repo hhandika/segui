@@ -67,7 +67,7 @@ This option requires users to select file individually. You can use the `Select 
 
 ### Input from a directory (desktop only)
 
-This option allows users to select a directory. The app will look for files that match the supported file extensions in the directory. Recursive search is not yet supported.
+This option allows users to select a directory. The app will look for files in the directory and subdirectory that match the supported file extensions for the task. If you only interested to include the files in a directory, use the `Select files` button instead. Then, select the files in similar manner as mentioned above.
 
 ### Adding more files
 
@@ -79,11 +79,11 @@ To remove a file, select the input tab. You can remove files from the input list
 
 ### Specific Guideline for Smartphone Users
 
-Phylogenomic datasets typically consist of over a thousand files. Mobile operating systems, including Android since SDK 30, forbid direct access to a file for security reasons. The app needs to cache input files to the app designated temporary directory. This process can be slow and may cause the app to crash if the device's RAM is insufficient. We suggest dividing the files into smaller batches for optimal performance. Our tests show that the app can handle up to 1,500 files at once on a [Xiaomi Redmi Note 12](https://www.gsmarena.com/xiaomi_redmi_note_12-12063.php) with 8 Gb of RAM. Smaller batches will make the input process faster and more stable. Future updates will include support for compressed files, which will allow users to input large datasets more efficiently.
+Phylogenomic datasets typically consist of over a thousand files. Mobile operating systems, including Android since SDK 30, forbid direct access to a file for security reasons. The app needs to cache input files to the app designated temporary directory. This process can be slow and may cause the app to crash if the device's RAM is insufficient. For Android, we suggest dividing the files into smaller batches for optimal performance. Our tests show that the app can handle up to 1,500 files at once on a [Xiaomi Redmi Note 12](https://www.gsmarena.com/xiaomi_redmi_note_12-12063.php) with 8 Gb of RAM. Smaller batches will make the input process faster and more stable. For iOS, we only able to input >1000 of files when the data stored in an external drive. Future updates will include support for compressed files, which will allow users to input large datasets more efficiently.
 
 ### Specific Guideline for macOS Users
 
-Our app prioritizes security by utilizing [App Sandbox](https://developer.apple.com/documentation/security/app_sandbox), which inherently limits its access to your file system to protect your data. During our testing phase on macOS Sonoma, we found that the app encountered issues when processing thousands of files stored in the document folder. However, it functioned as expected when the data was located in the download folder or an external drive. You can allow full disk access to the app by going to `System Preferences > Security & Privacy > Privacy > Full Disk Access` and adding the app to the list. This will allow the app to access your files in the document folder. However, we do not recommend this approach due to the security risks it poses. We are working on a solution to improve the app's performance when accessing files in the document folder.
+Our app prioritizes security by utilizing [App Sandbox](https://developer.apple.com/documentation/security/app_sandbox), which inherently limits its access to your file system to protect your data. When you first use the app, it may prompt you to grant permission for file access. Once granted, the app should already have permission to access the files you selected, whether they are stored in internal or external storage. However, if you encounter file access issues, we recommend allowing full disk access to the app. You can do this by going to `System Preferences > Security & Privacy > Privacy > Full Disk Access` and adding the app to the list. This will enable the app to access your files in the document folder.
 
 ## Input format
 
@@ -101,7 +101,7 @@ List of supported file extensions for alignment and sequence tasks:
 
 - NEXUS: `.nex`, `.nexus`, `.nxs`
 - FASTA: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
-- PHYLIP*: `.phy`, `.phylip`, '.ph'
+- PHYLIP*: `.phy`, `.phylip`, `.ph`
 
 :::note
 SEGUL only supports relaxed PHYLIP format. The strict PHYLIP format is not supported.
@@ -149,8 +149,17 @@ Some tasks have optional parameters. Follow the task's documentation to learn mo
 
 ## Output
 
-On desktop platforms, the application saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To copy the output or share it with other applications or devices, simply utilize the 'Share' button. The quick share button will compress output files and share it as a single file, whereas the 'Share' button the `Output` window allows you to share the output individually.
+On desktop platforms, the application saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To copy the output or share it with other applications or devices, simply utilize the `Share` button. The quick share button will compress output files and share it as a single file, whereas the `Share` button the `Output` window allows you to share the output individually.
 
 ## Sharing Output
 
-The app allows you to share the output files with other apps, such as OneDrive, DropBox, etc. or devices. For instance, using AirDrop for macOS. After the app finish executing a task, the "Run" button will be replace by the `Quick Share` button. Pressing this button will compress the output files and share them as a single file. You can also use the `Share` button in the `Output` window to share the output files individually.
+The app allows you to share the output files to other devices or with other apps, such as [OneDrive](https://onedrive.live.com/), [DropBox](https://www.dropbox.com/), and other installed cloud provider apps. For instance, using AirDrop for macOS. After the app finishes executing a task, the "Run" button will be replace by a `Quick Share` button. Pressing this button will compress the output files and share them as a single file. Additionally, you can share individual files by clicking the `three dots menu button` for each file. Then, select `Share`.
+
+## In-App built-in file viewer
+
+Supported file types:
+
+- Plain-text files (`.txt`)
+- Comma separated values (`.csv`)
+
+The app can directly view the supported file types. The content will be displayed in a new window. For a CSV file, the data is visualized in a table format with numbers formatted based on the locale settings of the device. For example in the US, the number will be formatted with thousand separator for integer and two decimal points for floating numbers (e.g., `1,000`, `0.65`). For the desktop version, you can also select open the file in other app. It will open default on default apps for the file type. This method also works for unsupported file types.
