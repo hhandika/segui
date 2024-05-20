@@ -25,13 +25,13 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 
 ### Mobile
 
+[<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800" alt="Download on the App Store" width="180">](https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&amp;itscg=30200)
+
 [<img
     alt="Get it on Google Play"
     src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
     height="80"
   />](https://play.google.com/store/apps/details?id=com.hhandika.segui&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
-
-iOS and iPadOS Devices: [[Try Beta]](https://testflight.apple.com/join/LSJD5D0i)
 
 Learn more about device requirements and GUI app installation in the [documentation](https://www.segul.app/docs/installation/install_gui).
 
