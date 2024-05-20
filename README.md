@@ -14,10 +14,10 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 
 ### Desktop
 
-[<img alt="Microsoft Store download" src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" />](https://apps.microsoft.com/detail/SEGUI/9NP1BQ6FW9PW?mode=direct)
+[<img style="padding-left: 15" alt="Microsoft Store download" src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" />](https://apps.microsoft.com/detail/SEGUI/9NP1BQ6FW9PW?mode=direct)
 
 [<img
-    class="margin--md"
+    style="padding: 15"
     src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800"
     alt="Download on the Mac App Store"
     width="220"
@@ -25,7 +25,7 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 
 ### Mobile
 
-[<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800" alt="Download on the App Store" width="180">](https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&amp;itscg=30200)
+[<img style="padding-left: 15" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800" alt="Download on the App Store" width="180">](https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&amp;itscg=30200)
 
 [<img
     alt="Get it on Google Play"

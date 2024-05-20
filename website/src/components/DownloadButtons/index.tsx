@@ -40,6 +40,19 @@ function MacStoreBadge(): JSX.Element {
   );
 }
 
+function AppStoreBadge(): JSX.Element {
+  return (
+    <Link to="https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&amp;itscg=30200">
+      <img
+        className="margin--sm"
+        src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800"
+        alt="Download on the App Store"
+        width="180"
+      />
+    </Link>
+  );
+}
+
 function DownloadOptions() {
   return (
     <div className={styles.install}>
@@ -49,6 +62,7 @@ function DownloadOptions() {
         <MacStoreBadge />
       </p>
       <Heading as="h3">Mobile Version</Heading>
+      <AppStoreBadge />
       <GooglePlayBadge />
       <p>
         <Link to="/docs/installation/overview">
