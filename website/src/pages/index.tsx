@@ -8,6 +8,7 @@ import Heading from "@theme/Heading";
 import styles from "./index.module.css";
 import HomepageScreenshot from "../components/HomepageScreenshot";
 import DownloadOptions from "../components/DownloadButtons";
+import SupportedFeatures from "../components/FeatureLists";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -63,6 +64,7 @@ export default function Home(): JSX.Element {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        <SupportedFeatures />
         <DownloadOptions />
       </main>
     </Layout>
