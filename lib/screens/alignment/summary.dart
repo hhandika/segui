@@ -204,7 +204,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
         outputPrefix: _ctr.prefixController.text,
-        interval: int.tryParse(_interval ?? '5') ?? 5,
+        interval: BigInt.parse(_interval ?? '5'),
       ).run();
       _setSuccess(outputDir);
     } catch (e) {

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=segui
+Comment=A phylogenomic data manipulation and summary statistic tool
+Exec=segui 
+Icon=${SNAP}/meta/gui/segui.png
+Terminal=false
+Type=Application
+Categories=Science;

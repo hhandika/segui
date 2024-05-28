@@ -71,7 +71,7 @@ class SequenceTranslationRunner {
       outputDir: outputDir.path,
       outputFmt: outputFmt,
       table: table,
-      readingFrame: int.tryParse(readingFrame) ?? 1,
+      readingFrame: BigInt.parse(readingFrame),
     ).translateSequence();
   }
 }
