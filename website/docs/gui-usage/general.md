@@ -14,7 +14,7 @@ This page provides general guidelines for using SEGUI. It covers the following t
   - [Input from a directory (desktop only)](#input-from-a-directory-desktop-only)
   - [Adding more files](#adding-more-files)
   - [Removing files](#removing-files)
-  - [Specific Guideline for Smartphone Users](#specific-guideline-for-smartphone-users)
+  - [Specific Guideline for Smartphone Users](#specific-guideline-for-mobile-users)
   - [Specific Guideline for macOS Users](#specific-guideline-for-macos-users)
 - [Input format](#input-format)
   - [Supported file extensions](#supported-file-extensions)
@@ -77,7 +77,7 @@ For tasks that allow multiple input files, you can add more files to the input l
 
 To remove a file, select the input tab. You can remove files from the input list by clicking the `remove` button. Removing files will not delete the files from your storage. It only removes them from the input list.
 
-### Specific Guideline for Smartphone Users
+### Specific Guideline for Mobile Users
 
 Phylogenomic datasets typically consist of over a thousand files. Mobile operating systems, including Android since SDK 30, forbid direct access to a file for security reasons. The app needs to cache input files to the app designated temporary directory. This process can be slow and may cause the app to crash if the device's RAM is insufficient. For Android, we suggest dividing the files into smaller batches for optimal performance. Our tests show that the app can handle up to 1,500 files at once on a [Xiaomi Redmi Note 12](https://www.gsmarena.com/xiaomi_redmi_note_12-12063.php) with 8 Gb of RAM. Smaller batches will make the input process faster and more stable. For iOS, we only able to input >1000 of files when the data stored in an external drive. Future updates will include support for compressed files, which will allow users to input large datasets more efficiently.
 

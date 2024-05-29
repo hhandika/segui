@@ -16,7 +16,7 @@ Supported file formats:
 Example
 
 ```Bash
-segul raw summary -i raw_reads.fq.gz -o raw_reads_summary
+segul read summary -i raw_reads.fq.gz -o raw_reads_summary
 ```
 
 The output file will be saved as `read-summary.csv`.
