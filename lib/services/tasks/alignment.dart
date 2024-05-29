@@ -113,9 +113,9 @@ class FilteringRunner {
       case FilteringOptions.minimalTaxa:
         return FilteringParams.minTax(double.tryParse(paramValue) ?? 0);
       case FilteringOptions.minimalLength:
-        return FilteringParams.alnLen(int.parse(paramValue));
+        return FilteringParams.alnLen(BigInt.parse(paramValue));
       case FilteringOptions.parsimonyInf:
-        return FilteringParams.parsInf(int.parse(paramValue));
+        return FilteringParams.parsInf(BigInt.parse(paramValue));
       case FilteringOptions.percentParsimonyInf:
         return FilteringParams.percInf(double.tryParse(paramValue) ?? 0);
       default:
@@ -250,7 +250,7 @@ class AlignmentSummaryRunner {
   final String datatype;
   final Directory outputDir;
   final String outputPrefix;
-  final int interval;
+  final BigInt interval;
 
   Future<void> run() async {
     List<String> finalInputFiles = IOServices()

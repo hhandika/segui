@@ -19,8 +19,8 @@ mixin _$FilteringParams {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
-    required TResult Function(int field0) alnLen,
-    required TResult Function(int field0) parsInf,
+    required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) parsInf,
     required TResult Function(double field0) percInf,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
@@ -29,8 +29,8 @@ mixin _$FilteringParams {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
-    TResult? Function(int field0)? alnLen,
-    TResult? Function(int field0)? parsInf,
+    TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? parsInf,
     TResult? Function(double field0)? percInf,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
@@ -39,8 +39,8 @@ mixin _$FilteringParams {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
-    TResult Function(int field0)? alnLen,
-    TResult Function(int field0)? parsInf,
+    TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? parsInf,
     TResult Function(double field0)? percInf,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,
@@ -166,8 +166,8 @@ class _$FilteringParams_MinTaxImpl extends FilteringParams_MinTax {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
-    required TResult Function(int field0) alnLen,
-    required TResult Function(int field0) parsInf,
+    required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) parsInf,
     required TResult Function(double field0) percInf,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
@@ -179,8 +179,8 @@ class _$FilteringParams_MinTaxImpl extends FilteringParams_MinTax {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
-    TResult? Function(int field0)? alnLen,
-    TResult? Function(int field0)? parsInf,
+    TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? parsInf,
     TResult? Function(double field0)? percInf,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
@@ -192,8 +192,8 @@ class _$FilteringParams_MinTaxImpl extends FilteringParams_MinTax {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
-    TResult Function(int field0)? alnLen,
-    TResult Function(int field0)? parsInf,
+    TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? parsInf,
     TResult Function(double field0)? percInf,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,
@@ -267,7 +267,7 @@ abstract class _$$FilteringParams_AlnLenImplCopyWith<$Res> {
           $Res Function(_$FilteringParams_AlnLenImpl) then) =
       __$$FilteringParams_AlnLenImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int field0});
+  $Res call({BigInt field0});
 }
 
 /// @nodoc
@@ -288,7 +288,7 @@ class __$$FilteringParams_AlnLenImplCopyWithImpl<$Res>
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as int,
+              as BigInt,
     ));
   }
 }
@@ -299,7 +299,7 @@ class _$FilteringParams_AlnLenImpl extends FilteringParams_AlnLen {
   const _$FilteringParams_AlnLenImpl(this.field0) : super._();
 
   @override
-  final int field0;
+  final BigInt field0;
 
   @override
   String toString() {
@@ -328,8 +328,8 @@ class _$FilteringParams_AlnLenImpl extends FilteringParams_AlnLen {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
-    required TResult Function(int field0) alnLen,
-    required TResult Function(int field0) parsInf,
+    required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) parsInf,
     required TResult Function(double field0) percInf,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
@@ -341,8 +341,8 @@ class _$FilteringParams_AlnLenImpl extends FilteringParams_AlnLen {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
-    TResult? Function(int field0)? alnLen,
-    TResult? Function(int field0)? parsInf,
+    TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? parsInf,
     TResult? Function(double field0)? percInf,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
@@ -354,8 +354,8 @@ class _$FilteringParams_AlnLenImpl extends FilteringParams_AlnLen {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
-    TResult Function(int field0)? alnLen,
-    TResult Function(int field0)? parsInf,
+    TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? parsInf,
     TResult Function(double field0)? percInf,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,
@@ -412,11 +412,11 @@ class _$FilteringParams_AlnLenImpl extends FilteringParams_AlnLen {
 }
 
 abstract class FilteringParams_AlnLen extends FilteringParams {
-  const factory FilteringParams_AlnLen(final int field0) =
+  const factory FilteringParams_AlnLen(final BigInt field0) =
       _$FilteringParams_AlnLenImpl;
   const FilteringParams_AlnLen._() : super._();
 
-  int get field0;
+  BigInt get field0;
   @JsonKey(ignore: true)
   _$$FilteringParams_AlnLenImplCopyWith<_$FilteringParams_AlnLenImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -429,7 +429,7 @@ abstract class _$$FilteringParams_ParsInfImplCopyWith<$Res> {
           $Res Function(_$FilteringParams_ParsInfImpl) then) =
       __$$FilteringParams_ParsInfImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int field0});
+  $Res call({BigInt field0});
 }
 
 /// @nodoc
@@ -450,7 +450,7 @@ class __$$FilteringParams_ParsInfImplCopyWithImpl<$Res>
       null == field0
           ? _value.field0
           : field0 // ignore: cast_nullable_to_non_nullable
-              as int,
+              as BigInt,
     ));
   }
 }
@@ -461,7 +461,7 @@ class _$FilteringParams_ParsInfImpl extends FilteringParams_ParsInf {
   const _$FilteringParams_ParsInfImpl(this.field0) : super._();
 
   @override
-  final int field0;
+  final BigInt field0;
 
   @override
   String toString() {
@@ -490,8 +490,8 @@ class _$FilteringParams_ParsInfImpl extends FilteringParams_ParsInf {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
-    required TResult Function(int field0) alnLen,
-    required TResult Function(int field0) parsInf,
+    required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) parsInf,
     required TResult Function(double field0) percInf,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
@@ -503,8 +503,8 @@ class _$FilteringParams_ParsInfImpl extends FilteringParams_ParsInf {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
-    TResult? Function(int field0)? alnLen,
-    TResult? Function(int field0)? parsInf,
+    TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? parsInf,
     TResult? Function(double field0)? percInf,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
@@ -516,8 +516,8 @@ class _$FilteringParams_ParsInfImpl extends FilteringParams_ParsInf {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
-    TResult Function(int field0)? alnLen,
-    TResult Function(int field0)? parsInf,
+    TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? parsInf,
     TResult Function(double field0)? percInf,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,
@@ -574,11 +574,11 @@ class _$FilteringParams_ParsInfImpl extends FilteringParams_ParsInf {
 }
 
 abstract class FilteringParams_ParsInf extends FilteringParams {
-  const factory FilteringParams_ParsInf(final int field0) =
+  const factory FilteringParams_ParsInf(final BigInt field0) =
       _$FilteringParams_ParsInfImpl;
   const FilteringParams_ParsInf._() : super._();
 
-  int get field0;
+  BigInt get field0;
   @JsonKey(ignore: true)
   _$$FilteringParams_ParsInfImplCopyWith<_$FilteringParams_ParsInfImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -652,8 +652,8 @@ class _$FilteringParams_PercInfImpl extends FilteringParams_PercInf {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
-    required TResult Function(int field0) alnLen,
-    required TResult Function(int field0) parsInf,
+    required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) parsInf,
     required TResult Function(double field0) percInf,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
@@ -665,8 +665,8 @@ class _$FilteringParams_PercInfImpl extends FilteringParams_PercInf {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
-    TResult? Function(int field0)? alnLen,
-    TResult? Function(int field0)? parsInf,
+    TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? parsInf,
     TResult? Function(double field0)? percInf,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
@@ -678,8 +678,8 @@ class _$FilteringParams_PercInfImpl extends FilteringParams_PercInf {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
-    TResult Function(int field0)? alnLen,
-    TResult Function(int field0)? parsInf,
+    TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? parsInf,
     TResult Function(double field0)? percInf,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,
@@ -822,8 +822,8 @@ class _$FilteringParams_TaxonAllImpl extends FilteringParams_TaxonAll {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
-    required TResult Function(int field0) alnLen,
-    required TResult Function(int field0) parsInf,
+    required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) parsInf,
     required TResult Function(double field0) percInf,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
@@ -835,8 +835,8 @@ class _$FilteringParams_TaxonAllImpl extends FilteringParams_TaxonAll {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
-    TResult? Function(int field0)? alnLen,
-    TResult? Function(int field0)? parsInf,
+    TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? parsInf,
     TResult? Function(double field0)? percInf,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
@@ -848,8 +848,8 @@ class _$FilteringParams_TaxonAllImpl extends FilteringParams_TaxonAll {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
-    TResult Function(int field0)? alnLen,
-    TResult Function(int field0)? parsInf,
+    TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? parsInf,
     TResult Function(double field0)? percInf,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,
@@ -956,8 +956,8 @@ class _$FilteringParams_NoneImpl extends FilteringParams_None {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
-    required TResult Function(int field0) alnLen,
-    required TResult Function(int field0) parsInf,
+    required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) parsInf,
     required TResult Function(double field0) percInf,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
@@ -969,8 +969,8 @@ class _$FilteringParams_NoneImpl extends FilteringParams_None {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
-    TResult? Function(int field0)? alnLen,
-    TResult? Function(int field0)? parsInf,
+    TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? parsInf,
     TResult? Function(double field0)? percInf,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
@@ -982,8 +982,8 @@ class _$FilteringParams_NoneImpl extends FilteringParams_None {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
-    TResult Function(int field0)? alnLen,
-    TResult Function(int field0)? parsInf,
+    TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? parsInf,
     TResult Function(double field0)? percInf,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,

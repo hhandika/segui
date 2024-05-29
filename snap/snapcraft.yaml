@@ -1,0 +1,43 @@
+name: segui
+base: core22 # the base snap is the execution environment for this snap
+version: '1.1.2'
+summary: A phylogenomic data manipulation and summary statistic tool # 79 char long summary
+description: |
+  SEGUI (SEGUL GUI) is an ultrafast, memory efficient, 
+  cross-platform tool for phylogenomic data manipulation and summary statistics calculation. 
+  We develop SEGUL to address the need for a high-performance and accessible phylogenomic tool. 
+  It is particularly well-suited for large-scale phylogenomic projects, 
+  especially those involving thousands of loci and hundreds of samples. 
+  Additionally, SEGUL is capable of handling small Sanger sequences effectively.
+
+grade: stable
+confinement: strict
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+
+slots:
+  dbus-segui:
+    interface: dbus
+    bus: session
+    name: com.hhandika.segui
+    
+apps:
+  segui:
+    command: segui
+    plugs:
+    - network
+    slots:
+      - dbus-segui
+    extensions: [gnome]
+
+parts:
+  segui:
+    # See 'snapcraft plugins'
+    source: .
+    build-packages:
+      - curl
+    build-snaps:
+      - rustup
+    plugin: flutter
+    flutter-target: lib/main.dart

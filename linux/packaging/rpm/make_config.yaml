@@ -1,0 +1,25 @@
+icon: assets/launcher/iconDesktop.png
+summary: Phylogenomic data manipulation and summary statistic tool
+group: Applications/Productivity
+vendor: Heru Handika
+packager: Heru Handika
+packagerEmail: hhandi1@lsu.edu
+license: MIT
+url: https://www.segul.app/
+
+display_name: segui
+
+keywords:
+  - science
+  - phylogenomics
+  - bioinformatics
+  - genomics
+
+generic_name: Phylogenomic data manipulation and summary statistic tool
+
+categories:
+  - Science
+  - Education
+  - Biology
+
+startup_notify: true
