@@ -32,22 +32,11 @@ parts:
   segui:
     # See 'snapcraft plugins'
     source: .
-    plugin: nil
     build-packages:
-      - cmake
-      - clang
       - curl
-      - git
-      - unzip
-    override-build: |
-      sudo apt-get update
-      sudo apt-get install clang cmake git ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
-      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-      git clone https://github.com/flutter/flutter.git -b stable
-      export PATH="$PATH:`pwd`/flutter/bin"
-      flutter doctor
-      flutter pub get
-      flutter config --enable-linux-desktop
-      flutter build linux --release -v
-      cp -rp $SNAPCRAFT_PART_BUILD/build/linux/x64/release/bundle/* $SNAPCRAFT_PART_INSTALL/
+    build-snaps:
+      - rust
+      - flutter
+    plugin: flutter
+    flutter-target: lib/main.dart
     
