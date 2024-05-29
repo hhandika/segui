@@ -1,5 +1,5 @@
 name: segui
-base: core22 # the base snap is the execution environment for this snap
+base: core20 # the base snap is the execution environment for this snap
 version: '1.1.2'
 summary: A phylogenomic data manipulation and summary statistic tool # 79 char long summary
 description: |
