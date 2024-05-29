@@ -60,3 +60,5 @@ src/main/jniLibs/
 *.jks
 
 keys
+
+*.snap

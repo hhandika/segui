@@ -32,7 +32,6 @@ parts:
   segui:
     # See 'snapcraft plugins'
     source: .
-    plugin: |
-      flutter
-      rust
-    flutter-target: ../lib/main.dart
+    plugin: flutter
+    flutter-target: lib/main.dart
+    
