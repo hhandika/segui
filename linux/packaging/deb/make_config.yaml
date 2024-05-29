@@ -1,0 +1,31 @@
+display_name: segui
+package_name: segui
+maintainer:
+  name: Heru Handika
+  email: hhandi1@lsu.edu
+co_authors:
+  - name: Jacob A. Esselstyn
+    email: esseltyn@lsu.edu
+priority: optional
+section: x11
+installed_size: 19800000
+essential: false
+icon: assets/launcher/iconDesktop.png
+
+postinstall_scripts:
+  - echo "SEGUI has been successfully installed."
+
+keywords:
+  - science
+  - phylogenomics
+  - bioinformatics
+  - genomics
+
+generic_name: Phylogenomic data manipulation and summary statistic tool
+
+categories:
+  - Science
+  - Education
+  - Biology
+
+startup_notify: true

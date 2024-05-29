@@ -62,3 +62,5 @@ src/main/jniLibs/
 keys
 
 *.snap
+
+/dist
