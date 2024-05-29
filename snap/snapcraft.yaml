@@ -37,7 +37,7 @@ parts:
     source: .
     build-packages:
       - curl
-      - rust-all
+    build-snaps:
+      - rustup
     plugin: flutter
     flutter-target: lib/main.dart
-    
