@@ -1,5 +1,5 @@
 name: segui
-base: core20 # the base snap is the execution environment for this snap
+base: core22 # the base snap is the execution environment for this snap
 version: '1.1.2'
 summary: A phylogenomic data manipulation and summary statistic tool # 79 char long summary
 description: |
@@ -11,7 +11,7 @@ description: |
   Additionally, SEGUL is capable of handling small Sanger sequences effectively.
 
 grade: stable
-confinement: classic
+confinement: strict
 architectures:
   - build-on: amd64
   - build-on: arm64
@@ -29,6 +29,7 @@ apps:
     - network
     slots:
       - dbus-segui
+    extensions: [gnome]
 
 parts:
   segui:
