@@ -32,7 +32,7 @@ const SupportedList: SupportedItem[] = [
 // and the features in the list
 function SupportedFeatures({ title, description }: SupportedItem): JSX.Element {
   return (
-    <div className={clsx("col")}>
+    <div className="col padding--sm">
       <div className="card">
         <div className="card__header text--primary">
           <Heading as="h3">{title}</Heading>
