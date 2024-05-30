@@ -28,7 +28,10 @@ If you would like to build the app from the source code, refer to the [advanced 
 
 SEGUI works on Android phones, tablets, and Chromebooks. We recommend installing the app from Google Play Store. You can download the app by clicking the download button below:
 
-<a href="https://play.google.com/store/apps/details?id=com.hhandika.segui&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1">
+<a
+  target="_blank"
+  href="https://play.google.com/store/apps/details?id=com.hhandika.segui&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
+>
   <img
     alt="Get it on Google Play"
     src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
@@ -84,7 +87,10 @@ You can download the app by clicking the download button below:
   width="140"
 />
 
-<a href="https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&amp;itscg=30200">
+<a
+  target="_blank"
+  href="https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&amp;itscg=30200"
+>
   <img
     class="margin--sm"
     src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800"
@@ -104,14 +110,40 @@ Interested in helping us to test the app before the official release? You can jo
 
 ### Linux
 
+If you are using Ubuntu or other distributions that support Snapcraft, you can install the app from the Snap Store. Click the button below to install the app:
+
+<a target="_blank" href="https://snapcraft.io/segui">
+  <img
+    class="margin-bottom--sm"
+    src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg"
+    alt="Get it from the Snap Store"
+    width="168"
+  />
+</a>
+
 Requirements
 
-- Ubuntu 22.04+
-- openSUSE Tumbleweed (tested)
+- Ubuntu 22.04+ or other distributions with GLIBC 2.34+
 
-Download the latest release from [here](https://github.com/hhandika/segui/releases). Extract the `segui-Linux-x86_64.tar.gz` file to your desired location.
+#### Alternative Installation
 
-Open terminal and extract the file using the following command:
+Download the latest release from [here](https://github.com/hhandika/segui/releases). We provide a pre-built binary for Linux in `.deb`, `.rpm`, and `.tar.gz` formats. Choose the format that is compatible with your distribution.
+
+For Debian and Ubuntu-based distributions, download the `.deb` file. For Fedora, CentOS, and other Red Hat-based distributions, download the `.rpm` file. For other distributions, download the `.tar.gz` file.
+
+For Debian and Ubuntu-based distributions, install the app using the following command:
+
+```bash
+sudo dpkg -i segui-Linux-x86_64.deb
+```
+
+For Fedora, CentOS, and other Red Hat-based distributions, install the app using the following command:
+
+```bash
+sudo rpm -i segui-Linux-x86_64.rpm
+```
+
+For other distributions, download the `.tar.gz` file. Extract the `segui-Linux-x86_64.tar.gz` file to your desired location:
 
 ```bash
 tar -xvzf segui-Linux-x86_64.tar.gz
@@ -134,7 +166,10 @@ ldd --version
 
 We recommend to install the app directly from Microsoft Store. You can download the app by clicking the download button below:
 
-<a href="https://apps.microsoft.com/detail/SEGUI/9NP1BQ6FW9PW?mode=direct">
+<a
+  target="_blank"
+  href="https://apps.microsoft.com/detail/SEGUI/9NP1BQ6FW9PW?mode=direct"
+>
   <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" />
 </a>
 
