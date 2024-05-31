@@ -1,6 +1,6 @@
 name: segui
 base: core22 # the base snap is the execution environment for this snap
-version: '1.1.2'
+version: "1.1.2"
 summary: A phylogenomic data manipulation and summary statistic tool # 79 char long summary
 description: |
   SEGUI (SEGUL GUI) is an ultrafast, memory efficient, 
@@ -21,19 +21,18 @@ slots:
     interface: dbus
     bus: session
     name: com.hhandika.segui
-    
+
 apps:
   segui:
     command: segui
     plugs:
-    - network
+      - network
     slots:
       - dbus-segui
     extensions: [gnome]
 
 parts:
   segui:
-    # See 'snapcraft plugins'
     source: .
     build-packages:
       - curl
