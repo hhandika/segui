@@ -14,7 +14,6 @@ grade: stable
 confinement: strict
 architectures:
   - build-on: amd64
-  - build-on: arm64
 
 slots:
   dbus-segui:
@@ -32,11 +31,18 @@ apps:
     extensions: [gnome]
 
 parts:
+  rust-lib:
+    plugin: rust
+    build-packages:
+      - musl-tools
+    source: rust/
+    override-build: |
+      rustup target add x86_64-unknown-linux-musl
+      cargo build --release --target x86_64-unknown-linux-musl
   segui:
     source: .
     build-packages:
       - curl
-    build-snaps:
-      - rustup
+      - rust-all
     plugin: flutter
     flutter-target: lib/main.dart

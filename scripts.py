@@ -133,6 +133,15 @@ class BuildRust:
     def __init__(self):
         pass
 
+    def install_frb_executable(self) -> None:
+        print("Installing frb executable...")
+        try:
+            subprocess.run(["cargo", "install", FRB_INSTALL_NAME])
+            print("Frb executable installed successfully\n")
+        except Exception as e:
+            print("Error installing frb executable:", str(e))
+            return
+
     def generate_frb_code(self, is_clean: bool) -> None:
         print("Generating frb code...")
         try:
@@ -319,6 +328,7 @@ class Args:
             "--upgrade", action="store_true", help="Upgrade frb executable"
         )
         parser.add_argument("--clean", action="store_true", help="Clean project")
+        parser.add_argument("--install", action="store_true", help="Install frb executable")
 
     def get_doc_build_args(self, args: argparse.Namespace) -> None:
         parser = args.add_parser("docs", help="Build documentation")
@@ -376,6 +386,8 @@ class Parser:
             rust.update_rust_dependencies()
         elif self.args.upgrade:
             rust.update_frb_executable()
+        elif self.args.install:
+            rust.install_frb_executable()
         else:
             print("No build option selected")
             return
