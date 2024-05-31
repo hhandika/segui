@@ -32,6 +32,15 @@ apps:
     extensions: [gnome]
 
 parts:
+  rust-lib:
+    source: rust/
+    build-packages:
+      - curl
+    build-snaps:
+      - rustup
+    override-build: |
+      rustup target add x86_64-unknown-linux-musl
+      cargo build --release --target x86_64-unknown-linux-musl
   segui:
     source: .
     build-packages:
