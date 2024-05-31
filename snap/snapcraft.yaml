@@ -26,6 +26,9 @@ apps:
     command: segui
     plugs:
       - network
+      - home
+      - removable-media
+      - cifs-mount
     slots:
       - dbus-segui
     extensions: [gnome]
