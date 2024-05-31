@@ -14,7 +14,6 @@ grade: stable
 confinement: strict
 architectures:
   - build-on: amd64
-  - build-on: arm64
 
 slots:
   dbus-segui:
@@ -32,6 +31,12 @@ apps:
     extensions: [gnome]
 
 parts:
+  rust-lib:
+    plugin: rust
+    source: rust/
+    override-build: |
+      rustup target add x86_64-unknown-linux-gnu
+      cargo build --release --target x86_64-unknown-linux-gnu
   segui:
     source: .
     build-packages:
