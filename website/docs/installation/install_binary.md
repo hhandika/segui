@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # CLI Pre-compiled Binary
 
-The pre-compiled binary is available in [the release page](https://github.com/hhandika/segul/releases/). To install it, the typical workflow is as follow:
+The pre-compiled binary is available in the [release page](https://github.com/hhandika/segul/releases/latest). To install it, the typical workflow is as follow:
 
 1. Download the compressed executable file (.zip or .tar.gz) in [the release page](https://github.com/hhandika/segul/releases/) to your computer, either using a browser or using a command line app.
 2. Extract the file.
@@ -21,11 +21,11 @@ See specific details below:
 
 SEGUL is highly optimized to be as fast and efficient as possible. For this reason, we provide two versions of the app for Linux:
 
-- **Fully static executable** using [musl libc](https://musl.libc.org/). This version is suitable for running the app on old Linux distributions or some HPC systems. The file is named `segul-Linux-musl-x86_64.tar.gz`.
-- **Dinamically linked executable** using [glibc](https://www.gnu.org/software/libc/). This version is suitable for running the app on modern Linux distributions. The file is named `segul-Linux-x86_64.tar.gz`.
+- **Fully static executable** using [musl libc](https://musl.libc.org/). This version is suitable for running the app on old Linux distributions or some HPC systems. The file is named `segul-Linux-musl-x86_64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-musl-x86_64.tar.gz)).
+- **Dynamically linked executable** using [glibc](https://www.gnu.org/software/libc/). This version is suitable for running the app on modern Linux distributions. The file is named `segul-Linux-x86_64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz)).
 
 :::info
-Since version 0.21.3, the CLI binary is also available for ARM64 architecture on Linux. The file is named `segul-Linux-arm64.tar.gz`.
+Since version 0.21.3, the CLI binary is also available for ARM64 architecture on Linux. The file is named `segul-Linux-arm64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-arm64.tar.gz)).
 :::
 
 Check GLIBC version:
@@ -54,16 +54,16 @@ We recommend using the dynamically linked executable version if your OS has the 
 
 #### Download the compressed Linux executable
 
-Here, we use the version 0.20.2 as an example. You should replace the link with the most up to date version available in the release page.
+Use your terminal app to download the file from the release page. You can use `wget` or `curl` to download the file. The example below is for the dynamically linked executable version. Replace the file name with the version you want to download.
 
 ```Bash
-wget https://github.com/hhandika/segul/releases/download/v0.20.2/segul-Linux-x86_64.tar.gz
+wget https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz
 ```
 
-Using curl:
+Or using curl:
 
 ```Bash
-curl -LJO https://github.com/hhandika/segul/releases/download/v0.20.2/segul-Linux-x86_64.tar.gz
+curl -LJO https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz
 ```
 
 #### Decompress Linux executable
@@ -98,24 +98,24 @@ segul --version
 
 For macOS, the executables are available for Intel Macs and Apple ARM M series processor.
 
-- **Intel Macs**. The file is named `segul-macOS-x86_64.tar.gz`.
-- **Apple ARM M series CPUs**. The file is named `segul-macOS-arm64.tar.gz`.
+- **Intel Macs**. The file is named `segul-macOS-x86_64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)).
+- **Apple ARM M series CPUs**. The file is named `segul-macOS-arm64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)).
 
 ### Installing MacOS binary
 
 #### Download the compressed MacOS executable
 
-Here, we use the version 0.20.2 for Apple ARM processors as an example. You should replace the link with the most up to date version available in the release page.
+Similar to the Linux version, you can use `wget` or `curl` to download the file.
 
 ```Bash
 
-wget https://github.com/hhandika/segul/releases/download/v0.20.2/segul-macOS-arm64.tar.gz
+wget https://github.com/hhandika/segul/releases/latest/download/segul-macOS-arm64.tar.gz
 ```
 
-Using curl:
+Or using curl:
 
 ```Bash
-curl -LJO https://github.com/hhandika/segul/releases/download/v0.20.2/segul-macOS-arm64.tar.gz
+curl -LJO https://github.com/hhandika/segul/releases/latest/download/segul-macOS-arm64.tar.gz
 ```
 
 #### Decompress MacOS executable
@@ -166,11 +166,11 @@ This instruction is for running SEGUL native on Windows. If you are using WSL, i
 
 #### Download segul-Windows-x86_64.zip
 
-Use your browser to download the file from the release page.
+Download the compressed Windows executable from the [release page](https://github.com/hhandika/segul/releases/latest). The file is named `segul-Windows-x86_64.zip` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)).
 
 #### Decompress Windows executable
 
-Windows has a built-in zip decompressor. You can right-click the file and select `Extract All...` from the context menu. You can also use third-party apps like 7zip.
+Windows has a built-in feature for zip decompression. You can right-click the file and select `Extract All...` from the context menu. You can also use third-party apps like 7zip.
 
 After decompressing the file, you will find the `segul.exe` file. You can put it in a folder registered in your environment variable. Create a new folder if you don't have one yet. Then, put the `segul.exe` file in the folder.
 
