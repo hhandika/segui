@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+use flutter_rust_bridge::frb;
 use segul::handler::align::concat::ConcatHandler;
 use segul::handler::align::convert::Converter;
 use segul::handler::align::filter::{Params, SeqFilter};
@@ -28,6 +29,7 @@ pub fn show_dna_uppercase() -> String {
 }
 
 trait Sequence {
+    #[frb(ignore)]
     fn match_datatype(&self, datatype: &str) -> DataType {
         datatype
             .to_lowercase()
@@ -35,6 +37,7 @@ trait Sequence {
             .expect("Invalid data type")
     }
 
+    #[frb(ignore)]
     fn match_input_fmt(&self, input_fmt: &str) -> InputFmt {
         input_fmt
             .to_lowercase()
@@ -42,6 +45,7 @@ trait Sequence {
             .expect("Invalid input format")
     }
 
+    #[frb(ignore)]
     fn match_output_fmt(&self, out_fmt_str: &str) -> OutputFmt {
         out_fmt_str
             .to_lowercase()
@@ -49,6 +53,7 @@ trait Sequence {
             .expect("Invalid output format")
     }
 
+    #[frb(ignore)]
     fn find_input_input_files(
         &self,
         input_files: &[String],
@@ -68,6 +73,7 @@ trait Sequence {
         }
     }
 
+    #[frb(ignore)]
     fn check_file_count(&self, file_count: usize) {
         if file_count < 2 {
             panic!("At least two input_files are required for the analysis");
@@ -76,6 +82,7 @@ trait Sequence {
 }
 
 trait Partition {
+    #[frb(ignore)]
     fn match_partition_fmt(&self, partition_fmt: &str) -> PartitionFmt {
         partition_fmt
             .to_lowercase()

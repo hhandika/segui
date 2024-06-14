@@ -7,6 +7,8 @@ use std::{
     path::Path,
 };
 
+use flutter_rust_bridge::frb;
+
 use polars::{
     error::PolarsResult,
     frame::DataFrame,
@@ -31,6 +33,7 @@ pub enum CsvSegulType {
 const ID_COLOMN: [&str; 4] = ["locus", "taxon", "name", "path"];
 
 trait PolarDataFrame {
+    #[frb(ignore)]
     fn get_dataframe(&self, input_path: &Path) -> PolarsResult<DataFrame> {
         let df = CsvReader::from_path(input_path)?
             .infer_schema(None)
