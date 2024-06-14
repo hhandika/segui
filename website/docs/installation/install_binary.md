@@ -28,7 +28,7 @@ SEGUL is highly optimized to be as fast and efficient as possible. For this reas
 Since version 0.21.3, the CLI binary is also available for ARM64 architecture on Linux. The file is named `segul-Linux-arm64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-arm64.tar.gz)).
 :::
 
-Check GLIBC version:
+If you are not sure which version of SEGUL to use on Linux, check the GLIBC version:
 
 ```python
 ldd --version
@@ -44,7 +44,7 @@ Output example:
 # Written by Roland McGrath and Ulrich Drepper.
 ```
 
-If your version is **glibc 2.17+**, you can use the version labeled `Linux`. If your version is older, you should use the version labeled `Linux-musl`.
+If your version is **glibc 2.17** or higher, you can use the version labeled `Linux`. If your version is older, you should use the version labeled `Linux-musl`.
 
 :::info
 We recommend using the dynamically linked executable version if your OS has the supported GLIBC version. It is more optimized by the compiler, which in theory will be faster than the static binary version. See Rust platform [tier list](https://forge.rust-lang.org/platform-support.html) for more information.
