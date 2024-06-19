@@ -14,9 +14,11 @@ We develop **SEGUL (SEquence and Genomic UtiLities)** to address the need for a 
 
 If you are interested in reading the journal article but do not have access to it, you can request a copy from the authors on [ResearchGate](https://www.researchgate.net/publication/380125709_SEGUL_Ultrafast_memory-efficient_and_mobile-friendly_software_for_manipulating_and_summarizing_phylogenomic_datasets).
 
-## Platform Support
+## Quick Start ⏱️
 
-### Desktop
+### Platform Support
+
+#### Desktop
 
 | Platform                          | GUI | CLI |
 | --------------------------------- | --- | --- |
@@ -25,7 +27,7 @@ If you are interested in reading the journal article but do not have access to i
 | Windows                           | ✅  | ✅  |
 | Windows Subsystem for Linux (WSL) | ❌  | ✅  |
 
-### Mobile
+#### Mobile
 
 | Platform | GUI | CLI |
 | -------- | --- | --- |
@@ -33,11 +35,9 @@ If you are interested in reading the journal article but do not have access to i
 | iPadOS   | ✅  | ❌  |
 | Android  | ✅  | ❌  |
 
-## Quick Start ⏱️
-
 ### Command line (CLI) vs GUI
 
-If your answer is yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your need.
+If your answer is yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your need. You can also use both versions. They each operates in their own contained environment.
 
 1. Are you planning to run the app on non-GUI environment, such as a [HPC](https://www.ibm.com/topics/hpc) cluster?
 2. Do you run SEGUL as part of a pipeline?
@@ -49,14 +49,14 @@ Learn more about the differences between the CLI and GUI version [here](./cli_gu
 
 For GUI apps, we recommend downloading from the [official store](/docs/installation/install_gui) of your operating system. The fastest installation route for CLI is using the pre-compiled binaries. If you are familiar with installing single executable CLI apps, you can download the latest release using the links below. The [installation guide](/docs/installation/install_binary) provides more detailed instructions.
 
-| Platform              | Link                                                                                                  | Description                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Linux ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-arm64.tar.gz)       | For Linux on ARM64 architecture (uncommon).                                         |
-| Linux x86_64 (static) | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-musl-x86_64.tar.gz) | For Linux with old GLIBC version. Common in HPC clusters.                           |
-| Linux x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz)      | For Linux with modern GLIBC version. Most recent Linux distribution, including WSL. |
-| MacOS ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Apple M series.                                                        |
-| MacOS x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Intel.                                                                 |
-| Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. May work on ARM Windows as well.                              |
+| Platform              | Link                                                                                                  | Description                                                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Linux ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-arm64.tar.gz)       | For Linux on ARM64 architecture (uncommon).                                                                               |
+| Linux x86_64 (static) | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-musl-x86_64.tar.gz) | For Linux with old [GLIBC](https://www.gnu.org/software/libc/) version. Common in HPC clusters.                           |
+| Linux x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz)      | For Linux with modern [GLIBC](https://www.gnu.org/software/libc/) version. Most recent Linux distribution, including WSL. |
+| MacOS ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Apple M series.                                                                                              |
+| MacOS x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Intel.                                                                                                       |
+| Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. May work on ARM Windows as well.                                                                    |
 
 ### Usage
 
@@ -152,7 +152,19 @@ For example, to concatenate alignments:
 segul align concat --dir alignments/ --output aln-concat
 ```
 
+Some arguments are required, while others are optional. For example, the `--output` option is optional. If you do not provide it, the app will use the default output directory. This command will concatenate all the alignments in the `alignments` directory and save the output in the `Align-Concat` directory.
+
+```bash
+segul align concat --dir alignments/
+```
+
+We recommend using the `segul --help` option to see the available options for each command, the `segul <command> --help` option to see the available options for each subcommand, and the `segul <command> <subcommand> --help` option to see the available options for each subcommand.
+
 See the [command usage](./cli-usage/command_options.md) section for more detailed usage.
+
+:::tip
+Since version 0.19.0, you don't need to specify the input format. The app will automatically detect the format based on the file extension. Lower version only allow auto detect format for non-directory input. If you have non-standard file extensions, regardless of the version, use the `--format` option to set the input format.
+:::
 
 :::warning
 The commands below expect SEGUL version 0.19.0+. If you are using lower version, the subcommand become the command and dir input option required input format.
@@ -193,7 +205,7 @@ segul concat -d <input-directory> -f <input-format>
 
 ## Navigating the Documentation
 
-For using GUI application, we recommend starting with the [GUI Usage](/docs/gui-usage/general) section. For using the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section. These sections provide general information about the app and how to use it.
+For using GUI application, we recommend starting with the [GUI Usage](/docs/gui-usage/general) section. For using the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section.These sections provide general information about the app and how to use it.
 
 ## Helps & Supports
 

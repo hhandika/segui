@@ -148,6 +148,7 @@ class BuildRust:
             if is_clean:
                 self.remove_old_frb_code()
             subprocess.run(["flutter_rust_bridge_codegen", "generate"])
+            self._fix_dart_code()
             print("Rust code generated successfully\n")
         except Exception as e:
             print("Error generating frb code:", str(e))
@@ -191,6 +192,15 @@ class BuildRust:
             print("Rust dependencies updated successfully\n")
         except Exception as e:
             print("Error updating rust dependencies:", str(e))
+            return
+
+    def _fix_dart_code(self) -> None:
+        print("Fixing dart code...")
+        try:
+            subprocess.run(["dart", "fix", "--apply"])
+            print("Dart code fixed successfully\n")
+        except Exception as e:
+            print("Error fixing dart code:", str(e))
             return
 
 
