@@ -9,7 +9,7 @@ function WindowsBadge(): JSX.Element {
         className="margin-horiz--none margin-bottom--none"
         alt="Get it on Microsoft Store"
         src="https://get.microsoft.com/images/en-us%20dark.svg"
-        width="200"
+        width="168"
       />
     </Link>
   );
