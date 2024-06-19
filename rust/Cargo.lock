@@ -283,9 +283,9 @@ checksum = "5ce89b21cab1437276d2650d57e971f9d548a2d9037cc231abdc0562b97498ce"
 
 [[package]]
 name = "bytemuck"
-version = "1.16.0"
+version = "1.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "78834c15cb5d5efe3452d58b1e8ba890dd62d21907f867f383358198e56ebca5"
+checksum = "b236fc92302c97ed75b38da1f4917b5cdda4984745740f153a5d3059e48d725e"
 dependencies = [
  "bytemuck_derive",
 ]
@@ -759,9 +759,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge"
-version = "2.0.0-dev.39"
+version = "2.0.0-dev.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92c9a3d358c2df51ac5ab05440334a63d7e2ce3229ca05d285769498bfe7fb8d"
+checksum = "328fef080f13b92ad451e84bda27ebddbca2b74f087cb68e7aa800f14bbf0aec"
 dependencies = [
  "allo-isolate",
  "android_logger",
@@ -786,9 +786,9 @@ dependencies = [
 
 [[package]]
 name = "flutter_rust_bridge_macros"
-version = "2.0.0-dev.39"
+version = "2.0.0-dev.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c73c8b391f3c0aed00493871aee6541c03d117d553fa5c121f126dfbbad5157"
+checksum = "276102ad9d93b61817baf4e925dcd21de216d671522d6341ae092f5128933334"
 dependencies = [
  "hex",
  "md-5",
@@ -1242,9 +1242,9 @@ checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 
 [[package]]
 name = "miniz_oxide"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87dfd01fe195c66b572b37921ad8803d010623c0aca821bea2302239d155cdae"
+checksum = "b8a240ddb74feaf34a79a7add65a741f3167852fba007066dcac1ca548d89c08"
 dependencies = [
  "adler",
 ]
@@ -2060,8 +2060,8 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "segul"
-version = "0.21.3"
-source = "git+https://github.com/hhandika/segul.git?branch=dev#95e01e1669d5da95507fbfcdc0812e60ad13224d"
+version = "0.21.4"
+source = "git+https://github.com/hhandika/segul.git?branch=dev#1b60a482fda6d64dc1149725abbf938e7925615c"
 dependencies = [
  "ahash",
  "alphanumeric-sort",
@@ -2276,9 +2276,9 @@ dependencies = [
 
 [[package]]
 name = "subtle"
-version = "2.5.0"
+version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81cdd64d312baedb58e21336b31bc043b77e01cc99033ce76ef539f78e965ebc"
+checksum = "0d0208408ba0c3df17ed26eb06992cb1a1268d41b2c0e12e65203fbe3972cee5"
 
 [[package]]
 name = "syn"
@@ -2847,9 +2847,9 @@ dependencies = [
 
 [[package]]
 name = "zstd-sys"
-version = "2.0.10+zstd.1.5.6"
+version = "2.0.11+zstd.1.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c253a4914af5bafc8fa8c86ee400827e83cf6ec01195ec1f1ed8441bf00d65aa"
+checksum = "75652c55c0b6f3e6f12eb786fe1bc960396bf05a1eb3bf1f3691c3610ac2e6d4"
 dependencies = [
  "cc",
  "pkg-config",
