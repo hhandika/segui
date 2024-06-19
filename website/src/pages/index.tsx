@@ -46,8 +46,9 @@ function Latest() {
       <Heading as="h3">Latest Updates</Heading>
       <p className={styles.newMessage}>
         <ul>
-          <li>SEGUL GUI: Now in stable version! 🎉</li>
-          <li>SEGUL CLI: Available as an ARM64 Linux binary.</li>
+          <li>SEGUL GUI: Stable version! 🎉</li>
+          <li>SEGUL CLI: Now also available as an ARM64 Linux binary.</li>
+          <li>SEGUL API: Python library is in beta</li>
         </ul>
       </p>
     </div>
