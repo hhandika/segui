@@ -173,7 +173,7 @@ impl SequenceConversionServices {
         let output_fmt = self.match_output_fmt(&self.output_fmt);
         let task = "Sequence Conversion";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let mut concat = Converter::new(&input_fmt, &output_fmt, &datatype, self.sort);
+        let concat = Converter::new(&input_fmt, &output_fmt, &datatype, self.sort);
         concat.convert(&input_files, output_path);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
