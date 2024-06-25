@@ -35,7 +35,7 @@ def concat_alignments():
     concat.from_dir(input_dir)
 ```
 
-You can also input the alignment path in a list directly instead of using a directory
+You can also input the alignment paths in a list directly instead of using a directory
 
 ```python
 import pysegul

@@ -8,6 +8,16 @@ sidebar_position: 1
 
 We develop **SEGUL (SEquence and Genomic UtiLities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
 
+:::info
+[PySEGUL](https://pypi.org/project/pysegul/), a Python binding of SEGUL API, is available in beta on PyPI. You can install it using pip:
+
+```bash
+pip install pysegul
+```
+
+Learrn more about using SEGUL API in Python [here](/docs/api-usage/python/intro).
+:::
+
 ## Citation
 
 > Handika, H., and J. A. Esselstyn. 2024. SEGUL: Ultrafast, memory-efficient and mobile-friendly software for manipulating and summarizing phylogenomic datasets. _Molecular Ecology Resources_. [https://doi.org/10.1111/1755-0998.13964](https://doi.org/10.1111/1755-0998.13964).
@@ -203,6 +213,55 @@ segul concat -d <input-directory> -f <input-format>
 | Command help                   | `segul <command> --help`                                           |
 | Subcommand help                | `segul <command> <subcommand> --help`                              |
 
+#### API Usage
+
+SEGUL API is available as a Rust crate. You can use it to develop your own application or integrate it with other programming languages. The API is available on [crates.io](https://crates.io/crates/segul).
+
+To add SEGUL API to your project, you can use the `cargo add` command:
+
+```bash
+cd my-project
+
+cargo add segul
+```
+
+Or add manually in `Cargo.toml` file:
+
+```toml
+[dependencies]
+segul = "0.*"
+```
+
+If you are interested in using SEGUL API in Python, we provide a Python binding called `pysegul`. You can write python using the api like using any python library. No Rust knowledge is needed. You can install it using pip:
+
+```bash
+pip install pysegul
+```
+
+```python
+import pysegul
+
+def concat_alignments():
+    input_dir = 'tests/data'
+    input_format = 'nexus'
+    datatype = 'dna'
+    output_format = 'fasta'
+    partition_format = 'raxml'
+    prefix = 'concatenated'
+    output_dir = 'tests/output'
+    concat = pysegul.AlignmentConcatenation(
+        input_format,
+        datatype,
+        output_dir,
+        output_format,
+        partition_format,
+        prefix
+        )
+    concat.from_dir(input_dir)
+```
+
+Learn more about using SEGUL API in Python [here](/docs/api-usage/python/intro).
+
 ## Navigating the Documentation
 
 For using GUI application, we recommend starting with the [GUI Usage](/docs/gui-usage/general) section. For using the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section.These sections provide general information about the app and how to use it.
@@ -216,3 +275,7 @@ If you have any questions, issues, or suggestions, please let us know. Learn mor
 - [API Documentation](https://docs.rs/segul/0.18.1/segul/)
 - [GUI Source Code](https://github.com/hhandika/segui)
 - [CLI & API Source Code](https://github.com/hhandika/segul)
+
+```
+
+```
