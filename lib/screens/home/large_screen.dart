@@ -16,14 +16,6 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
   late bool isUsingNavigationRail;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Show large screen view for screen width >= 600 dp
-    // which is the recommended screen size for tablets.
-    isUsingNavigationRail = !isDesktopScreen(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final Color? mainColor = getSEGULBackgroundColor(context);
