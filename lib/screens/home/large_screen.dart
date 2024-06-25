@@ -13,7 +13,17 @@ class LargeScreenView extends ConsumerStatefulWidget {
 }
 
 class LargeScreenViewState extends ConsumerState<LargeScreenView> {
-  late bool isUsingNavigationRail;
+  bool isUsingNavigationRail = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +53,9 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
         top: false,
         child: Row(
           children: [
-            screenWidth > 840 && !isUsingNavigationRail
-                ? const ExpandedScreenDrawer()
-                : const MediumScreenRail(),
+            screenWidth < 840 || isUsingNavigationRail
+                ? const MediumScreenRail()
+                : const ExpandedScreenDrawer(),
             Expanded(
               child: Center(
                 child: pages[ref.watch(tabSelectionProvider)],
