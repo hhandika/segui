@@ -28,7 +28,7 @@ impl RawReadServices {
         let mut files = self.find_input_files();
         let sum_mode = self.match_mode(&mode);
         ReadLogger::new(None, &input_fmt, files.len()).log("Read Summary");
-        let mut summary = ReadSummaryHandler::new(
+        let summary = ReadSummaryHandler::new(
             &mut files,
             &input_fmt,
             &sum_mode,

@@ -5,15 +5,14 @@ use flutter_rust_bridge::frb;
 use segul::handler::align::concat::ConcatHandler;
 use segul::handler::align::convert::Converter;
 use segul::handler::align::filter::{Params, SeqFilter};
-use segul::handler::align::split::Splitter;
+use segul::handler::align::partition::PartConverter;
+use segul::handler::align::split::AlignmentSplitting;
 use segul::handler::align::summarize::SeqStats;
 use segul::handler::sequence::extract::{Extract, ExtractOpts};
 use segul::handler::sequence::id::Id;
-use segul::handler::sequence::partition::PartConverter;
 use segul::handler::sequence::remove::{Remove, RemoveOpts};
 use segul::handler::sequence::rename::{Rename, RenameOpts};
 use segul::handler::sequence::translate::Translate;
-use segul::helper::files::{self, create_output_fname_from_path};
 use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{log_input_partition, AlignSeqLogger};
 use segul::helper::partition::construct_partition_path;
@@ -250,19 +249,25 @@ impl AlignmentServices {
         }
     }
 
-    pub fn concat_alignment(&self, out_fname: String, out_fmt_str: String, partition_fmt: String) {
+    pub fn concat_alignment(&self, prefix: String, out_fmt_str: String, partition_fmt: String) {
         let time = Instant::now();
-        let output_path = PathBuf::from(&self.output_dir).join(out_fname);
+        let output_dir = Path::new(&self.output_dir);
+        let output_prefix = Path::new(&prefix);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
         let mut input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
         let output_fmt = self.match_output_fmt(&out_fmt_str);
         self.check_file_count(input_files.len());
-        let final_path = create_output_fname_from_path(&output_path, &output_fmt);
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let task = "Alignment Concatenation";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let mut concat = ConcatHandler::new(&input_fmt, &final_path, &output_fmt, &partition_fmt);
+        let mut concat = ConcatHandler::new(
+            &input_fmt,
+            &output_dir,
+            &output_fmt,
+            &partition_fmt,
+            output_prefix,
+        );
         concat.concat_alignment(&mut input_files, &datatype);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
@@ -326,8 +331,9 @@ impl SplitAlignmentServices {
         let task = "Alignment Splitting";
         AlignSeqLogger::new(None, &input_fmt, &datatype, 1).log(task);
         let input_partition_path = self.generate_input_partition_path();
-        let split = Splitter::new(input_path, &datatype, &input_fmt, output_path, &output_fmt);
-        split.split_alignment(
+        let split =
+            AlignmentSplitting::new(input_path, &datatype, &input_fmt, output_path, &output_fmt);
+        split.split(
             &input_partition_path,
             &partition_fmt,
             &self.prefix,
@@ -408,8 +414,7 @@ impl FilteringServices {
                 .match_partition_fmt(&self.partition_fmt.as_ref().expect("No partition format"));
 
             let prefix = Path::new(self.prefix.as_ref().expect("No prefix"));
-            let final_output_path = files::create_output_fname(&output_path, prefix, &output_fmt);
-            filter.set_concat(&final_output_path, &output_fmt, &partition_fmt);
+            filter.set_concat(&output_fmt, &partition_fmt, prefix);
             filter.filter_aln();
         } else {
             filter.filter_aln();
@@ -720,8 +725,8 @@ impl SequenceExtraction {
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let params = self.match_params();
-        let extract_handle = Extract::new(&params, &input_fmt, &datatype);
-        extract_handle.extract_sequences(&input_files, output_path, &output_fmt);
+        let extract_handle = Extract::new(&input_fmt, &datatype, &params, output_path, &output_fmt);
+        extract_handle.extract_sequences(&input_files);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
