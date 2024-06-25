@@ -41,7 +41,7 @@ class ConcatRunnerServices {
       datatype: datatype,
       outputDir: outputDir.path,
     ).concatAlignment(
-      outFname: outputPrefix,
+      prefix: outputPrefix,
       outFmtStr: outputFmt,
       partitionFmt: partitionFmt,
     );
