@@ -13,11 +13,18 @@ Then, you can use the library in your Python script:
 
 ```python
 import pysegul
+
+# <Your code here...>
 ```
 
 Here is an example of how to use the library to concatenate alignments:
 
+- Create a file named `concat_alignments.py`.
+
+- Copy and paste the following code. The shebang line `#!/usr/bin/env python` is optional. It is used to make the script executable on Linux and macOS.
+
 ```python
+#!/usr/bin/env python
 import pysegul
 
 def concat_alignments():
@@ -37,11 +44,21 @@ def concat_alignments():
         prefix
         )
     concat.from_files(input_paths)
+    # If you prefer to input a directory
+    # and let SEGUL API to find all matching alignment files
+    input_dir = 'tests/data'
+    concat.from_dir(input_dir)
 
 if __name__ == '__main__':
     concat_alignments()
 ```
 
+- Run the script:
+
+```bash
+python concat_alignments.py
+```
+
 :::note
-The [pysegul](https://pypi.org/project/pysegul/) library is still in development. If you encounter any issues, please report them in the [issue tracker](https://github.com/hhandika/pysegul/issues). Our first goal is to make all SEGUL major features available in Python. The next goal is to expose more SEGUL public functions to Python, including the helper functions. It will allow Python developers to interact, manipulate, or create a custom workflow using SEGUL API in Python.
+The [pysegul](https://pypi.org/project/pysegul/) library is still in beta. If you encounter any issues, please report them in the [issue tracker](https://github.com/hhandika/pysegul/issues). It is now support all major features that CLI and GUI versions supports. Our goal is to expose more SEGUL public functions to Python, including the helper functions. It will allow Python developers to create a custom analyses using SEGUL API in Python.
 :::
