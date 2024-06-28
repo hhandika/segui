@@ -240,7 +240,7 @@ Or add manually in `Cargo.toml` file:
 segul = "0.*"
 ```
 
-If you are interested in using SEGUL API in Python, we provide a Python binding called `pysegul`. You can access SEGUL features like using any python library. No Rust knowledge is needed. Install it using pip:
+If you are interested in using SEGUL API in Python, we provide a Python binding called PySEGUL. You can access SEGUL features like using any python library. No Rust knowledge is needed. Install it using pip:
 
 ```bash
 pip install pysegul
@@ -271,18 +271,20 @@ def concat_alignments():
     concat.from_files(input_paths)
 ```
 
-Most of the PySEGUL features follow the same code pattern, except for features that require specific paramaters, such as alignment filtering, sequence extraction and removal. For the latter, inputting directory or file path list is done through setter and paramaters using matching method. For example, to extract sequences using regular expression:
+Most of the PySEGUL features follow the same code pattern, except for features that require specific paramaters, such as alignment filtering, sequence extraction, and sequence removal. For these features, use setter to input files or directory. Then, use the matching method parameters to run the analyses. For example, to extract sequences using regular expression:
 
 ```python
-# <Your code using similar code structure as above here...>
+# <Your code using similar code structure as above...>
 
 input_dir = 'tests/data'
-# Or using a list of files
+# Or a list of files
 input_files = ['tests/data/alignment1.nex', 'tests/data/alignment2.nex']
-extract.extract_regex("(?i)^(abce)")
+# <An exract object with its input paramaters>
+# Then, extract the sequences using regular expression method
+object_name.extract_regex("(?i)^(abce)")
 ```
 
-Learn more about using SEGUL API in Python [here](/docs/api-usage/python/intro).
+Learn more about using PySEGUL [here](/docs/api-usage/python/intro).
 
 ## Additional Resources
 
