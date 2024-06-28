@@ -3,6 +3,8 @@ sidebar_position: 1
 title: Introduction
 ---
 
+[![PyPI version](https://badge.fury.io/py/pysegul.svg)](https://badge.fury.io/py/pysegul)
+
 SEGUL is available as a Python library called `PySEGUL`. It allows users to use SEGUL API in Python. You don't need Rust knowledge to use the library. The library is available on [PyPI](https://pypi.org/project/pysegul/) and can be installed using pip:
 
 ```bash
@@ -29,9 +31,17 @@ import pysegul
 
 def concat_alignments():
     input_paths = ['tests/data/alignment1.nex', 'tests/data/alignment2.nex']
+    # Available input_format values: nexus, fasta, phylip.
+    # Automatically detect interleaved format.
     input_format = 'nexus'
+    # Available datatype values: dna, aa.
     datatype = 'dna'
+    # Available output_format values: fasta, phylip, nexus.
+    # Suffix with -int for interleaved format. Example: phylip-int
     output_format = 'fasta'
+    # Available partition_format values: raxml, nexus, charset.
+    # Charset format is only available for nexus output format.
+    # The charset partition data is stored in the same file as the alignment.
     partition_format = 'raxml'
     prefix = 'concatenated'
     output_dir = 'tests/output'
@@ -45,7 +55,8 @@ def concat_alignments():
         )
     concat.from_files(input_paths)
     # If you prefer to input a directory
-    # and let SEGUL API to find all matching alignment files
+    # and let SEGUL API to find
+    # all alignment files that match the input format.
     input_dir = 'tests/data'
     concat.from_dir(input_dir)
 
