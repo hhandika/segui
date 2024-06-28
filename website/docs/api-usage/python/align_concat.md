@@ -5,7 +5,7 @@ title: Alignment Concatenation
 
 ## Steps
 
-Install `pysegul` using pip if you haven't done it yet
+Install PySEGUL using pip if you haven't done it yet
 
 ```bash
 pip install pysegul

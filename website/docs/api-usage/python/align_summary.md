@@ -1,9 +1,9 @@
 ---
-sidebar_position: 2
-title: Alignment Conversion
+sidebar_position: 5
+title: Alignment Summary
 ---
 
-Convert an alignment from one format to another format. Optimized for converting many alignments in parallel without the limitation for Python's GIL.
+Generate summary statistics for DNA and amino acid alignments.
 
 ## Steps
 
@@ -13,26 +13,27 @@ Install PySEGUL using pip if you haven't done it yet
 pip install pysegul
 ```
 
-Create a new Python script, import the library, and write python code
+Create a new Python script, import the library, and write python code.
 
 ```python
 import pysegul
 
-def convert_alignment():
+def summary_alignment():
     input_dir = 'tests/align-data'
     input_format = 'nexus'
     datatype = 'dna'
-    output_format = 'fasta'
-    sort_sequences = True
+    # Available values for interval: 1, 2, 5, 10.
+    completeness_interval = 5
+    prefix = 'concatenated'
     output_dir = 'tests/output'
-    convert = pysegul.AlignmentConversion(
+    concat = pysegul.AlignmentSummary(
         input_format,  
         datatype, 
-        output_dir, 
-        output_format,
-        sort_sequences 
+        output_dir,
+        completeness_interval,
+        prefix
         )
-    convert.from_dir(input_dir)
+    concat.from_dir(input_dir)
 ```
 
 You can also input the alignment paths in a list directly instead of using a directory. Replace the `input_dir` with `input_files` and provide a list of paths. Then, call the `from_files` method instead of `from_dir`.
@@ -40,19 +41,19 @@ You can also input the alignment paths in a list directly instead of using a dir
 ```python
 import pysegul
 
-def convert_alignment():
+def summary_alignment():
     input_path = ['tests/align-data/alignment1.nex', 'tests/align-data/alignment2.nex']
     input_format = 'nexus'
     datatype = 'dna'
-    output_format = 'fasta'
-    sort_sequences = True
+    completeness_interval = 5
+    prefix = 'concatenated'
     output_dir = 'tests/output'
-    convert = pysegul.AlignmentConversion(
+    concat = pysegul.AlignmentSummary(
         input_format,  
         datatype, 
-        output_dir, 
-        output_format,
-        sort_sequences 
+        output_dir,
+        completeness_interval,
+        prefix
         )
-    convert.from_files(input_path)
+    concat.from_files(input_path)
 ```
