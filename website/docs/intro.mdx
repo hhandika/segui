@@ -274,14 +274,22 @@ def concat_alignments():
 Most of the PySEGUL features follow the same code pattern, except for features that require specific paramaters, such as alignment filtering, sequence extraction, and sequence removal. For these features, use setter to input files or directory. Then, use the matching method parameters to run the analyses. For example, to extract sequences using regular expression:
 
 ```python
-# <Your code using similar code structure as above...>
+import pysegul
 
-input_dir = 'tests/data'
-# Or a list of files
-input_files = ['tests/data/alignment1.nex', 'tests/data/alignment2.nex']
-# <An exract object with its input paramaters>
-# Then, extract the sequences using regular expression method
-object_name.extract_regex("(?i)^(abce)")
+def extract_sequences():
+    input_dir = 'tests/align-data'
+    input_format = 'nexus'
+    datatype = 'dna'
+    output_format = 'fasta'
+    output_dir = 'tests/output'
+    extract = pysegul.SequenceExtraction(
+        input_format,
+        datatype,
+        output_dir,
+        output_format,
+        )
+    extract.input_dir = input_dir
+    extract.extract_regex("(?i)^(abce)")
 ```
 
 Learn more about using PySEGUL [here](/docs/api-usage/python/intro).
