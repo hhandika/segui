@@ -6,10 +6,6 @@ sidebar_position: 6
 
 Split alignments into multiple files based on the partition.
 
-- [Steps](#steps)
-- [Input Partition](#input-partition)
-- [Check Partition for Errors](#check-partition-for-errors)
-
 ## Steps
 
 1. Select the `Alignment` button from the navigation bar.

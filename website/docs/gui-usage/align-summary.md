@@ -6,10 +6,6 @@ sidebar_position: 7
 
 Summary statistics for many alignments.
 
-- [Steps](#steps)
-- [Output](#output)
-- [Prefix](#prefix)
-
 ## Steps
 
 1. Select the `Alignment` button from the navigation bar.

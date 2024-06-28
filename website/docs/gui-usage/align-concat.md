@@ -5,12 +5,6 @@ sidebar_position: 3
 
 Concatenate multiple alignments into a single alignment with partition output.
 
-- [Steps](#steps)
-- [Prefix](#prefix)
-- [Output format](#output-format)
-- [Partition format](#partition-format)
-- [Output file](#output-file)
-
 ## Steps
 
 1. Select the `Alignments` button from the navigation bar.

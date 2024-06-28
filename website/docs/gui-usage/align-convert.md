@@ -6,11 +6,6 @@ sidebar_position: 4
 
 Convert alignment from one format to another.
 
-- [Steps](#steps)
-- [Output](#output)
-  - [Output format](#output-format)
-- [Sort sequences](#sort-sequences)
-
 ## Steps
 
 1. Select the `Alignments` button from the navigation bar.

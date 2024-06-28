@@ -6,9 +6,6 @@ sidebar_position: 14
 
 Extract sequences from alignment files based on sequence IDs or regular expression.
 
-- [Steps](#steps)
-- [Parameters](#parameters)
-
 ## Steps
 
 1. Select the `Sequences` button from the navigation bar.

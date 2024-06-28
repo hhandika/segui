@@ -6,14 +6,6 @@ sidebar_position: 8
 
 This feature provides summary statistics for sequence reads and contiguous sequences (contigs).
 
-- [Sequence Read Summary Statistics](#sequence-read-summary-statistics)
-  - [Steps for Sequence Read Summary Statistics](#steps-for-sequence-read-summary-statistics)
-  - [Summary Mode](#summary-mode)
-  - [Essential statistics for raw reads](#essential-statistics-for-raw-reads)
-- [Contig Summary Statistics](#contig-summary-statistics)
-  - [Steps for Contig Summary Statistics](#steps-for-contig-summary-statistics)
-  - [Available statistics for contiguous sequences](#available-statistics-for-contiguous-sequences)
-
 ## Sequence Read Summary Statistics
 
 ### Steps for Sequence Read Summary Statistics

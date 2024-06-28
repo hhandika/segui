@@ -6,10 +6,6 @@ sidebar_position: 5
 
 Filtering alignments based on the length (sites), taxa completeness, parsimony informative sites, or percent of parsimony informative sites.
 
-- [Steps](#steps)
-- [Parameters](#parameters)
-- [Concatenating the output](#concatenating-the-output)
-
 ## Steps
 
 1. Select the `Alignments` button from the navigation bar.

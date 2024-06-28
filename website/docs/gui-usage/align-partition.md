@@ -6,9 +6,6 @@ sidebar_position: 6
 
 Convert partition from one format to another.
 
-- [Steps](#steps)
-- [Input Partition](#partition-format)
-
 ## Steps
 
 1. Select the `Alignment` button from the navigation bar.
