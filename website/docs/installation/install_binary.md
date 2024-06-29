@@ -28,6 +28,10 @@ SEGUL is highly optimized to be as fast and efficient as possible. For this reas
 Since version 0.21.3, the CLI binary is also available for ARM64 architecture on Linux. The file is named `segul-Linux-arm64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-arm64.tar.gz)).
 :::
 
+:::tip
+When installing SEGUL in the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10), consider that if your files are large and are stored in the Windows partition, WSL 1 will be 2-3 times faster than WSL 2. If you prefer to use WSL 2, which is the default option, it is advisable to store your data in the Linux partition. Learn more about the differences from [Microsoft WSL Guidelines](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
+:::
+
 If you are not sure which version of SEGUL to use on Linux, check the GLIBC version:
 
 ```python
@@ -54,7 +58,7 @@ We recommend using the dynamically linked executable version if your OS has the 
 
 #### Download the compressed Linux executable
 
-Use your terminal app to download the file from the release page. You can use `wget` or `curl` to download the file. The example below is for the dynamically linked executable version. Replace the file name with the version you want to download.
+Use your terminal app to download the file from the release page. You can use `wget` or `curl` to download the file. The example below is for the **dynamically linked executable** version. Replace the file name with the version you want to download.
 
 ```Bash
 wget https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz
@@ -88,11 +92,57 @@ chmod a+x segul
 
 #### Put it in a folder registered in your Linux PATH variable
 
-Copy SEGUL executable to the folder. Then, try call SEGUL from anywhere in your system:
+If you already has a PATH registered in your environment variable, put the executable in the folder. If you don't have one yet, you can create a new folder in your home directory and put the executable in it. Then, add the path to the folder to your PATH variable. To do this, on your terminal, type:
+
+```Bash
+which $SHELL
+```
+
+If it shows `bash`, add the following line to your `.bashrc` file or `.bash_profile`, whichever is available in your system. If it shows `zsh`, add the line to your `.zshrc` file.
+
+```Bash
+export PATH=$PATH:/path/to/segul/folder
+```
+
+For example, if you put the SEGUL executable in the `~/bin` folder, add the following line to your `.bashrc` file:
+
+```Bash
+export PATH=$PATH:~/bin
+```
+
+Then, run the following command to apply the changes. Change the file name if you use `.zshrc` or `.bash_profile`.
+
+```Bash
+source ~/.bashrc
+```
+
+:::tip
+To check which bash profile file is available in your home directory, you can use the following command:
+
+Make sure you are in your home directory or `cd ~`. Then, run:
+
+```Bash
+ls -a .
+```
+
+It will show all files in your home directory, including hidden files. Look for `.bashrc`, `.bash_profile`, or `.zshrc`. If you don't have any of these files, you can create one.
+
+```Bash
+touch .bashrc
+```
+
+Then, add the export PATH line to the file.
+:::
+
+#### Check the installation
+
+Try call SEGUL from anywhere in your system:
 
 ```Bash
 segul --version
 ```
+
+It should show the SEGUL version number.
 
 ## macOS
 
@@ -160,21 +210,21 @@ It is best to avoid registering too many paths in your environment variable. It 
 
 ## Windows
 
-This instruction is for running SEGUL native on Windows. If you are using WSL, install the Linux version of the app by following the instruction [above](#installing-linux-binary). However, running SEGUL on native Windows is more efficient due to a better access to the hardware than the WSL. The installation procedure is similar to the MacOS or Linux. After downloading the zip file for Windows and extracting it, you will setup your environment variable pointing to the path where you will put the executable. In Windows, this is usually done using GUI.
+This instruction is for running SEGUL native on Windows. If you are using WSL, install the Linux version of the app by following [the Linux installation guideline](#installing-linux-binary). However, running SEGUL on native Windows is more efficient due to a better access to the hardware than the WSL. The installation procedure is similar to the MacOS or Linux. Keep in mind that, the Windows executable is compressed in a zip file. After downloading the zip file and extracting it, you will setup your environment variable pointing to the path where you will put the executable. In Windows, this is usually done using GUI.
 
 ### Installing Windows binary
 
 #### Download segul-Windows-x86_64.zip
 
-Download the compressed Windows executable from the [release page](https://github.com/hhandika/segul/releases/latest). The file is named `segul-Windows-x86_64.zip` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)).
+Download the compressed Windows executable: `segul-Windows-x86_64.zip` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)).
 
 #### Decompress Windows executable
 
-Windows has a built-in feature for zip decompression. You can right-click the file and select `Extract All...` from the context menu. You can also use third-party apps like 7zip.
+Windows has a built-in feature for zip decompression. You can right-click the file and select `Extract All...` from the context menu. You can also use third-party apps like [7zip](https://www.7-zip.org/download.html).
 
 After decompressing the file, you will find the `segul.exe` file. You can put it in a folder registered in your environment variable. Create a new folder if you don't have one yet. Then, put the `segul.exe` file in the folder.
 
-#### Setup the environment variable (optional)
+#### Setup the environment variable
 
 Click search and type `env`. Select `Edit the system environment variables`. Then, click `Environment Variables...` button. In the `System variables` section, select `Path` and click `Edit...` button. Click `New` and add the path to the folder where you put the SEGUL executable. Click `OK` to close the dialog boxes.
 
@@ -185,5 +235,5 @@ segul --version
 ```
 
 :::tip
-We recommend using a combination of [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) and [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) for easy navigation in the terminal. Windows terminal comes pre-installed on Windows 11. It is available on Microsoft Store for Windows 10 users. You can also use [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run the Linux version of SEGUL. Follow the Linux/WSL installation guideline for installing the Linux binary on WSL. Keep in mind that, if your data is big and it is in the Windows partition, WSL 1 will be 2-3 times faster than WSL 2. If you are using WSL 2, you should put your data in the Linux partition. Learn more about WSL [here](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
+We recommend using a combination of [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) and [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3) for easy navigation in the terminal. Windows terminal comes pre-installed on Windows 11. It is available on Microsoft Store for Windows 10 users.
 :::

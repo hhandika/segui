@@ -7,7 +7,7 @@ We develop SEGUL to improve equity in evolutionary biology, and we strive to mak
 
 ## New Feature Requests and Bug Reports
 
-If you have a [GitHub](https://github.com/) account, you can submit new feature requests and bug reports directly to our [GitHub Issues](https://github.com/hhandika/segul/issues).
+If you have a [GitHub](https://github.com/) account, you can submit new feature requests and bug reports directly to our [GitHub Issues](https://github.com/hhandika/segul/issues). We also welcome for collaboration and contributions to the project.
 
 :::info
 We encourage you to submit new feature requests and bug reports to our GitHub Issues. It helps us to keep track of the issues and feature requests more efficiently. However, we understand that not everyone has a GitHub account or comfortable of using it. In this case, you can also contact us through our support email (see below).
