@@ -26,7 +26,7 @@ If you are interested in reading the journal article but do not have access to i
 
 ## Navigating the Documentation
 
-We provide quick start [below](#quick-start-%EF%B8%8F) to help you get started with SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. Any users interested in installing SEGUL should be benefitted from our [installation guidelines](/docs/installation/overview). If you are using the GUI app, we recommend checking the [GUI general usage](/docs/gui-usage/general) section. For using the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section. These sections provide an overview of the app, input and output formats, datatype, and other general information about the app. If you have any questions, issues, and feedback about the app and its documentation, please refer to the [support](/docs/support) section. We also welcome for collaboration and contribution.
+We provide quick start [below](#quick-start-%EF%B8%8F) to help you get started with SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. A detailed instruction on installing SEGUL is available in the [installation guidelines](/docs/installation/overview). If you are using the GUI app, we recommend checking the [GUI general usage](/docs/gui-usage/general) section. For using the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section. These sections provide an overview of the app, input and output formats, datatype, and other general information about the app. If you have any questions, issues, and feedback about the app and its documentation, please refer to the [support](/docs/support) section. We also welcome for collaboration and contribution.
 
 :::tip
 If you are reading the documentation on mobile devices, at the top of each page, you can find a dropdown menu that allows you to navigate to different sections of the documentation. For larger screen reading, the sidebar on the right side of the page provides the same functionality.
@@ -53,15 +53,23 @@ If you are reading the documentation on mobile devices, at the top of each page,
 | iPadOS   | ✅  | ❌  |
 | Android  | ✅  | ❌  |
 
-### Command line (CLI) vs GUI
+### CLI vs GUI vs API
 
-If your answer is yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your need. You can also use both versions. They each operates in their own contained environment.
+For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If your answer is yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your need. You can also install both versions and use them interchangeably. They each operates in their own contained environment and do not interfere with the other.
 
 1. Are you planning to run the app on non-GUI environment, such as a [HPC](https://www.ibm.com/topics/hpc) cluster?
 2. Do you run SEGUL as part of a pipeline?
 3. Do you you need the utmost efficiency?
 
 Learn more about the differences between the CLI and GUI version [here](./cli_gui.md).
+
+For developer, SEGUL is available as a Rust crate, which can be easily integrated in Rust code. The Python library is available as a Python binding to SEGUL API called PySEGUL. It is user-friendly and does not require Rust knowledge to use it. The Rust crate also works with R. However, using it in R requires some Rust knowledge.
+
+Learn more about using SEGUL API [here](/docs/category/api-usages).
+
+:::tip
+If you write a pipeline in Python, we recommend using PySEGUL. It is available in Python Package Index (PyPI) that will simplify dependency management.
+:::
 
 ### Installation
 
@@ -76,7 +84,7 @@ For GUI apps, we recommend downloading from the [official store](/docs/installat
 | MacOS x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Intel.                                                                                                       |
 | Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. May work on ARM Windows as well.                                                                    |
 
-### Usage
+### Usage Overview
 
 SEGUL has a growing list of features to help you manipulate and summarize your phylogenomic datasets. You can install both GUI and CLI versions in the system that supports them. Each version operates in its own contained environment and does not interfere with the other.
 
@@ -134,12 +142,12 @@ We provide sample datasets to help you get started or test the app if you find a
 | Dataset                    | Link                                                                                |
 | -------------------------- | ----------------------------------------------------------------------------------- |
 | FASTA                      | [Download](https://github.com/hhandika/segul/raw/main/examples/data-fasta.zip)      |
-| Nexus                      | [Download](https://github.com/hhandika/segul/raw/main/examples/data-nexus.zip)      |
-| Relaxed-Phylip             | [Download](https://github.com/hhandika/segul/raw/main/examples/data-phylip.zip)     |
-| Interleaved Relaxed-Phylip | [Download](https://github.com/hhandika/segul/raw/main/examples/data-phylip.zip)     |
-| Concatenated Nexus         | [Download](https://github.com/hhandika/segul/raw/main/examples/data-concat-nex.zip) |
+| NEXUS                      | [Download](https://github.com/hhandika/segul/raw/main/examples/data-nexus.zip)      |
+| Relaxed-PHYLIP             | [Download](https://github.com/hhandika/segul/raw/main/examples/data-phylip.zip)     |
+| Interleaved relaxed-PHYLIP | [Download](https://github.com/hhandika/segul/raw/main/examples/data-phylip.zip)     |
+| Concatenated NEXUS         | [Download](https://github.com/hhandika/segul/raw/main/examples/data-concat-nex.zip) |
 
-#### GUI Usage
+### GUI Usage
 
 1. Open the app.
 2. Use the navigation bar to select the feature you want to use. For example, if you want to concatenate alignments, click the "Alignments" button.
@@ -156,7 +164,7 @@ We provide sample datasets to help you get started or test the app if you find a
 The mobile version of the GUI has limited capabilities in handling large number of files. Find out more in the [guideline for mobile users](/docs/gui-usage/general#specific-guideline-for-mobile-users).
 :::
 
-#### CLI Usage
+### CLI Usage
 
 `segul` command is structured as follows:
 
@@ -221,7 +229,7 @@ segul concat -d <input-directory> -f <input-format>
 | Command help                   | `segul <command> --help`                                           |
 | Subcommand help                | `segul <command> <subcommand> --help`                              |
 
-#### API Usage
+### API Usage
 
 SEGUL API is available as a Rust crate. You can use it to develop your own application or integrate it with other programming languages. The API is available on [crates.io](https://crates.io/crates/segul).
 

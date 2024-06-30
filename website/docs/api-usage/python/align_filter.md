@@ -23,7 +23,7 @@ Create a new Python script, import the library, and write python code. Example:
 ```python
 import pysegul
 
-def filter_alignment():
+def filter_alignments():
     input_dir = 'tests/align-data'
     input_format = 'nexus'
     datatype = 'dna'

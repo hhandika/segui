@@ -24,7 +24,7 @@ Create a new Python script, import the library, and write python code. Example:
 ```python
 import pysegul
 
-def convert_partition():
+def convert_partitions():
     input_paths = [
         'tests/partition-data/partition_codon.txt', 
         'tests/partition-data/partition.txt'

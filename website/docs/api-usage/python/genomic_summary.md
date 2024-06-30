@@ -18,7 +18,7 @@ Create a new Python script, import the library, and write python code.
 ```python
 import pysegul
 
-def genomic_summary():
+def summarize_reads():
     input_dir = 'tests/raw-data'
     input_format = 'auto'
     summary_mode = 'default'
@@ -38,7 +38,7 @@ You can also input the alignment paths in a list directly instead of using a dir
 ```python
 import pysegul
 
-def genomic_summary():
+def summarize_reads():
     input_path = ['tests/raw-data/read1.fastq', 'tests/raw-data/read2.fastq']
     input_format = 'auto'
     # Available values for summary_mode: 'default', 'complete', 'minimal'.
@@ -67,7 +67,7 @@ Create a new Python script, import the library, and write python code.
 ```python
 import pysegul
 
-def genomic_summary():
+def summarize_contigs():
     input_dir = 'tests/contig-data'
     input_format = 'auto'
     prefix = 'contig_summary'
@@ -85,7 +85,7 @@ You can also input the alignment paths in a list directly instead of using a dir
 ```python
 import pysegul
 
-def genomic_summary():
+def summarize_contigs():
     input_path = ['tests/contig-data/contig1.fasta', 'tests/contig-data/contig2.fasta']
     input_format = 'auto'
     prefix = 'contig_summary'

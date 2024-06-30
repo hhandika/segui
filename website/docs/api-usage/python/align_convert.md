@@ -18,7 +18,7 @@ Create a new Python script, import the library, and write python code
 ```python
 import pysegul
 
-def convert_alignment():
+def convert_alignments():
     input_dir = 'tests/align-data'
     input_format = 'nexus'
     datatype = 'dna'
@@ -40,7 +40,7 @@ You can also input the alignment paths in a list directly instead of using a dir
 ```python
 import pysegul
 
-def convert_alignment():
+def convert_alignments():
     input_path = ['tests/align-data/alignment1.nex', 'tests/align-data/alignment2.nex']
     input_format = 'nexus'
     datatype = 'dna'

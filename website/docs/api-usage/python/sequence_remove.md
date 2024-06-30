@@ -21,7 +21,7 @@ Create a new Python script, import the library, and write python code
 ```python
 import pysegul
 
-def remove_sequence():
+def remove_sequences():
     input_dir = 'tests/align-data'
     input_format = 'nexus'
     datatype = 'dna'
