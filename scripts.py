@@ -14,10 +14,13 @@ RUST_FRB_WEB = "rust/src/frb_generated.web.rs"
 
 FRB_FILES = [DART_FRB, DART_FRB_IO, DART_FRB_WEB, RUST_FRB_IO, RUST_FRB, RUST_FRB_WEB]
 
-DMG_CONFIG = "installer/config.json"
-OUTPUT_DMG = "installer/nahpu.dmg"
+DMG_CONFIG = "packages/config.json"
+OUTPUT_DMG = "packages/mdd.dmg"
 
 FRB_INSTALL_NAME = "flutter_rust_bridge_codegen@^2.0.0-dev.0"
+
+IOS_PODS_FILES = "ios/Podfile ios/Podfile.lock ios/Pods/"
+MACOS_PODS_FILES = "macos/Podfile macos/Podfile.lock macos/Pods/"
 
 
 class Build:
@@ -31,6 +34,7 @@ class Build:
             if platform.system() == "Windows":
                 self.build_windows()
             elif platform.system() == "Darwin":
+                self.build_android()
                 self.build_ios()
                 self.build_macos()
             elif platform.system() == "Linux":
@@ -148,10 +152,21 @@ class BuildRust:
             if is_clean:
                 self.remove_old_frb_code()
             subprocess.run(["flutter_rust_bridge_codegen", "generate"])
-            self._fix_dart_code()
             print("Rust code generated successfully\n")
         except Exception as e:
             print("Error generating frb code:", str(e))
+            return
+        
+    def clean_frb_files(self) -> None:
+        print("Cleaning frb code...")
+        try:
+            self.remove_old_frb_code()
+            subprocess.run(["rm", "-rf", "rust_builder"])
+            subprocess.run(["rm", "-rf", "flutter_rust_bridge.yaml"])
+            subprocess.run(["rm", "-rf", "integration_test"])
+            print("Frb code cleaned successfully\n")
+        except Exception as e:
+            print("Error cleaning frb code:", str(e))
             return
 
     def update_frb_executable(self) -> None:
@@ -194,16 +209,6 @@ class BuildRust:
             print("Error updating rust dependencies:", str(e))
             return
 
-    def _fix_dart_code(self) -> None:
-        print("Fixing dart code...")
-        try:
-            subprocess.run(["dart", "fix", "--apply"])
-            print("Dart code fixed successfully\n")
-        except Exception as e:
-            print("Error fixing dart code:", str(e))
-            return
-
-
 class FlutterUtils:
     def __init__(self):
         pass
@@ -233,6 +238,21 @@ class FlutterUtils:
             print("Flutter dependencies updated successfully\n")
         except Exception as e:
             print("Error updating flutter dependencies:", str(e))
+            return
+    
+    def clean_pods(self) -> None:
+        print("Cleaning pods...")
+        try:
+            subprocess.run(["flutter", "clean"])
+            subprocess.run(["rm", "-rf", IOS_PODS_FILES])
+            subprocess.run(["rm", "-rf", MACOS_PODS_FILES])
+            subprocess.run(["rm", "-rf", "ios/.symlinks"])
+            subprocess.run(["rm", "-rf", "ios/Flutter/Flutter.framework"])
+            subprocess.run(["rm", "-rf", "macos/Flutter/Flutter.framework"])
+            subprocess.run(["rm", "-rf", "macos/Flutter/Flutter.podspec"])
+            print("Pods cleaned successfully\n")
+        except Exception as e:
+            print("Error cleaning pods:", str(e))
             return
 
 
@@ -324,6 +344,7 @@ class Args:
         parser.add_argument(
             "--update", action="store_true", help="Update flutter dependencies"
         )
+        parser.add_argument("--clean-pods", action="store_true", help="Clean pods")
 
     def get_rust_build_args(self, args: argparse.Namespace) -> None:
         parser = args.add_parser("frb", help="Build options for Rust project")
@@ -338,6 +359,7 @@ class Args:
             "--upgrade", action="store_true", help="Upgrade frb executable"
         )
         parser.add_argument("--clean", action="store_true", help="Clean project")
+        parser.add_argument("--clean-all", action="store_true", help="Clean FRB files")
         parser.add_argument("--install", action="store_true", help="Install frb executable")
 
     def get_doc_build_args(self, args: argparse.Namespace) -> None:
@@ -382,6 +404,8 @@ class Parser:
             utils.fix_dart_code()
         elif self.args.update:
             utils.update_flutter_dependencies()
+        elif self.args.clean_pods:
+            utils.clean_pods()
         else:
             print("No utility option selected")
             return
@@ -398,6 +422,8 @@ class Parser:
             rust.update_frb_executable()
         elif self.args.install:
             rust.install_frb_executable()
+        elif self.args.clean_all:
+            rust.clean_frb_files()
         else:
             print("No build option selected")
             return
