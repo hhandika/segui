@@ -22,14 +22,14 @@ Learn more about using SEGUL API in Python [here](/docs/api-usage/python/intro).
 
 > Handika, H., and J. A. Esselstyn. 2024. SEGUL: Ultrafast, memory-efficient and mobile-friendly software for manipulating and summarizing phylogenomic datasets. _Molecular Ecology Resources_. [https://doi.org/10.1111/1755-0998.13964](https://doi.org/10.1111/1755-0998.13964).
 
-If you are interested in reading the journal article but do not have access to it, you can request a copy from the authors on [ResearchGate](https://www.researchgate.net/publication/380125709_SEGUL_Ultrafast_memory-efficient_and_mobile-friendly_software_for_manipulating_and_summarizing_phylogenomic_datasets).
+If you are interested in reading the journal article but cannot access it, you can request a copy from the authors on [ResearchGate](https://www.researchgate.net/publication/380125709_SEGUL_Ultrafast_memory-efficient_and_mobile-friendly_software_for_manipulating_and_summarizing_phylogenomic_datasets).
 
 ## Navigating the Documentation
 
-We provide quick start [below](#quick-start-%EF%B8%8F) to help you get started with SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. A detailed instruction on installing SEGUL is available in the [installation guidelines](/docs/installation/overview). If you are using the GUI app, we recommend checking the [GUI general usage](/docs/gui-usage/general) section. For using the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section. These sections provide an overview of the app, input and output formats, datatype, and other general information about the app. If you have any questions, issues, and feedback about the app and its documentation, please refer to the [support](/docs/support) section. We also welcome for collaboration and contribution.
+[Below](#quick-start-%EF%B8%8F), we provide a quick start to help you start with SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. Detailed instructions on installing SEGUL are available in the [installation guidelines](/docs/installation/overview). We recommend checking the [GUI general usage](/docs/gui-usage/general)e the GUI app. To use the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section. These sections provide an overview of the app, input and output formats, datatype, and other general information about the app. Please refer to the [support](/docs/support) section for questions, issues, or feedback about the app and its documentation. We also welcome collaboration and contribution.
 
 :::tip
-If you are reading the documentation on mobile devices, at the top of each page, you can find a dropdown menu that allows you to navigate to different sections of the documentation. For larger screen reading, the sidebar on the right side of the page provides the same functionality.
+For mobile reading, you can find a dropdown menu at the top of each page to navigate to different documentation sections. For larger screen reading, the sidebar on the right side of the page provides the same functionality.
 :::
 
 ## Quick Start ⏱️
@@ -55,25 +55,25 @@ If you are reading the documentation on mobile devices, at the top of each page,
 
 ### CLI vs GUI vs API
 
-For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If your answer is yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your need. You can also install both versions and use them interchangeably. They each operates in their own contained environment and do not interfere with the other.
+For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If you answer yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your needs. You can also install both versions and use them interchangeably. They operate in their environment and do not interfere with the other.
 
-1. Are you planning to run the app on non-GUI environment, such as a [HPC](https://www.ibm.com/topics/hpc) cluster?
+1. Are you planning to run the app in a non-GUI environment like an [HPC](https://www.ibm.com/topics/hpc) cluster?
 2. Do you run SEGUL as part of a pipeline?
 3. Do you you need the utmost efficiency?
 
 Learn more about the differences between the CLI and GUI version [here](./cli_gui.md).
 
-For developer, SEGUL is available as a Rust crate, which can be easily integrated in Rust code. The Python library is available as a Python binding to SEGUL API called PySEGUL. It is user-friendly and does not require Rust knowledge to use it. The Rust crate also works with R. However, using it in R requires some Rust knowledge.
+For developers, SEGUL is available as a Rust crate, which you can easily integrate into Rust code. The Python library is available as a Python binding to the SEGUL API called PySEGUL. It is user-friendly and does not require Rust knowledge to use it. The Rust crate also works with R. However, using it in R requires some Rust knowledge.
 
 Learn more about using SEGUL API [here](/docs/category/api-usages).
 
 :::tip
-If you write a pipeline in Python, we recommend using PySEGUL. It is available in Python Package Index (PyPI) that will simplify dependency management.
+If you write a pipeline in Python, we recommend using PySEGUL. It is available in the Python Package Index (PyPI), which will simplify dependency management.
 :::
 
 ### Installation
 
-For GUI apps, we recommend downloading from the [official store](/docs/installation/install_gui) of your operating system. The fastest installation route for CLI is using the pre-compiled binaries. If you are familiar with installing single executable CLI apps, you can download the latest release using the links below. The [installation guide](/docs/installation/install_binary) provides more detailed instructions.
+For GUI apps, we recommend downloading from the [official store](/docs/installation/install_gui) of your operating system. The fastest installation route for CLI is using the pre-compiled binaries. If you are familiar with installing single executable CLI apps, download the latest release using the links below. The [installation guide](/docs/installation/install_binary) provides more detailed instructions.
 
 | Platform              | Link                                                                                                  | Description                                                                                                               |
 | --------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -137,7 +137,7 @@ SEGUL CLI can handle non-standard file extensions that are not listed above. Use
 
 #### Example Dataset
 
-We provide sample datasets to help you get started or test the app if you find any issues using your own datasets. The datasets include small alignments in SEGUL supported formats. Due to the large file sizes, we are unable to provide genomic datasets. You can download the genomic data from public repositories, such as [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra).
+We provide sample datasets to help you get started or test the app if you find any issues using your datasets. The datasets include small alignments in SEGUL-supported formats. Due to the large file sizes, we cannot provide genomic datasets. You can download the genomic data from public repositories, such as [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra).
 
 | Dataset                    | Link                                                                                |
 | -------------------------- | ----------------------------------------------------------------------------------- |
@@ -150,18 +150,18 @@ We provide sample datasets to help you get started or test the app if you find a
 ### GUI Usage
 
 1. Open the app.
-2. Use the navigation bar to select the feature you want to use. For example, if you want to concatenate alignments, click the "Alignments" button.
-3. Use the dropdown menu to select the task. For alignment concatenation, select "Concatenate alignments".
-4. Add the input files by clicking the "Add file" button. On desktop platforms, you can also input a directory by clicking the "Add directory" button. The app will look for matching files in the directory.
-5. All the input files will be displayed in the input tab bar. You can remove the file by clicking the "Remove" button. Removing the file will only remove it from input list and not from the file system.
-6. Add the output directory by clicking the "Add output directory" button. On mobile platforms, the directory will be the default directory for the app.
-7. For some tasks, you also need to add the parameters. For example, if you want to filter alignments, you need to add the filtering parameters.
+2. Use the navigation bar to select the feature you want to use. For example, to concatenate alignments, click the "Alignments" button.
+3. Use the dropdown menu to select the task. For alignment concatenation, select "Concatenate alignments."
+4. You can add the input files by clicking the "Add file" button. On desktop platforms, you can also input a directory by clicking the "Add directory" button. The app will look for files matching the directory.
+5. The input tab bar displays all the input files. You can remove a file by clicking the "Remove" button. Removing a file will only remove it from the input list, not the file system.
+6. Click the "Add output directory" button to add the output directory. On mobile platforms, this directory will be the app's default directory.
+7. You also need to add the parameters for some tasks. For example, you must add the filtering parameters to filter alignments.
 8. Click the "Run" button to start the task.
-9. Once it's done, the app will display the output in the output tab bar. You can also tab the file to open it in the app file viewer. Current version only support plain text and comma-separated (CSV) data.
-10. You can also share the output. There are two share options. The quick share will create a zip file containing the output and share it using the system share sheet. You can also share individual files by clicking the share button on the file output viewer.
+9. Once done, the app will display the output in the output tab bar. You can also tab the file to open it in the app file viewer. The current version only supports plain text and comma-separated (CSV) data.
+10. You can also share the output. There are two share options. The quick share will create a zip file containing the output and share it using the system share sheet. You can also share individual files by clicking the share button on the output viewer.
 
 :::warning
-The mobile version of the GUI has limited capabilities in handling large number of files. Find out more in the [guideline for mobile users](/docs/gui-usage/general#specific-guideline-for-mobile-users).
+The mobile version of the GUI has limited capabilities in handling many files. Find out more in the [guideline for mobile users](/docs/gui-usage/general#specific-guideline-for-mobile-users).
 :::
 
 ### CLI Usage
@@ -178,7 +178,7 @@ For example, to concatenate alignments:
 segul align concat --dir alignments/ --output aln-concat
 ```
 
-Some arguments are required, while others are optional. For example, the `--output` option is optional. If you do not provide it, the app will use the default output directory. This command will concatenate all the alignments in the `alignments` directory and save the output in the `Align-Concat` directory.
+Some arguments are required, while others are optional. For example, the `--output` option is optional. The app will use the default output directory if you do not provide it. The command below will concatenate all the alignments in the `alignments/` directory and save the output in the `Align-Concat` directory.
 
 ```bash
 segul align concat --dir alignments/
@@ -189,7 +189,7 @@ We recommend using the `segul --help` option to see the available options for ea
 See the [command usage](./cli-usage/command_options.md) section for more detailed usage.
 
 :::tip
-Since version 0.19.0, you don't need to specify the input format. The app will automatically detect the format based on the file extension. Lower version only allow auto detect format for non-directory input. If you have non-standard file extensions, regardless of the version, use the `--format` option to set the input format.
+Since version 0.19.0, you don't need to specify the input format. The app will automatically detect the format based on the file extension. The lower version only allows auto-detect format for non-directory input. If you have non-standard file extensions, use the `--format` option to set the input format regardless of the version.
 :::
 
 :::warning
@@ -231,7 +231,7 @@ segul concat -d <input-directory> -f <input-format>
 
 ### API Usage
 
-SEGUL API is available as a Rust crate. You can use it to develop your own application or integrate it with other programming languages. The API is available on [crates.io](https://crates.io/crates/segul).
+SEGUL API is available as a Rust crate. You can use it to develop your application or integrate it with other programming languages. The API is available on [crates.io](https://crates.io/crates/segul).
 
 To add SEGUL API to your project, you can use the `cargo add` command:
 
@@ -279,7 +279,7 @@ def concat_alignments():
     concat.from_files(input_paths)
 ```
 
-Most of the PySEGUL features follow the same code pattern, except for features that require specific paramaters, such as alignment filtering, sequence extraction, and sequence removal. For these features, use setter to input files or directory. Then, use the matching method parameters to run the analyses. For example, to extract sequences using regular expression:
+Most of the PySEGUL features follow the same code pattern except for features that require specific parameters, such as alignment filtering, sequence extraction, and sequence removal. For these features, use a setter to input files or directories. Then, the matching method parameters are used to run the analyses. For example, to extract sequences using regular expression:
 
 ```python
 import pysegul
