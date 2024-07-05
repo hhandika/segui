@@ -126,7 +126,7 @@ impl TranslationServices {
         let translation_table = self.match_translation_table(&self.table);
         let task = "Sequence Translation";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let translate = Translate::new(&translation_table, &input_fmt, &datatype, &output_fmt);
+        let translate = Translate::new(&input_fmt, &translation_table, &datatype, &output_fmt);
         translate.translate_all(&mut input_files, self.reading_frame, &output_path);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
