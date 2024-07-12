@@ -24,7 +24,7 @@ mamba install segul
 
 ### Install Miniforge
 
-If you start from scratch, we recommend using [Miniforge](https://github.com/conda-forge/miniforge). First, download the Miniforge installer from the [Miniforge GitHub release page](https://github.com/conda-forge/miniforge/releases). The [README](https://github.com/conda-forge/miniforge) file in the Miniforge also contains a quick link to the latest release.
+We recommend using [Miniforge](https://github.com/conda-forge/miniforge) if you start from scratch. First, download the Miniforge installer from the [Miniforge GitHub release page](https://github.com/conda-forge/miniforge/releases). The [README](https://github.com/conda-forge/miniforge) file in the Miniforge also contains a quick link to the latest release.
 
 Briefly, you can download the installer using `wget`:
 
@@ -48,13 +48,13 @@ Detailed installation instructions for Miniforge can be found [here](https://git
 
 ### Check Conda and Mamba Installation
 
-You can check both by checking mamba version:
+You can check both by checking the Mamba version:
 
 ```bash
 mamba --version
 ```
 
-It will print the version of mamba and conda if they are installed correctly.
+It will print the Mamba and Conda versions if installed correctly.
 
 For example:
 
@@ -79,7 +79,7 @@ Finally, you can install SEGUL CLI using the following command:
 mamba install segul
 ```
 
-### To test SEGUL CLI installation
+### To test the SEGUL CLI installation
 
 To check the version number:
 
