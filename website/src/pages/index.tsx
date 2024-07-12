@@ -47,7 +47,7 @@ function Latest() {
       <p className={styles.newMessage}>
         <ul>
           <li>SEGUL GUI: Stable version! 🎉</li>
-          <li>SEGUL CLI: Now also available as an ARM64 Linux binary.</li>
+          <li>SEGUL CLI: Now available in Bioconda.</li>
           <li>SEGUL API: Python library is in beta</li>
         </ul>
       </p>
