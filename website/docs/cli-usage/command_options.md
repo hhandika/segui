@@ -32,7 +32,7 @@ Commands:
   help       Print this message or the help of the given subcommand(s)
 ```
 
-Example subcommands for alignment category:
+Example subcommands for the alignment category:
 
 ```bash
 Commands:
