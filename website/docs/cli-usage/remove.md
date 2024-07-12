@@ -4,7 +4,7 @@ sidebar_position: 15
 
 # Sequence Removal
 
-Based on a list of IDs, you can remove sequences in a collection of alignments. This feature is the opposite of `segul extract` feature. It is faster than `segul extract` if you remove less than a half of the sequences.
+Based on a list of IDs, you can remove sequences in a collection of alignments. This feature is the opposite of the `segul extract` feature. Removing less than half of the sequences is faster than `segul extract`.
 
 ## Remove sequences based on a list of IDs
 
@@ -21,7 +21,7 @@ segul sequence remove --dir ./data/ -f fasta --id="seq_1;seq_2;seq_3"
 ```
 
 :::warning
-The equal sign "=" and quotation marks `"` are required to input a list of IDs.
+To input a list of IDs, you must use the equal sign "=" and quotation marks `"`.
 :::
 
 ## Remove sequences based on a regular expression
@@ -34,8 +34,8 @@ segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --re=["
 
 Example:
 
-Command below will remove all sequences whose IDs with the name started with `Homo`.
+The command below will remove all sequences whose IDs with the name started with `Mus`.
 
 ```Bash
-segul sequence remove --dir ./data/ -f fasta --re="^Homo"
+segul sequence remove --dir ./data/ -f fasta --re="^Mus"
 ```
