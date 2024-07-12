@@ -4,13 +4,13 @@ sidebar_position: 16
 
 # Sequence Translation
 
-To translate dna alignment to amino acid:
+To translate DNA alignment to amino acid:
 
 ```Bash
 segul sequence translate -d [path-to-alignment-files] -f [sequence-format-keyword]
 ```
 
-By default, the app will use the standard code table (NCBI Table 1). To set the translation table, use the `--table` option. For example, to translate dna sequences using NCBI Table 2 (vertebrate MtDNA):
+The app will default to the standard code table (NCBI Table 1). Use the `--table` option to set the translation table. For example, to translate DNA sequences using NCBI Table 2 (vertebrate MtDNA):
 
 ```Bash
 segul sequence translate -d loci/ -f fasta --table 2
@@ -29,8 +29,6 @@ segul sequence translate --show-tables
 ```
 
 ## Supported Translation Tables
-
-Sources: [NCBI Genetic Code Tables](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#top):
 
 | Table No | Genetic Code                                                                                 |
 | -------- | -------------------------------------------------------------------------------------------- |
@@ -56,3 +54,5 @@ Sources: [NCBI Genetic Code Tables](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/
 | 29       | Mesodinium Nuclear Code                                                                      |
 | 30       | Peritrich Nuclear Code                                                                       |
 | 33       | Cephalodiscidae Mitochondrial UAA-Tyr Code                                                   |
+
+Sources: [NCBI Genetic Code Tables](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#top)
