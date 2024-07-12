@@ -25,6 +25,7 @@ mamba install segul
 ### Install Miniforge
 
 We recommend using [Miniforge](https://github.com/conda-forge/miniforge) if you start from scratch. First, download the Miniforge installer from the [Miniforge GitHub release page](https://github.com/conda-forge/miniforge/releases). The [README](https://github.com/conda-forge/miniforge) file in the Miniforge also contains a quick link to the latest release.
+We recommend using [Miniforge](https://github.com/conda-forge/miniforge) if you start from scratch. First, download the Miniforge installer from the [Miniforge GitHub release page](https://github.com/conda-forge/miniforge/releases). The [README](https://github.com/conda-forge/miniforge) file in the Miniforge also contains a quick link to the latest release.
 
 Briefly, you can download the installer using `wget`:
 
@@ -54,6 +55,7 @@ You can check both by checking the Mamba version:
 mamba --version
 ```
 
+It will print the Mamba and Conda versions if installed correctly.
 It will print the Mamba and Conda versions if installed correctly.
 
 For example:
