@@ -4,9 +4,11 @@ sidebar_position: 6
 
 # Alignment Splitting
 
-To split an alignment, you need two input files: the concatenated alignment and the partition file. If you skip inputting partition file, the app will assume the partition is embedded in the alignment file.
+SEGUL alignment splitting splits a concatenated alignment into multiple alignments based on an input partition. 
 
-The command is as below:
+To split an alignment, you need two input files: the concatenated alignment and the partition file. If you skip inputting the partition file, the app will assume it is embedded in the alignment file.
+
+The command is as follows:
 
 ```Bash
 segul align split --input <path-to-alignment> --input-partition <path-to-partition-file>
@@ -20,12 +22,12 @@ segul align split --input concat-alignment.nexus --input-partition concat-alignm
 
 ## Check Partition for Errors
 
-The command above assume the partition following this rule:
+The command above assumes the partition following this rule:
 
 1. The first partition position starts with 1.
-2. The next partition is next number after the end of the previous partition. If codon model, it will check the next locus applies the rule.
+2. The next partition is the next number after the previous partition's end. If the codon model checks, the next locus applies the rule.
 
-To skip the partition check, use the `--skip-checking` option:
+Use the `--skip-checking` flag to skip the partition check. This is helpful if you only want to extract a specific part of a concatenated alignment.
 
 ```Bash
 segul align split --input concat-alignment.nexus --input-partition concat-alignment-partition.nex --skip-checking
@@ -33,7 +35,7 @@ segul align split --input concat-alignment.nexus --input-partition concat-alignm
 
 ## Supported partition format for splitting alignment
 
-`segul` support two kind of RaXML format:
+SEGUL supports two kinds of RaXML format:
 
 With datatype written in the partitions:
 
@@ -49,7 +51,7 @@ locus_1 = 1-5
 locus_2 = 6-10
 ```
 
-For nexus partition:
+For NEXUS partition:
 
 ```Text
 #Nexus
@@ -59,7 +61,7 @@ begin set
 end;
 ```
 
-`segul` partition parser is robust when dealing with extra spaces, but forbid the use of spaces for the locus names.
+The SEGUL partition parser is robust when dealing with extra spaces but forbids using spaces for locus names.
 
 This nexus format will work:
 
@@ -71,7 +73,7 @@ begin set
 end;
 ```
 
-But this will not work:
+But this will not work (note the space inside the quotes between the locus and number):
 
 ```Text
 #Nexus
@@ -81,7 +83,19 @@ begin set
 end;
 ```
 
-Some other programs write locus names with file extension (contain dot). In that case, `segul` will replace it with underscore to avoid name conflict when changing file extension.
+:::info
+SEGUL also does not support merged partitions, such as:
+
+```plaintext
+#Nexus
+begin set
+  charset part1 = 1-5 6-10;
+  charset part2 = 11-15;
+end;
+```
+:::
+
+Some other programs write locus names with file extensions (which contain a dot). In that case, SEGUL will replace it with an underscore to avoid a name conflict when changing the file extension.
 
 For example:
 
@@ -93,4 +107,4 @@ begin set
 end;
 ```
 
-In this case above, `segul` will write the output file as locus_1_nex.nex and locus_2_nex.nex (if save to nexus).
+In the above case, SEGUL will write the output file as locus_1_nex.nex and locus_2_nex.nex (if saved to NEXUS).
