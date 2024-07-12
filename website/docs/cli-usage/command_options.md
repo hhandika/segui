@@ -20,7 +20,7 @@ In summary, we keep SEGUL CLI commands, subcommands, and options consistent:
 4. Options with equal sign (`=`), such as `--re=`, require the input values to be in a single or double quotation. For example, `--re="^Genus"`.
 5. Some options are available in both long and short versions, while the rest are only available in long versions. The SEGUL CLI command options will never be available only in a short version.
 
-SEGUL CLI command option as of v0.21.3
+SEGUL CLI command option as of v0.21.3:
 
 ```Bash
 Commands:
