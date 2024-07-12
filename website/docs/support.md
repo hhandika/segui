@@ -3,14 +3,14 @@ sidebar_position: 12
 title: Support
 ---
 
-We develop SEGUL to improve equity in evolutionary biology, and we strive to make it as user-friendly as possible. However, we understand that you may encounter issues or have questions while using the app. On this page, we provide several ways for you to get help and support.
+We develop SEGUL to improve equity in evolutionary biology and strive to make it as user-friendly as possible. However, we understand you may need help with issues or have questions while using the app. This page provides several ways for you to get help and support.
 
-## New Feature Requests and Bug Reports
+## New Feature Requests, Bug Reports, and Documentation Issues
 
-If you have a [GitHub](https://github.com/) account, you can submit new feature requests and bug reports directly to our [GitHub Issues](https://github.com/hhandika/segul/issues). We also welcome for collaboration and contributions to the project.
+If you have a [GitHub](https://github.com/) account, you can submit new feature requests and bug reports directly to our [GitHub Issues](https://github.com/hhandika/segul/issues). We also welcome collaboration and contributions to the project. The documentation is hosted in the SEGUl GUI [repository](https://github.com/hhandika/segui). Please report an issue with the documentation on the repository's [GitHub Issues](https://github.com/hhandika/segui/issues) page.
 
 :::info
-We encourage you to submit new feature requests and bug reports to our GitHub Issues. It helps us to keep track of the issues and feature requests more efficiently. However, we understand that not everyone has a GitHub account or comfortable of using it. In this case, you can also contact us through our support email (see below).
+We encourage you to submit new feature requests and bug reports to our GitHub Issues. This helps us keep track of the issues and feature requests more efficiently. However, we understand that only some have a GitHub account or are comfortable using it. In this case, please feel free to contact us through our support email (see below).
 :::
 
 ## Discussion Forum
@@ -19,8 +19,8 @@ You can also join our [GitHub Discussions](https://github.com/hhandika/segul/dis
 
 ## Contact Us
 
-E-mail us at [support@segul.app](mailto:support@segul.app) for any questions or feedback. We will try to respond to your email as soon as possible.
+Please e-mail us at [support@segul.app](mailto:support@segul.app) with any questions or feedback. We will respond to your email as soon as possible.
 
 :::info
-In a tight deadline and need immediate help? We understand. You are more than welcome to contact the [project maintainer](https://hhandika.com/contact.html). Please note that we might not be able to respond to your email immediately due to our other commitments. We appreciate your understanding.
+Are you on a tight deadline and need immediate help? We understand. You are welcome to contact the [project maintainer](https://hhandika.com/contact.html). Due to our other commitments, we might need more time to respond to your email. We appreciate your understanding.
 :::
