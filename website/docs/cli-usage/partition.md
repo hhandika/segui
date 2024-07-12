@@ -23,9 +23,7 @@ By default, `segul` checks the partition format:
 1. The first partition position starts with 1.
 2. The next partition is the next number after the previous partition's end. If using the codon model, the next locus applies the rule.
 
-Passing the `--uncheck` flag allows you to ignore format checking. This is helpful if you only want to extract a specific part of a concatenated alignment.
-
-For example, to extract nexus in-file partitions (called charset format in `segul`):
+Passing the `--uncheck` flag allows you to ignore format checking. For example, to extract nexus in-file partitions (called charset format in `segul`):
 
 ```Bash
 segul partition convert --input concatenated_alignment.nex --input-part charset --output-part nexus
