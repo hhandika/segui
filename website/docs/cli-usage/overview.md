@@ -14,3 +14,7 @@ Several considerations before using `segul`:
 4. The command examples below are for Unix-like OS, such as Linux, Windows Subsystem for Linux, and MacOS. If you run `segul` natively on Windows, the program name will be `segul.exe`.
 5. SEGUL CLI has default output directories for each task. You can specify the input directory by using the `--output` or `-o` argument.
 6. For some tasks, such as alignment concatenation and summary statistics, you can use the `--prefix` argument to specify the prefix of the output files.
+
+:::note
+If you use [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4) on Windows, you can type `segul` just like Unix-like OS.
+:::
