@@ -9,7 +9,7 @@ sidebar_position: 1
 We develop **SEGUL (SEquence and Genomic UtiLities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively.
 
 :::info
-SEGUL CLI is now available in [Bioconda](https://anaconda.org/bioconda/segul). Available to install for Linux and MacOS users using [ARM](https://en.wikipedia.org/wiki/ARM_architecture_family) or [x86_64](https://en.wikipedia.org/wiki/X86-64) CPUs.
+SEGUL CLI is now available in [Bioconda](https://anaconda.org/bioconda/segul). It is available to install for Linux and MacOS users using [ARM](https://en.wikipedia.org/wiki/ARM_architecture_family) or [x86_64](https://en.wikipedia.org/wiki/X86-64) CPUs.
 
 ```bash
 conda install bioconda::segul
@@ -35,7 +35,7 @@ If you are interested in reading the journal article but cannot access it, you c
 [Below](#quick-start-%EF%B8%8F), we provide a quick start to help you start with SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. Detailed instructions on installing SEGUL are available in the [installation guidelines](/docs/installation/overview). We recommend checking the [GUI general usage](/docs/gui-usage/general) section if you use the GUI app. To use the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section. These sections provide an overview of the app, input and output formats, datatype, and other general information about the app. Please refer to the [support](/docs/support) section for questions, issues, or feedback about the app and its documentation. We also welcome collaboration and contribution.
 
 :::tip
-For mobile reading, you can find a dropdown menu at the top of each page to navigate to different documentation sections. For larger screen reading, the sidebar on the right side of the page provides the same functionality.
+A dropdown menu at the top of each page allows you to navigate to different documentation sections for mobile reading. The sidebar on the right side of the page provides the same functionality for larger screen reading.
 :::
 
 ## Quick Start ⏱️
@@ -61,13 +61,13 @@ For mobile reading, you can find a dropdown menu at the top of each page to navi
 
 ### CLI vs GUI vs API
 
-For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If you answer yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will serve your needs. You can also install both versions and use them interchangeably. They operate in their environment and do not interfere with the other.
+For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If you answer yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will help you. You can also install both versions and use them interchangeably. They operate in their environment and do not interfere with the other.
 
 1. Are you planning to run the app in a non-GUI environment like an [HPC](https://www.ibm.com/topics/hpc) cluster?
 2. Do you run SEGUL as part of a pipeline?
-3. Do you you need the utmost efficiency?
+3. Do you need the utmost efficiency?
 
-Learn more about the differences between the CLI and GUI version [here](./cli_gui.md).
+Learn more about the differences between the CLI and GUI versions [here](./cli_gui.md).
 
 For developers, SEGUL is available as a Rust crate, which you can easily integrate into Rust code. The Python library is available as a Python binding to the SEGUL API called PySEGUL. It is user-friendly and does not require Rust knowledge to use it. The Rust crate also works with R. However, using it in R requires some Rust knowledge.
 
@@ -79,7 +79,7 @@ If you write a pipeline in Python, we recommend using PySEGUL. It is available i
 
 ### Installation
 
-For GUI apps, we recommend downloading from the [official store](/docs/installation/install_gui) of your operating system. The fastest installation route for CLI is using the pre-compiled binaries. If you are familiar with installing single executable CLI apps, download the latest release using the links below. The [installation guide](/docs/installation/install_binary) provides more detailed instructions.
+For GUI apps, we recommend downloading from your operating system's [official store](/docs/installation/install_gui). The fastest installation route for CLI is using the pre-compiled binaries. If you are familiar with installing single executable CLI apps, download the latest release using the links below. The [installation guide](/docs/installation/install_binary) provides more detailed instructions.
 
 | Platform              | Link                                                                                                  | Description                                                                                                               |
 | --------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -88,7 +88,7 @@ For GUI apps, we recommend downloading from the [official store](/docs/installat
 | Linux x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz)      | For Linux with modern [GLIBC](https://www.gnu.org/software/libc/) version. Most recent Linux distribution, including WSL. |
 | MacOS ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Apple M series.                                                                                              |
 | MacOS x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Intel.                                                                                                       |
-| Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. May work on ARM Windows as well.                                                                    |
+| Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. It may work on ARM Windows as well.                                                                    |
 
 ### Usage Overview
 
@@ -127,7 +127,7 @@ Supported input and output file formats for **Alignment** and **Sequence** tasks
 | File Format | Description                                                                                                                                                       | Supported extensions                    |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | FASTA       | Include support for interleaved format.                                                                                                                           | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas` |
-| PHYLIP      | Support relaxed-phylip only. Include support for interleaved format. Learn the differences [here](https://biopython.org/docs/1.74/api/Bio.AlignIO.PhylipIO.html). | `.phy`, `.phylip`, `.ph`                |
+| PHYLIP      | Support relaxed-PHYLIP only. Include support for interleaved format. Learn the differences [here](https://biopython.org/docs/1.74/api/Bio.AlignIO.PhylipIO.html). | `.phy`, `.phylip`, `.ph`                |
 | NEXUS       | Include support for interleaved format.                                                                                                                           | `.nexus`, `.nex`, `.nxs`                |
 
 Supported input and output partition formats:
@@ -138,7 +138,7 @@ Supported input and output partition formats:
 | NEXUS       | NEXUS partition file. | `.nexus`, `.nex`, `.nxs`      |
 
 :::info
-SEGUL CLI can handle non-standard file extensions that are not listed above. Use the `--format` option to set the input format. The GUI version will not allow inputting non-standard file extensions. You can change the file extension to one of the supported file extensions or use the CLI version.
+SEGUL CLI can handle non-standard file extensions that are not listed above. Use the `--format` option to set the input format. The GUI version will not allow inputting non-standard file extensions. You can change the file extension to one of the supported extensions or use the CLI version.
 :::
 
 #### Example Dataset
@@ -158,7 +158,7 @@ We provide sample datasets to help you get started or test the app if you find a
 1. Open the app.
 2. Use the navigation bar to select the feature you want to use. For example, to concatenate alignments, click the "Alignments" button.
 3. Use the dropdown menu to select the task. For alignment concatenation, select "Concatenate alignments."
-4. You can add the input files by clicking the "Add file" button. On desktop platforms, you can also input a directory by clicking the "Add directory" button. The app will look for files matching the directory.
+4. Click the "Add file" button to add the input files. You can also input a directory on desktop platforms by clicking the "Add directory" button. The app will look for files matching the directory.
 5. The input tab bar displays all the input files. You can remove a file by clicking the "Remove" button. Removing a file will only remove it from the input list, not the file system.
 6. Click the "Add output directory" button to add the output directory. On mobile platforms, this directory will be the app's default directory.
 7. You also need to add the parameters for some tasks. For example, you must add the filtering parameters to filter alignments.
@@ -172,7 +172,7 @@ The mobile version of the GUI has limited capabilities in handling many files. F
 
 ### CLI Usage
 
-`segul` command is structured as follows:
+The `segul` command is structured as follows:
 
 ```bash
 segul <command> <subcommand> --option1 value1 --option2 value2
@@ -199,7 +199,7 @@ Since version 0.19.0, you don't need to specify the input format. The app will a
 :::
 
 :::warning
-The commands below expect SEGUL version 0.19.0+. If you are using lower version, the subcommand become the command and dir input option required input format.
+The commands below expect SEGUL version 0.19.0+. If you are using a lower version, the subcommand becomes the command, and the dir input option requires a specific input format.
 
 For example:
 
@@ -247,14 +247,14 @@ cd my-project
 cargo add segul
 ```
 
-Or add manually in `Cargo.toml` file:
+Or add manually in the `Cargo.toml` file:
 
 ```toml
 [dependencies]
 segul = "0.*"
 ```
 
-If you are interested in using SEGUL API in Python, we provide a Python binding called PySEGUL. You can access SEGUL features like using any python library. No Rust knowledge is needed. Install it using pip:
+If you want to use SEGUL API in Python, we provide a Python binding called PySEGUL. The library allows you to access SEGUL features like using any Python library. No Rust knowledge is needed. Install it using pip:
 
 ```bash
 pip install pysegul
