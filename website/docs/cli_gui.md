@@ -5,7 +5,7 @@ title: CLI vs GUI
 
 For general users, SEGUL is available in two interfaces: **Command Line Interface** (CLI) and **Graphical User Interface** (GUI). Both have the same core functionality but are designed to cater to different use cases and user preferences.
 
-Summary of the CLI version advantages:
+Summary of the CLI advantages:
 
 - Faster and more memory-efficient
 - Supports non-GUI platforms, such as HPC clusters.
@@ -16,7 +16,7 @@ Summary of the CLI version advantages:
 - Supports all major desktop platforms and Windows Subsystem for Linux (WSL)
 - The ability to compile from the source code for any platform that supports Rust
 
-Summary of the GUI version advantages:
+Summary of the GUI advantages:
 
 - Interactive and user-friendly
 - Supports text and table viewer without third-party software
@@ -25,7 +25,7 @@ Summary of the GUI version advantages:
 - Available for all major desktop and mobile platforms but is limited by the Flutter framework platform support
 
 :::note
-You can install GUI and CLI interfaces in the system supporting them. Each operates in its own contained environment and does not interfere with the other.
+You can install GUI and CLI in the system supporting them. Each operates in its own contained environment and does not interfere with the other.
 :::
 
 ## Platform Support
