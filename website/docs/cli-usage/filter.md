@@ -6,11 +6,12 @@ sidebar_position: 5
 
 SEGUL provides multiple ways to filter alignments:
 
-1. Based on alignment length
-2. Based on the data matrix completeness.
-3. Based on parsimony informative sites.
+1. [Alignment length](#filtering-based-on-the-minimal-alignment-length)
+2. [The data matrix completeness](#filtering-based-on-data-matrix-completeness)
+3. [Parsimony informative sites](#filtering-based-on-parsimony-informative-sites)
+4. [Proportion of missing data](#filtering-based-on-the-proportion-of-missing-data)
 
-In its simplest form, the command is structured as below:
+The command is structured as below:
 
 ```Bash
 segul align filter <input-option> [alignment-path] <filtering-options>
@@ -58,7 +59,7 @@ You can also write the percentage as `.8`, and it will parse the same way you wr
 Sometimes, we want to build phylogenetic trees with different data matrix completeness. Using `segul`, we can filter with multiple data matrix completeness values in a single command. For this task, we use `npercent` option:
 
 ```Bash
-segul align filter --dir segul --dir alignments/ --input-format nexus --npercent .9 .8 .75
+segul align filter --dir segul --dir alignments/ --input-format nexus --npercent 0.9 0.8 0.75
 ```
 
 SEGUL will create an output directory for each data matrix completeness value, with the percentage values suffixed on the directory names. For the example above, it will create three directories named `alignments_90p`, `alignments_80p`, and `alignments_75p`.
@@ -67,7 +68,7 @@ SEGUL will create an output directory for each data matrix completeness value, w
 
 SEGUL provides two ways of filtering based on parsimony informative sites:
 
-1. Based on the minimum input values of informative sites
+### Based on the minimum input values of informative sites
 
 We use the `--pinf` option to input the number of informative sites. This option filters alignments that contain at least that number of informative sites.
 
@@ -77,14 +78,22 @@ For example, in the command below, we will filter alignments in the `alignments`
 segul align filter --dir alignments/ --input-format nexus --pinf 50
 ```
 
-2. Based on the percentage of minimal parsimony informative sites
+### Based on the percentage of minimal parsimony informative sites
 
 This value is counted based on the highest number of informative sites on your alignments. It is similar to computing data matrix completeness but based on the number of informative sites. You only need to input the percentage value. SEGUL will determine the highest number of informative sites across all input alignments.
 
 For example, the highest number of informative sites in the input alignments is 100. We will filter with a minimal 80 percent of the highest parsimony informative value. Using `--percent-inf .8` option, SEGUL will filter alignments with at least containing 80 parsimony informative sites:
 
 ```Bash
-segul align filter --dir alignments/ --percent-inf .8
+segul align filter --dir alignments/ --percent-inf 0.8
+```
+
+## Filtering based on the proportion of missing data
+
+The proportion of missing data is calculated by dividing the total missing data across all sequences in an alignment by the total number of characters. SEGUL will evaluate the proportion of missing data in each alignment and copy the matching alignments to the output directory. To filter the alignments, use the `--missing-data` option. The value is in decimals.
+
+```Bash
+segul align filter --dir alignments/ --missing-data 0.5
 ```
 
 ## Specifying output directories
