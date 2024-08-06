@@ -20,16 +20,16 @@ segul align filter <input-option> [alignment-path] <filtering-option> <value>
 ```
 
 :::info
-SEGUL will never overwrite your original datasets. It will copy the alignments that match the filtering parameters to its output directory when filtering alignments. You can also concatenate the resulting alignments instead. It is particularly useful to estimate a species tree quickly based on the filtered alignments.
+SEGUL will never overwrite your original datasets. When filtering alignments, it will copy the alignments that match the filtering parameters to its output directory. You can also concatenate the resulting alignments instead. This is particularly useful for quickly estimating a species tree based on the filtered alignments.
 :::
 
 :::tip
- We recommend starting with [the sequence filtering method](/docs/cli-usage/seq_filter) before using the alignment filtering method. It will help clean your alignments from problematic sequences. This step could end up with alignments containing low number of sample coverage. You can then use the alignment filtering method with the `--percent` option ([see below](#filtering-based-on-data-matrix-completeness)) to filter out those alignments.
+ We recommend starting with [the sequence filtering method](/docs/cli-usage/seq_filter) before using the alignment filtering method. This step will help clean your alignments from problematic sequences, which could result in alignments containing low sample coverage. You can then use the alignment filtering method with the `--percent` option ([see below](#filtering-based-on-data-matrix-completeness)) to filter out those alignments.
 :::
 
 ## Filtering based on the minimal alignment length
 
-To filter based on the alignment length (also refer to number of sites), we will use the `--len` option. For example, our directory below contains three alignments:
+To filter based on the alignment length (also often refer to the number of sites in a textbook or NCHAR in the NEXUS header), we will use the `--len` option. For example, our directory below contains three alignments:
 
 ```Bash
 alignments/
@@ -38,7 +38,7 @@ alignments/
 └── locus_3.nexus
 ```
 
-We want to filter an alignment with a minimal length of 500 bp. Use `segul` command using `--dir` input as below:
+We want to filter an alignment with a minimal length of 500 bp. Use the `segul` command using the `--dir` input as below:
 
 ```Bash
 segul align filter --dir alignments/ --len 500
@@ -62,7 +62,7 @@ segul align filter --dir alignments/ --input-format nexus --percent 0.8
 
 You can also write the percentage as `.8`, and it will parse the same way you write it with 0.
 
-Sometimes, we want to build phylogenetic trees with different data matrix completeness. Using `segul`, we can filter with multiple data matrix completeness values in a single command. For this task, we use `npercent` option:
+Sometimes, we want to build phylogenetic trees with different data matrix completeness. Using `segul`, we can filter with multiple data matrix completeness values in a single command. For this task, we use the `npercent` option:
 
 ```Bash
 segul align filter --dir segul --dir alignments/ --input-format nexus --npercent 0.9 0.8 0.75
@@ -88,7 +88,7 @@ segul align filter --dir alignments/ --input-format nexus --pinf 50
 
 This value is counted based on the highest number of informative sites on your alignments. It is similar to computing data matrix completeness but based on the number of informative sites. You only need to input the percentage value. SEGUL will determine the highest number of informative sites across all input alignments.
 
-For example, the highest number of informative sites in the input alignments is 100. We will filter with a minimal 80 percent of the highest parsimony informative value. Using `--percent-inf .8` option, SEGUL will filter alignments with at least containing 80 parsimony informative sites:
+For example, the highest number of informative sites in the input alignments is 100. We will filter with a minimal 80 percent of the highest parsimony informative value. Using the `--percent-inf .8` option, SEGUL will filter alignments with at least containing 80 parsimony informative sites:
 
 ```Bash
 segul align filter --dir alignments/ --percent-inf 0.8
@@ -112,7 +112,7 @@ By default, SEGUL output directories for filtering are based on the input direct
 
 For example, if your input directory is named `alignments/` and the filtering option is a minimal alignment length of 500 bp, the output directory will be `alignments_500bp`.
 
-You can change the prefix names using `--output` or `-o` option.
+The `--output` or `-o` option allows you to change the prefix names of the output directory.
 
 ## Concatenating the results
 
