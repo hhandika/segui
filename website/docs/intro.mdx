@@ -6,7 +6,7 @@ sidebar_position: 1
 
 **Thank you for using SEGUL!** 🙏🏻
 
-We develop **SEGUL (SEquence and Genomic UtiLities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively. SEGUL is a practical solution to typical phylogenomic data analyses and a proof of concept for genomic software that scales from smartphones, tablets, and personal computers to high-performance computing clusters. Check out [Chan 2024 perspective](https://onlinelibrary.wiley.com/doi/full/10.1111/1755-0998.13993) for an independent review of SEGUL. 
+We develop **SEGUL (SEquence and Genomic UtiLities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively. SEGUL is a practical solution to typical phylogenomic data analyses and a proof of concept for genomic software that scales from smartphones, tablets, and personal computers to high-performance computing clusters. Check out [Chan 2024 perspective](https://onlinelibrary.wiley.com/doi/full/10.1111/1755-0998.13993) for an independent review of SEGUL.
 
 :::info
 SEGUL CLI is available on [Bioconda](https://anaconda.org/bioconda/segul). It is available for Linux and MacOS users using [ARM](https://en.wikipedia.org/wiki/ARM_architecture_family) or [x86_64](https://en.wikipedia.org/wiki/X86-64) CPUs. To install SEGUL, use the following command:
@@ -32,7 +32,7 @@ If you are interested in reading the journal article but cannot access it, you c
 
 ## Navigating the Documentation
 
-[Below](#quick-start-%EF%B8%8F), we provide a quick start with an overview of using SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. Detailed instructions on installing SEGUL are available in the [installation guidelines](/docs/installation/overview). The documentation is structured by version (i.e., GUI, CLI, or API) organized in a section. Within a section, we provide detailed instructions on how to use each feature. In general, feature guidelines are independent of each other. You should be able to jump to a feature you need for the version of SEGUL you use without checking out another section. However, we recommend checking the [GUI general usage](/docs/gui-usage/general) section if you use the GUI app. For the CLI application, we recommend starting with the [CLI Overview](/docs/cli-usage/overview) section. We recommend starting with [the API Introduction](/docs/app-usage/python/intro) for Python API. These sections provide a general overview, input and output formats, datatype, and other general information about using the version. If you have questions, issues, or feedback about the app and its documentation, please refer to the [support](/docs/support) section. We also welcome collaboration and contribution.
+[Below](#quick-start-%EF%B8%8F), we provide a quick start with an overview of using SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. Detailed instructions on installing SEGUL are available in the [installation guidelines](/docs/installation/overview). The documentation is structured by version (i.e., GUI, CLI, or API) organized in a section. Within a section, we provide detailed instructions on how to use each feature. In general, feature guidelines are independent of each other. You should be able to jump to a feature you need for the version of SEGUL you use without checking out another section. However, we recommend checking [the GUI general usage](/docs/gui-usage/general) section if you use the GUI app. For the CLI application, we recommend starting with [the CLI Overview](/docs/cli-usage/overview) section. We recommend starting with [the API Introduction](/docs/api-usage/python/intro) for Python API. These sections provide a general overview, input and output formats, datatype, and other general information about using the version. If you have questions, issues, or feedback about the app and its documentation, please refer to the [support](/docs/support) section. We also welcome collaboration and contribution.
 
 :::tip
 A dropdown menu at the top of each page allows you to navigate to different documentation sections for mobile reading. The sidebar on the right side of the page provides the same functionality for larger screen reading.
@@ -61,7 +61,7 @@ A dropdown menu at the top of each page allows you to navigate to different docu
 
 ### CLI vs GUI vs API
 
-For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If you answer yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will help you. 
+For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If you answer yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will help you.
 
 1. Are you planning to run the app in a non-GUI environment like an [HPC](https://www.ibm.com/topics/hpc) cluster?
 2. Do you run SEGUL as part of a pipeline?
@@ -88,7 +88,23 @@ We recommend downloading GUI apps from your operating system's [official store](
 | Linux x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz)      | For Linux with modern [GLIBC](https://www.gnu.org/software/libc/) version. Most recent Linux distribution, including WSL. |
 | MacOS ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Apple M series.                                                                                              |
 | MacOS x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Intel.                                                                                                       |
-| Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. It may work on ARM Windows as well.                                                                    |
+| Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. It may work on ARM Windows as well.                                                                 |
+
+:::tip
+If you are using [conda](https://anaconda.org/bioconda/segul) on Linux or MacOS. You can install SEGUL using it. Make sure you have [bioconda](https://bioconda.github.io/) channel setup before installing SEGUL. To install SEGUL, use the following command:
+
+```bash
+conda install bioconda::segul
+```
+
+Or if you use mamba:
+
+```bash
+mamba install segul
+```
+
+Learn more about the installation using Bioconda [here](/docs/installation/install_conda).
+:::
 
 ### Usage Overview
 
@@ -117,10 +133,10 @@ SEGUL has a growing list of features to help you manipulate and summarize your p
 
 Supported input formats for **Genomic** tasks:
 
-| File Format | Description                                                              | Supported extensions                    |
-| ----------- | ------------------------------------------------------------------------ | --------------------------------------- |
-| FASTQ       | For genomic read summary statistics. Support compressed and uncompressed format. | `.fastq`, `.fq`, `fastq.gz`, `fg.gz`                         |
-| FASTA       | For contig summary statistics.                                           | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas` |
+| File Format | Description                                                                      | Supported extensions                    |
+| ----------- | -------------------------------------------------------------------------------- | --------------------------------------- |
+| FASTQ       | For genomic read summary statistics. Support compressed and uncompressed format. | `.fastq`, `.fq`, `fastq.gz`, `fg.gz`    |
+| FASTA       | For contig summary statistics.                                                   | `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas` |
 
 Supported input and output file formats for **Alignment** and **Sequence** tasks:
 
