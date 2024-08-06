@@ -78,9 +78,9 @@ All the main features are supported in both CLI and GUI. However, there are some
 
 ## Task Group
 
-The features are grouped into the kind of data they operate on. The alignment task group operates at the alignment level, taking input from alignment files. While taking alignment input, the sequence task group operates at the sequence level. The genomic task group takes input from genomic sequences, such as raw read FASTQ or contiguous sequence files. 
+The features are grouped into the kind of data they operate on. The alignment task group operates at the alignment level, taking input from alignment files. While taking alignment input, the sequence task group operates at the sequence level. The genomic task group takes input from genomic sequences, such as raw read FASTQ or contiguous sequence files.
 
-The GUI and CLI of SEGUL have similar task groups. In the CLI, the task group equals a command, and the task equals a subcommand.  The CLI task group's name is the same as the GUI version, except for **genomic summary statistics** and **partition conversion**. The genomic summary statistics are split into commands for sequence reads and contigs. The partition conversion is available in the partition command. 
+The GUI and CLI of SEGUL have similar task groups. In the CLI, the task group equals a command, and the task equals a subcommand.  The CLI task group's name is the same as the GUI version, except for **genomic summary statistics** and **partition conversion**. The genomic summary statistics are split into commands for sequence reads and contigs. The partition conversion is available in the partition command.
 
 Learn more about [CLI](/docs/cli-usage/command_options) and [GUI](/docs/gui-usage/general) options.
 
@@ -98,11 +98,11 @@ Below is a performance comparison for **alignment concatenation** across differe
 
 ### Execution time comparison
 
-![Execution time comparison](/docs/img/execution_graph.svg)
+![Execution time comparison](./img/execution_graph.svg)
 
 ### RAM usage comparison
 
-![RAM usage comparison](/docs/img/ram_graph.svg)
+![RAM usage comparison](./img/ram_graph.svg)
 
 :::note
 The RAM usage comparison is only available for the desktop versions of SEGUL.
