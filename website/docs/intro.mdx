@@ -32,7 +32,7 @@ If you are interested in reading the journal article but cannot access it, you c
 
 ## Navigating the Documentation
 
-[Below](#quick-start-%EF%B8%8F), we provide a quick start with an overview of using SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. Detailed instructions on installing SEGUL are available in the [installation guidelines](/docs/installation/overview). The documentation is structured by version (i.e., GUI, CLI, or API) organized in a section. Within a section, we provide detailed instructions on how to use each feature. In general, feature guidelines are independent of each other. You should be able to jump to a feature you need for the version of SEGUL you use without checking out another section. However, we recommend checking [the GUI general usage](/docs/gui-usage/general) section if you use the GUI app. For the CLI application, we recommend starting with [the CLI Overview](/docs/cli-usage/overview) section. We recommend starting with [the API Introduction](/docs/api-usage/python/intro) for Python API. These sections provide a general overview, input and output formats, datatype, and other general information about using the version. If you have questions, issues, or feedback about the app and its documentation, please refer to the [support](/docs/support) section. We also welcome collaboration and contribution.
+[Below](#quick-start-%EF%B8%8F), we provide a quick start with an overview of using SEGUL. The quick start assumes familiarity with phylogenomic data and some experience using related tools. Detailed instructions on installing SEGUL are available in the [installation guidelines](/docs/installation/overview). The guidelines are structured by interfaces (i.e., GUI, CLI, or API) organized in sections. Within a section, we provide detailed instructions on how to use each feature. In general, feature guidelines are independent of each other. You should be able to jump to a feature you need for the interface of SEGUL you use without checking out another section. However, we recommend checking [the GUI general usage](/docs/gui-usage/general) section if you use the GUI app. For the CLI application, we recommend starting with [the CLI Overview](/docs/cli-usage/overview) section. We recommend starting with [the API Introduction](/docs/api-usage/python/intro) for Python API. These sections provide a general overview, input and output formats, datatype, and other general information on using the interface. If you have questions, issues, or feedback about the app and its documentation, please refer to the [support](/docs/support) section. We also welcome collaboration and contribution.
 
 :::tip
 A dropdown menu at the top of each page allows you to navigate to different documentation sections for mobile reading. The sidebar on the right side of the page provides the same functionality for larger screen reading.
@@ -61,13 +61,13 @@ A dropdown menu at the top of each page allows you to navigate to different docu
 
 ### CLI vs GUI vs API
 
-For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If you answer yes to any of the following questions, you should use the CLI version of the app. Otherwise, either GUI or CLI will help you.
+For general users, the choice will be between the command-line (CLI) and graphical interface (GUI) applications. If you answer yes to any of the following questions, use SEGUL CLI. Otherwise, either GUI or CLI will help you.
 
 1. Are you planning to run the app in a non-GUI environment like an [HPC](https://www.ibm.com/topics/hpc) cluster?
 2. Do you run SEGUL as part of a pipeline?
 3. Do you need the utmost efficiency?
 
-You can also install both versions and use them interchangeably. They operate in their environment and do not interfere with the other. You can take advantage of the strength of either one of them, depending on workflow scenarios. Learn more about the differences between the CLI and GUI versions [here](./cli_gui.md).
+You can also install both interfaces and use them interchangeably. They operate in their environment and do not interfere with the other. Depending on workflow scenarios, you can take advantage of the strengths of either one. Learn more about the differences between the CLI and GUI versions [here](/docs/cli_gui).
 
 For developers, SEGUL is available as a Rust crate, which you can easily integrate into Rust code. The Python library is available as a Python binding to the SEGUL API called PySEGUL. It does not require Rust knowledge to use it. The Rust crate also works with R. However, using it in R requires some Rust knowledge.
 
@@ -91,7 +91,7 @@ We recommend downloading GUI apps from your operating system's [official store](
 | Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. It may work on ARM Windows as well.                                                                 |
 
 :::tip
-If you are using [conda](https://anaconda.org/bioconda/segul) on Linux or MacOS. You can install SEGUL using it. Make sure you have [bioconda](https://bioconda.github.io/) channel setup before installing SEGUL. To install SEGUL, use the following command:
+If you use [conda](https://anaconda.org/bioconda/segul) on Linux or MacOS. You can install SEGUL using it. Ensure you have [bioconda](https://bioconda.github.io/) channel setup before installing SEGUL. To install SEGUL, use the following command:
 
 ```bash
 conda install bioconda::segul
@@ -103,7 +103,7 @@ Or if you use mamba:
 mamba install segul
 ```
 
-Learn more about the installation using Bioconda [here](/docs/installation/install_conda).
+Note that the Conda installation may not work in old Linux distributions often found in HPC clusters. Learn more about the installation using Bioconda [here](/docs/installation/install_conda).
 :::
 
 ### Usage Overview
@@ -208,7 +208,7 @@ segul align concat --dir alignments/
 
 We recommend using the `segul --help` option to see the available options for each command, the `segul <command> --help` option to see the available options for each subcommand, and the `segul <command> <subcommand> --help` option to see the available options for each subcommand.
 
-For more detailed usage information, please see the [command usage](./cli-usage/command_options.md) section.
+Please see the [command usage](./cli-usage/command_options.md) section for more detailed usage information.
 
 :::tip
 Since version 0.19.0, you don't need to specify the input format. The app will automatically detect the format based on the file extension. The lower version only allows auto-detect format for non-directory input. If you have non-standard file extensions, use the `--format` option to set the input format regardless of the version.
