@@ -4,21 +4,27 @@ sidebar_position: 5
 
 # Alignment Filtering
 
-SEGUL provides multiple ways to filter alignments:
+In a typical phylogenomic workflow, you may want to filter problematic alignments before running a phylogenetic analysis. This feature provides multiple ways to filter alignments.
 
-1. [Alignment length](#filtering-based-on-the-minimal-alignment-length)
-2. [The data matrix completeness](#filtering-based-on-data-matrix-completeness)
-3. [Parsimony informative sites](#filtering-based-on-parsimony-informative-sites)
-4. [Proportion of missing data](#filtering-based-on-the-proportion-of-missing-data)
+Available filtering methods:
+
+  1. Minimal alignment length
+  2. Data matrix completeness
+  3. Parsimony informative sites
+  4. Proportion of missing data
 
 The command is structured as below:
 
 ```Bash
-segul align filter <input-option> [alignment-path] <filtering-options>
+segul align filter <input-option> [alignment-path] <filtering-option> <value>
 ```
 
 :::info
 SEGUL will never overwrite your original datasets. It will copy the alignments that match the filtering parameters to its output directory when filtering alignments. You can also concatenate the resulting alignments instead. It is particularly useful to estimate a species tree quickly based on the filtered alignments.
+:::
+
+:::tip
+ We recommend starting with [the sequence filtering method](/docs/cli-usage/seq_filter) before using the alignment filtering method. It will help clean your alignments from problematic sequences. This step could end up with alignments containing low number of sample coverage. You can then use the alignment filtering method with the `--percent` option ([see below](#filtering-based-on-data-matrix-completeness)) to filter out those alignments.
 :::
 
 ## Filtering based on the minimal alignment length

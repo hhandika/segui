@@ -4,17 +4,17 @@ sidebar_position: 15
 
 # Sequence Filtering
 
-The sequence filtering method works at the sequence level, which differs from the SEGUL alignment filtering feature, which works on the alignment level. If you use the alignment filtering features, they will filter the entire alignment that does not meet the filtering criteria, whereas the sequence filtering feature will remove sequences that do not meet the criteria. The app will never overwrite your original datasets; it will create new files with the filtered sequences.
+The sequence filtering method works at the sequence level, which differs from the SEGUL alignment filtering feature, which works on the alignment level. If you use the alignment filtering feature, it will filter the entire alignment that does not meet the filtering criteria. However, the sequence filtering feature will remove sequences that do not meet the criteria while still retaining the same alignment if there is at least one sequence left in the alignment. The app will never overwrite your original datasets; it will create new files with the filtered sequences.
 
 Available filtering methods:
 
-1. [Sequence length](#filtering-based-on-sequence-length)
-2. [Maximum proportion of gaps](#filtering-based-on-the-maximum-proportion-of-gaps)
+1. Sequence length
+2. Proportion of gaps
 
 The command is structured as below:
 
 ```Bash
-segul sequence filter <input-option> [alignment-path] <filtering-options>
+segul sequence filter <input-option> [alignment-path] <filtering-option> <value>
 ```
 
 ## Filtering based on sequence length
@@ -47,7 +47,7 @@ agtcgatct
 
 ## Filtering based on the maximum proportion of gaps
 
-SEGUL considers `-` and `?` as gap characters. The app will remove sequences with a proportion of gaps greater than the specified value. Use the `--max-gap` option to filter sequences:
+SEGUL considers `-` and `?` as gap characters. The app will remove sequences with a proportion of gaps greater than the specified value. To filter sequences, use the `--max-gap` option with a value between 0 and 1.
 
 ```Bash
 segul sequence filter --dir alignments/ --max-gap 0.3
