@@ -4,7 +4,7 @@ sidebar_position: 15
 
 # Sequence Filtering
 
-The sequence filtering method works at the sequence level, which differs from the SEGUL alignment filtering feature, which works on the alignment level. If you use the alignment filtering feature, it will filter the entire alignment that does not meet the filtering criteria. However, the sequence filtering feature will remove sequences that do not meet the criteria while still retaining the same alignment if there is at least one sequence left in the alignment. The app will never overwrite your original datasets; it will create new files with the filtered sequences.
+The sequence filtering method works at the sequence level, which differs from the SEGUL [alignment filtering](/docs/cli-usage/filter) feature, which works on the alignment level. Using the alignment filtering feature will filter the entire alignment that does not meet the filtering criteria. However, the sequence filtering feature will remove sequences that do not meet the criteria while retaining the same alignment if at least one sequence is left in the alignment. The feature works on many alignments simultaneously and will never overwrite your original datasets; it will create new files with the filtered sequences.
 
 Available filtering methods:
 
