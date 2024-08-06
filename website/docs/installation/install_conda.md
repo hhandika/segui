@@ -17,14 +17,18 @@ mamba install segul
 
 ## Supported Platforms
 
-- Linux (ARM, x86_64)
+- Linux (ARM64, x86_64, required [GLIBC](https://www.gnu.org/software/libc/) 2.17+) 
 - macOS (Intel and Apple Silicon)
+
+:::note
+SEGUL Conda installation may not work on old Linux distributions often found in HPC clusters. We recommend installing SEGUL using [the Linux MUSL binary](/docs/installation/install_binary#linuxwsl) or through [the package manager](/docs/installation/install_cargo).
+:::
 
 ## Detailed Installation Guide
 
 ### Install Miniforge
 
-We recommend using [Miniforge](https://github.com/conda-forge/miniforge) if you start from scratch. First, download the Miniforge installer from the [Miniforge GitHub release page](https://github.com/conda-forge/miniforge/releases). The [README](https://github.com/conda-forge/miniforge) file in the Miniforge also contains a quick link to the latest release.
+If you start fresh, we recommend using [Miniforge](https://github.com/conda-forge/miniforge). First, download the Miniforge installer from the [Miniforge GitHub release page](https://github.com/conda-forge/miniforge/releases). The [README](https://github.com/conda-forge/miniforge) file in the Miniforge also contains a quick link to the latest release.
 
 Briefly, you can download the installer using `wget`:
 
