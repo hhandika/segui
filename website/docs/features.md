@@ -11,7 +11,7 @@ The task group is a navigation bar or rail in GUI, depending on the platform. In
 
 ### Alignments
 
-This is for tasks related to multiple sequence alignments, such as concatenation, conversion, filtering, and splitting. The app enforces the input to be in **the alignment format**. We consider an alignment if the sequence length is the same for each input alignment.
+This is for tasks related to multiple sequence alignments, such as concatenation, conversion, filtering, and splitting. The app enforces the input to be in **the alignment format**. We consider an alignment if the sequences within an alignment have the same length.
 
 ### Genomic
 
