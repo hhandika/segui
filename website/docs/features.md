@@ -33,19 +33,18 @@ List of supported file extensions for alignment and sequence tasks:
 
 - NEXUS: `.nex`, `.nexus`, `.nxs`
 - FASTA: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
-- PHYLIP*: `.phy`, `.phylip`, `.ph`
+- Relaxed-PHYLIP*: `.phy`, `.phylip`, `.ph`
 
-:::note
-SEGUL only supports a **relaxed PHYLIP** format. The strict PHYLIP format is NOT supported.
+#### Genomic data files
 
-Example of relaxed PHYLIP format:
+List of supported file extensions for genomic tasks:
 
-```plaintext
-5 10
-Seq1    ATCGATCGATATCGATCGAT
-Seq2    ATCGATCGATATCGATCGAT
-Seq3    ATCGATCGATATCGATCGAT
-```
+- Sequence read: `.fastq`, `.fq`
+- Compressed sequence read: `.fastq.gz`, `.fq.gz`
+- Contig: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
+
+:::info
+SEGUL does not support the strict PHYLIP format.
 
 Example of strict PHYLIP format (note the space between each sequence). The format also restricts taxon identifiers/sample names to a maximum of 10 characters.
 
@@ -57,15 +56,15 @@ Seq2    ATCGATCGAT ATCGATCGAT
 Seq3    ATCGATCGAT ATCGATCGAT
 ```
 
+This is compared to a relaxed PHYLIP format that does not have space between sequences and allows longer taxon identifiers:
+
+```plaintext
+5 10
+genus_species_museumNo1    ATCGATCGATATCGATCGAT
+genus_species_museumNo2    ATCGATCGATATCGATCGAT
+genus_species_museumNo3    ATCGATCGATATCGATCGAT
+```
 :::
-
-#### Genomic data files
-
-List of supported file extensions for genomic tasks:
-
-- Sequence read: `.fastq`, `.fq`
-- Compressed sequence read: `.fastq.gz`, `.fq.gz`
-- Contig: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
 
 ## Alignment Operations
 
