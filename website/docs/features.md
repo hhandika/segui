@@ -25,8 +25,6 @@ The input for the sequence task group can also be alignment files. However, the 
 
 SEGUL always operates on multiple files, except for Alignment Splitting, which only accepts one alignment file.
 
-## Input Format
-
 ### Supported file extensions
 
 #### Alignment and standard sequence files
