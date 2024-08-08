@@ -36,7 +36,7 @@ List of supported file extensions for alignment and sequence tasks:
 - PHYLIP*: `.phy`, `.phylip`, `.ph`
 
 :::note
-SEGUL only supports a relaxed PHYLIP format. The strict PHYLIP format is not supported.
+SEGUL only supports a **relaxed PHYLIP** format. The strict PHYLIP format is not supported.
 
 Example of relaxed PHYLIP format:
 
