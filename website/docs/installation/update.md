@@ -11,7 +11,7 @@ The operating system usually updates the app automatically. However, you can che
 
 ## SEGUL CLI
 
-To update the CLI, you must first check where the SEGUL binary is. The Conda/Mamba and Cargo installation should be straightforward to update. If you are unsure how the app was installed, you can use the `which` command on macOS and Linux to check the binary location. Windows users using PowerShell 7+ can use the same command.
+To update the CLI, you must first check where the SEGUL binary is. The Conda/Mamba or Cargo installation should be straightforward to update. If you are unsure how the app was installed, you can use the `which` command on macOS and Linux to check the binary location. Windows users using PowerShell 7+ can use the same command.
 
 ```Bash
 which segul
