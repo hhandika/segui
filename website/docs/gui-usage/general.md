@@ -7,35 +7,7 @@ This page provides guidelines that are applicable to all tasks available in the 
 
 ## Task Selection
 
-The app allows you to select a task from the navigation bar. Task categories include:
-
-### Alignments
-
-For tasks related to multiple sequence alignments, such as concatenation, conversion, filtering, and splitting.
-
-- [Alignment concatenation](./align-concat)
-- [Alignment conversion](./align-convert)
-- [Alignment filtering](./align-filter)
-- [Alignment splitting](./align-split)
-- [Alignment partition conversion](./align-partition)
-- [Alignment summary statistics](./align-summary)
-
-### Genomic
-
-For tasks related to genomic data, such as sequence read and contig.
-
-- [Sequence read summary statistics](./genomic#sequence-read-summary-statistics)
-- [Contig summary statistics](./genomic#contig-summary-statistics)
-
-### Sequences
-
-For works in sequence basis. The input can also be alignment files. We refer the input for these tasks throughout the documentation as **standard sequence files**.
-
-- [Sequence extraction](./sequence-extract)
-- [Sequence ID extraction](./sequence-id)
-- [Sequence ID mapping](./sequence-id-map)
-- [Sequence removal](./sequence-remove)
-- [Sequence translation](./sequence-translate)
+The app allows you to select a task from the navigation bar. Task categories is based on the [task group](/docs/features#task-group). Briefly, the task group consists of **Alignments**, **Genomic**, and **Sequences**. Check out the [features](/docs/features#task-group) page for more information about the task group.
 
 ## File Input
 
@@ -72,48 +44,6 @@ SEGUI supports NEXUS, FASTA, and PHYLIP file formats. By default it sets to `Aut
 :::note
 The Android version may still allow non-standard file extensions. However, we recommend using the supported file extensions to avoid potential issues. Future updates may only support the standard file extensions.
 :::
-
-### Supported file extensions
-
-#### Alignment and standard sequence files
-
-List of supported file extensions for alignment and sequence tasks:
-
-- NEXUS: `.nex`, `.nexus`, `.nxs`
-- FASTA: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
-- PHYLIP*: `.phy`, `.phylip`, `.ph`
-
-:::note
-SEGUL only supports relaxed PHYLIP format. The strict PHYLIP format is not supported.
-
-Example of relaxed PHYLIP format:
-
-```plaintext
-5 10
-Seq1    ATCGATCGATATCGATCGAT
-Seq2    ATCGATCGATATCGATCGAT
-Seq3    ATCGATCGATATCGATCGAT
-```
-
-Example of strict PHYLIP format (note the space between each sequence):
-
-```plaintext
-5 10
-
-Seq1    ATCGATCGAT ATCGATCGAT
-Seq2    ATCGATCGAT ATCGATCGAT
-Seq3    ATCGATCGAT ATCGATCGAT
-```
-
-:::
-
-#### Genomic data files
-
-List of supported file extensions for genomic tasks:
-
-- Sequence read: `.fastq`, `.fq`
-- Compressed sequence read: `.fastq.gz`, `.fq.gz`
-- Contig: `.fasta`, `.fa`, `.fna`, `.fsa`, `.fas`
 
 ## Data Type (alignment and standard sequence only)
 
