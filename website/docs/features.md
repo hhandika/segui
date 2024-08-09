@@ -7,23 +7,41 @@ This page provides a detailed explanation of the inner workings of the features 
 
 ## Task Group
 
-The task group is a navigation bar or rail in GUI, depending on the platform. In the CLI, the task group is represented as a command group. The task group consists of:
+We group SEGUL's main features into task groups based on the scope of the analyses and the data input. Each task group is represented as a button in a navigation bar or rail in GUI, depending on the platform. In the CLI, the task group is represented as a command group. The task group consists of:
 
 ### Alignments
 
-This is for tasks related to multiple sequence alignments, such as concatenation, conversion, filtering, and splitting. The app enforces the input to be in **the alignment format**. We consider an alignment if the sequences within an alignment have the same length.
+This is for tasks related to multiple sequence alignments, such as concatenation, conversion, filtering, and splitting. The app enforces the input to be in **the alignment format**, except for partition conversion, which only accepts input in partition formats, such as RaXML or NEXUS partition. We consider an alignment if the sequences within an alignment have the same length. SEGUL will not detect miss-aligned sequences when they are of the same length.
 
 ### Genomic
 
-The CLI divides the genomic task group into two commands depending on the input files for tasks related to genomic data, such as sequence read and contig. The `read` command accepts sequence read files (FASTQ or gunzip compressed FASTQ), while the `contig` command accepts contig files in FASTA.
+The CLI divides the genomic task group into two commands depending on the input files for tasks related to genomic data, such as sequence read and contig. The `read` command accepts sequence read files (FASTQ or gunzip compressed FASTQ), while the `contig` command accepts contig files in FASTA. The GUI groups the genomic task in the same group and relies on a dropdown menu to provide task selection. 
 
 ### Sequences
 
-The input for the sequence task group can also be alignment files. However, the app does not check that the sequence length is the same for each alignment. Throughout the documentation, we refer to the input for these tasks as **standard sequence files**.
+The input for the sequence task group can be either aligned or unaligned sequence files. When the input is an alignment, the app does not check that the sequence length is the same for each alignment. Throughout the documentation, we refer to the input for these tasks as **standard sequence files**.
+
+Example of an aligned sequence file in PHYLIP format:
+
+```plaintext
+3 10
+sequence1 agtcccc--
+sequence2 agtccccaa
+sequence3 agtc-cctt
+```
+
+Example of the same file when it is unaligned:
+
+```plaintext
+3 10
+sequence1 agtcccc
+sequence2 agtccccaa
+sequence3 agtccctt
+```
 
 ## File Input
 
-SEGUL always operates on multiple files, except for Alignment Splitting, which only accepts one alignment file.
+SEGUL always supports multiple file inputs, except for Alignment Splitting, which only accepts one concatenated alignment file.
 
 ### Supported file extensions
 
@@ -66,7 +84,7 @@ genus_species_museumNo3    ATCGATCGATATCGATCGAT
 ```
 :::
 
-## Alignment Operations
+## Alignment Task Groups
 
 ### Alignment Concatenation
 
