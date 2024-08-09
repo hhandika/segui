@@ -15,7 +15,7 @@ This is for tasks related to multiple sequence alignments, such as concatenation
 
 ### Genomic
 
-The CLI divides the genomic task group into two commands depending on the input files for tasks related to genomic data, such as sequence read and contig. The `read` command accepts sequence read files (FASTQ or gunzip compressed FASTQ), while the `contig` command accepts contig files in FASTA. The GUI groups the genomic task in the same group and relies on a dropdown menu to provide task selection. 
+The CLI divides the genomic task group into two commands depending on the input files for tasks related to genomic data, such as sequence read and contig. The `read` command accepts sequence read files (FASTQ or gunzip compressed FASTQ), while the `contig` command accepts contig files in FASTA. The GUI groups the genomic task in the same group and relies on a dropdown menu to provide task selection.
 
 ### Sequences
 
@@ -82,13 +82,70 @@ genus_species_museumNo1    ATCGATCGATATCGATCGAT
 genus_species_museumNo2    ATCGATCGATATCGATCGAT
 genus_species_museumNo3    ATCGATCGATATCGATCGAT
 ```
+
 :::
 
 ## Alignment Task Groups
 
 ### Alignment Concatenation
 
+Given a set of aligned sequences, this task concatenates them into a single alignment and generate partition for the concatenated alignment. The concatenation is done by adding the sequences from each alignment file to the end of the previous alignment file. The concatenation used alphanumeric order by the alignment name. It matches the sequences for concatenation based on the taxon identifiers/sample names. Typos or inconsistent naming in the taxon identifiers/sample names across the dataset will result in unmatched sequences.
+
+:::tip
+You can use the [Sequence ID Extraction](#sequence-id-extraction) feature to check for typos or inconsistencies in the name.
+:::
+
+For example, given the following two alignments:
+
+Alignment 1:
+
+```plaintext
+3 10
+sequence1 agtcccc--
+sequence2 agtccccaa
+sequence3 agtc-cctt
+```
+
+Alignment 2:
+
+```plaintext
+3 10
+sequence1 agtcccc--
+sequence2 agtccccaa
+sequence3 agtc-cctt
+```
+
+The concatenated alignment will be:
+
+```plaintext
+3 20
+sequence1 agtcccc--agtcccc--
+sequence2 agtccccaaagtccccaa
+sequence3 agtc-ccttagtc-cctt
+```
+
+The partition in the RAxML format will be:
+
+```plaintext
+DNA, sequence1 = 1-10
+DNA, sequence2 = 11-20
+DNA, sequence3 = 21-30
+```
+
+You can also choose to create NEXUS partition format instead:
+
+```plaintext
+#NEXUS
+begin sets;
+charset sequence1 = 1-10;
+charset sequence2 = 11-20;
+charset sequence3 = 21-30;
+end;
+```
+
 ### Alignment Conversion
+
+The alignment conversion task converts the alignment file format to another format.
 
 ### Alignment Filtering
 
@@ -98,13 +155,13 @@ genus_species_museumNo3    ATCGATCGATATCGATCGAT
 
 ### Alignment Summary
 
-## Genomic Operations
+## Genomic Task Groups
 
 ### Sequence Read Summary
 
 ### Contiguous Sequence Summary
 
-## Sequence Operations
+## Sequence Task Groups
 
 ### Sequence ID Extraction
 
