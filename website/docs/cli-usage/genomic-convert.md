@@ -3,7 +3,7 @@ sidebar_position: 10
 title: Genomic File Conversion (Beta)
 ---
 
-SEGUL currently supports only converting Multi Alignment Format (MAF).
+SEGUL currently supports only converting Multiple Alignment Format (MAF).
 
 ## Multiple Alignment Format (MAF) conversion
 
@@ -14,7 +14,7 @@ The current beta version only supports sourcing the names from a BED file. NEXUS
 :::
 
 :::info
-To use this feature, follow the [Test Beta Feature](/docs/installation/install_dev) installation guideline.
+To use this feature, follow the [Try Beta Feature](/docs/installation/install_dev) installation guideline.
 :::
 
 ### How does it work?
