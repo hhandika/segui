@@ -3,7 +3,7 @@ sidebar_position: 11
 title: Sequence Translation
 ---
 
-Translate nucleotide sequences to amino acid sequences. For available translation tables, see [CLI translation guideline](/docs/cli-usage/translate#supported-translation-tables). Note that the translation table is in a string format, not an integer.
+Translate nucleotide sequences to amino acid sequences. For available translation tables, see [CLI translation guideline](/docs/cli-usage/sequence-translate#supported-translation-tables). Note that the translation table is in a string format, not an integer.
 
 ## Steps
 

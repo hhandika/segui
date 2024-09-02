@@ -24,7 +24,7 @@ SEGUL will never overwrite your original datasets. When filtering alignments, it
 :::
 
 :::tip
- We recommend starting with [the sequence filtering method](/docs/cli-usage/seq_filter) before using the alignment filtering method. This step will help clean your alignments from problematic sequences, which could result in alignments containing low sample coverage. You can then use the alignment filtering method with the `--percent` option ([see below](#filtering-based-on-data-matrix-completeness)) to filter out those alignments.
+ We recommend starting with [the sequence filtering method](/docs/cli-usage/sequence-filter) before using the alignment filtering method. This step will help clean your alignments from problematic sequences, which could result in alignments containing low sample coverage. You can then use the alignment filtering method with the `--percent` option ([see below](#filtering-based-on-data-matrix-completeness)) to filter out those alignments.
 :::
 
 ## Filtering based on the minimal alignment length
@@ -116,7 +116,7 @@ The `--output` or `-o` option allows you to change the prefix names of the outpu
 
 ## Concatenating the results
 
-By default, SEGUL copies the alignments that match the filtering option. Instead of copying the files, you can concatenate them using the `--concat` flag. All options for the [`align concat`](./concat) subcommand are available for this task. You are, however, required to specify the `--output` or `-o` name and the partition format `--part` or `-p` option.
+By default, SEGUL copies the alignments that match the filtering option. Instead of copying the files, you can concatenate them using the `--concat` flag. All options for the [`align concat`](/docs/cli-usage/align-concat) subcommand are available for this task. You are, however, required to specify the `--output` or `-o` name and the partition format `--part` or `-p` option.
 
 For example, in the command below, we will filter based on alignments with a length of 500 bp and will concat the result:
 

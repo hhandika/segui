@@ -16,7 +16,7 @@ The `summary` function produces three summary statistics:
 2. Summary statistics for each alignment (assuming locus) written to a CSV file (default name: `locus_summary.csv`).
 3. Summary statistics for each taxon written to a CSV file (default name: `taxon_summary.csv`).
 
-Learn more about specifying the output directory and filenames [here](./summary#specifying-the-output-directory-and-filenames).
+Learn more about specifying the output directory and filenames [here](./align-summary#specifying-the-output-directory-and-filenames).
 
 ## Computing sequence summary statistics for DNA sequences
 
@@ -137,7 +137,7 @@ segul align summary -i alignments/*.nexus --datatype aa
 
 ### Setting up data matrix completeness interval
 
-By default, SEGUL will print the percentage of data matrix completeness with a decrement interval of 5 percent. It starts from 100% until it reaches all alignment coverage or near zero percent completeness. With the default interval, if SEGUL never reaches all alignment coverage, it will stop printing the result when the result reaches 5%. In the Oliveros et al. (2019) dataset [above](./summary#computing-sequence-summary-statistics-for-dna-sequences), SEGUL stops printing the data matrix completeness at 80% because it already covers the total number of alignments (4,060 alignments).
+By default, SEGUL will print the percentage of data matrix completeness with a decrement interval of 5 percent. It starts from 100% until it reaches all alignment coverage or near zero percent completeness. With the default interval, if SEGUL never reaches all alignment coverage, it will stop printing the result when the result reaches 5%. In the Oliveros et al. (2019) dataset [above](./align-summary#computing-sequence-summary-statistics-for-dna-sequences), SEGUL stops printing the data matrix completeness at 80% because it already covers the total number of alignments (4,060 alignments).
 
 Use the `--interval` option to change the interval setting. SEGUL supports intervals 1, 2, 5, and 10. For example:
 
