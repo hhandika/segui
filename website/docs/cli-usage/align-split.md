@@ -1,10 +1,10 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Alignment Splitting
 
-SEGUL alignment splitting splits a concatenated alignment into multiple alignments based on an input partition. 
+SEGUL alignment splitting splits a concatenated alignment into multiple alignments based on an input partition.
 
 To split an alignment, you need two input files: the concatenated alignment and the partition file. If you skip inputting the partition file, the app will assume it is embedded in the alignment file.
 
@@ -93,6 +93,7 @@ begin set
   charset part2 = 11-15;
 end;
 ```
+
 :::
 
 Some other programs write locus names with file extensions (which contain a dot). In that case, SEGUL will replace it with an underscore to avoid a name conflict when changing the file extension.

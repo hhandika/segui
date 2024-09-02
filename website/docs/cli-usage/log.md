@@ -1,9 +1,9 @@
 ---
-sidebar_position: 17
+sidebar_position: 21
 ---
 # Log File
 
-Except for the spinning emoji and the program progress messages, all the terminal output is written in the log file and saved in the current working directory. The log file also includes the time and the log status. 
+Except for the spinning emoji and the program progress messages, all the terminal output is written in the log file and saved in the current working directory. The log file also includes the time and the log status.
 
 By default, the SEGUL log file is named `segul.log`. SEGUL does not overwrite the log file. Each time you run the app, if the log file exists in the same working directory, it will append the log output to the same file. You can customize the log file name using the `--log` option, which is available in all features.
 

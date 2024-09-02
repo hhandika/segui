@@ -1,8 +1,8 @@
 ---
-sidebar_position: 8
+sidebar_position: 11
+title: Genomic Summary
 ---
 
-# Genomic Summary
 
 Since version 0.19.0, `segul` can calculate summary statistics for raw reads and contiguous sequences.
 

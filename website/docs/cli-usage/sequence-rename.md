@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 18
 title: Sequence ID Renaming
 ---
 
@@ -24,6 +24,7 @@ For example:
 ```Bash
 segul sequence rename -d alignments/ -f nexus --replace-id new_names.csv
 ```
+
 :::
 
 You can use `--dry-run` option to check if the input names are parsed correctly:
