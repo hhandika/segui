@@ -3,15 +3,19 @@ sidebar_position: 10
 title: Genomic File Conversion (Beta)
 ---
 
-SEGUL currently only support converting Multi Alignment Format (MAF).
+SEGUL currently supports only converting Multi Alignment Format (MAF).
 
 ## Multiple Alignment Format (MAF) conversion
 
-Multiple Alignment Format (MAF) is a text-based format for representing multiple sequence alignments. Current version, supports converting this format to FASTA or PHYLIP format, including support for interleaved and sequential formats. It requires BED file to extract the name of the sequences for the output file.
+Multiple Alignment Format (MAF) is a text-based format for representing multiple sequence alignments. Unlike the NEXUS or FASTA format, which usually contains a single alignment, each MAF file can contain multiple alignments. The current version supports converting this format to FASTA or PHYLIP format, including support for interleaved and sequential formats. The output will be in multiple files containing sequences with a matching locus/gene. The filenames will be the locus/gene names. 
+
+:::info
+The current version only supports sourcing the names from a BED file.
+:::
 
 ### How does it work?
 
-The MAF file is parsed and the sequences are extracted. SEGUL will match the sequence names with the BED file based on the start position of the reference sequence. It requires the reference sequence is the first sequence in each MAF alignment block (or paragraph in MAF term). The output file will be in FASTA or PHYLIP format.
+After parsing the MAF file and extracting the sequences, SEGUL will match the locus/gene names with the BED file based on the start position of the reference sequence. The reference sequence must be the first in each MAF alignment block (or __paragraph__ in MAF terms). Thankfully, it is typical for an aligner to place the reference as the first sequence. SEGUL will write the output for each locus/gene. The output file will be named based on the locus/gene names from the BED file. If the name cannot be found in the BED file, SEGUL will use the reference name instead and output the results in a `missing-refs` directory inside the output directory.
 
 ### Preparing the BED file
 
@@ -29,12 +33,12 @@ chr1 500 600 seq3
 ```
 
 :::note
-We are working on improving BED file support to include more columns and headers.
+We are improving BED file support to include more columns and headers.
 :::
 
 ### Converting MAF
 
-Current version supports input multiple MAF files. However, it restricts name sources from a single BED file. Future updates will include multiple BED file support with implementation similar to the [sequence addition](/docs/cli-usage/sequence-add) feature.
+The current version supports inputting multiple MAF files. However, it restricts name sources from a single BED file. Future updates will include multiple BED file support with an implementation similar to the [sequence addition](/docs/cli-usage/sequence-add) feature.
 
 ```bash
 segul genomic convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed
@@ -48,7 +52,7 @@ segul genomic convert -i <input-maf-file> --reference <bed-file> --from-bed
 
 ### Specifying output directory and format
 
-By default, the output directory is `Genomic-Convert` in the current working directory. You can specify the output directory and format using the following options:
+The output directory is `Genomic-Convert` in the current working directory by default. You can specify the output directory and format using the following options:
 
 ```bash
 segul genomic convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format <format>
@@ -66,4 +70,4 @@ For PHYLIP format:
 segul genomic convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format phylip
 ```
 
-Use the `-int` suffix to specify the interleaved format for the output file. For example, for interleaved FASTA format: `fasta-int` and for interleaved PHYLIP format: `phylip-int`.
+Use the `-int` suffix to specify the interleaved format for the output file. For example, for interleaved FASTA format: `fasta-int` and interleaved PHYLIP format: `phylip-int`.
