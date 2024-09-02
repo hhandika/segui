@@ -7,10 +7,14 @@ SEGUL currently supports only converting Multi Alignment Format (MAF).
 
 ## Multiple Alignment Format (MAF) conversion
 
-Multiple Alignment Format (MAF) is a text-based format for representing multiple sequence alignments. Unlike the NEXUS or FASTA format, which usually contains a single alignment, each MAF file can contain multiple alignments. This format is useful for storing alignments with detailed information about the sequences, such as the sample name, scores, size, strand, and other attributes. However, most phylogenetic software does not support this format. SEGUL aims to bridge this gap by converting MAF files to FASTA or PHYLIP format, including support for interleaved and sequential formats. The output will be in multiple files containing sequences with a matching locus/gene. The filenames will be the locus/gene names.
+Multiple Alignment Format (MAF) is a text-based format for representing multiple sequence alignments. Unlike the NEXUS or PHYLIP format, which usually contains a single alignment, each MAF file can contain multiple alignments. This format helps store alignments with detailed information about the sequences, such as the sample name, scores, size, strand, and other attributes. However, most phylogenetic software does not support this format. SEGUL aims to bridge this gap by converting MAF files to FASTA or PHYLIP format, including support for interleaved and sequential formats. The output will be in multiple files containing sequences with a matching locus/gene. The filenames will be the locus/gene names.
 
 :::info
-The current version only supports sourcing the names from a BED file.
+The current beta version only supports sourcing the names from a BED file. NEXUS output is not yet supported. We are working on adding a feature to get the reference names from FASTA files and supports for NEXUS output. 
+:::
+
+:::info
+To use this feature, follow the [Test Beta Feature](/docs/installation/install-dev) installation guideline. 
 :::
 
 ### How does it work?
