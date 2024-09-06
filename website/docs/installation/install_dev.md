@@ -23,7 +23,7 @@ After the installation, on your terminal, run this command to verify the install
 cargo --version
 ```
 
-It should show the version number of the number app. If it says command not found, we recommend restarting your system. On Linux or macOS, you can also try to run this command:
+It should show the app version number. If it says command not found, we recommend restarting your system. On Linux or macOS, you can also try to run these commands without restarting the computer:
 
 ```bash
 which $SHELL
