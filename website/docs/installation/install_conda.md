@@ -17,11 +17,17 @@ mamba install segul
 
 ## Supported Platforms
 
-- Linux (ARM64, x86_64, required [GLIBC](https://www.gnu.org/software/libc/) 2.17+) 
+- Linux (ARM64, x86_64, required [GLIBC](https://www.gnu.org/software/libc/) 2.17+)
 - macOS (Intel and Apple Silicon)
 
-:::note
-SEGUL Conda installation may not work on old Linux distributions often found in HPC clusters. We recommend installing SEGUL using [the Linux MUSL binary](/docs/installation/install_binary#linuxwsl) or through [the package manager](/docs/installation/install_cargo).
+:::tip
+SEGUL Conda installation depends on [`libgcc-ng`](https://anaconda.org/conda-forge/libgcc-ng) version 12 or higher. If you encounter `libgcc-ng` incompatibility issues, often found in old Linux distribution, you can try update `libgcc-ng` using the following command:
+
+```bash
+conda install conda-forge::libgcc-ng
+```
+
+Then, try to install SEGUL CLI again. Alternatively, on Linux, you can install [the Linux MUSL binary](/docs/installation/install_binary#linuxwsl). For better compatibility on any operating system, you can also try to install using the [the package manager](/docs/installation/install_cargo).
 :::
 
 ## Detailed Installation Guide
