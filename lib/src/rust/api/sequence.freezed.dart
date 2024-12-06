@@ -96,6 +96,9 @@ class _$FilteringParamsCopyWithImpl<$Res, $Val extends FilteringParams>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -117,6 +120,8 @@ class __$$FilteringParams_MinTaxImplCopyWithImpl<$Res>
       $Res Function(_$FilteringParams_MinTaxImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -155,7 +160,9 @@ class _$FilteringParams_MinTaxImpl extends FilteringParams_MinTax {
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$FilteringParams_MinTaxImplCopyWith<_$FilteringParams_MinTaxImpl>
@@ -255,7 +262,10 @@ abstract class FilteringParams_MinTax extends FilteringParams {
   const FilteringParams_MinTax._() : super._();
 
   double get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FilteringParams_MinTaxImplCopyWith<_$FilteringParams_MinTaxImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -279,6 +289,8 @@ class __$$FilteringParams_AlnLenImplCopyWithImpl<$Res>
       $Res Function(_$FilteringParams_AlnLenImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -317,7 +329,9 @@ class _$FilteringParams_AlnLenImpl extends FilteringParams_AlnLen {
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$FilteringParams_AlnLenImplCopyWith<_$FilteringParams_AlnLenImpl>
@@ -417,7 +431,10 @@ abstract class FilteringParams_AlnLen extends FilteringParams {
   const FilteringParams_AlnLen._() : super._();
 
   BigInt get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FilteringParams_AlnLenImplCopyWith<_$FilteringParams_AlnLenImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -441,6 +458,8 @@ class __$$FilteringParams_ParsInfImplCopyWithImpl<$Res>
       $Res Function(_$FilteringParams_ParsInfImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -479,7 +498,9 @@ class _$FilteringParams_ParsInfImpl extends FilteringParams_ParsInf {
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$FilteringParams_ParsInfImplCopyWith<_$FilteringParams_ParsInfImpl>
@@ -579,7 +600,10 @@ abstract class FilteringParams_ParsInf extends FilteringParams {
   const FilteringParams_ParsInf._() : super._();
 
   BigInt get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FilteringParams_ParsInfImplCopyWith<_$FilteringParams_ParsInfImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -603,6 +627,8 @@ class __$$FilteringParams_PercInfImplCopyWithImpl<$Res>
       $Res Function(_$FilteringParams_PercInfImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -641,7 +667,9 @@ class _$FilteringParams_PercInfImpl extends FilteringParams_PercInf {
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$FilteringParams_PercInfImplCopyWith<_$FilteringParams_PercInfImpl>
@@ -741,7 +769,10 @@ abstract class FilteringParams_PercInf extends FilteringParams {
   const FilteringParams_PercInf._() : super._();
 
   double get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FilteringParams_PercInfImplCopyWith<_$FilteringParams_PercInfImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -765,6 +796,8 @@ class __$$FilteringParams_TaxonAllImplCopyWithImpl<$Res>
       $Res Function(_$FilteringParams_TaxonAllImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -811,7 +844,9 @@ class _$FilteringParams_TaxonAllImpl extends FilteringParams_TaxonAll {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_field0));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$FilteringParams_TaxonAllImplCopyWith<_$FilteringParams_TaxonAllImpl>
@@ -911,7 +946,10 @@ abstract class FilteringParams_TaxonAll extends FilteringParams {
   const FilteringParams_TaxonAll._() : super._();
 
   List<String> get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FilteringParams_TaxonAllImplCopyWith<_$FilteringParams_TaxonAllImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -930,6 +968,9 @@ class __$$FilteringParams_NoneImplCopyWithImpl<$Res>
   __$$FilteringParams_NoneImplCopyWithImpl(_$FilteringParams_NoneImpl _value,
       $Res Function(_$FilteringParams_NoneImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -1115,6 +1156,9 @@ class _$SequenceExtractionParamsCopyWithImpl<$Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -1137,6 +1181,8 @@ class __$$SequenceExtractionParams_IdImplCopyWithImpl<$Res>
       $Res Function(_$SequenceExtractionParams_IdImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1183,7 +1229,9 @@ class _$SequenceExtractionParams_IdImpl extends SequenceExtractionParams_Id {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_field0));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceExtractionParams_IdImplCopyWith<_$SequenceExtractionParams_IdImpl>
@@ -1271,7 +1319,10 @@ abstract class SequenceExtractionParams_Id extends SequenceExtractionParams {
   const SequenceExtractionParams_Id._() : super._();
 
   List<String> get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceExtractionParams_IdImplCopyWith<_$SequenceExtractionParams_IdImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1296,6 +1347,8 @@ class __$$SequenceExtractionParams_FileImplCopyWithImpl<$Res>
       $Res Function(_$SequenceExtractionParams_FileImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1335,7 +1388,9 @@ class _$SequenceExtractionParams_FileImpl
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceExtractionParams_FileImplCopyWith<
@@ -1424,7 +1479,10 @@ abstract class SequenceExtractionParams_File extends SequenceExtractionParams {
   const SequenceExtractionParams_File._() : super._();
 
   String get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceExtractionParams_FileImplCopyWith<
           _$SequenceExtractionParams_FileImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -1450,6 +1508,8 @@ class __$$SequenceExtractionParams_RegexImplCopyWithImpl<$Res>
       $Res Function(_$SequenceExtractionParams_RegexImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1489,7 +1549,9 @@ class _$SequenceExtractionParams_RegexImpl
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceExtractionParams_RegexImplCopyWith<
@@ -1578,7 +1640,10 @@ abstract class SequenceExtractionParams_Regex extends SequenceExtractionParams {
   const SequenceExtractionParams_Regex._() : super._();
 
   String get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceExtractionParams_RegexImplCopyWith<
           _$SequenceExtractionParams_RegexImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -1601,6 +1666,9 @@ class __$$SequenceExtractionParams_NoneImplCopyWithImpl<$Res>
       _$SequenceExtractionParams_NoneImpl _value,
       $Res Function(_$SequenceExtractionParams_NoneImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of SequenceExtractionParams
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -1792,6 +1860,9 @@ class _$SequenceRenamingParamsCopyWithImpl<$Res,
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -1814,6 +1885,8 @@ class __$$SequenceRenamingParams_RenameIdImplCopyWithImpl<$Res>
       $Res Function(_$SequenceRenamingParams_RenameIdImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1853,7 +1926,9 @@ class _$SequenceRenamingParams_RenameIdImpl
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceRenamingParams_RenameIdImplCopyWith<
@@ -1958,7 +2033,10 @@ abstract class SequenceRenamingParams_RenameId extends SequenceRenamingParams {
   const SequenceRenamingParams_RenameId._() : super._();
 
   String get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceRenamingParams_RenameIdImplCopyWith<
           _$SequenceRenamingParams_RenameIdImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -1984,6 +2062,8 @@ class __$$SequenceRenamingParams_RemoveStrImplCopyWithImpl<$Res>
       $Res Function(_$SequenceRenamingParams_RemoveStrImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2023,7 +2103,9 @@ class _$SequenceRenamingParams_RemoveStrImpl
   @override
   int get hashCode => Object.hash(runtimeType, field0);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceRenamingParams_RemoveStrImplCopyWith<
@@ -2128,7 +2210,10 @@ abstract class SequenceRenamingParams_RemoveStr extends SequenceRenamingParams {
   const SequenceRenamingParams_RemoveStr._() : super._();
 
   String get field0;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceRenamingParams_RemoveStrImplCopyWith<
           _$SequenceRenamingParams_RemoveStrImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -2154,6 +2239,8 @@ class __$$SequenceRenamingParams_RemoveRegexImplCopyWithImpl<$Res>
       $Res Function(_$SequenceRenamingParams_RemoveRegexImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2202,7 +2289,9 @@ class _$SequenceRenamingParams_RemoveRegexImpl
   @override
   int get hashCode => Object.hash(runtimeType, field0, field1);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceRenamingParams_RemoveRegexImplCopyWith<
@@ -2310,7 +2399,10 @@ abstract class SequenceRenamingParams_RemoveRegex
 
   String get field0;
   bool get field1;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceRenamingParams_RemoveRegexImplCopyWith<
           _$SequenceRenamingParams_RemoveRegexImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -2336,6 +2428,8 @@ class __$$SequenceRenamingParams_ReplaceStrImplCopyWithImpl<$Res>
       $Res Function(_$SequenceRenamingParams_ReplaceStrImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2384,7 +2478,9 @@ class _$SequenceRenamingParams_ReplaceStrImpl
   @override
   int get hashCode => Object.hash(runtimeType, field0, field1);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceRenamingParams_ReplaceStrImplCopyWith<
@@ -2492,7 +2588,10 @@ abstract class SequenceRenamingParams_ReplaceStr
 
   String get field0;
   String get field1;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceRenamingParams_ReplaceStrImplCopyWith<
           _$SequenceRenamingParams_ReplaceStrImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -2518,6 +2617,8 @@ class __$$SequenceRenamingParams_ReplaceRegexImplCopyWithImpl<$Res>
       $Res Function(_$SequenceRenamingParams_ReplaceRegexImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2575,7 +2676,9 @@ class _$SequenceRenamingParams_ReplaceRegexImpl
   @override
   int get hashCode => Object.hash(runtimeType, field0, field1, field2);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SequenceRenamingParams_ReplaceRegexImplCopyWith<
@@ -2684,7 +2787,10 @@ abstract class SequenceRenamingParams_ReplaceRegex
   String get field0;
   String get field1;
   bool get field2;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SequenceRenamingParams_ReplaceRegexImplCopyWith<
           _$SequenceRenamingParams_ReplaceRegexImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -2707,6 +2813,9 @@ class __$$SequenceRenamingParams_NoneImplCopyWithImpl<$Res>
       _$SequenceRenamingParams_NoneImpl _value,
       $Res Function(_$SequenceRenamingParams_NoneImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of SequenceRenamingParams
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
