@@ -2,17 +2,11 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 use flutter_rust_bridge::frb;
-use segul::handler::align::concat::ConcatHandler;
-use segul::handler::align::convert::Converter;
-use segul::handler::align::filter::{Params, SeqFilter};
-use segul::handler::align::partition::PartConverter;
-use segul::handler::align::split::AlignmentSplitting;
-use segul::handler::align::summarize::SeqStats;
-use segul::handler::sequence::extract::{Extract, ExtractOpts};
-use segul::handler::sequence::id::Id;
-use segul::handler::sequence::remove::{Remove, RemoveOpts};
-use segul::handler::sequence::rename::{Rename, RenameOpts};
-use segul::handler::sequence::translate::Translate;
+use segul::core::align::concat::AlignmentConcatenation;
+use segul::core::align::convert::AlignmentConversion;
+use segul::core::align::split::AlignmentSplitting;
+use segul::core::sequence::id::SequenceID;
+use segul::core::sequence::translate::SequenceTranslation;
 use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{log_input_partition, AlignSeqLogger};
 use segul::helper::partition::construct_partition_path;
@@ -126,8 +120,9 @@ impl TranslationServices {
         let translation_table = self.match_translation_table(&self.table);
         let task = "Sequence Translation";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let translate = Translate::new(&input_fmt, &translation_table, &datatype, &output_fmt);
-        translate.translate_all(&mut input_files, self.reading_frame, &output_path);
+        let translate =
+            SequenceTranslation::new(&input_fmt, &translation_table, &datatype, &output_fmt);
+        translate.translate(&mut input_files, self.reading_frame, &output_path);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -172,7 +167,7 @@ impl SequenceConversionServices {
         let output_fmt = self.match_output_fmt(&self.output_fmt);
         let task = "Sequence Conversion";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let concat = Converter::new(&input_fmt, &output_fmt, &datatype, self.sort);
+        let concat = AlignmentConversion::new(&input_fmt, &output_fmt, &datatype, self.sort);
         concat.convert(&input_files, output_path);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
@@ -211,7 +206,7 @@ impl IDExtractionServices {
             self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
         let task = "ID Extraction";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let id = Id::new(
+        let id = SequenceID::new(
             &input_files,
             &input_fmt,
             &datatype,
@@ -221,7 +216,7 @@ impl IDExtractionServices {
         if self.is_map {
             id.map_id();
         } else {
-            id.generate_id();
+            id.get_unique();
         }
 
         let duration = time.elapsed();
@@ -261,14 +256,14 @@ impl AlignmentServices {
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let task = "Alignment Concatenation";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let mut concat = ConcatHandler::new(
+        let mut concat = AlignmentConcatenation::new(
             &input_fmt,
             &output_dir,
             &output_fmt,
             &partition_fmt,
             output_prefix,
         );
-        concat.concat_alignment(&mut input_files, &datatype);
+        concat.concat(&mut input_files, &datatype);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }

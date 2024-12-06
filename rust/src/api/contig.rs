@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use segul::handler::contig::summarize::ContigSummaryHandler;
+use segul::core::contig::summarize::ContigSummaryHandler;
 use segul::helper::logger::ContigLogger;
 use segul::helper::types::ContigFmt;
 use segul::helper::utils;
