@@ -4,8 +4,14 @@ use std::time::Instant;
 use flutter_rust_bridge::frb;
 use segul::core::align::concat::AlignmentConcatenation;
 use segul::core::align::convert::AlignmentConversion;
+use segul::core::align::filter::{AlignmentFiltering, FilteringParameters};
+use segul::core::align::partition::PartitionConverter;
 use segul::core::align::split::AlignmentSplitting;
+use segul::core::align::summarize::AlignmentSummary;
+use segul::core::sequence::extract::{self, SeqExtractionParameters};
 use segul::core::sequence::id::SequenceID;
+use segul::core::sequence::remove::{self, SeqRemovalParameters};
+use segul::core::sequence::rename::{self, SeqRenamingParameters};
 use segul::core::sequence::translate::SequenceTranslation;
 use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{log_input_partition, AlignSeqLogger};
@@ -276,7 +282,7 @@ impl AlignmentServices {
         let mut input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
         let task = "Alignment Summary";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let mut summary = SeqStats::new(&input_fmt, &output_path, interval, &datatype);
+        let mut summary = AlignmentSummary::new(&input_fmt, &output_path, interval, &datatype);
         summary.summarize_all(&mut input_files, Some(output_prefix).as_deref());
         let duration = time.elapsed();
         utils::print_execution_time(duration);
@@ -400,7 +406,8 @@ impl FilteringServices {
         let task = "Alignment Filtering";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let params = self.match_parameters(&input_files, &input_fmt, &datatype);
-        let mut filter = SeqFilter::new(&input_files, &input_fmt, &datatype, &output_path, &params);
+        let mut filter =
+            AlignmentFiltering::new(&input_files, &input_fmt, &datatype, &output_path, &params);
 
         if self.is_concat {
             let output_fmt =
@@ -410,9 +417,9 @@ impl FilteringServices {
 
             let prefix = Path::new(self.prefix.as_ref().expect("No prefix"));
             filter.set_concat(&output_fmt, &partition_fmt, prefix);
-            filter.filter_aln();
+            filter.filter();
         } else {
-            filter.filter_aln();
+            filter.filter();
         }
 
         let duration = time.elapsed();
@@ -424,7 +431,7 @@ impl FilteringServices {
         input_files: &[PathBuf],
         input_fmt: &InputFmt,
         datatype: &DataType,
-    ) -> Params {
+    ) -> FilteringParameters {
         self.log_info();
         match &self.params {
             FilteringParams::MinTax(percent) => {
@@ -432,23 +439,23 @@ impl FilteringServices {
                 let min_taxa = self.count_min_tax(*percent, taxon_count);
                 log::info!("{:18}: {}%", "Percent", percent * 100.0);
                 log::info!("{:18}: {}\n", "Min tax", min_taxa);
-                Params::MinTax(min_taxa)
+                FilteringParameters::MinTax(min_taxa)
             }
             FilteringParams::AlnLen(len) => {
                 log::info!("{:18}: {} bp\n", "Min aln len", len);
-                Params::AlnLen(*len)
+                FilteringParameters::AlnLen(*len)
             }
             FilteringParams::ParsInf(inf) => {
                 log::info!("{:18}: {}\n", "Min pars. inf", inf);
-                Params::ParsInf(*inf)
+                FilteringParameters::ParsInf(*inf)
             }
             FilteringParams::PercInf(perc_inf) => {
                 log::info!("{:18}: {}%\n", "% pars. inf", perc_inf * 100.0);
-                Params::PercInf(*perc_inf)
+                FilteringParameters::PercInf(*perc_inf)
             }
             FilteringParams::TaxonAll(taxon_id) => {
                 log::info!("{:18}: {} taxa\n", "Taxon id", taxon_id.len());
-                Params::TaxonAll(taxon_id.to_vec())
+                FilteringParameters::TaxonAll(taxon_id.to_vec())
             }
             FilteringParams::None => unreachable!("Invalid params"),
         }
@@ -501,7 +508,7 @@ impl PartitionServices {
             let file_stem = self.extract_partition_fname(input);
             let output_path = self.create_final_output_path(output, &file_stem);
             let final_path = construct_partition_path(&output_path, &out_part_fmt);
-            let converter = PartConverter::new(input, &input_fmt, &final_path, &out_part_fmt);
+            let converter = PartitionConverter::new(input, &input_fmt, &final_path, &out_part_fmt);
             converter.convert(&datatype, self.is_uncheck);
         });
         let duration = time.elapsed();
@@ -558,7 +565,7 @@ impl SequenceRemoval {
         let task = "Sequence Removal";
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let remove_handle = Remove::new(
+        let remove_handle = remove::SequenceRemoval::new(
             &input_fmt,
             &datatype,
             output_path,
@@ -570,16 +577,16 @@ impl SequenceRemoval {
         utils::print_execution_time(duration);
     }
 
-    fn match_removal_type(&self) -> RemoveOpts {
+    fn match_removal_type(&self) -> SeqRemovalParameters {
         log::info!("{}", "Params");
         if let Some(regex) = &self.remove_regex {
             log::info!("{:18}: {}\n", "Regex", "Options");
             log::info!("{:18}, {}\n", "Values", regex);
-            RemoveOpts::Regex(regex.to_string())
+            SeqRemovalParameters::Regex(regex.to_string())
         } else if let Some(list) = &self.remove_list {
             log::info!("{:18}: id", "Options");
             log::info!("{:18}, {:?}", "Values", list);
-            RemoveOpts::Id(list.clone())
+            SeqRemovalParameters::Id(list.clone())
         } else {
             unimplemented!("Invalid removal type")
         }
@@ -639,41 +646,46 @@ impl SequenceRenaming {
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let params = self.match_params();
-        let rename_handle = Rename::new(&input_fmt, &datatype, output_path, &output_fmt, &params);
+        let rename_handle =
+            rename::SequenceRenaming::new(&input_fmt, &datatype, output_path, &output_fmt, &params);
         rename_handle.rename(&input_files);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
 
-    fn match_params(&self) -> RenameOpts {
+    fn match_params(&self) -> SeqRenamingParameters {
         match &self.params {
             SequenceRenamingParams::RenameId(path) => {
                 log::info!("{:18}: {}\n", "Rename id", "Options");
                 log::info!("{:18}, {:?}\n", "Path", path);
                 let id_list = delimited::parse_delimited_text(Path::new(path));
-                RenameOpts::RnId(id_list)
+                SeqRenamingParameters::RnId(id_list)
             }
             SequenceRenamingParams::RemoveStr(remove_str) => {
                 log::info!("{:18}: {}\n", "Remove str", "Options");
                 log::info!("{:18}, {}\n", "Values", remove_str);
-                RenameOpts::RmStr(remove_str.clone())
+                SeqRenamingParameters::RmStr(remove_str.clone())
             }
             SequenceRenamingParams::RemoveRegex(remove_regex, is_all_matches) => {
                 log::info!("{:18}: {}\n", "Remove regex", "Options");
                 log::info!("{:18}, {}\n", "Values", remove_regex);
-                RenameOpts::RmRegex(remove_regex.clone(), *is_all_matches)
+                SeqRenamingParameters::RmRegex(remove_regex.clone(), *is_all_matches)
             }
             SequenceRenamingParams::ReplaceStr(old_str, new_str) => {
                 log::info!("{:18}: {}\n", "Replace str", "Options");
                 log::info!("{:18}, {}, {}\n", "Values", old_str, new_str);
-                RenameOpts::RpStr(old_str.to_string(), new_str.to_string())
+                SeqRenamingParameters::RpStr(old_str.to_string(), new_str.to_string())
             }
             SequenceRenamingParams::ReplaceRegex(old_regex, new_regex, is_all_match) => {
                 log::info!("{:18}: {}\n", "Replace regex", "Options");
                 log::info!("{:18}, {}, {}\n", "Values", old_regex, new_regex);
-                RenameOpts::RpRegex(old_regex.to_string(), new_regex.to_string(), *is_all_match)
+                SeqRenamingParameters::RpRegex(
+                    old_regex.to_string(),
+                    new_regex.to_string(),
+                    *is_all_match,
+                )
             }
-            SequenceRenamingParams::None => RenameOpts::None,
+            SequenceRenamingParams::None => SeqRenamingParameters::None,
         }
     }
 }
@@ -720,28 +732,34 @@ impl SequenceExtraction {
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let params = self.match_params();
-        let extract_handle = Extract::new(&input_fmt, &datatype, &params, output_path, &output_fmt);
-        extract_handle.extract_sequences(&input_files);
+        let extract_handle = extract::SequenceExtraction::new(
+            &input_fmt,
+            &datatype,
+            &params,
+            output_path,
+            &output_fmt,
+        );
+        extract_handle.extract(&input_files);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
 
-    fn match_params(&self) -> ExtractOpts {
+    fn match_params(&self) -> SeqExtractionParameters {
         match &self.params {
             SequenceExtractionParams::Id(id) => {
                 log::info!("{:18}: {:?}\n", "Regex", id);
-                ExtractOpts::Id(id.to_vec())
+                SeqExtractionParameters::Id(id.to_vec())
             }
             SequenceExtractionParams::Regex(regex) => {
                 log::info!("{:18}: {}\n", "Regex", regex);
-                ExtractOpts::Regex(regex.to_string())
+                SeqExtractionParameters::Regex(regex.to_string())
             }
             SequenceExtractionParams::File(file) => {
                 log::info!("{:18}: {}\n", "File", file);
                 let ids = self.parse_file(file);
-                ExtractOpts::Id(ids)
+                SeqExtractionParameters::Id(ids)
             }
-            SequenceExtractionParams::None => ExtractOpts::None,
+            SequenceExtractionParams::None => SeqExtractionParameters::None,
         }
     }
 
