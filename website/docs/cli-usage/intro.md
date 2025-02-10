@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Overview
+# Introduction
 
 The goals of SEGUL CLI are to be easy to use for beginners and to provide powerful options for experienced users. Some common arguments have short options. Some of them also have default values when they are possible and safe to have. This way, we will save time typing the commands.
 

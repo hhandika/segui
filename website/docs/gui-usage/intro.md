@@ -1,6 +1,6 @@
 ---
 sidebar_position: 0
-title: General Guidelines
+title: Introduction
 ---
 
 This page provides guidelines that are applicable to all tasks available in the app. For task-specific guidelines, refer to the respective task documentation.
