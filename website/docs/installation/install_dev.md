@@ -23,12 +23,33 @@ After the installation, on your terminal, run this command to verify the install
 cargo --version
 ```
 
-If you encounter compiling issues on Linux and Windows, you will need to take additional steps to compile SEGUL. For more information, see the [/docs/installation/install_cargo](source installation guide).
+It should show the app version number. If it says command not found, we recommend restarting your system. On Linux or macOS, you can also try to run these commands without restarting the computer:
+
+```bash
+which $SHELL
+```
+
+If it contains ZSH, do:
+
+```bash
+source ~/.zshrc
+```
+
+If BASH, do:
+
+```bash
+source ~/.bashrc
+```
+
 
 ### Install SEGUL Development Version
 
-To install the SEGUL development version, on your terminal application, use the command below:
+To install the SEGUL development version on your terminal application, use the command below:
 
 ```Bash
 cargo install --git https://github.com/hhandika/segul.git --branch dev
 ```
+
+:::tip
+If you encounter compiling issues on Linux and Windows, such as linker not found or something similar, try additional steps explained in the [package manager installation guide](/docs/installation/install_cargo).
+:::

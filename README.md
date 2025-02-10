@@ -8,7 +8,7 @@
 ![last-commit](https://img.shields.io/github/last-commit/hhandika/segui)
 ![License](https://img.shields.io/github/license/hhandika/segui)
 
-A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memory-efficient application for phylogenomic data manipulation and sequence summary statistics. It carries similar performance to the CLI version of the app with the convenient of GUI, while still retaining reproducibility through logging support. The GUI version will also support iOS, iPadOS and Android, in addition to macOS, Windows, and Linux.
+A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memory-efficient application for phylogenomic data manipulation and sequence summary statistics. It performs similarly to the CLI version of the app with the convenience of GUI while still retaining reproducibility through logging support. The GUI version will also support iOS, iPadOS and Android, and macOS, Windows, and Linux.
 
 ## Installation
 

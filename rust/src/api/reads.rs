@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use segul::handler::read::summarize::ReadSummaryHandler;
+use segul::core::read::summarize::GenomicReadSummary;
 use segul::helper::logger::ReadLogger;
 use segul::helper::types::{SeqReadFmt, SummaryMode};
 use segul::helper::utils;
@@ -28,7 +28,7 @@ impl RawReadServices {
         let mut files = self.find_input_files();
         let sum_mode = self.match_mode(&mode);
         ReadLogger::new(None, &input_fmt, files.len()).log("Read Summary");
-        let summary = ReadSummaryHandler::new(
+        let summary = GenomicReadSummary::new(
             &mut files,
             &input_fmt,
             &sum_mode,

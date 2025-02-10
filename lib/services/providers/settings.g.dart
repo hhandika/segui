@@ -6,7 +6,7 @@ part of 'settings.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$settingHash() => r'8d3ecafee3305b91918d38dce44046849a6590d1';
+String _$settingHash() => r'b4ffdf1319400e689586e0f3860362fbad56142e';
 
 /// See also [setting].
 @ProviderFor(setting)
@@ -19,6 +19,8 @@ final settingProvider = Provider<SharedPreferences>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SettingRef = ProviderRef<SharedPreferences>;
 String _$themeSettingHash() => r'5493e98fe97e213af398d1f7acaadf065b90d6ca';
 
@@ -36,4 +38,4 @@ final themeSettingProvider =
 
 typedef _$ThemeSetting = AsyncNotifier<ThemeMode>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
