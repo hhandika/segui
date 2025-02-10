@@ -1,11 +1,7 @@
 ---
 sidebar_position: 10
-title: Genomic File Conversion (Beta)
+title: Multi Alignment Format Conversion (Beta)
 ---
-
-SEGUL currently supports only converting Multiple Alignment Format (MAF).
-
-## Multiple Alignment Format (MAF) conversion
 
 Multiple Alignment Format (MAF) is a text-based format for representing multiple sequence alignments. Unlike the NEXUS or PHYLIP format, which usually contains a single alignment, each MAF file can contain multiple alignments. This format helps store alignments with detailed information about the sequences, such as the sample name, scores, size, strand, and other attributes. However, most phylogenetic software does not support this format. SEGUL aims to bridge this gap by converting MAF files to FASTA or PHYLIP format, including support for interleaved and sequential formats. The output will be in multiple files containing sequences with a matching locus/gene. The filenames will be the locus/gene names.
 
@@ -45,13 +41,13 @@ We are improving BED file support to include more columns and headers.
 The current version supports inputting multiple MAF files. However, it restricts name sources from a single BED file. Future updates will include multiple BED file support with an implementation similar to the [sequence addition](/docs/cli-usage/sequence-add) feature.
 
 ```bash
-segul genomic convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed
+segul maf convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed
 ```
 
 You can also use standard input to provide the MAF file.
 
 ```bash
-segul genomic convert -i <input-maf-file> --reference <bed-file> --from-bed
+segul maf convert -i <input-maf-file> --reference <bed-file> --from-bed
 ```
 
 ### Specifying output directory and format
@@ -59,19 +55,19 @@ segul genomic convert -i <input-maf-file> --reference <bed-file> --from-bed
 The output directory is `Genomic-Convert` in the current working directory by default. You can specify the output directory and format using the following options:
 
 ```bash
-segul genomic convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format <format>
+segul maf convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format <format>
 ```
 
 For FASTA format:
 
 ```bash
-segul genomic convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format fasta
+segul maf convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format fasta
 ```
 
 For PHYLIP format:
 
 ```bash
-segul genomic convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format phylip
+segul maf convert -d <directory-with-maf-files> --reference <bed-file> -o <output-file> --from-bed --output-dir <output-directory> --output-format phylip
 ```
 
 Use the `-int` suffix to specify the interleaved format for the output file. For example, for interleaved FASTA format: `fasta-int` and interleaved PHYLIP format: `phylip-int`.
