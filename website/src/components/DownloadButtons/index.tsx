@@ -78,9 +78,7 @@ function DownloadOptions() {
       <AppStoreBadge />
       <GooglePlayBadge />
       <p className="padding--none">
-        <Link to="/docs/installation/overview">
-          CLI & other install options
-        </Link>
+        <Link to="/docs/installation/intro">CLI & other install options</Link>
       </p>
     </div>
   );

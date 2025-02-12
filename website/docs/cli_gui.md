@@ -42,9 +42,9 @@ The GUI is available for all major desktop and mobile platforms. The CLI is avai
 | Windows Subsystem for Linux (WSL) | ❌   | ✅   |
 
 :::note
- The GUI on **Linux** required GLIBC 2.34+. The CLI works in any Linux distribution. We provide a fully static binary for older Linux and a dynamically linked binary to GLIBC for newer distributions. See [GUI](./installation/install_gui) and [CLI](./installation/install_binary) installation instruction for more details.
+ The GUI on **Linux** required GLIBC 2.34+. The CLI works in any Linux distribution. We provide a fully static binary for older Linux and a dynamically linked binary to GLIBC for newer distributions. See [GUI](/docs/installation/install_gui) and [CLI](/docs/installation/install_binary) installation instruction for more details.
 
- You can also compile the CLI version from the source code for any platform that supports Rust. See [installation from source code](./installation/install_source) for more details.
+ You can also compile the CLI version from the source code for any platform that supports Rust. See [installation from source code](/docs/installation/install_source) for more details.
 :::
 
 :::info
@@ -82,7 +82,7 @@ The features are grouped into the kind of data they operate on. The alignment ta
 
 The GUI and CLI of SEGUL have similar task groups. In the CLI, the task group equals a command, and the task equals a subcommand.  The CLI task group's name is the same as the GUI version, except for **genomic summary statistics** and **partition conversion**. The genomic summary statistics are split into commands for sequence reads and contigs. The partition conversion is available in the partition command.
 
-Learn more about [CLI](/docs/cli-usage/command_options) and [GUI](/docs/gui-usage/general) options.
+Learn more about [CLI](/docs/cli-usage/command_options) and [GUI](/docs/gui-usage/intro) options.
 
 ## Performance and Memory Efficiency
 

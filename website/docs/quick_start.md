@@ -127,7 +127,7 @@ We provide sample datasets to help you get started or test the app if you find a
 10. You can also share the output. There are two share options. The quick share will create a zip file containing the output and share it using the system share sheet. You can also share individual files by clicking the share button on the output viewer.
 
 :::warning
-The mobile version of the GUI has limited capabilities in handling many files. Find out more in the [guideline for mobile users](/docs/gui-usage/general#specific-guideline-for-mobile-users).
+The mobile version of the GUI has limited capabilities in handling many files. Find out more in the [guideline for mobile users](/docs/gui-usage/intro#specific-guideline-for-mobile-users).
 :::
 
 ## CLI Usage
