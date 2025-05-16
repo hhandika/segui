@@ -74,8 +74,6 @@ class SequenceOptions extends StatelessWidget {
         return const IDExtractionView();
       case SequenceOperationType.translation:
         return const TranslateView();
-      default:
-        return const SizedBox();
     }
   }
 }

@@ -77,8 +77,6 @@ class AlignmentOptions extends ConsumerWidget {
         return const SplitAlignmentView();
       case AlignmentOperationType.summary:
         return const AlignmentSummaryView();
-      default:
-        return const SizedBox();
     }
   }
 }

@@ -118,8 +118,6 @@ class FilteringRunner {
         return FilteringParams.parsInf(BigInt.parse(paramValue));
       case FilteringOptions.percentParsimonyInf:
         return FilteringParams.percInf(double.tryParse(paramValue) ?? 0);
-      default:
-        throw ArgumentError('Invalid filtering option');
     }
   }
 }

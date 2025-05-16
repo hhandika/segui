@@ -2279,8 +2279,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_String(field0, serializer);
       case FilteringParams_None():
         sse_encode_i_32(5, serializer);
-      default:
-        throw UnimplementedError('');
     }
   }
 
@@ -2434,8 +2432,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(field0, serializer);
       case SequenceExtractionParams_None():
         sse_encode_i_32(3, serializer);
-      default:
-        throw UnimplementedError('');
     }
   }
 
@@ -2500,8 +2496,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_bool(field2, serializer);
       case SequenceRenamingParams_None():
         sse_encode_i_32(5, serializer);
-      default:
-        throw UnimplementedError('');
     }
   }
 

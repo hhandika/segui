@@ -70,8 +70,6 @@ class GenomicOptions extends StatelessWidget {
         return const ReadSummaryView();
       case GenomicOperationType.contigSummary:
         return const ContigView();
-      default:
-        return const SizedBox();
     }
   }
 }

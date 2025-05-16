@@ -443,11 +443,11 @@ impl FilteringServices {
             }
             FilteringParams::AlnLen(len) => {
                 log::info!("{:18}: {} bp\n", "Min aln len", len);
-                FilteringParameters::AlnLen(*len)
+                FilteringParameters::MinLen(*len)
             }
             FilteringParams::ParsInf(inf) => {
                 log::info!("{:18}: {}\n", "Min pars. inf", inf);
-                FilteringParameters::ParsInf(*inf)
+                FilteringParameters::MinParsInf(*inf)
             }
             FilteringParams::PercInf(perc_inf) => {
                 log::info!("{:18}: {}%\n", "% pars. inf", perc_inf * 100.0);
