@@ -1,5 +1,13 @@
 # Release Notes
 
+## v1.1.3
+
+### Bug Fixes
+
+- Fix issue with trailing whitespaces in the sequence IDs.
+- Fix menu drawer keeps opening after toggling the hamburger menu.
+- Fix window size buttons.
+
 ## v1.1.2
 
 - Improve number formatting for tabular data.

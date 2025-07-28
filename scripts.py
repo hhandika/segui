@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""This script provides a command-line interface for building, testing, and managing the Flutter and Rust parts of the project."""
+
 import subprocess
 import argparse
 import platform
@@ -24,10 +26,14 @@ MACOS_PODS_FILES = "macos/Podfile macos/Podfile.lock macos/Pods/"
 
 
 class Build:
+    """Build commands for the project."""
+
     def __init__(self):
+        """Initialize the Build class."""
         pass
 
     def build_all(self) -> None:
+        """Build the project for all supported platforms."""
         os_name: str = platform.system()
         print(f"Building for all platforms on {os_name}...")
         try:
@@ -46,6 +52,7 @@ class Build:
             print(f"Error building project for all platforms: {str(e)}")
 
     def build_android(self) -> None:
+        """Build the project for Android."""
         print("Building for Android...")
         try:
             self.build_bundle()
@@ -55,6 +62,7 @@ class Build:
             print("Error building project for android:", str(e))
 
     def build_apk(self) -> None:
+        """Build the Android APK."""
         print("Building apk for Android...")
         try:
             subprocess.run(["flutter", "build", "apk", "--release", "--split-per-abi"])
@@ -63,6 +71,7 @@ class Build:
             print("Error building project for android:", str(e))
 
     def build_bundle(self) -> None:
+        """Build the Android App Bundle."""
         print("Building appbundle for Android...")
         try:
             subprocess.run(["flutter", "build", "appbundle", "--release"])
@@ -71,6 +80,7 @@ class Build:
             print("Error building project for android:", str(e))
 
     def build_ios(self) -> None:
+        """Build the project for iOS."""
         print("Building for iOS...")
         try:
             subprocess.run(["flutter", "build", "ios", "--release"])
@@ -79,6 +89,7 @@ class Build:
             print("Error building project for ios:", str(e))
 
     def build_macos(self) -> None:
+        """Build the project for macOS."""
         print("Building for macOS...")
         try:
             subprocess.run(["flutter", "build", "macos", "--release"])
@@ -90,6 +101,7 @@ class Build:
             print("Error building project for macos:", str(e))
 
     def build_linux(self) -> None:
+        """Build the project for Linux."""
         print("Building for Linux...")
         try:
             subprocess.run(["flutter", "build", "linux", "--release"])
@@ -98,6 +110,7 @@ class Build:
             print("Error building project for linux:", str(e))
 
     def build_windows(self) -> None:
+        """Build the project for Windows."""
         print("Building for Windows...")
         try:
             subprocess.run(["flutter", "build", "windows", "--release"], shell=True)
@@ -108,6 +121,7 @@ class Build:
             return
 
     def _create_dmg(self) -> None:
+        """Create a DMG file for the macOS build."""
         print("Creating dmg...")
         try:
             subprocess.run(["appdmg", DMG_CONFIG, OUTPUT_DMG])
@@ -116,6 +130,7 @@ class Build:
             print("Error creating dmg:", str(e))
 
     def _remove_dmg(self) -> None:
+        """Remove the DMG file if it exists."""
         print("Removing dmg...")
         try:
             if os.path.exists(OUTPUT_DMG):
@@ -125,6 +140,7 @@ class Build:
             print("Error removing dmg:", str(e))
 
     def _open_dmg(self) -> None:
+        """Open the DMG file."""
         print("Opening dmg...")
         try:
             subprocess.run(["open", OUTPUT_DMG])
@@ -134,10 +150,14 @@ class Build:
 
 
 class BuildRust:
+    """Build commands for the Rust part of the project."""
+
     def __init__(self):
+        """Initialize the BuildRust class."""
         pass
 
     def install_frb_executable(self) -> None:
+        """Install the flutter_rust_bridge executable."""
         print("Installing frb executable...")
         try:
             subprocess.run(["cargo", "install", FRB_INSTALL_NAME])
@@ -147,6 +167,11 @@ class BuildRust:
             return
 
     def generate_frb_code(self, is_clean: bool) -> None:
+        """Generate the frb code.
+
+        Args:
+            is_clean (bool): Whether to remove old frb code before generating.
+        """
         print("Generating frb code...")
         try:
             if is_clean:
@@ -158,6 +183,7 @@ class BuildRust:
             return
         
     def clean_frb_files(self) -> None:
+        """Clean the frb files."""
         print("Cleaning frb code...")
         try:
             self.remove_old_frb_code()
@@ -170,6 +196,7 @@ class BuildRust:
             return
 
     def update_frb_executable(self) -> None:
+        """Update the frb executable."""
         print("Updating frb executable...")
         try:
             subprocess.run(["cargo", "install", FRB_INSTALL_NAME])
@@ -180,6 +207,7 @@ class BuildRust:
             return
 
     def remove_old_frb_code(self) -> None:
+        """Remove old frb code."""
         print("Removing old frb code...")
         try:
             for file in FRB_FILES:
@@ -192,6 +220,7 @@ class BuildRust:
             return
 
     def check_rust_dependencies(self) -> None:
+        """Check the Rust dependencies."""
         print("Checking rust dependencies...")
         try:
             subprocess.run(["cargo", "check"], cwd="rust")
@@ -201,6 +230,7 @@ class BuildRust:
             return
 
     def update_rust_dependencies(self) -> None:
+        """Update the Rust dependencies."""
         print("Updating rust dependencies...")
         try:
             subprocess.run(["cargo", "update"], cwd="rust")
@@ -210,10 +240,14 @@ class BuildRust:
             return
 
 class FlutterUtils:
+    """Utilities for the Flutter project."""
+
     def __init__(self):
+        """Initialize the FlutterUtils class."""
         pass
 
     def clean_project(self) -> None:
+        """Clean the Flutter project."""
         print("Cleaning project...")
         try:
             subprocess.run(["flutter", "clean"])
@@ -223,6 +257,7 @@ class FlutterUtils:
             return
 
     def fix_dart_code(self) -> None:
+        """Fix the Dart code."""
         print("Fixing dart code...")
         try:
             subprocess.run(["dart", "fix", "--apply"])
@@ -232,6 +267,7 @@ class FlutterUtils:
             return
 
     def update_flutter_dependencies(self) -> None:
+        """Update the Flutter dependencies."""
         print("Updating flutter dependencies...")
         try:
             subprocess.run(["flutter", "pub", "upgrade"])
@@ -241,6 +277,7 @@ class FlutterUtils:
             return
     
     def clean_pods(self) -> None:
+        """Clean the iOS and macOS pods."""
         print("Cleaning pods...")
         try:
             subprocess.run(["flutter", "clean"])
@@ -257,10 +294,14 @@ class FlutterUtils:
 
 
 class BuildDocs:
+    """Build commands for the documentation."""
+
     def __init__(self):
+        """Initialize the BuildDocs class."""
         pass
 
     def run(self) -> None:
+        """Run the documentation website."""
         print("Building documentation...")
         command: List[str] = ["yarn", "start"]
         try:
@@ -274,6 +315,7 @@ class BuildDocs:
             return
 
     def build(self) -> None:
+        """Build the documentation website."""
         print("Building documentation...")
         command: List[str] = ["yarn", "build"]
         try:
@@ -287,6 +329,7 @@ class BuildDocs:
             return
 
     def upgrade(self) -> None:
+        """Upgrade the documentation dependencies."""
         print("Upgrading documentation...")
         command: List[str] = [
             "yarn",
@@ -309,10 +352,14 @@ class BuildDocs:
 
 
 class Args:
+    """Argument parser for the script."""
+
     def __init__(self):
+        """Initialize the Args class."""
         pass
 
     def get_args(self) -> argparse.Namespace:
+        """Get the arguments from the command line."""
         parser = argparse.ArgumentParser(
             description="Various build scripts for the project"
         )
@@ -327,6 +374,7 @@ class Args:
         return parser.parse_args()
 
     def get_flutter_build_args(self, args: argparse.Namespace) -> None:
+        """Get the arguments for the Flutter build commands."""
         parser = args.add_parser("build", help="Build project")
         parser.add_argument("--all", action="store_true", help="Build all platforms")
         parser.add_argument("--android", action="store_true", help="Build android")
@@ -338,6 +386,7 @@ class Args:
         parser.add_argument("--windows", action="store_true", help="Build windows")
 
     def get_flutter_utils_args(self, args: argparse.Namespace) -> None:
+        """Get the arguments for the Flutter utility commands."""
         parser = args.add_parser("utils", help="Utilities for Flutter project")
         parser.add_argument("--clean", action="store_true", help="Clean project")
         parser.add_argument("--fix", action="store_true", help="Fix dart code")
@@ -347,6 +396,7 @@ class Args:
         parser.add_argument("--clean-pods", action="store_true", help="Clean pods")
 
     def get_rust_build_args(self, args: argparse.Namespace) -> None:
+        """Get the arguments for the Rust build commands."""
         parser = args.add_parser("frb", help="Build options for Rust project")
         parser.add_argument("--generate", action="store_true", help="Generate frb code")
         parser.add_argument(
@@ -363,6 +413,7 @@ class Args:
         parser.add_argument("--install", action="store_true", help="Install frb executable")
 
     def get_doc_build_args(self, args: argparse.Namespace) -> None:
+        """Get the arguments for the documentation build commands."""
         parser = args.add_parser("docs", help="Build documentation")
         parser.add_argument("--run", action="store_true", help="Run documentation")
         parser.add_argument("--build", action="store_true", help="Build documentation")
@@ -372,10 +423,14 @@ class Args:
 
 
 class Parser:
+    """Parser for the script arguments."""
+
     def __init__(self, args: argparse.Namespace):
+        """Initialize the Parser class."""
         self.args = args
 
     def parse_build_args(self) -> None:
+        """Parse the build arguments."""
         build = Build()
         if self.args.android:
             build.build_android()
@@ -397,6 +452,7 @@ class Parser:
             print("No platform selected")
 
     def parse_flutter_utils_args(self) -> None:
+        """Parse the Flutter utility arguments."""
         utils = FlutterUtils()
         if self.args.clean:
             utils.clean_project()
@@ -411,6 +467,7 @@ class Parser:
             return
 
     def parse_rust_build_args(self) -> None:
+        """Parse the Rust build arguments."""
         rust = BuildRust()
         if self.args.generate:
             rust.generate_frb_code(self.args.clean)
@@ -429,6 +486,7 @@ class Parser:
             return
 
     def parse_doc_build_args(self) -> None:
+        """Parse the documentation build arguments."""
         docs = BuildDocs()
         if self.args.run:
             docs.run()
@@ -442,6 +500,7 @@ class Parser:
 
 
 def main() -> None:
+    """Main function for the script."""
     args = Args().get_args()
     parser = Parser(args)
     if args.command == "build":

@@ -119,7 +119,7 @@ class _PaginatedTableState extends State<PaginatedTable> {
     return SingleChildScrollView(
         child: Theme(
       data: Theme.of(context).copyWith(
-          cardTheme: const CardTheme(elevation: 0, color: Colors.transparent)),
+          cardTheme: const CardThemeData(elevation: 0, color: Colors.transparent)),
       child: PaginatedDataTable(
         rowsPerPage: _rowCount(screenHeight),
         columns: widget.content[0]
