@@ -110,7 +110,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
                 labelText: 'Select method',
                 hintText: 'Select removal method',
               ),
-              value: _removalMethodController,
+              initialValue: _removalMethodController,
               items: removalOptionsMap.entries
                   .map((MapEntry<RemovalOptions, String> e) =>
                       DropdownMenuItem<RemovalOptions>(

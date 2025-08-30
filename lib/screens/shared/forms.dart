@@ -192,7 +192,7 @@ class SharedDropdownField extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String?>(
       isExpanded: true,
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         labelText: label,
       ),

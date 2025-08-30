@@ -112,7 +112,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
         FormCard(
           children: [
             DropdownButtonFormField(
-              value: _renamingOptionController,
+              initialValue: _renamingOptionController,
               decoration: const InputDecoration(
                 labelText: 'Select method',
               ),
