@@ -14,7 +14,7 @@ segul --version
 $ segul 0.23.0
 ```
 
-Check the [Installation Guide](/docs/installation/install) to update SEGUL to the latest version.
+Check the [Installation Guide](/docs/installation/update#segul-cli) to update SEGUL to the latest version.
 :::
 
 ## Quick example
