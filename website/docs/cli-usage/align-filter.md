@@ -70,6 +70,12 @@ segul align filter --dir alignments/ --input-format nexus --percent-inf 0.8
 
 # Proportion of missing data
 segul align filter --dir alignments/ --missing-data 0.3
+
+# Minimum taxon counts
+segul align filter --dir alignments/ --min-ntax 100
+
+# Taxon ID
+segul align filter --dir alignments/ --taxon-id path/to/taxon_ids.txt
 ```
 
 To check the available filtering options and other command arguments, use the `--help` option:
@@ -202,6 +208,38 @@ SEGUL will will copy the matching alignments to the output directory. To filter 
 ```Bash
 segul align filter --dir alignments/ --missing-data 0.3
 ```
+
+## Filtering based on minimum taxon counts
+
+To filter alignments based on the minimum number of taxa present in each alignment, use the `--min-ntax` option. For example, to filter alignments with at least 100 taxa, use the command below:
+
+```Bash
+segul align filter --dir alignments/ --min-ntax 100
+```
+
+:::info
+Available in SEGUL v0.23.0 and later versions.
+:::
+
+## Filtering based on taxon ID
+
+The taxon ID is the same as your sequence ID. To use this feature, you need to provide a text file containing a list of taxon IDs (one taxon ID per line). SEGUL will filter alignments that contain the taxon IDs specified in the file. For example, if you have a file named `taxon_ids.txt` with the following content:
+
+```Text
+taxon_1
+taxon_2
+taxon_3
+```
+
+You can use the following command to filter alignments in the `alignments/` directory that contain these taxon IDs:
+
+```Bash
+segul align filter --dir alignments/ --taxon-id path/to/taxon_ids.txt
+```
+
+:::info
+Available in SEGUL v0.23.0 and later versions.
+:::
 
 ## Specifying output directories
 
