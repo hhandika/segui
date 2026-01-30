@@ -29,12 +29,31 @@ git clone https://github.com/hhandika/segui.git
 
 Install nodejs:
 
-First, intall nodejs by following the instructions [here](https://nodejs.org/en/)
+It is recommended to use a package manager to install nodejs. Two common options are [NVM](https://github.com/nvm-sh/nvm) and [fnm](https://github.com/Schniz/fnm). We recommend using fnm for its speed and simplicity.
 
-We recommend using yarn to install the dependencies:
+Using fnm:
 
 ```bash
-npm install -g yarn
+curl -fsSL https://fnm.vercel.app/install | bash
+```
+
+After installing fnm, restart your terminal and install the latest LTS version of Node.js:
+
+```bash
+fnm install --lts
+```
+
+Check the installed version of Node.js:
+
+```bash
+node -v
+npm -v
+```
+
+Activate yarn package manager:
+
+```bash
+corepack enable
 ```
 
 Change directory to the website folder:
