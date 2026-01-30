@@ -29,7 +29,7 @@ If the path contains `~/.cargo/bin` or `~/cargo/bin`, your SEGUL binary is insta
 cargo install segul
 ```
 
-If the path contains `/usr/local/bin`, `/usr/bin`, `/bin,` or `~/programs`, your SEGUL binary is installed using a pre-compiled binary. You must download the latest binary from the [release page](https://github.com/hhandika/segul/releases/latest/). After downloading the binary, replace the old binary with the new one. For more details, follow the binary [installation guidelines](/docs/installation/install_binary).
+If the path contains `/usr/local/bin`, `/usr/bin`, `/bin,`, `~/programs` or a similar path, your SEGUL binary is installed using a pre-compiled binary. You will need to replace the binary with a new version manually. You can download the latest binary from the [release page](https://github.com/hhandika/segul/releases/latest/). After downloading the binary, replace the old binary with the new one. For more details, follow the binary [installation guidelines](/docs/installation/install_binary).
 
 If the path contains `miniforge` or `conda`, your SEGUL binary is installed using Conda. You can update it by running the following command:
 
