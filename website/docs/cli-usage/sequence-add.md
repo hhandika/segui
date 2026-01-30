@@ -1,6 +1,6 @@
 ---
 sidebar_position: 12
-title: Sequence Addition (Beta)
+title: Sequence Addition
 ---
 
 Add sequences to existing sequence files/alignments. Allow adding sequences from multiple sources to multiple destinations. The file formats for the source and destinations can be different, but SEGUL requires matching file names for both to add the sequences. If the destination files are aligned, all the output sequences will be unaligned. We recommend using [MAFFT](https://mafft.cbrc.jp/alignment/software/) to align the resulting sequence files.
@@ -11,8 +11,10 @@ This feature is available in SEGUL v0.23.0 and later versions. To check your SEG
 ```Bash
 segul --version
 # Compatible version example:
-$ segul 0.23.0
+# segul 0.23.0
 ```
+
+:::
 
 ## Quick Start
 
