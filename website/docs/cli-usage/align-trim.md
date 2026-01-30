@@ -10,8 +10,8 @@ This feature is available in SEGUL v0.23.0 and later versions. To check your SEG
 
 ```Bash
 segul --version
-# Result example:
-$ segul 0.23.0
+# Compatible version example:
+# segul 0.23.0
 ```
 
 Check the [Installation Guide](/docs/installation/update#segul-cli) to update SEGUL to the latest version.
