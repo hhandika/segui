@@ -92,9 +92,11 @@ SEGUL will never overwrite your original datasets. When filtering alignments, it
 We recommend starting with [the sequence filtering method](/docs/cli-usage/sequence-filter) before using the alignment filtering method. This step will help clean your alignments from problematic sequences, which could result in alignments containing low sample coverage. You can then use the alignment filtering method with the `--percent` option ([see below](#filtering-based-on-data-matrix-completeness)) to filter out those alignments.
 :::
 
-## Filtering based on alignment length
+## Detailed usage
 
-### Minimum alignment length
+### Filtering based on alignment length
+
+#### Minimum alignment length
 
 You can filter alignments based on their length using the `--min-len` option. For example, if you want to filter alignments in the `alignments/` below:
 
@@ -111,7 +113,7 @@ To filter alignments with a minimum length of 200 bp, use the command below:
 segul align filter --dir alignments/ --input-format nexus --min-len 200
 ```
 
-### Maximum alignment length
+#### Maximum alignment length
 
 To filter alignments based on the maximum length, use the `--max-len` option. For example:
 
@@ -129,7 +131,7 @@ segul align filter --dir alignments/ --len 500
 
 :::
 
-## Filtering based on data matrix completeness
+### Filtering based on data matrix completeness
 
 This filtering method is based on the percentage of minimal taxa present in your alignments, similar to `phyluce_align_get_only_loci_with_min_taxa` in [Phyluce pipeline](https://phyluce.readthedocs.io/en/latest/tutorials/tutorial-1.html#final-data-matrices). For example, given a collection of alignments with 100 taxa with 90 percent completeness, SEGUL will filter alignments containing at least 90 taxa.
 
@@ -141,7 +143,7 @@ segul align filter --dir alignments/ --input-format nexus --percent 0.8
 
 You can also write the percentage as `.8`, and it will parse the same way you write it with 0.
 
-### Using multiple data matrix completeness values
+#### Using multiple data matrix completeness values
 
 Sometimes, we want to build phylogenetic trees with different data matrix completeness. Using `segul`, we can do it in a single command using the `npercent` option:
 
@@ -151,11 +153,11 @@ segul align filter --dir segul --dir alignments/ --input-format nexus --npercent
 
 SEGUL will create an output directory for each data matrix completeness value, with the percentage values suffixed on the directory names. For the example above, it will create three directories named `alignments_90p`, `alignments_80p`, and `alignments_75p`.
 
-## Filtering based on parsimony informative sites
+### Filtering based on parsimony informative sites
 
 SEGUL provides two ways of filtering based on parsimony informative sites:
 
-### Minimum informative sites
+#### Minimum informative sites
 
 This option filters alignments that contain at least the specified number of informative sites.
 
@@ -171,7 +173,7 @@ segul align filter --dir alignments/ --input-format nexus --pinf 50
 
 :::
 
-### Maximum informative sites
+#### Maximum informative sites
 
 :::info
 Supported in SEGUL v0.23.0 and later versions.
@@ -183,7 +185,7 @@ To filter alignments based on the maximum number of informative sites, use the `
 segul align filter --dir alignments/ --input-format nexus --max-pinf 200
 ```
 
-### Percentage of minimal parsimony informative sites
+#### Percentage of minimal parsimony informative sites
 
 This value is counted based on the highest number of informative sites on your alignments. It is similar to computing data matrix completeness but based on the number of informative sites. You only need to input the percentage value. SEGUL will determine the highest number of informative sites across all input alignments.
 
@@ -193,7 +195,7 @@ For example, the highest number of informative sites in the input alignments is 
 segul align filter --dir alignments/ --percent-inf 0.8
 ```
 
-## Filtering based on the proportion of missing data
+### Filtering based on the proportion of missing data
 
 The proportion of missing data is calculated using the following formula:
 
@@ -209,7 +211,7 @@ SEGUL will will copy the matching alignments to the output directory. To filter 
 segul align filter --dir alignments/ --missing-data 0.3
 ```
 
-## Filtering based on minimum taxon counts
+### Filtering based on minimum taxon counts
 
 To filter alignments based on the minimum number of taxa present in each alignment, use the `--min-ntax` option. For example, to filter alignments with at least 100 taxa, use the command below:
 
@@ -221,7 +223,7 @@ segul align filter --dir alignments/ --min-ntax 100
 Available in SEGUL v0.23.0 and later versions.
 :::
 
-## Filtering based on taxon ID
+### Filtering based on taxon ID
 
 The taxon ID is the same as your sequence ID. To use this feature, you need to provide a text file containing a list of taxon IDs (one taxon ID per line). SEGUL will filter alignments that contain the taxon IDs specified in the file. For example, if you have a file named `taxon_ids.txt` with the following content:
 
@@ -241,7 +243,7 @@ segul align filter --dir alignments/ --taxon-id path/to/taxon_ids.txt
 Available in SEGUL v0.23.0 and later versions.
 :::
 
-## Specifying output directories
+### Specifying output directories
 
 By default, SEGUL output directories for filtering are based on the input directory names suffixed with filtering values. The format is as follows:
 
@@ -253,7 +255,7 @@ For example, if your input directory is named `alignments/` and the filtering op
 
 The `--output` or `-o` option allows you to change the prefix names of the output directory.
 
-## Concatenating the results
+### Concatenating the results
 
 By default, SEGUL copies the alignments that match the filtering option. Instead of copying the files, you can concatenate them using the `--concat` flag. All options for the [`align concat`](/docs/cli-usage/align-concat) subcommand are available for this task. You are, however, required to specify the `--output` or `-o` name and the partition format `--partition-format` or `-p` option.
 
@@ -273,7 +275,7 @@ segul align filter --dir alignments/ --input-format nexus --len 500 --concat --p
 
 :::
 
-## Other input options
+### Other input options
 
 You can use `--input` or `-i` to specify a single alignment file or multiple alignments using [wildcards](https://en.wikipedia.org/wiki/Wildcard_character). For example:
 
@@ -281,9 +283,9 @@ You can use `--input` or `-i` to specify a single alignment file or multiple ali
 segul align filter --input alignments/*.fasta --min-len 300
 ```
 
-## For Amino Acid alignments
+### For Amino Acid alignments
 
-By default, SEGUL assumes the input alignments are DNA sequences. To filter amino acid alignments, use the `--datatype aa` option. For example:
+By default, SEGUL assumes the input alignments are DNA sequences. It will fails to run if the data is amino acid sequences. To filter amino acid alignments, use the `--datatype aa` option. For example:
 
 ```Bash
 segul align filter --dir alignments/ --input-format fasta --datatype aa --min-len 300
