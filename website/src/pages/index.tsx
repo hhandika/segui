@@ -72,10 +72,10 @@ export default function Home(): JSX.Element {
     >
       <HomepageHeader />
       <main>
-        <NewFeatures />
         <HomepageFeatures />
         <SupportedFeatures />
         <DownloadOptions />
+        <NewFeatures />
       </main>
     </Layout>
   );
