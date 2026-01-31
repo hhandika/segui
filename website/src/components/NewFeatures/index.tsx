@@ -5,7 +5,7 @@ function NewFeatures(): JSX.Element {
     <div className="m-4">
       <div className="max-w-6xl mx-auto my-12 border rounded-xl bg-white dark:bg-gray-800 p-6 overflow-hidden">
         <div className="text-center mb-8">
-          <h2>What's New in SEGUL 0.23.0</h2>
+          <h2>What's New in SEGUL v0.23.0</h2>
         </div>
 
         <div className="space-y-6">
