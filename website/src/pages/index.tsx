@@ -9,6 +9,8 @@ import styles from "./index.module.css";
 import HomepageScreenshot from "../components/HomepageScreenshot";
 import DownloadOptions from "../components/DownloadButtons";
 import SupportedFeatures from "../components/FeatureLists";
+import NewFeatures from "../components/NewFeatures";
+import { JSX } from "react";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -24,6 +26,13 @@ function HomepageHeader() {
               {siteConfig.title}
             </Heading>
             <p className="hero__subtitle">{siteConfig.tagline}</p>
+            <p>
+              SEGUL runs on every major platform—iOS, Android, Windows, macOS,
+              and Linux—supporting both ARM and x86 architectures. We believe
+              reproducible genomic research means analyses should be{" "}
+              <span className="font-semibold">accessible to everyone</span>,
+              regardless of their computing device.
+            </p>
             <div className={styles.buttons}>
               <Link
                 className="button button--warning button--lg"
@@ -32,7 +41,6 @@ function HomepageHeader() {
                 Learn SEGUL
               </Link>
             </div>
-            <Latest />
           </div>
         </div>
       </div>
@@ -40,20 +48,20 @@ function HomepageHeader() {
   );
 }
 
-function Latest() {
-  return (
-    <div className={styles.whatsNew}>
-      <Heading as="h3">Latest Updates</Heading>
-      <p className={styles.newMessage}>
-        <ul>
-          <li>SEGUL GUI: Stable version! 🎉</li>
-          <li>SEGUL CLI: Now available in Bioconda.</li>
-          <li>SEGUL API: Python library is in beta</li>
-        </ul>
-      </p>
-    </div>
-  );
-}
+// function Latest() {
+//   return (
+//     <div className={styles.whatsNew}>
+//       <Heading as="h3">Latest Updates</Heading>
+//       <p className={styles.newMessage}>
+//         <ul>
+//           <li>SEGUL GUI: Stable version! 🎉</li>
+//           <li>SEGUL CLI: Now available in Bioconda.</li>
+//           <li>SEGUL API: Python library is in beta</li>
+//         </ul>
+//       </p>
+//     </div>
+//   );
+// }
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -64,6 +72,7 @@ export default function Home(): JSX.Element {
     >
       <HomepageHeader />
       <main>
+        <NewFeatures />
         <HomepageFeatures />
         <SupportedFeatures />
         <DownloadOptions />
