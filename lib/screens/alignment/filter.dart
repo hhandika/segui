@@ -132,8 +132,8 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
         const CardTitle(title: 'Parameters'),
         FormCard(
           children: [
-            DropdownButtonFormField(
-              value: _filteringOptionsController,
+            DropdownButtonFormField<FilteringOptions>(
+              initialValue: _filteringOptionsController,
               decoration: const InputDecoration(
                 labelText: 'Select method',
               ),

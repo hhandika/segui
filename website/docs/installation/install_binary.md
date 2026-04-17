@@ -24,9 +24,10 @@ See specific details below:
 | Linux ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-arm64.tar.gz)       | For Linux on ARM64 architecture (uncommon).                                                                                                          |
 | Linux x86_64 (static) | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-musl-x86_64.tar.gz) | For Linux with old [GLIBC](https://www.gnu.org/software/libc/) version. Common in HPC clusters. Also work on newer Linux but with less optimization. |
 | Linux x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz)      | For Linux with modern [GLIBC](https://www.gnu.org/software/libc/) version. Most recent Linux distribution, including WSL.                            |
-| MacOS ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Apple M series CPUs.                                                                                                                    |
+| MacOS ARM64           | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-arm64.tar.gz)       | For MacOS on Apple M series CPUs.                                                                                                                    |
 | MacOS x86_64          | [download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)      | For MacOS on Intel.                                                                                                                                  |
 | Windows x86_64        | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-x86_64.zip)       | Most Windows devices. It may work on ARM Windows as well.                                                                                            |
+| Windows ARM64         | [download](https://github.com/hhandika/segul/releases/latest/download/segul-Windows-arm64.zip)        | For [Windows on ARM architecture](https://learn.microsoft.com/en-us/windows/arm/overview), usually devices labelled with Copilot+ PC.                |
 
 ## Linux/WSL
 

@@ -102,7 +102,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
               labelText: 'Select method',
             ),
             isExpanded: true,
-            value: _extractionOptionsController,
+            initialValue: _extractionOptionsController,
             items: extractionOptionsMap.entries
                 .map((MapEntry<ExtractionOptions, String> e) =>
                     DropdownMenuItem<ExtractionOptions>(

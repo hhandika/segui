@@ -1,7 +1,6 @@
 # SEGUI <img src="https://raw.githubusercontent.com/hhandika/segui/main/assets/launcher/iconDesktop.png" alt="segul logo" align="right" width="150"/>
 
 ![Segui-Tests](https://github.com/hhandika/segui/workflows/test/badge.svg)
-[![LoC](https://tokei.rs/b1/github/hhandika/segui?category=code)](https://github.com/XAMPPRocky/tokei)
 
 <!-- ![GH-Downloads](https://img.shields.io/github/downloads/hhandika/segui/total?color=blue&label=gh-release-downloads) -->
 
@@ -21,13 +20,13 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
     src="https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800"
     alt="Download on the Mac App Store"
     width="220"
-  />](https://apps.apple.com/us/app/segui/id6447999874?mt=12&amp;itsct=apps_box_badge&amp;itscg=30200)
+  />](https://apps.apple.com/us/app/segui/id6447999874?mt=12&itsct=apps_box_badge&itscg=30200)
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/segui)
 
 ### Mobile
 
-[<img style="padding-left: 15" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800" alt="Download on the App Store" width="180">](https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&amp;itscg=30200)
+[<img style="padding-left: 15" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1716076800" alt="Download on the App Store" width="180">](https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&itscg=30200)
 
 [<img
     alt="Get it on Google Play"
@@ -49,7 +48,7 @@ Learn more about device requirements and GUI app installation in the [documentat
 | Alignment summary statistics   | [CLI](https://www.segul.app/docs/cli-usage/summary) / [GUI](https://www.segul.app/docs/gui-usage/align-summary)        |
 | Genomic summary statistics     | [CLI](https://www.segul.app/docs/cli-usage/genomic) / [GUI](https://www.segul.app/docs/gui-usage/genomic)              |
 | Sequence extraction            | [CLI](https://www.segul.app/docs/cli-usage/extract) / [GUI](https://www.segul.app/docs/gui-usage/sequence-extract)     |
-| Sequence filtering             | [CLI](https://www.segul.app/docs/cli-usage/seq_filter) / GUI feature in development       |
+| Sequence filtering             | [CLI](https://www.segul.app/docs/cli-usage/seq_filter) / GUI feature in development                                    |
 | Sequence ID extraction         | [CLI](https://www.segul.app/docs/cli-usage/id) / [GUI](https://www.segul.app/docs/gui-usage/sequence-id)               |
 | Sequence ID mapping            | [CLI](https://www.segul.app/docs/cli-usage/map) / [GUI](https://www.segul.app/docs/gui-usage/sequence-id-map)          |
 | Sequence ID renaming           | [CLI](https://www.segul.app/docs/cli-usage/rename) / [GUI](https://www.segul.app/docs/gui-usage/sequence-rename)       |
