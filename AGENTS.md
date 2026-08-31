@@ -10,10 +10,10 @@ SEGUI is the Flutter GUI for SEGUL, a Rust toolkit for phylogenomic data manipul
 - `lib/styles/`: themes in `themes.dart` and shared decorations and responsive breakpoints in `decoration.dart`.
 - `rust/src/api/`: Rust bridge wrappers for alignment and sequence operations, contigs, reads, CSV, archives, and common utilities. Generated bindings live in `lib/src/rust/` and `rust/src/frb_generated*.rs`; configuration is in `flutter_rust_bridge.yaml`.
 - `rust_builder/`: local Flutter FFI plugin and Cargokit integration for building the native Rust library.
-- `test/`: Dart unit tests and fixtures in `test/files/`; `integration_test/` contains the bridge smoke-test scaffold, and `test_driver/` contains a currently commented-out integration driver. Rust unit tests are inline in the API modules, with fixtures in `rust/src/tests/`.
+- `test/`: Dart unit tests and fixtures in `test/files/`; `integration_test/` checks native startup, navigation, and bridge file IO, and `test_driver/` contains a currently commented-out integration driver. Rust unit tests are inline in the API modules, with fixtures in `rust/src/tests/`.
 - `assets/`: illustrations in `images/`, app icons in `launcher/`, and bundled help in `markdown/`.
 - `website/`: Docusaurus documentation and website; content is in `docs/` and `blog/`, React/TypeScript UI is in `src/`, and public assets are in `static/`.
-- `android/`, `ios/`, `linux/`, `macos/`, `web/`, and `windows/`: Flutter platform projects. Native Rust packaging is configured through `rust_builder/` for Android, iOS, Linux, macOS, and Windows.
+- `android/`, `ios/`, `linux/`, `macos/`, and `windows/`: Native Flutter platform projects. Native Rust packaging is configured through `rust_builder/` for these five platforms; SEGUI does not target web browsers.
 - `scripts.py` and `scripts/`: development and packaging helpers, including PowerShell scripts in `scripts/windows/`. `installer/` and `snap/` contain packaging configuration; `.github/workflows/` contains CI and release workflows.
 
 ## Build, Test, and Development Commands
@@ -24,9 +24,9 @@ Run Flutter and bridge commands from the repository root:
 - `flutter analyze`: analyze Dart code using `analysis_options.yaml`.
 - `flutter test`: run unit and widget tests in `test/`.
 - `dart run build_runner build --delete-conflicting-outputs`: regenerate Riverpod and Freezed code.
-- `flutter_rust_bridge_codegen generate`: regenerate Rust/Dart bridge bindings; use a generator version matching the bridge dependencies in `pubspec.yaml` and `rust/Cargo.toml`.
+- `python3 scripts.py frb --generate`: regenerate native Rust/Dart bindings, run Freezed and Riverpod generation together, then apply scoped constructor fixes and formatting. Use generator 2.13.0 to match the bridge dependencies. The helper keeps generated providers intact and runs fixes after Freezed generation.
 - `flutter run -d <device-id>`: run the app on a configured device.
-- `flutter test integration_test -d <device-id>`: run integration tests on a supported target with the native Rust library available; the existing scaffold needs updating before it can validate current app behavior.
+- `flutter test integration_test -d <device-id>`: run startup, navigation, and file IO integration tests on a native target with the Rust library available.
 - `cargo check`, `cargo clippy`, and `cargo test`: run from `rust/` to check, lint, and test the Rust crate.
 
 For the documentation website, run `yarn install`, `yarn start`, `yarn typecheck`, or `yarn build` from `website/`. Inspect legacy helper scripts before running them: some clean generated files, upgrade dependencies, or install an older bridge generator.

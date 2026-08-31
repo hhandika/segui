@@ -117,10 +117,15 @@ mod test {
 
     #[test]
     fn test_get_line() {
+        let input_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join("tests")
+            .join("limited_oli_locus_summary.csv");
         let csv = CsvSummaryServices::new(
-            String::from("tests/data/limited_oli_locus_summary.csv"),
+            input_path.to_string_lossy().into_owned(),
             CsvSegulType::LocusSummary,
         );
-        assert_eq!(csv.get_line(), 95);
+        // The fixture contains a header and 95 locus records.
+        assert_eq!(csv.get_line(), 96);
     }
 }

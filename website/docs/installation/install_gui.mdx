@@ -3,10 +3,10 @@ sidebar_position: 2
 title: GUI Installation
 ---
 
-SEGUL GUI (SEGUI) supports desktop and mobile platforms. It is available for download on the official app stores of macOS, Windows, and Android. The app is also available for Linux and iOS/iPadOS devices. Read the installation guide for each platform below.
+SEGUI is the native desktop and mobile GUI for SEGUL. It supports Android, iOS, iPadOS, macOS, Windows, and Linux; there is no browser version. Use the platform-specific instructions below to install the app.
 
 :::info
-If you would like to build the app from the source code, refer to the [advanced guide](../advance-guides/build-gui) section for instruction.
+To build SEGUI from source, follow the [advanced guide](../advance-guides/build-gui).
 :::
 
 ### Quick Download Links
@@ -15,6 +15,20 @@ If you would like to build the app from the source code, refer to the [advanced 
 - [Mac App Store](https://apps.apple.com/us/app/segui/id6447999874?mt=12&itsct=apps_box_badge&itscg=30200)
 - [Microsoft Store](https://apps.microsoft.com/detail/SEGUI/9NP1BQ6FW9PW?mode=direct)
 - [Snap Store](https://snapcraft.io/segui)
+
+## System Requirements
+
+| Platform | Minimum requirement |
+| --- | --- |
+| Android | Android 8.0 Oreo (API 26) |
+| iOS and iPadOS | Version 15.0 |
+| macOS | macOS 12.0 Monterey |
+| Windows | Windows 10, 64-bit |
+| Linux | Ubuntu 22.04 or another compatible 64-bit distribution with GLIBC 2.34+ |
+
+:::note Apple compatibility
+The Apple minimum versions above apply to the next SEGUI release containing the native-platform upgrade. Versions currently available in the app stores may have different requirements; check the listing for the version you install.
+:::
 
 ## Installation
 
@@ -33,13 +47,13 @@ SEGUI works on Android phones, tablets, and Chromebooks. We recommend installing
   />
 </a>
 
-Requirements
+**Requirements**
 
-- Android 8 Oreo+ (SDK 26)
+- Android 8.0 Oreo+ (API 26)
 
 #### Alternative Installation
 
-Download the apk file from the [GitHub release page](https://github.com/hhandika/segui/releases). Select the apk based on your device architecture. The available options are:
+Download an APK from the [GitHub release page](https://github.com/hhandika/segui/releases). Select the APK based on your device architecture. The available options are:
 
 - `segui-arm64-v8a-release.apk` for 64-bit ARM devices. Most modern Android devices use this architecture.
 - `segui-armeabi-v7a-release.apk` for 32-bit ARM devices. Provided for compatibility with older devices.
@@ -68,9 +82,10 @@ We recommend installing the app from the [Mac App Store](https://apps.apple.com/
     width="220"
   />
 </a>
-Requirements
 
-- macOS 11.0+ (recommended macOS Ventura 13.0+)
+**Requirements**
+
+- macOS 12.0 Monterey+
 
 #### iOS and iPadOS
 
@@ -93,10 +108,9 @@ You can download the app by clicking the download button below:
   />
 </a>
 
-Requirements
+**Requirements**
 
-- iOS 12.0+ (recommended iOS 16.0+)
-- iPadOS 13.0+
+- iOS 15.0+ or iPadOS 15.0+
 
 #### Beta Testing for Apple Devices
 
@@ -115,7 +129,7 @@ If you are using Ubuntu or other distributions that support Snapcraft, you can i
   />
 </a>
 
-Requirements
+**Requirements**
 
 - Ubuntu 22.04+ or other distributions with GLIBC 2.34+
 
@@ -158,7 +172,7 @@ ldd --version
 
 ### Windows
 
-We recommend to install the app directly from Microsoft Store. You can download the app by clicking the download button below:
+We recommend installing SEGUI directly from the Microsoft Store. You can download the app by clicking the download button below:
 
 <a
   target="_blank"
@@ -167,7 +181,7 @@ We recommend to install the app directly from Microsoft Store. You can download 
   <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" />
 </a>
 
-Requirements
+**Requirements**
 
 - Windows 10+ (64-bit)
 
@@ -176,5 +190,5 @@ Requirements
 Download the latest release from [GitHub](https://github.com/hhandika/segui/releases). Extract the `segui-Windows-x86_64.zip` file to your desired location. Then, run the `segui.exe` file. For easier access, we recommend creating a desktop or start menu shortcut to the executable file.
 
 :::warning
-Installing Windows version of SEGUI from GitHub may prompt you to allow the application to run on your device. You can grant permission by clicking on “More info” and then selecting “Run anyway.
+Installing the Windows version of SEGUI from GitHub may prompt you to allow the application to run on your device. Verify that you downloaded it from the official release page before clicking “More info” and selecting “Run anyway.”
 :::

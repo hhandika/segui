@@ -5,6 +5,7 @@ on: push
 jobs:
   check:
     name: Test
+    timeout-minutes: 45
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -24,10 +25,28 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          flutter-version: "3.47.2"
       - run: |
           flutter pub get
           flutter analyze
 
       - name: Run test
-        uses: subosito/flutter-action@v2
-      - run: flutter test
+        run: flutter test
+
+      - name: Setup Rust for desktop builds
+        if: runner.os != 'macOS'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+
+      - name: Build Linux with the native Rust library
+        if: runner.os == 'Linux'
+        run: flutter build linux --release
+
+      - name: Build Windows with the native Rust library
+        if: runner.os == 'Windows'
+        run: flutter build windows --release

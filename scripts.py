@@ -5,21 +5,20 @@ import subprocess
 import argparse
 import platform
 import os
+from pathlib import Path
 from typing import List
 
-DART_FRB = "lib/src/rust/frb_generated.dart"
-DART_FRB_IO = "lib/src/rust/frb_generated.io.dart"
-DART_FRB_WEB = "lib/src/rust/frb_generated.web.dart"
-RUST_FRB_IO = "rust/src/frb_generated.io.rs"
-RUST_FRB = "rust/src/frb_generated.rs"
-RUST_FRB_WEB = "rust/src/frb_generated.web.rs"
+DART_FRB = Path("lib") / "src" / "rust" / "frb_generated.dart"
+DART_FRB_IO = Path("lib") / "src" / "rust" / "frb_generated.io.dart"
+RUST_FRB_IO = Path("rust") / "src" / "frb_generated.io.rs"
+RUST_FRB = Path("rust") / "src" / "frb_generated.rs"
 
-FRB_FILES = [DART_FRB, DART_FRB_IO, DART_FRB_WEB, RUST_FRB_IO, RUST_FRB, RUST_FRB_WEB]
+FRB_FILES = [DART_FRB, DART_FRB_IO, RUST_FRB_IO, RUST_FRB]
 
 DMG_CONFIG = "packages/config.json"
 OUTPUT_DMG = "packages/mdd.dmg"
 
-FRB_INSTALL_NAME = "flutter_rust_bridge_codegen@^2.0.0-dev.0"
+FRB_INSTALL_NAME = "flutter_rust_bridge_codegen@2.13.0"
 
 IOS_PODS_FILES = "ios/Podfile ios/Podfile.lock ios/Pods/"
 MACOS_PODS_FILES = "macos/Podfile macos/Podfile.lock macos/Pods/"
@@ -176,11 +175,21 @@ class BuildRust:
         try:
             if is_clean:
                 self.remove_old_frb_code()
-            subprocess.run(["flutter_rust_bridge_codegen", "generate"])
+            subprocess.run(["flutter_rust_bridge_codegen", "generate"], check=True)
+            subprocess.run(
+                ["flutter", "pub", "run", "build_runner", "build", "--delete-conflicting-outputs"],
+                check=True,
+            )
+            generated_dart = str(DART_FRB.parent)
+            subprocess.run(
+                ["dart", "fix", "--apply", "--code=prefer_const_constructors", generated_dart],
+                check=True,
+            )
+            subprocess.run(["dart", "format", generated_dart], check=True)
             print("Rust code generated successfully\n")
         except Exception as e:
             print("Error generating frb code:", str(e))
-            return
+            raise
         
     def clean_frb_files(self) -> None:
         """Clean the frb files."""

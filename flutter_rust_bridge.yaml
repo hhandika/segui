@@ -1,2 +1,10 @@
-rust_input: rust/src/api/**/*.rs
+rust_input: crate::api
+rust_root: rust/
 dart_output: lib/src/rust
+web: false
+auto_upgrade_dependency: false
+# Generate Freezed and Riverpod together after this command. FRB's filtered
+# build_runner invocation removes unrelated Riverpod outputs.
+build_runner: false
+# Apply constructor fixes only after Freezed has regenerated its models.
+dart_fix: false

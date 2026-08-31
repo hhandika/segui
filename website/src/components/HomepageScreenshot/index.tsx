@@ -1,4 +1,5 @@
 import styles from "./styles.module.css";
+import type { JSX } from "react";
 
 export default function HomepageScreenshot(): JSX.Element {
   return (

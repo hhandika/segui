@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:segui/styles/icons.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/screens/shared/common.dart';
@@ -36,8 +36,8 @@ const List<NavigationTarget> navigationTargets = [
   ),
   NavigationTarget(
     label: 'Sequences',
-    icon: Icon(LineAwesome.dna_solid),
-    selectedIcon: Icon(BoxIcons.bx_dna),
+    icon: Icon(SeguiIcons.dna),
+    selectedIcon: Icon(SeguiIcons.dnaSelected),
   ),
 ];
 
@@ -71,8 +71,8 @@ const List<NavigationDrawerDestination> navigationDrawerTargets = [
       'Sequences',
       overflow: TextOverflow.ellipsis,
     ),
-    icon: Icon(LineAwesome.dna_solid),
-    selectedIcon: Icon(BoxIcons.bx_dna),
+    icon: Icon(SeguiIcons.dna),
+    selectedIcon: Icon(SeguiIcons.dnaSelected),
   ),
 ];
 

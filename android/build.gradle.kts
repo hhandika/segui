@@ -1,3 +1,5 @@
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
+
 allprojects {
     repositories {
         google()
@@ -7,6 +9,16 @@ allprojects {
 
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
 rootProject.layout.buildDirectory.value(newBuildDir)
+
+// Keep file_picker 8's behavior while satisfying its lifecycle plugin's SDK 36
+// requirement. finalizeDsl runs after the plugin's hard-coded SDK 34 setting.
+project(":file_picker") {
+    plugins.withId("com.android.library") {
+        extensions.getByType<LibraryAndroidComponentsExtension>().finalizeDsl {
+            it.compileSdk = maxOf(it.compileSdk ?: 0, 36)
+        }
+    }
+}
 
 subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
