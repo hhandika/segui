@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:segui/services/types.dart';
 
 class IOController {
@@ -31,7 +31,7 @@ class IOController {
     return !isRunning;
   }
 
-  get isFileSelection => null;
+  Null get isFileSelection => null;
 
   void reset() {
     prefixController.clear();

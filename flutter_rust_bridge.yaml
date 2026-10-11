@@ -3,8 +3,7 @@ rust_root: rust/
 dart_output: lib/src/rust
 web: false
 auto_upgrade_dependency: false
-# Generate Freezed and Riverpod together after this command. FRB's filtered
-# build_runner invocation removes unrelated Riverpod outputs.
+# Run build_runner after this command so Freezed regenerates the bridge models.
 build_runner: false
 # Apply constructor fixes only after Freezed has regenerated its models.
 dart_fix: false

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:segui/screens/shared/buttons.dart';
@@ -119,7 +119,8 @@ class _PaginatedTableState extends State<PaginatedTable> {
     return SingleChildScrollView(
         child: Theme(
       data: Theme.of(context).copyWith(
-          cardTheme: const CardThemeData(elevation: 0, color: Colors.transparent)),
+          cardTheme:
+              const CardThemeData(elevation: 0, color: Colors.transparent)),
       child: PaginatedDataTable(
         rowsPerPage: _rowCount(screenHeight),
         columns: widget.content[0]

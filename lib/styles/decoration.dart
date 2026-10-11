@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Material You design system recommend screen size
 /// Desktop/Expanded screen: 840dp

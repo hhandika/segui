@@ -23,8 +23,8 @@ Run Flutter and bridge commands from the repository root:
 - `flutter pub get`: install Dart/Flutter dependencies.
 - `flutter analyze`: analyze Dart code using `analysis_options.yaml`.
 - `flutter test`: run unit and widget tests in `test/`.
-- `dart run build_runner build --delete-conflicting-outputs`: regenerate Riverpod and Freezed code.
-- `python3 scripts.py frb --generate`: regenerate native Rust/Dart bindings, run Freezed and Riverpod generation together, then apply scoped constructor fixes and formatting. Use generator 2.13.0 to match the bridge dependencies. The helper keeps generated providers intact and runs fixes after Freezed generation.
+- `dart run build_runner build --delete-conflicting-outputs`: regenerate Freezed code for the bridge models. Riverpod providers are written by hand with Riverpod 3 and need no generation.
+- `python3 scripts.py frb --generate`: regenerate native Rust/Dart bindings, run Freezed generation, then apply scoped constructor fixes and formatting. Use generator 2.13.0 to match the bridge dependencies. The helper runs fixes after Freezed generation.
 - `flutter run -d <device-id>`: run the app on a configured device.
 - `flutter test integration_test -d <device-id>`: run startup, navigation, and file IO integration tests on a native target with the Rust library available.
 - `cargo check`, `cargo clippy`, and `cargo test`: run from `rust/` to check, lint, and test the Rust crate.
@@ -33,7 +33,7 @@ For the documentation website, run `yarn install`, `yarn start`, `yarn typecheck
 
 ## Coding Style & Naming Conventions
 
-Use 2-space Dart formatting; run `dart format lib test integration_test test_driver`. Follow `flutter_lints` and the repository's `analysis_options.yaml`; `custom_lint` and `riverpod_lint` are available as development dependencies. Name Dart files in `snake_case.dart` and classes/widgets in `PascalCase`.
+Use 2-space Dart formatting; run `dart format lib test integration_test test_driver`. Follow `flutter_lints` and the repository's `analysis_options.yaml`. Name Dart files in `snake_case.dart` and classes/widgets in `PascalCase`.
 
 Always use cross-platform filesystem paths throughout application code, tests, and tooling, including fixtures, mocks, native-library paths, temporary files, and assertions. In Dart/Flutter, import `package:path/path.dart` as `p` and use `p.join`, `p.basename`, `p.dirname`, and `p.extension`. In Rust, use `std::path::Path` and `PathBuf`; use equivalent path APIs in other languages. Never concatenate or split filesystem path separators manually or hard-code `/tmp` or drive-letter paths. Create temporary directories through platform APIs such as `Directory.systemTemp.createTemp`, and clean up test directories in teardown. Code and tests intentionally handling Windows or POSIX path syntax must declare that syntax explicitly, such as with `p.Context(style: ...)`, instead of assuming the host platform.
 
@@ -43,7 +43,7 @@ Keep Rust code, comments, and docstrings to 100 characters per line; wrap long s
 
 ## Flutter Best Practices
 
-Keep screens as thin UI wrappers under `lib/screens/`. Put business logic in `lib/services/` and reusable UI in `lib/screens/shared/`. Do not place UI in services or return widgets from helpers; create widget classes, no functions return widgets. In widget classes, only `@override` methods go before `build`; keep `build` near the top and helpers below. Prefer `const`, immutable models, and Riverpod over mutable globals. Keep `build` side-effect free; do filesystem, preferences, and bridge work in services/providers. Guard async UI updates with `context.mounted`. Use theme values.
+Keep screens as thin UI wrappers under `lib/screens/`. Put business logic in `lib/services/` and reusable UI in `lib/screens/shared/`. Do not place UI in services or return widgets from helpers; create widget classes, no functions return widgets. In widget classes, only `@override` methods go before `build`; keep `build` near the top and helpers below. Prefer `const`, immutable models, and Riverpod over mutable globals. Import Material from `package:material_ui/material_ui.dart`, not `package:flutter/material.dart`. Keep `build` side-effect free; do filesystem, preferences, and bridge work in services/providers. Guard async UI updates with `context.mounted`. Use theme values.
 
 Reuse the responsive breakpoints and decoration helpers in `lib/styles/decoration.dart`. Use the active `Theme.of(context)` and `ColorScheme` for colors and typography; add or update shared theme values in `lib/styles/themes.dart` when a value is not already available.
 
@@ -53,7 +53,7 @@ Add focused `*_test.dart` files in `test/`. Prefer service tests for file discov
 
 ## Agent-Specific Instructions
 
-Preserve user changes and avoid unrelated refactors. Write the GUI product name as `SEGUI` and the underlying toolkit as `SEGUL`; Dart package imports use `package:segui/`. Agents must not create commits, branches, pushes, or pull requests; leave Git under user control. After bridge API edits, regenerate bindings and verify analysis plus `cargo check` and `cargo clippy`. Do not hand-edit generated bridge, Riverpod, or Freezed files. Add assets to `pubspec.yaml` only when needed.
+Preserve user changes and avoid unrelated refactors. Write the GUI product name as `SEGUI` and the underlying toolkit as `SEGUL`; Dart package imports use `package:segui/`. Agents must not create commits, branches, pushes, or pull requests; leave Git under user control. After bridge API edits, regenerate bindings and verify analysis plus `cargo check` and `cargo clippy`. Do not hand-edit generated bridge or Freezed files. Add assets to `pubspec.yaml` only when needed.
 
 Edit website documentation directly under `website/docs/` and bundled in-app help under `assets/markdown/`. Keep documentation aligned with the affected GUI or SEGUL behavior; do not edit generated website output or dependency directories.
 

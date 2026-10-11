@@ -1,7 +1,7 @@
 // Module for shared components
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/styles/decoration.dart';

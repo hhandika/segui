@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/logging.dart';
@@ -54,10 +54,10 @@ class IOServices {
 
   Future<void> shareFile(BuildContext context, File file) async {
     final box = context.findRenderObject() as RenderBox?;
-    await Share.shareXFiles(
-      [XFile(file.path)],
+    await SharePlus.instance.share(ShareParams(
+      files: [XFile(file.path)],
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
-    );
+    ));
   }
 
   int countFiles(List<SegulInputFile> files, SegulType type) {

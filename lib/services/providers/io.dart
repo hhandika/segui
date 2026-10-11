@@ -1,15 +1,16 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/output.dart';
 
-part 'io.g.dart';
+final fileInputProvider =
+    AsyncNotifierProvider<FileInput, List<SegulInputFile>>(FileInput.new);
 
-@Riverpod(keepAlive: true)
-class FileInput extends _$FileInput {
+class FileInput extends AsyncNotifier<List<SegulInputFile>> {
   @override
   FutureOr<List<SegulInputFile>> build() {
     return [];
@@ -65,8 +66,10 @@ class FileInput extends _$FileInput {
 
 /// The output directory.
 /// This is use to store the output files.
-@Riverpod(keepAlive: true)
-class FileOutput extends _$FileOutput {
+final fileOutputProvider =
+    AsyncNotifierProvider<FileOutput, SegulOutputFile>(FileOutput.new);
+
+class FileOutput extends AsyncNotifier<SegulOutputFile> {
   @override
   FutureOr<SegulOutputFile> build() {
     return SegulOutputFile.empty();

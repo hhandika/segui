@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/genomics/entry_page.dart';
 import 'package:segui/screens/home/home.dart';

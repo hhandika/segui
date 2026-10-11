@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/screens/viewers/text.dart';
 import 'package:segui/screens/viewers/unknown.dart';

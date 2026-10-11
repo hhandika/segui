@@ -1,11 +1,11 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/types.dart';
 
-part 'navigation.g.dart';
+final tabSelectionProvider =
+    NotifierProvider<TabSelection, int>(TabSelection.new);
 
-@Riverpod(keepAlive: true)
-class TabSelection extends _$TabSelection {
+class TabSelection extends Notifier<int> {
   @override
   int build() {
     return 0;
@@ -18,8 +18,11 @@ class TabSelection extends _$TabSelection {
   }
 }
 
-@Riverpod(keepAlive: true)
-class GenomicOperationSelection extends _$GenomicOperationSelection {
+final genomicOperationSelectionProvider =
+    NotifierProvider<GenomicOperationSelection, GenomicOperationType>(
+        GenomicOperationSelection.new);
+
+class GenomicOperationSelection extends Notifier<GenomicOperationType> {
   @override
   GenomicOperationType build() {
     return GenomicOperationType.readSummary;
@@ -30,8 +33,11 @@ class GenomicOperationSelection extends _$GenomicOperationSelection {
   }
 }
 
-@Riverpod(keepAlive: true)
-class AlignmentOperationSelection extends _$AlignmentOperationSelection {
+final alignmentOperationSelectionProvider =
+    NotifierProvider<AlignmentOperationSelection, AlignmentOperationType>(
+        AlignmentOperationSelection.new);
+
+class AlignmentOperationSelection extends Notifier<AlignmentOperationType> {
   @override
   AlignmentOperationType build() {
     return AlignmentOperationType.concatenation;
@@ -42,8 +48,11 @@ class AlignmentOperationSelection extends _$AlignmentOperationSelection {
   }
 }
 
-@Riverpod(keepAlive: true)
-class SequenceOperationSelection extends _$SequenceOperationSelection {
+final sequenceOperationSelectionProvider =
+    NotifierProvider<SequenceOperationSelection, SequenceOperationType>(
+        SequenceOperationSelection.new);
+
+class SequenceOperationSelection extends Notifier<SequenceOperationType> {
   @override
   SequenceOperationType build() {
     return SequenceOperationType.extraction;

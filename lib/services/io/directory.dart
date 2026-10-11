@@ -53,7 +53,7 @@ class DirectorySelectionServices {
   }
 
   Future<Directory?> _selectDirectoryFilePicker() async {
-    final result = await FilePicker.platform.getDirectoryPath();
+    final result = await FilePicker.getDirectoryPath();
     if (result != null) {
       return Directory(result);
     }

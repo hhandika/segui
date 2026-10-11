@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'settings.g.dart';
+/// Overridden in `ProviderScope` with the loaded preferences.
+final settingProvider = Provider<SharedPreferences>(
+  (ref) => throw UnimplementedError(),
+);
 
-@Riverpod(keepAlive: true)
-SharedPreferences setting(Ref ref) {
-  return throw UnimplementedError();
-}
+final themeSettingProvider =
+    AsyncNotifierProvider<ThemeSetting, ThemeMode>(ThemeSetting.new);
 
-@Riverpod(keepAlive: true)
-class ThemeSetting extends _$ThemeSetting {
+class ThemeSetting extends AsyncNotifier<ThemeMode> {
   Future<ThemeMode> _fetchSetting() async {
     final prefs = ref.watch(settingProvider);
     final savedTheme = prefs.getString('themeMode');

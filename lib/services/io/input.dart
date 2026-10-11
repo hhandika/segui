@@ -187,24 +187,22 @@ class FileInputServices {
 // Do selection without data.
   Future<List<XFile>> _selectUsingFilePicker(
       XTypeGroup allowedExtension) async {
-    final result = await FilePicker.platform
-        .pickFiles(allowMultiple: false, type: FileType.any);
-
-    if (result == null) {
+    final result = await FilePicker.pickFile(type: FileType.any);
+    final path = result?.path;
+    if (path == null) {
       return [];
     }
-    return [XFile(result.files.first.path!)];
+    return [XFile(path)];
   }
 
 // Do selection without data.
   Future<List<XFile>> _selectMultiUsingFilePicker(
       XTypeGroup allowedExtension) async {
-    final result = await FilePicker.platform
-        .pickFiles(allowMultiple: true, type: FileType.any);
-
-    if (result == null) {
-      return [];
-    }
-    return result.files.map((e) => XFile(e.path!)).toList();
+    final result = await FilePicker.pickFiles(type: FileType.any);
+    return result
+        .map((e) => e.path)
+        .whereType<String>()
+        .map((path) => XFile(path))
+        .toList();
   }
 }
