@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/styles/icons.dart';
+import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/screens/shared/common.dart';
@@ -26,18 +26,18 @@ const List<NavigationTarget> navigationTargets = [
   ),
   NavigationTarget(
     label: 'Genomics',
-    icon: Icon(Icons.factory_outlined),
-    selectedIcon: Icon(Icons.factory_rounded),
+    icon: Icon(SeguiIcons.genomicsOutlined),
+    selectedIcon: Icon(SeguiIcons.genomicsFilled),
   ),
   NavigationTarget(
     label: 'Alignments',
-    icon: Icon(Icons.sync_alt_outlined),
-    selectedIcon: Icon(Icons.sync_alt_rounded),
+    icon: Icon(SeguiIcons.alignmentsOutlined),
+    selectedIcon: Icon(SeguiIcons.alignmentsFilled),
   ),
   NavigationTarget(
     label: 'Sequences',
-    icon: Icon(SeguiIcons.dna),
-    selectedIcon: Icon(SeguiIcons.dnaSelected),
+    icon: Icon(SeguiIcons.sequencesOutlined),
+    selectedIcon: Icon(SeguiIcons.sequencesFilled),
   ),
 ];
 
@@ -55,24 +55,24 @@ const List<NavigationDrawerDestination> navigationDrawerTargets = [
       'Genomics',
       overflow: TextOverflow.ellipsis,
     ),
-    icon: Icon(Icons.factory_outlined),
-    selectedIcon: Icon(Icons.factory_rounded),
+    icon: Icon(SeguiIcons.genomicsOutlined),
+    selectedIcon: Icon(SeguiIcons.genomicsFilled),
   ),
   NavigationDrawerDestination(
     label: Text(
       'Alignments',
       overflow: TextOverflow.ellipsis,
     ),
-    icon: Icon(Icons.sync_alt_outlined),
-    selectedIcon: Icon(Icons.sync_alt_rounded),
+    icon: Icon(SeguiIcons.alignmentsOutlined),
+    selectedIcon: Icon(SeguiIcons.alignmentsFilled),
   ),
   NavigationDrawerDestination(
     label: Text(
       'Sequences',
       overflow: TextOverflow.ellipsis,
     ),
-    icon: Icon(SeguiIcons.dna),
-    selectedIcon: Icon(SeguiIcons.dnaSelected),
+    icon: Icon(SeguiIcons.sequencesOutlined),
+    selectedIcon: Icon(SeguiIcons.sequencesFilled),
   ),
 ];
 

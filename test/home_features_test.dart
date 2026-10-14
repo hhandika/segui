@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:path/path.dart' as p;
 import 'package:segui/screens/home/home.dart';
 import 'package:segui/screens/home/components/workflows.dart';
 import 'package:segui/screens/home/components/tool_catalog.dart';
@@ -41,6 +44,20 @@ void main() {
       expect(workflow.steps.length, greaterThan(1));
       expect(homeTools, containsAll(workflow.steps));
     }
+  });
+
+  test('Every tool has a bundled SVG and a matching font glyph', () {
+    for (final tool in homeTools) {
+      // Asset keys always use POSIX separators.
+      final List<String> parts = p.posix.split(tool.svgAsset);
+      expect(parts.take(2), ['assets', 'icons'], reason: tool.title);
+      expect(File(p.joinAll(parts)).existsSync(), isTrue, reason: tool.title);
+      expect(tool.icon.fontFamily, 'SeguiIcons', reason: tool.title);
+    }
+    expect(homeTools.map((tool) => tool.svgAsset).toSet(),
+        hasLength(homeTools.length));
+    expect(homeTools.map((tool) => tool.icon).toSet(),
+        hasLength(homeTools.length));
   });
 
   test('Tool search matches titles, descriptions, and categories', () {

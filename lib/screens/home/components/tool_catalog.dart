@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/navigation.dart';
@@ -195,7 +196,7 @@ class ToolDescription extends StatelessWidget {
   }
 }
 
-/// Tool icon on a tile tinted by the tool's category.
+/// Tool SVG icon on a tile tinted by the tool's category.
 class ToolCategoryIcon extends StatelessWidget {
   const ToolCategoryIcon({super.key, required this.tool, this.size = 40});
 
@@ -226,7 +227,14 @@ class ToolCategoryIcon extends StatelessWidget {
         color: background,
         borderRadius: BorderRadius.circular(size / 4),
       ),
-      child: Icon(tool.icon, size: size * 0.55, color: foreground),
+      alignment: Alignment.center,
+      child: SvgPicture.asset(
+        tool.svgAsset,
+        width: size * 0.55,
+        height: size * 0.55,
+        colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
+        semanticsLabel: tool.title,
+      ),
     );
   }
 }

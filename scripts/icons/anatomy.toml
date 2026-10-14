@@ -1,0 +1,96 @@
+# Limb-count manifest for the SEGUI icon sources in assets/icons/.
+#
+# nahpu-icon-generator lints every family against a manifest like this one.
+# SEGUI icons draw tools rather than animals, so every count is zero.
+#
+# Lint and build from the nahpu-icon-generator checkout:
+#
+#   uv run python main.py lint --input <segui>/assets/icons \
+#     --anatomy <segui>/scripts/icons/anatomy.toml
+#   uv run python main.py build --input <segui>/assets/icons \
+#     --output <out>/segui_icons.ttf --font-name SeguiIcons --specimen
+#
+# Copy segui_icons.ttf to assets/fonts/ and segui_icons.dart to lib/styles/
+# together. Codepoints follow alphabetical filename order, so adding an icon
+# renumbers the ones after it.
+
+[alignments]
+legs = 0
+antennae = 0
+wings = 0
+
+[alignment_summary]
+legs = 0
+antennae = 0
+wings = 0
+
+[concatenate]
+legs = 0
+antennae = 0
+wings = 0
+
+[contig_summary]
+legs = 0
+antennae = 0
+wings = 0
+
+[convert]
+legs = 0
+antennae = 0
+wings = 0
+
+[extract_id]
+legs = 0
+antennae = 0
+wings = 0
+
+[extract]
+legs = 0
+antennae = 0
+wings = 0
+
+[filter]
+legs = 0
+antennae = 0
+wings = 0
+
+[genomics]
+legs = 0
+antennae = 0
+wings = 0
+
+[partition]
+legs = 0
+antennae = 0
+wings = 0
+
+[read_summary]
+legs = 0
+antennae = 0
+wings = 0
+
+[remove]
+legs = 0
+antennae = 0
+wings = 0
+
+[rename]
+legs = 0
+antennae = 0
+wings = 0
+
+[sequences]
+legs = 0
+antennae = 0
+wings = 0
+
+[split]
+legs = 0
+antennae = 0
+wings = 0
+
+[translate]
+legs = 0
+antennae = 0
+wings = 0
+

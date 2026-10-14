@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/segui_icons.dart';
 
 /// Tool groups shown on the home screen, in navigation tab order.
 enum ToolCategory {
@@ -29,6 +30,7 @@ class HomeTool {
     required this.title,
     required this.description,
     required this.icon,
+    required this.svgAsset,
   });
 
   final ToolCategory category;
@@ -36,6 +38,9 @@ class HomeTool {
   final String title;
   final String description;
   final IconData icon;
+
+  /// SVG source of [icon], drawn on tool cards.
+  final String svgAsset;
 
   /// Whether the tool matches a case-insensitive search [query].
   bool matches(String query) {
@@ -67,7 +72,8 @@ const HomeTool readSummaryTool = HomeTool(
   operation: GenomicOperationType.readSummary,
   title: 'Summarize genomic reads',
   description: 'FASTQ quality: read counts, length, GC content, and Q-scores.',
-  icon: Icons.analytics_outlined,
+  icon: SeguiIcons.readSummaryOutlined,
+  svgAsset: 'assets/icons/read_summary_outlined.svg',
 );
 
 const HomeTool contigSummaryTool = HomeTool(
@@ -75,7 +81,8 @@ const HomeTool contigSummaryTool = HomeTool(
   operation: GenomicOperationType.contigSummary,
   title: 'Summarize genomic contigs',
   description: 'Contig counts, N50, length, and GC content for assemblies.',
-  icon: Icons.segment,
+  icon: SeguiIcons.contigSummaryOutlined,
+  svgAsset: 'assets/icons/contig_summary_outlined.svg',
 );
 
 const HomeTool concatenationTool = HomeTool(
@@ -83,7 +90,8 @@ const HomeTool concatenationTool = HomeTool(
   operation: AlignmentOperationType.concatenation,
   title: 'Concatenate alignments',
   description: 'Merge locus alignments into a supermatrix with partitions.',
-  icon: Icons.compare_arrows,
+  icon: SeguiIcons.concatenateOutlined,
+  svgAsset: 'assets/icons/concatenate_outlined.svg',
 );
 
 const HomeTool conversionTool = HomeTool(
@@ -91,7 +99,8 @@ const HomeTool conversionTool = HomeTool(
   operation: AlignmentOperationType.conversion,
   title: 'Convert alignments',
   description: 'Switch alignments between FASTA, NEXUS, and PHYLIP.',
-  icon: Icons.swap_horiz,
+  icon: SeguiIcons.convertOutlined,
+  svgAsset: 'assets/icons/convert_outlined.svg',
 );
 
 const HomeTool filterTool = HomeTool(
@@ -99,7 +108,8 @@ const HomeTool filterTool = HomeTool(
   operation: AlignmentOperationType.filter,
   title: 'Filter alignments',
   description: 'Keep loci by taxon coverage, length, or informative sites.',
-  icon: Icons.filter_alt_outlined,
+  icon: SeguiIcons.filterOutlined,
+  svgAsset: 'assets/icons/filter_outlined.svg',
 );
 
 const HomeTool partitionTool = HomeTool(
@@ -107,7 +117,8 @@ const HomeTool partitionTool = HomeTool(
   operation: AlignmentOperationType.partition,
   title: 'Convert partition',
   description: 'Convert between RAxML, NEXUS, and charset partitions.',
-  icon: Icons.view_column_outlined,
+  icon: SeguiIcons.partitionOutlined,
+  svgAsset: 'assets/icons/partition_outlined.svg',
 );
 
 const HomeTool splitTool = HomeTool(
@@ -115,7 +126,8 @@ const HomeTool splitTool = HomeTool(
   operation: AlignmentOperationType.split,
   title: 'Split alignments',
   description: 'Break a concatenated matrix back into individual loci.',
-  icon: Icons.call_split,
+  icon: SeguiIcons.splitOutlined,
+  svgAsset: 'assets/icons/split_outlined.svg',
 );
 
 const HomeTool alignmentSummaryTool = HomeTool(
@@ -123,7 +135,8 @@ const HomeTool alignmentSummaryTool = HomeTool(
   operation: AlignmentOperationType.summary,
   title: 'Summarize alignments',
   description: 'Missing data, informative sites, GC, and length statistics.',
-  icon: Icons.bar_chart,
+  icon: SeguiIcons.alignmentSummaryOutlined,
+  svgAsset: 'assets/icons/alignment_summary_outlined.svg',
 );
 
 const HomeTool extractionTool = HomeTool(
@@ -131,7 +144,8 @@ const HomeTool extractionTool = HomeTool(
   operation: SequenceOperationType.extraction,
   title: 'Extract sequences',
   description: 'Pull sequences out of alignments by ID list or regex.',
-  icon: Icons.output,
+  icon: SeguiIcons.extractOutlined,
+  svgAsset: 'assets/icons/extract_outlined.svg',
 );
 
 const HomeTool idExtractionTool = HomeTool(
@@ -139,7 +153,8 @@ const HomeTool idExtractionTool = HomeTool(
   operation: SequenceOperationType.idExtraction,
   title: 'Extract and map sequence IDs',
   description: 'List unique sample IDs and the files each one appears in.',
-  icon: Icons.badge_outlined,
+  icon: SeguiIcons.extractIdOutlined,
+  svgAsset: 'assets/icons/extract_id_outlined.svg',
 );
 
 const HomeTool removalTool = HomeTool(
@@ -147,7 +162,8 @@ const HomeTool removalTool = HomeTool(
   operation: SequenceOperationType.removal,
   title: 'Remove sequences',
   description: 'Drop samples by ID or regex across many alignments.',
-  icon: Icons.remove_circle_outline,
+  icon: SeguiIcons.removeOutlined,
+  svgAsset: 'assets/icons/remove_outlined.svg',
 );
 
 const HomeTool renamingTool = HomeTool(
@@ -155,7 +171,8 @@ const HomeTool renamingTool = HomeTool(
   operation: SequenceOperationType.renaming,
   title: 'Rename sequence IDs',
   description: 'Rename samples from a mapping file or a text pattern.',
-  icon: Icons.drive_file_rename_outline,
+  icon: SeguiIcons.renameOutlined,
+  svgAsset: 'assets/icons/rename_outlined.svg',
 );
 
 const HomeTool translationTool = HomeTool(
@@ -163,7 +180,8 @@ const HomeTool translationTool = HomeTool(
   operation: SequenceOperationType.translation,
   title: 'Translate sequences',
   description: 'Translate DNA to amino acids with NCBI genetic codes.',
-  icon: Icons.translate,
+  icon: SeguiIcons.translateOutlined,
+  svgAsset: 'assets/icons/translate_outlined.svg',
 );
 
 /// Every tool available in SEGUI, grouped by category.
