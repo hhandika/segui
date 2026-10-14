@@ -34,12 +34,14 @@ Color? getSEGULBackgroundColor(BuildContext context) {
       Theme.of(context).colorScheme.surface, 0.9);
 }
 
+// Opaque so selected navigation labels keep WCAG AA contrast.
 Color getIndicatorColor(BuildContext context) {
-  return Theme.of(context).colorScheme.primary.withAlpha(80);
+  return Theme.of(context).colorScheme.secondaryContainer;
 }
 
+// Opaque so icons keep WCAG AA non-text contrast.
 Color getIconColor(BuildContext context) {
-  return Theme.of(context).colorScheme.tertiary.withAlpha(120);
+  return Theme.of(context).colorScheme.tertiary;
 }
 
 Color getBorderColor(BuildContext context) {

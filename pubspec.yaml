@@ -55,7 +55,6 @@ dependencies:
   flutter_riverpod: ^3.4.3
   flutter_svg: ^2.2.1
   file_selector: ^1.0.4
-  dynamic_color: ^2.1.0
   csv: ^8.0.0
   shared_preferences: ^2.5.3
   intl: ^0.20.3

@@ -212,7 +212,12 @@ class SharedDropdownField extends StatelessWidget {
 
 SnackBar showSharedSnackBar(BuildContext context, String text) {
   return SnackBar(
-    content: Text(text, style: Theme.of(context).textTheme.bodyMedium),
+    content: Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onTertiaryContainer,
+          ),
+    ),
     duration: const Duration(seconds: 10),
     showCloseIcon: true,
     closeIconColor: Theme.of(context).colorScheme.onTertiaryContainer,

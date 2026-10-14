@@ -23,7 +23,7 @@ void main() {
       await tester.pumpWidget(ProviderScope(
         overrides: [settingProvider.overrideWithValue(preferences)],
         child: MaterialApp(
-          theme: SeguiTheme.lightTheme(null),
+          theme: SeguiTheme.lightTheme(),
           home: const CompactScreenView(),
         ),
       ));

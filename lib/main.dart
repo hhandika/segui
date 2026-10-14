@@ -1,4 +1,3 @@
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,19 +34,17 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
-      return MaterialApp(
-        title: 'SEGUL',
-        debugShowCheckedModeBanner: false,
-        theme: SeguiTheme.lightTheme(lightColorScheme),
-        darkTheme: SeguiTheme.darkTheme(darkColorScheme),
-        themeMode: ref.watch(themeSettingProvider).when(
-              data: (settings) => settings,
-              loading: () => ThemeMode.system,
-              error: (err, stack) => ThemeMode.system,
-            ),
-        home: const SegulHome(),
-      );
-    });
+    return MaterialApp(
+      title: 'SEGUL',
+      debugShowCheckedModeBanner: false,
+      theme: SeguiTheme.lightTheme(),
+      darkTheme: SeguiTheme.darkTheme(),
+      themeMode: ref.watch(themeSettingProvider).when(
+            data: (settings) => settings,
+            loading: () => ThemeMode.system,
+            error: (err, stack) => ThemeMode.system,
+          ),
+      home: const SegulHome(),
+    );
   }
 }
