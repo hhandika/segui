@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/screens/home/components/faq.dart';
+import 'package:segui/screens/home/components/illustration.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/screens/home/components/tool_catalog.dart';
 import 'package:segui/screens/home/components/workflows.dart';
@@ -118,7 +119,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                     const Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Divider(),
+                        // The sketch's ground line separates the footer.
+                        HomeIllustration(),
+                        SizedBox(height: 4),
                         ResourceLinks(),
                       ],
                     ),

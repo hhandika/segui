@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 44 1200 196">
+<!-- SEGUI home illustration: field notebook sketch with the SEGUL gull.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF gull fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M0,200 C120,170 200,150 300,176 C380,196 440,140 560,150 C680,160 720,190 820,180 C940,168 1000,140 1100,160 C1150,170 1180,176 1200,178"/>
+<path d="M0,236 H1200"/>
+<path d="M760,180 L700,236 M760,180 L820,236 M760,180 V236 M735,236 L760,205 L785,236"/>
+<path d="M900,236 V200 M900,200 L884,214 M900,200 L916,214 M900,186 L888,198 M900,186 L912,198 M900,172 L892,184 M900,172 L908,184"/>
+<path d="M940,236 V210 M940,210 L928,220 M940,210 L952,220 M940,198 L932,206 M940,198 L948,206"/>
+<path d="M200,236 V192 M200,192 H160 V160 M200,192 H244 V148 M160,160 H140 V136 M160,160 H178 V130 M244,148 H226 V122 M244,148 H264 V128"/>
+<path d="M1030,236 V148"/>
+<path d="M1000,120 H1090 L1102,134 L1090,148 H1000 Z"/>
+<path d="M1016,130 H1074 M1016,138 H1058" stroke-width="2.5"/>
+<path d="M520,232 l6,-4 M540,228 l6,-4 M560,232 l6,-4 M580,228 l6,-4" stroke-width="2.5"/>
+</g>
+<g fill="#FFD64F" stroke="#005224" stroke-width="2.5"><circle cx="140" cy="130" r="7"/><circle cx="178" cy="124" r="7"/><circle cx="226" cy="116" r="7"/><circle cx="264" cy="122" r="7"/></g>
+<line x1="410.9" y1="216" x2="429.1" y2="216" stroke="#FFD64F" stroke-width="2.1" stroke-linecap="round"/><line x1="410.9" y1="176" x2="429.1" y2="176" stroke="#FFD64F" stroke-width="2.1" stroke-linecap="round"/><line x1="410.9" y1="136" x2="429.1" y2="136" stroke="#FFD64F" stroke-width="2.1" stroke-linecap="round"/><line x1="410.9" y1="96" x2="429.1" y2="96" stroke="#FFD64F" stroke-width="2.1" stroke-linecap="round"/><path d="M420,236 C433,226 433,206 420,196 C407,186 407,166 420,156 C433,146 433,126 420,116 C407,106 407,86 420,76" fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round"/><path d="M420,236 C407,226 407,206 420,196 C433,186 433,166 420,156 C407,146 407,126 420,116 C433,106 433,86 420,76" fill="none" stroke="#FFD64F" stroke-width="3" stroke-linecap="round"/>
+<circle cx="600" cy="90" r="30" fill="none" stroke="#FFD64F" stroke-width="3"/>
+<g transform="translate(1030,120)">
+<path d="M-4,-14 L-6,0 M6,-14 L9,0" fill="none" stroke="#FFD64F" stroke-width="3" stroke-linecap="round"/>
+<path d="M-28,-30 L-46,-27 L-30,-21 Z" fill="#005224"/>
+<path d="M-30,-28 C-30,-44 0,-46 14,-42 C14,-52 18,-64 27,-64 C37,-64 40,-54 35,-46 C30,-38 31,-30 24,-21 C14,-12 -20,-12 -30,-28 Z" fill="#FFFFFF" stroke="#005224" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M-30,-31 C-14,-44 10,-42 18,-32 C6,-25 -14,-23 -30,-26 Z" fill="#FFFFFF" stroke="#005224" stroke-width="2" stroke-linejoin="round"/>
+<path d="M-30,-26 L-44,-29 L-30,-31 Z" fill="#005224"/>
+<path d="M36,-56 L51,-52 L36,-49 Z" fill="#FFD64F" stroke="#005224" stroke-width="1.2" stroke-linejoin="round"/>
+<circle cx="30" cy="-56" r="2.4" fill="#005224"/>
+</g>
+<path d="M666.0,70 Q673.0,62.0 680,70 Q687.0,62.0 694.0,70" fill="none" stroke="#005224" stroke-width="2.5" stroke-linecap="round"/><path d="M318.8,60 Q324.4,53.6 330,60 Q335.6,53.6 341.2,60" fill="none" stroke="#005224" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
