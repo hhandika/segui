@@ -4,10 +4,33 @@ import 'package:material_ui/material_ui.dart';
 /// Desktop/Expanded screen: 840dp
 /// Tablet/Medium screen: 600dp
 /// Mobile/Compact screen: 360dp
+/// Extra-large screen: 1600dp, such as a 1440p desktop monitor.
+const double extraLargeScreenSize = 1600;
 const double largeScreenSize = 1200;
 const double expandedScreenSize = 840;
 const double mediumScreenSize = 600;
 const double compactScreenSize = 360;
+
+/// Widest content area for pages that lay out cards in a grid, so wide
+/// monitors fill with more columns instead of empty margins.
+const double maxGridContentWidth = 2400;
+
+/// Number of equal grid columns that fit [width] while keeping each item at
+/// least [minItemWidth] wide, from one up to [maxColumns].
+int gridColumnCount(
+  double width, {
+  required double minItemWidth,
+  required int maxColumns,
+  double spacing = 12,
+}) {
+  final int columns = ((width + spacing) / (minItemWidth + spacing)).floor();
+  return columns.clamp(1, maxColumns);
+}
+
+/// Width of each item when [columns] share [width] with [spacing] between.
+double gridItemWidth(double width, int columns, {double spacing = 12}) {
+  return (width - spacing * (columns - 1)) / columns;
+}
 
 BoxDecoration getContainerDecoration(BuildContext context) {
   return BoxDecoration(

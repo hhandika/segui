@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/styles/decoration.dart';
@@ -93,7 +94,7 @@ class ToolCategorySection extends ConsumerWidget {
   }
 }
 
-/// Lays out [tools] as cards in one to three columns.
+/// Lays out [tools] as equal-size cards, adding columns as the width grows.
 class ToolGrid extends StatelessWidget {
   const ToolGrid({super.key, required this.tools});
 
@@ -101,21 +102,15 @@ class ToolGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double spacing = 12;
     return LayoutBuilder(builder: (context, constraints) {
-      final int columns = constraints.maxWidth >= expandedScreenSize
-          ? 3
-          : constraints.maxWidth >= 520
-              ? 2
-              : 1;
-      final double cardWidth =
-          (constraints.maxWidth - spacing * (columns - 1)) / columns;
-      return Wrap(
-        spacing: spacing,
-        runSpacing: spacing,
+      return EqualHeightGrid(
+        columns: gridColumnCount(
+          constraints.maxWidth,
+          minItemWidth: 300,
+          maxColumns: 6,
+        ),
         children: [
-          for (final tool in tools)
-            SizedBox(width: cardWidth, child: ToolCard(tool: tool)),
+          for (final tool in tools) ToolCard(tool: tool),
         ],
       );
     });
@@ -149,17 +144,11 @@ class ToolCard extends ConsumerWidget {
                     Text(
                       tool.title,
                       style: textTheme.titleSmall,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      tool.description,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    ToolDescription(text: tool.description),
                   ],
                 ),
               ),
@@ -167,6 +156,41 @@ class ToolCard extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Tool description that always takes two lines, so cards in different
+/// category grids line up at the same height.
+class ToolDescription extends StatelessWidget {
+  const ToolDescription({super.key, required this.text});
+
+  static const int lines = 2;
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle? style = Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        );
+    return Stack(
+      children: [
+        // Invisible placeholder that reserves two lines at the current
+        // text scale.
+        ExcludeSemantics(
+          child: Opacity(
+            opacity: 0,
+            child: Text('\n' * (lines - 1), style: style, maxLines: lines),
+          ),
+        ),
+        Text(
+          text,
+          style: style,
+          maxLines: lines,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }

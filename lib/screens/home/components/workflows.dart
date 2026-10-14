@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/home/components/tool_catalog.dart';
+import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/styles/decoration.dart';
 
@@ -17,7 +18,7 @@ class WorkflowPanel extends StatelessWidget {
           children: [
             Expanded(child: WorkflowList()),
             SizedBox(width: 24),
-            SizedBox(width: 280, child: ToolIndex()),
+            SizedBox(width: 300, child: ToolIndex()),
           ],
         );
       }
@@ -38,7 +39,6 @@ class WorkflowList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double spacing = 12;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -48,18 +48,15 @@ class WorkflowList extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         LayoutBuilder(builder: (context, constraints) {
-          final int columns = constraints.maxWidth >= 520 ? 2 : 1;
-          final double cardWidth =
-              (constraints.maxWidth - spacing * (columns - 1)) / columns;
-          return Wrap(
-            spacing: spacing,
-            runSpacing: spacing,
+          return EqualHeightGrid(
+            columns: gridColumnCount(
+              constraints.maxWidth,
+              minItemWidth: 360,
+              maxColumns: 3,
+            ),
             children: [
               for (final workflow in homeWorkflows)
-                SizedBox(
-                  width: cardWidth,
-                  child: WorkflowCard(workflow: workflow),
-                ),
+                WorkflowCard(workflow: workflow),
             ],
           );
         }),

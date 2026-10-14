@@ -1,5 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/styles/decoration.dart';
 
 const String homeIllustrationAsset = 'assets/images/home_field_sketch.svg';
 
@@ -16,21 +17,40 @@ class HomeIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    // Scale with the width so the whole sketch always shows. The home page
-    // caps its content width, which keeps the height modest on wide screens.
+    // Scale with the width so the whole sketch always shows, up to a cap
+    // that keeps it short on wide monitors. Faded ends blend the centered
+    // sketch into the empty space beside it.
     return ExcludeSemantics(
-      child: AspectRatio(
-        aspectRatio: _aspectRatio,
-        child: SvgPicture(
-          SvgAssetLoader(
-            homeIllustrationAsset,
-            colorMapper: HomeIllustrationColors(
-              line: colors.outlineVariant,
-              accent: colors.tertiaryContainer,
-              fill: colors.surface,
+      child: Center(
+        heightFactor: 1,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: largeScreenSize),
+          child: AspectRatio(
+            aspectRatio: _aspectRatio,
+            child: ShaderMask(
+              blendMode: BlendMode.dstIn,
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [
+                  Color(0x00000000),
+                  Color(0xFF000000),
+                  Color(0xFF000000),
+                  Color(0x00000000),
+                ],
+                stops: [0, 0.06, 0.94, 1],
+              ).createShader(bounds),
+              child: SvgPicture(
+                SvgAssetLoader(
+                  homeIllustrationAsset,
+                  colorMapper: HomeIllustrationColors(
+                    line: colors.outlineVariant,
+                    accent: colors.tertiaryContainer,
+                    fill: colors.surface,
+                  ),
+                ),
+                fit: BoxFit.contain,
+              ),
             ),
           ),
-          fit: BoxFit.contain,
         ),
       ),
     );

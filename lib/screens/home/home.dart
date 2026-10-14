@@ -78,7 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 // Fill the screen height so the resource links stay at the
                 // bottom when the content is short.
                 constraints: BoxConstraints(
-                  maxWidth: largeScreenSize,
+                  maxWidth: maxGridContentWidth,
                   minHeight: constraints.maxHeight - verticalPadding * 2,
                 ),
                 child: Column(

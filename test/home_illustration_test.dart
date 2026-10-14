@@ -48,4 +48,18 @@ void main() {
       handle.dispose();
     });
   }
+
+  testWidgets('Illustration stays capped on wide monitors', (tester) async {
+    tester.view.physicalSize = const Size(2200, 600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(MaterialApp(
+      theme: SeguiTheme.lightTheme(),
+      home: const Scaffold(body: HomeIllustration()),
+    ));
+    await tester.pumpAndSettle();
+    final Size size = tester.getSize(find.byType(SvgPicture));
+    expect(size.width, 1200);
+    expect(size.height, closeTo(196, 0.01));
+  });
 }

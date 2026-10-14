@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/home/home.dart';
+import 'package:segui/screens/home/components/workflows.dart';
+import 'package:segui/screens/home/components/tool_catalog.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
@@ -134,5 +136,53 @@ void main() {
     expect(tester.getSize(find.byType(HomePage)).height, 2400);
     expect(tester.getBottomLeft(find.text('Documentation')).dy,
         greaterThan(2400 - 100));
+  });
+
+  testWidgets('Tool cards share one size on a 1440p monitor', (tester) async {
+    tester.view.physicalSize = const Size(2240, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: Scaffold(body: HomePage())),
+    ));
+    await tester.pumpAndSettle();
+
+    final sizes = tester
+        .widgetList<ToolCard>(find.byType(ToolCard))
+        .map((card) => tester.getSize(find.byWidget(card)))
+        .toSet();
+    expect(find.byType(ToolCard), findsNWidgets(homeTools.length));
+    expect(sizes, hasLength(1));
+    // Six columns: every alignment tool fits on one row.
+    final rows = tester
+        .widgetList<ToolCard>(find.byType(ToolCard))
+        .where((card) => card.tool.category == ToolCategory.alignment)
+        .map((card) => tester.getTopLeft(find.byWidget(card)).dy)
+        .toSet();
+    expect(rows, hasLength(1));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Workflow cards share one size', (tester) async {
+    tester.view.physicalSize = const Size(1400, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await preferences.setString('homeView', 'workflows');
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: Scaffold(body: HomePage())),
+    ));
+    await tester.pumpAndSettle();
+
+    final sizes = tester
+        .widgetList<WorkflowCard>(find.byType(WorkflowCard))
+        .map((card) => tester.getSize(find.byWidget(card)))
+        .toSet();
+    expect(find.byType(WorkflowCard), findsNWidgets(homeWorkflows.length));
+    expect(sizes, hasLength(1));
+    expect(tester.takeException(), isNull);
   });
 }
