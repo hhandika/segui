@@ -413,8 +413,13 @@ class FilePanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int inputCount = ref.watch(fileInputProvider).value?.length ?? 0;
-    final int outputCount =
-        ref.watch(fileOutputProvider).value?.files.length ?? 0;
+    final int outputCount = ref
+            .watch(fileOutputProvider)
+            .value
+            ?.files
+            .where((file) => file.isNew)
+            .length ??
+        0;
     final FilePanelView view = ref.watch(filePanelViewProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
@@ -441,6 +446,7 @@ class FilePanel extends ConsumerWidget {
           Expanded(
             child: IndexedStack(
               index: view.index,
+              sizing: StackFit.expand,
               children: const [InputScreen(), OutputScreen()],
             ),
           ),

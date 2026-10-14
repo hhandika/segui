@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/io/file_list.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/common.dart';
@@ -39,7 +40,9 @@ class OutputScreen extends ConsumerWidget {
   }
 }
 
-class OutputFileList extends StatelessWidget {
+/// Files in the output directory. Shows only the files new since the
+/// directory was selected, with a button to show the rest.
+class OutputFileList extends StatefulWidget {
   const OutputFileList({
     super.key,
     required this.data,
@@ -48,30 +51,60 @@ class OutputFileList extends StatelessWidget {
   final SegulOutputFile data;
 
   @override
+  State<OutputFileList> createState() => _OutputFileListState();
+}
+
+class _OutputFileListState extends State<OutputFileList> {
+  bool _isShowingAll = false;
+
+  @override
   Widget build(BuildContext context) {
+    final List<({File file, bool isNew})> allFiles = widget.data.files;
+    final List<({File file, bool isNew})> files = _isShowingAll
+        ? allFiles
+        : allFiles.where((file) => file.isNew).toList();
+    final int otherCount = allFiles.length -
+        allFiles.where((file) {
+          return file.isNew;
+        }).length;
     return IOListContainer(
       title: 'Output Files',
-      infoText: 'List of files in the output directory. '
-          'Newly created files are marked with a new icon. '
+      infoText: 'New files in the output directory. '
+          'Show other files to see everything in the directory. '
           'Click on a file to view its content. '
           'Select menu to share or delete a file. '
           'Deleting a file will remove it from the system.',
-      child: data.files.isEmpty
-          ? const Center(
-              child: EmptyScreen(
-              title: 'No output files found. ',
-              description: 'Run an analysis to generate output files.',
-            ))
-          : ListView.builder(
-              itemCount: data.files.length,
-              itemBuilder: (context, index) {
-                final file = data.files[index].file;
-                return OutputFileTiles(
-                  isOldFile: !data.files[index].isNew,
-                  file: file,
-                );
-              },
+      child: Column(
+        children: [
+          if (otherCount > 0)
+            TextButton(
+              onPressed: () => setState(() => _isShowingAll = !_isShowingAll),
+              child: Text(_isShowingAll
+                  ? 'Show new files only'
+                  : 'Show $otherCount other '
+                      '${otherCount == 1 ? 'file' : 'files'} in the folder'),
             ),
+          Expanded(
+            child: files.isEmpty
+                ? EmptyScreen(
+                    title: allFiles.isEmpty
+                        ? 'No output files found.'
+                        : 'No new output files yet.',
+                    description: 'Run an analysis to generate output files.',
+                  )
+                : PagedFileList(
+                    key: ValueKey(_isShowingAll),
+                    itemCount: files.length,
+                    itemBuilder: (context, index) {
+                      return OutputFileTiles(
+                        isOldFile: !files[index].isNew,
+                        file: files[index].file,
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -91,7 +124,7 @@ class OutputFileTiles extends StatelessWidget {
     final FileAssociation association = FileAssociation(file: file);
     return ListTile(
       minVerticalPadding: 2,
-      leading: FileIcon(file: file),
+      leading: FileIconTile(icon: FileIcon(file: file)),
       title: isOldFile
           ? FileIOTitle(file: file)
           : Row(

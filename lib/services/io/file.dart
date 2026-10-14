@@ -139,13 +139,58 @@ const List<String> compressionExtensions = [
   '7zip',
 ];
 
-const Map<CommonFileType, String> commonFileIcons = {
-  CommonFileType.sequence: 'assets/images/dna.svg',
-  CommonFileType.plainText: 'assets/images/text.svg',
-  CommonFileType.tabulated: 'assets/images/table.svg',
-  CommonFileType.zip: 'assets/images/zip.svg',
-  CommonFileType.other: 'assets/images/unknown.svg',
-};
+/// Partition-only file extensions. Partitions saved as `.txt` or `.nex`
+/// show the text or NEXUS icon instead.
+const List<String> partitionExtensions = [
+  'part',
+  'partition',
+];
+
+/// File formats drawn with their own icon in file lists.
+enum FileIconType {
+  fasta('fasta'),
+  nexus('nexus'),
+  phylip('phylip'),
+  fastq('fastq'),
+  gzip('gzip'),
+  csv('csv'),
+  text('text'),
+  partition('partition'),
+  log('log'),
+  zip('zip'),
+  unknown('unknown');
+
+  const FileIconType(this._name);
+
+  final String _name;
+
+  /// SVG asset of the icon. Asset keys always use POSIX separators.
+  String get assetPath => 'assets/images/files/$_name.svg';
+
+  /// Icon type for a file named [fileName], matched by extension. Gzip
+  /// files show the format they compress when it is FASTQ.
+  static FileIconType fromFileName(String fileName) {
+    final String name = fileName.toLowerCase();
+    final String ext = p.extension(name).replaceFirst('.', '');
+    if (gunzipExtensions.contains(ext)) {
+      final String innerExt =
+          p.extension(p.withoutExtension(name)).replaceFirst('.', '');
+      return fastqExtensions.contains(innerExt)
+          ? FileIconType.fastq
+          : FileIconType.gzip;
+    }
+    if (fastaExtensions.contains(ext)) return FileIconType.fasta;
+    if (nexusExtensions.contains(ext)) return FileIconType.nexus;
+    if (phylipExtensions.contains(ext)) return FileIconType.phylip;
+    if (fastqExtensions.contains(ext)) return FileIconType.fastq;
+    if (tabularExtensions.contains(ext)) return FileIconType.csv;
+    if (partitionExtensions.contains(ext)) return FileIconType.partition;
+    if (ext == 'log') return FileIconType.log;
+    if (plainTextExtensions.contains(ext)) return FileIconType.text;
+    if (compressionExtensions.contains(ext)) return FileIconType.zip;
+    return FileIconType.unknown;
+  }
+}
 
 /// Common file type to match
 /// file type with icons.
@@ -173,8 +218,7 @@ class FileAssociation extends FileUtils {
   }
 
   String get matchingIconPath {
-    final fileType = commonFileTYpe;
-    return commonFileIcons[fileType]!;
+    return FileIconType.fromFileName(p.basename(file.path)).assetPath;
   }
 
   bool get isSequenceFile {

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 22 68 50">
+<!-- SEGUI empty state: the SEGUL gull from the greeting, slumped with a
+     drooping head and wing, a sad brow, and a tear.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M30,64 H86" stroke-width="2"/>
+<path d="M58,59.5 V64 M63,59 V64 M56,64 H60 M61,64 H65" stroke-width="2.5"/>
+<g transform="rotate(16 60 60)">
+<path d="M36,50 C42,46 48,44 56,44 C60,44 63,42 64,38 C65,33 70,31 74,33 C77,35 77,40 75,43 C73,47 72,50 71,54 C69,59 62,61 54,60 C46,59 40,55 36,50 Z" fill="#FFFFFF"/>
+<path d="M76,37.5 L85,39.5 L75.5,42 Z" fill="#FFD64F" stroke-width="2"/>
+<circle cx="71" cy="38.9" r="1.6" fill="#005224" stroke="none"/>
+<path d="M68.8,36.2 L72.2,34" stroke-width="1.8"/>
+<path d="M70.6,42 C69,44.6 69,46.4 70.6,46.8 C72.2,46.4 72.2,44.6 70.6,42 Z" fill="#FFD64F" stroke-width="1.6"/>
+</g>
+<g transform="rotate(16 60 60) rotate(-18 62 50)">
+<path d="M62,49 C56,44.5 46,44 35,47 C41,52.5 52,54.5 62,51.5 Z" fill="#FFFFFF"/>
+<path d="M35,47 C38.5,46 42,45.5 45,45.6 L41.5,51 C39,50.2 36.8,48.8 35,47 Z" fill="#005224" stroke-width="2"/>
+</g>
+</g>
+</svg>

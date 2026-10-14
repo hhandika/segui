@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:segui/screens/home/components/illustration.dart';
 import 'package:segui/screens/shared/info.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/home_features.dart';
@@ -191,18 +192,14 @@ class EmptyScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          emptyDirIcon,
-          height: 80,
-          colorFilter: ColorFilter.mode(
-            getIconColor(context),
-            BlendMode.srcIn,
+        const SadGull(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
           ),
-        ),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-          overflow: TextOverflow.ellipsis,
         ),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -212,6 +209,32 @@ class EmptyScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             )),
       ],
+    );
+  }
+}
+
+/// The SEGUL gull slumped and teary, shown when a list is empty.
+class SadGull extends StatelessWidget {
+  const SadGull({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return ExcludeSemantics(
+      child: SvgPicture(
+        SvgAssetLoader(
+          emptyDirIcon,
+          colorMapper: HomeIllustrationColors(
+            line: colors.onSurfaceVariant,
+            // Container tones go muddy in dark mode, as in the greeting.
+            accent: colors.brightness == Brightness.dark
+                ? colors.tertiary
+                : colors.tertiaryContainer,
+            fill: colors.surfaceContainerLowest,
+          ),
+        ),
+        height: 96,
+      ),
     );
   }
 }

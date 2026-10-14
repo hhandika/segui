@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/io/file_list.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/common.dart';
@@ -45,8 +46,7 @@ class InputFileList extends ConsumerWidget {
             'Click on a file to view its content. '
             'Click on the delete icon to remove a file. '
             'Removing a file will not delete the file from the system.',
-        child: ListView.builder(
-          shrinkWrap: true,
+        child: PagedFileList(
           itemCount: files.length,
           padding: const EdgeInsets.all(8),
           itemBuilder: (context, index) {
@@ -54,7 +54,7 @@ class InputFileList extends ConsumerWidget {
             final association = FileAssociation(file: data.file);
             return ListTile(
               minVerticalPadding: 2,
-              leading: FileIcon(file: data.file),
+              leading: FileIconTile(icon: FileIcon(file: data.file)),
               title: FileIOTitle(file: data.file),
               subtitle: FileIOSubtitle(file: data.file),
               trailing: IconButton(

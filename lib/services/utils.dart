@@ -71,7 +71,7 @@ enum GreetingTime {
 }
 
 String get emptyDirIcon {
-  return 'assets/images/empty-folder.svg';
+  return 'assets/images/sad-gull.svg';
 }
 
 void launchSegulDocUrl() {
