@@ -76,7 +76,8 @@ void main() {
   testWidgets('Input list shows 20 files, then more on request',
       (tester) async {
     final files = createFiles(45, 'nexus')
-        .map((file) => SegulInputFile(file: file, type: SegulType.standardSequence))
+        .map((file) =>
+            SegulInputFile(file: file, type: SegulType.standardSequence))
         .toList();
     await pumpList(tester, InputFileList(files: files));
 
@@ -98,7 +99,8 @@ void main() {
 
   testWidgets('Short lists have no show more button', (tester) async {
     final files = createFiles(3, 'fasta')
-        .map((file) => SegulInputFile(file: file, type: SegulType.standardSequence))
+        .map((file) =>
+            SegulInputFile(file: file, type: SegulType.standardSequence))
         .toList();
     await pumpList(tester, InputFileList(files: files));
 

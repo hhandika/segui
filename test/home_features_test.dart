@@ -53,6 +53,8 @@ void main() {
       expect(parts.take(2), ['assets', 'icons'], reason: tool.title);
       expect(File(p.joinAll(parts)).existsSync(), isTrue, reason: tool.title);
       expect(tool.icon.fontFamily, 'SeguiIcons', reason: tool.title);
+      expect(tool.filledIcon.fontFamily, 'SeguiIcons', reason: tool.title);
+      expect(tool.filledIcon, isNot(tool.icon), reason: tool.title);
     }
     expect(homeTools.map((tool) => tool.svgAsset).toSet(),
         hasLength(homeTools.length));

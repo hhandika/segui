@@ -31,6 +31,7 @@ class HomeTool {
     required this.description,
     required this.about,
     required this.icon,
+    required this.filledIcon,
     required this.svgAsset,
   });
 
@@ -42,6 +43,9 @@ class HomeTool {
   /// Longer explanation shown in the tool page header.
   final String about;
   final IconData icon;
+
+  /// Filled variant of [icon], used once the tool has input files.
+  final IconData filledIcon;
 
   /// SVG source of [icon], drawn on tool cards.
   final String svgAsset;
@@ -80,6 +84,7 @@ const HomeTool readSummaryTool = HomeTool(
       'base counts, GC and AT content, low Q-score counts, and other '
       'relevant statistics.',
   icon: SeguiIcons.readSummaryOutlined,
+  filledIcon: SeguiIcons.readSummaryFilled,
   svgAsset: 'assets/icons/read_summary_outlined.svg',
 );
 
@@ -91,6 +96,7 @@ const HomeTool contigSummaryTool = HomeTool(
   about: 'Summarize contigs by calculating the number of contigs, total '
       'length, base count, N50, and other relevant statistics.',
   icon: SeguiIcons.contigSummaryOutlined,
+  filledIcon: SeguiIcons.contigSummaryFilled,
   svgAsset: 'assets/icons/contig_summary_outlined.svg',
 );
 
@@ -102,6 +108,7 @@ const HomeTool concatenationTool = HomeTool(
   about: 'Concatenate multiple alignments and generate a partition file for '
       'the concatenated alignment.',
   icon: SeguiIcons.concatenateOutlined,
+  filledIcon: SeguiIcons.concatenateFilled,
   svgAsset: 'assets/icons/concatenate_outlined.svg',
 );
 
@@ -113,6 +120,7 @@ const HomeTool conversionTool = HomeTool(
   about: 'Convert sequence alignments to other formats. It can convert '
       'multiple files at once.',
   icon: SeguiIcons.convertOutlined,
+  filledIcon: SeguiIcons.convertFilled,
   svgAsset: 'assets/icons/convert_outlined.svg',
 );
 
@@ -125,6 +133,7 @@ const HomeTool filterTool = HomeTool(
       'completeness, count of parsimony informative sites, and percentage '
       'of parsimony informative sites.',
   icon: SeguiIcons.filterOutlined,
+  filledIcon: SeguiIcons.filterFilled,
   svgAsset: 'assets/icons/filter_outlined.svg',
 );
 
@@ -136,6 +145,7 @@ const HomeTool partitionTool = HomeTool(
   about: 'Convert partition files to a different format. It can convert '
       'multiple files at once.',
   icon: SeguiIcons.partitionOutlined,
+  filledIcon: SeguiIcons.partitionFilled,
   svgAsset: 'assets/icons/partition_outlined.svg',
 );
 
@@ -148,6 +158,7 @@ const HomeTool splitTool = HomeTool(
       'partitions. The partition can be in a separate RAxML or NEXUS file, '
       'or in the same file as a charset block.',
   icon: SeguiIcons.splitOutlined,
+  filledIcon: SeguiIcons.splitFilled,
   svgAsset: 'assets/icons/split_outlined.svg',
 );
 
@@ -159,6 +170,7 @@ const HomeTool alignmentSummaryTool = HomeTool(
   about: 'Summarize alignments by calculating the number of sequences, sites, '
       'parsimony informative sites, and other relevant statistics.',
   icon: SeguiIcons.alignmentSummaryOutlined,
+  filledIcon: SeguiIcons.alignmentSummaryFilled,
   svgAsset: 'assets/icons/alignment_summary_outlined.svg',
 );
 
@@ -170,6 +182,7 @@ const HomeTool extractionTool = HomeTool(
   about: 'Extract sequences from multiple files. Supports regex, text file, '
       'and semicolon-separated IDs.',
   icon: SeguiIcons.extractOutlined,
+  filledIcon: SeguiIcons.extractFilled,
   svgAsset: 'assets/icons/extract_outlined.svg',
 );
 
@@ -182,6 +195,7 @@ const HomeTool idExtractionTool = HomeTool(
       'is a list of unique sequence IDs. The map option maps sample '
       'distribution across the input dataset.',
   icon: SeguiIcons.extractIdOutlined,
+  filledIcon: SeguiIcons.extractIdFilled,
   svgAsset: 'assets/icons/extract_id_outlined.svg',
 );
 
@@ -193,6 +207,7 @@ const HomeTool removalTool = HomeTool(
   about: 'Remove sequences from a collection of sequence files based on '
       'sequence name. Supports regular expressions.',
   icon: SeguiIcons.removeOutlined,
+  filledIcon: SeguiIcons.removeFilled,
   svgAsset: 'assets/icons/remove_outlined.svg',
 );
 
@@ -204,6 +219,7 @@ const HomeTool renamingTool = HomeTool(
   about: 'Rename sequence IDs across a collection of sequence files. Supports '
       'file, text, and regular expression input.',
   icon: SeguiIcons.renameOutlined,
+  filledIcon: SeguiIcons.renameFilled,
   svgAsset: 'assets/icons/rename_outlined.svg',
 );
 
@@ -215,6 +231,7 @@ const HomeTool translationTool = HomeTool(
   about: 'Translate nucleotide sequences to amino acid sequences. It can '
       'translate multiple files at once.',
   icon: SeguiIcons.translateOutlined,
+  filledIcon: SeguiIcons.translateFilled,
   svgAsset: 'assets/icons/translate_outlined.svg',
 );
 
@@ -283,6 +300,16 @@ List<HomeTool> filterHomeTools(ToolCategory category, String query) {
 HomeTool homeToolFor(Enum operation) {
   return homeTools.firstWhere((tool) => tool.operation == operation);
 }
+
+/// Tool open on the current navigation page, or null on the home page.
+final currentToolProvider = Provider<HomeTool?>((ref) {
+  return switch (ref.watch(tabSelectionProvider)) {
+    1 => homeToolFor(ref.watch(genomicOperationSelectionProvider)),
+    2 => homeToolFor(ref.watch(alignmentOperationSelectionProvider)),
+    3 => homeToolFor(ref.watch(sequenceOperationSelectionProvider)),
+    _ => null,
+  };
+});
 
 /// All tools sorted alphabetically by title.
 List<HomeTool> get sortedHomeTools {

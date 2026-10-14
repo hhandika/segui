@@ -5,6 +5,7 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/io.dart';
+import 'package:segui/services/home_features.dart';
 import 'package:segui/services/io/directory.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
@@ -108,6 +109,9 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                   PickerLabel(
                     addNew: addNew,
                     isDir: false,
+                    // One tool reads several formats, so the tool icon
+                    // stands for the selected files.
+                    selectedIcon: ref.watch(currentToolProvider)?.filledIcon,
                     unselectedLabel: '${widget.label} ',
                     selectedLabel: Text(
                       _getFileCountLabel(data.length),
@@ -234,12 +238,16 @@ class PickerLabel extends StatelessWidget {
     required this.isDir,
     required this.unselectedLabel,
     required this.selectedLabel,
+    this.selectedIcon,
   });
 
   final bool addNew;
   final bool isDir;
   final String unselectedLabel;
   final Widget selectedLabel;
+
+  /// Icon shown once a selection is made, in place of the file icon.
+  final IconData? selectedIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -251,6 +259,9 @@ class PickerLabel extends StatelessWidget {
                 alignment: PlaceholderAlignment.middle,
                 child: Icon(
                   _icon,
+                  color: _hasSelectedIcon
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
                 ),
               ),
               const WidgetSpan(
@@ -268,7 +279,12 @@ class PickerLabel extends StatelessWidget {
             ])));
   }
 
+  bool get _hasSelectedIcon => !addNew && selectedIcon != null;
+
   IconData get _icon {
+    if (_hasSelectedIcon) {
+      return selectedIcon!;
+    }
     if (isDir) {
       return addNew ? Icons.folder_outlined : Icons.folder_open_outlined;
     } else {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -12,10 +13,12 @@ import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/services/home_features.dart';
+import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/styles/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -205,5 +208,31 @@ void main() {
       container.read(sequenceOperationSelectionProvider),
       SequenceOperationType.translation,
     );
+  });
+
+  testWidgets('Input picker shows the tool icon after files are selected',
+      (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    final Directory dir = Directory.systemTemp.createTempSync('segui-pick-');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final List<XFile> files = ['locus.nex', 'locus.fasta'].map((name) {
+      final file = File(p.join(dir.path, name))..writeAsStringSync('x');
+      return XFile(file.path);
+    }).toList();
+    await pumpPage(tester, const Size(1600, 1000), container: container);
+
+    expect(find.byIcon(Icons.file_copy_outlined), findsOneWidget);
+    expect(find.byIcon(SeguiIcons.concatenateFilled), findsNothing);
+
+    await tester.runAsync(() => container
+        .read(fileInputProvider.notifier)
+        .addFiles(files, sequenceTypeGroup));
+    await tester.pump();
+    expect(find.byIcon(SeguiIcons.concatenateFilled), findsOneWidget);
+    expect(find.byIcon(Icons.file_copy_outlined), findsNothing);
   });
 }
