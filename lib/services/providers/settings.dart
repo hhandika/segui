@@ -66,3 +66,28 @@ class ThemeSetting extends AsyncNotifier<ThemeMode> {
     }
   }
 }
+
+/// Home screen layouts the user can switch between.
+enum HomeView { tools, workflows }
+
+final homeViewProvider =
+    NotifierProvider<HomeViewSetting, HomeView>(HomeViewSetting.new);
+
+/// Remembers whether the home screen shows all tools or common workflows.
+class HomeViewSetting extends Notifier<HomeView> {
+  static const String _key = 'homeView';
+
+  @override
+  HomeView build() {
+    final String? saved = ref.watch(settingProvider).getString(_key);
+    return HomeView.values.firstWhere(
+      (view) => view.name == saved,
+      orElse: () => HomeView.tools,
+    );
+  }
+
+  Future<void> setView(HomeView view) async {
+    state = view;
+    await ref.read(settingProvider).setString(_key, view.name);
+  }
+}

@@ -36,7 +36,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(HomePage), findsOneWidget);
-    expect(find.text('Quick Actions'), findsOneWidget);
+    expect(find.text('Common workflows'), findsNothing);
+    expect(find.text('Concatenate alignments'), findsOneWidget);
     final quickStart = find.text('Quick start');
     await tester.ensureVisible(quickStart);
     await tester.tap(quickStart);

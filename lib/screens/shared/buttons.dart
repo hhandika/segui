@@ -182,67 +182,6 @@ class SecondaryButton extends StatelessWidget {
   }
 }
 
-class QuickActionButton extends StatelessWidget {
-  const QuickActionButton({
-    super.key,
-    required this.onTap,
-    required this.icon,
-    required this.label,
-  });
-
-  final VoidCallback onTap;
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double containerSize = getContainerSize(screenWidth);
-    return Container(
-      height: containerSize,
-      width: containerSize,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            16,
-          ),
-          // Lerp colors
-          color: Color.lerp(
-            Theme.of(context).colorScheme.surface,
-            Theme.of(context).colorScheme.primaryContainer,
-            0.5,
-          )),
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: Icon(icon,
-                    color: Theme.of(context).colorScheme.onSecondaryContainer),
-              ),
-            ),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.labelLarge,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  double getContainerSize(double screenWidth) {
-    bool isSmallerThanScreen = screenWidth < ((120 * 4) + (16 * 2));
-    return isSmallerThanScreen ? (screenWidth / 4) - (16 * 2) : 120;
-  }
-}
-
 class ShowMoreButton extends StatelessWidget {
   const ShowMoreButton({
     super.key,

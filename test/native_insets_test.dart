@@ -4,7 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:segui/screens/home/compact_screen.dart';
 import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/home/home.dart';
+import 'package:segui/services/providers/settings.dart';
 import 'package:segui/styles/themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   for (final bottomInset in [24.0, 48.0]) {
@@ -15,8 +17,11 @@ void main() {
       tester.view.padding = FakeViewPadding(top: 24, bottom: bottomInset);
       tester.view.viewPadding = FakeViewPadding(top: 24, bottom: bottomInset);
       addTearDown(tester.view.reset);
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
 
       await tester.pumpWidget(ProviderScope(
+        overrides: [settingProvider.overrideWithValue(preferences)],
         child: MaterialApp(
           theme: SeguiTheme.lightTheme(null),
           home: const CompactScreenView(),

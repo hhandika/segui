@@ -1,13 +1,14 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
+import 'package:segui/screens/home/components/tool_catalog.dart';
+import 'package:segui/screens/home/components/workflows.dart';
 import 'package:segui/screens/home/large_screen.dart';
 import 'package:segui/screens/home/compact_screen.dart';
-import 'package:segui/screens/shared/buttons.dart';
-import 'package:segui/services/types.dart';
+import 'package:segui/services/home_features.dart';
+import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 
@@ -37,185 +38,237 @@ class _SegulHomeState extends State<SegulHome> {
   }
 }
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Match container decoration with layout changes
     final isSmallScreen = !isTabletScreen(context);
+    final HomeView view = ref.watch(homeViewProvider);
+    final double verticalPadding = isSmallScreen ? 8 : 24;
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        height: double.infinity,
         decoration: isSmallScreen ? null : getContainerDecoration(context),
-        child: Center(
-          child: SingleChildScrollView(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+        child: LayoutBuilder(builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: isSmallScreen ? 8 : 28,
+              vertical: verticalPadding,
+            ),
+            child: Center(
+              child: ConstrainedBox(
+                // Fill the screen height so the resource links stay at the
+                // bottom when the content is short.
+                constraints: BoxConstraints(
+                  maxWidth: largeScreenSize,
+                  minHeight: constraints.maxHeight - verticalPadding * 2,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const HomeHeader(),
+                        const SizedBox(height: 20),
+                        Wrap(
+                          spacing: 16,
+                          runSpacing: 12,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            const HomeViewToggle(),
+                            if (view == HomeView.tools)
+                              ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 380),
+                                child: ToolSearchField(
+                                  controller: _searchController,
+                                  onChanged: (_) => setState(() {}),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        switch (view) {
+                          HomeView.tools =>
+                            ToolCatalog(query: _searchController.text),
+                          HomeView.workflows => const WorkflowPanel(),
+                        },
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Divider(),
+                        ResourceLinks(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class HomeHeader extends StatelessWidget {
+  const HomeHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Row(
+      children: [
+        SvgPicture.asset(
+          greetingIconPack,
+          height: 48,
+          colorFilter:
+              ColorFilter.mode(theme.colorScheme.onSurface, BlendMode.srcIn),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-                  child: SvgPicture.asset(
-                    greetingIconPack,
-                    height: 80,
-                    colorFilter: ColorFilter.mode(
-                        Theme.of(context).colorScheme.onSurface,
-                        BlendMode.srcIn),
-                  )),
               Text(
                 greeting,
-                style: Theme.of(context).textTheme.titleLarge,
-                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
-              const SizedBox(height: 40),
               Text(
-                'Quick Actions',
-                style: Theme.of(context).textTheme.titleMedium,
-                overflow: TextOverflow.ellipsis,
+                'What would you like to work on?',
+                style: theme.textTheme.headlineSmall,
               ),
-              Icon(
-                Icons.arrow_drop_down,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-              const SizedBox(height: 15),
-              const QuickActionContainer(),
-              const SizedBox(height: 30),
-              const ResourceTiles(),
             ],
-          )),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Switches the home screen between the tool catalog and workflows.
+class HomeViewToggle extends ConsumerWidget {
+  const HomeViewToggle({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SegmentedButton<HomeView>(
+      segments: [
+        ButtonSegment(
+          value: HomeView.tools,
+          icon: const Icon(Icons.apps),
+          label: Text('All tools (${homeTools.length})'),
+        ),
+        const ButtonSegment(
+          value: HomeView.workflows,
+          icon: Icon(Icons.route_outlined),
+          label: Text('Workflows'),
+        ),
+      ],
+      selected: {ref.watch(homeViewProvider)},
+      onSelectionChanged: (selection) =>
+          ref.read(homeViewProvider.notifier).setView(selection.first),
+    );
+  }
+}
+
+class ToolSearchField extends StatelessWidget {
+  const ToolSearchField({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        hintText: 'Search tools, e.g. NEXUS or rename',
+        prefixIcon: const Icon(Icons.search),
+        suffixIcon: controller.text.isEmpty
+            ? null
+            : IconButton(
+                tooltip: 'Clear search',
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+              ),
+        isDense: true,
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide.none,
         ),
       ),
     );
   }
 }
 
-class QuickActionContainer extends ConsumerWidget {
-  const QuickActionContainer({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final bool isExpandedScreen = isTabletScreen(context);
-    final double containerHeight = isExpandedScreen ? 140 : 240;
-    final double containerWidth = isExpandedScreen ? 600 : 240;
-    const double twoColumnWidth = 240 + 16;
-    return SizedBox(
-        height: containerHeight,
-        width: containerWidth,
-        child: GridView.count(
-          crossAxisCount: isExpandedScreen
-              ? 4
-              : screenWidth < twoColumnWidth
-                  ? 1
-                  : 2,
-          physics: screenWidth > twoColumnWidth
-              ? const NeverScrollableScrollPhysics()
-              : const AlwaysScrollableScrollPhysics(),
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          shrinkWrap: true,
-          children: [
-            QuickActionButton(
-              icon: Icons.compare_arrows,
-              label: 'Concatenate\nAlignments',
-              onTap: () {
-                ref.read(tabSelectionProvider.notifier).setTab(2);
-                ref
-                    .read(alignmentOperationSelectionProvider.notifier)
-                    .setOperation(AlignmentOperationType.concatenation);
-              },
-            ),
-            QuickActionButton(
-              icon: Icons.swap_horiz,
-              label: 'Convert\nAlignments',
-              onTap: () {
-                ref.read(tabSelectionProvider.notifier).setTab(2);
-                ref
-                    .read(alignmentOperationSelectionProvider.notifier)
-                    .setOperation(AlignmentOperationType.conversion);
-              },
-            ),
-            QuickActionButton(
-                icon: Icons.translate,
-                label: 'Translate\nSequences',
-                onTap: () {
-                  ref.read(tabSelectionProvider.notifier).setTab(3);
-                  ref
-                      .read(sequenceOperationSelectionProvider.notifier)
-                      .setOperation(SequenceOperationType.translation);
-                }),
-            QuickActionButton(
-              icon: Icons.bar_chart,
-              label: 'Summarize\nSequences',
-              onTap: () {
-                ref.read(tabSelectionProvider.notifier).setTab(2);
-                ref
-                    .read(alignmentOperationSelectionProvider.notifier)
-                    .setOperation(AlignmentOperationType.summary);
-              },
-            ),
-          ],
-        ));
-  }
-}
-
-class ResourceTiles extends StatelessWidget {
-  const ResourceTiles({super.key});
+class ResourceLinks extends StatelessWidget {
+  const ResourceLinks({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 500),
-      child: Column(
-        children: [
-          ListTile(
-            leading: Icon(Icons.help_outline_outlined,
-                color: Theme.of(context).colorScheme.onSurface),
-            title: Text(
-              'FAQ',
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Icon(Icons.arrow_forward_ios,
-                color: Theme.of(context).colorScheme.onSurface),
-            onTap: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => const FaqPage())),
-          ),
-          ListTile(
-            leading: Icon(Icons.speed_outlined,
-                color: Theme.of(context).colorScheme.onSurface),
-            title: Text(
-              'Quick start',
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Icon(Icons.arrow_forward_ios,
-                color: Theme.of(context).colorScheme.onSurface),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const QuickStartPage())),
-          ),
-          ListTile(
-              leading: Icon(Icons.description_outlined,
-                  color: Theme.of(context).colorScheme.onSurface),
-              title: Text(
-                'Documentation',
-                style: Theme.of(context).textTheme.titleMedium,
-                overflow: TextOverflow.ellipsis,
+    return Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          'New to SEGUI?',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-              trailing: Icon(Icons.arrow_forward_ios,
-                  color: Theme.of(context).colorScheme.onSurface),
-              onTap: () => launchSegulDocUrl())
-        ],
-      ),
+        ),
+        TextButton.icon(
+          icon: const Icon(Icons.speed_outlined),
+          label: const Text('Quick start'),
+          onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const QuickStartPage())),
+        ),
+        TextButton.icon(
+          icon: const Icon(Icons.help_outline_outlined),
+          label: const Text('FAQ'),
+          onPressed: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => const FaqPage())),
+        ),
+        TextButton.icon(
+          icon: const Icon(Icons.description_outlined),
+          label: const Text('Documentation'),
+          onPressed: launchSegulDocUrl,
+        ),
+      ],
     );
   }
 }
