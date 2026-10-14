@@ -188,8 +188,7 @@ class SmallScreenSettings extends ConsumerWidget {
           height: MediaQuery.of(context).size.height,
           child: ListView(
             children: [
-              Container(
-                decoration: getContainerDecoration(context),
+              OutlinedPanel(
                 child: SettingTile(
                   title: 'Logs',
                   subtitle: 'View logs from previous tasks',
@@ -207,8 +206,7 @@ class SmallScreenSettings extends ConsumerWidget {
               const SettingTitle(title: 'App Settings'),
               const MainSettings(),
               const SettingTitle(title: 'General'),
-              Container(
-                decoration: getContainerDecoration(context),
+              OutlinedPanel(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -259,8 +257,7 @@ class MainSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: getContainerDecoration(context),
+    return OutlinedPanel(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,

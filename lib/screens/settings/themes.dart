@@ -42,8 +42,7 @@ class CompactThemeSettingView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: getContainerDecoration(context),
+    return OutlinedPanel(
       child: ref.watch(themeSettingProvider).when(
             data: (theme) => ListView.separated(
               shrinkWrap: true,

@@ -59,6 +59,11 @@ legs = 0
 antennae = 0
 wings = 0
 
+[input_folder]
+legs = 0
+antennae = 0
+wings = 0
+
 [output_folder]
 legs = 0
 antennae = 0

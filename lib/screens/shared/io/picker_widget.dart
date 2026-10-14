@@ -252,32 +252,29 @@ class PickerLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // A row, not rich text, so the icon centers on the label instead of
+    // sitting on its baseline.
     return Expanded(
-        child: RichText(
-            textAlign: TextAlign.start,
-            text: TextSpan(children: [
-              WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: Icon(
-                  _icon,
-                  color: _hasSelectedIcon
-                      ? Theme.of(context).colorScheme.primary
-                      : null,
-                ),
-              ),
-              const WidgetSpan(
-                child: SizedBox(width: 4),
-              ),
-              WidgetSpan(
-                child: addNew
-                    ? Text(
-                        unselectedLabel,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    : selectedLabel,
-              ),
-            ])));
+      child: Row(
+        children: [
+          Icon(
+            _icon,
+            color:
+                _hasSelectedIcon ? Theme.of(context).colorScheme.primary : null,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: addNew
+                ? Text(
+                    unselectedLabel,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : selectedLabel,
+          ),
+        ],
+      ),
+    );
   }
 
   bool get _hasSelectedIcon => !addNew && selectedIcon != null;

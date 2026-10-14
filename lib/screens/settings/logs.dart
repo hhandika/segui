@@ -48,9 +48,8 @@ class LogListView extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
-                      child: Container(
+                      child: OutlinedPanel(
                     width: double.infinity,
-                    decoration: getContainerDecoration(context),
                     child: ListView.separated(
                       separatorBuilder: (context, index) =>
                           const CommonDivider(),

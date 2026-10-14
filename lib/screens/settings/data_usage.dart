@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
@@ -44,8 +45,7 @@ class DataUsageView extends ConsumerWidget {
           const AppDataStats(),
           const SizedBox(height: 8),
           Expanded(
-            child: Container(
-              decoration: getContainerDecoration(context),
+            child: OutlinedPanel(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: ref.watch(fileOutputProvider).when(
                     data: (outputFile) {

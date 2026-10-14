@@ -2,7 +2,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path/path.dart' as p;
-import 'package:segui/services/home_features.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/summary.dart';
 import 'package:segui/services/providers/io.dart';
@@ -24,8 +23,7 @@ class FileSummaryView extends ConsumerWidget {
       children: [
         FileSummaryCard(
           title: 'Input',
-          icon: ref.watch(currentToolProvider)?.filledIcon ??
-              Icons.file_copy_outlined,
+          icon: SeguiIcons.inputFolderFilled,
           summary: input,
           emptyText: 'No input files selected.',
           buttonLabel: 'View input files',

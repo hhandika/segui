@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/screens/home/components/illustration.dart';
 import 'package:segui/screens/shared/info.dart';
@@ -41,27 +42,25 @@ class SharedOperationPage extends StatelessWidget {
       final bool showToolList = width >= toolListPageWidth;
       return Padding(
         padding: const EdgeInsets.all(8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: ColoredBox(
-            color: Theme.of(context).colorScheme.surface,
-            child: Row(
-              children: [
-                if (showToolList)
-                  ToolListPanel(category: tool.category, selected: tool),
-                Expanded(
-                  child: ToolWorkspace(
-                    tool: tool,
-                    showSwitcher: !showToolList,
-                    isCompact: false,
-                    child: child,
-                  ),
+        // Outlined like the home screen; the clip keeps the side panels
+        // inside the rounded border.
+        child: OutlinedPanel(
+          child: Row(
+            children: [
+              if (showToolList)
+                ToolListPanel(category: tool.category, selected: tool),
+              Expanded(
+                child: ToolWorkspace(
+                  tool: tool,
+                  showSwitcher: !showToolList,
+                  isCompact: false,
+                  child: child,
                 ),
-                FileSidePanel(
-                  width: filePanelWidth(width, hasToolList: showToolList),
-                ),
-              ],
-            ),
+              ),
+              FileSidePanel(
+                width: filePanelWidth(width, hasToolList: showToolList),
+              ),
+            ],
           ),
         ),
       );

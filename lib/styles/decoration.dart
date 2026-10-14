@@ -43,6 +43,15 @@ BoxDecoration getContainerDecoration(BuildContext context) {
   );
 }
 
+/// Shape of [getContainerDecoration] for a [Material], which clips its
+/// child to the rounded corners and draws the outline on top.
+RoundedRectangleBorder getContainerShape(BuildContext context) {
+  return RoundedRectangleBorder(
+    side: BorderSide(color: getBorderColor(context), width: 2),
+    borderRadius: BorderRadius.circular(16),
+  );
+}
+
 RoundedRectangleBorder getIndicatorShape(BuildContext context) {
   return const RoundedRectangleBorder(
     borderRadius: BorderRadius.horizontal(

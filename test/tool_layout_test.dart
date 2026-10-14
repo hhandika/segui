@@ -9,6 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
@@ -66,6 +67,14 @@ void main() {
     expect(find.byType(StepBadge), findsNWidgets(2));
     expect(find.byType(ToolRunBar), findsOneWidget);
     expect(find.byType(ExecutionButton), findsOneWidget);
+    // Outlined like the home screen on wide layouts.
+    expect(
+      find.ancestor(
+        of: find.byType(ToolListPanel),
+        matching: find.byType(OutlinedPanel),
+      ),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 
@@ -260,6 +269,8 @@ void main() {
 
     expect(find.byType(FileSummaryView), findsOneWidget);
     expect(find.byType(FileSummaryCard), findsNWidgets(2));
+    expect(find.byIcon(SeguiIcons.inputFolderFilled), findsOneWidget);
+    expect(find.byIcon(SeguiIcons.outputFolderFilled), findsOneWidget);
     expect(find.text('No input files selected.'), findsOneWidget);
     expect(find.text('No output folder selected.'), findsOneWidget);
 

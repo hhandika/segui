@@ -164,3 +164,36 @@ class FileErrorIcon extends StatelessWidget {
         ));
   }
 }
+
+/// Rounded, outlined page section, the panel form of
+/// [getContainerDecoration].
+///
+/// A [Material] rather than a decorated box: children are clipped to the
+/// rounded corners with the outline drawn over them, and list tiles inside
+/// keep their background and ink splashes.
+class OutlinedPanel extends StatelessWidget {
+  const OutlinedPanel({
+    super.key,
+    required this.child,
+    this.padding,
+    this.width,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: Material(
+        color: Theme.of(context).colorScheme.surface,
+        shape: getContainerShape(context),
+        clipBehavior: Clip.antiAlias,
+        child:
+            padding == null ? child : Padding(padding: padding!, child: child),
+      ),
+    );
+  }
+}
