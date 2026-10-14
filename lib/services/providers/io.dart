@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/output.dart';
+import 'package:segui/services/io/summary.dart';
 
 final fileInputProvider =
     AsyncNotifierProvider<FileInput, List<SegulInputFile>>(FileInput.new);
@@ -65,26 +66,47 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
 }
 
 /// File list shown in the tool page's file panel.
-enum FilePanelView { input, output }
+enum FilePanelView { summary, input, output }
 
 final filePanelViewProvider =
     NotifierProvider<FilePanelViewSelection, FilePanelView>(
         FilePanelViewSelection.new);
 
-/// Shows the input files while they change and the output files after a run.
+/// Shows the summary by default and whenever the input files change, and
+/// the output files after a run.
 class FilePanelViewSelection extends Notifier<FilePanelView> {
   @override
   FilePanelView build() {
     ref.listen(fileInputProvider, (previous, next) {
-      state = FilePanelView.input;
+      state = FilePanelView.summary;
     });
-    return FilePanelView.input;
+    return FilePanelView.summary;
   }
 
   void show(FilePanelView view) {
     state = view;
   }
 }
+
+/// Count, size, and formats of the selected input files.
+final inputSummaryProvider = FutureProvider<FileSetSummary>((ref) async {
+  final List<SegulInputFile> files = await ref.watch(fileInputProvider.future);
+  return FileSetSummary.fromFiles(files.map((input) => input.file).toList());
+});
+
+/// Count, size, and formats of the new files in the output directory.
+final outputSummaryProvider = FutureProvider<OutputSummary>((ref) async {
+  final SegulOutputFile output = await ref.watch(fileOutputProvider.future);
+  final List<File> newFiles = [
+    for (final file in output.files)
+      if (file.isNew) file.file,
+  ];
+  return OutputSummary(
+    directory: output.directory,
+    newFiles: await FileSetSummary.fromFiles(newFiles),
+    otherFileCount: output.files.length - newFiles.length,
+  );
+});
 
 /// The output directory.
 /// This is use to store the output files.

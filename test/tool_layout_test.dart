@@ -10,10 +10,13 @@ import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io/picker_widget.dart';
+import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/io/file.dart';
+import 'package:segui/services/io/summary.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
@@ -158,7 +161,7 @@ void main() {
     expect(width, greaterThan(minFilePanelWidth));
   });
 
-  test('File panel shows output after a run and input after new files',
+  test('File panel shows output after a run and summary after new files',
       () async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],
@@ -167,14 +170,14 @@ void main() {
     final Directory dir = await Directory.systemTemp.createTemp('segui-run-');
     addTearDown(() => dir.delete(recursive: true));
 
-    expect(container.read(filePanelViewProvider), FilePanelView.input);
+    expect(container.read(filePanelViewProvider), FilePanelView.summary);
     await container.read(fileOutputProvider.notifier).add(dir);
     await File(p.join(dir.path, 'concat.nex')).writeAsString('#NEXUS\n');
     await container.read(fileOutputProvider.notifier).refresh();
     expect(container.read(filePanelViewProvider), FilePanelView.output);
 
     await container.read(fileInputProvider.notifier).clearAll();
-    expect(container.read(filePanelViewProvider), FilePanelView.input);
+    expect(container.read(filePanelViewProvider), FilePanelView.summary);
   });
 
   testWidgets('Global search opens any tool', (tester) async {
@@ -225,14 +228,77 @@ void main() {
     }).toList();
     await pumpPage(tester, const Size(1600, 1000), container: container);
 
-    expect(find.byIcon(Icons.file_copy_outlined), findsOneWidget);
-    expect(find.byIcon(SeguiIcons.concatenateFilled), findsNothing);
+    Finder pickerIcon(IconData icon) => find.descendant(
+          of: find.byType(PickerLabel),
+          matching: find.byIcon(icon),
+        );
+    expect(pickerIcon(Icons.file_copy_outlined), findsOneWidget);
+    expect(pickerIcon(SeguiIcons.concatenateFilled), findsNothing);
 
     await tester.runAsync(() => container
         .read(fileInputProvider.notifier)
         .addFiles(files, sequenceTypeGroup));
     await tester.pump();
-    expect(find.byIcon(SeguiIcons.concatenateFilled), findsOneWidget);
-    expect(find.byIcon(Icons.file_copy_outlined), findsNothing);
+    expect(pickerIcon(SeguiIcons.concatenateFilled), findsOneWidget);
+    expect(pickerIcon(Icons.file_copy_outlined), findsNothing);
+  });
+
+  testWidgets('File panel opens on the input and output summary',
+      (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    final Directory dir = Directory.systemTemp.createTempSync('segui-sum-');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final List<XFile> files = [
+      for (final name in ['a.nex', 'b.nex', 'c.fasta'])
+        XFile((File(p.join(dir.path, name))..writeAsStringSync('ACGT')).path),
+    ];
+    await pumpPage(tester, const Size(1600, 1000), container: container);
+
+    expect(find.byType(FileSummaryView), findsOneWidget);
+    expect(find.byType(FileSummaryCard), findsNWidgets(2));
+    expect(find.text('No input files selected.'), findsOneWidget);
+    expect(find.text('No output folder selected.'), findsOneWidget);
+
+    await tester.runAsync(() async {
+      await container
+          .read(fileInputProvider.notifier)
+          .addFiles(files, sequenceTypeGroup);
+      await container.read(inputSummaryProvider.future);
+    });
+    await tester.pumpAndSettle();
+    final Finder inputCard = find.byType(FileSummaryCard).first;
+    Finder inInput(Finder finder) =>
+        find.descendant(of: inputCard, matching: finder);
+    expect(inInput(find.text('3')), findsOneWidget);
+    expect(inInput(find.text('files')), findsOneWidget);
+    expect(inInput(find.text('0.01 Kb')), findsOneWidget);
+    expect(inInput(find.text('NEXUS')), findsOneWidget);
+    expect(inInput(find.text('2')), findsOneWidget);
+    expect(inInput(find.text('FASTA')), findsOneWidget);
+
+    await tester.tap(find.text('View input files'));
+    await tester.pumpAndSettle();
+    expect(container.read(filePanelViewProvider), FilePanelView.input);
+  });
+
+  test('Summary counts files, size, and formats', () async {
+    final Directory dir = await Directory.systemTemp.createTemp('segui-sum-');
+    addTearDown(() => dir.delete(recursive: true));
+    final List<File> files = [
+      for (final name in ['a.nex', 'b.nex', 'c.csv'])
+        await File(p.join(dir.path, name)).writeAsString('1234'),
+    ];
+    final FileSetSummary summary = await FileSetSummary.fromFiles(files);
+
+    expect(summary.fileCount, 3);
+    expect(summary.totalBytes, 12);
+    expect(summary.formatCounts, [
+      (format: FileIconType.nexus, count: 2),
+      (format: FileIconType.csv, count: 1),
+    ]);
   });
 }

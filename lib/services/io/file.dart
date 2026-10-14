@@ -148,21 +148,24 @@ const List<String> partitionExtensions = [
 
 /// File formats drawn with their own icon in file lists.
 enum FileIconType {
-  fasta('fasta'),
-  nexus('nexus'),
-  phylip('phylip'),
-  fastq('fastq'),
-  gzip('gzip'),
-  csv('csv'),
-  text('text'),
-  partition('partition'),
-  log('log'),
-  zip('zip'),
-  unknown('unknown');
+  fasta('fasta', 'FASTA'),
+  nexus('nexus', 'NEXUS'),
+  phylip('phylip', 'PHYLIP'),
+  fastq('fastq', 'FASTQ'),
+  gzip('gzip', 'Gzip'),
+  csv('csv', 'CSV'),
+  text('text', 'Text'),
+  partition('partition', 'Partition'),
+  log('log', 'Log'),
+  zip('zip', 'Archive'),
+  unknown('unknown', 'Other');
 
-  const FileIconType(this._name);
+  const FileIconType(this._name, this.label);
 
   final String _name;
+
+  /// Format name shown in file summaries.
+  final String label;
 
   /// SVG asset of the icon. Asset keys always use POSIX separators.
   String get assetPath => 'assets/images/files/$_name.svg';

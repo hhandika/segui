@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
+import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/styles/decoration.dart';
@@ -406,7 +407,8 @@ class FilesPage extends StatelessWidget {
   }
 }
 
-/// Input and output file lists switched with a segmented control.
+/// Input and output summary and file lists, switched with a segmented
+/// control.
 class FilePanel extends ConsumerWidget {
   const FilePanel({super.key});
 
@@ -429,6 +431,10 @@ class FilePanel extends ConsumerWidget {
           SegmentedButton<FilePanelView>(
             showSelectedIcon: false,
             segments: [
+              const ButtonSegment(
+                value: FilePanelView.summary,
+                label: Text('Summary'),
+              ),
               ButtonSegment(
                 value: FilePanelView.input,
                 label: Text('Input · $inputCount'),
@@ -447,7 +453,11 @@ class FilePanel extends ConsumerWidget {
             child: IndexedStack(
               index: view.index,
               sizing: StackFit.expand,
-              children: const [InputScreen(), OutputScreen()],
+              children: const [
+                FileSummaryView(),
+                InputScreen(),
+                OutputScreen(),
+              ],
             ),
           ),
         ],

@@ -9,6 +9,7 @@ import 'package:segui/services/home_features.dart';
 import 'package:segui/services/io/directory.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/styles/segui_icons.dart';
 
 class SelectDirField extends ConsumerWidget {
   const SelectDirField({
@@ -286,7 +287,10 @@ class PickerLabel extends StatelessWidget {
       return selectedIcon!;
     }
     if (isDir) {
-      return addNew ? Icons.folder_outlined : Icons.folder_open_outlined;
+      // Directory pickers only choose the output directory.
+      return addNew
+          ? SeguiIcons.outputFolderOutlined
+          : SeguiIcons.outputFolderFilled;
     } else {
       return addNew ? Icons.file_copy_outlined : Icons.file_present_outlined;
     }
