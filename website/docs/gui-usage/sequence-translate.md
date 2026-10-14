@@ -9,7 +9,7 @@ Translate DNA sequences to amino acid sequences.
 ## Steps
 
 1. Select the `Sequence` button from the navigation bar.
-2. Select `Translate sequences` from the dropdown menu.
+2. Select `Translate sequences` from the tool list. On narrower windows, select the tool name at the top of the page to switch tools.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
 4. Select the output directory by clicking the `Add directory` button.
 5. Select the output sequence format.

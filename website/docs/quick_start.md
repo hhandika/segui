@@ -117,13 +117,13 @@ We provide sample datasets to help you get started or test the app if you find a
 
 1. Open the app.
 2. Use the navigation bar to select the feature you want to use. For example, to concatenate alignments, click the "Alignments" button.
-3. Use the dropdown menu to select the task. For alignment concatenation, select "Concatenate alignments."
+3. Use the tool list to select the task. For alignment concatenation, select "Concatenate alignments." On narrower windows, select the tool name at the top of the page to switch tools.
 4. Click the "Add file" button to add the input files. You can also input a directory on desktop platforms by clicking the "Add directory" button. The app will look for files matching the directory.
-5. The input tab bar displays all the input files. You can remove a file by clicking the "Remove" button. Removing a file will only remove it from the input list, not the file system.
+5. The input files panel displays all the input files. You can remove a file by clicking the "Remove" button. Removing a file will only remove it from the input list, not the file system.
 6. Click the "Add output directory" button to add the output directory. On mobile platforms, this directory will be the app's default directory.
 7. You also need to add the parameters for some tasks. For example, you must add the filtering parameters to filter alignments.
 8. Click the "Run" button to start the task.
-9. Once done, the app will display the output in the output tab bar. You can also tab the file to open it in the app file viewer. The current version only supports plain text and comma-separated (CSV) data.
+9. Once done, the app will display the output in the output files panel. You can also tab the file to open it in the app file viewer. The current version only supports plain text and comma-separated (CSV) data.
 10. You can also share the output. There are two share options. The quick share will create a zip file containing the output and share it using the system share sheet. You can also share individual files by clicking the share button on the output viewer.
 
 :::warning

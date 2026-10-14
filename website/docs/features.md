@@ -15,7 +15,7 @@ This is for tasks related to multiple sequence alignments, such as concatenation
 
 ### Genomic
 
-The CLI divides the genomic task group into two commands depending on the input files for tasks related to genomic data, such as sequence read and contig. The `read` command accepts sequence read files (FASTQ or gunzip compressed FASTQ), while the `contig` command accepts contig files in FASTA. The GUI groups the genomic task in the same group and relies on a dropdown menu to provide task selection.
+The CLI divides the genomic task group into two commands depending on the input files for tasks related to genomic data, such as sequence read and contig. The `read` command accepts sequence read files (FASTQ or gunzip compressed FASTQ), while the `contig` command accepts contig files in FASTA. The GUI groups the genomic task in the same group and relies on a tool list to provide task selection.
 
 ### Sequences
 

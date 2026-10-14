@@ -35,8 +35,9 @@ class _QuickStartPageState extends State<QuickStartPage> {
                         'For instance, to perform genomic analysis, '
                         'click on the Genomics tab. '
                         'This will take you to the Genomic Analysis page. '
-                        'From there, use the top dropdown menu to '
-                        'select the task you want to perform. ',
+                        'From there, pick the task you want to perform '
+                        'from the tool list. On narrower windows, '
+                        'tap the tool name at the top to switch tools.',
                   ),
                   CardTitle(title: 'Input'),
                   HelpContent(

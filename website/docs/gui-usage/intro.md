@@ -27,7 +27,7 @@ For tasks that allow multiple input files, you can add more files to the input l
 
 ### Removing files
 
-To remove a file, select the input tab. You can remove files from the input list by clicking the `remove` button. Removing files will not delete the files from your storage. It only removes them from the input list.
+To remove a file, open the input files panel. On phones and narrow windows, open it with the files button next to the tool name. You can remove files from the input list by clicking the `remove` button. Removing files will not delete the files from your storage. It only removes them from the input list.
 
 ### Specific Guideline for Mobile Users
 

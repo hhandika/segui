@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/alignment/concat.dart';
 import 'package:segui/screens/alignment/convert.dart';
@@ -16,44 +15,12 @@ class AlignmentPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final operation = ref.watch(alignmentOperationSelectionProvider);
     return SharedOperationPage(
+        operation: operation,
         child: AlignmentOptions(
-      analysis: ref.watch(alignmentOperationSelectionProvider),
-    ));
-  }
-}
-
-class AlignmentTaskSelection extends ConsumerWidget {
-  const AlignmentTaskSelection({super.key, required this.infoContent});
-
-  final Widget infoContent;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return FormView(children: [
-      DropdownButton(
-          value: ref.watch(alignmentOperationSelectionProvider),
-          isExpanded: true,
-          items: alignmentOperationMap.entries
-              .map((e) => DropdownMenuItem(
-                    value: e.key,
-                    child: Text(
-                      e.value,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ))
-              .toList(),
-          onChanged: (AlignmentOperationType? value) {
-            if (value != null) {
-              ref
-                  .read(alignmentOperationSelectionProvider.notifier)
-                  .setOperation(value);
-            }
-            ref.invalidate(fileInputProvider);
-            ref.invalidate(fileOutputProvider);
-          }),
-      infoContent,
-    ]);
+          analysis: operation,
+        ));
   }
 }
 

@@ -1,161 +1,101 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/screens/shared/info.dart';
-import 'package:segui/screens/shared/io/input_view.dart';
-import 'package:segui/screens/shared/io/output_view.dart';
+import 'package:segui/screens/shared/tool_layout.dart';
+import 'package:segui/services/home_features.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 
-/// Standard screen size for medium devices (tablets, small laptops, etc.)
-/// based on the Material Design specification.
-/// https://material.io/blog/material-you-large-screens
-const mdMediumScreenSize = 840;
-
-/// A page that shows a shared operation.
-/// to switch layout between compact and expanded screen.
+/// Tool page that pairs the tool form with tool switching and file lists.
+///
+/// Wide pages show the tool list, the form, and the file panel side by
+/// side. Narrower pages drop the tool list for a switcher in the header,
+/// and compact pages open the files from the header instead.
 class SharedOperationPage extends StatelessWidget {
   const SharedOperationPage({
     super.key,
+    required this.operation,
     required this.child,
   });
 
+  /// Selected [GenomicOperationType], [AlignmentOperationType], or
+  /// [SequenceOperationType].
+  final Enum operation;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
+    final HomeTool tool = homeToolFor(operation);
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      if (constraints.maxWidth > mdMediumScreenSize) {
-        return Row(children: [
-          AppPageView(child: child),
-          const Expanded(
-            child: IOExpandedScreen(),
-          ),
-        ]);
-      } else {
-        return IOCompactScreen(child: child);
+      final double width = constraints.maxWidth;
+      if (width <= expandedScreenSize) {
+        return ToolWorkspace(
+          tool: tool,
+          showSwitcher: true,
+          isCompact: true,
+          child: child,
+        );
       }
+      final bool showToolList = width >= toolListPageWidth;
+      return Padding(
+        padding: const EdgeInsets.all(8),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: ColoredBox(
+            color: Theme.of(context).colorScheme.surface,
+            child: Row(
+              children: [
+                if (showToolList)
+                  ToolListPanel(category: tool.category, selected: tool),
+                Expanded(
+                  child: ToolWorkspace(
+                    tool: tool,
+                    showSwitcher: !showToolList,
+                    isCompact: false,
+                    child: child,
+                  ),
+                ),
+                FileSidePanel(
+                  width: filePanelWidth(width, hasToolList: showToolList),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     });
   }
 }
 
-class FormView extends StatelessWidget {
-  const FormView({super.key, required this.children});
+/// Tool header above the tool form.
+class ToolWorkspace extends StatelessWidget {
+  const ToolWorkspace({
+    super.key,
+    required this.tool,
+    required this.showSwitcher,
+    required this.isCompact,
+    required this.child,
+  });
 
-  final List<Widget> children;
+  final HomeTool tool;
+  final bool showSwitcher;
+  final bool isCompact;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: children,
-    );
-  }
-}
-
-class AppPageView extends StatelessWidget {
-  const AppPageView({super.key, required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final windowWidth = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Container(
-        height: double.infinity,
-        decoration: getContainerDecoration(context),
-        constraints: BoxConstraints(maxWidth: windowWidth > 1800 ? 600 : 500),
-        padding: const EdgeInsets.all(16),
-        child: child,
-      ),
-    );
-  }
-}
-
-class IOExpandedScreen extends ConsumerStatefulWidget {
-  const IOExpandedScreen({super.key});
-
-  @override
-  IOExpandedScreenState createState() => IOExpandedScreenState();
-}
-
-class IOExpandedScreenState extends ConsumerState<IOExpandedScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8),
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: getContainerDecoration(context),
-          child: const DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: TabBar(
-                tabs: [
-                  Tab(
-                    icon: Icon(Icons.input),
-                  ),
-                  Tab(
-                    icon: Icon(Icons.output),
-                  ),
-                ],
-              ),
-              body: TabBarView(
-                children: [
-                  InputScreen(),
-                  OutputScreen(),
-                ],
-              ),
-            ),
-          ),
-        ));
-  }
-}
-
-class IOCompactScreen extends StatefulWidget {
-  const IOCompactScreen({
-    super.key,
-    required this.child,
-  });
-
-  final Widget child;
-
-  @override
-  State<IOCompactScreen> createState() => _IOCompactScreenState();
-}
-
-class _IOCompactScreenState extends State<IOCompactScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return TabContainer(
-        child: DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: const TabBar(
-          tabs: [
-            Tab(
-              icon: Icon(Icons.play_circle_outline),
-            ),
-            Tab(
-              icon: Icon(Icons.input),
-            ),
-            Tab(
-              icon: Icon(Icons.output),
-            ),
-          ],
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ToolHeader(
+          tool: tool,
+          showSwitcher: showSwitcher,
+          isCompact: isCompact,
         ),
-        body: TabBarView(
-          children: [
-            widget.child,
-            const InputScreen(),
-            const OutputScreen(),
-          ],
-        ),
-      ),
-    ));
+        Expanded(child: child),
+      ],
+    );
   }
 }
 
@@ -231,23 +171,6 @@ class _IOListContainerState extends State<IOListContainer> {
         )
       ],
     );
-  }
-}
-
-class TabContainer extends StatelessWidget {
-  const TabContainer({super.key, required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: getContainerDecoration(context),
-          child: child,
-        ));
   }
 }
 

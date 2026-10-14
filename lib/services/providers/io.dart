@@ -64,6 +64,28 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
   }
 }
 
+/// File list shown in the tool page's file panel.
+enum FilePanelView { input, output }
+
+final filePanelViewProvider =
+    NotifierProvider<FilePanelViewSelection, FilePanelView>(
+        FilePanelViewSelection.new);
+
+/// Shows the input files while they change and the output files after a run.
+class FilePanelViewSelection extends Notifier<FilePanelView> {
+  @override
+  FilePanelView build() {
+    ref.listen(fileInputProvider, (previous, next) {
+      state = FilePanelView.input;
+    });
+    return FilePanelView.input;
+  }
+
+  void show(FilePanelView view) {
+    state = view;
+  }
+}
+
 /// The output directory.
 /// This is use to store the output files.
 final fileOutputProvider =
@@ -125,6 +147,10 @@ class FileOutput extends AsyncNotifier<SegulOutputFile> {
           SegulOutputFile.updateFiles(state.value!, isRecursive: isRecursive);
       return updates;
     });
+    // A refresh follows a finished run, so show its output files.
+    if (state.value?.directory != null) {
+      ref.read(filePanelViewProvider.notifier).show(FilePanelView.output);
+    }
   }
 
   Future<void> removeFile(File file) async {

@@ -3,66 +3,25 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
-import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
-import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.sequenceUniqueId;
 
-class IDExtractionView extends StatefulWidget {
+class IDExtractionView extends StatelessWidget {
   const IDExtractionView({super.key});
 
   @override
-  State<IDExtractionView> createState() => _IDExtractionViewState();
-}
-
-class _IDExtractionViewState extends State<IDExtractionView> {
-  bool _isShowingInfo = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Show info by default for desktop screens
-    _isShowingInfo = isDesktopScreen(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SequenceTaskSelection(
-          infoContent: SharedInfoForm(
-            description: 'Extract unique IDs '
-                'across multiple sequence files. '
-                'The output file is a '
-                'list of unique sequence IDs. '
-                'The map option will map sample '
-                'distribution across the input dataset.',
-            isShowingInfo: _isShowingInfo,
-            onClosed: () {
-              setState(() {
-                _isShowingInfo = false;
-              });
-            },
-            onExpanded: () {
-              setState(() {
-                _isShowingInfo = true;
-              });
-            },
-          ),
-        ),
-        const Expanded(child: IDExtractionPage()),
-      ],
-    );
+    return const IDExtractionPage();
   }
 }
 
@@ -84,12 +43,9 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SingleChildScrollView(
-        child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const CardTitle(title: 'Input'),
+    return ToolFormLayout(
+      form: [
+        const CardTitle(step: 1, title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
@@ -97,7 +53,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
           task: task,
         ),
         const SizedBox(height: 16),
-        const CardTitle(title: 'Output'),
+        const CardTitle(step: 2, title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
@@ -117,50 +73,47 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
                 });
               }),
         ]),
-        Center(
-          child: ref.watch(fileInputProvider).when(
-                data: (value) {
-                  return ExecutionButton(
-                    label: _isMap ? 'Extract and Map ID' : 'Extract ID',
-                    isRunning: _ctr.isRunning,
-                    isSuccess: _ctr.isSuccess,
-                    controller: _ctr,
-                    onNewRun: _setNewRun,
-                    onExecuted: value.isEmpty || !_isValid
-                        ? null
-                        : () async {
-                            await _execute(value);
-                          },
-                    onShared: ref.read(fileOutputProvider).when(
-                          data: (value) {
-                            if (value.directory == null) {
-                              return null;
-                            } else {
-                              return _ctr.isRunning
-                                  ? null
-                                  : () async {
-                                      final newFiles =
-                                          getNewFilesFromOutput(value);
-                                      await _shareOutput(
-                                        value.directory!,
-                                        newFiles,
-                                      );
-                                    };
-                            }
-                          },
-                          loading: () => null,
-                          error: (e, _) => null,
-                        ),
-                  );
-                },
-                loading: () => null,
-                error: (e, s) {
-                  return null;
-                },
-              ),
-        )
       ],
-    ));
+      action: ref.watch(fileInputProvider).when(
+            data: (value) {
+              return ExecutionButton(
+                label: _isMap ? 'Extract and Map ID' : 'Extract ID',
+                isRunning: _ctr.isRunning,
+                isSuccess: _ctr.isSuccess,
+                controller: _ctr,
+                onNewRun: _setNewRun,
+                onExecuted: value.isEmpty || !_isValid
+                    ? null
+                    : () async {
+                        await _execute(value);
+                      },
+                onShared: ref.read(fileOutputProvider).when(
+                      data: (value) {
+                        if (value.directory == null) {
+                          return null;
+                        } else {
+                          return _ctr.isRunning
+                              ? null
+                              : () async {
+                                  final newFiles = getNewFilesFromOutput(value);
+                                  await _shareOutput(
+                                    value.directory!,
+                                    newFiles,
+                                  );
+                                };
+                        }
+                      },
+                      loading: () => null,
+                      error: (e, _) => null,
+                    ),
+              );
+            },
+            loading: () => null,
+            error: (e, s) {
+              return null;
+            },
+          ),
+    );
   }
 
   bool get _isValid {

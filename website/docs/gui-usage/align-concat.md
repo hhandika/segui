@@ -8,9 +8,9 @@ Concatenate multiple alignments into a single alignment with partition output.
 ## Steps
 
 1. Select the `Alignments` button from the navigation bar.
-2. Select `Concatenate alignments` from the dropdown menu.
+2. Select `Concatenate alignments` from the tool list. On narrower windows, select the tool name at the top of the page to switch tools.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
-4. All the input files will be displayed in the input tab bar. You can remove the file by clicking the `Remove` button. Removing the file will only remove it from input list and not from the file system.
+4. All the input files will be displayed in the input files panel. On phones and narrow windows, open it with the files button next to the tool name. You can remove the file by clicking the `Remove` button. Removing the file will only remove it from input list and not from the file system.
 5. Select input format (optional). See the [supported file extensions](/docs/features#supported-file-extensions) for the list of supported extensions for alignment files.
 6. Add the output directory by clicking the `Add output directory` button. On mobile platforms, the directory will be the default directory for the app.
 7. Set the prefix for the output file.
@@ -27,11 +27,11 @@ For example, if you set the prefix to `concat`, for nexus output and RAxML parti
 
 ## Output format
 
-The app supports FASTA, NEXUS, and PHYLIP output formats. By default, it sets to non-interleaved format. You can set it to interleaved format by clicking the `set interleave format` button. Use the `show more` button to see the options.
+The app supports FASTA, NEXUS, and PHYLIP output formats. By default, it sets to non-interleaved format. You can set it to interleaved format by clicking the `set interleave format` button. Use the `Advanced options` button to see the options.
 
 ## Partition format
 
-The app supports Charset, NEXUS, and RAxML. The charset option only works when the output is NEXUS. It also allows to set to codon model partition. Use the `show more` button to see the options.
+The app supports Charset, NEXUS, and RAxML. The charset option only works when the output is NEXUS. It also allows to set to codon model partition. Use the `Advanced options` button to see the options.
 
 ## Output file
 

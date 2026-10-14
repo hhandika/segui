@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
-import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
-import 'package:segui/screens/shared/info.dart';
+import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io/file.dart';
@@ -14,52 +13,15 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.sequenceRemoval;
 
-class SequenceRemovalView extends StatefulWidget {
+class SequenceRemovalView extends StatelessWidget {
   const SequenceRemovalView({super.key});
 
   @override
-  State<SequenceRemovalView> createState() => _SequenceRemovalViewState();
-}
-
-class _SequenceRemovalViewState extends State<SequenceRemovalView> {
-  bool _isShowingInfo = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Show info by default for desktop screens
-    _isShowingInfo = isDesktopScreen(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SequenceTaskSelection(
-          infoContent: SharedInfoForm(
-            description: 'Remove sequences from a collection '
-                'of sequence files based on sequence name. '
-                'Include support for regular expression.',
-            isShowingInfo: _isShowingInfo,
-            onClosed: () {
-              setState(() {
-                _isShowingInfo = false;
-              });
-            },
-            onExpanded: () {
-              setState(() {
-                _isShowingInfo = true;
-              });
-            },
-          ),
-        ),
-        const Expanded(child: SequenceRemovalPage()),
-      ],
-    );
+    return const SequenceRemovalPage();
   }
 }
 
@@ -89,19 +51,15 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SingleChildScrollView(
-        child: Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const CardTitle(title: 'Input'),
+    return ToolFormLayout(
+      form: [
+        const CardTitle(step: 1, title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           task: task,
         ),
-        const CardTitle(title: 'Parameters'),
+        const CardTitle(step: 2, title: 'Parameters'),
         FormCard(
           children: [
             DropdownButtonFormField(
@@ -137,7 +95,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
             ),
           ],
         ),
-        const CardTitle(title: 'Output'),
+        const CardTitle(step: 3, title: 'Output'),
         FormCard(
           children: [
             SharedOutputDirField(
@@ -158,50 +116,47 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
             ),
           ],
         ),
-        Center(
-          child: ref.watch(fileInputProvider).when(
-                data: (value) {
-                  return ExecutionButton(
-                    label: 'Remove',
-                    isRunning: _ctr.isRunning,
-                    isSuccess: _ctr.isSuccess,
-                    controller: _ctr,
-                    onNewRun: _setNewRun,
-                    onExecuted: value.isEmpty || !_isValid
-                        ? null
-                        : () async {
-                            await _execute(value);
-                          },
-                    onShared: ref.read(fileOutputProvider).when(
-                          data: (value) {
-                            if (value.directory == null) {
-                              return null;
-                            } else {
-                              return _ctr.isRunning
-                                  ? null
-                                  : () async {
-                                      final newFiles =
-                                          getNewFilesFromOutput(value);
-                                      await _shareOutput(
-                                        value.directory!,
-                                        newFiles,
-                                      );
-                                    };
-                            }
-                          },
-                          loading: () => null,
-                          error: (e, _) => null,
-                        ),
-                  );
-                },
-                loading: () => null,
-                error: (e, s) {
-                  return null;
-                },
-              ),
-        )
       ],
-    ));
+      action: ref.watch(fileInputProvider).when(
+            data: (value) {
+              return ExecutionButton(
+                label: 'Remove',
+                isRunning: _ctr.isRunning,
+                isSuccess: _ctr.isSuccess,
+                controller: _ctr,
+                onNewRun: _setNewRun,
+                onExecuted: value.isEmpty || !_isValid
+                    ? null
+                    : () async {
+                        await _execute(value);
+                      },
+                onShared: ref.read(fileOutputProvider).when(
+                      data: (value) {
+                        if (value.directory == null) {
+                          return null;
+                        } else {
+                          return _ctr.isRunning
+                              ? null
+                              : () async {
+                                  final newFiles = getNewFilesFromOutput(value);
+                                  await _shareOutput(
+                                    value.directory!,
+                                    newFiles,
+                                  );
+                                };
+                        }
+                      },
+                      loading: () => null,
+                      error: (e, _) => null,
+                    ),
+              );
+            },
+            loading: () => null,
+            error: (e, s) {
+              return null;
+            },
+          ),
+    );
   }
 
   bool get _isValid {

@@ -9,7 +9,7 @@ Split alignments into multiple files based on the partition.
 ## Steps
 
 1. Select the `Alignment` button from the navigation bar.
-2. Select `Split alignments` from the dropdown menu.
+2. Select `Split alignments` from the tool list. On narrower windows, select the tool name at the top of the page to switch tools.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
 4. Select the output directory by clicking the `Add directory` button.
 5. Input alignment partition.

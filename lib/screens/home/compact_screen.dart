@@ -4,6 +4,7 @@ import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/settings/settings.dart';
+import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/styles/decoration.dart';
 
 class CompactScreenView extends ConsumerWidget {
@@ -18,8 +19,10 @@ class CompactScreenView extends ConsumerWidget {
           elevation: 0,
           backgroundColor:
               ref.watch(tabSelectionProvider) == 0 ? null : mainColor,
-          actions: const [
-            SettingButtons(),
+          actions: [
+            // Home has its own tool search.
+            if (ref.watch(tabSelectionProvider) != 0) const GlobalToolSearch(),
+            const SettingButtons(),
           ],
         ),
         backgroundColor:

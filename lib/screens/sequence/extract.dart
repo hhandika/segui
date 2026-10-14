@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
-import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
-import 'package:segui/screens/shared/info.dart';
+import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/services/controllers.dart';
@@ -15,52 +14,15 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.sequenceExtraction;
 
-class ExtractSequenceView extends StatefulWidget {
+class ExtractSequenceView extends StatelessWidget {
   const ExtractSequenceView({super.key});
 
   @override
-  State<ExtractSequenceView> createState() => _ExtractSequenceViewState();
-}
-
-class _ExtractSequenceViewState extends State<ExtractSequenceView> {
-  bool _isShowingInfo = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Show info by default for desktop screens
-    _isShowingInfo = isDesktopScreen(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SequenceTaskSelection(
-          infoContent: SharedInfoForm(
-            description: 'Extract sequences from multiple files. '
-                'Supports regex, text file, '
-                'and semicolon-separated IDs.',
-            isShowingInfo: _isShowingInfo,
-            onClosed: () {
-              setState(() {
-                _isShowingInfo = false;
-              });
-            },
-            onExpanded: () {
-              setState(() {
-                _isShowingInfo = true;
-              });
-            },
-          ),
-        ),
-        const Expanded(child: ExtractSequencePage()),
-      ],
-    );
+    return const ExtractSequencePage();
   }
 }
 
@@ -83,19 +45,15 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SingleChildScrollView(
-        child: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const CardTitle(title: 'Input'),
+    return ToolFormLayout(
+      form: [
+        const CardTitle(step: 1, title: 'Input'),
         SharedSequenceInputForm(
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           task: task,
         ),
-        const CardTitle(title: 'Parameters'),
+        const CardTitle(step: 2, title: 'Parameters'),
         FormCard(children: [
           DropdownButtonFormField(
             decoration: const InputDecoration(
@@ -136,7 +94,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                       : 'seq1;seq2;seq3',
                 ),
         ]),
-        const CardTitle(title: 'Output'),
+        const CardTitle(step: 3, title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
@@ -156,50 +114,47 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
             },
           ),
         ]),
-        Center(
-          child: ref.watch(fileInputProvider).when(
-                data: (value) {
-                  return ExecutionButton(
-                    label: 'Extract',
-                    isRunning: _ctr.isRunning,
-                    isSuccess: _ctr.isSuccess,
-                    controller: _ctr,
-                    onNewRun: _setNewRun,
-                    onExecuted: value.isEmpty || !_isValid(value)
-                        ? null
-                        : () async {
-                            await _execute(value);
-                          },
-                    onShared: ref.read(fileOutputProvider).when(
-                          data: (value) {
-                            if (value.directory == null) {
-                              return null;
-                            } else {
-                              return _ctr.isRunning
-                                  ? null
-                                  : () async {
-                                      final newFiles =
-                                          getNewFilesFromOutput(value);
-                                      await _shareOutput(
-                                        value.directory!,
-                                        newFiles,
-                                      );
-                                    };
-                            }
-                          },
-                          loading: () => null,
-                          error: (e, _) => null,
-                        ),
-                  );
-                },
-                loading: () => null,
-                error: (e, s) {
-                  return null;
-                },
-              ),
-        )
       ],
-    ));
+      action: ref.watch(fileInputProvider).when(
+            data: (value) {
+              return ExecutionButton(
+                label: 'Extract',
+                isRunning: _ctr.isRunning,
+                isSuccess: _ctr.isSuccess,
+                controller: _ctr,
+                onNewRun: _setNewRun,
+                onExecuted: value.isEmpty || !_isValid(value)
+                    ? null
+                    : () async {
+                        await _execute(value);
+                      },
+                onShared: ref.read(fileOutputProvider).when(
+                      data: (value) {
+                        if (value.directory == null) {
+                          return null;
+                        } else {
+                          return _ctr.isRunning
+                              ? null
+                              : () async {
+                                  final newFiles = getNewFilesFromOutput(value);
+                                  await _shareOutput(
+                                    value.directory!,
+                                    newFiles,
+                                  );
+                                };
+                        }
+                      },
+                      loading: () => null,
+                      error: (e, _) => null,
+                    ),
+              );
+            },
+            loading: () => null,
+            error: (e, s) {
+              return null;
+            },
+          ),
+    );
   }
 
   bool _isValid(List<SegulInputFile> inputFiles) {

@@ -10,6 +10,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/styles/decoration.dart';
 
+/// Runs a tool, then offers a new run and sharing after it succeeds.
 class ExecutionButton extends StatelessWidget {
   const ExecutionButton({
     super.key,
@@ -32,43 +33,31 @@ class ExecutionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
-        child: isSuccess
-            ? Wrap(
-                spacing: 16,
-                children: [
-                  NewRunButton(
-                    controller: controller,
-                    onPressed: onNewRun,
-                  ),
-                  ShareButton(
-                    isRunning: isRunning,
-                    onPressed: onShared,
-                  ),
-                ],
-              )
-            : Column(
-                children: [
-                  Visibility(
-                    visible: isRunning,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        '⏳ Executing task. '
-                        'Keep this screen open to avoid interruption.',
-                        style: Theme.of(context).textTheme.labelMedium,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  PrimaryButton(
-                    label: label,
-                    onPressed: onExecuted,
-                    isRunning: isRunning,
-                  ),
-                ],
-              ));
+    if (isSuccess) {
+      return Wrap(
+        spacing: 12,
+        runSpacing: 8,
+        alignment: WrapAlignment.end,
+        children: [
+          NewRunButton(
+            controller: controller,
+            onPressed: onNewRun,
+          ),
+          ShareButton(
+            isRunning: isRunning,
+            onPressed: onShared,
+          ),
+        ],
+      );
+    }
+    return Tooltip(
+      message: isRunning ? 'Keep this screen open to avoid interruption.' : '',
+      child: PrimaryButton(
+        label: isRunning ? 'Running' : label,
+        onPressed: isRunning ? null : onExecuted,
+        isRunning: isRunning,
+      ),
+    );
   }
 }
 
@@ -141,19 +130,26 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        elevation: 0,
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return FilledButton.icon(
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(0, 52),
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+        shape: const StadiumBorder(),
+        textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
       ),
       icon: isRunning
-          ? const SizedBox(
-              height: 8,
-              width: 8,
-              child: CircularProgressIndicator(),
+          ? SizedBox(
+              height: 18,
+              width: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: colors.onSurfaceVariant,
+              ),
             )
-          : const Icon(Icons.play_arrow),
+          : const Icon(Icons.play_arrow_rounded),
       onPressed: onPressed,
       label: Text(label),
     );
@@ -197,9 +193,12 @@ class ShowMoreButton extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.only(top: 4),
-        child: TextButton(
+        child: TextButton.icon(
           onPressed: onPressed,
-          child: Text(isShowMore ? 'Show less' : 'Show more'),
+          icon: Icon(
+            isShowMore ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+          ),
+          label: Text(isShowMore ? 'Fewer options' : 'Advanced options'),
         ),
       ),
     );

@@ -9,7 +9,7 @@ This feature is the opposite of [sequence extraction](./sequence-extract) featur
 ## Steps
 
 1. Select the `Alignment` button from the navigation bar.
-2. Select `Remove sequences` from the dropdown menu.
+2. Select `Remove sequences` from the tool list. On narrower windows, select the tool name at the top of the page to switch tools.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
 4. Select the option to remove sequences based on a list of IDs or a regular expression.
 5. Add the list of IDs or regular expression.

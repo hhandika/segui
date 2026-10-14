@@ -29,6 +29,7 @@ class HomeTool {
     required this.operation,
     required this.title,
     required this.description,
+    required this.about,
     required this.icon,
     required this.svgAsset,
   });
@@ -37,6 +38,9 @@ class HomeTool {
   final Enum operation;
   final String title;
   final String description;
+
+  /// Longer explanation shown in the tool page header.
+  final String about;
   final IconData icon;
 
   /// SVG source of [icon], drawn on tool cards.
@@ -72,6 +76,9 @@ const HomeTool readSummaryTool = HomeTool(
   operation: GenomicOperationType.readSummary,
   title: 'Summarize genomic reads',
   description: 'FASTQ quality: read counts, length, GC content, and Q-scores.',
+  about: 'Summarize raw genomic reads by calculating the number of reads, '
+      'base counts, GC and AT content, low Q-score counts, and other '
+      'relevant statistics.',
   icon: SeguiIcons.readSummaryOutlined,
   svgAsset: 'assets/icons/read_summary_outlined.svg',
 );
@@ -81,6 +88,8 @@ const HomeTool contigSummaryTool = HomeTool(
   operation: GenomicOperationType.contigSummary,
   title: 'Summarize genomic contigs',
   description: 'Contig counts, N50, length, and GC content for assemblies.',
+  about: 'Summarize contigs by calculating the number of contigs, total '
+      'length, base count, N50, and other relevant statistics.',
   icon: SeguiIcons.contigSummaryOutlined,
   svgAsset: 'assets/icons/contig_summary_outlined.svg',
 );
@@ -90,6 +99,8 @@ const HomeTool concatenationTool = HomeTool(
   operation: AlignmentOperationType.concatenation,
   title: 'Concatenate alignments',
   description: 'Merge locus alignments into a supermatrix with partitions.',
+  about: 'Concatenate multiple alignments and generate a partition file for '
+      'the concatenated alignment.',
   icon: SeguiIcons.concatenateOutlined,
   svgAsset: 'assets/icons/concatenate_outlined.svg',
 );
@@ -99,6 +110,8 @@ const HomeTool conversionTool = HomeTool(
   operation: AlignmentOperationType.conversion,
   title: 'Convert alignments',
   description: 'Switch alignments between FASTA, NEXUS, and PHYLIP.',
+  about: 'Convert sequence alignments to other formats. It can convert '
+      'multiple files at once.',
   icon: SeguiIcons.convertOutlined,
   svgAsset: 'assets/icons/convert_outlined.svg',
 );
@@ -108,6 +121,9 @@ const HomeTool filterTool = HomeTool(
   operation: AlignmentOperationType.filter,
   title: 'Filter alignments',
   description: 'Keep loci by taxon coverage, length, or informative sites.',
+  about: 'Filter alignments by minimal alignment length, data matrix '
+      'completeness, count of parsimony informative sites, and percentage '
+      'of parsimony informative sites.',
   icon: SeguiIcons.filterOutlined,
   svgAsset: 'assets/icons/filter_outlined.svg',
 );
@@ -117,6 +133,8 @@ const HomeTool partitionTool = HomeTool(
   operation: AlignmentOperationType.partition,
   title: 'Convert partition',
   description: 'Convert between RAxML, NEXUS, and charset partitions.',
+  about: 'Convert partition files to a different format. It can convert '
+      'multiple files at once.',
   icon: SeguiIcons.partitionOutlined,
   svgAsset: 'assets/icons/partition_outlined.svg',
 );
@@ -126,6 +144,9 @@ const HomeTool splitTool = HomeTool(
   operation: AlignmentOperationType.split,
   title: 'Split alignments',
   description: 'Break a concatenated matrix back into individual loci.',
+  about: 'Split a concatenated alignment into multiple files based on its '
+      'partitions. The partition can be in a separate RAxML or NEXUS file, '
+      'or in the same file as a charset block.',
   icon: SeguiIcons.splitOutlined,
   svgAsset: 'assets/icons/split_outlined.svg',
 );
@@ -135,6 +156,8 @@ const HomeTool alignmentSummaryTool = HomeTool(
   operation: AlignmentOperationType.summary,
   title: 'Summarize alignments',
   description: 'Missing data, informative sites, GC, and length statistics.',
+  about: 'Summarize alignments by calculating the number of sequences, sites, '
+      'parsimony informative sites, and other relevant statistics.',
   icon: SeguiIcons.alignmentSummaryOutlined,
   svgAsset: 'assets/icons/alignment_summary_outlined.svg',
 );
@@ -144,6 +167,8 @@ const HomeTool extractionTool = HomeTool(
   operation: SequenceOperationType.extraction,
   title: 'Extract sequences',
   description: 'Pull sequences out of alignments by ID list or regex.',
+  about: 'Extract sequences from multiple files. Supports regex, text file, '
+      'and semicolon-separated IDs.',
   icon: SeguiIcons.extractOutlined,
   svgAsset: 'assets/icons/extract_outlined.svg',
 );
@@ -153,6 +178,9 @@ const HomeTool idExtractionTool = HomeTool(
   operation: SequenceOperationType.idExtraction,
   title: 'Extract and map sequence IDs',
   description: 'List unique sample IDs and the files each one appears in.',
+  about: 'Extract unique IDs across multiple sequence files. The output file '
+      'is a list of unique sequence IDs. The map option maps sample '
+      'distribution across the input dataset.',
   icon: SeguiIcons.extractIdOutlined,
   svgAsset: 'assets/icons/extract_id_outlined.svg',
 );
@@ -162,6 +190,8 @@ const HomeTool removalTool = HomeTool(
   operation: SequenceOperationType.removal,
   title: 'Remove sequences',
   description: 'Drop samples by ID or regex across many alignments.',
+  about: 'Remove sequences from a collection of sequence files based on '
+      'sequence name. Supports regular expressions.',
   icon: SeguiIcons.removeOutlined,
   svgAsset: 'assets/icons/remove_outlined.svg',
 );
@@ -171,6 +201,8 @@ const HomeTool renamingTool = HomeTool(
   operation: SequenceOperationType.renaming,
   title: 'Rename sequence IDs',
   description: 'Rename samples from a mapping file or a text pattern.',
+  about: 'Rename sequence IDs across a collection of sequence files. Supports '
+      'file, text, and regular expression input.',
   icon: SeguiIcons.renameOutlined,
   svgAsset: 'assets/icons/rename_outlined.svg',
 );
@@ -180,6 +212,8 @@ const HomeTool translationTool = HomeTool(
   operation: SequenceOperationType.translation,
   title: 'Translate sequences',
   description: 'Translate DNA to amino acids with NCBI genetic codes.',
+  about: 'Translate nucleotide sequences to amino acid sequences. It can '
+      'translate multiple files at once.',
   icon: SeguiIcons.translateOutlined,
   svgAsset: 'assets/icons/translate_outlined.svg',
 );
@@ -243,6 +277,11 @@ List<HomeTool> filterHomeTools(ToolCategory category, String query) {
   return homeTools
       .where((tool) => tool.category == category && tool.matches(query))
       .toList();
+}
+
+/// The tool that runs [operation].
+HomeTool homeToolFor(Enum operation) {
+  return homeTools.firstWhere((tool) => tool.operation == operation);
 }
 
 /// All tools sorted alphabetically by title.

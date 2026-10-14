@@ -11,9 +11,9 @@ This feature provides summary statistics for sequence reads and contiguous seque
 ### Steps for Sequence Read Summary Statistics
 
 1. Select the `Genomic` button from the navigation bar.
-2. Select `Summarize genomic reads` from the dropdown menu.
+2. Select `Summarize genomic reads` from the tool list. On narrower windows, select the tool name at the top of the page to switch tools.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
-4. All the input files will be displayed in the input tab bar. You can remove the file by clicking the `Remove` button. Removing the file will only remove it from input list and not from the file system.
+4. All the input files will be displayed in the input files panel. On phones and narrow windows, open it with the files button next to the tool name. You can remove the file by clicking the `Remove` button. Removing the file will only remove it from input list and not from the file system.
 5. Select the summary mode.
 6. Click the `Run` button labeled `Sequence read summary statistics` to start the task.
 7. Share the output (optional).
@@ -48,9 +48,9 @@ The app supports the following summary modes:
 ### Steps for Contig Summary Statistics
 
 1. Select the `Genomic` button from the navigation bar.
-2. Select `Summarize genomic contigs` from the dropdown menu.
+2. Select `Summarize genomic contigs` from the tool list. On narrower windows, select the tool name at the top of the page to switch tools.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
-4. All the input files will be displayed in the input tab bar. You can remove the file by clicking the `Remove` button. Removing the file will only remove it from input list and not from the file system.
+4. All the input files will be displayed in the input files panel. On phones and narrow windows, open it with the files button next to the tool name. You can remove the file by clicking the `Remove` button. Removing the file will only remove it from input list and not from the file system.
 5. Add the output directory by clicking the `Add output directory` button. On mobile platforms, the directory will be the default directory for the app.
 6. Click the `Run` button labeled `Contig summary statistics` to start the task.
 7. Share the output (optional).

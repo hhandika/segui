@@ -3,63 +3,25 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
-import 'package:segui/screens/genomics/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
-import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/tasks/genomics.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/styles/decoration.dart';
 
 const SupportedTask task = SupportedTask.genomicContigSummary;
 
-class ContigView extends StatefulWidget {
+class ContigView extends StatelessWidget {
   const ContigView({super.key});
 
   @override
-  State<ContigView> createState() => _ContigViewState();
-}
-
-class _ContigViewState extends State<ContigView> {
-  bool _isShowingInfo = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Show info by default for desktop screens
-    _isShowingInfo = isDesktopScreen(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GenomicTaskSelection(
-          infoContent: SharedInfoForm(
-            description: 'Summarize contigs by calculating the number of '
-                'contigs, total length, base count N50, '
-                'and other relevant statistics.',
-            isShowingInfo: _isShowingInfo,
-            onClosed: () {
-              setState(() {
-                _isShowingInfo = false;
-              });
-            },
-            onExpanded: () {
-              setState(() {
-                _isShowingInfo = true;
-              });
-            },
-          ),
-        ),
-        const Expanded(child: ContigPage()),
-      ],
-    );
+    return const ContigPage();
   }
 }
 
@@ -86,86 +48,81 @@ class ContigPageState extends ConsumerState<ContigPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SingleChildScrollView(
-        child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-          const CardTitle(title: 'Input'),
-          FormCard(children: [
-            InputSelectorForm(
-              xTypeGroup: genomicContigTypeGroup,
-              allowMultiple: true,
-              ctr: _ctr,
-              hasSecondaryPicker: false,
-              allowDirectorySelection: true,
-              task: task,
-            ),
-            SharedDropdownField(
-              value: _ctr.inputFormatController,
-              label: 'Format',
-              items: contigFormat,
-              onChanged: (value) {
-                setState(() {
-                  _ctr.inputFormatController = value;
-                });
-              },
-            ),
-          ]),
-          const CardTitle(title: 'Output'),
-          FormCard(children: [
-            SharedOutputDirField(
-              ctr: _ctr.outputDir,
-            ),
-            SharedTextField(
-              controller: _ctr.prefixController,
-              label: 'Prefix',
-              hint: 'contig_summary, species_contig_summary, etc.',
-            ),
-          ]),
-          Center(
-            child: ref.watch(fileInputProvider).when(
-                  data: (value) {
-                    return ExecutionButton(
-                      label: 'Summarize',
-                      isRunning: _ctr.isRunning,
-                      isSuccess: _ctr.isSuccess,
-                      controller: _ctr,
-                      onNewRun: _setNewRun,
-                      onExecuted: value.isEmpty || !_isValid
-                          ? null
-                          : () async {
-                              await _execute(value);
-                            },
-                      onShared: ref.read(fileOutputProvider).when(
-                            data: (value) {
-                              if (value.directory == null) {
-                                return null;
-                              } else {
-                                return _ctr.isRunning
-                                    ? null
-                                    : () async {
-                                        final newFiles =
-                                            getNewFilesFromOutput(value);
-                                        await _shareOutput(
-                                          value.directory!,
-                                          newFiles,
-                                        );
-                                      };
-                              }
-                            },
-                            loading: () => null,
-                            error: (e, _) => null,
-                          ),
-                    );
-                  },
-                  loading: () => null,
-                  error: (e, s) {
-                    return null;
-                  },
-                ),
-          )
-        ]));
+    return ToolFormLayout(
+      form: [
+        const CardTitle(step: 1, title: 'Input'),
+        FormCard(children: [
+          InputSelectorForm(
+            xTypeGroup: genomicContigTypeGroup,
+            allowMultiple: true,
+            ctr: _ctr,
+            hasSecondaryPicker: false,
+            allowDirectorySelection: true,
+            task: task,
+          ),
+          SharedDropdownField(
+            value: _ctr.inputFormatController,
+            label: 'Format',
+            items: contigFormat,
+            onChanged: (value) {
+              setState(() {
+                _ctr.inputFormatController = value;
+              });
+            },
+          ),
+        ]),
+        const CardTitle(step: 2, title: 'Output'),
+        FormCard(children: [
+          SharedOutputDirField(
+            ctr: _ctr.outputDir,
+          ),
+          SharedTextField(
+            controller: _ctr.prefixController,
+            label: 'Prefix',
+            hint: 'contig_summary, species_contig_summary, etc.',
+          ),
+        ]),
+      ],
+      action: ref.watch(fileInputProvider).when(
+            data: (value) {
+              return ExecutionButton(
+                label: 'Summarize',
+                isRunning: _ctr.isRunning,
+                isSuccess: _ctr.isSuccess,
+                controller: _ctr,
+                onNewRun: _setNewRun,
+                onExecuted: value.isEmpty || !_isValid
+                    ? null
+                    : () async {
+                        await _execute(value);
+                      },
+                onShared: ref.read(fileOutputProvider).when(
+                      data: (value) {
+                        if (value.directory == null) {
+                          return null;
+                        } else {
+                          return _ctr.isRunning
+                              ? null
+                              : () async {
+                                  final newFiles = getNewFilesFromOutput(value);
+                                  await _shareOutput(
+                                    value.directory!,
+                                    newFiles,
+                                  );
+                                };
+                        }
+                      },
+                      loading: () => null,
+                      error: (e, _) => null,
+                    ),
+              );
+            },
+            loading: () => null,
+            error: (e, s) {
+              return null;
+            },
+          ),
+    );
   }
 
   bool get _isValid {

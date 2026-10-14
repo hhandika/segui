@@ -80,22 +80,63 @@ class SharedSequenceInputFormState
   }
 }
 
+/// Section title in a tool form, numbered when [step] is set.
 class CardTitle extends StatelessWidget {
-  const CardTitle({super.key, required this.title});
+  const CardTitle({super.key, required this.title, this.step});
 
   final String title;
+  final int? step;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium,
-        ));
+      padding: const EdgeInsets.fromLTRB(4, 24, 0, 10),
+      child: Row(
+        children: [
+          if (step != null) ...[
+            StepBadge(step: step!),
+            const SizedBox(width: 12),
+          ],
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
+class StepBadge extends StatelessWidget {
+  const StepBadge({super.key, required this.step});
+
+  final int step;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Container(
+      width: 28,
+      height: 28,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: colors.primary,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        '$step',
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: colors.onPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+      ),
+    );
+  }
+}
+
+/// Card that groups the fields of one tool form section.
 class FormCard extends StatelessWidget {
   const FormCard({super.key, required this.children});
 
@@ -103,13 +144,37 @@ class FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonCard(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: children,
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colors = theme.colorScheme;
+    final OutlineInputBorder border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: colors.outlineVariant),
+    );
+    return Theme(
+      data: theme.copyWith(
+        inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+          border: border,
+          enabledBorder: border,
+          focusedBorder: border.copyWith(
+            borderSide: BorderSide(color: colors.primary, width: 2),
+          ),
+          filled: true,
+          fillColor: colors.surfaceContainerLowest,
+        ),
+      ),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: colors.surfaceContainerLowest,
+          border: Border.all(color: colors.outlineVariant),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: children,
+        ),
       ),
     );
   }
@@ -153,25 +218,30 @@ class SharedTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        suffix: controller.text.isNotEmpty
-            ? IconButton(
-                tooltip: 'Clear',
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  controller.clear();
-                },
-              )
-            : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+          suffix: controller.text.isNotEmpty
+              ? IconButton(
+                  tooltip: 'Clear',
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    controller.clear();
+                  },
+                )
+              : null,
+        ),
       ),
     );
   }
 }
 
+/// Picks one of [items], as segmented buttons when the options are few and
+/// short, or as a dropdown otherwise.
 class SharedDropdownField extends StatelessWidget {
   const SharedDropdownField({
     super.key,
@@ -182,6 +252,9 @@ class SharedDropdownField extends StatelessWidget {
     this.enabled = true,
   });
 
+  static const int maxSegments = 4;
+  static const int maxSegmentLabelLength = 10;
+
   final String? value;
   final String label;
   final List<String> items;
@@ -190,22 +263,89 @@ class SharedDropdownField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String?>(
-      isExpanded: true,
-      initialValue: value,
-      decoration: InputDecoration(
-        labelText: label,
-      ),
-      items: items
-          .map((item) => DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  overflow: TextOverflow.clip,
-                ),
-              ))
-          .toList(),
-      onChanged: enabled ? onChanged : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: _isSegmented
+          ? SegmentedField(
+              value: value,
+              label: label,
+              items: items,
+              onChanged: enabled ? onChanged : null,
+            )
+          : DropdownButtonFormField<String?>(
+              isExpanded: true,
+              initialValue: value,
+              decoration: InputDecoration(
+                labelText: label,
+              ),
+              items: items
+                  .map((item) => DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                          overflow: TextOverflow.clip,
+                        ),
+                      ))
+                  .toList(),
+              onChanged: enabled ? onChanged : null,
+            ),
+    );
+  }
+
+  bool get _isSegmented {
+    return items.length <= maxSegments &&
+        items.every((item) => item.length <= maxSegmentLabelLength);
+  }
+}
+
+class SegmentedField extends StatelessWidget {
+  const SegmentedField({
+    super.key,
+    required this.value,
+    required this.label,
+    required this.items,
+    required this.onChanged,
+  });
+
+  final String? value;
+  final String label;
+  final List<String> items;
+  final void Function(String?)? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: double.infinity,
+          child: SegmentedButton<String>(
+            showSelectedIcon: false,
+            emptySelectionAllowed: value == null,
+            segments: items
+                .map((item) => ButtonSegment<String>(
+                      value: item,
+                      label: Text(item, overflow: TextOverflow.ellipsis),
+                    ))
+                .toList(),
+            selected: {if (value != null) value!},
+            onSelectionChanged: onChanged == null
+                ? null
+                : (selection) {
+                    if (selection.isNotEmpty) {
+                      onChanged!(selection.first);
+                    }
+                  },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -242,7 +382,8 @@ class SwitchForm extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label),
+        Expanded(child: Text(label)),
+        const SizedBox(width: 12),
         Switch(
           value: value,
           onChanged: onPressed,

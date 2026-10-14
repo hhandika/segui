@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/home/components/navigation.dart';
+import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/styles/decoration.dart';
 
 class LargeScreenView extends ConsumerStatefulWidget {
@@ -34,6 +35,11 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
         elevation: 0,
         title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
         backgroundColor: mainColor,
+        // Home has its own tool search.
+        actions: [
+          if (ref.watch(tabSelectionProvider) != 0) const GlobalToolSearch(),
+          const SizedBox(width: 16),
+        ],
         leading: screenWidth < 840
             ? null
             : IconButton(
