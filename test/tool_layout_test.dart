@@ -189,6 +189,35 @@ void main() {
     expect(container.read(filePanelViewProvider), FilePanelView.summary);
   });
 
+  testWidgets('New tool page resets the file panel without a build error',
+      (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    final panel = container.listen(filePanelViewProvider, (_, __) {});
+    addTearDown(panel.close);
+    container.read(fileInputProvider);
+    container.read(filePanelViewProvider.notifier).show(FilePanelView.output);
+    expect(panel.read(), FilePanelView.output);
+    container.invalidate(fileInputProvider);
+
+    // The page's first build rebuilds the invalidated input files.
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        home: Consumer(builder: (context, ref, _) {
+          ref.watch(fileInputProvider);
+          return Text(ref.watch(filePanelViewProvider).name);
+        }),
+      ),
+    ));
+    expect(tester.takeException(), isNull);
+    expect(find.text('summary'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(milliseconds: 1));
+  });
+
   testWidgets('Global search opens any tool', (tester) async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],

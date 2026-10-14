@@ -77,9 +77,10 @@ final filePanelViewProvider =
 class FilePanelViewSelection extends Notifier<FilePanelView> {
   @override
   FilePanelView build() {
-    ref.listen(fileInputProvider, (previous, next) {
-      state = FilePanelView.summary;
-    });
+    // Watching rebuilds this notifier, which is safe while widgets build.
+    // Setting state from a listener throws when an invalidated input
+    // provider rebuilds during a widget's build.
+    ref.watch(fileInputProvider);
     return FilePanelView.summary;
   }
 
