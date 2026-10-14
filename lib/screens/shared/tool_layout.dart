@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
@@ -314,10 +315,8 @@ class ToolSwitcherButton extends StatelessWidget {
         message: 'Switch tool',
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => showModalBottomSheet(
+          onTap: () => showResponsiveSheet(
             context: context,
-            showDragHandle: true,
-            isScrollControlled: true,
             builder: (context) => ToolSwitcherSheet(tool: tool),
           ),
           child: Padding(
@@ -353,7 +352,9 @@ class ToolSwitcherSheet extends StatelessWidget {
     return SafeArea(
       child: ListView(
         shrinkWrap: true,
-        padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+        // Sheets have a drag handle above; dialogs need their own top space.
+        padding:
+            EdgeInsets.fromLTRB(12, isPhoneScreen(context) ? 0 : 20, 12, 16),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),

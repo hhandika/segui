@@ -197,3 +197,77 @@ class OutlinedPanel extends StatelessWidget {
     );
   }
 }
+
+/// Widest a dialog from [showResponsiveSheet] grows.
+const double responsiveDialogMaxWidth = 560;
+
+/// Shows [builder] as a bottom sheet on phones and as a dialog on larger
+/// screens.
+Future<T?> showResponsiveSheet<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+}) {
+  if (isPhoneScreen(context)) {
+    return showModalBottomSheet<T>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => SafeArea(child: builder(context)),
+    );
+  }
+  return showDialog<T>(
+    context: context,
+    builder: (context) => Dialog(
+      clipBehavior: Clip.antiAlias,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: responsiveDialogMaxWidth),
+        child: builder(context),
+      ),
+    ),
+  );
+}
+
+/// Title, message, and actions laid out to read well in both a dialog and
+/// a bottom sheet from [showResponsiveSheet].
+class SheetContent extends StatelessWidget {
+  const SheetContent({
+    super.key,
+    required this.title,
+    required this.child,
+    this.actions = const [],
+  });
+
+  final String title;
+  final Widget child;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isCompact = isPhoneScreen(context);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24, isCompact ? 0 : 24, 24, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 16),
+          Flexible(child: SingleChildScrollView(child: child)),
+          if (actions.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: Wrap(
+                alignment: WrapAlignment.end,
+                spacing: 8,
+                runSpacing: 8,
+                children: actions,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}

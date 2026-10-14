@@ -180,14 +180,11 @@ class ClearAppDataButtonState extends ConsumerState<ClearAppDataButton> {
         child: TextButton(
             onPressed: () {
               // Show dialog to confirm the action
-              showDialog(
+              showResponsiveSheet(
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Clear all data'),
-                    content: const Text(
-                      'Delete all data except the latest log file.',
-                    ),
+                  return SheetContent(
+                    title: 'Clear all data',
                     actions: [
                       TextButton(
                           onPressed: () {
@@ -212,6 +209,9 @@ class ClearAppDataButtonState extends ConsumerState<ClearAppDataButton> {
                           icon: const Icon(Icons.delete_forever_outlined),
                           label: const Text('Clear all data'))
                     ],
+                    child: const Text(
+                      'Delete all data except the latest log file.',
+                    ),
                   );
                 },
               );

@@ -18,6 +18,7 @@ class GlobalToolSearch extends StatelessWidget {
     return SearchAnchor(
       viewHintText: 'Search tools, e.g. NEXUS or rename',
       isFullScreen: isCompact,
+      viewBackgroundColor: Theme.of(context).colorScheme.surface,
       viewConstraints: const BoxConstraints(
         minWidth: 360,
         maxWidth: 480,
@@ -37,6 +38,17 @@ class GlobalToolSearch extends StatelessWidget {
             controller: controller,
             hintText: 'Search tools',
             elevation: const WidgetStatePropertyAll(0),
+            // A lighter tint of the app bar instead of the default grey.
+            backgroundColor: WidgetStatePropertyAll(
+              Color.lerp(
+                getSEGULBackgroundColor(context),
+                Theme.of(context).colorScheme.surface,
+                0.6,
+              ),
+            ),
+            side: WidgetStatePropertyAll(
+              BorderSide(color: getBorderColor(context)),
+            ),
             constraints: const BoxConstraints(minHeight: 44),
             leading: const Icon(Icons.search),
             onTap: controller.openView,

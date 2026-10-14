@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/home/components/citation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/greeting.dart';
@@ -267,6 +268,7 @@ class ResourceLinks extends StatelessWidget {
           label: const Text('Documentation'),
           onPressed: launchSegulDocUrl,
         ),
+        const CiteSegulButton(),
       ],
     );
   }

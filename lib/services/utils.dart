@@ -4,6 +4,21 @@ import 'package:url_launcher/url_launcher.dart';
 
 const String segulDocUrl = 'https://www.segul.app/';
 
+/// The SEGUL paper to cite, as on the documentation website.
+const String segulArticleUrl = 'https://doi.org/10.1111/1755-0998.13964';
+
+/// Citation authors and year, before the title.
+const String segulCitationAuthors = 'Handika, H., and J. A. Esselstyn. 2024.';
+const String segulCitationTitle = 'SEGUL: Ultrafast, memory-efficient and '
+    'mobile-friendly software for manipulating and summarizing '
+    'phylogenomic datasets.';
+const String segulCitationJournal = 'Molecular Ecology Resources';
+const String segulCitationIssue = '24(7)';
+
+/// Plain-text citation for copying.
+const String segulCitation = '$segulCitationAuthors $segulCitationTitle '
+    '$segulCitationJournal, $segulCitationIssue. $segulArticleUrl';
+
 const String _greetingDir = 'assets/images/greeting';
 
 /// Time of day for the home greeting and its gull scene.
@@ -72,6 +87,10 @@ enum GreetingTime {
 
 String get emptyDirIcon {
   return 'assets/images/sad-gull.svg';
+}
+
+void launchSegulArticleUrl() {
+  launchUrl(Uri.parse(segulArticleUrl));
 }
 
 void launchSegulDocUrl() {

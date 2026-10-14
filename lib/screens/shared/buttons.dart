@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -8,7 +9,6 @@ import 'package:segui/screens/shared/io/info.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
-import 'package:segui/styles/decoration.dart';
 
 /// Runs a tool, then offers a new run and sharing after it succeeds.
 class ExecutionButton extends StatelessWidget {
@@ -306,11 +306,9 @@ class SharedDeleteButton extends ConsumerWidget {
       icon: const Icon(Icons.delete_outline),
       onPressed: () {
         // Ask for confirmation
-        showDialog(
+        showResponsiveSheet(
           context: context,
-          builder: (BuildContext context) {
-            return DeleteAlert(file: file);
-          },
+          builder: (context) => DeleteAlert(file: file),
         );
       },
     );
@@ -324,9 +322,8 @@ class DeleteAlert extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AlertDialog(
-      title: const Text('Delete file'),
-      content: const Text('Deleting this file will remove it permanently.'),
+    return SheetContent(
+      title: 'Delete file',
       actions: [
         TextButton(
           onPressed: () {
@@ -343,6 +340,7 @@ class DeleteAlert extends ConsumerWidget {
               style: TextStyle(color: Theme.of(context).colorScheme.error)),
         ),
       ],
+      child: const Text('Deleting this file will remove it permanently.'),
     );
   }
 }
@@ -383,21 +381,10 @@ class FileInfoTile extends StatelessWidget {
       title: const Text('Details'),
       onTap: () {
         Navigator.pop(context);
-        if (isPhoneScreen(context)) {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) => FileInfoScreen(file: file),
-          );
-        } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return Dialog(
-                child: FileInfoScreen(file: file),
-              );
-            },
-          );
-        }
+        showResponsiveSheet(
+          context: context,
+          builder: (context) => FileInfoScreen(file: file),
+        );
       },
     );
   }
@@ -424,11 +411,9 @@ class CommonDeleteTile extends StatelessWidget {
       ),
       onTap: () {
         Navigator.pop(context);
-        showDialog(
+        showResponsiveSheet(
           context: context,
-          builder: (BuildContext context) {
-            return DeleteAlert(file: file);
-          },
+          builder: (context) => DeleteAlert(file: file),
         );
       },
     );
@@ -444,21 +429,10 @@ class InfoButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
         onPressed: () {
-          if (isPhoneScreen(context)) {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => FileInfoScreen(file: file),
-            );
-          } else {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return Dialog(
-                  child: FileInfoScreen(file: file),
-                );
-              },
-            );
-          }
+          showResponsiveSheet(
+            context: context,
+            builder: (context) => FileInfoScreen(file: file),
+          );
         },
         icon: const Icon(Icons.info_outline_rounded));
   }
