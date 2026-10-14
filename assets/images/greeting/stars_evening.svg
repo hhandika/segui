@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<!-- SEGUI greeting layer: evening stars, fade in after the moon
+     Layers share this 96x96 view box and stack in GreetingIllustration.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M48,10 L49,13 L52,14 L49,15 L48,18 L47,15 L44,14 L47,13 Z M10,43 L10.8,45.2 L13,46 L10.8,46.8 L10,49 L9.2,46.8 L7,46 L9.2,45.2 Z M42,43 L42.8,45.2 L45,46 L42.8,46.8 L42,49 L41.2,46.8 L39,46 L41.2,45.2 Z M84,15 L84.8,17.2 L87,18 L84.8,18.8 L84,21 L83.2,18.8 L81,18 L83.2,17.2 Z" fill="#005224" stroke-width="1.5"/>
+</g>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<!-- SEGUI greeting layer: gull wing, hinged at the shoulder (62, 50)
+     Layers share this 96x96 view box and stack in GreetingIllustration.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M62,49 C56,44.5 46,44 35,47 C41,52.5 52,54.5 62,51.5 Z" fill="#FFFFFF"/>
+<path d="M35,47 C38.5,46 42,45.5 45,45.6 L41.5,51 C39,50.2 36.8,48.8 35,47 Z" fill="#005224" stroke-width="2"/>
+</g>
+</svg>

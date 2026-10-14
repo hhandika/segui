@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<!-- SEGUI greeting layer: afternoon sun, scales in about its center (24, 24)
+     Layers share this 96x96 view box and stack in GreetingIllustration.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="24" cy="24" r="9" fill="#FFD64F"/>
+<path d="M38,24 L42.5,24 M33.9,33.9 L37.1,37.1 M24,38 L24,42.5 M14.1,33.9 L10.9,37.1 M10,24 L5.5,24 M14.1,14.1 L10.9,10.9 M24,10 L24,5.5 M33.9,14.1 L37.1,10.9"/>
+</g>
+</svg>

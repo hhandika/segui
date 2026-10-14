@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<!-- SEGUI greeting layer: wooden pier post the gull lands on, top at y=64
+     Layers share this 96x96 view box and stack in GreetingIllustration.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M55,64 H67 V92 H55 Z" fill="#FFFFFF"/>
+<path d="M55,71 H67 M55,84 H67" stroke-width="2"/>
+</g>
+</svg>

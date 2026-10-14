@@ -108,6 +108,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/images/greeting/
     - assets/launcher/icon.png
     - assets/markdown/
 

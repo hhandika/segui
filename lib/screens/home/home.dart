@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/screens/home/components/faq.dart';
+import 'package:segui/screens/home/components/greeting.dart';
 import 'package:segui/screens/home/components/illustration.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/screens/home/components/tool_catalog.dart';
@@ -142,21 +142,17 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final GreetingTime time = GreetingTime.of(DateTime.now());
     return Row(
       children: [
-        SvgPicture.asset(
-          greetingIconPack,
-          height: 48,
-          colorFilter:
-              ColorFilter.mode(theme.colorScheme.onSurface, BlendMode.srcIn),
-        ),
+        GreetingIllustration(time: time),
         const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                greeting,
+                time.message,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),

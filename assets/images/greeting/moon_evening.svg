@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<!-- SEGUI greeting layer: evening crescent moon
+     Layers share this 96x96 view box and stack in GreetingIllustration.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M27,10 A14,14 0 1 0 40,32 A10.5,10.5 0 1 1 27,10 Z" fill="#FFD64F"/>
+</g>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<!-- SEGUI greeting layer: SEGUL gull body facing right, feet on the post top at y=64
+     Layers share this 96x96 view box and stack in GreetingIllustration.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M58,59.5 V64 M63,59 V64 M56,64 H60 M61,64 H65" stroke-width="2.5"/>
+<path d="M36,50 C42,46 48,44 56,44 C60,44 63,42 64,38 C65,33 70,31 74,33 C77,35 77,40 75,43 C73,47 72,50 71,54 C69,59 62,61 54,60 C46,59 40,55 36,50 Z" fill="#FFFFFF"/>
+<path d="M76,37.5 L85,39.5 L75.5,42 Z" fill="#FFD64F" stroke-width="2"/>
+<circle cx="71.5" cy="37" r="1.8" fill="#005224" stroke="none"/>
+</g>
+</svg>

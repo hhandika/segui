@@ -4,26 +4,70 @@ import 'package:url_launcher/url_launcher.dart';
 
 const String segulDocUrl = 'https://www.segul.app/';
 
-String get greeting {
-  int hour = DateTime.now().hour;
-  if (hour < 12) {
-    return 'Good morning!';
-  } else if (hour < 18) {
-    return 'Good afternoon!';
-  } else {
-    return 'Good evening!';
-  }
-}
+const String _greetingDir = 'assets/images/greeting';
 
-String get greetingIconPack {
-  int hour = DateTime.now().hour;
-  if (hour < 12) {
-    return 'assets/images/sunrise.svg';
-  } else if (hour < 18) {
-    return 'assets/images/afternoon.svg';
-  } else {
-    return 'assets/images/night.svg';
+/// Time of day for the home greeting and its gull scene.
+///
+/// Every asset shares a 96 x 96 view box so the layers stack exactly.
+enum GreetingTime {
+  morning(
+    message: 'Good morning!',
+    skyAsset: '$_greetingDir/sun_morning.svg',
+    sceneAsset: '$_greetingDir/scene_morning.svg',
+  ),
+  afternoon(
+    message: 'Good afternoon!',
+    skyAsset: '$_greetingDir/sun_afternoon.svg',
+    sceneAsset: '$_greetingDir/scene_afternoon.svg',
+  ),
+  evening(
+    message: 'Good evening!',
+    skyAsset: '$_greetingDir/moon_evening.svg',
+    sceneAsset: '$_greetingDir/scene_evening.svg',
+    starsAsset: '$_greetingDir/stars_evening.svg',
+  );
+
+  const GreetingTime({
+    required this.message,
+    required this.skyAsset,
+    required this.sceneAsset,
+    this.starsAsset,
+  });
+
+  final String message;
+
+  /// Sun or moon layer, animated on entrance.
+  final String skyAsset;
+
+  /// Static horizon, sea, and clouds.
+  final String sceneAsset;
+
+  /// Stars that fade in after the moon, if any.
+  final String? starsAsset;
+
+  static const String postAsset = '$_greetingDir/post.svg';
+  static const String gullBodyAsset = '$_greetingDir/gull_body.svg';
+  static const String gullWingAsset = '$_greetingDir/gull_wing.svg';
+
+  /// Greeting for the hour of [time].
+  static GreetingTime of(DateTime time) {
+    if (time.hour < 12) {
+      return GreetingTime.morning;
+    } else if (time.hour < 18) {
+      return GreetingTime.afternoon;
+    }
+    return GreetingTime.evening;
   }
+
+  /// Every asset the scene for this time draws.
+  List<String> get assets => [
+        skyAsset,
+        sceneAsset,
+        if (starsAsset != null) starsAsset!,
+        postAsset,
+        gullBodyAsset,
+        gullWingAsset,
+      ];
 }
 
 String get emptyDirIcon {
