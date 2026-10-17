@@ -26,7 +26,7 @@ export const navItems = [
 export const docsPath = "/docs/intro/";
 export const githubUrl = "https://github.com/hhandika/segul";
 
-export const tagline = "An ultrafast and mobile-friendly phylogenomic tool";
+export const tagline = "An ultrafast and mobile-friendly phylogenomic toolkit";
 
 export const summary =
   "SEGUL prepares phylogenomic datasets: concatenate, convert, filter, split, and " +

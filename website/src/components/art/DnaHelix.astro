@@ -1,0 +1,27 @@
+---
+/// The DNA helix from the SEGUI field sketch, 30 x 160 units, standing on its
+/// base at (0, 0). Its strands draw upward, then the base pairs fade in.
+interface Props {
+  /// SVG transform placing the helix, such as `translate(300 314)`.
+  transform?: string;
+  line: string;
+  accent: string;
+}
+
+const { transform, line, accent } = Astro.props;
+const strand =
+  "M0,0 C13,-10 13,-30 0,-40 C-13,-50 -13,-70 0,-80 C13,-90 13,-110 0,-120 C-13,-130 -13,-150 0,-160";
+const mirrored =
+  "M0,0 C-13,-10 -13,-30 0,-40 C13,-50 13,-70 0,-80 C-13,-90 -13,-110 0,-120 C13,-130 13,-150 0,-160";
+const rungs = [-20, -60, -100, -140];
+---
+
+<g transform={transform} class="dna-helix" fill="none" stroke-linecap="round">
+  {
+    rungs.map((y, index) => (
+      <line class="dna-rung" style={`--i: ${index}`} x1="-9.1" y1={y} x2="9.1" y2={y} stroke={accent} stroke-width="2.1" />
+    ))
+  }
+  <path class="dna-strand" d={strand} pathLength="1" stroke={line} stroke-width="3"></path>
+  <path class="dna-strand dna-strand-late" d={mirrored} pathLength="1" stroke={accent} stroke-width="3"></path>
+</g>

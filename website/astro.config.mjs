@@ -23,7 +23,7 @@ export default defineConfig({
     starlight({
       title: "SEGUL",
       description:
-        "SEGUL is an ultrafast, memory-efficient, and mobile-friendly phylogenomic tool.",
+        "SEGUL is an ultrafast, memory-efficient, and mobile-friendly phylogenomic toolkit.",
       logo: {
         src: "./src/assets/logo.svg",
       },

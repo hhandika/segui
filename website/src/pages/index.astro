@@ -1,9 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import LandingRibbon from "../components/landing/LandingRibbon.astro";
+import HeroSignpost from "../components/landing/hero/HeroSignpost.astro";
 import { summary, tagline } from "../data/site";
 ---
 
 <Layout title={`SEGUL: ${tagline}`} description={summary}>
-  <LandingRibbon />
+  <LandingRibbon>
+    <HeroSignpost slot="art" />
+  </LandingRibbon>
 </Layout>

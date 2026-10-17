@@ -1,0 +1,104 @@
+---
+/// Landing hero art: white field-sketch line art with a phylogenetic tree and a
+/// DNA helix. The gull flies in along a dashed trail and lands on a SEGUL
+/// signpost, which sways once.
+import FlyingGull from "../../art/FlyingGull.astro";
+import DnaHelix from "../../art/DnaHelix.astro";
+import PhyloTree from "../../art/PhyloTree.astro";
+
+const trail = "M800,-90 C700,0 620,60 560,50 C510,42 500,120 486,156";
+---
+
+<svg
+  class="fg-scene h-auto w-full overflow-visible"
+  viewBox="0 0 640 420"
+  role="img"
+  aria-label="The SEGUL gull flies in and lands on a signpost"
+>
+  <defs>
+    <mask id="signpost-trail" maskUnits="userSpaceOnUse" x="380" y="-120" width="460" height="320">
+      <path class="fg-draw" d={trail} pathLength="1" fill="none" stroke="#fff" stroke-width="8"></path>
+    </mask>
+  </defs>
+
+  <g fill="none" stroke="#d8f8e3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20,330 C140,300 220,290 320,312 C420,334 520,300 620,306"></path>
+    <path d="M60,366 H580" opacity="0.45"></path>
+    <path d="M346,326 l5,-12 M354,327 l1,-14 M362,326 l-4,-10 M560,312 l5,-12 M568,313 l1,-14" stroke-width="2.5"></path>
+    <path d="M286,78 q7,-8 14,0 q7,-8 14,0 M342,104 q5,-6 10,0 q5,-6 10,0" stroke-width="2.5"></path>
+  </g>
+  <circle cx="230" cy="130" r="34" fill="none" stroke="#ffd64f" stroke-width="3"></circle>
+
+  <PhyloTree transform="translate(150 304)" line="#d8f8e3" accent="#ffd64f" />
+  <DnaHelix transform="translate(300 309)" line="#d8f8e3" accent="#ffd64f" />
+
+  <path d={trail} fill="none" stroke="#ffd64f" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 11" mask="url(#signpost-trail)" class="signpost-trail"></path>
+
+  <g class="signpost-sway">
+    <path d="M465,330 V226" fill="none" stroke="#d8f8e3" stroke-width="3.5" stroke-linecap="round"></path>
+    <path d="M405,186 H520 L538,206 L520,226 H405 Z" fill="#00743a" stroke="#d8f8e3" stroke-width="3" stroke-linejoin="round"></path>
+    <text x="466" y="213" text-anchor="middle" fill="#ffffff" font-size="19" font-weight="800" letter-spacing="3">SEGUL</text>
+  </g>
+
+  <g class="fg-flight signpost-flight">
+    <FlyingGull size={220} flip />
+  </g>
+</svg>
+
+<style>
+  .signpost-flight {
+    transform: translate(386px, 39px);
+    animation: signpost-path 2.6s 0.4s both;
+  }
+
+  @keyframes signpost-path {
+    0% {
+      transform: translate(675px, -187px) rotate(-6deg);
+      animation-timing-function: ease-in;
+    }
+    30% {
+      transform: translate(565px, -87px) rotate(-10deg);
+      animation-timing-function: linear;
+    }
+    55% {
+      transform: translate(475px, -67px) rotate(-2deg);
+      animation-timing-function: ease-in;
+    }
+    78% {
+      transform: translate(415px, -7px) rotate(-8deg);
+      animation-timing-function: ease-out;
+    }
+    90% {
+      transform: translate(383px, 45px) rotate(8deg);
+      animation-timing-function: ease-in-out;
+    }
+    100% {
+      transform: translate(386px, 39px) rotate(0deg);
+    }
+  }
+
+  .signpost-sway {
+    transform-origin: 465px 330px;
+    animation: signpost-sway 0.8s ease-out 2.95s;
+  }
+
+  @keyframes signpost-sway {
+    30% {
+      transform: rotate(1.4deg);
+    }
+    65% {
+      transform: rotate(-0.7deg);
+    }
+  }
+
+  /* Leaves a faint trail once the gull has landed. */
+  .signpost-trail {
+    animation: signpost-trail-fade 0.8s ease-out 3.1s forwards;
+  }
+
+  @keyframes signpost-trail-fade {
+    to {
+      opacity: 0.35;
+    }
+  }
+</style>

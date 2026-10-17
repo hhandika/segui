@@ -130,31 +130,9 @@
     linear-gradient(135deg, #009245 0%, #00813f 35%, #006e39 75%, #006837 100%);
 }
 
-.sg-float {
-  animation: sg-float 9s ease-in-out infinite;
-}
 
-@keyframes sg-float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(0, -14px, 0) rotate(-1.5deg);
-  }
-}
 
-.sg-ribbon-draw {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: sg-draw 2.4s ease-out 0.2s forwards;
-}
 
-@keyframes sg-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
 
 /* ----------------------------------------------------------- terminal ---- */
 
@@ -189,15 +167,10 @@
   }
 
   .sg-gull-wing,
-  .sg-float,
   .sg-caret::after {
     animation: none;
   }
 
-  .sg-ribbon-draw {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
 }
 
 /* Long commands scroll sideways without a visible scrollbar. */
@@ -208,4 +181,167 @@
 
 .sg-scroll-x::-webkit-scrollbar {
   display: none;
+}
+
+/* ------------------------------------------------------- flying gull ---- */
+
+/* One landing, played once: the gull flaps in from 0.4 s, brakes and drops
+   its legs at 2.4 s, folds its wings, and settles at 3 s. Each hero scene
+   moves its own `.fg-flight` group on the same clock. */
+.fg-wing {
+  transform-origin: 62px 50px;
+  animation:
+    fg-flap 0.3s ease-in-out 0.4s 7 alternate,
+    fg-fold 0.6s ease-out 2.5s forwards;
+}
+
+.fg-far-wing {
+  opacity: 0;
+  transform-origin: 60px 47px;
+  animation:
+    fg-flap 0.3s ease-in-out 0.45s 7 alternate,
+    fg-far-wing 2.6s linear 0.4s both;
+}
+
+.fg-legs {
+  animation: fg-legs 0.25s ease-out 2.4s both;
+}
+
+.fg-body {
+  animation: fg-settle 0.5s ease-out 3s;
+}
+
+.fg-flight {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes fg-flap {
+  from {
+    transform: rotate(55deg);
+  }
+  to {
+    transform: rotate(-35deg);
+  }
+}
+
+@keyframes fg-fold {
+  0% {
+    transform: rotate(-35deg);
+  }
+  40% {
+    transform: rotate(65deg);
+  }
+  75% {
+    transform: rotate(-6deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes fg-far-wing {
+  0%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fg-legs {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fg-settle {
+  40% {
+    transform: translateY(1.5px);
+  }
+}
+
+/* Draws a path once, from start to end. */
+.fg-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fg-draw 2.6s cubic-bezier(0.4, 0, 0.6, 1) 0.4s forwards;
+}
+
+@keyframes fg-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* The DNA helix and phylogenetic tree draw in while the gull is in flight.
+   Their resting state is fully drawn, so reduced motion shows them at once. */
+.dna-strand,
+.phylo-branches {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.dna-strand {
+  animation: fg-grow 1.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+.dna-strand-late {
+  animation-delay: 0.45s;
+}
+
+.dna-rung {
+  animation: fg-fade-in 0.35s ease-out both;
+  animation-delay: calc(0.9s + var(--i) * 0.14s);
+}
+
+.phylo-branches {
+  animation: fg-grow 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+}
+
+.phylo-tip {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fg-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  animation-delay: calc(1.6s + var(--i) * 0.15s);
+}
+
+@keyframes fg-grow {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes fg-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fg-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fg-wing,
+  .fg-far-wing,
+  .fg-legs,
+  .fg-body,
+  .fg-flight,
+  .fg-scene * {
+    animation: none !important;
+  }
+
+  .fg-draw {
+    stroke-dashoffset: 0;
+  }
 }

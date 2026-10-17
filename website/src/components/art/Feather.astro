@@ -2,11 +2,9 @@
 /// The SEGUL feather and its pollen-to-teal ribbon, lifted from the app icon.
 interface Props {
   class?: string;
-  /// Draw the ribbon as an animated outline before the feather appears.
-  animate?: boolean;
 }
 
-const { class: className, animate = false } = Astro.props;
+const { class: className } = Astro.props;
 const id = `ribbon-${Math.random().toString(36).slice(2, 8)}`;
 const ribbon =
   "M188.59,643.2c-12.92-.56-16.77,17.36-4.73,22.08,99.24,38.88,267.51,74.42,387.67-59.95,137.94-154.24,220-184.7,258.3-188.44,7.37-.72,9.69-10.34,3.43-14.32-55.04-34.95-202.05-97.82-356.99,93.23-103.65,127.8-213.81,150.61-287.69,147.4Z";
@@ -21,18 +19,6 @@ const ribbon =
       <stop offset="1" stop-color="#33ba9c"></stop>
     </linearGradient>
   </defs>
-  {
-    animate && (
-      <path
-        class="sg-ribbon-draw"
-        d={ribbon}
-        pathLength="1"
-        fill="none"
-        stroke={`url(#${id})`}
-        stroke-width="3"
-      />
-    )
-  }
   <path d={ribbon} fill={`url(#${id})`}></path>
   <path
     fill="#fff"
