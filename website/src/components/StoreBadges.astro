@@ -1,0 +1,24 @@
+---
+import StoreBadge from "./StoreBadge.astro";
+
+/// A wrapping row of store badges.
+interface Props {
+  stores: Array<"microsoft" | "mac" | "app" | "play" | "snap">;
+}
+
+const { stores } = Astro.props;
+---
+
+<div class="store-badges not-content">
+  {stores.map((store) => <StoreBadge store={store} />)}
+</div>
+
+<style>
+  .store-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 1rem;
+    margin-block: 1rem;
+  }
+</style>

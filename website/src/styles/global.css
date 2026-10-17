@@ -1,0 +1,86 @@
+@layer base, starlight, theme, components, utilities;
+
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  /* SEGUL green palette, anchored on the brand color #0d604e (700). */
+  --color-segul-50: #effaf6;
+  --color-segul-100: #d8f3e7;
+  --color-segul-200: #b4e6d2;
+  --color-segul-300: #82d2b7;
+  --color-segul-400: #4eb797;
+  --color-segul-500: #2b9b7c;
+  --color-segul-600: #1d7d64;
+  --color-segul-700: #0d604e;
+  --color-segul-800: #134d40;
+  --color-segul-900: #123f36;
+  --color-segul-950: #08241e;
+
+  /* Amber for calls to action. */
+  --color-amber-cta: #ffba00;
+}
+
+/* Dark mode colors. */
+:root {
+  --sl-color-accent-low: var(--color-segul-950);
+  --sl-color-accent: var(--color-segul-600);
+  --sl-color-accent-high: var(--color-segul-200);
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #eceef2;
+  --sl-color-gray-2: #c0c2c7;
+  --sl-color-gray-3: #888b96;
+  --sl-color-gray-4: #545861;
+  --sl-color-gray-5: #353841;
+  --sl-color-gray-6: #24272f;
+  --sl-color-black: #17181c;
+}
+
+/* Light mode colors. */
+:root[data-theme="light"] {
+  --sl-color-accent-low: var(--color-segul-100);
+  --sl-color-accent: var(--color-segul-700);
+  --sl-color-accent-high: var(--color-segul-900);
+  --sl-color-white: #17181c;
+  --sl-color-gray-1: #24272f;
+  --sl-color-gray-2: #353841;
+  --sl-color-gray-3: #545861;
+  --sl-color-gray-4: #888b96;
+  --sl-color-gray-5: #c0c2c7;
+  --sl-color-gray-6: #eceef2;
+  --sl-color-gray-7: #f5f6f8;
+  --sl-color-black: #ffffff;
+}
+
+/* Landing page hero on the brand gradient. */
+[data-has-hero] .hero {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-has-hero] .hero::before {
+  content: "";
+  position: absolute;
+  inset: -2rem calc(50% - 50vw);
+  z-index: -1;
+  background: linear-gradient(
+    110deg,
+    var(--color-segul-700) 0%,
+    #29784c 52%
+  );
+}
+
+[data-has-hero] .hero :is(h1, .tagline) {
+  color: #ffffff;
+}
+
+[data-has-hero] .hero .sl-link-button.primary {
+  background: var(--color-amber-cta);
+  border-color: var(--color-amber-cta);
+  color: #17181c;
+}
+
+[data-has-hero] .hero .sl-link-button.minimal {
+  color: #ffffff;
+}

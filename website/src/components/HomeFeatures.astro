@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets";
+import easyUse from "../assets/easyUse.svg";
+import reproducible from "../assets/repeatableAndReproducible.svg";
+import fast from "../assets/fastMemoryEfficient.svg";
+
+const features = [
+  {
+    title: "Easy to Use",
+    image: easyUse,
+    description:
+      "SEGUL offers an intuitive command line interface for efficient operation, along with a user-friendly, interactive graphical interface. We provide comprehensive documentation to help users with varying levels of technical expertise.",
+  },
+  {
+    title: "Accessible and Reproducible",
+    image: reproducible,
+    description:
+      "SEGUL supports a wide range of devices, from smartphones to high-performance computers, without requiring any runtime dependencies. It also negates the need for supplementary applications like Docker or Singularity, enhancing its user-friendliness and accessibility.",
+  },
+  {
+    title: "Fast and Memory Efficient",
+    image: fast,
+    description:
+      "SEGUL delivers high-speed performance while maintaining minimal memory usage. It is engineered to leverage multi-core CPUs for rapid data processing, all without requiring manual intervention from the users.",
+  },
+];
+---
+
+<section class="not-content grid gap-10 py-8 md:grid-cols-3">
+  {
+    features.map((feature) => (
+      <div class="flex flex-col items-center text-center">
+        <Image src={feature.image} alt="" class="h-40 w-auto" />
+        <h3 class="mt-4 text-xl font-semibold text-(--sl-color-white)">
+          {feature.title}
+        </h3>
+        <p class="mt-2 text-(--sl-color-gray-2)">{feature.description}</p>
+      </div>
+    ))
+  }
+</section>

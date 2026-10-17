@@ -1,0 +1,69 @@
+---
+title: Introduction
+sidebar:
+  order: 1
+---
+
+**Thank you for using SEGUL!** 🙏🏻
+
+We develop **SEGUL (SEquence and Genomic UtiLities)** to address the need for a high-performance and accessible phylogenomic tool. It is particularly well-suited for large-scale phylogenomic projects, especially those involving thousands of loci and hundreds of samples. Additionally, SEGUL is capable of handling small Sanger sequences effectively. SEGUL is a practical solution to typical phylogenomic data analyses and a proof of concept for genomic software that scales from smartphones, tablets, and personal computers to high-performance computing clusters. Check out [Chan 2024 perspective](https://onlinelibrary.wiley.com/doi/full/10.1111/1755-0998.13993) for an independent review of SEGUL.
+
+:::note
+SEGUL CLI is available on [Bioconda](https://anaconda.org/bioconda/segul). It is available for Linux and MacOS users using [ARM](https://en.wikipedia.org/wiki/ARM_architecture_family) or [x86_64](https://en.wikipedia.org/wiki/X86-64) CPUs. To install SEGUL, use the following command:
+
+```bash
+conda install bioconda::segul
+```
+
+Or if you use mamba:
+
+```bash
+mamba install segul
+```
+
+Learn more about the installation using Bioconda [here](/docs/installation/install_conda/).
+:::
+
+## Citation
+
+> Handika, H., and J. A. Esselstyn. 2024. SEGUL: Ultrafast, memory-efficient and mobile-friendly software for manipulating and summarizing phylogenomic datasets. _Molecular Ecology Resources_, 24(7). [https://doi.org/10.1111/1755-0998.13964](https://doi.org/10.1111/1755-0998.13964).
+
+If you are interested in reading the journal article but cannot access it, you can request a copy from the authors on [ResearchGate](https://www.researchgate.net/publication/380125709_SEGUL_Ultrafast_memory-efficient_and_mobile-friendly_software_for_manipulating_and_summarizing_phylogenomic_datasets).
+
+## Platform Support
+
+### Desktop
+
+| Platform                          | GUI | CLI |
+| --------------------------------- | --- | --- |
+| Linux                             | ✅  | ✅  |
+| MacOS                             | ✅  | ✅  |
+| Windows                           | ✅  | ✅  |
+| Windows Subsystem for Linux (WSL) | ❌  | ✅  |
+
+### Mobile
+
+| Platform | GUI | CLI |
+| -------- | --- | --- |
+| iOS      | ✅  | ❌  |
+| iPadOS   | ✅  | ❌  |
+| Android  | ✅  | ❌  |
+
+## Navigating the Documentation
+
+We provide a [quick start](/docs/quick_start/) with an overview of using SEGUL. Detailed instructions on installing SEGUL are available in the [installation guidelines](/docs/installation/intro/). Feature usage guidelines are structured by interfaces (i.e., GUI, CLI, or API) organized as sections: [GUI Usage](/docs/gui-usage/intro/), [CLI Usage](/docs/cli-usage/intro/), and [API Usage](/docs/api-usage/). Within a section, we provide a detailed instruction page for each feature. The instructions are independent of each other, and should contain enough information to use a feature for its respective interface. However, we recommend checking the introduction page for each section. The page provides a general overview, input and output formats, datatype, and other general information on using the interface. We also provide a [feature page](/docs/features/) (work in progress) that provides a more detailed explanation, including the inner-working of all supported features. If you have questions, issues, or feedback about the app and its documentation, please refer to the [support](/docs/support/) section. We also welcome collaboration and contribution.
+
+:::tip
+A dropdown menu at the top of each page allows you to navigate to different documentation sections for mobile reading. The sidebar on the right side of the page provides the same functionality for larger screen reading.
+:::
+
+## Acknowledgments
+
+We thank Andre E. Moncrieff, Austin S. Chipps, Carl R. Hutter, Darwin Morales-Martínez, Diego J. Elias, Giovani Hernández-Canchola, Glaucia C. Del-Rio, Roberta C. Canton, Samantha L. Rutledge, Sarin Tiatragul, and Spenser J. Babb-Biernacki for their valuable feedback on the application and its documentation. We are grateful to Spenser J. Babb-Biernacki for suggesting the expansion of the SEGUL acronym. Financial support was provided by the National Science Foundation ([DEB-1754393](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1754393) and [DEB-2244754](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2244754)) and the Alfred L. Gardner and Mark S. Hafner Mammalogy Fund. Several features of SEGUL are inspired by [Phyluce](https://phyluce.readthedocs.io/en/latest/), [AMAS](https://github.com/marekborowiec/AMAS), [goalign](https://github.com/evolbioinfo/goalign), and [FrogCap](https://github.com/chutter/FrogCap-Sequence-Capture). Additionally, SEGUL benefited greatly from excellent open-source libraries, particularly those provided by the Rust and Flutter programming communities.
+
+## Additional Resources
+
+- [API Documentation](https://docs.rs/segul/0.18.1/segul/)
+- [GUI Source Code](https://github.com/hhandika/segui)
+- [CLI & Rust API Source Code](https://github.com/hhandika/segul)
+- [Python API Source Code](https://github.com/hhandika/pysegul)

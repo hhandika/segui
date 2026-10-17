@@ -1,0 +1,51 @@
+---
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import {
+  formatDate,
+  getPosts,
+  postAuthors,
+  postSlug,
+  type BlogPost,
+} from "../../utils/blog";
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const authors = postAuthors(post);
+---
+
+<StarlightPage
+  frontmatter={{ title: post.data.title, description: post.data.description }}
+  headings={headings}
+>
+  <p class="byline">
+    <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+    {
+      authors.map((author) => (
+        <>
+          {" · "}
+          <a href={author.url}>{author.name}</a>
+        </>
+      ))
+    }
+  </p>
+  <Content />
+  <p><a href="/blog/">← All news</a></p>
+</StarlightPage>
+
+<style>
+  .byline {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+</style>
