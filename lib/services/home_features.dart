@@ -243,10 +243,13 @@ const HomeTool distanceTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.distance,
   title: 'Compute genetic distances',
-  description: 'Pairwise p, JC69, K2P, TN93, or Poisson distance matrices.',
-  about: 'Compute pairwise genetic distances between samples in each '
-      'alignment. Writes one distance matrix per alignment and a summary '
-      'of the distances across all alignments.',
+  description:
+      'Pairwise p, JC69, K2P, TN93, or Poisson distances and group means.',
+  about: 'Compute pairwise p, JC69, K2P, TN93, or Poisson distances between '
+      'samples in each alignment. Writes one distance matrix per alignment '
+      'and a summary across all alignments. Optionally groups samples into '
+      'populations or species for within- and between-group means, and '
+      'writes all distances as long-format tables.',
   icon: SeguiIcons.distanceOutlined,
   filledIcon: SeguiIcons.distanceFilled,
   svgAsset: 'assets/icons/distance_outlined.svg',

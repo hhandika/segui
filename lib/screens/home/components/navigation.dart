@@ -5,6 +5,7 @@ import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class NavigationTarget {
   const NavigationTarget({
@@ -82,8 +83,11 @@ class ExpandedScreenDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return NavigationDrawer(
-      tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      elevation: 0,
+      tilePadding: const EdgeInsets.symmetric(
+        horizontal: SeguiSpacing.xs,
+        vertical: SeguiSpacing.xxs,
+      ),
+      elevation: SeguiElevation.none,
       backgroundColor: getSEGULBackgroundColor(context),
       indicatorColor: getIndicatorColor(context),
       indicatorShape: getIndicatorShape(context),
@@ -140,7 +144,7 @@ class CompactScreenNavBar extends ConsumerWidget {
     return NavigationBar(
       backgroundColor: Colors.transparent,
       indicatorColor: getIndicatorColor(context),
-      elevation: 4,
+      elevation: SeguiElevation.medium,
       destinations: navigationTargets
           .map((e) => NavigationDestination(
                 icon: e.icon,

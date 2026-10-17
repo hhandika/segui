@@ -18,32 +18,44 @@ const SupportedTask task = SupportedTask.alignmentFiltering;
 
 const Map<FilteringOptions, InputDecoration> filteringOptionsInput = {
   FilteringOptions.minimalTaxa: InputDecoration(
-    labelText: 'Percentage value',
-    hintText: 'E.g., 0.5, .2, 1.0, etc.',
+    labelText: 'Minimum taxon proportion',
+    hintText: 'E.g., 0.75',
+    helperText: 'Keeps alignments that include at least this proportion of '
+        'all taxa, from 0 to 1.',
   ),
   FilteringOptions.minimalLength: InputDecoration(
-    labelText: 'Minimal length',
-    hintText: 'E.g., 800, 1200, etc.',
+    labelText: 'Minimum length',
+    hintText: 'E.g., 800',
+    helperText: 'Keeps alignments with at least this many sites.',
   ),
   FilteringOptions.maximalLength: InputDecoration(
-    labelText: 'Maximal length',
-    hintText: 'E.g., 5000, 10000, etc.',
+    labelText: 'Maximum length',
+    hintText: 'E.g., 5000',
+    helperText: 'Keeps alignments with at most this many sites.',
   ),
   FilteringOptions.parsimonyInf: InputDecoration(
-    labelText: 'Minimal counts',
-    hintText: 'E.g., 1, 20, etc.',
+    labelText: 'Minimum informative sites',
+    hintText: 'E.g., 20',
+    helperText: 'Keeps alignments with at least this many parsimony '
+        'informative sites.',
   ),
   FilteringOptions.maximalParsimonyInf: InputDecoration(
-    labelText: 'Maximal counts',
-    hintText: 'E.g., 100, 500, etc.',
+    labelText: 'Maximum informative sites',
+    hintText: 'E.g., 500',
+    helperText: 'Keeps alignments with at most this many parsimony '
+        'informative sites.',
   ),
   FilteringOptions.percentParsimonyInf: InputDecoration(
-    labelText: 'Percentage value',
-    hintText: 'E.g., 0.5, .2, 1.0, etc.',
+    labelText: 'Informative site proportion',
+    hintText: 'E.g., 0.2',
+    helperText: 'Keeps alignments whose proportion of parsimony informative '
+        'sites is at least this value, from 0 to 1.',
   ),
   FilteringOptions.missingData: InputDecoration(
-    labelText: 'Proportion of missing data',
-    hintText: 'From 0 to 1, e.g., 0.3',
+    labelText: 'Maximum missing data',
+    hintText: 'E.g., 0.3',
+    helperText: 'Keeps alignments with at most this proportion of missing '
+        'data, from 0 to 1.',
   ),
 };
 
@@ -101,7 +113,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
             DropdownButtonFormField<FilteringOptions>(
               initialValue: _filteringOptionsController,
               decoration: const InputDecoration(
-                labelText: 'Select method',
+                labelText: 'Filter by',
               ),
               isExpanded: true,
               items: filteringOptions.entries
@@ -157,17 +169,14 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
                 });
               },
             ),
-            Visibility(
-              visible: _isConcatenated,
-              child: SharedTextField(
+            if (_isConcatenated) ...[
+              SharedTextField(
                 controller: _prefixController,
                 label: 'Output prefix',
                 hint: 'E.g., concatenated',
+                onChanged: (_) => setState(() {}),
               ),
-            ),
-            Visibility(
-              visible: _isConcatenated,
-              child: SharedDropdownField(
+              SharedDropdownField(
                 value: _outputPartitionFmtController,
                 label: 'Partition format',
                 items: partitionFormat,
@@ -179,7 +188,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
                   });
                 },
               ),
-            ),
+            ],
           ],
         ),
       ],

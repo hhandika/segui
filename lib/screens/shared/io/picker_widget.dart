@@ -16,6 +16,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/segui_icons.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class SelectDirField extends ConsumerWidget {
   const SelectDirField({
@@ -423,11 +424,7 @@ class _FileDropTargetState extends State<FileDropTarget> {
 
   @override
   Widget build(BuildContext context) {
-    // Matches the vertical padding of the form fields.
-    final Widget child = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: widget.builder(context, _isDragging, null),
-    );
+    final Widget child = widget.builder(context, _isDragging, null);
     if (!isFileDropSupported) {
       return child;
     }
@@ -547,18 +544,20 @@ class PickerDropZoneColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: const EdgeInsets.all(SeguiSpacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(icon, size: 32, color: theme.colorScheme.primary),
-          const SizedBox(height: 8),
+          Icon(icon,
+              size: SeguiControlSize.iconLarge,
+              color: theme.colorScheme.primary),
+          const SizedBox(height: SeguiSpacing.md),
           Text(
             title,
             style: theme.textTheme.titleSmall,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: SeguiSpacing.xxs),
           Text(
             hint,
             style: theme.textTheme.bodySmall?.copyWith(
@@ -566,17 +565,18 @@ class PickerDropZoneColumn extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: SeguiSpacing.lg),
           if (isLoading)
             const SizedBox.square(
               dimension: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child:
+                  CircularProgressIndicator(strokeWidth: SeguiStroke.regular),
             )
           else
             Wrap(
               alignment: WrapAlignment.center,
-              spacing: 8,
-              runSpacing: 8,
+              spacing: SeguiSpacing.md,
+              runSpacing: SeguiSpacing.md,
               children: [
                 for (final (int i, PickerAction action) in actions.indexed)
                   i == 0
@@ -619,15 +619,16 @@ class PickerDropZoneRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.lg, SeguiSpacing.md, SeguiSpacing.md, SeguiSpacing.md),
       child: Row(
         children: [
           Icon(icon, color: theme.colorScheme.primary),
-          const SizedBox(width: 12),
+          const SizedBox(width: SeguiSpacing.lg),
           Expanded(
             child: PickerText(title: Text(title), subtitle: hint),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: SeguiSpacing.md),
           isLoading
               ? const PickerProgress()
               : FilledButton.tonal(
@@ -680,18 +681,19 @@ class PickerSelectionCard extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+        padding: const EdgeInsets.fromLTRB(
+            SeguiSpacing.lg, SeguiSpacing.md, SeguiSpacing.md, SeguiSpacing.md),
         child: Row(
           children: [
             Icon(icon, color: colors.primary),
-            const SizedBox(width: 12),
+            const SizedBox(width: SeguiSpacing.lg),
             Expanded(
               child: PickerText(
                 title: title,
                 subtitle: isDragging ? 'Release to add' : subtitle,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: SeguiSpacing.md),
             isLoading
                 ? const PickerProgress()
                 : TextButton.icon(
@@ -703,7 +705,8 @@ class PickerSelectionCard extends StatelessWidget {
                       title: sheetTitle,
                       actions: actions,
                     ),
-                    icon: const Icon(Icons.edit_outlined, size: 18),
+                    icon: const Icon(Icons.edit_outlined,
+                        size: SeguiControlSize.iconSmall),
                     label: const Text('Edit'),
                   ),
           ],
@@ -753,10 +756,10 @@ class PickerProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: SeguiSpacing.xl),
       child: SizedBox.square(
         dimension: 20,
-        child: CircularProgressIndicator(strokeWidth: 2),
+        child: CircularProgressIndicator(strokeWidth: SeguiStroke.regular),
       ),
     );
   }
@@ -801,13 +804,15 @@ class PickerActionSheet extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding: const EdgeInsets.fromLTRB(
+            SeguiSpacing.xl, 0, SeguiSpacing.xl, SeguiSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              padding: const EdgeInsets.fromLTRB(
+                  SeguiSpacing.xl, 0, SeguiSpacing.xl, SeguiSpacing.md),
               child: Text(
                 title,
                 style: theme.textTheme.titleMedium,
@@ -817,7 +822,7 @@ class PickerActionSheet extends StatelessWidget {
             ),
             for (final (int i, PickerAction action) in actions.indexed) ...[
               if (_startsDestructiveGroup(actions, i))
-                const Divider(height: 16),
+                const Divider(height: SeguiSpacing.xl),
               PickerActionTile(action: action),
             ],
           ],
@@ -842,7 +847,8 @@ class PickerActionDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
-      contentPadding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+      contentPadding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.lg, SeguiSpacing.xl, SeguiSpacing.lg, 0),
       content: SizedBox(
         width: pickerDialogWidth,
         child: Column(
@@ -850,7 +856,7 @@ class PickerActionDialog extends StatelessWidget {
           children: [
             for (final (int i, PickerAction action) in actions.indexed) ...[
               if (_startsDestructiveGroup(actions, i))
-                const Divider(height: 16),
+                const Divider(height: SeguiSpacing.xl),
               PickerActionTile(action: action),
             ],
           ],

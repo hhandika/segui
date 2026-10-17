@@ -83,9 +83,8 @@ class ConcatPageState extends ConsumerState<ConcatPage>
               });
             },
           ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
+          if (_isShowMore)
+            SwitchForm(
               label: 'Set interleaved format',
               value: isInterleave,
               onPressed: (value) {
@@ -94,7 +93,6 @@ class ConcatPageState extends ConsumerState<ConcatPage>
                 });
               },
             ),
-          ),
           SharedDropdownField(
             value: _partitionFormatController,
             label: 'Partition Format',
@@ -107,9 +105,8 @@ class ConcatPageState extends ConsumerState<ConcatPage>
               });
             },
           ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
+          if (_isShowMore)
+            SwitchForm(
                 label: 'Set codon model partition',
                 value: isCodon,
                 onPressed: (value) {
@@ -117,7 +114,6 @@ class ConcatPageState extends ConsumerState<ConcatPage>
                     isCodon = value;
                   });
                 }),
-          ),
           ShowMoreButton(
             isShowMore: _isShowMore,
             onPressed: () {

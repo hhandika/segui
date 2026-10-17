@@ -19,6 +19,7 @@ enum SegulType {
   destinationSequence,
   multipleAlignment,
   bed,
+  sampleGroup,
 }
 
 class SegulInputFile {
@@ -63,6 +64,8 @@ SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
       return SegulType.multipleAlignment;
     case bedTypeGroup:
       return SegulType.bed;
+    case sampleGroupTypeGroup:
+      return SegulType.sampleGroup;
     default:
       return SegulType.standardSequence;
   }

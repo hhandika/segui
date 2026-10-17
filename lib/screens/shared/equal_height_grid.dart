@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Lays out [children] in [columns] equal-width columns and gives every child
 /// the height of the tallest one, so all cards in the grid match in size.
@@ -9,8 +10,8 @@ class EqualHeightGrid extends MultiChildRenderObjectWidget {
   const EqualHeightGrid({
     super.key,
     required this.columns,
-    this.spacing = 12,
-    this.runSpacing = 12,
+    this.spacing = SeguiSpacing.lg,
+    this.runSpacing = SeguiSpacing.lg,
     super.children,
   }) : assert(columns > 0);
 

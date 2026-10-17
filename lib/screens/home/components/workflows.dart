@@ -4,9 +4,10 @@ import 'package:segui/screens/home/components/tool_catalog.dart';
 import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Width of the tool list beside the workflows on wide screens.
-const double toolIndexWidth = 300;
+const double toolIndexWidth = SeguiContentWidth.panel;
 
 /// Common workflows next to an alphabetical list of every tool.
 class WorkflowPanel extends StatelessWidget {
@@ -21,7 +22,8 @@ class WorkflowPanel extends StatelessWidget {
         return const Stack(
           children: [
             Padding(
-              padding: EdgeInsets.only(right: toolIndexWidth + 24),
+              padding:
+                  EdgeInsets.only(right: toolIndexWidth + SeguiSpacing.xxl),
               child: WorkflowList(),
             ),
             Positioned(
@@ -38,7 +40,7 @@ class WorkflowPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           WorkflowList(),
-          SizedBox(height: 24),
+          SizedBox(height: SeguiSpacing.xxl),
           ToolIndex(),
         ],
       );
@@ -58,7 +60,7 @@ class WorkflowList extends StatelessWidget {
           'Common workflows',
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: SeguiSpacing.md),
         LayoutBuilder(builder: (context, constraints) {
           return EqualHeightGrid(
             columns: gridColumnCount(
@@ -88,29 +90,29 @@ class WorkflowCard extends ConsumerWidget {
     return Card.outlined(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(SeguiSpacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(workflow.title, style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
+            const SizedBox(height: SeguiSpacing.xs),
             Text(
               workflow.description,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: SeguiSpacing.lg),
             Wrap(
-              spacing: 4,
-              runSpacing: 8,
+              spacing: SeguiSpacing.xs,
+              runSpacing: SeguiSpacing.md,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 for (final (index, tool) in workflow.steps.indexed) ...[
                   if (index > 0)
                     Icon(
                       Icons.arrow_forward,
-                      size: 16,
+                      size: SeguiControlSize.iconSmall,
                       color: theme.colorScheme.outline,
                     ),
                   ActionChip(
@@ -144,7 +146,10 @@ class ToolIndex extends ConsumerWidget {
     final ThemeData theme = Theme.of(context);
     final List<HomeTool> tools = sortedHomeTools;
     final Widget title = Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 4, 4),
+      padding: const EdgeInsets.only(
+        left: SeguiSpacing.xl,
+        bottom: SeguiSpacing.xs,
+      ),
       child: Text('All tools', style: theme.textTheme.titleMedium),
     );
     return Card.filled(
@@ -153,7 +158,11 @@ class ToolIndex extends ConsumerWidget {
       clipBehavior: Clip.antiAlias,
       child: Padding(
         // Equal right and bottom padding keeps the scrollbar off both edges.
-        padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+        padding: const EdgeInsets.only(
+          top: SeguiSpacing.lg,
+          right: SeguiSpacing.lg,
+          bottom: SeguiSpacing.lg,
+        ),
         child: isScrollable
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -190,7 +199,7 @@ class ToolIndexTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
       dense: true,
-      leading: ToolCategoryIcon(tool: tool, size: 28),
+      leading: ToolCategoryIcon(tool: tool, size: SeguiControlSize.badge),
       title: Text(tool.title, overflow: TextOverflow.ellipsis),
       subtitle: Text(tool.category.label),
       onTap: () => ref.read(homeToolNavigatorProvider).open(tool),

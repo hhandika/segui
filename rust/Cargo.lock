@@ -2123,7 +2123,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "segul"
 version = "0.24.0"
-source = "git+https://github.com/hhandika/segul.git?branch=dev#9af703fb7ac37f47fc52e0f06bac2fdec6352152"
+source = "git+https://github.com/hhandika/segul.git?branch=dev#2fec9acbbca30cb16dcc471675b80d2016b6f402"
 dependencies = [
  "clap",
  "colored",
@@ -2136,7 +2136,7 @@ dependencies = [
 [[package]]
 name = "segul-core"
 version = "0.24.0"
-source = "git+https://github.com/hhandika/segul.git?branch=dev#9af703fb7ac37f47fc52e0f06bac2fdec6352152"
+source = "git+https://github.com/hhandika/segul.git?branch=dev#2fec9acbbca30cb16dcc471675b80d2016b6f402"
 dependencies = [
  "ahash",
  "alphanumeric-sort",

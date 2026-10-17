@@ -57,7 +57,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
         FormCard(children: [
           DropdownButtonFormField(
             decoration: const InputDecoration(
-              labelText: 'Select method',
+              labelText: 'Extract by',
             ),
             isExpanded: true,
             initialValue: _extractionOptionsController,
@@ -92,6 +92,10 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                   hint: _extractionOptionsController == ExtractionOptions.regex
                       ? '^Rattus'
                       : 'seq1;seq2;seq3',
+                  helper:
+                      _extractionOptionsController == ExtractionOptions.regex
+                          ? 'Extracts sequences whose IDs match the pattern.'
+                          : 'Separate IDs with semicolons.',
                 ),
         ]),
         const CardTitle(step: 3, title: 'Output'),

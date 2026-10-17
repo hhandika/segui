@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/styles/design_tokens.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -35,8 +36,8 @@ class ExecutionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isSuccess) {
       return Wrap(
-        spacing: 12,
-        runSpacing: 8,
+        spacing: SeguiSpacing.lg,
+        runSpacing: SeguiSpacing.md,
         alignment: WrapAlignment.end,
         children: [
           NewRunButton(
@@ -99,13 +100,15 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        elevation: 0,
+        elevation: SeguiElevation.none,
       ),
       icon: isRunning
           ? const SizedBox(
-              height: 8,
-              width: 8,
-              child: CircularProgressIndicator(),
+              height: SeguiControlSize.iconSmall,
+              width: SeguiControlSize.iconSmall,
+              child: CircularProgressIndicator(
+                strokeWidth: SeguiStroke.regular,
+              ),
             )
           : Icon(Icons.adaptive.share),
       onPressed: onPressed,
@@ -133,8 +136,8 @@ class PrimaryButton extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return FilledButton.icon(
       style: FilledButton.styleFrom(
-        minimumSize: const Size(0, 52),
-        padding: const EdgeInsets.symmetric(horizontal: 28),
+        minimumSize: const Size(0, SeguiControlSize.primaryAction),
+        padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xxl),
         shape: const StadiumBorder(),
         textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
@@ -142,10 +145,10 @@ class PrimaryButton extends StatelessWidget {
       ),
       icon: isRunning
           ? SizedBox(
-              height: 18,
-              width: 18,
+              height: SeguiControlSize.iconSmall,
+              width: SeguiControlSize.iconSmall,
               child: CircularProgressIndicator(
-                strokeWidth: 2,
+                strokeWidth: SeguiStroke.regular,
                 color: colors.onSurfaceVariant,
               ),
             )
@@ -191,15 +194,12 @@ class ShowMoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: TextButton.icon(
-          onPressed: onPressed,
-          icon: Icon(
-            isShowMore ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-          ),
-          label: Text(isShowMore ? 'Fewer options' : 'Advanced options'),
+      child: TextButton.icon(
+        onPressed: onPressed,
+        icon: Icon(
+          isShowMore ? Icons.expand_less_rounded : Icons.expand_more_rounded,
         ),
+        label: Text(isShowMore ? 'Fewer options' : 'Advanced options'),
       ),
     );
   }
@@ -253,7 +253,7 @@ class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
             );
     } else {
       return Padding(
-          padding: const EdgeInsets.only(top: 2),
+          padding: const EdgeInsets.only(top: SeguiSpacing.xxs),
           child: TextButton.icon(
             onPressed: () async =>
                 isMobile ? await _shareFile() : await _openExternalViewer(),
@@ -354,7 +354,7 @@ class CommonShareTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(SeguiRadius.lg)),
       ),
       leading: Icon(Icons.adaptive.share_rounded),
       title: const Text('Share'),
@@ -375,7 +375,7 @@ class FileInfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(SeguiRadius.lg)),
       ),
       leading: const Icon(Icons.info_outline_rounded),
       title: const Text('Details'),
@@ -399,7 +399,7 @@ class CommonDeleteTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(SeguiRadius.lg)),
       ),
       leading: Icon(
         Icons.delete_outline_rounded,

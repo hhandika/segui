@@ -45,9 +45,13 @@ class SharedOutputDirField extends ConsumerWidget {
   const SharedOutputDirField({
     super.key,
     required this.ctr,
+    this.helper,
   });
 
   final TextEditingController ctr;
+
+  /// Explanation of the output, shown below the field.
+  final String? helper;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,10 +59,14 @@ class SharedOutputDirField extends ConsumerWidget {
         ? SharedTextField(
             label: 'Directory name',
             hint: 'Enter output directory name',
+            helper: helper,
             controller: ctr,
           )
-        : const SelectDirField(
-            label: 'Select output directory',
+        : FieldWithHelper(
+            helper: helper,
+            child: const SelectDirField(
+              label: 'Select output directory',
+            ),
           );
   }
 }

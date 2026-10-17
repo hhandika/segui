@@ -6,6 +6,7 @@ import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/summary.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/styles/segui_icons.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Input and output summaries, each with a button to open its file list.
 class FileSummaryView extends ConsumerWidget {
@@ -19,7 +20,8 @@ class FileSummaryView extends ConsumerWidget {
     final String? outputDir = output?.directory?.path;
     final int otherCount = output?.otherFileCount ?? 0;
     return ListView(
-      padding: const EdgeInsets.only(top: 16, bottom: 8),
+      padding:
+          const EdgeInsets.only(top: SeguiSpacing.xl, bottom: SeguiSpacing.md),
       children: [
         FileSummaryCard(
           title: 'Input',
@@ -33,7 +35,7 @@ class FileSummaryView extends ConsumerWidget {
                   .read(filePanelViewProvider.notifier)
                   .show(FilePanelView.input),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: SeguiSpacing.lg),
         FileSummaryCard(
           title: 'Output',
           icon: SeguiIcons.outputFolderFilled,
@@ -88,10 +90,11 @@ class FileSummaryCard extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.md),
       decoration: BoxDecoration(
         color: colors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(SeguiRadius.lg),
         border: Border.all(color: colors.outlineVariant),
       ),
       child: Column(
@@ -100,7 +103,7 @@ class FileSummaryCard extends StatelessWidget {
           Row(
             children: [
               Icon(icon, color: colors.primary),
-              const SizedBox(width: 10),
+              const SizedBox(width: SeguiSpacing.md),
               Text(
                 title,
                 style: textTheme.titleMedium?.copyWith(
@@ -108,7 +111,7 @@ class FileSummaryCard extends StatelessWidget {
                 ),
               ),
               if (subtitle != null) ...[
-                const SizedBox(width: 8),
+                const SizedBox(width: SeguiSpacing.md),
                 Expanded(
                   child: Text(
                     subtitle!,
@@ -122,7 +125,7 @@ class FileSummaryCard extends StatelessWidget {
               ],
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: SeguiSpacing.lg),
           if (summary.isEmpty)
             Text(
               emptyText,
@@ -147,10 +150,10 @@ class FileSummaryCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: SeguiSpacing.lg),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: SeguiSpacing.md,
+              runSpacing: SeguiSpacing.md,
               children: [
                 for (final format in summary.formatCounts)
                   FormatCountChip(format: format.format, count: format.count),
@@ -158,7 +161,7 @@ class FileSummaryCard extends StatelessWidget {
             ),
           ],
           if (note != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: SeguiSpacing.md),
             Text(
               note!,
               style: textTheme.bodySmall?.copyWith(
@@ -166,7 +169,7 @@ class FileSummaryCard extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 4),
+          const SizedBox(height: SeguiSpacing.xs),
           Align(
             alignment: Alignment.centerRight,
             child: TextButton.icon(
@@ -229,23 +232,24 @@ class FormatCountChip extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
-      padding: const EdgeInsets.fromLTRB(8, 6, 10, 6),
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.md, SeguiSpacing.sm, SeguiSpacing.md, SeguiSpacing.sm),
       decoration: BoxDecoration(
         color: colors.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(SeguiRadius.md),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
             format.assetPath,
-            width: 18,
-            height: 18,
+            width: SeguiControlSize.iconSmall,
+            height: SeguiControlSize.iconSmall,
             colorFilter: ColorFilter.mode(colors.tertiary, BlendMode.srcIn),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: SeguiSpacing.sm),
           Text(format.label, style: textTheme.labelLarge),
-          const SizedBox(width: 6),
+          const SizedBox(width: SeguiSpacing.sm),
           Text(
             '$count',
             style: textTheme.labelLarge?.copyWith(

@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'sequence.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `count_min_tax`, `create_final_output_path`, `extract_partition_fname`, `generate_input_partition_path`, `log_info`, `match_model`, `match_parameters`, `match_params`, `match_params`, `match_params`, `match_params`, `match_removal_type`, `match_translation_table`, `parse_file`
+// These functions are ignored because they are not marked as `pub`: `count_min_tax`, `create_final_output_path`, `extract_partition_fname`, `find_ids`, `generate_input_partition_path`, `log_info`, `match_grouping`, `match_model`, `match_parameters`, `match_params`, `match_params`, `match_params`, `match_params`, `match_removal_type`, `match_translation_table`, `no_groups_detected`, `parse_file`
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`
 
 Future<String> showDnaUppercase() =>
@@ -23,6 +23,9 @@ class AlignmentDistanceServices {
   final String triangle;
   final String diagonal;
   final String? prefix;
+  final DistanceGroupingParams grouping;
+  final String groupDiagonal;
+  final bool longFormat;
 
   const AlignmentDistanceServices({
     required this.inputFiles,
@@ -33,6 +36,9 @@ class AlignmentDistanceServices {
     required this.triangle,
     required this.diagonal,
     this.prefix,
+    required this.grouping,
+    required this.groupDiagonal,
+    required this.longFormat,
   });
 
   Future<void> computeDistance() => RustLib.instance.api
@@ -44,6 +50,11 @@ class AlignmentDistanceServices {
   static Future<AlignmentDistanceServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceAlignmentDistanceServicesNew();
 
+  Future<DistanceGroupPreview> previewGroups() => RustLib.instance.api
+          .crateApiSequenceAlignmentDistanceServicesPreviewGroups(
+        that: this,
+      );
+
   @override
   int get hashCode =>
       inputFiles.hashCode ^
@@ -53,7 +64,10 @@ class AlignmentDistanceServices {
       model.hashCode ^
       triangle.hashCode ^
       diagonal.hashCode ^
-      prefix.hashCode;
+      prefix.hashCode ^
+      grouping.hashCode ^
+      groupDiagonal.hashCode ^
+      longFormat.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -67,7 +81,10 @@ class AlignmentDistanceServices {
           model == other.model &&
           triangle == other.triangle &&
           diagonal == other.diagonal &&
-          prefix == other.prefix;
+          prefix == other.prefix &&
+          grouping == other.grouping &&
+          groupDiagonal == other.groupDiagonal &&
+          longFormat == other.longFormat;
 }
 
 class AlignmentServices {
@@ -171,6 +188,80 @@ class AlignmentTrimmingServices {
           outputDir == other.outputDir &&
           outputFmt == other.outputFmt &&
           params == other.params;
+}
+
+class DistanceGroupCount {
+  final String name;
+  final BigInt count;
+
+  const DistanceGroupCount({
+    required this.name,
+    required this.count,
+  });
+
+  @override
+  int get hashCode => name.hashCode ^ count.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DistanceGroupCount &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          count == other.count;
+}
+
+class DistanceGroupPreview {
+  final String? delimiter;
+  final BigInt? fields;
+  final BigInt sampleCount;
+  final List<DistanceGroupCount> groups;
+  final List<String> unassigned;
+
+  const DistanceGroupPreview({
+    this.delimiter,
+    this.fields,
+    required this.sampleCount,
+    required this.groups,
+    required this.unassigned,
+  });
+
+  @override
+  int get hashCode =>
+      delimiter.hashCode ^
+      fields.hashCode ^
+      sampleCount.hashCode ^
+      groups.hashCode ^
+      unassigned.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DistanceGroupPreview &&
+          runtimeType == other.runtimeType &&
+          delimiter == other.delimiter &&
+          fields == other.fields &&
+          sampleCount == other.sampleCount &&
+          groups == other.groups &&
+          unassigned == other.unassigned;
+}
+
+@freezed
+sealed class DistanceGroupingParams with _$DistanceGroupingParams {
+  const DistanceGroupingParams._();
+
+  const factory DistanceGroupingParams.delimiter({
+    required String delimiter,
+    required BigInt fields,
+  }) = DistanceGroupingParams_Delimiter;
+  const factory DistanceGroupingParams.regex(
+    String field0,
+  ) = DistanceGroupingParams_Regex;
+  const factory DistanceGroupingParams.mapFile(
+    String field0,
+  ) = DistanceGroupingParams_MapFile;
+  const factory DistanceGroupingParams.auto() = DistanceGroupingParams_Auto;
+  const factory DistanceGroupingParams.none() = DistanceGroupingParams_None;
 }
 
 @freezed

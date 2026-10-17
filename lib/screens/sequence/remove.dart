@@ -65,8 +65,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
             DropdownButtonFormField(
               isExpanded: true,
               decoration: const InputDecoration(
-                labelText: 'Select method',
-                hintText: 'Select removal method',
+                labelText: 'Remove by',
               ),
               initialValue: _removalMethodController,
               items: removalOptionsMap.entries
@@ -92,6 +91,9 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
               hint: _removalMethodController == RemovalOptions.regex
                   ? '^[A-Z]{3}[0-9]{5}'
                   : 'seq1;seq2;seq3',
+              helper: _removalMethodController == RemovalOptions.regex
+                  ? 'Removes sequences whose IDs match the pattern.'
+                  : 'Separate IDs with semicolons.',
             ),
           ],
         ),

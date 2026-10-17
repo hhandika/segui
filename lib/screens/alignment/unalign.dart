@@ -61,10 +61,7 @@ class UnalignmentPageState extends ConsumerState<UnalignmentPage>
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
-          ),
-          Text(
-            'Output is unaligned FASTA.',
-            style: Theme.of(context).textTheme.labelSmall,
+            helper: 'Output is unaligned FASTA.',
           ),
           SwitchForm(
             label: 'Set interleaved format',

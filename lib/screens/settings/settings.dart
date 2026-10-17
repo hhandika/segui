@@ -7,6 +7,7 @@ import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class SettingButtons extends StatelessWidget {
   const SettingButtons({super.key});
@@ -125,10 +126,13 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
       children: [
         NavigationDrawer(
           backgroundColor: getSEGULBackgroundColor(context),
-          tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          tilePadding: const EdgeInsets.symmetric(
+            horizontal: SeguiSpacing.xs,
+            vertical: SeguiSpacing.xxs,
+          ),
           indicatorColor: getIndicatorColor(context),
           indicatorShape: getIndicatorShape(context),
-          elevation: 0,
+          elevation: SeguiElevation.none,
           selectedIndex: _selectedIndex,
           children: const [
             ...settingsDrawerDestinations,
@@ -181,10 +185,10 @@ class SmallScreenSettings extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(SeguiSpacing.xl),
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: SeguiContentWidth.form),
           height: MediaQuery.of(context).size.height,
           child: ListView(
             children: [
@@ -243,7 +247,12 @@ class SettingTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
+        padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.md,
+          SeguiSpacing.md,
+          SeguiSpacing.md,
+          SeguiSpacing.xs,
+        ),
         child: Text(
           title,
           style: Theme.of(context).textTheme.labelLarge,

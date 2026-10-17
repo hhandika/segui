@@ -90,7 +90,7 @@ export const tools: {
   {
     category: "alignment",
     title: "Compute genetic distances",
-    description: "Pairwise p, JC69, K2P, TN93, or Poisson distance matrices.",
+    description: "Pairwise p, JC69, K2P, TN93, or Poisson distances and group means.",
     icon: distance,
     docs: "/docs/gui-usage/align-distance/",
   },

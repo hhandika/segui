@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/io/file_tree_view.dart';
 import 'package:segui/services/io/file_tree.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Action on the files selected in a [FileBrowser].
 @immutable
@@ -103,7 +104,8 @@ class _FileBrowserState extends State<FileBrowser> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+          padding: const EdgeInsets.fromLTRB(
+              SeguiSpacing.xl, 0, SeguiSpacing.xl, SeguiSpacing.xs),
           child: FileSearchField(
             controller: _search,
             onChanged: (value) => setState(() => _query = value.trim()),
@@ -229,7 +231,7 @@ class FileSearchField extends StatelessWidget {
             filled: true,
             fillColor: colors.surfaceContainerHigh,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(SeguiRadius.full),
               borderSide: BorderSide.none,
             ),
           ),
@@ -266,7 +268,7 @@ class FileSelectionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final String? root = rootPath;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xl),
       child: Row(
         children: [
           if (isSelecting) ...[
@@ -312,21 +314,24 @@ class FileActionToolbar extends StatelessWidget {
         ? const []
         : actions.where((e) => !e.isSingleFile || count == 1).toList();
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.lg, 0, SeguiSpacing.lg, SeguiSpacing.xl),
       child: Material(
         color: colors.surfaceContainerHighest,
-        elevation: 3,
+        elevation: SeguiElevation.medium,
         shape: const StadiumBorder(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          padding: const EdgeInsets.symmetric(
+              horizontal: SeguiSpacing.md, vertical: SeguiSpacing.sm),
           child: Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 4,
-            runSpacing: 4,
+            spacing: SeguiSpacing.xs,
+            runSpacing: SeguiSpacing.xs,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: SeguiSpacing.md),
                 child: Text(
                   count == 0 ? 'Select files' : '$count selected',
                   style: theme.textTheme.labelLarge,

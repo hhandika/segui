@@ -7,7 +7,7 @@ SEGUI is the Flutter GUI for SEGUL, a Rust toolkit for phylogenomic data manipul
 - `lib/main.dart`: app startup, Rust initialization, preferences, and Riverpod setup.
 - `lib/screens/`: feature UI grouped into `alignment/`, `sequence/`, `genomics/`, `home/`, `settings/`, and `viewers/`; reusable widgets and file-selection UI live in `shared/`.
 - `lib/services/`: task orchestration in `tasks/`, Riverpod state in `providers/`, filesystem and logging helpers in `io/`, file parsing in `viewers/`, and shared controllers, types, and utilities.
-- `lib/styles/`: themes in `themes.dart` and shared decorations and responsive breakpoints in `decoration.dart`.
+- `lib/styles/`: themes in `themes.dart`, shared decorations and responsive breakpoints in `decoration.dart`, and spacing, radius, stroke, elevation, size, and width tokens in `design_tokens.dart`.
 - `rust/src/api/`: Rust bridge wrappers for alignment and sequence operations, contigs, reads, CSV, archives, and common utilities. Generated bindings live in `lib/src/rust/` and `rust/src/frb_generated*.rs`; configuration is in `flutter_rust_bridge.yaml`.
 - `rust_builder/`: local Flutter FFI plugin and Cargokit integration for building the native Rust library.
 - `test/`: Dart unit tests and fixtures in `test/files/`; `integration_test/` checks native startup, navigation, and bridge file IO, and `test_driver/` contains a currently commented-out integration driver. Rust unit tests are inline in the API modules, with fixtures in `rust/src/tests/`.
@@ -45,7 +45,7 @@ Keep Rust code, comments, and docstrings to 100 characters per line; wrap long s
 
 Keep screens as thin UI wrappers under `lib/screens/`. Put business logic in `lib/services/` and reusable UI in `lib/screens/shared/`. Do not place UI in services or return widgets from helpers; create widget classes, no functions return widgets. In widget classes, only `@override` methods go before `build`; keep `build` near the top and helpers below. Prefer `const`, immutable models, and Riverpod over mutable globals. Import Material from `package:material_ui/material_ui.dart`, not `package:flutter/material.dart`. Keep `build` side-effect free; do filesystem, preferences, and bridge work in services/providers. Guard async UI updates with `context.mounted`. Use theme values.
 
-Reuse the responsive breakpoints and decoration helpers in `lib/styles/decoration.dart`. Use the active `Theme.of(context)` and `ColorScheme` for colors and typography; add or update shared theme values in `lib/styles/themes.dart` when a value is not already available.
+Reuse the responsive breakpoints and decoration helpers in `lib/styles/decoration.dart`. Use the tokens in `lib/styles/design_tokens.dart` (`SeguiSpacing`, `SeguiRadius`, `SeguiStroke`, `SeguiElevation`, `SeguiControlSize`, `SeguiFormLayout`, `SeguiContentWidth`) instead of hard-coded padding, gaps, radii, and sizes; add a named token when a value is new. In tool forms, `FormCard` spaces fields, so fields carry no vertical padding, hidden fields use collection `if` rather than `Visibility`, and explanatory text goes in a field's `helper` (or `FieldWithHelper`) instead of a loose `Text`. Use the active `Theme.of(context)` and `ColorScheme` for colors and typography; add or update shared theme values in `lib/styles/themes.dart` when a value is not already available.
 
 ## Testing Guidelines
 

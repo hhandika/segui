@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/utils.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Opens the SEGUL citation with copy and article links.
 class CiteSegulButton extends StatelessWidget {
@@ -42,14 +43,14 @@ class CitationContent extends StatelessWidget {
                   color: colors.onSurfaceVariant,
                 ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: SeguiSpacing.lg),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(SeguiSpacing.xl),
             decoration: BoxDecoration(
               // Lightest tone, so it stands out on both dialog and sheet.
               color: colors.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(SeguiRadius.md),
               border: Border.all(color: colors.outlineVariant),
             ),
             child: SelectableText.rich(

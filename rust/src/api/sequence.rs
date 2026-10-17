@@ -4,7 +4,10 @@ use std::time::Instant;
 use flutter_rust_bridge::frb;
 use segul::core::align::concat::AlignmentConcatenation;
 use segul::core::align::convert::AlignmentConversion;
-use segul::core::align::distance::{AlignmentDistance, MatrixDiagonal, MatrixTriangle};
+use segul::core::align::distance::group::SampleGrouping;
+use segul::core::align::distance::{
+    AlignmentDistance, GroupDiagonal, MatrixDiagonal, MatrixTriangle,
+};
 use segul::core::align::filter::{AlignmentFiltering, FilteringParameters};
 use segul::core::align::partition::PartitionConverter;
 use segul::core::align::split::AlignmentSplitting;
@@ -848,6 +851,12 @@ pub struct AlignmentDistanceServices {
     // Matrix diagonal: zero, blank, or max
     pub diagonal: String,
     pub prefix: Option<String>,
+    // How to group samples for group mean distances
+    pub grouping: DistanceGroupingParams,
+    // Group matrix diagonal: within, zero, blank, or max
+    pub group_diagonal: String,
+    // Write pairwise distances and group statistics of all loci as long tables
+    pub long_format: bool,
 }
 
 impl Sequence for AlignmentDistanceServices {}
@@ -863,6 +872,9 @@ impl AlignmentDistanceServices {
             triangle: String::from("full"),
             diagonal: String::from("zero"),
             prefix: None,
+            grouping: DistanceGroupingParams::None,
+            group_diagonal: String::from("within"),
+            long_format: false,
         }
     }
 
@@ -890,12 +902,104 @@ impl AlignmentDistanceServices {
         let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
         let task = "Pairwise Genetic Distance";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        AlignmentDistance::new(&input_fmt, &datatype, &model, output_path)
+        let grouping = self
+            .match_grouping(&input_files, &input_fmt, &datatype)
+            .unwrap_or_else(|e| panic!("{:#}", e));
+        let mut handle = AlignmentDistance::new(&input_fmt, &datatype, &model, output_path)
             .with_triangle(triangle)
             .with_diagonal(diagonal)
-            .compute(&input_files, self.prefix.as_deref());
+            .with_long_format(self.long_format);
+        if let Some(grouping) = grouping {
+            let group_diagonal = self
+                .group_diagonal
+                .parse::<GroupDiagonal>()
+                .expect("Invalid group matrix diagonal");
+            handle = handle
+                .with_grouping(grouping)
+                .with_group_diagonal(group_diagonal);
+        }
+        handle.compute(&input_files, self.prefix.as_deref());
         let duration = time.elapsed();
         utils::print_execution_time(duration);
+    }
+
+    // Assign the samples of the input files to groups without computing distances.
+    // With auto grouping, also returns the detected delimiter and field count.
+    pub fn preview_groups(&self) -> anyhow::Result<DistanceGroupPreview> {
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let ids = self.find_ids(&input_files, &input_fmt, &datatype);
+        let (grouping, suggestion) = match &self.grouping {
+            DistanceGroupingParams::Auto => {
+                let suggestion = SampleGrouping::detect(&ids).ok_or_else(no_groups_detected)?;
+                (suggestion.to_grouping(), Some(suggestion))
+            }
+            _ => match self.match_grouping(&input_files, &input_fmt, &datatype)? {
+                Some(grouping) => (grouping, None),
+                None => anyhow::bail!("No grouping method selected"),
+            },
+        };
+        let assignment = grouping.assign(&ids);
+        Ok(DistanceGroupPreview {
+            delimiter: suggestion.map(|s| s.delimiter.to_string()),
+            fields: suggestion.map(|s| s.fields),
+            sample_count: ids.len(),
+            groups: assignment
+                .counts()
+                .into_iter()
+                .map(|(name, count)| DistanceGroupCount { name, count })
+                .collect(),
+            unassigned: assignment.unassigned(),
+        })
+    }
+
+    #[frb(ignore)]
+    fn match_grouping(
+        &self,
+        input_files: &[PathBuf],
+        input_fmt: &InputFmt,
+        datatype: &DataType,
+    ) -> anyhow::Result<Option<SampleGrouping>> {
+        let grouping = match &self.grouping {
+            DistanceGroupingParams::Delimiter { delimiter, fields } => {
+                let mut chars = delimiter.chars();
+                match (chars.next(), chars.next()) {
+                    (Some(delimiter), None) => SampleGrouping::from_delimiter(delimiter, *fields)?,
+                    _ => anyhow::bail!("The group delimiter must be a single character"),
+                }
+            }
+            DistanceGroupingParams::Regex(pattern) => SampleGrouping::from_regex(pattern)?,
+            DistanceGroupingParams::MapFile(path) => {
+                SampleGrouping::from_map_file(Path::new(path))?
+            }
+            DistanceGroupingParams::Auto => {
+                let ids = self.find_ids(input_files, input_fmt, datatype);
+                let suggestion = SampleGrouping::detect(&ids).ok_or_else(no_groups_detected)?;
+                log::info!(
+                    "Detected groups: split on '{}', keep {} field(s), {} groups\n",
+                    suggestion.delimiter,
+                    suggestion.fields,
+                    suggestion.groups
+                );
+                suggestion.to_grouping()
+            }
+            DistanceGroupingParams::None => return Ok(None),
+        };
+        Ok(Some(grouping))
+    }
+
+    #[frb(ignore)]
+    fn find_ids(
+        &self,
+        input_files: &[PathBuf],
+        input_fmt: &InputFmt,
+        datatype: &DataType,
+    ) -> Vec<String> {
+        IDs::new(input_files, input_fmt, datatype)
+            .id_unique()
+            .into_iter()
+            .collect()
     }
 
     fn match_model(&self) -> DistanceModel {
@@ -904,6 +1008,40 @@ impl AlignmentDistanceServices {
             .parse::<DistanceModel>()
             .expect("Invalid distance model")
     }
+}
+
+fn no_groups_detected() -> anyhow::Error {
+    anyhow::anyhow!(
+        "Could not detect groups from sample names. \
+        Use a delimiter, a regular expression, or a group file."
+    )
+}
+
+// How to group samples for group mean distances.
+pub enum DistanceGroupingParams {
+    // Split sample names on a single-character delimiter and keep the first fields
+    Delimiter { delimiter: String, fields: usize },
+    // Use the first capture group of the regex, or the whole match
+    Regex(String),
+    // Path to a CSV/TSV file with a header and sample and group columns
+    MapFile(String),
+    // Detect the delimiter and field count from sample names
+    Auto,
+    None,
+}
+
+pub struct DistanceGroupCount {
+    pub name: String,
+    pub count: usize,
+}
+
+pub struct DistanceGroupPreview {
+    // The detected delimiter and field count, set only for auto grouping
+    pub delimiter: Option<String>,
+    pub fields: Option<usize>,
+    pub sample_count: usize,
+    pub groups: Vec<DistanceGroupCount>,
+    pub unassigned: Vec<String>,
 }
 
 // Holder for FRB generated code.
@@ -1287,6 +1425,74 @@ mod test {
         services.compute_distance();
         assert!(count_files(&output) >= 2);
         clean(&output);
+    }
+
+    fn grouped_distance_services(grouping: DistanceGroupingParams) -> AlignmentDistanceServices {
+        let mut services = AlignmentDistanceServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.grouping = grouping;
+        services
+    }
+
+    #[test]
+    fn test_compute_distance_groups_long() {
+        let output = output_dir("distance-groups");
+        let mut services =
+            grouped_distance_services(DistanceGroupingParams::Regex(String::from("^sample_[ab]")));
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.long_format = true;
+        services.group_diagonal = String::from("blank");
+        services.compute_distance();
+        for name in [
+            "distance_group_mean.csv",
+            "distance_group_pairs.csv",
+            "distance_group_long.csv",
+            "distance_pairwise_long.csv",
+        ] {
+            assert!(output.join(name).is_file(), "Missing {}", name);
+        }
+        let mean = fs::read_to_string(output.join("distance_group_mean.csv")).unwrap();
+        assert!(mean.starts_with(",sample_a,sample_b"));
+        let second_line = mean.lines().nth(1).unwrap();
+        assert!(second_line.starts_with("sample_a,,"), "{}", second_line);
+        clean(&output);
+    }
+
+    #[test]
+    fn test_preview_distance_groups() {
+        let services = grouped_distance_services(DistanceGroupingParams::Delimiter {
+            delimiter: String::from("_"),
+            fields: 2,
+        });
+        let preview = services.preview_groups().unwrap();
+        assert_eq!(preview.sample_count, preview.groups.len());
+        assert_eq!(preview.groups[0].name, "sample_a");
+        assert!(preview.unassigned.is_empty());
+        assert_eq!(preview.delimiter, None);
+
+        let services =
+            grouped_distance_services(DistanceGroupingParams::Regex(String::from("^sample_a")));
+        let preview = services.preview_groups().unwrap();
+        assert_eq!(preview.groups.len(), 1);
+        assert_eq!(preview.unassigned.len(), preview.sample_count - 1);
+    }
+
+    #[test]
+    fn test_preview_distance_groups_errors() {
+        // All fixture samples share the same prefix, so no grouping is detected.
+        let auto = grouped_distance_services(DistanceGroupingParams::Auto);
+        assert!(auto.preview_groups().is_err());
+        let delimiter = grouped_distance_services(DistanceGroupingParams::Delimiter {
+            delimiter: String::from("__"),
+            fields: 1,
+        });
+        assert!(delimiter.preview_groups().is_err());
+        let regex = grouped_distance_services(DistanceGroupingParams::Regex(String::from("(")));
+        assert!(regex.preview_groups().is_err());
+        let none = grouped_distance_services(DistanceGroupingParams::None);
+        assert!(none.preview_groups().is_err());
     }
 
     #[test]

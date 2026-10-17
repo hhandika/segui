@@ -16,6 +16,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/output.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class OutputScreen extends ConsumerWidget {
   const OutputScreen({super.key});
@@ -205,7 +206,7 @@ class OutputFileTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     final FileAssociation association = FileAssociation(file: file);
     return ListTile(
-      minVerticalPadding: 2,
+      minVerticalPadding: SeguiSpacing.xxs,
       leading: FileIconTile(icon: FileIcon(file: file)),
       title: isOldFile
           ? FileIOTitle(file: file)
@@ -264,24 +265,24 @@ class OutputActionMenu extends StatelessWidget {
                 context: context,
                 builder: (context) {
                   return Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(SeguiSpacing.xl),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CommonShareTile(file: file),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: SeguiSpacing.xxs),
                         ExternalAppLauncher(
                           file: file,
                           fromPopUp: true,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: SeguiSpacing.xxs),
                         FileInfoTile(file: file),
                         if (showDelete) ...[
-                          const SizedBox(height: 8),
+                          const SizedBox(height: SeguiSpacing.md),
                           const CommonDivider(),
                           CommonDeleteTile(file: file),
                         ],
-                        const SizedBox(height: 4),
+                        const SizedBox(height: SeguiSpacing.xs),
                       ],
                     ),
                   );

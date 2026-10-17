@@ -76,18 +76,15 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
               });
             },
           ),
-          const SizedBox(height: 8),
-          Visibility(
-            visible: _partitionFormatController != 'Charset',
-            child: const SharedFilePicker(
+          if (_partitionFormatController != 'Charset')
+            const SharedFilePicker(
               label: 'Select partition file',
               allowMultiple: false,
               hasSecondaryPicker: true,
               xTypeGroup: partitionTypeGroup,
               task: task,
               allowDirectorySelection: false,
-            ),
-          )
+            )
         ]),
         const CardTitle(step: 3, title: 'Output'),
         FormCard(children: [

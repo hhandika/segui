@@ -9,6 +9,7 @@ import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Widest the tool form, header, and action bar grow before centering.
 const double maxToolFormWidth = 760;
@@ -69,7 +70,8 @@ class ToolListPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 4),
+            padding: const EdgeInsets.fromLTRB(SeguiSpacing.xxl,
+                SeguiSpacing.xxl, SeguiSpacing.xxl, SeguiSpacing.xs),
             child: Text(
               category.label,
               style: textTheme.titleLarge?.copyWith(
@@ -78,7 +80,8 @@ class ToolListPanel extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+            padding: const EdgeInsets.fromLTRB(
+                SeguiSpacing.xxl, 0, SeguiSpacing.xxl, SeguiSpacing.lg),
             child: Text(
               '${tools.length} tools',
               style: textTheme.bodyMedium?.copyWith(
@@ -88,7 +91,8 @@ class ToolListPanel extends StatelessWidget {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+              padding: const EdgeInsets.fromLTRB(SeguiSpacing.lg,
+                  SeguiSpacing.xs, SeguiSpacing.lg, SeguiSpacing.xl),
               children: [
                 for (final tool in tools)
                   ToolListTile(
@@ -126,13 +130,13 @@ class ToolListTile extends ConsumerWidget {
     return ToolDescriptionTooltip(
       tool: tool,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 4),
+        padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
         child: Material(
           color:
               isSelected ? colors.surfaceContainerLowest : Colors.transparent,
           elevation: isSelected ? 1 : 0,
           shadowColor: colors.shadow.withAlpha(60),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(SeguiRadius.md),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: () {
@@ -142,11 +146,12 @@ class ToolListTile extends ConsumerWidget {
               onOpened?.call();
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: SeguiSpacing.lg, vertical: SeguiSpacing.md),
               child: Row(
                 children: [
                   ToolIconTile(tool: tool, isSelected: isSelected),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: SeguiSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,10 +268,10 @@ class ToolHeader extends StatelessWidget {
             ?.copyWith(fontWeight: FontWeight.w700);
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        isCompact ? 16 : 32,
-        isCompact ? 12 : 28,
-        isCompact ? 8 : 32,
-        isCompact ? 4 : 8,
+        isCompact ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+        isCompact ? SeguiSpacing.lg : SeguiSpacing.xxl,
+        isCompact ? SeguiSpacing.md : SeguiSpacing.xxxl,
+        isCompact ? SeguiSpacing.xs : SeguiSpacing.md,
       ),
       child: Center(
         child: ConstrainedBox(
@@ -284,7 +289,7 @@ class ToolHeader extends StatelessWidget {
                   if (isCompact) const FilesButton(),
                 ],
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: SeguiSpacing.xs),
               Text(
                 tool.about,
                 style: textTheme.bodyMedium?.copyWith(
@@ -315,13 +320,13 @@ class ToolSwitcherButton extends StatelessWidget {
       child: Tooltip(
         message: 'Switch tool',
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(SeguiRadius.md),
           onTap: () => showResponsiveSheet(
             context: context,
             builder: (context) => ToolSwitcherSheet(tool: tool),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: SeguiSpacing.xs),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -332,7 +337,7 @@ class ToolSwitcherButton extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: SeguiSpacing.xs),
                 const Icon(Icons.expand_more_rounded),
               ],
             ),
@@ -354,11 +359,15 @@ class ToolSwitcherSheet extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         // Sheets have a drag handle above; dialogs need their own top space.
-        padding:
-            EdgeInsets.fromLTRB(12, isPhoneScreen(context) ? 0 : 20, 12, 16),
+        padding: EdgeInsets.fromLTRB(
+            SeguiSpacing.lg,
+            isPhoneScreen(context) ? 0 : SeguiSpacing.xl,
+            SeguiSpacing.lg,
+            SeguiSpacing.xl),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            padding: const EdgeInsets.fromLTRB(
+                SeguiSpacing.lg, 0, SeguiSpacing.lg, SeguiSpacing.lg),
             child: Text(
               tool.category.label,
               style: Theme.of(context).textTheme.titleLarge,
@@ -426,7 +435,8 @@ class FilePanel extends ConsumerWidget {
         0;
     final FilePanelView view = ref.watch(filePanelViewProvider);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -536,7 +546,7 @@ class ToolFormLayout extends StatelessWidget {
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.only(top: 24),
+                      padding: EdgeInsets.only(top: SeguiSpacing.xxl),
                       child: ToolScene(),
                     ),
                   ],
@@ -568,8 +578,8 @@ class ToolRunBar extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isCompact ? 16 : 32,
-          vertical: 12,
+          horizontal: isCompact ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+          vertical: SeguiSpacing.lg,
         ),
         child: Center(
           child: ConstrainedBox(
@@ -583,7 +593,7 @@ class ToolRunBar extends StatelessWidget {
                   children: [
                     const RunSummary(),
                     if (action != null) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: SeguiSpacing.md),
                       Align(alignment: Alignment.centerRight, child: action),
                     ],
                   ],
@@ -592,7 +602,7 @@ class ToolRunBar extends StatelessWidget {
               return Row(
                 children: [
                   const Expanded(child: RunSummary()),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: SeguiSpacing.lg),
                   if (action != null) action!,
                 ],
               );

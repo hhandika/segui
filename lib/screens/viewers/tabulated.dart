@@ -9,6 +9,7 @@ import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/viewers/csv.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class TabulatedFileView extends StatelessWidget {
   const TabulatedFileView({super.key, required this.file});
@@ -28,20 +29,20 @@ class TabulatedFileView extends StatelessWidget {
       backgroundColor: getSEGULBackgroundColor(context),
       body: Center(
         child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(SeguiSpacing.xl),
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
                   child: Container(
                     decoration: getContainerDecoration(context),
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(SeguiSpacing.xl),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           FileIcon(file: file),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: SeguiSpacing.md),
                           FileIOSubtitle(file: file),
                         ],
                       ),
@@ -50,7 +51,7 @@ class TabulatedFileView extends StatelessWidget {
                 ),
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(SeguiSpacing.md),
                     decoration: getContainerDecoration(context),
                     child: TabulatedFileViewBody(file: file),
                   ),
@@ -119,8 +120,8 @@ class _PaginatedTableState extends State<PaginatedTable> {
     return SingleChildScrollView(
         child: Theme(
       data: Theme.of(context).copyWith(
-          cardTheme:
-              const CardThemeData(elevation: 0, color: Colors.transparent)),
+          cardTheme: const CardThemeData(
+              elevation: SeguiElevation.none, color: Colors.transparent)),
       child: PaginatedDataTable(
         rowsPerPage: _rowCount(screenHeight),
         columns: widget.content[0]

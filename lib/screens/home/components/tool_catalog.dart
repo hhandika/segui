@@ -5,6 +5,7 @@ import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Every SEGUI tool grouped by category, filtered by [query].
 class ToolCatalog extends StatelessWidget {
@@ -19,7 +20,7 @@ class ToolCatalog extends StatelessWidget {
         .toList();
     if (categories.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 32),
+        padding: const EdgeInsets.symmetric(vertical: SeguiSpacing.xxxl),
         child: Text(
           'No tools match "${query.trim()}".',
           textAlign: TextAlign.center,
@@ -32,7 +33,7 @@ class ToolCatalog extends StatelessWidget {
       children: [
         for (final category in categories)
           Padding(
-            padding: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.only(bottom: SeguiSpacing.xxl),
             child: ToolCategorySection(
               category: category,
               tools: filterHomeTools(category, query),
@@ -79,7 +80,7 @@ class ToolCategorySection extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: SeguiSpacing.md),
             TextButton(
               onPressed: () => ref
                   .read(tabSelectionProvider.notifier)
@@ -88,7 +89,7 @@ class ToolCategorySection extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: SeguiSpacing.md),
         ToolGrid(tools: tools),
       ],
     );
@@ -132,12 +133,12 @@ class ToolCard extends ConsumerWidget {
       child: InkWell(
         onTap: () => ref.read(homeToolNavigatorProvider).open(tool),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(SeguiSpacing.lg),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ToolCategoryIcon(tool: tool),
-              const SizedBox(width: 14),
+              const SizedBox(width: SeguiSpacing.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +149,7 @@ class ToolCard extends ConsumerWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SeguiSpacing.xxs),
                     ToolDescription(text: tool.description),
                   ],
                 ),
@@ -198,7 +199,11 @@ class ToolDescription extends StatelessWidget {
 
 /// Tool SVG icon on a tile tinted by the tool's category.
 class ToolCategoryIcon extends StatelessWidget {
-  const ToolCategoryIcon({super.key, required this.tool, this.size = 40});
+  const ToolCategoryIcon({
+    super.key,
+    required this.tool,
+    this.size = SeguiControlSize.control,
+  });
 
   final HomeTool tool;
   final double size;

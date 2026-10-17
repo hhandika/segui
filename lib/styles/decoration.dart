@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Material 3 window size class breakpoints, in logical pixels (dp).
 /// https://m3.material.io/foundations/layout/applying-layout/window-size-classes
@@ -58,14 +59,18 @@ int gridColumnCount(
   double width, {
   required double minItemWidth,
   required int maxColumns,
-  double spacing = 12,
+  double spacing = SeguiSpacing.lg,
 }) {
   final int columns = ((width + spacing) / (minItemWidth + spacing)).floor();
   return columns.clamp(1, maxColumns);
 }
 
 /// Width of each item when [columns] share [width] with [spacing] between.
-double gridItemWidth(double width, int columns, {double spacing = 12}) {
+double gridItemWidth(
+  double width,
+  int columns, {
+  double spacing = SeguiSpacing.lg,
+}) {
   return (width - spacing * (columns - 1)) / columns;
 }
 
@@ -73,9 +78,9 @@ BoxDecoration getContainerDecoration(BuildContext context) {
   return BoxDecoration(
     border: Border.all(
       color: getBorderColor(context),
-      width: 2,
+      width: SeguiStroke.regular,
     ),
-    borderRadius: BorderRadius.circular(16),
+    borderRadius: BorderRadius.circular(SeguiRadius.lg),
     color: Theme.of(context).colorScheme.surface,
   );
 }
@@ -84,16 +89,19 @@ BoxDecoration getContainerDecoration(BuildContext context) {
 /// child to the rounded corners and draws the outline on top.
 RoundedRectangleBorder getContainerShape(BuildContext context) {
   return RoundedRectangleBorder(
-    side: BorderSide(color: getBorderColor(context), width: 2),
-    borderRadius: BorderRadius.circular(16),
+    side: BorderSide(
+      color: getBorderColor(context),
+      width: SeguiStroke.regular,
+    ),
+    borderRadius: BorderRadius.circular(SeguiRadius.lg),
   );
 }
 
 RoundedRectangleBorder getIndicatorShape(BuildContext context) {
   return const RoundedRectangleBorder(
     borderRadius: BorderRadius.horizontal(
-      right: Radius.circular(16),
-      left: Radius.circular(16),
+      right: Radius.circular(SeguiRadius.lg),
+      left: Radius.circular(SeguiRadius.lg),
     ),
   );
 }

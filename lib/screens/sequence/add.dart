@@ -66,19 +66,16 @@ class SequenceAdditionPageState extends ConsumerState<SequenceAdditionPage>
         FormCard(children: [
           SwitchForm(
             label: 'Add all to a single file',
+            helper: _isSingleDestination
+                ? 'Every sequence is added to one destination file.'
+                : 'Sequences are added to destination files with the '
+                    'same file name.',
             value: _isSingleDestination,
             onPressed: (value) {
               setState(() {
                 _isSingleDestination = value;
               });
             },
-          ),
-          Text(
-            _isSingleDestination
-                ? 'Every sequence is added to one destination file.'
-                : 'Sequences are added to destination files with the '
-                    'same file name.',
-            style: Theme.of(context).textTheme.labelSmall,
           ),
           SharedFilePicker(
             label: 'Select destination files',
@@ -98,9 +95,8 @@ class SequenceAdditionPageState extends ConsumerState<SequenceAdditionPage>
               });
             },
           ),
-          Visibility(
-            visible: _isSingleDestination,
-            child: SwitchForm(
+          if (_isSingleDestination)
+            SwitchForm(
               label: 'Add source file name to IDs',
               value: _isFilenameIncluded,
               onPressed: (value) {
@@ -109,16 +105,12 @@ class SequenceAdditionPageState extends ConsumerState<SequenceAdditionPage>
                 });
               },
             ),
-          ),
         ]),
         const CardTitle(step: 3, title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
-          ),
-          Text(
-            'Output is unaligned FASTA.',
-            style: Theme.of(context).textTheme.labelSmall,
+            helper: 'Output is unaligned FASTA.',
           ),
           SwitchForm(
             label: 'Set interleaved format',

@@ -80,21 +80,20 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
         ]),
         const CardTitle(step: 2, title: 'Loci (optional)'),
         FormCard(children: [
-          const SharedFilePicker(
-            label: 'Select BED file',
-            allowMultiple: false,
-            hasSecondaryPicker: true,
-            xTypeGroup: bedTypeGroup,
-            task: task,
-            allowDirectorySelection: false,
-          ),
-          Text(
-            hasBed
+          FieldWithHelper(
+            helper: hasBed
                 ? 'Each block is matched to every locus it overlaps on the '
                     'same chromosome, and blocks of a locus are joined.'
                 : 'Without a BED file, each block or each reference '
                     'chromosome becomes its own alignment.',
-            style: Theme.of(context).textTheme.labelSmall,
+            child: const SharedFilePicker(
+              label: 'Select BED file',
+              allowMultiple: false,
+              hasSecondaryPicker: true,
+              xTypeGroup: bedTypeGroup,
+              task: task,
+              allowDirectorySelection: false,
+            ),
           ),
           if (hasBed) ...[
             SwitchForm(

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Files shown at first and added by each "Show more".
 const int fileListPageSize = 20;
@@ -67,10 +68,10 @@ class ShowMoreFilesButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final int nextCount = math.min(remaining, fileListPageSize);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: SeguiSpacing.md),
       child: Wrap(
         alignment: WrapAlignment.center,
-        spacing: 8,
+        spacing: SeguiSpacing.md,
         children: [
           TextButton.icon(
             onPressed: onShowMore,
@@ -97,12 +98,12 @@ class FileIconTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 36,
-      height: 36,
+      width: SeguiControlSize.avatar,
+      height: SeguiControlSize.avatar,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(SeguiRadius.md),
       ),
       child: icon,
     );

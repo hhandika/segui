@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 const List<String> themeTitles = ['System default', 'Light', 'Dark'];
 
@@ -31,7 +32,8 @@ class ThemeSettings extends StatelessWidget {
       backgroundColor: getSEGULBackgroundColor(context),
       body: const SingleChildScrollView(
         child: Padding(
-            padding: EdgeInsets.all(16), child: CompactThemeSettingView()),
+            padding: EdgeInsets.all(SeguiSpacing.xl),
+            child: CompactThemeSettingView()),
       ),
     );
   }
@@ -77,13 +79,13 @@ class DesktopThemeSettingView extends ConsumerWidget {
       child: ref.watch(themeSettingProvider).when(
             data: (theme) {
               return SizedBox(
-                height: 200,
+                height: SeguiControlSize.themePicker,
                 child: GridView.count(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.all(16),
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 28,
+                  padding: const EdgeInsets.all(SeguiSpacing.xl),
+                  crossAxisSpacing: SeguiSpacing.xl,
+                  mainAxisSpacing: SeguiSpacing.xxl,
                   crossAxisCount: 1,
                   children: List.generate(
                     themeTitles.length,
@@ -164,13 +166,13 @@ class ThemeSettingGrid extends ConsumerWidget {
           ? getContainerDecoration(context).copyWith(
               border: Border.all(
                 color: Theme.of(context).colorScheme.primary,
-                width: 4,
+                width: SeguiStroke.thick,
               ),
             )
           : getContainerDecoration(context),
-      padding: const EdgeInsets.all(16),
-      width: 320,
-      height: 120,
+      padding: const EdgeInsets.all(SeguiSpacing.xl),
+      width: SeguiContentWidth.panel,
+      height: SeguiControlSize.themeCard,
       child: InkWell(
         onTap: () {
           ref.read(themeSettingProvider.notifier).setTheme(theme);
@@ -181,9 +183,9 @@ class ThemeSettingGrid extends ConsumerWidget {
             Icon(
               icon,
               color: getIconColor(context),
-              size: 80,
+              size: SeguiControlSize.illustration,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: SeguiSpacing.md),
             Text(
               title,
               style: Theme.of(context).textTheme.labelLarge,

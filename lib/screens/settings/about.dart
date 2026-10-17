@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class AboutButton extends StatelessWidget {
   const AboutButton({super.key});
@@ -49,7 +50,12 @@ class _AppAboutState extends State<AppAbout> {
         backgroundColor: getSEGULBackgroundColor(context),
         body: const Center(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 24),
+            padding: EdgeInsets.fromLTRB(
+              SeguiSpacing.xl,
+              SeguiSpacing.xl,
+              SeguiSpacing.xl,
+              SeguiSpacing.xxl,
+            ),
             child: AboutContent(),
           ),
         ));
@@ -65,22 +71,27 @@ class AboutContent extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Positioned(
-          top: 56,
+          top: SeguiControlSize.illustrationLarge / 2 + SeguiSpacing.sm,
           child: Container(
             // We add extra padding to the width
             // to account for the container decoration
             // added to the container
-            width: MediaQuery.of(context).size.width > 840
-                ? 800
-                : MediaQuery.of(context).size.width - 32,
-            padding: const EdgeInsets.fromLTRB(16, 60, 16, 16),
+            width: MediaQuery.of(context).size.width > expandedScreenSize
+                ? SeguiContentWidth.reading
+                : MediaQuery.of(context).size.width - 2 * SeguiSpacing.xl,
+            padding: const EdgeInsets.fromLTRB(
+              SeguiSpacing.xl,
+              SeguiSpacing.display,
+              SeguiSpacing.xl,
+              SeguiSpacing.xl,
+            ),
             decoration: getContainerDecoration(context),
             child: FutureBuilder<SegulVersion>(
               future: segulVersion,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return SingleChildScrollView(
-                      padding: const EdgeInsets.only(top: 16),
+                      padding: const EdgeInsets.only(top: SeguiSpacing.xl),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +101,7 @@ class AboutContent extends StatelessWidget {
                             'SEGUI',
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: SeguiSpacing.xs),
                           Text(
                             'A GUI version of the SEGUL genomic tool',
                             style: Theme.of(context).textTheme.bodyLarge,
@@ -101,7 +112,7 @@ class AboutContent extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium,
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: SeguiSpacing.xs),
                           const CommonDivider(),
                           AboutTile(
                             title: 'App version',
@@ -119,7 +130,8 @@ class AboutContent extends StatelessWidget {
                             icon: Icons.api_outlined,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 8),
+                            padding:
+                                const EdgeInsets.only(top: SeguiSpacing.md),
                             child: TextButton(
                               onPressed: () {
                                 showLicensePage(
@@ -143,16 +155,16 @@ class AboutContent extends StatelessWidget {
         Align(
             alignment: Alignment.topCenter,
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(SeguiSpacing.sm),
               decoration: getContainerDecoration(context),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(SeguiRadius.lg),
                 child: Image.asset(
                   'assets/launcher/icon.png',
                   cacheHeight: 420,
                   cacheWidth: 420,
-                  width: 100,
-                  height: 100,
+                  width: SeguiControlSize.illustrationLarge,
+                  height: SeguiControlSize.illustrationLarge,
                 ),
               ),
             )),

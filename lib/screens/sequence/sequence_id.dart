@@ -52,7 +52,6 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
           isDatatypeEnabled: true,
           task: task,
         ),
-        const SizedBox(height: 16),
         const CardTitle(step: 2, title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(

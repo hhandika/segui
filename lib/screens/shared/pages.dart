@@ -7,6 +7,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Tool page that pairs the tool form with tool switching and file lists.
 ///
@@ -41,7 +42,7 @@ class SharedOperationPage extends StatelessWidget {
       }
       final bool showToolList = width >= toolListPageWidth;
       return Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(SeguiSpacing.md),
         // Outlined like the home screen; the clip keeps the side panels
         // inside the rounded border.
         child: OutlinedPanel(
@@ -122,7 +123,7 @@ class _IOListContainerState extends State<IOListContainer> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: 8),
+        const SizedBox(height: SeguiSpacing.md),
         RichText(
           text: TextSpan(
             children: [
@@ -135,7 +136,7 @@ class _IOListContainerState extends State<IOListContainer> {
               WidgetSpan(
                 child: IconButton(
                   icon: Icon(
-                    size: 18,
+                    size: SeguiControlSize.iconSmall,
                     Icons.info_outline,
                     color: Theme.of(context).disabledColor,
                   ),
@@ -149,7 +150,7 @@ class _IOListContainerState extends State<IOListContainer> {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: SeguiSpacing.md),
         isShowingInfo
             ? SharedInfoForm(
                 description: widget.infoText,
@@ -193,7 +194,7 @@ class EmptyScreen extends StatelessWidget {
       children: [
         const SadGull(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xxl),
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleMedium,
@@ -201,7 +202,7 @@ class EmptyScreen extends StatelessWidget {
           ),
         ),
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xxl),
             child: Text(
               description,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -232,7 +233,7 @@ class SadGull extends StatelessWidget {
             fill: colors.surfaceContainerLowest,
           ),
         ),
-        height: 96,
+        height: SeguiControlSize.illustrationLarge,
       ),
     );
   }

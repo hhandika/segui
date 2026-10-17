@@ -18,12 +18,16 @@ const SupportedTask task = SupportedTask.alignmentTrimming;
 
 const Map<TrimmingOptions, InputDecoration> _trimmingInput = {
   TrimmingOptions.missingData: InputDecoration(
-    labelText: 'Proportion of missing data',
-    hintText: 'From 0 to 1, e.g., 0.5',
+    labelText: 'Maximum missing data',
+    hintText: 'E.g., 0.5',
+    helperText: 'Keeps sites with at most this proportion of missing data, '
+        'from 0 to 1.',
   ),
   TrimmingOptions.parsimonyInf: InputDecoration(
-    labelText: 'Minimal counts',
-    hintText: 'E.g., 1, 2, etc.',
+    labelText: 'Minimum informative counts',
+    hintText: 'E.g., 2',
+    helperText: 'Keeps sites with at least this many parsimony informative '
+        'counts.',
   ),
 };
 
@@ -77,7 +81,7 @@ class AlignmentTrimmingPageState extends ConsumerState<AlignmentTrimmingPage>
             DropdownButtonFormField<TrimmingOptions>(
               initialValue: _option,
               decoration: const InputDecoration(
-                labelText: 'Select method',
+                labelText: 'Trim by',
               ),
               isExpanded: true,
               items: trimmingOptions.entries

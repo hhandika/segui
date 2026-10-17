@@ -139,6 +139,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CsvSummaryServices dco_decode_csv_summary_services(dynamic raw);
 
   @protected
+  DistanceGroupCount dco_decode_distance_group_count(dynamic raw);
+
+  @protected
+  DistanceGroupPreview dco_decode_distance_group_preview(dynamic raw);
+
+  @protected
+  DistanceGroupingParams dco_decode_distance_grouping_params(dynamic raw);
+
+  @protected
   double dco_decode_f_64(dynamic raw);
 
   @protected
@@ -155,6 +164,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<String> dco_decode_list_String(dynamic raw);
+
+  @protected
+  List<DistanceGroupCount> dco_decode_list_distance_group_count(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
@@ -374,6 +386,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  DistanceGroupCount sse_decode_distance_group_count(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceGroupPreview sse_decode_distance_group_preview(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceGroupingParams sse_decode_distance_grouping_params(
+      SseDeserializer deserializer);
+
+  @protected
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
@@ -391,6 +415,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
+
+  @protected
+  List<DistanceGroupCount> sse_decode_list_distance_group_count(
+      SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
@@ -627,6 +655,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CsvSummaryServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_distance_group_count(
+      DistanceGroupCount self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_group_preview(
+      DistanceGroupPreview self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_grouping_params(
+      DistanceGroupingParams self, SseSerializer serializer);
+
+  @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
@@ -646,6 +686,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_distance_group_count(
+      List<DistanceGroupCount> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(

@@ -76,9 +76,8 @@ class ConvertPageState extends ConsumerState<ConvertPage>
               });
             },
           ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
+          if (_isShowMore)
+            SwitchForm(
                 label: 'Set interleaved format',
                 value: _isInterleave,
                 onPressed: (value) {
@@ -86,10 +85,8 @@ class ConvertPageState extends ConsumerState<ConvertPage>
                     _isInterleave = value;
                   });
                 }),
-          ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
+          if (_isShowMore)
+            SwitchForm(
               label: 'Sort by sequence ID',
               value: _isSortSequence,
               onPressed: (value) {
@@ -98,7 +95,6 @@ class ConvertPageState extends ConsumerState<ConvertPage>
                 });
               },
             ),
-          ),
           ShowMoreButton(
             onPressed: () {
               setState(() {

@@ -4,6 +4,7 @@ import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/shared/io/file_list.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/file_tree.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Indent of each nesting level in a [FileTreeView].
 const double fileTreeIndent = 16;
@@ -78,7 +79,8 @@ class _FileTreeViewState extends State<FileTreeView> {
     final int unsupported = widget.tree.unsupportedCount;
     final int leading = unsupported > 0 ? 1 : 0;
     return ListView.builder(
-      padding: EdgeInsets.fromLTRB(8, 0, 8, widget.bottomPadding),
+      padding: EdgeInsets.fromLTRB(
+          SeguiSpacing.md, 0, SeguiSpacing.md, widget.bottomPadding),
       itemCount: rows.length + leading,
       itemBuilder: (context, index) {
         if (index < leading) {
@@ -246,25 +248,26 @@ class FileTreeFolderHeader extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final int count = folder.fileCount;
     return InkWell(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(SeguiRadius.sm),
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 8, 4),
+        padding: const EdgeInsets.fromLTRB(
+            SeguiSpacing.lg, SeguiSpacing.md, SeguiSpacing.md, SeguiSpacing.xs),
         child: Row(
           children: [
             Icon(
               isExpanded
                   ? Icons.expand_more_rounded
                   : Icons.chevron_right_rounded,
-              size: 18,
+              size: SeguiControlSize.iconSmall,
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: SeguiSpacing.xs),
             Icon(
               isExpanded ? Icons.folder_open_outlined : Icons.folder_outlined,
-              size: 18,
+              size: SeguiControlSize.iconSmall,
               color: theme.colorScheme.primary,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: SeguiSpacing.md),
             Flexible(
               child: Tooltip(
                 message: folder.path,
@@ -276,7 +279,7 @@ class FileTreeFolderHeader extends StatelessWidget {
               ),
             ),
             if (folder.hasNewFiles) const NewFileBadge(),
-            const SizedBox(width: 8),
+            const SizedBox(width: SeguiSpacing.md),
             Text(
               count == 1 ? '1 file' : '$count files',
               style: theme.textTheme.bodySmall?.copyWith(
@@ -325,10 +328,11 @@ class FileBrowserTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return ListTile(
-      minVerticalPadding: 2,
+      minVerticalPadding: SeguiSpacing.xxs,
       selected: isSelecting && isSelected,
       selectedTileColor: colors.secondaryContainer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(SeguiRadius.md)),
       leading: FileIconTile(icon: FileIcon(file: file.file)),
       title: Row(
         children: [
@@ -374,11 +378,13 @@ class UnsupportedFilesNote extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final Color color = theme.colorScheme.onSurfaceVariant;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.xl, SeguiSpacing.xs, SeguiSpacing.xl, SeguiSpacing.md),
       child: Row(
         children: [
-          Icon(Icons.visibility_off_outlined, size: 16, color: color),
-          const SizedBox(width: 8),
+          Icon(Icons.visibility_off_outlined,
+              size: SeguiControlSize.iconSmall, color: color),
+          const SizedBox(width: SeguiSpacing.md),
           Expanded(
             child: Text(
               '$count unsupported ${count == 1 ? 'file' : 'files'} '
@@ -405,10 +411,10 @@ class FileTreeRootHeader extends StatelessWidget {
       children: [
         Icon(
           Icons.folder_outlined,
-          size: 16,
+          size: SeguiControlSize.iconSmall,
           color: theme.colorScheme.onSurfaceVariant,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: SeguiSpacing.md),
         Flexible(child: PathTextWithOverflow(path: path)),
       ],
     );

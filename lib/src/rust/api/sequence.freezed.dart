@@ -14,6 +14,510 @@ part of 'sequence.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
+mixin _$DistanceGroupingParams {
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is DistanceGroupingParams);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'DistanceGroupingParams()';
+  }
+}
+
+/// @nodoc
+class $DistanceGroupingParamsCopyWith<$Res> {
+  $DistanceGroupingParamsCopyWith(
+      DistanceGroupingParams _, $Res Function(DistanceGroupingParams) __);
+}
+
+/// Adds pattern-matching-related methods to [DistanceGroupingParams].
+extension DistanceGroupingParamsPatterns on DistanceGroupingParams {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(DistanceGroupingParams_Delimiter value)? delimiter,
+    TResult Function(DistanceGroupingParams_Regex value)? regex,
+    TResult Function(DistanceGroupingParams_MapFile value)? mapFile,
+    TResult Function(DistanceGroupingParams_Auto value)? auto,
+    TResult Function(DistanceGroupingParams_None value)? none,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case DistanceGroupingParams_Delimiter() when delimiter != null:
+        return delimiter(_that);
+      case DistanceGroupingParams_Regex() when regex != null:
+        return regex(_that);
+      case DistanceGroupingParams_MapFile() when mapFile != null:
+        return mapFile(_that);
+      case DistanceGroupingParams_Auto() when auto != null:
+        return auto(_that);
+      case DistanceGroupingParams_None() when none != null:
+        return none(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(DistanceGroupingParams_Delimiter value) delimiter,
+    required TResult Function(DistanceGroupingParams_Regex value) regex,
+    required TResult Function(DistanceGroupingParams_MapFile value) mapFile,
+    required TResult Function(DistanceGroupingParams_Auto value) auto,
+    required TResult Function(DistanceGroupingParams_None value) none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case DistanceGroupingParams_Delimiter():
+        return delimiter(_that);
+      case DistanceGroupingParams_Regex():
+        return regex(_that);
+      case DistanceGroupingParams_MapFile():
+        return mapFile(_that);
+      case DistanceGroupingParams_Auto():
+        return auto(_that);
+      case DistanceGroupingParams_None():
+        return none(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(DistanceGroupingParams_Delimiter value)? delimiter,
+    TResult? Function(DistanceGroupingParams_Regex value)? regex,
+    TResult? Function(DistanceGroupingParams_MapFile value)? mapFile,
+    TResult? Function(DistanceGroupingParams_Auto value)? auto,
+    TResult? Function(DistanceGroupingParams_None value)? none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case DistanceGroupingParams_Delimiter() when delimiter != null:
+        return delimiter(_that);
+      case DistanceGroupingParams_Regex() when regex != null:
+        return regex(_that);
+      case DistanceGroupingParams_MapFile() when mapFile != null:
+        return mapFile(_that);
+      case DistanceGroupingParams_Auto() when auto != null:
+        return auto(_that);
+      case DistanceGroupingParams_None() when none != null:
+        return none(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String delimiter, BigInt fields)? delimiter,
+    TResult Function(String field0)? regex,
+    TResult Function(String field0)? mapFile,
+    TResult Function()? auto,
+    TResult Function()? none,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case DistanceGroupingParams_Delimiter() when delimiter != null:
+        return delimiter(_that.delimiter, _that.fields);
+      case DistanceGroupingParams_Regex() when regex != null:
+        return regex(_that.field0);
+      case DistanceGroupingParams_MapFile() when mapFile != null:
+        return mapFile(_that.field0);
+      case DistanceGroupingParams_Auto() when auto != null:
+        return auto();
+      case DistanceGroupingParams_None() when none != null:
+        return none();
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String delimiter, BigInt fields) delimiter,
+    required TResult Function(String field0) regex,
+    required TResult Function(String field0) mapFile,
+    required TResult Function() auto,
+    required TResult Function() none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case DistanceGroupingParams_Delimiter():
+        return delimiter(_that.delimiter, _that.fields);
+      case DistanceGroupingParams_Regex():
+        return regex(_that.field0);
+      case DistanceGroupingParams_MapFile():
+        return mapFile(_that.field0);
+      case DistanceGroupingParams_Auto():
+        return auto();
+      case DistanceGroupingParams_None():
+        return none();
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String delimiter, BigInt fields)? delimiter,
+    TResult? Function(String field0)? regex,
+    TResult? Function(String field0)? mapFile,
+    TResult? Function()? auto,
+    TResult? Function()? none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case DistanceGroupingParams_Delimiter() when delimiter != null:
+        return delimiter(_that.delimiter, _that.fields);
+      case DistanceGroupingParams_Regex() when regex != null:
+        return regex(_that.field0);
+      case DistanceGroupingParams_MapFile() when mapFile != null:
+        return mapFile(_that.field0);
+      case DistanceGroupingParams_Auto() when auto != null:
+        return auto();
+      case DistanceGroupingParams_None() when none != null:
+        return none();
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class DistanceGroupingParams_Delimiter extends DistanceGroupingParams {
+  const DistanceGroupingParams_Delimiter(
+      {required this.delimiter, required this.fields})
+      : super._();
+
+  final String delimiter;
+  final BigInt fields;
+
+  /// Create a copy of DistanceGroupingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $DistanceGroupingParams_DelimiterCopyWith<DistanceGroupingParams_Delimiter>
+      get copyWith => _$DistanceGroupingParams_DelimiterCopyWithImpl<
+          DistanceGroupingParams_Delimiter>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is DistanceGroupingParams_Delimiter &&
+            (identical(other.delimiter, delimiter) ||
+                other.delimiter == delimiter) &&
+            (identical(other.fields, fields) || other.fields == fields));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, delimiter, fields);
+  }
+
+  @override
+  String toString() {
+    return 'DistanceGroupingParams.delimiter(delimiter: $delimiter, fields: $fields)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $DistanceGroupingParams_DelimiterCopyWith<$Res>
+    implements $DistanceGroupingParamsCopyWith<$Res> {
+  factory $DistanceGroupingParams_DelimiterCopyWith(
+          DistanceGroupingParams_Delimiter value,
+          $Res Function(DistanceGroupingParams_Delimiter) _then) =
+      _$DistanceGroupingParams_DelimiterCopyWithImpl;
+  @useResult
+  $Res call({String delimiter, BigInt fields});
+}
+
+/// @nodoc
+class _$DistanceGroupingParams_DelimiterCopyWithImpl<$Res>
+    implements $DistanceGroupingParams_DelimiterCopyWith<$Res> {
+  _$DistanceGroupingParams_DelimiterCopyWithImpl(this._self, this._then);
+
+  final DistanceGroupingParams_Delimiter _self;
+  final $Res Function(DistanceGroupingParams_Delimiter) _then;
+
+  /// Create a copy of DistanceGroupingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? delimiter = null,
+    Object? fields = null,
+  }) {
+    return _then(DistanceGroupingParams_Delimiter(
+      delimiter: null == delimiter
+          ? _self.delimiter
+          : delimiter // ignore: cast_nullable_to_non_nullable
+              as String,
+      fields: null == fields
+          ? _self.fields
+          : fields // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+    ));
+  }
+}
+
+/// @nodoc
+
+class DistanceGroupingParams_Regex extends DistanceGroupingParams {
+  const DistanceGroupingParams_Regex(this.field0) : super._();
+
+  final String field0;
+
+  /// Create a copy of DistanceGroupingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $DistanceGroupingParams_RegexCopyWith<DistanceGroupingParams_Regex>
+      get copyWith => _$DistanceGroupingParams_RegexCopyWithImpl<
+          DistanceGroupingParams_Regex>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is DistanceGroupingParams_Regex &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'DistanceGroupingParams.regex(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $DistanceGroupingParams_RegexCopyWith<$Res>
+    implements $DistanceGroupingParamsCopyWith<$Res> {
+  factory $DistanceGroupingParams_RegexCopyWith(
+          DistanceGroupingParams_Regex value,
+          $Res Function(DistanceGroupingParams_Regex) _then) =
+      _$DistanceGroupingParams_RegexCopyWithImpl;
+  @useResult
+  $Res call({String field0});
+}
+
+/// @nodoc
+class _$DistanceGroupingParams_RegexCopyWithImpl<$Res>
+    implements $DistanceGroupingParams_RegexCopyWith<$Res> {
+  _$DistanceGroupingParams_RegexCopyWithImpl(this._self, this._then);
+
+  final DistanceGroupingParams_Regex _self;
+  final $Res Function(DistanceGroupingParams_Regex) _then;
+
+  /// Create a copy of DistanceGroupingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(DistanceGroupingParams_Regex(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class DistanceGroupingParams_MapFile extends DistanceGroupingParams {
+  const DistanceGroupingParams_MapFile(this.field0) : super._();
+
+  final String field0;
+
+  /// Create a copy of DistanceGroupingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $DistanceGroupingParams_MapFileCopyWith<DistanceGroupingParams_MapFile>
+      get copyWith => _$DistanceGroupingParams_MapFileCopyWithImpl<
+          DistanceGroupingParams_MapFile>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is DistanceGroupingParams_MapFile &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'DistanceGroupingParams.mapFile(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $DistanceGroupingParams_MapFileCopyWith<$Res>
+    implements $DistanceGroupingParamsCopyWith<$Res> {
+  factory $DistanceGroupingParams_MapFileCopyWith(
+          DistanceGroupingParams_MapFile value,
+          $Res Function(DistanceGroupingParams_MapFile) _then) =
+      _$DistanceGroupingParams_MapFileCopyWithImpl;
+  @useResult
+  $Res call({String field0});
+}
+
+/// @nodoc
+class _$DistanceGroupingParams_MapFileCopyWithImpl<$Res>
+    implements $DistanceGroupingParams_MapFileCopyWith<$Res> {
+  _$DistanceGroupingParams_MapFileCopyWithImpl(this._self, this._then);
+
+  final DistanceGroupingParams_MapFile _self;
+  final $Res Function(DistanceGroupingParams_MapFile) _then;
+
+  /// Create a copy of DistanceGroupingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(DistanceGroupingParams_MapFile(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class DistanceGroupingParams_Auto extends DistanceGroupingParams {
+  const DistanceGroupingParams_Auto() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is DistanceGroupingParams_Auto);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'DistanceGroupingParams.auto()';
+  }
+}
+
+/// @nodoc
+
+class DistanceGroupingParams_None extends DistanceGroupingParams {
+  const DistanceGroupingParams_None() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is DistanceGroupingParams_None);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'DistanceGroupingParams.none()';
+  }
+}
+
+/// @nodoc
 mixin _$FilteringParams {
   @override
   bool operator ==(Object other) {

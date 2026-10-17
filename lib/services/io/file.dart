@@ -101,6 +101,16 @@ const XTypeGroup bedTypeGroup = XTypeGroup(
   ],
 );
 
+/// Sample group tables with a header and sample and group columns.
+const XTypeGroup sampleGroupTypeGroup = XTypeGroup(
+  label: 'Sample groups',
+  extensions: ['csv', 'tsv'],
+  uniformTypeIdentifiers: [
+    'public.comma-separated-values-text',
+    'public.tab-separated-values-text',
+  ],
+);
+
 const XTypeGroup genomicContigTypeGroup = XTypeGroup(
   label: 'Contig',
   extensions: fastaExtensions,

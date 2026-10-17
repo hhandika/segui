@@ -63,10 +63,7 @@ class SequenceTranspositionPageState
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
-          ),
-          Text(
-            'Writes one unaligned FASTA file per sample.',
-            style: Theme.of(context).textTheme.labelSmall,
+            helper: 'Writes one unaligned FASTA file per sample.',
           ),
           SwitchForm(
             label: 'Set interleaved format',

@@ -11,9 +11,7 @@ import 'package:segui/services/home_features.dart';
 import 'package:segui/services/quick_start.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
-
-/// Widest content on the quick start pages.
-const double _maxQuickStartWidth = 1100;
+import 'package:segui/styles/design_tokens.dart';
 
 /// How to run a task, then a guide for every tool with its feature diagram.
 class QuickStartPage extends StatefulWidget {
@@ -38,28 +36,30 @@ class _QuickStartPageState extends State<QuickStartPage> {
       backgroundColor: getSEGULBackgroundColor(context),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
-          horizontal: isPhoneScreen(context) ? 16 : 32,
-          vertical: 16,
+          horizontal:
+              isPhoneScreen(context) ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+          vertical: SeguiSpacing.xl,
         ),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: _maxQuickStartWidth),
+            constraints:
+                const BoxConstraints(maxWidth: SeguiContentWidth.guide),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const QuickStartHeader(),
-                const SizedBox(height: 20),
+                const SizedBox(height: SeguiSpacing.xl),
                 const QuickStartSteps(),
-                const SizedBox(height: 32),
+                const SizedBox(height: SeguiSpacing.xxxl),
                 Text('Feature guides', style: theme.textTheme.titleMedium),
-                const SizedBox(height: 4),
+                const SizedBox(height: SeguiSpacing.xs),
                 Text(
                   'See what each tool does to your data, then open it.',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: SeguiSpacing.lg),
                 FeatureGuideFilter(
                   selected: _category,
                   onSelected: (category) {
@@ -68,9 +68,9 @@ class _QuickStartPageState extends State<QuickStartPage> {
                     });
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: SeguiSpacing.lg),
                 FeatureGuideGrid(tools: featureGuidesFor(_category)),
-                const SizedBox(height: 16),
+                const SizedBox(height: SeguiSpacing.xl),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: LaunchDocButton(),
@@ -93,8 +93,8 @@ class QuickStartHeader extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     return Row(
       children: [
-        const QuickStartGull(size: 72),
-        const SizedBox(width: 16),
+        const QuickStartGull(size: SeguiControlSize.illustrationSmall),
+        const SizedBox(width: SeguiSpacing.xl),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,14 +185,14 @@ class QuickStartStepCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       color: colors.surfaceContainerLow,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(SeguiSpacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 CircleAvatar(
-                  radius: 14,
+                  radius: SeguiControlSize.badge / 2,
                   backgroundColor: colors.primary,
                   foregroundColor: colors.onPrimary,
                   child: Text(
@@ -206,9 +206,9 @@ class QuickStartStepCard extends StatelessWidget {
                 Icon(step.icon, color: colors.primary),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: SeguiSpacing.lg),
             Text(step.title, style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
+            const SizedBox(height: SeguiSpacing.xs),
             Text(
               step.description,
               style: theme.textTheme.bodySmall?.copyWith(
@@ -236,8 +236,8 @@ class FeatureGuideFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: SeguiSpacing.md,
+      runSpacing: SeguiSpacing.md,
       children: [
         ChoiceChip(
           label: Text('All (${homeTools.length})'),
@@ -302,17 +302,23 @@ class FeatureGuideCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  height: 140,
+                  height: SeguiControlSize.diagramPreview,
                   color: colors.surfaceContainerLow,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(SeguiSpacing.lg),
                   child: FeatureDiagram(asset: tool.diagramAssets.first),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                  padding: const EdgeInsets.fromLTRB(
+                    SeguiSpacing.xl,
+                    SeguiSpacing.lg,
+                    SeguiSpacing.xl,
+                    SeguiSpacing.xs,
+                  ),
                   child: Row(
                     children: [
-                      ToolCategoryIcon(tool: tool, size: 28),
-                      const SizedBox(width: 12),
+                      ToolCategoryIcon(
+                          tool: tool, size: SeguiControlSize.badge),
+                      const SizedBox(width: SeguiSpacing.lg),
                       Expanded(
                         child: Text(
                           tool.title,
@@ -323,7 +329,8 @@ class FeatureGuideCard extends ConsumerWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: SeguiSpacing.xl),
                   child: Text(
                     tool.description,
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -334,11 +341,16 @@ class FeatureGuideCard extends ConsumerWidget {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 12, 12),
+              padding: const EdgeInsets.fromLTRB(
+                SeguiSpacing.lg,
+                SeguiSpacing.md,
+                SeguiSpacing.lg,
+                SeguiSpacing.lg,
+              ),
               child: Wrap(
                 alignment: WrapAlignment.end,
-                spacing: 4,
-                runSpacing: 4,
+                spacing: SeguiSpacing.xs,
+                runSpacing: SeguiSpacing.xs,
                 children: [
                   TextButton(
                     onPressed: () => _openGuide(context),
@@ -400,19 +412,20 @@ class FeatureGuidePage extends StatelessWidget {
       backgroundColor: getSEGULBackgroundColor(context),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
-          horizontal: isPhoneScreen(context) ? 16 : 32,
-          vertical: 16,
+          horizontal:
+              isPhoneScreen(context) ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+          vertical: SeguiSpacing.xl,
         ),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 900),
+            constraints: const BoxConstraints(maxWidth: SeguiContentWidth.wide),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
                   children: [
-                    ToolCategoryIcon(tool: tool, size: 36),
-                    const SizedBox(width: 12),
+                    ToolCategoryIcon(tool: tool, size: SeguiControlSize.avatar),
+                    const SizedBox(width: SeguiSpacing.lg),
                     Expanded(
                       child: Text(
                         tool.category.label,
@@ -423,17 +436,17 @@ class FeatureGuidePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: SeguiSpacing.lg),
                 Text(tool.about, style: theme.textTheme.bodyLarge),
-                const SizedBox(height: 16),
+                const SizedBox(height: SeguiSpacing.xl),
                 for (final asset in tool.diagramAssets)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.only(bottom: SeguiSpacing.xl),
                     child: Card.filled(
                       margin: EdgeInsets.zero,
                       color: colors.surfaceContainerLow,
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(SeguiSpacing.xl),
                         child: LayoutBuilder(builder: (context, constraints) {
                           final double width = math.max(
                             constraints.maxWidth,
@@ -454,12 +467,12 @@ class FeatureGuidePage extends StatelessWidget {
                     ),
                   ),
                 Text('How to run it', style: theme.textTheme.titleMedium),
-                const SizedBox(height: 8),
+                const SizedBox(height: SeguiSpacing.md),
                 for (final (index, step) in quickStartSteps.indexed)
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: CircleAvatar(
-                      radius: 14,
+                      radius: SeguiControlSize.badge / 2,
                       backgroundColor: colors.primaryContainer,
                       foregroundColor: colors.onPrimaryContainer,
                       child: Text('${index + 1}'),
@@ -467,10 +480,10 @@ class FeatureGuidePage extends StatelessWidget {
                     title: Text(step.title),
                     subtitle: Text(step.description),
                   ),
-                const SizedBox(height: 16),
+                const SizedBox(height: SeguiSpacing.xl),
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: SeguiSpacing.md,
+                  runSpacing: SeguiSpacing.md,
                   children: [
                     OpenToolButton(tool: tool),
                     OutlinedButton(
@@ -479,7 +492,7 @@ class FeatureGuidePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: SeguiSpacing.md),
               ],
             ),
           ),

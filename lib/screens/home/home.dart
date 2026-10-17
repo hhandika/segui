@@ -13,6 +13,7 @@ import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class SegulHome extends StatefulWidget {
   const SegulHome({super.key});
@@ -61,9 +62,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     // Match container decoration with layout changes
     final isSmallScreen = !isTabletScreen(context);
     final HomeView view = ref.watch(homeViewProvider);
-    final double verticalPadding = isSmallScreen ? 8 : 24;
+    final double verticalPadding =
+        isSmallScreen ? SeguiSpacing.md : SeguiSpacing.xxl;
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(SeguiSpacing.md),
       child: Container(
         width: double.infinity,
         height: double.infinity,
@@ -71,7 +73,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: LayoutBuilder(builder: (context, constraints) {
           return SingleChildScrollView(
             padding: EdgeInsets.symmetric(
-              horizontal: isSmallScreen ? 8 : 28,
+              horizontal: isSmallScreen ? SeguiSpacing.md : SeguiSpacing.xxl,
               vertical: verticalPadding,
             ),
             child: Center(
@@ -90,17 +92,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const HomeHeader(),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: SeguiSpacing.xl),
                         Wrap(
-                          spacing: 16,
-                          runSpacing: 12,
+                          spacing: SeguiSpacing.xl,
+                          runSpacing: SeguiSpacing.lg,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             const HomeViewToggle(),
                             if (view == HomeView.tools)
                               ConstrainedBox(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 380),
+                                constraints: const BoxConstraints(
+                                    maxWidth: SeguiContentWidth.card),
                                 child: ToolSearchField(
                                   controller: _searchController,
                                   onChanged: (_) => setState(() {}),
@@ -108,13 +110,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                               ),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: SeguiSpacing.xxl),
                         switch (view) {
                           HomeView.tools =>
                             ToolCatalog(query: _searchController.text),
                           HomeView.workflows => const WorkflowPanel(),
                         },
-                        const SizedBox(height: 16),
+                        const SizedBox(height: SeguiSpacing.xl),
                       ],
                     ),
                     const Column(
@@ -122,7 +124,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       children: [
                         // The sketch's ground line separates the footer.
                         HomeIllustration(),
-                        SizedBox(height: 4),
+                        SizedBox(height: SeguiSpacing.xs),
                         ResourceLinks(),
                       ],
                     ),
@@ -147,7 +149,7 @@ class HomeHeader extends StatelessWidget {
     return Row(
       children: [
         GreetingIllustration(time: time),
-        const SizedBox(width: 16),
+        const SizedBox(width: SeguiSpacing.xl),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +229,7 @@ class ToolSearchField extends StatelessWidget {
         isDense: true,
         filled: true,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(SeguiRadius.full),
           borderSide: BorderSide.none,
         ),
       ),
@@ -241,8 +243,8 @@ class ResourceLinks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 4,
+      spacing: SeguiSpacing.md,
+      runSpacing: SeguiSpacing.xs,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Text(

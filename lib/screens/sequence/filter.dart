@@ -18,16 +18,22 @@ const SupportedTask task = SupportedTask.sequenceFiltering;
 
 const Map<SequenceFilteringOptions, InputDecoration> _sequenceFilteringInput = {
   SequenceFilteringOptions.minimalLength: InputDecoration(
-    labelText: 'Minimal length without gaps',
-    hintText: 'E.g., 100, 500, etc.',
+    labelText: 'Minimum length',
+    hintText: 'E.g., 500',
+    helperText: 'Keeps sequences with at least this many bases, not '
+        'counting gaps.',
   ),
   SequenceFilteringOptions.maximalLength: InputDecoration(
-    labelText: 'Maximal length without gaps',
-    hintText: 'E.g., 1000, 5000, etc.',
+    labelText: 'Maximum length',
+    hintText: 'E.g., 5000',
+    helperText: 'Keeps sequences with at most this many bases, not '
+        'counting gaps.',
   ),
   SequenceFilteringOptions.maximalGap: InputDecoration(
-    labelText: 'Proportion of gaps',
-    hintText: 'From 0 to 1, e.g., 0.5',
+    labelText: 'Maximum gap proportion',
+    hintText: 'E.g., 0.5',
+    helperText: 'Keeps sequences with at most this proportion of gaps, '
+        'from 0 to 1.',
   ),
 };
 
@@ -81,7 +87,7 @@ class SequenceFilteringPageState extends ConsumerState<SequenceFilteringPage>
             DropdownButtonFormField<SequenceFilteringOptions>(
               initialValue: _option,
               decoration: const InputDecoration(
-                labelText: 'Select method',
+                labelText: 'Filter by',
               ),
               isExpanded: true,
               items: sequenceFilteringOptions.entries

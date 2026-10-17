@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class FaqPage extends StatefulWidget {
   const FaqPage({super.key});
@@ -23,7 +24,8 @@ class _FaqPageState extends State<FaqPage> {
       body: Center(
           child: ConstrainedBox(
         constraints: BoxConstraints(
-            maxWidth: 800, maxHeight: MediaQuery.of(context).size.height * 0.8),
+            maxWidth: SeguiContentWidth.reading,
+            maxHeight: MediaQuery.of(context).size.height * 0.8),
         child: FutureBuilder(
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -55,7 +57,7 @@ class MarkdownView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(SeguiSpacing.md),
         child: ListView.builder(
           itemCount: data.length,
           itemBuilder: (context, index) {
@@ -68,7 +70,7 @@ class MarkdownView extends StatelessWidget {
             } else {
               return Container(
                 decoration: getContainerDecoration(context),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(SeguiSpacing.xl),
                 child: Text(
                   data[index],
                   style: Theme.of(context).textTheme.bodyLarge,

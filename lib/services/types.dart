@@ -154,6 +154,24 @@ const Map<String, String> distanceMatrixDiagonals = {
   'max': 'Highest distance in the row',
 };
 
+/// Group mean matrix diagonals, keyed by the SEGUL option name.
+const Map<String, String> distanceGroupDiagonals = {
+  'within': 'Mean within the group',
+  'zero': 'Zero',
+  'blank': 'Blank',
+  'max': 'Highest mean in the row',
+};
+
+/// Ways to assign samples to groups, such as populations or species,
+/// for group mean distances.
+const Map<String, String> distanceGroupingMethods = {
+  'none': 'No grouping',
+  'auto': 'Detect from sample names',
+  'delimiter': 'Split sample names',
+  'regex': 'Regular expression',
+  'file': 'Group file (CSV or TSV)',
+};
+
 const List<String> readingFrame = ["1", "2", "3"];
 
 const List<String> translationTable = [
