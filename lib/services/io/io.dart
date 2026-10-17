@@ -68,6 +68,15 @@ class IOServices {
     ));
   }
 
+  Future<void> shareFiles(BuildContext context, List<File> files) async {
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(ShareParams(
+      files: files.map((e) => XFile(e.path)).toList(),
+      sharePositionOrigin:
+          box == null ? null : box.localToGlobal(Offset.zero) & box.size,
+    ));
+  }
+
   int countFiles(List<SegulInputFile> files, SegulType type) {
     return files.where((e) => e.type == type).length;
   }

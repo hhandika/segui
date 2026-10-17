@@ -4,11 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/io/file_browser.dart';
 import 'package:segui/screens/shared/io/file_list.dart';
+import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/services/io/file.dart';
+import 'package:segui/services/io/file_tree.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/output.dart';
 import 'package:segui/services/types.dart';
@@ -40,9 +43,9 @@ class OutputScreen extends ConsumerWidget {
   }
 }
 
-/// Files in the output directory. Shows only the files new since the
-/// directory was selected, with a button to show the rest.
-class OutputFileList extends StatefulWidget {
+/// Files in the output directory by folder. Shows only the files new since
+/// the directory was selected, with a button to show the rest.
+class OutputFileList extends ConsumerStatefulWidget {
   const OutputFileList({
     super.key,
     required this.data,
@@ -51,10 +54,10 @@ class OutputFileList extends StatefulWidget {
   final SegulOutputFile data;
 
   @override
-  State<OutputFileList> createState() => _OutputFileListState();
+  ConsumerState<OutputFileList> createState() => _OutputFileListState();
 }
 
-class _OutputFileListState extends State<OutputFileList> {
+class _OutputFileListState extends ConsumerState<OutputFileList> {
   bool _isShowingAll = false;
 
   @override
@@ -63,48 +66,127 @@ class _OutputFileListState extends State<OutputFileList> {
     final List<({File file, bool isNew})> files = _isShowingAll
         ? allFiles
         : allFiles.where((file) => file.isNew).toList();
-    final int otherCount = allFiles.length -
-        allFiles.where((file) {
-          return file.isNew;
-        }).length;
+    // Other files the toggle would reveal, leaving out unsupported files.
+    final int otherCount = allFiles
+        .where((file) => !file.isNew && isSupportedFile(file.file.path))
+        .length;
+    final bool isDesktop = runningPlatform == PlatformType.isDesktop;
     return IOListContainer(
       title: 'Output Files',
-      infoText: 'New files in the output directory. '
+      infoText: 'New files in the output directory, by folder. '
           'Show other files to see everything in the directory. '
+          'Files SEGUI does not recognize are not shown. '
           'Click on a file to view its content. '
-          'Select menu to share or delete a file. '
+          'Select files to share or delete them. '
           'Deleting a file will remove it from the system.',
-      child: Column(
-        children: [
-          if (otherCount > 0)
-            TextButton(
-              onPressed: () => setState(() => _isShowingAll = !_isShowingAll),
-              child: Text(_isShowingAll
-                  ? 'Show new files only'
-                  : 'Show $otherCount other '
-                      '${otherCount == 1 ? 'file' : 'files'} in the folder'),
+      child: FileBrowser(
+        files: files,
+        rootPath: widget.data.directory?.path,
+        header: otherCount > 0
+            ? TextButton(
+                onPressed: () => setState(() => _isShowingAll = !_isShowingAll),
+                child: Text(_isShowingAll
+                    ? 'Show new files only'
+                    : 'Show $otherCount other '
+                        '${otherCount == 1 ? 'file' : 'files'} in the folder'),
+              )
+            : null,
+        emptyChild: EmptyScreen(
+          title: allFiles.isEmpty
+              ? 'No output files found.'
+              : 'No new output files yet.',
+          description: 'Run an analysis to generate output files.',
+        ),
+        onFileTap: (file) => openFileView(context, file.file),
+        trailingBuilder: (context, file) {
+          return OutputActionMenu(file: file.file, showDelete: false);
+        },
+        actions: [
+          FileBrowserAction(
+            label: 'Share',
+            icon: Icons.adaptive.share_rounded,
+            onSelected: (context, files) async {
+              await IOServices().shareFiles(context, files);
+              return false;
+            },
+          ),
+          if (isDesktop)
+            FileBrowserAction(
+              label: 'Open',
+              icon: Icons.open_in_new_rounded,
+              isSingleFile: true,
+              onSelected: (context, files) async {
+                await _openInApp(context, files.single);
+                return false;
+              },
             ),
-          Expanded(
-            child: files.isEmpty
-                ? EmptyScreen(
-                    title: allFiles.isEmpty
-                        ? 'No output files found.'
-                        : 'No new output files yet.',
-                    description: 'Run an analysis to generate output files.',
-                  )
-                : PagedFileList(
-                    key: ValueKey(_isShowingAll),
-                    itemCount: files.length,
-                    itemBuilder: (context, index) {
-                      return OutputFileTiles(
-                        isOldFile: !files[index].isNew,
-                        file: files[index].file,
-                      );
-                    },
-                  ),
+          FileBrowserAction(
+            label: 'Delete',
+            icon: Icons.delete_outline_rounded,
+            isDestructive: true,
+            onSelected: _confirmDelete,
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _openInApp(BuildContext context, File file) async {
+    final launcher = UrlLauncherServices(file: file);
+    final bool canLaunch = await launcher.canLaunch();
+    try {
+      if (canLaunch) {
+        await launcher.launchExternalApp();
+        return;
+      }
+    } catch (_) {
+      // Shown below like a file no app can open.
+    }
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        showSharedSnackBar(context, 'No app found to open this file.'),
+      );
+    }
+  }
+
+  Future<bool> _confirmDelete(BuildContext context, List<File> files) async {
+    final bool? isConfirmed = await showResponsiveSheet<bool>(
+      context: context,
+      builder: (context) => DeleteFilesAlert(count: files.length),
+    );
+    if (isConfirmed != true) {
+      return false;
+    }
+    await ref.read(fileOutputProvider.notifier).deleteFiles(files);
+    return true;
+  }
+}
+
+/// Asks before deleting [count] selected files from disk.
+class DeleteFilesAlert extends StatelessWidget {
+  const DeleteFilesAlert({super.key, required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final String files = count == 1 ? '1 file' : '$count files';
+    return SheetContent(
+      title: 'Delete $files?',
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(
+            'Delete',
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ],
+      child: Text('Deleting removes $files from your computer permanently.'),
     );
   }
 }
@@ -159,9 +241,17 @@ class OutputFileTiles extends StatelessWidget {
 }
 
 class OutputActionMenu extends StatelessWidget {
-  const OutputActionMenu({super.key, required this.file});
+  const OutputActionMenu({
+    super.key,
+    required this.file,
+    this.showDelete = true,
+  });
 
   final File file;
+
+  /// Whether the menu offers Delete. The file panel deletes through
+  /// selection instead.
+  final bool showDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -186,9 +276,11 @@ class OutputActionMenu extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         FileInfoTile(file: file),
-                        const SizedBox(height: 8),
-                        const CommonDivider(),
-                        CommonDeleteTile(file: file),
+                        if (showDelete) ...[
+                          const SizedBox(height: 8),
+                          const CommonDivider(),
+                          CommonDeleteTile(file: file),
+                        ],
                         const SizedBox(height: 4),
                       ],
                     ),
@@ -211,10 +303,12 @@ class OutputActionMenu extends StatelessWidget {
                     ),
                   ),
                 PopupMenuItem(child: FileInfoTile(file: file)),
-                const PopupMenuDivider(),
-                PopupMenuItem(
-                  child: CommonDeleteTile(file: file),
-                ),
+                if (showDelete) ...[
+                  const PopupMenuDivider(),
+                  PopupMenuItem(
+                    child: CommonDeleteTile(file: file),
+                  ),
+                ],
               ];
             },
           );

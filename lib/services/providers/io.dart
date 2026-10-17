@@ -67,6 +67,14 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
     });
   }
 
+  /// Remove the files at [paths] from the list. The files stay on disk.
+  Future<void> removeFiles(Set<String> paths) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      return [...?state.value]..removeWhere((e) => paths.contains(e.file.path));
+    });
+  }
+
   Future<void> removeFromList(SegulInputFile file) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -182,20 +190,42 @@ class FileOutput extends AsyncNotifier<SegulOutputFile> {
   /// We can also do stream with `FileEntity().watch`
   /// to update the file list.
   /// But it may slow down the task execution.
-  Future<void> refresh({bool isRecursive = false}) async {
+  Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (state.value == null || state.value!.directory == null) {
         return SegulOutputFile.empty();
       }
-      final updates =
-          SegulOutputFile.updateFiles(state.value!, isRecursive: isRecursive);
+      final updates = SegulOutputFile.updateFiles(state.value!);
       return updates;
     });
     // A refresh follows a finished run, so show its output files.
     if (state.value?.directory != null) {
       ref.read(filePanelViewProvider.notifier).show(FilePanelView.output);
     }
+  }
+
+  /// Delete [files] from disk and from the output list.
+  Future<void> deleteFiles(List<File> files) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final SegulOutputFile? current = state.value;
+      if (current == null) {
+        return SegulOutputFile.empty();
+      }
+      for (final File file in files) {
+        if (await file.exists()) {
+          await file.delete();
+        }
+      }
+      final Set<String> paths = files.map((e) => e.path).toSet();
+      return SegulOutputFile(
+        directory: current.directory,
+        files:
+            current.files.where((e) => !paths.contains(e.file.path)).toList(),
+        selectedAt: current.selectedAt,
+      );
+    });
   }
 
   Future<void> removeFile(File file) async {

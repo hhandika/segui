@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/io/file_list.dart';
+import 'package:segui/screens/shared/io/file_tree_view.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/services/io/file.dart';
@@ -122,14 +123,14 @@ void main() {
     ]);
     await pumpList(tester, OutputFileList(data: output));
 
-    expect(find.byType(OutputFileTiles), findsNWidgets(2));
+    expect(find.byType(FileBrowserTile), findsNWidgets(2));
     await tester.tap(find.text('Show 3 other files in the folder'));
     await tester.pump();
-    expect(find.byType(OutputFileTiles), findsNWidgets(5));
+    expect(find.byType(FileBrowserTile), findsNWidgets(5));
 
     await tester.tap(find.text('Show new files only'));
     await tester.pump();
-    expect(find.byType(OutputFileTiles), findsNWidgets(2));
+    expect(find.byType(FileBrowserTile), findsNWidgets(2));
   });
 
   testWidgets('Output list without new files explains how to get them',
@@ -139,7 +140,7 @@ void main() {
     ]);
     await pumpList(tester, OutputFileList(data: output));
 
-    expect(find.byType(OutputFileTiles), findsNothing);
+    expect(find.byType(FileBrowserTile), findsNothing);
     expect(find.text('No new output files yet.'), findsOneWidget);
     expect(find.text('Show 2 other files in the folder'), findsOneWidget);
   });

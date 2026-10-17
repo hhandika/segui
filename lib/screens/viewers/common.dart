@@ -28,3 +28,15 @@ class FileView extends StatelessWidget {
     }
   }
 }
+
+/// Opens [file] in the viewer that matches its type.
+Future<void> openFileView(BuildContext context, File file) {
+  return Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => FileView(
+        file: file,
+        type: FileAssociation(file: file).commonFileTYpe,
+      ),
+    ),
+  );
+}
