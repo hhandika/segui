@@ -231,6 +231,7 @@ segul maf convert --dir maf/ --bed loci.bed --output loci --output-format nexus
 | `-o`, `--output`           | Output directory. Default: `Maf-Convert`                             |
 | `--prefix`                 | Name of the locus report. Default: `maf_convert`                     |
 | `--force`                  | Overwrite an existing output directory                               |
+| `--log`                    | Log file path. Default: `segul.log`                                  |
 
 ## Migrating from v0.23
 

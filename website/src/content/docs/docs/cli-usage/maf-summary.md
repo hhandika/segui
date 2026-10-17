@@ -86,7 +86,7 @@ Overlapping blocks are counted each time they appear, so `ref_genome_coverage` c
 
 With more than one input file, SEGUL adds rows with `path` set to `all` that combine every file.
 
-## Options
+## All options
 
 | Option                  | Description                                                      |
 | ----------------------- | ---------------------------------------------------------------- |
@@ -99,6 +99,7 @@ With more than one input file, SEGUL adds rows with `path` set to `all` that com
 | `-o`, `--output`        | Output directory. Default: `Maf-Summary`                         |
 | `--prefix`              | Prefix of the output files. Default: `maf_summary`               |
 | `--force`               | Overwrite an existing output directory                           |
+| `--log`                 | Log file path. Default: `segul.log`                              |
 
 For example, to summarize every MAF file in a directory and name the output files `primates_per_file.csv` and `primates_per_species.csv`:
 

@@ -54,7 +54,7 @@ For lots of ID, you can generate all the IDs first using SEGUL [sequence ID extr
 
 This is the most flexible option to extract sequences from a collection of alignments. SEGUL uses the Rust [regex](https://docs.rs/regex/latest/regex/) library to parse regular expression syntax. The syntax is similar to Perl-style regex syntax (details [here](https://docs.rs/regex/latest/regex/#syntax)). To test your syntax, you can use a website like [https://regex101.com/](https://regex101.com/).
 
-Use the option `-re=` for a regular expression and put the syntax in a single or double quotation. For example, our sequence ID is named this way `genus_species_voucherNo`. We want to extract the sequences from the same genus: `Mus`. We could write a regular expression that searches for sequence ID that starts with `Mus` as below. The `^` indicates the start of the word in REGEX syntax.
+Use the option `--re=` for a regular expression and put the syntax in a single or double quotation. For example, our sequence ID is named this way `genus_species_voucherNo`. We want to extract the sequences from the same genus: `Mus`. We could write a regular expression that searches for sequence ID that starts with `Mus` as below. The `^` indicates the start of the word in REGEX syntax.
 
 ```bash
 segul sequence extract --dir alignments/ --re="^Mus"
@@ -70,8 +70,24 @@ Each alignment containing matched sequences will be written to the output files.
 
 ## Specifying output directory and format
 
-By default, the output files will be written into `SEGUL-Extract` directory. To change the directory name, use the `--output` or `-o` option. For the output files, the matched sequences will be written in nexus format using the alignment original name. You can change the output format using the `--output-format` (or `-F` in the short version) option. For example, below, we'll be able to change both the output directory and the output format of the resulting files.
+By default, the output files will be written into `Sequence-Extract` directory. To change the directory name, use the `--output` or `-o` option. For the output files, the matched sequences will be written in nexus format using the alignment original name. You can change the output format using the `--output-format` (or `-F` in the short version) option. For example, below, we'll be able to change both the output directory and the output format of the resulting files.
 
 ```bash
-segul sequence extract --dir alignments/ --re="^Mus" output Mus-alignment/ --output-format Fasta
+segul sequence extract --dir alignments/ --re="^Mus" --output Mus-alignment/ --output-format fasta
 ```
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `--id=`                 | Sequence IDs to extract, separated by semicolons                                    |
+| `--file`                | Text file of sequence IDs to extract, one per line                                  |
+| `--re=`                 | Regular expression that matches the sequence IDs to extract                         |
+| `-F`, `--output-format` | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-o`, `--output`        | Output directory. Default: `Sequence-Extract`                                       |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

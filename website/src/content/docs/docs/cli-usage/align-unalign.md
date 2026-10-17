@@ -64,10 +64,10 @@ segul align unalign --dir <alignment-dir>
 
 ### Unaligning alignments (Amino Acid)
 
-To unalign amino acid alignments, use the `--amino-acid` flag as follows:
+To unalign amino acid alignments, use the `--datatype aa` option as follows:
 
 ```bash
-segul align unalign --dir <alignment-dir> --input-format aa
+segul align unalign --dir <alignment-dir> --datatype aa
 ```
 
 ### Specifying output directory
@@ -79,7 +79,7 @@ segul align unalign --dir <alignment-dir> --output unalign-output
 ```
 
 :::note
-Due to the nature of unaligning, the output format will always be in FASTA format.
+Due to the nature of unaligning, the output format will always be in FASTA format. Use `--output-format fasta` for sequential FASTA instead of the default interleaved FASTA.
 :::
 
 ### More ways to specify input files
@@ -89,3 +89,16 @@ You can also specify input files using the `--input` or `-i` option. This option
 ```bash
 segul align unalign --input alignments/*.fasta
 ```
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `-F`, `--output-format` | Output format: `fasta-int` (default) or `fasta`                                     |
+| `-o`, `--output`        | Output directory. Default: `Align-Unalign`                                          |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

@@ -174,16 +174,31 @@ Data Matrix Completeness
 
 ### Specifying the output directory and filenames
 
-The two CSV files are saved in the `SEGUL-Stats` directory by default. You can change the directory name by using the `--output` or `-o` option. For example:
+The two CSV files are saved in the `Align-Summary` directory by default. You can change the directory name by using the `--output` or `-o` option. For example:
 
 ```bash
 segul align summary -d alignments/ -f nexus -o alignment_stats
 ```
 
-You can also add a prefix to the CSV filenames using the `-- prefix` option. For example:
+You can also add a prefix to the CSV filenames using the `--prefix` option. For example:
 
 ```bash
 segul align summary -d alignments/ -f nexus -o alignment_stats --prefix my_samples
 ```
 
 The command above will create a directory named `alignment_stats/` and write the CSV output files. Using the `--prefix` option, the output filename for the taxon summary will be `my_samples_taxon_summary.csv,`. For the locus, the summary will be `my_samples_locus_summary.csv.`,  and `my_samples_alignment_summary.csv` for the alignment summary.
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default) or `aa`                                                  |
+| `--interval`            | Data matrix completeness interval in percent: `5` (default), `1`, `2`, or `10`      |
+| `--per-locus`           | Only compute summary statistics for each locus                                      |
+| `-o`, `--output`        | Output directory. Default: `Align-Summary`                                          |
+| `--prefix`              | Prefix of the output files                                                          |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

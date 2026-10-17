@@ -16,10 +16,16 @@ The app will default to the standard code table (NCBI Table 1). Use the `--table
 segul sequence translate -d loci/ -f fasta --table 2
 ```
 
-You can also set the reading frame using the `--rf` option:
+You can also set the reading frame using the `--reading-frame` option:
 
 ```bash
-segul sequence translate -d loci/ -f fasta --table 2 --rf 2
+segul sequence translate -d loci/ -f fasta --table 2 --reading-frame 2
+```
+
+To let SEGUL detect the reading frame of each alignment, use the `--auto-read` flag instead:
+
+```bash
+segul sequence translate -d loci/ -f fasta --table 2 --auto-read
 ```
 
 To show all the table options, use the `--show-tables` flag:
@@ -28,7 +34,7 @@ To show all the table options, use the `--show-tables` flag:
 segul sequence translate --show-tables
 ```
 
-## Supported Translation Tables
+## Supported translation tables
 
 | Table No | Genetic Code                                                                                 |
 | -------- | -------------------------------------------------------------------------------------------- |
@@ -56,3 +62,20 @@ segul sequence translate --show-tables
 | 33       | Cephalodiscidae Mitochondrial UAA-Tyr Code                                                   |
 
 Sources: [NCBI Genetic Code Tables](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#top)
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `--table`               | NCBI translation table. Default: `1`                                                |
+| `--reading-frame`       | Reading frame: `1` (default), `2`, or `3`                                           |
+| `--auto-read`           | Detect the reading frame of each alignment                                          |
+| `--show-tables`         | Print the supported translation tables                                              |
+| `-F`, `--output-format` | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-o`, `--output`        | Output directory. Default: `Sequence-Translate`                                     |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

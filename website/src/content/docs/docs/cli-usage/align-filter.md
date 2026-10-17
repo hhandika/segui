@@ -57,7 +57,7 @@ segul align filter --dir alignments/ --input-format nexus --max-len 800
 segul align filter --dir alignments/ --input-format nexus --percent 0.8
 
 # Using multiple data matrix completeness values
-segul align filter --dir segul --dir alignments/ --input-format nexus --npercent 0.9 0.8 0.75
+segul align filter --dir alignments/ --input-format nexus --npercent 0.9 0.8 0.75
 
 # Minimum parsimony informative sites
 segul align filter --dir alignments/ --input-format nexus --min-pinf 50
@@ -148,7 +148,7 @@ You can also write the percentage as `.8`, and it will parse the same way you wr
 Sometimes, we want to build phylogenetic trees with different data matrix completeness. Using `segul`, we can do it in a single command using the `npercent` option:
 
 ```bash
-segul align filter --dir segul --dir alignments/ --input-format nexus --npercent 0.9 0.8 0.75
+segul align filter --dir alignments/ --input-format nexus --npercent 0.9 0.8 0.75
 ```
 
 SEGUL will create an output directory for each data matrix completeness value, with the percentage values suffixed on the directory names. For the example above, it will create three directories named `alignments_90p`, `alignments_80p`, and `alignments_75p`.
@@ -162,6 +162,10 @@ SEGUL provides two ways of filtering based on parsimony informative sites:
 This option filters alignments that contain at least the specified number of informative sites.
 
 For example, in the command below, we will filter alignments in the `alignments` directory with a minimum containing 50 parsimony informative sites:
+
+```bash
+segul align filter --dir alignments/ --input-format nexus --min-pinf 50
+```
 
 :::note
 
@@ -290,3 +294,32 @@ By default, SEGUL assumes the input alignments are DNA sequences. It will fails 
 ```bash
 segul align filter --dir alignments/ --input-format fasta --datatype aa --min-len 300
 ```
+
+## All options
+
+| Option                     | Description                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`              | Directory with alignments                                                           |
+| `-i`, `--input`            | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`     | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`               | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `--min-len`                | Minimum alignment length                                                            |
+| `--max-len`                | Maximum alignment length                                                            |
+| `--percent`                | Minimum data matrix completeness, as a proportion of taxa                           |
+| `--npercent`               | Several data matrix completeness values. Writes one output per value                |
+| `--min-pinf`               | Minimum number of parsimony informative sites                                       |
+| `--max-pinf`               | Maximum number of parsimony informative sites                                       |
+| `--percent-inf`            | Minimum parsimony informative sites, as a proportion of the highest count           |
+| `--missing-data`           | Maximum proportion of missing data                                                  |
+| `--min-ntax`               | Minimum number of taxa                                                              |
+| `--taxon-id`               | Text file of taxon IDs, one per line                                                |
+| `--concat`                 | Concatenate the filtered alignments instead of copying them                         |
+| `-F`, `--output-format`    | Output format with `--concat`: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-p`, `--partition-format` | Partition format with `--concat`: `nexus` (default), `charset`, or `raxml`          |
+| `--codon`                  | Write the partition as a codon model, with `--concat`                               |
+| `--prefix`                 | Prefix of the output files, with `--concat`                                         |
+| `-o`, `--output`           | Output directory. Default: named after the input directory and filter value         |
+| `--force`                  | Overwrite an existing output directory                                              |
+| `--log`                    | Log file path. Default: `segul.log`                                                 |
+
+Use one filtering option per run.

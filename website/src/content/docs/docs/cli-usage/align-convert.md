@@ -23,7 +23,7 @@ segul align convert --input [a-path-to-file] --input-format [sequence-format] --
 For example, here we will convert a nexus file containing DNA sequences named `loci.nexus` to fasta format:
 
 ```bash
-segul align convert --input alignments/loci.nexus -output-format fasta
+segul align convert --input alignments/loci.nexus --output-format fasta
 ```
 
 You can ignore specifying the output format if you want the output files in NEXUS format. For example, we will convert loci.fasta to nexus format:
@@ -44,7 +44,7 @@ When converting alignments, SEGUL only changes the file extension and maintains 
 
 ## Batch converting sequence files in a directory
 
-We have the option to provide the input files to the program. First, use the `--dir` or `-d` input. For a directory input, it is required to specify the `--input-format`:
+We have the option to provide the input files to the program. Use the `--dir` or `-d` input. SEGUL detects the format from the file extensions. Add `--input-format` for unusual extensions:
 
 ```bash
 segul align convert --dir [path-to-your-repository] --input-format [sequence-format] --output [your-output-dir-name] --output-format [sequence-format]
@@ -91,15 +91,15 @@ alignments-fas/
 By default, the SEGUL datatype is set to convert DNA sequences. If your file contains amino acid sequences, use the argument `--datatype aa`. For example:
 
 ```bash
-segul align convert --input alignments/loci.nexus -output-format fasta --datatype aa
+segul align convert --input alignments/loci.nexus --output-format fasta --datatype aa
 ```
 
 ## Specifying the output directory
 
-By default, segul will write the result in a directory called `SEGUL-convert`. To specify the output directory, use the `--output` argument. For example, here, we will specify the output directory to `alignment-fasta`.
+By default, segul will write the result in a directory called `Align-Convert`. To specify the output directory, use the `--output` argument. For example, here, we will specify the output directory to `alignment-fasta`.
 
 ```bash
-segul align convert --input alignments/loci -output-format fasta --datatype aa --output alignment-fasta
+segul align convert --input alignments/loci.nexus --output-format fasta --datatype aa --output alignment-fasta
 ```
 
 ## Sorting the output sequences
@@ -107,6 +107,19 @@ segul align convert --input alignments/loci -output-format fasta --datatype aa -
 By default, SEGUL maintains the original order of the sequences in the input file(s). Using the `--sort` flag, you can sort the sequences in alphabetical order based on their IDs:
 
 ```bash
-segul align convert --input alignments/loci -output-format fasta --datatype aa --output alignment-fasta --sort
+segul align convert --input alignments/loci.nexus --output-format fasta --datatype aa --output alignment-fasta --sort
 ```
 
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `-F`, `--output-format` | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `--sort`                | Sort sequences by ID                                                                |
+| `-o`, `--output`        | Output directory. Default: `Align-Convert`                                          |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

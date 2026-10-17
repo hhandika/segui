@@ -30,7 +30,7 @@ agtc-----
 agtcgatct
 ```
 
-We want to filter sequences that contain at least 5 bp of sequences, excluding gaps. We can use the `--min-length` option:
+We want to filter sequences that contain at least 5 bp of sequences, excluding gaps. We can use the `--min-length` option. Use `--max-length` to remove sequences longer than a value:
 
 ```bash
 segul sequence filter --dir alignments/ --min-length 5
@@ -52,3 +52,19 @@ SEGUL considers `-` and `?` as gap characters. The app will remove sequences wit
 ```bash
 segul sequence filter --dir alignments/ --max-gap 0.3
 ```
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `--min-length`          | Minimum sequence length, excluding gaps                                             |
+| `--max-length`          | Maximum sequence length, excluding gaps                                             |
+| `--max-gap`             | Maximum proportion of gaps, from 0 to 1                                             |
+| `-F`, `--output-format` | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-o`, `--output`        | Output directory. Default: `Sequence-Filter`                                        |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

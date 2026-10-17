@@ -4,7 +4,7 @@ sidebar:
   order: 17
 ---
 
-Based on a list of IDs, you can remove sequences in a collection of alignments. This feature is the opposite of the `segul extract` feature. Removing less than half of the sequences is faster than `segul extract`.
+Based on a list of IDs, you can remove sequences in a collection of alignments. This feature is the opposite of the `segul sequence extract` feature. Removing less than half of the sequences is faster than `segul sequence extract`.
 
 ## Remove sequences based on a list of IDs
 
@@ -29,7 +29,7 @@ To input a list of IDs, you must use the equal sign "=" and quotation marks `"`.
 Using regular expression:
 
 ```bash
-segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --re=["regex"]
+segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --re="[regex]"
 ```
 
 Example:
@@ -39,3 +39,18 @@ The command below will remove all sequences whose IDs with the name started with
 ```bash
 segul sequence remove --dir ./data/ -f fasta --re="^Mus"
 ```
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `--id=`                 | Sequence IDs to remove, separated by semicolons                                     |
+| `--re=`                 | Regular expression that matches the sequence IDs to remove                          |
+| `-F`, `--output-format` | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-o`, `--output`        | Output directory. Default: `Sequence-Remove`                                        |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

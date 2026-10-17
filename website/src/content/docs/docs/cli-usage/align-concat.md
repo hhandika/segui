@@ -31,12 +31,12 @@ Second, we can use the `--input` argument to input the alignment files. We will 
 segul align concat --input alignments/*.nexus
 ```
 
-`segul` will generate two files saved in the `SEGUL-concat` directory, consisting of the concatenated alignments and the partition settings:
+`segul` will generate two files saved in the `Align-Concat` directory, consisting of the concatenated alignments and the partition settings:
 
 ```bash
-SEGUL-concat/
-├── SEGUL-Concat.nex
-└── SEGUL-Concat_partition.nex
+Align-Concat/
+├── Align-Concat.nex
+└── Align-Concat_partition.nex
 ```
 
 To specify the name of the output directory, use the `--output` or `-o` option. Below, we will name our output directory `aln-concat`.
@@ -70,12 +70,12 @@ charset 'locus-3' = 1474-2000;
 end;
 ```
 
-You can specify the partition format using the `--part` or `-p` option.
+You can specify the partition format using the `--partition-format` or `-p` option.
 
 For example, to use RaXML format:
 
 ```bash
-segul align concat --input alignments/*.nexus --output concat --prefix concat --part raxml
+segul align concat --input alignments/*.nexus --output concat --prefix concat --partition-format raxml
 ```
 
 The resulting partition will be formatted in RaXML style:
@@ -88,8 +88,6 @@ DNA, locus_3 = 1474-2000
 
 If the input is amino acid sequences, the partition will not contain the datatype:
 
-The resulting partition will be formatted in RaXML style:
-
 ```text
 locus_1 = 1-666
 locus_2 = 667-1473
@@ -99,7 +97,26 @@ locus_3 = 1474-2000
 You can also use `charset` format. In this format, the partition will be written at the end of the sequence and only available for the nexus output. This format is usually required for phylogenetic programs, such as PAUP and BEAST. To use `charset` format:
 
 ```bash
-segul align concat --input alignments/*.nexus --output concat --prefix concat --part charset
+segul align concat --input alignments/*.nexus --output concat --prefix concat --partition-format charset
 ```
 
 You can also write the partition to a codon model format using the flag `--codon`. You may not need this option for genomic datasets. We reserve this function for Sanger datasets.
+
+To sort the sequences in the output by their IDs, add the `--sort` flag.
+
+## All options
+
+| Option                     | Description                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`              | Directory with alignments                                                           |
+| `-i`, `--input`            | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`     | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`               | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `-F`, `--output-format`    | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-p`, `--partition-format` | Partition format: `nexus` (default), `charset`, or `raxml`                          |
+| `--codon`                  | Write the partition as a codon model                                                |
+| `--sort`                   | Sort sequences by ID                                                                |
+| `-o`, `--output`           | Output directory. Default: `Align-Concat`                                           |
+| `--prefix`                 | Prefix of the output files. Default: `Align-Concat`                                 |
+| `--force`                  | Overwrite an existing output directory                                              |
+| `--log`                    | Log file path. Default: `segul.log`                                                 |

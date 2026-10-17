@@ -109,3 +109,19 @@ end;
 ```
 
 In the above case, SEGUL will write the output file as locus_1_nex.nex and locus_2_nex.nex (if saved to NEXUS).
+
+## All options
+
+| Option                     | Description                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `-i`, `--input`            | Concatenated alignment. Required                                                    |
+| `-f`, `--input-format`     | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`               | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `-I`, `--input-partition`  | Partition file. Without it, SEGUL reads the partition embedded in the alignment     |
+| `-p`, `--partition-format` | Format of the partition file: `nexus` or `raxml`                                    |
+| `--skip-checking`          | Skip checking the partition positions                                               |
+| `-F`, `--output-format`    | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-o`, `--output`           | Output directory. Default: `Align-Split`                                            |
+| `--prefix`                 | Prefix of the output files                                                          |
+| `--force`                  | Overwrite an existing output directory                                              |
+| `--log`                    | Log file path. Default: `segul.log`                                                 |

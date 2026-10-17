@@ -84,7 +84,7 @@ segul align trim --dir alignments/ --pinf 50
 
 ### Amino acid alignment trimming
 
-If the input is amino acid sequences, you need to use the `datatype aa` option. For example:
+If the input is amino acid sequences, you need to use the `--datatype aa` option. For example:
 
 ```bash
 segul align trim --dir alignments/ --missing-data 0.5 --datatype aa
@@ -103,3 +103,18 @@ To specify the output format, use the `--output-format` or `-F` option. The defa
 ```bash
 segul align trim --dir alignments/ --output-format fasta
 ```
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `--missing-data`        | Remove sites with a higher proportion of missing data                               |
+| `--pinf`                | Parsimony informative site threshold for keeping sites                              |
+| `-F`, `--output-format` | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-o`, `--output`        | Output directory. Default: `Align-Trim`                                             |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

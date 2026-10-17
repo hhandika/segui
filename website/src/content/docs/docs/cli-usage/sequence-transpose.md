@@ -97,3 +97,16 @@ You can also specify input files using the `--input` or `-i` option. For example
 ```bash
 segul sequence transpose --input alignments/*.fasta
 ```
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `-F`, `--output-format` | Output format: `fasta` (default) or `fasta-int`                                     |
+| `-o`, `--output`        | Output directory. Default: `Sequence-Transpose`                                     |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |
