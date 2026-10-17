@@ -4,6 +4,35 @@ sidebar:
   order: 3
 ---
 
+## Quick install (Linux and macOS)
+
+Run the installer script in your terminal:
+
+```bash
+curl -fsSL https://segul.app/install.sh | sh
+```
+
+The script picks the right binary for your system, installs it to `~/.local/bin` without root access, and tells you if that folder is not on your `PATH`. On Linux x86_64, it uses the static musl build when your glibc is older than 2.34, which is common on HPC clusters.
+
+Pass options after `sh -s --`:
+
+| Option | Description |
+| --- | --- |
+| `--dir <path>` | Install into another folder, such as `--dir ~/bin`. |
+| `--version <tag>` | Install a specific release, such as `--version v0.23.2`. |
+| `--musl` | Use the static Linux build even when glibc is new enough. |
+| `--uninstall` | Remove the installed binary. Add `--dir` if you used a custom folder. |
+
+For example:
+
+```bash
+curl -fsSL https://segul.app/install.sh | sh -s -- --dir ~/bin
+```
+
+On Windows, follow the [manual Windows instructions](#windows).
+
+## Manual install
+
 The pre-compiled binary is available on the [release page](https://github.com/hhandika/segul/releases/latest). To install it, the typical workflow is as follows:
 
 1. Download the compressed executable file (.zip or .tar.gz) in [the release page](https://github.com/hhandika/segul/releases/) to your computer, either using a browser or using a command line app.
@@ -60,7 +89,7 @@ Output example:
 # Written by Roland McGrath and Ulrich Drepper.
 ```
 
-You can use the `Linux` version if your version is **glibc 2.17** or higher. You should use the `Linux-musl` version if your version is older.
+You can use the `Linux` version if your version is **glibc 2.34** or higher. You should use the `Linux-musl` version if your version is older. The Linux ARM64 build also needs glibc 2.34 or higher.
 
 :::note
 We recommend using the dynamically linked executable version if your OS has the supported GLIBC version. The compiler optimizes it more, making it faster than the static binary version. See the Rust platform [tier list](https://forge.rust-lang.org/platform-support.html) for more information.
@@ -161,7 +190,7 @@ It should show the SEGUL version number.
 For macOS, the executables are available for Intel Macs and Apple ARM M series processors.
 
 - **Intel Macs**. The file is named `segul-macOS-x86_64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)).
-- **Apple ARM M series CPUs**. The file is named `segul-macOS-arm64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-x86_64.tar.gz)).
+- **Apple ARM M series CPUs**. The file is named `segul-macOS-arm64.tar.gz` ([download](https://github.com/hhandika/segul/releases/latest/download/segul-macOS-arm64.tar.gz)).
 
 ### Installing MacOS binary
 

@@ -37,6 +37,7 @@ export default defineConfig({
       customCss: ["./src/styles/global.css"],
       components: {
         Footer: "./src/components/Footer.astro",
+        Head: "./src/components/Head.astro",
       },
       editLink: {
         baseUrl: "https://github.com/hhandika/segui/edit/main/website/",

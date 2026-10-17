@@ -1,6 +1,7 @@
 ---
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/SiteFooter.astro";
+import Analytics from "@vercel/analytics/astro";
 import cntl from "cntl";
 
 import "../styles/global.css";
@@ -49,6 +50,7 @@ const bodyClasses = cntl`
       <slot />
     </main>
     <Footer />
+    <Analytics />
     <script>
       import { observeReveals } from "../scripts/reveal";
       observeReveals();
