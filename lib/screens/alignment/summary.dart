@@ -38,6 +38,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String? _interval;
+  bool _isPerLocus = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -69,9 +70,19 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             label: 'Output Prefix',
             hint: 'Enter output prefix',
           ),
+          SwitchForm(
+            label: 'Summarize each locus separately',
+            value: _isPerLocus,
+            onPressed: (value) {
+              setState(() {
+                _isPerLocus = value;
+              });
+            },
+          ),
           SharedDropdownField(
             value: _interval,
             label: 'Summary Interval',
+            enabled: !_isPerLocus,
             items: summaryInt,
             onChanged: (String? value) {
               setState(() {
@@ -127,7 +138,8 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   bool get _isValid {
-    bool isPrefixValid = _ctr.prefixController.text.isNotEmpty;
+    // Per-locus files are named after each alignment.
+    bool isPrefixValid = _isPerLocus || _ctr.prefixController.text.isNotEmpty;
     return _ctr.isValid && isPrefixValid;
   }
 
@@ -161,6 +173,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         outputDir: outputDir,
         outputPrefix: _ctr.prefixController.text,
         interval: BigInt.parse(_interval ?? '5'),
+        isPerLocus: _isPerLocus,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
@@ -212,6 +225,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     setState(() {
       _ctr.reset();
       _interval = null;
+      _isPerLocus = false;
       _ctr.isSuccess = false;
       ref.invalidate(fileInputProvider);
       ref.invalidate(fileOutputProvider);

@@ -54,8 +54,11 @@ extension FilteringParamsPatterns on FilteringParams {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(FilteringParams_MinTax value)? minTax,
     TResult Function(FilteringParams_AlnLen value)? alnLen,
+    TResult Function(FilteringParams_MaxAlnLen value)? maxAlnLen,
     TResult Function(FilteringParams_ParsInf value)? parsInf,
+    TResult Function(FilteringParams_MaxParsInf value)? maxParsInf,
     TResult Function(FilteringParams_PercInf value)? percInf,
+    TResult Function(FilteringParams_MissingData value)? missingData,
     TResult Function(FilteringParams_TaxonAll value)? taxonAll,
     TResult Function(FilteringParams_None value)? none,
     required TResult orElse(),
@@ -66,10 +69,16 @@ extension FilteringParamsPatterns on FilteringParams {
         return minTax(_that);
       case FilteringParams_AlnLen() when alnLen != null:
         return alnLen(_that);
+      case FilteringParams_MaxAlnLen() when maxAlnLen != null:
+        return maxAlnLen(_that);
       case FilteringParams_ParsInf() when parsInf != null:
         return parsInf(_that);
+      case FilteringParams_MaxParsInf() when maxParsInf != null:
+        return maxParsInf(_that);
       case FilteringParams_PercInf() when percInf != null:
         return percInf(_that);
+      case FilteringParams_MissingData() when missingData != null:
+        return missingData(_that);
       case FilteringParams_TaxonAll() when taxonAll != null:
         return taxonAll(_that);
       case FilteringParams_None() when none != null:
@@ -96,8 +105,11 @@ extension FilteringParamsPatterns on FilteringParams {
   TResult map<TResult extends Object?>({
     required TResult Function(FilteringParams_MinTax value) minTax,
     required TResult Function(FilteringParams_AlnLen value) alnLen,
+    required TResult Function(FilteringParams_MaxAlnLen value) maxAlnLen,
     required TResult Function(FilteringParams_ParsInf value) parsInf,
+    required TResult Function(FilteringParams_MaxParsInf value) maxParsInf,
     required TResult Function(FilteringParams_PercInf value) percInf,
+    required TResult Function(FilteringParams_MissingData value) missingData,
     required TResult Function(FilteringParams_TaxonAll value) taxonAll,
     required TResult Function(FilteringParams_None value) none,
   }) {
@@ -107,10 +119,16 @@ extension FilteringParamsPatterns on FilteringParams {
         return minTax(_that);
       case FilteringParams_AlnLen():
         return alnLen(_that);
+      case FilteringParams_MaxAlnLen():
+        return maxAlnLen(_that);
       case FilteringParams_ParsInf():
         return parsInf(_that);
+      case FilteringParams_MaxParsInf():
+        return maxParsInf(_that);
       case FilteringParams_PercInf():
         return percInf(_that);
+      case FilteringParams_MissingData():
+        return missingData(_that);
       case FilteringParams_TaxonAll():
         return taxonAll(_that);
       case FilteringParams_None():
@@ -134,8 +152,11 @@ extension FilteringParamsPatterns on FilteringParams {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(FilteringParams_MinTax value)? minTax,
     TResult? Function(FilteringParams_AlnLen value)? alnLen,
+    TResult? Function(FilteringParams_MaxAlnLen value)? maxAlnLen,
     TResult? Function(FilteringParams_ParsInf value)? parsInf,
+    TResult? Function(FilteringParams_MaxParsInf value)? maxParsInf,
     TResult? Function(FilteringParams_PercInf value)? percInf,
+    TResult? Function(FilteringParams_MissingData value)? missingData,
     TResult? Function(FilteringParams_TaxonAll value)? taxonAll,
     TResult? Function(FilteringParams_None value)? none,
   }) {
@@ -145,10 +166,16 @@ extension FilteringParamsPatterns on FilteringParams {
         return minTax(_that);
       case FilteringParams_AlnLen() when alnLen != null:
         return alnLen(_that);
+      case FilteringParams_MaxAlnLen() when maxAlnLen != null:
+        return maxAlnLen(_that);
       case FilteringParams_ParsInf() when parsInf != null:
         return parsInf(_that);
+      case FilteringParams_MaxParsInf() when maxParsInf != null:
+        return maxParsInf(_that);
       case FilteringParams_PercInf() when percInf != null:
         return percInf(_that);
+      case FilteringParams_MissingData() when missingData != null:
+        return missingData(_that);
       case FilteringParams_TaxonAll() when taxonAll != null:
         return taxonAll(_that);
       case FilteringParams_None() when none != null:
@@ -174,8 +201,11 @@ extension FilteringParamsPatterns on FilteringParams {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(double field0)? minTax,
     TResult Function(BigInt field0)? alnLen,
+    TResult Function(BigInt field0)? maxAlnLen,
     TResult Function(BigInt field0)? parsInf,
+    TResult Function(BigInt field0)? maxParsInf,
     TResult Function(double field0)? percInf,
+    TResult Function(double field0)? missingData,
     TResult Function(List<String> field0)? taxonAll,
     TResult Function()? none,
     required TResult orElse(),
@@ -186,10 +216,16 @@ extension FilteringParamsPatterns on FilteringParams {
         return minTax(_that.field0);
       case FilteringParams_AlnLen() when alnLen != null:
         return alnLen(_that.field0);
+      case FilteringParams_MaxAlnLen() when maxAlnLen != null:
+        return maxAlnLen(_that.field0);
       case FilteringParams_ParsInf() when parsInf != null:
         return parsInf(_that.field0);
+      case FilteringParams_MaxParsInf() when maxParsInf != null:
+        return maxParsInf(_that.field0);
       case FilteringParams_PercInf() when percInf != null:
         return percInf(_that.field0);
+      case FilteringParams_MissingData() when missingData != null:
+        return missingData(_that.field0);
       case FilteringParams_TaxonAll() when taxonAll != null:
         return taxonAll(_that.field0);
       case FilteringParams_None() when none != null:
@@ -216,8 +252,11 @@ extension FilteringParamsPatterns on FilteringParams {
   TResult when<TResult extends Object?>({
     required TResult Function(double field0) minTax,
     required TResult Function(BigInt field0) alnLen,
+    required TResult Function(BigInt field0) maxAlnLen,
     required TResult Function(BigInt field0) parsInf,
+    required TResult Function(BigInt field0) maxParsInf,
     required TResult Function(double field0) percInf,
+    required TResult Function(double field0) missingData,
     required TResult Function(List<String> field0) taxonAll,
     required TResult Function() none,
   }) {
@@ -227,10 +266,16 @@ extension FilteringParamsPatterns on FilteringParams {
         return minTax(_that.field0);
       case FilteringParams_AlnLen():
         return alnLen(_that.field0);
+      case FilteringParams_MaxAlnLen():
+        return maxAlnLen(_that.field0);
       case FilteringParams_ParsInf():
         return parsInf(_that.field0);
+      case FilteringParams_MaxParsInf():
+        return maxParsInf(_that.field0);
       case FilteringParams_PercInf():
         return percInf(_that.field0);
+      case FilteringParams_MissingData():
+        return missingData(_that.field0);
       case FilteringParams_TaxonAll():
         return taxonAll(_that.field0);
       case FilteringParams_None():
@@ -254,8 +299,11 @@ extension FilteringParamsPatterns on FilteringParams {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(double field0)? minTax,
     TResult? Function(BigInt field0)? alnLen,
+    TResult? Function(BigInt field0)? maxAlnLen,
     TResult? Function(BigInt field0)? parsInf,
+    TResult? Function(BigInt field0)? maxParsInf,
     TResult? Function(double field0)? percInf,
+    TResult? Function(double field0)? missingData,
     TResult? Function(List<String> field0)? taxonAll,
     TResult? Function()? none,
   }) {
@@ -265,10 +313,16 @@ extension FilteringParamsPatterns on FilteringParams {
         return minTax(_that.field0);
       case FilteringParams_AlnLen() when alnLen != null:
         return alnLen(_that.field0);
+      case FilteringParams_MaxAlnLen() when maxAlnLen != null:
+        return maxAlnLen(_that.field0);
       case FilteringParams_ParsInf() when parsInf != null:
         return parsInf(_that.field0);
+      case FilteringParams_MaxParsInf() when maxParsInf != null:
+        return maxParsInf(_that.field0);
       case FilteringParams_PercInf() when percInf != null:
         return percInf(_that.field0);
+      case FilteringParams_MissingData() when missingData != null:
+        return missingData(_that.field0);
       case FilteringParams_TaxonAll() when taxonAll != null:
         return taxonAll(_that.field0);
       case FilteringParams_None() when none != null:
@@ -415,6 +469,73 @@ class _$FilteringParams_AlnLenCopyWithImpl<$Res>
 
 /// @nodoc
 
+class FilteringParams_MaxAlnLen extends FilteringParams {
+  const FilteringParams_MaxAlnLen(this.field0) : super._();
+
+  final BigInt field0;
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $FilteringParams_MaxAlnLenCopyWith<FilteringParams_MaxAlnLen> get copyWith =>
+      _$FilteringParams_MaxAlnLenCopyWithImpl<FilteringParams_MaxAlnLen>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is FilteringParams_MaxAlnLen &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'FilteringParams.maxAlnLen(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $FilteringParams_MaxAlnLenCopyWith<$Res>
+    implements $FilteringParamsCopyWith<$Res> {
+  factory $FilteringParams_MaxAlnLenCopyWith(FilteringParams_MaxAlnLen value,
+          $Res Function(FilteringParams_MaxAlnLen) _then) =
+      _$FilteringParams_MaxAlnLenCopyWithImpl;
+  @useResult
+  $Res call({BigInt field0});
+}
+
+/// @nodoc
+class _$FilteringParams_MaxAlnLenCopyWithImpl<$Res>
+    implements $FilteringParams_MaxAlnLenCopyWith<$Res> {
+  _$FilteringParams_MaxAlnLenCopyWithImpl(this._self, this._then);
+
+  final FilteringParams_MaxAlnLen _self;
+  final $Res Function(FilteringParams_MaxAlnLen) _then;
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(FilteringParams_MaxAlnLen(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+    ));
+  }
+}
+
+/// @nodoc
+
 class FilteringParams_ParsInf extends FilteringParams {
   const FilteringParams_ParsInf(this.field0) : super._();
 
@@ -482,6 +603,74 @@ class _$FilteringParams_ParsInfCopyWithImpl<$Res>
 
 /// @nodoc
 
+class FilteringParams_MaxParsInf extends FilteringParams {
+  const FilteringParams_MaxParsInf(this.field0) : super._();
+
+  final BigInt field0;
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $FilteringParams_MaxParsInfCopyWith<FilteringParams_MaxParsInf>
+      get copyWith =>
+          _$FilteringParams_MaxParsInfCopyWithImpl<FilteringParams_MaxParsInf>(
+              this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is FilteringParams_MaxParsInf &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'FilteringParams.maxParsInf(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $FilteringParams_MaxParsInfCopyWith<$Res>
+    implements $FilteringParamsCopyWith<$Res> {
+  factory $FilteringParams_MaxParsInfCopyWith(FilteringParams_MaxParsInf value,
+          $Res Function(FilteringParams_MaxParsInf) _then) =
+      _$FilteringParams_MaxParsInfCopyWithImpl;
+  @useResult
+  $Res call({BigInt field0});
+}
+
+/// @nodoc
+class _$FilteringParams_MaxParsInfCopyWithImpl<$Res>
+    implements $FilteringParams_MaxParsInfCopyWith<$Res> {
+  _$FilteringParams_MaxParsInfCopyWithImpl(this._self, this._then);
+
+  final FilteringParams_MaxParsInf _self;
+  final $Res Function(FilteringParams_MaxParsInf) _then;
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(FilteringParams_MaxParsInf(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+    ));
+  }
+}
+
+/// @nodoc
+
 class FilteringParams_PercInf extends FilteringParams {
   const FilteringParams_PercInf(this.field0) : super._();
 
@@ -539,6 +728,74 @@ class _$FilteringParams_PercInfCopyWithImpl<$Res>
     Object? field0 = null,
   }) {
     return _then(FilteringParams_PercInf(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+
+class FilteringParams_MissingData extends FilteringParams {
+  const FilteringParams_MissingData(this.field0) : super._();
+
+  final double field0;
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $FilteringParams_MissingDataCopyWith<FilteringParams_MissingData>
+      get copyWith => _$FilteringParams_MissingDataCopyWithImpl<
+          FilteringParams_MissingData>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is FilteringParams_MissingData &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'FilteringParams.missingData(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $FilteringParams_MissingDataCopyWith<$Res>
+    implements $FilteringParamsCopyWith<$Res> {
+  factory $FilteringParams_MissingDataCopyWith(
+          FilteringParams_MissingData value,
+          $Res Function(FilteringParams_MissingData) _then) =
+      _$FilteringParams_MissingDataCopyWithImpl;
+  @useResult
+  $Res call({double field0});
+}
+
+/// @nodoc
+class _$FilteringParams_MissingDataCopyWithImpl<$Res>
+    implements $FilteringParams_MissingDataCopyWith<$Res> {
+  _$FilteringParams_MissingDataCopyWithImpl(this._self, this._then);
+
+  final FilteringParams_MissingData _self;
+  final $Res Function(FilteringParams_MissingData) _then;
+
+  /// Create a copy of FilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(FilteringParams_MissingData(
       null == field0
           ? _self.field0
           : field0 // ignore: cast_nullable_to_non_nullable
@@ -1102,6 +1359,463 @@ class SequenceExtractionParams_None extends SequenceExtractionParams {
   @override
   String toString() {
     return 'SequenceExtractionParams.none()';
+  }
+}
+
+/// @nodoc
+mixin _$SequenceFilteringParams {
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is SequenceFilteringParams);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'SequenceFilteringParams()';
+  }
+}
+
+/// @nodoc
+class $SequenceFilteringParamsCopyWith<$Res> {
+  $SequenceFilteringParamsCopyWith(
+      SequenceFilteringParams _, $Res Function(SequenceFilteringParams) __);
+}
+
+/// Adds pattern-matching-related methods to [SequenceFilteringParams].
+extension SequenceFilteringParamsPatterns on SequenceFilteringParams {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SequenceFilteringParams_MinLength value)? minLength,
+    TResult Function(SequenceFilteringParams_MaxLength value)? maxLength,
+    TResult Function(SequenceFilteringParams_MaxGap value)? maxGap,
+    TResult Function(SequenceFilteringParams_None value)? none,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SequenceFilteringParams_MinLength() when minLength != null:
+        return minLength(_that);
+      case SequenceFilteringParams_MaxLength() when maxLength != null:
+        return maxLength(_that);
+      case SequenceFilteringParams_MaxGap() when maxGap != null:
+        return maxGap(_that);
+      case SequenceFilteringParams_None() when none != null:
+        return none(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SequenceFilteringParams_MinLength value)
+        minLength,
+    required TResult Function(SequenceFilteringParams_MaxLength value)
+        maxLength,
+    required TResult Function(SequenceFilteringParams_MaxGap value) maxGap,
+    required TResult Function(SequenceFilteringParams_None value) none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SequenceFilteringParams_MinLength():
+        return minLength(_that);
+      case SequenceFilteringParams_MaxLength():
+        return maxLength(_that);
+      case SequenceFilteringParams_MaxGap():
+        return maxGap(_that);
+      case SequenceFilteringParams_None():
+        return none(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SequenceFilteringParams_MinLength value)? minLength,
+    TResult? Function(SequenceFilteringParams_MaxLength value)? maxLength,
+    TResult? Function(SequenceFilteringParams_MaxGap value)? maxGap,
+    TResult? Function(SequenceFilteringParams_None value)? none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SequenceFilteringParams_MinLength() when minLength != null:
+        return minLength(_that);
+      case SequenceFilteringParams_MaxLength() when maxLength != null:
+        return maxLength(_that);
+      case SequenceFilteringParams_MaxGap() when maxGap != null:
+        return maxGap(_that);
+      case SequenceFilteringParams_None() when none != null:
+        return none(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(BigInt field0)? minLength,
+    TResult Function(BigInt field0)? maxLength,
+    TResult Function(double field0)? maxGap,
+    TResult Function()? none,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SequenceFilteringParams_MinLength() when minLength != null:
+        return minLength(_that.field0);
+      case SequenceFilteringParams_MaxLength() when maxLength != null:
+        return maxLength(_that.field0);
+      case SequenceFilteringParams_MaxGap() when maxGap != null:
+        return maxGap(_that.field0);
+      case SequenceFilteringParams_None() when none != null:
+        return none();
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(BigInt field0) minLength,
+    required TResult Function(BigInt field0) maxLength,
+    required TResult Function(double field0) maxGap,
+    required TResult Function() none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SequenceFilteringParams_MinLength():
+        return minLength(_that.field0);
+      case SequenceFilteringParams_MaxLength():
+        return maxLength(_that.field0);
+      case SequenceFilteringParams_MaxGap():
+        return maxGap(_that.field0);
+      case SequenceFilteringParams_None():
+        return none();
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(BigInt field0)? minLength,
+    TResult? Function(BigInt field0)? maxLength,
+    TResult? Function(double field0)? maxGap,
+    TResult? Function()? none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case SequenceFilteringParams_MinLength() when minLength != null:
+        return minLength(_that.field0);
+      case SequenceFilteringParams_MaxLength() when maxLength != null:
+        return maxLength(_that.field0);
+      case SequenceFilteringParams_MaxGap() when maxGap != null:
+        return maxGap(_that.field0);
+      case SequenceFilteringParams_None() when none != null:
+        return none();
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class SequenceFilteringParams_MinLength extends SequenceFilteringParams {
+  const SequenceFilteringParams_MinLength(this.field0) : super._();
+
+  final BigInt field0;
+
+  /// Create a copy of SequenceFilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SequenceFilteringParams_MinLengthCopyWith<SequenceFilteringParams_MinLength>
+      get copyWith => _$SequenceFilteringParams_MinLengthCopyWithImpl<
+          SequenceFilteringParams_MinLength>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SequenceFilteringParams_MinLength &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'SequenceFilteringParams.minLength(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $SequenceFilteringParams_MinLengthCopyWith<$Res>
+    implements $SequenceFilteringParamsCopyWith<$Res> {
+  factory $SequenceFilteringParams_MinLengthCopyWith(
+          SequenceFilteringParams_MinLength value,
+          $Res Function(SequenceFilteringParams_MinLength) _then) =
+      _$SequenceFilteringParams_MinLengthCopyWithImpl;
+  @useResult
+  $Res call({BigInt field0});
+}
+
+/// @nodoc
+class _$SequenceFilteringParams_MinLengthCopyWithImpl<$Res>
+    implements $SequenceFilteringParams_MinLengthCopyWith<$Res> {
+  _$SequenceFilteringParams_MinLengthCopyWithImpl(this._self, this._then);
+
+  final SequenceFilteringParams_MinLength _self;
+  final $Res Function(SequenceFilteringParams_MinLength) _then;
+
+  /// Create a copy of SequenceFilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(SequenceFilteringParams_MinLength(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+    ));
+  }
+}
+
+/// @nodoc
+
+class SequenceFilteringParams_MaxLength extends SequenceFilteringParams {
+  const SequenceFilteringParams_MaxLength(this.field0) : super._();
+
+  final BigInt field0;
+
+  /// Create a copy of SequenceFilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SequenceFilteringParams_MaxLengthCopyWith<SequenceFilteringParams_MaxLength>
+      get copyWith => _$SequenceFilteringParams_MaxLengthCopyWithImpl<
+          SequenceFilteringParams_MaxLength>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SequenceFilteringParams_MaxLength &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'SequenceFilteringParams.maxLength(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $SequenceFilteringParams_MaxLengthCopyWith<$Res>
+    implements $SequenceFilteringParamsCopyWith<$Res> {
+  factory $SequenceFilteringParams_MaxLengthCopyWith(
+          SequenceFilteringParams_MaxLength value,
+          $Res Function(SequenceFilteringParams_MaxLength) _then) =
+      _$SequenceFilteringParams_MaxLengthCopyWithImpl;
+  @useResult
+  $Res call({BigInt field0});
+}
+
+/// @nodoc
+class _$SequenceFilteringParams_MaxLengthCopyWithImpl<$Res>
+    implements $SequenceFilteringParams_MaxLengthCopyWith<$Res> {
+  _$SequenceFilteringParams_MaxLengthCopyWithImpl(this._self, this._then);
+
+  final SequenceFilteringParams_MaxLength _self;
+  final $Res Function(SequenceFilteringParams_MaxLength) _then;
+
+  /// Create a copy of SequenceFilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(SequenceFilteringParams_MaxLength(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+    ));
+  }
+}
+
+/// @nodoc
+
+class SequenceFilteringParams_MaxGap extends SequenceFilteringParams {
+  const SequenceFilteringParams_MaxGap(this.field0) : super._();
+
+  final double field0;
+
+  /// Create a copy of SequenceFilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SequenceFilteringParams_MaxGapCopyWith<SequenceFilteringParams_MaxGap>
+      get copyWith => _$SequenceFilteringParams_MaxGapCopyWithImpl<
+          SequenceFilteringParams_MaxGap>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SequenceFilteringParams_MaxGap &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'SequenceFilteringParams.maxGap(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $SequenceFilteringParams_MaxGapCopyWith<$Res>
+    implements $SequenceFilteringParamsCopyWith<$Res> {
+  factory $SequenceFilteringParams_MaxGapCopyWith(
+          SequenceFilteringParams_MaxGap value,
+          $Res Function(SequenceFilteringParams_MaxGap) _then) =
+      _$SequenceFilteringParams_MaxGapCopyWithImpl;
+  @useResult
+  $Res call({double field0});
+}
+
+/// @nodoc
+class _$SequenceFilteringParams_MaxGapCopyWithImpl<$Res>
+    implements $SequenceFilteringParams_MaxGapCopyWith<$Res> {
+  _$SequenceFilteringParams_MaxGapCopyWithImpl(this._self, this._then);
+
+  final SequenceFilteringParams_MaxGap _self;
+  final $Res Function(SequenceFilteringParams_MaxGap) _then;
+
+  /// Create a copy of SequenceFilteringParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(SequenceFilteringParams_MaxGap(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+
+class SequenceFilteringParams_None extends SequenceFilteringParams {
+  const SequenceFilteringParams_None() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is SequenceFilteringParams_None);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'SequenceFilteringParams.none()';
   }
 }
 
@@ -1766,6 +2480,372 @@ class SequenceRenamingParams_None extends SequenceRenamingParams {
   @override
   String toString() {
     return 'SequenceRenamingParams.none()';
+  }
+}
+
+/// @nodoc
+mixin _$TrimmingParams {
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is TrimmingParams);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'TrimmingParams()';
+  }
+}
+
+/// @nodoc
+class $TrimmingParamsCopyWith<$Res> {
+  $TrimmingParamsCopyWith(TrimmingParams _, $Res Function(TrimmingParams) __);
+}
+
+/// Adds pattern-matching-related methods to [TrimmingParams].
+extension TrimmingParamsPatterns on TrimmingParams {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(TrimmingParams_MissingData value)? missingData,
+    TResult Function(TrimmingParams_ParsInf value)? parsInf,
+    TResult Function(TrimmingParams_None value)? none,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case TrimmingParams_MissingData() when missingData != null:
+        return missingData(_that);
+      case TrimmingParams_ParsInf() when parsInf != null:
+        return parsInf(_that);
+      case TrimmingParams_None() when none != null:
+        return none(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(TrimmingParams_MissingData value) missingData,
+    required TResult Function(TrimmingParams_ParsInf value) parsInf,
+    required TResult Function(TrimmingParams_None value) none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case TrimmingParams_MissingData():
+        return missingData(_that);
+      case TrimmingParams_ParsInf():
+        return parsInf(_that);
+      case TrimmingParams_None():
+        return none(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(TrimmingParams_MissingData value)? missingData,
+    TResult? Function(TrimmingParams_ParsInf value)? parsInf,
+    TResult? Function(TrimmingParams_None value)? none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case TrimmingParams_MissingData() when missingData != null:
+        return missingData(_that);
+      case TrimmingParams_ParsInf() when parsInf != null:
+        return parsInf(_that);
+      case TrimmingParams_None() when none != null:
+        return none(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(double field0)? missingData,
+    TResult Function(BigInt field0)? parsInf,
+    TResult Function()? none,
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case TrimmingParams_MissingData() when missingData != null:
+        return missingData(_that.field0);
+      case TrimmingParams_ParsInf() when parsInf != null:
+        return parsInf(_that.field0);
+      case TrimmingParams_None() when none != null:
+        return none();
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(double field0) missingData,
+    required TResult Function(BigInt field0) parsInf,
+    required TResult Function() none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case TrimmingParams_MissingData():
+        return missingData(_that.field0);
+      case TrimmingParams_ParsInf():
+        return parsInf(_that.field0);
+      case TrimmingParams_None():
+        return none();
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(double field0)? missingData,
+    TResult? Function(BigInt field0)? parsInf,
+    TResult? Function()? none,
+  }) {
+    final _that = this;
+    switch (_that) {
+      case TrimmingParams_MissingData() when missingData != null:
+        return missingData(_that.field0);
+      case TrimmingParams_ParsInf() when parsInf != null:
+        return parsInf(_that.field0);
+      case TrimmingParams_None() when none != null:
+        return none();
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class TrimmingParams_MissingData extends TrimmingParams {
+  const TrimmingParams_MissingData(this.field0) : super._();
+
+  final double field0;
+
+  /// Create a copy of TrimmingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $TrimmingParams_MissingDataCopyWith<TrimmingParams_MissingData>
+      get copyWith =>
+          _$TrimmingParams_MissingDataCopyWithImpl<TrimmingParams_MissingData>(
+              this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is TrimmingParams_MissingData &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'TrimmingParams.missingData(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $TrimmingParams_MissingDataCopyWith<$Res>
+    implements $TrimmingParamsCopyWith<$Res> {
+  factory $TrimmingParams_MissingDataCopyWith(TrimmingParams_MissingData value,
+          $Res Function(TrimmingParams_MissingData) _then) =
+      _$TrimmingParams_MissingDataCopyWithImpl;
+  @useResult
+  $Res call({double field0});
+}
+
+/// @nodoc
+class _$TrimmingParams_MissingDataCopyWithImpl<$Res>
+    implements $TrimmingParams_MissingDataCopyWith<$Res> {
+  _$TrimmingParams_MissingDataCopyWithImpl(this._self, this._then);
+
+  final TrimmingParams_MissingData _self;
+  final $Res Function(TrimmingParams_MissingData) _then;
+
+  /// Create a copy of TrimmingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(TrimmingParams_MissingData(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+
+class TrimmingParams_ParsInf extends TrimmingParams {
+  const TrimmingParams_ParsInf(this.field0) : super._();
+
+  final BigInt field0;
+
+  /// Create a copy of TrimmingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $TrimmingParams_ParsInfCopyWith<TrimmingParams_ParsInf> get copyWith =>
+      _$TrimmingParams_ParsInfCopyWithImpl<TrimmingParams_ParsInf>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is TrimmingParams_ParsInf &&
+            (identical(other.field0, field0) || other.field0 == field0));
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, field0);
+  }
+
+  @override
+  String toString() {
+    return 'TrimmingParams.parsInf(field0: $field0)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $TrimmingParams_ParsInfCopyWith<$Res>
+    implements $TrimmingParamsCopyWith<$Res> {
+  factory $TrimmingParams_ParsInfCopyWith(TrimmingParams_ParsInf value,
+          $Res Function(TrimmingParams_ParsInf) _then) =
+      _$TrimmingParams_ParsInfCopyWithImpl;
+  @useResult
+  $Res call({BigInt field0});
+}
+
+/// @nodoc
+class _$TrimmingParams_ParsInfCopyWithImpl<$Res>
+    implements $TrimmingParams_ParsInfCopyWith<$Res> {
+  _$TrimmingParams_ParsInfCopyWithImpl(this._self, this._then);
+
+  final TrimmingParams_ParsInf _self;
+  final $Res Function(TrimmingParams_ParsInf) _then;
+
+  /// Create a copy of TrimmingParams
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? field0 = null,
+  }) {
+    return _then(TrimmingParams_ParsInf(
+      null == field0
+          ? _self.field0
+          : field0 // ignore: cast_nullable_to_non_nullable
+              as BigInt,
+    ));
+  }
+}
+
+/// @nodoc
+
+class TrimmingParams_None extends TrimmingParams {
+  const TrimmingParams_None() : super._();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is TrimmingParams_None);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'TrimmingParams.none()';
   }
 }
 

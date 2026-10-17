@@ -63,12 +63,20 @@ void main() {
   });
 
   test('Tool search matches titles, descriptions, and categories', () {
-    expect(filterHomeTools(ToolCategory.alignment, ''), hasLength(6));
+    expect(filterHomeTools(ToolCategory.alignment, ''), hasLength(9));
     expect(
       filterHomeTools(ToolCategory.alignment, ' phylip ').map((t) => t.title),
       ['Convert alignments'],
     );
-    expect(filterHomeTools(ToolCategory.sequence, 'sequences'), hasLength(5));
+    expect(filterHomeTools(ToolCategory.sequence, 'sequences'), hasLength(8));
+    expect(
+      filterHomeTools(ToolCategory.genomics, 'maf').map((t) => t.title),
+      ['Convert MAF alignments'],
+    );
+    expect(
+      filterHomeTools(ToolCategory.alignment, 'k2p').map((t) => t.title),
+      ['Compute genetic distances'],
+    );
     expect(filterHomeTools(ToolCategory.genomics, 'translate'), isEmpty);
   });
 
@@ -93,6 +101,27 @@ void main() {
     expect(
       container.read(alignmentOperationSelectionProvider),
       AlignmentOperationType.split,
+    );
+
+    navigator.open(mafConversionTool);
+    expect(container.read(tabSelectionProvider), 1);
+    expect(
+      container.read(genomicOperationSelectionProvider),
+      GenomicOperationType.mafConversion,
+    );
+
+    navigator.open(distanceTool);
+    expect(container.read(tabSelectionProvider), 2);
+    expect(
+      container.read(alignmentOperationSelectionProvider),
+      AlignmentOperationType.distance,
+    );
+
+    navigator.open(transpositionTool);
+    expect(container.read(tabSelectionProvider), 3);
+    expect(
+      container.read(sequenceOperationSelectionProvider),
+      SequenceOperationType.transposition,
     );
   });
 
@@ -174,13 +203,15 @@ void main() {
         .toSet();
     expect(find.byType(ToolCard), findsNWidgets(homeTools.length));
     expect(sizes, hasLength(1));
-    // Six columns: every alignment tool fits on one row.
-    final rows = tester
+    // Six columns: alignment tools fill whole rows of six.
+    final alignmentCards = tester
         .widgetList<ToolCard>(find.byType(ToolCard))
         .where((card) => card.tool.category == ToolCategory.alignment)
+        .toList();
+    final rows = alignmentCards
         .map((card) => tester.getTopLeft(find.byWidget(card)).dy)
         .toSet();
-    expect(rows, hasLength(1));
+    expect(rows, hasLength((alignmentCards.length / 6).ceil()));
     expect(tester.takeException(), isNull);
   });
 

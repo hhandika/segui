@@ -63,6 +63,39 @@ const XTypeGroup partitionTypeGroup = XTypeGroup(
   ],
 );
 
+/// Sequence files that receive sequences in the sequence addition task.
+/// Same extensions as [sequenceTypeGroup], but a separate group so
+/// destination files stay apart from the files that supply sequences.
+const XTypeGroup destinationSequenceTypeGroup = XTypeGroup(
+  label: 'Destination sequence',
+  extensions: [
+    ...fastaExtensions,
+    ...nexusExtensions,
+    ...phylipExtensions,
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.fasta',
+    'com.segui.nexus',
+    'com.segui.phylip',
+  ],
+);
+
+const XTypeGroup mafTypeGroup = XTypeGroup(
+  label: 'MAF',
+  extensions: mafExtensions,
+  uniformTypeIdentifiers: [
+    'public.plain-text',
+  ],
+);
+
+const XTypeGroup bedTypeGroup = XTypeGroup(
+  label: 'BED',
+  extensions: bedExtensions,
+  uniformTypeIdentifiers: [
+    'public.plain-text',
+  ],
+);
+
 const XTypeGroup genomicContigTypeGroup = XTypeGroup(
   label: 'Contig',
   extensions: fastaExtensions,
@@ -89,6 +122,14 @@ const List<String> phylipExtensions = [
   'phylip',
   'phy',
   'ph',
+];
+
+const List<String> mafExtensions = [
+  'maf',
+];
+
+const List<String> bedExtensions = [
+  'bed',
 ];
 
 const List<String> fastqExtensions = [
@@ -125,6 +166,8 @@ const List<String> plainTextExtensions = [
   'toml',
   'yaml',
   'nex',
+  ...mafExtensions,
+  ...bedExtensions,
 ];
 
 const List<String> compressionExtensions = [

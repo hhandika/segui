@@ -25,6 +25,13 @@ enum SupportedTask {
   sequenceRenaming,
   sequenceUniqueId,
   sequenceTranslation,
+  alignmentDistance,
+  alignmentTrimming,
+  alignmentUnalignment,
+  genomicMafConversion,
+  sequenceAddition,
+  sequenceFiltering,
+  sequenceTransposition,
 }
 
 class ArchiveRunner {

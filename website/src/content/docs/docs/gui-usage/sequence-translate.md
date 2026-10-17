@@ -12,9 +12,9 @@ Translate DNA sequences to amino acid sequences.
 2. Select `Translate sequences` from the tool list. On narrower windows, select the tool name at the top of the page to switch tools.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
 4. Select the output directory by clicking the `Add directory` button.
-5. Select the output sequence format.
+5. Select the output sequence format. Turn on `Set interleaved format` to write interleaved output (optional).
 6. Select the translation table. The default is the standard genetic code.
-7. Select the reading frame. The default is the first reading frame.
+7. Select the reading frame. The default is the first reading frame. Turn on `Detect reading frame automatically` to let the app choose the frame for each file instead.
 8. Click the `Run` button labeled `Translate` to start the task.
 
 ## Output

@@ -1,10 +1,11 @@
 enum PlatformType { isDesktop, isMobile }
 
-enum GenomicOperationType { readSummary, contigSummary }
+enum GenomicOperationType { readSummary, contigSummary, mafConversion }
 
 const Map<GenomicOperationType, String> genomicOperationMap = {
   GenomicOperationType.readSummary: 'Summarize genomic reads',
   GenomicOperationType.contigSummary: 'Summarize genomic contigs',
+  GenomicOperationType.mafConversion: 'Convert MAF alignments',
 };
 
 const List<String> sequenceReadFormat = [
@@ -32,6 +33,9 @@ enum AlignmentOperationType {
   partition,
   summary,
   split,
+  distance,
+  trimming,
+  unalignment,
 }
 
 const Map<AlignmentOperationType, String> alignmentOperationMap = {
@@ -41,6 +45,9 @@ const Map<AlignmentOperationType, String> alignmentOperationMap = {
   AlignmentOperationType.filter: 'Filter alignments',
   AlignmentOperationType.split: 'Split alignments',
   AlignmentOperationType.summary: 'Summarize alignments',
+  AlignmentOperationType.distance: 'Compute genetic distances',
+  AlignmentOperationType.trimming: 'Trim alignments',
+  AlignmentOperationType.unalignment: 'Unalign sequences',
 };
 
 enum SequenceOperationType {
@@ -49,6 +56,9 @@ enum SequenceOperationType {
   removal,
   renaming,
   translation,
+  addition,
+  filtering,
+  transposition,
 }
 
 const Map<SequenceOperationType, String> sequenceOperationMap = {
@@ -57,6 +67,9 @@ const Map<SequenceOperationType, String> sequenceOperationMap = {
   SequenceOperationType.removal: 'Remove sequences',
   SequenceOperationType.renaming: 'Rename sequence IDs',
   SequenceOperationType.translation: 'Translate sequences',
+  SequenceOperationType.addition: 'Add sequences',
+  SequenceOperationType.filtering: 'Filter sequences',
+  SequenceOperationType.transposition: 'Transpose sequences',
 };
 
 const List<String> inputFormat = [
@@ -87,6 +100,47 @@ const List<String> dataType = [
 ];
 
 const List<String> summaryInt = ["1", "2", "5", "10"];
+
+/// Output formats for tasks that write unaligned sequences.
+const List<String> fastaOutputFormat = ['FASTA'];
+
+/// Output formats for MAF conversion.
+const List<String> mafOutputFormat = ['FASTA', 'PHYLIP'];
+
+/// Pairwise distance models, keyed by the SEGUL model name.
+const Map<String, String> distanceModels = {
+  'p': 'Uncorrected p-distance',
+  'jc69': 'Jukes-Cantor (JC69)',
+  'k2p': 'Kimura 2-parameter (K2P), DNA only',
+  'tn93': 'Tamura-Nei (TN93), DNA only',
+  'poisson': 'Poisson, amino acid only',
+};
+
+/// Distance models that SEGUL accepts for [datatype].
+List<String> distanceModelsFor(String datatype) {
+  switch (datatype) {
+    case 'DNA':
+      return const ['p', 'jc69', 'k2p', 'tn93'];
+    case 'AA':
+      return const ['p', 'jc69', 'poisson'];
+    default:
+      return const [];
+  }
+}
+
+/// Distance matrix triangles, keyed by the SEGUL option name.
+const Map<String, String> distanceMatrixTriangles = {
+  'full': 'Full matrix',
+  'lower': 'Lower triangle',
+  'upper': 'Upper triangle',
+};
+
+/// Distance matrix diagonals, keyed by the SEGUL option name.
+const Map<String, String> distanceMatrixDiagonals = {
+  'zero': 'Zero',
+  'blank': 'Blank',
+  'max': 'Highest distance in the row',
+};
 
 const List<String> readingFrame = ["1", "2", "3"];
 

@@ -27,7 +27,7 @@ const none: GuideLink[] = [];
 export const featureGuides = {
   "align-concat": { gui: gui("align-concat"), cli: cli("align-concat"), python: python("align_concat") },
   "align-convert": { gui: gui("align-convert"), cli: cli("align-convert"), python: python("align_convert") },
-  "align-distance": { gui: none, cli: cli("align-distance"), python: none },
+  "align-distance": { gui: gui("align-distance"), cli: cli("align-distance"), python: none },
   "align-filter": { gui: gui("align-filter"), cli: cli("align-filter"), python: python("align_filter") },
   "align-partition": {
     gui: gui("align-partition"),
@@ -61,7 +61,7 @@ export const featureGuides = {
     cli: cli("sequence-extract"),
     python: python("sequence_extract"),
   },
-  "sequence-filter": { gui: none, cli: cli("sequence-filter"), python: none },
+  "sequence-filter": { gui: gui("sequence-filter"), cli: cli("sequence-filter"), python: none },
   "sequence-remove": {
     gui: gui("sequence-remove"),
     cli: cli("sequence-remove"),
@@ -72,7 +72,11 @@ export const featureGuides = {
     cli: cli("sequence-translate"),
     python: python("sequence_translation"),
   },
-  "sequence-transpose": { gui: none, cli: cli("sequence-transpose"), python: none },
+  "sequence-transpose": {
+    gui: gui("sequence-transpose"),
+    cli: cli("sequence-transpose"),
+    python: none,
+  },
 } satisfies Record<string, FeatureGuides>;
 
 export type Feature = keyof typeof featureGuides;

@@ -13,6 +13,13 @@ import extractId from "../assets/icons/extract_id_outlined.svg";
 import remove from "../assets/icons/remove_outlined.svg";
 import rename from "../assets/icons/rename_outlined.svg";
 import translate from "../assets/icons/translate_outlined.svg";
+import distance from "../assets/icons/distance_outlined.svg";
+import trim from "../assets/icons/trim_outlined.svg";
+import unalign from "../assets/icons/unalign_outlined.svg";
+import add from "../assets/icons/add_outlined.svg";
+import sequenceFilter from "../assets/icons/sequence_filter_outlined.svg";
+import transpose from "../assets/icons/transpose_outlined.svg";
+import mafConvert from "../assets/icons/maf_convert_outlined.svg";
 import genomics from "../assets/icons/genomics_outlined.svg";
 import alignments from "../assets/icons/alignments_outlined.svg";
 import sequences from "../assets/icons/sequences_outlined.svg";
@@ -81,6 +88,13 @@ export const tools: {
   },
   {
     category: "alignment",
+    title: "Compute genetic distances",
+    description: "Pairwise p, JC69, K2P, TN93, or Poisson distance matrices.",
+    icon: distance,
+    docs: "/docs/gui-usage/align-distance/",
+  },
+  {
+    category: "alignment",
     title: "Filter alignments",
     description: "Keep loci by taxon coverage, length, or informative sites.",
     icon: filter,
@@ -108,6 +122,27 @@ export const tools: {
     docs: "/docs/gui-usage/align-summary/",
   },
   {
+    category: "alignment",
+    title: "Trim alignments",
+    description: "Drop sites with too much missing data or too little signal.",
+    icon: trim,
+    docs: "/docs/gui-usage/align-trim/",
+  },
+  {
+    category: "alignment",
+    title: "Unalign sequences",
+    description: "Strip alignment gaps to get raw sequences for realignment.",
+    icon: unalign,
+    docs: "/docs/gui-usage/align-unalign/",
+  },
+  {
+    category: "sequence",
+    title: "Add sequences",
+    description: "Append new samples to matching alignments or a single file.",
+    icon: add,
+    docs: "/docs/gui-usage/sequence-add/",
+  },
+  {
     category: "sequence",
     title: "Extract sequences",
     description: "Pull sequences out of alignments by ID list or regex.",
@@ -120,6 +155,13 @@ export const tools: {
     description: "List unique sample IDs and the files each one appears in.",
     icon: extractId,
     docs: "/docs/gui-usage/sequence-id/",
+  },
+  {
+    category: "sequence",
+    title: "Filter sequences",
+    description: "Keep samples by sequence length or proportion of gaps.",
+    icon: sequenceFilter,
+    docs: "/docs/gui-usage/sequence-filter/",
   },
   {
     category: "sequence",
@@ -143,6 +185,13 @@ export const tools: {
     docs: "/docs/gui-usage/sequence-translate/",
   },
   {
+    category: "sequence",
+    title: "Transpose sequences",
+    description: "Turn locus alignments into one file of loci per sample.",
+    icon: transpose,
+    docs: "/docs/gui-usage/sequence-transpose/",
+  },
+  {
     category: "genomics",
     title: "Summarize genomic reads",
     description: "FASTQ quality: read counts, length, GC content, and Q-scores.",
@@ -155,6 +204,13 @@ export const tools: {
     description: "Contig counts, N50, length, and GC content for assemblies.",
     icon: contigSummary,
     docs: "/docs/gui-usage/genomic/",
+  },
+  {
+    category: "genomics",
+    title: "Convert MAF alignments",
+    description: "Turn whole-genome MAF blocks into per-locus FASTA or PHYLIP.",
+    icon: mafConvert,
+    docs: "/docs/gui-usage/maf-convert/",
   },
 ];
 

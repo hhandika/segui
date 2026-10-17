@@ -25,13 +25,25 @@ const Map<FilteringOptions, InputDecoration> filteringOptionsInput = {
     labelText: 'Minimal length',
     hintText: 'E.g., 800, 1200, etc.',
   ),
+  FilteringOptions.maximalLength: InputDecoration(
+    labelText: 'Maximal length',
+    hintText: 'E.g., 5000, 10000, etc.',
+  ),
   FilteringOptions.parsimonyInf: InputDecoration(
     labelText: 'Minimal counts',
     hintText: 'E.g., 1, 20, etc.',
   ),
+  FilteringOptions.maximalParsimonyInf: InputDecoration(
+    labelText: 'Maximal counts',
+    hintText: 'E.g., 100, 500, etc.',
+  ),
   FilteringOptions.percentParsimonyInf: InputDecoration(
     labelText: 'Percentage value',
     hintText: 'E.g., 0.5, .2, 1.0, etc.',
+  ),
+  FilteringOptions.missingData: InputDecoration(
+    labelText: 'Proportion of missing data',
+    hintText: 'From 0 to 1, e.g., 0.3',
   ),
 };
 
@@ -207,7 +219,8 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   }
 
   bool get _isValid {
-    bool filteringOptionsValid = _valueController.text.isNotEmpty;
+    bool filteringOptionsValid = isValidFilteringValue(
+        _filteringOptionsController, _valueController.text);
     bool isFormatVld = _ctr.outputFormatController != null;
     if (_isConcatenated) {
       filteringOptionsValid =

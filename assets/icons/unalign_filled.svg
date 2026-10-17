@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+     fill="currentColor" stroke="currentColor" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd">
+  <path d="M 3,5 H 21" />
+  <path data-role="detail" fill="none" d="M 3,12 H 10" />
+  <path data-role="detail" fill="none" d="M 3,19 H 7" />
+  <path data-role="detail" fill="none" d="M 21,15.5 H 13.5 M 16.5,12.5 L 13.5,15.5 L 16.5,18.5" />
+</svg>

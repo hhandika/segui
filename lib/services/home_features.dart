@@ -100,6 +100,19 @@ const HomeTool contigSummaryTool = HomeTool(
   svgAsset: 'assets/icons/contig_summary_outlined.svg',
 );
 
+const HomeTool mafConversionTool = HomeTool(
+  category: ToolCategory.genomics,
+  operation: GenomicOperationType.mafConversion,
+  title: 'Convert MAF alignments',
+  description: 'Turn whole-genome MAF blocks into per-locus FASTA or PHYLIP.',
+  about: 'Convert Multiple Alignment Format (MAF) files into one alignment '
+      'per locus. A BED file names each locus by the start position of the '
+      'reference sequence.',
+  icon: SeguiIcons.mafConvertOutlined,
+  filledIcon: SeguiIcons.mafConvertFilled,
+  svgAsset: 'assets/icons/maf_convert_outlined.svg',
+);
+
 const HomeTool concatenationTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.concatenation,
@@ -174,6 +187,43 @@ const HomeTool alignmentSummaryTool = HomeTool(
   svgAsset: 'assets/icons/alignment_summary_outlined.svg',
 );
 
+const HomeTool distanceTool = HomeTool(
+  category: ToolCategory.alignment,
+  operation: AlignmentOperationType.distance,
+  title: 'Compute genetic distances',
+  description: 'Pairwise p, JC69, K2P, TN93, or Poisson distance matrices.',
+  about: 'Compute pairwise genetic distances between samples in each '
+      'alignment. Writes one distance matrix per alignment and a summary '
+      'of the distances across all alignments.',
+  icon: SeguiIcons.distanceOutlined,
+  filledIcon: SeguiIcons.distanceFilled,
+  svgAsset: 'assets/icons/distance_outlined.svg',
+);
+
+const HomeTool trimmingTool = HomeTool(
+  category: ToolCategory.alignment,
+  operation: AlignmentOperationType.trimming,
+  title: 'Trim alignments',
+  description: 'Drop sites with too much missing data or too little signal.',
+  about: 'Trim alignment sites by the proportion of missing data or by the '
+      'count of parsimony informative sites.',
+  icon: SeguiIcons.trimOutlined,
+  filledIcon: SeguiIcons.trimFilled,
+  svgAsset: 'assets/icons/trim_outlined.svg',
+);
+
+const HomeTool unalignmentTool = HomeTool(
+  category: ToolCategory.alignment,
+  operation: AlignmentOperationType.unalignment,
+  title: 'Unalign sequences',
+  description: 'Strip alignment gaps to get raw sequences for realignment.',
+  about: 'Remove gaps from aligned sequences and write them as unaligned '
+      'FASTA files, ready for realignment.',
+  icon: SeguiIcons.unalignOutlined,
+  filledIcon: SeguiIcons.unalignFilled,
+  svgAsset: 'assets/icons/unalign_outlined.svg',
+);
+
 const HomeTool extractionTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.extraction,
@@ -235,21 +285,65 @@ const HomeTool translationTool = HomeTool(
   svgAsset: 'assets/icons/translate_outlined.svg',
 );
 
+const HomeTool additionTool = HomeTool(
+  category: ToolCategory.sequence,
+  operation: SequenceOperationType.addition,
+  title: 'Add sequences',
+  description: 'Append new samples to matching alignments or a single file.',
+  about: 'Add sequences to destination files that share the same file name, '
+      'or add every sequence to a single destination file. Output is an '
+      'unaligned FASTA file.',
+  icon: SeguiIcons.addOutlined,
+  filledIcon: SeguiIcons.addFilled,
+  svgAsset: 'assets/icons/add_outlined.svg',
+);
+
+const HomeTool sequenceFilteringTool = HomeTool(
+  category: ToolCategory.sequence,
+  operation: SequenceOperationType.filtering,
+  title: 'Filter sequences',
+  description: 'Keep samples by sequence length or proportion of gaps.',
+  about: 'Filter sequences inside each file by minimum or maximum sequence '
+      'length without gaps, or by the maximum proportion of gaps.',
+  icon: SeguiIcons.sequenceFilterOutlined,
+  filledIcon: SeguiIcons.sequenceFilterFilled,
+  svgAsset: 'assets/icons/sequence_filter_outlined.svg',
+);
+
+const HomeTool transpositionTool = HomeTool(
+  category: ToolCategory.sequence,
+  operation: SequenceOperationType.transposition,
+  title: 'Transpose sequences',
+  description: 'Turn locus alignments into one file of loci per sample.',
+  about: 'Transpose locus alignments into per-sample files. Each output file '
+      'holds one sample, with one sequence for each locus it appears in.',
+  icon: SeguiIcons.transposeOutlined,
+  filledIcon: SeguiIcons.transposeFilled,
+  svgAsset: 'assets/icons/transpose_outlined.svg',
+);
+
 /// Every tool available in SEGUI, grouped by category.
 const List<HomeTool> homeTools = [
   readSummaryTool,
   contigSummaryTool,
+  mafConversionTool,
   concatenationTool,
   conversionTool,
+  distanceTool,
   filterTool,
   partitionTool,
   splitTool,
   alignmentSummaryTool,
+  trimmingTool,
+  unalignmentTool,
+  additionTool,
   extractionTool,
   idExtractionTool,
+  sequenceFilteringTool,
   removalTool,
   renamingTool,
   translationTool,
+  transpositionTool,
 ];
 
 const List<HomeWorkflow> homeWorkflows = [
@@ -286,6 +380,18 @@ const List<HomeWorkflow> homeWorkflows = [
     title: 'Work with protein data',
     description: 'Translate coding loci, then subset the samples you need.',
     steps: [translationTool, extractionTool],
+  ),
+  HomeWorkflow(
+    title: 'Build loci from genome alignments',
+    description: 'Split whole-genome MAF files into loci, then check '
+        'and filter them.',
+    steps: [mafConversionTool, alignmentSummaryTool, filterTool],
+  ),
+  HomeWorkflow(
+    title: 'Prepare loci for realignment',
+    description: 'Drop short or gappy sequences, then strip the remaining '
+        'gaps before realigning.',
+    steps: [sequenceFilteringTool, unalignmentTool],
   ),
 ];
 

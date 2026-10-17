@@ -16,6 +16,9 @@ enum SegulType {
   standardSequence,
   alignmentPartition,
   plainText,
+  destinationSequence,
+  multipleAlignment,
+  bed,
 }
 
 class SegulInputFile {
@@ -54,6 +57,12 @@ SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
       return SegulType.alignmentPartition;
     case plainTextTypeGroup:
       return SegulType.plainText;
+    case destinationSequenceTypeGroup:
+      return SegulType.destinationSequence;
+    case mafTypeGroup:
+      return SegulType.multipleAlignment;
+    case bedTypeGroup:
+      return SegulType.bed;
     default:
       return SegulType.standardSequence;
   }

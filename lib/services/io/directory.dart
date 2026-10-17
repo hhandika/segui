@@ -22,6 +22,13 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceRenaming: 'segui-sequence-renaming',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
+  SupportedTask.alignmentDistance: 'segui-alignment-distance',
+  SupportedTask.alignmentTrimming: 'segui-alignment-trimming',
+  SupportedTask.alignmentUnalignment: 'segui-alignment-unalignment',
+  SupportedTask.genomicMafConversion: 'segui-genomic-maf-conversion',
+  SupportedTask.sequenceAddition: 'segui-sequence-addition',
+  SupportedTask.sequenceFiltering: 'segui-sequence-filtering',
+  SupportedTask.sequenceTransposition: 'segui-sequence-transposition',
 };
 
 class DirectorySelectionServices {

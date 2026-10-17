@@ -13,7 +13,8 @@ Summary statistics for many alignments.
 3. Add the input files by clicking the `Add file` button. On desktop platforms, you can also input a directory by clicking the `Add directory` button. The app will look for matching files in the directory.
 4. Select the output directory by clicking the `Add directory` button.
 5. Add prefix for the output files.
-6. Click the `Run` button labeled `Summarize` to start the task.
+6. Turn on `Summarize each locus separately` to write a summary file for each alignment instead (optional).
+7. Click the `Run` button labeled `Summarize` to start the task.
 
 ## Output
 
@@ -22,6 +23,10 @@ The app have three output files:
 1. **Alignment summary**: A summary of the input alignments written to a text file (default name: `alignment_summary.txt`).
 2. **Locus summary**: A summary of each alignment/locus written to a csv file (default name: `locus_summary.csv`).
 3. **Taxon summary**: A summary of each taxon written to a csv file (default name: `taxon_summary.csv`).
+
+## Per-locus summary
+
+With `Summarize each locus separately` on, the app writes a taxon summary for each alignment instead of the combined summary files. The summary interval does not apply to this mode.
 
 ## Prefix
 

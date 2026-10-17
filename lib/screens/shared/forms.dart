@@ -300,6 +300,46 @@ class SharedDropdownField extends StatelessWidget {
   }
 }
 
+/// Dropdown whose [items] map each option value to its display label.
+class SharedMapDropdownField extends StatelessWidget {
+  const SharedMapDropdownField({
+    super.key,
+    required this.value,
+    required this.label,
+    required this.items,
+    required this.onChanged,
+  });
+
+  final String? value;
+  final String label;
+  final Map<String, String> items;
+  final void Function(String?) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: DropdownButtonFormField<String>(
+        isExpanded: true,
+        initialValue: value,
+        decoration: InputDecoration(
+          labelText: label,
+        ),
+        items: items.entries
+            .map((entry) => DropdownMenuItem<String>(
+                  value: entry.key,
+                  child: Text(
+                    entry.value,
+                    overflow: TextOverflow.clip,
+                  ),
+                ))
+            .toList(),
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
+
 class SegmentedField extends StatelessWidget {
   const SegmentedField({
     super.key,

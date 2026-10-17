@@ -7,6 +7,7 @@ import 'api/archive.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/csv.dart';
+import 'api/maf.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
 import 'dart:async';
@@ -30,7 +31,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  AlignmentDistanceServices dco_decode_alignment_distance_services(dynamic raw);
+
+  @protected
   AlignmentServices dco_decode_alignment_services(dynamic raw);
+
+  @protected
+  AlignmentTrimmingServices dco_decode_alignment_trimming_services(dynamic raw);
 
   @protected
   ArchiveServices dco_decode_archive_services(dynamic raw);
@@ -39,7 +46,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool dco_decode_bool(dynamic raw);
 
   @protected
+  AlignmentDistanceServices dco_decode_box_autoadd_alignment_distance_services(
+      dynamic raw);
+
+  @protected
   AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw);
+
+  @protected
+  AlignmentTrimmingServices dco_decode_box_autoadd_alignment_trimming_services(
+      dynamic raw);
 
   @protected
   ArchiveServices dco_decode_box_autoadd_archive_services(dynamic raw);
@@ -58,10 +73,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  MafConversionServices dco_decode_box_autoadd_maf_conversion_services(
+      dynamic raw);
+
+  @protected
   PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw);
 
   @protected
   RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw);
+
+  @protected
+  SequenceAdditionServices dco_decode_box_autoadd_sequence_addition_services(
+      dynamic raw);
 
   @protected
   SequenceConversionServices
@@ -71,10 +94,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SequenceExtraction dco_decode_box_autoadd_sequence_extraction(dynamic raw);
 
   @protected
+  SequenceFilteringServices dco_decode_box_autoadd_sequence_filtering_services(
+      dynamic raw);
+
+  @protected
   SequenceRemoval dco_decode_box_autoadd_sequence_removal(dynamic raw);
 
   @protected
   SequenceRenaming dco_decode_box_autoadd_sequence_renaming(dynamic raw);
+
+  @protected
+  SequenceTransposeServices dco_decode_box_autoadd_sequence_transpose_services(
+      dynamic raw);
 
   @protected
   SplitAlignmentServices dco_decode_box_autoadd_split_alignment_services(
@@ -82,6 +113,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TranslationServices dco_decode_box_autoadd_translation_services(dynamic raw);
+
+  @protected
+  UnalignmentServices dco_decode_box_autoadd_unalignment_services(dynamic raw);
 
   @protected
   ContigServices dco_decode_contig_services(dynamic raw);
@@ -117,6 +151,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
 
   @protected
+  MafConversionServices dco_decode_maf_conversion_services(dynamic raw);
+
+  @protected
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
@@ -132,6 +169,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (String, String) dco_decode_record_string_string(dynamic raw);
 
   @protected
+  SequenceAdditionServices dco_decode_sequence_addition_services(dynamic raw);
+
+  @protected
   SequenceConversionServices dco_decode_sequence_conversion_services(
       dynamic raw);
 
@@ -140,6 +180,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SequenceExtractionParams dco_decode_sequence_extraction_params(dynamic raw);
+
+  @protected
+  SequenceFilteringParams dco_decode_sequence_filtering_params(dynamic raw);
+
+  @protected
+  SequenceFilteringServices dco_decode_sequence_filtering_services(dynamic raw);
 
   @protected
   SequenceRemoval dco_decode_sequence_removal(dynamic raw);
@@ -151,13 +197,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SequenceRenamingParams dco_decode_sequence_renaming_params(dynamic raw);
 
   @protected
+  SequenceTransposeServices dco_decode_sequence_transpose_services(dynamic raw);
+
+  @protected
   SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw);
 
   @protected
   TranslationServices dco_decode_translation_services(dynamic raw);
 
   @protected
+  TrimmingParams dco_decode_trimming_params(dynamic raw);
+
+  @protected
   int dco_decode_u_8(dynamic raw);
+
+  @protected
+  UnalignmentServices dco_decode_unalignment_services(dynamic raw);
 
   @protected
   void dco_decode_unit(dynamic raw);
@@ -173,7 +228,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  AlignmentDistanceServices sse_decode_alignment_distance_services(
+      SseDeserializer deserializer);
+
+  @protected
   AlignmentServices sse_decode_alignment_services(SseDeserializer deserializer);
+
+  @protected
+  AlignmentTrimmingServices sse_decode_alignment_trimming_services(
+      SseDeserializer deserializer);
 
   @protected
   ArchiveServices sse_decode_archive_services(SseDeserializer deserializer);
@@ -182,7 +245,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  AlignmentDistanceServices sse_decode_box_autoadd_alignment_distance_services(
+      SseDeserializer deserializer);
+
+  @protected
   AlignmentServices sse_decode_box_autoadd_alignment_services(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignmentTrimmingServices sse_decode_box_autoadd_alignment_trimming_services(
       SseDeserializer deserializer);
 
   @protected
@@ -206,11 +277,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  MafConversionServices sse_decode_box_autoadd_maf_conversion_services(
+      SseDeserializer deserializer);
+
+  @protected
   PartitionServices sse_decode_box_autoadd_partition_services(
       SseDeserializer deserializer);
 
   @protected
   RawReadServices sse_decode_box_autoadd_raw_read_services(
+      SseDeserializer deserializer);
+
+  @protected
+  SequenceAdditionServices sse_decode_box_autoadd_sequence_addition_services(
       SseDeserializer deserializer);
 
   @protected
@@ -223,6 +302,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SequenceFilteringServices sse_decode_box_autoadd_sequence_filtering_services(
+      SseDeserializer deserializer);
+
+  @protected
   SequenceRemoval sse_decode_box_autoadd_sequence_removal(
       SseDeserializer deserializer);
 
@@ -231,11 +314,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SequenceTransposeServices sse_decode_box_autoadd_sequence_transpose_services(
+      SseDeserializer deserializer);
+
+  @protected
   SplitAlignmentServices sse_decode_box_autoadd_split_alignment_services(
       SseDeserializer deserializer);
 
   @protected
   TranslationServices sse_decode_box_autoadd_translation_services(
+      SseDeserializer deserializer);
+
+  @protected
+  UnalignmentServices sse_decode_box_autoadd_unalignment_services(
       SseDeserializer deserializer);
 
   @protected
@@ -275,6 +366,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  MafConversionServices sse_decode_maf_conversion_services(
+      SseDeserializer deserializer);
+
+  @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
@@ -291,6 +386,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SequenceAdditionServices sse_decode_sequence_addition_services(
+      SseDeserializer deserializer);
+
+  @protected
   SequenceConversionServices sse_decode_sequence_conversion_services(
       SseDeserializer deserializer);
 
@@ -300,6 +399,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SequenceExtractionParams sse_decode_sequence_extraction_params(
+      SseDeserializer deserializer);
+
+  @protected
+  SequenceFilteringParams sse_decode_sequence_filtering_params(
+      SseDeserializer deserializer);
+
+  @protected
+  SequenceFilteringServices sse_decode_sequence_filtering_services(
       SseDeserializer deserializer);
 
   @protected
@@ -313,6 +420,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SequenceTransposeServices sse_decode_sequence_transpose_services(
+      SseDeserializer deserializer);
+
+  @protected
   SplitAlignmentServices sse_decode_split_alignment_services(
       SseDeserializer deserializer);
 
@@ -321,7 +432,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  TrimmingParams sse_decode_trimming_params(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer);
+
+  @protected
+  UnalignmentServices sse_decode_unalignment_services(
+      SseDeserializer deserializer);
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
@@ -337,8 +455,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_alignment_distance_services(
+      AlignmentDistanceServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_alignment_services(
       AlignmentServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_alignment_trimming_services(
+      AlignmentTrimmingServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_archive_services(
@@ -348,8 +474,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_alignment_distance_services(
+      AlignmentDistanceServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_alignment_services(
       AlignmentServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_alignment_trimming_services(
+      AlignmentTrimmingServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_archive_services(
@@ -372,12 +506,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       IDExtractionServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_maf_conversion_services(
+      MafConversionServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_partition_services(
       PartitionServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_raw_read_services(
       RawReadServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_sequence_addition_services(
+      SequenceAdditionServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_sequence_conversion_services(
@@ -388,6 +530,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SequenceExtraction self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_sequence_filtering_services(
+      SequenceFilteringServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_sequence_removal(
       SequenceRemoval self, SseSerializer serializer);
 
@@ -396,12 +542,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SequenceRenaming self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_sequence_transpose_services(
+      SequenceTransposeServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_split_alignment_services(
       SplitAlignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_translation_services(
       TranslationServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_unalignment_services(
+      UnalignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_contig_services(
@@ -444,6 +598,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(String, String)> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_maf_conversion_services(
+      MafConversionServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
@@ -462,6 +620,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (String, String) self, SseSerializer serializer);
 
   @protected
+  void sse_encode_sequence_addition_services(
+      SequenceAdditionServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_sequence_conversion_services(
       SequenceConversionServices self, SseSerializer serializer);
 
@@ -472,6 +634,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_sequence_extraction_params(
       SequenceExtractionParams self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sequence_filtering_params(
+      SequenceFilteringParams self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sequence_filtering_services(
+      SequenceFilteringServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_sequence_removal(
@@ -486,6 +656,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SequenceRenamingParams self, SseSerializer serializer);
 
   @protected
+  void sse_encode_sequence_transpose_services(
+      SequenceTransposeServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_split_alignment_services(
       SplitAlignmentServices self, SseSerializer serializer);
 
@@ -494,7 +668,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TranslationServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_trimming_params(
+      TrimmingParams self, SseSerializer serializer);
+
+  @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_unalignment_services(
+      UnalignmentServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);

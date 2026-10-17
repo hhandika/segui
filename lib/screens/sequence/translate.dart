@@ -37,6 +37,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
   final IOController _ctr = IOController.empty();
   bool _isInterleave = false;
   String _readingFrame = readingFrame[0];
+  bool _isAutoFrame = false;
   int _tableIndex = 0;
 
   @override
@@ -91,10 +92,20 @@ class TranslatePageState extends ConsumerState<TranslatePage>
               });
             },
           ),
+          SwitchForm(
+            label: 'Detect reading frame automatically',
+            value: _isAutoFrame,
+            onPressed: (value) {
+              setState(() {
+                _isAutoFrame = value;
+              });
+            },
+          ),
           SharedDropdownField(
             value: _readingFrame,
             label: 'Reading Frame',
             items: readingFrame,
+            enabled: !_isAutoFrame,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
@@ -182,9 +193,10 @@ class TranslatePageState extends ConsumerState<TranslatePage>
         inputFmt: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
-        outputFmt: _ctr.outputFormatController!,
+        outputFmt: getOutputFmt(_ctr.outputFormatController!, _isInterleave),
         tableIndex: _tableIndex,
         readingFrame: _readingFrame,
+        isAutoFrame: _isAutoFrame,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {

@@ -7,6 +7,7 @@ import 'api/archive.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/csv.dart';
+import 'api/maf.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
 import 'dart:async';
@@ -73,7 +74,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -2031312007;
+  int get rustContentHash => -387899672;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -85,6 +86,12 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  Future<void> crateApiSequenceAlignmentDistanceServicesComputeDistance(
+      {required AlignmentDistanceServices that});
+
+  Future<AlignmentDistanceServices>
+      crateApiSequenceAlignmentDistanceServicesNew();
+
   Future<void> crateApiSequenceAlignmentServicesConcatAlignment(
       {required AlignmentServices that,
       required String prefix,
@@ -97,6 +104,15 @@ abstract class RustLibApi extends BaseApi {
       {required AlignmentServices that,
       required String outputPrefix,
       required BigInt interval});
+
+  Future<void> crateApiSequenceAlignmentServicesSummarizeAlignmentPerLocus(
+      {required AlignmentServices that, String? outputPrefix});
+
+  Future<AlignmentTrimmingServices>
+      crateApiSequenceAlignmentTrimmingServicesNew();
+
+  Future<void> crateApiSequenceAlignmentTrimmingServicesTrim(
+      {required AlignmentTrimmingServices that});
 
   Future<ArchiveServices> crateApiArchiveArchiveServicesNew();
 
@@ -134,6 +150,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiCommonInitLogger({required String logDir});
 
+  Future<void> crateApiMafMafConversionServicesConvert(
+      {required MafConversionServices that});
+
+  Future<MafConversionServices> crateApiMafMafConversionServicesNew();
+
   Future<void> crateApiSequencePartitionServicesConvertPartition(
       {required PartitionServices that});
 
@@ -143,6 +164,15 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiReadsRawReadServicesSummarize(
       {required RawReadServices that, required String mode, String? prefix});
+
+  Future<void> crateApiSequenceSequenceAdditionServicesAddSequence(
+      {required SequenceAdditionServices that});
+
+  Future<void> crateApiSequenceSequenceAdditionServicesAddSequenceToSingleFile(
+      {required SequenceAdditionServices that, required bool includeFilename});
+
+  Future<SequenceAdditionServices>
+      crateApiSequenceSequenceAdditionServicesNew();
 
   Future<void> crateApiSequenceSequenceConversionServicesConvertSequence(
       {required SequenceConversionServices that});
@@ -155,6 +185,12 @@ abstract class RustLibApi extends BaseApi {
 
   Future<SequenceExtraction> crateApiSequenceSequenceExtractionNew();
 
+  Future<void> crateApiSequenceSequenceFilteringServicesFilterSequence(
+      {required SequenceFilteringServices that});
+
+  Future<SequenceFilteringServices>
+      crateApiSequenceSequenceFilteringServicesNew();
+
   Future<SequenceRemoval> crateApiSequenceSequenceRemovalNew();
 
   Future<void> crateApiSequenceSequenceRemovalRemoveSequence(
@@ -164,6 +200,12 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiSequenceSequenceRenamingRenameSequence(
       {required SequenceRenaming that});
+
+  Future<SequenceTransposeServices>
+      crateApiSequenceSequenceTransposeServicesNew();
+
+  Future<void> crateApiSequenceSequenceTransposeServicesTranspose(
+      {required SequenceTransposeServices that});
 
   Future<String> crateApiSequenceShowDnaUppercase();
 
@@ -176,6 +218,14 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiSequenceTranslationServicesTranslateSequence(
       {required TranslationServices that});
+
+  Future<void> crateApiSequenceTranslationServicesTranslateSequenceAutoFrame(
+      {required TranslationServices that});
+
+  Future<UnalignmentServices> crateApiSequenceUnalignmentServicesNew();
+
+  Future<void> crateApiSequenceUnalignmentServicesUnalign(
+      {required UnalignmentServices that});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -185,6 +235,59 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required super.generalizedFrbRustBinding,
     required super.portManager,
   });
+
+  @override
+  Future<void> crateApiSequenceAlignmentDistanceServicesComputeDistance(
+      {required AlignmentDistanceServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_alignment_distance_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiSequenceAlignmentDistanceServicesComputeDistanceConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSequenceAlignmentDistanceServicesComputeDistanceConstMeta =>
+          const TaskConstMeta(
+            debugName: "alignment_distance_services_compute_distance",
+            argNames: ["that"],
+          );
+
+  @override
+  Future<AlignmentDistanceServices>
+      crateApiSequenceAlignmentDistanceServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_alignment_distance_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceAlignmentDistanceServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceAlignmentDistanceServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "alignment_distance_services_new",
+        argNames: [],
+      );
 
   @override
   Future<void> crateApiSequenceAlignmentServicesConcatAlignment(
@@ -200,7 +303,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(outFmtStr, serializer);
         sse_encode_String(partitionFmt, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 1, port: port_);
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -225,7 +328,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_alignment_services,
@@ -255,7 +358,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(outputPrefix, serializer);
         sse_encode_usize(interval, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 5, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -275,12 +378,92 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<void> crateApiSequenceAlignmentServicesSummarizeAlignmentPerLocus(
+      {required AlignmentServices that, String? outputPrefix}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_alignment_services(that, serializer);
+        sse_encode_opt_String(outputPrefix, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiSequenceAlignmentServicesSummarizeAlignmentPerLocusConstMeta,
+      argValues: [that, outputPrefix],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSequenceAlignmentServicesSummarizeAlignmentPerLocusConstMeta =>
+          const TaskConstMeta(
+            debugName: "alignment_services_summarize_alignment_per_locus",
+            argNames: ["that", "outputPrefix"],
+          );
+
+  @override
+  Future<AlignmentTrimmingServices>
+      crateApiSequenceAlignmentTrimmingServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_alignment_trimming_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceAlignmentTrimmingServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceAlignmentTrimmingServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "alignment_trimming_services_new",
+        argNames: [],
+      );
+
+  @override
+  Future<void> crateApiSequenceAlignmentTrimmingServicesTrim(
+      {required AlignmentTrimmingServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_alignment_trimming_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceAlignmentTrimmingServicesTrimConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceAlignmentTrimmingServicesTrimConstMeta =>
+      const TaskConstMeta(
+        debugName: "alignment_trimming_services_trim",
+        argNames: ["that"],
+      );
+
+  @override
   Future<ArchiveServices> crateApiArchiveArchiveServicesNew() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_archive_services,
@@ -306,7 +489,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_archive_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 10, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -330,7 +513,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_contig_services,
@@ -357,7 +540,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_contig_services(that, serializer);
         sse_encode_opt_String(prefix, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 12, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -383,7 +566,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_csv_summary_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_String,
@@ -409,7 +592,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_csv_summary_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 14, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_usize,
@@ -436,7 +619,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(inputPath, serializer);
         sse_encode_csv_segul_type(segulType, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 15, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_csv_summary_services,
@@ -463,7 +646,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_box_autoadd_csv_summary_services(that, serializer);
         sse_encode_String(colName, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 16, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_Map_String_String_None,
@@ -489,7 +672,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_filtering_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 17, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -513,7 +696,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_filtering_services,
@@ -537,7 +720,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 19, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -563,7 +746,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_id_extraction_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 20, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -587,7 +770,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
+            funcId: 21, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_id_extraction_services,
@@ -612,7 +795,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(logDir, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
+            funcId: 22, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -630,6 +813,56 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiMafMafConversionServicesConvert(
+      {required MafConversionServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_maf_conversion_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 23, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiMafMafConversionServicesConvertConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiMafMafConversionServicesConvertConstMeta =>
+      const TaskConstMeta(
+        debugName: "maf_conversion_services_convert",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<MafConversionServices> crateApiMafMafConversionServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 24, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_maf_conversion_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiMafMafConversionServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiMafMafConversionServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "maf_conversion_services_new",
+        argNames: [],
+      );
+
+  @override
   Future<void> crateApiSequencePartitionServicesConvertPartition(
       {required PartitionServices that}) {
     return handler.executeNormal(NormalTask(
@@ -637,7 +870,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_partition_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
+            funcId: 25, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -662,7 +895,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 19, port: port_);
+            funcId: 26, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_partition_services,
@@ -686,7 +919,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 20, port: port_);
+            funcId: 27, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_raw_read_services,
@@ -714,7 +947,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(mode, serializer);
         sse_encode_opt_String(prefix, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 21, port: port_);
+            funcId: 28, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -733,6 +966,87 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiSequenceSequenceAdditionServicesAddSequence(
+      {required SequenceAdditionServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_sequence_addition_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 29, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceSequenceAdditionServicesAddSequenceConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSequenceSequenceAdditionServicesAddSequenceConstMeta =>
+          const TaskConstMeta(
+            debugName: "sequence_addition_services_add_sequence",
+            argNames: ["that"],
+          );
+
+  @override
+  Future<void> crateApiSequenceSequenceAdditionServicesAddSequenceToSingleFile(
+      {required SequenceAdditionServices that, required bool includeFilename}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_sequence_addition_services(that, serializer);
+        sse_encode_bool(includeFilename, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 30, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiSequenceSequenceAdditionServicesAddSequenceToSingleFileConstMeta,
+      argValues: [that, includeFilename],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSequenceSequenceAdditionServicesAddSequenceToSingleFileConstMeta =>
+          const TaskConstMeta(
+            debugName: "sequence_addition_services_add_sequence_to_single_file",
+            argNames: ["that", "includeFilename"],
+          );
+
+  @override
+  Future<SequenceAdditionServices>
+      crateApiSequenceSequenceAdditionServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 31, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_sequence_addition_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceSequenceAdditionServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceSequenceAdditionServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "sequence_addition_services_new",
+        argNames: [],
+      );
+
+  @override
   Future<void> crateApiSequenceSequenceConversionServicesConvertSequence(
       {required SequenceConversionServices that}) {
     return handler.executeNormal(NormalTask(
@@ -740,7 +1054,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_sequence_conversion_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 22, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -767,7 +1081,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 23, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_sequence_conversion_services,
@@ -793,7 +1107,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_sequence_extraction(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 24, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -817,7 +1131,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 25, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_sequence_extraction,
@@ -836,12 +1150,65 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiSequenceSequenceFilteringServicesFilterSequence(
+      {required SequenceFilteringServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_sequence_filtering_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 36, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiSequenceSequenceFilteringServicesFilterSequenceConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSequenceSequenceFilteringServicesFilterSequenceConstMeta =>
+          const TaskConstMeta(
+            debugName: "sequence_filtering_services_filter_sequence",
+            argNames: ["that"],
+          );
+
+  @override
+  Future<SequenceFilteringServices>
+      crateApiSequenceSequenceFilteringServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 37, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_sequence_filtering_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceSequenceFilteringServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceSequenceFilteringServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "sequence_filtering_services_new",
+        argNames: [],
+      );
+
+  @override
   Future<SequenceRemoval> crateApiSequenceSequenceRemovalNew() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 26, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_sequence_removal,
@@ -867,7 +1234,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_sequence_removal(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 27, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -891,7 +1258,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 28, port: port_);
+            funcId: 40, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_sequence_renaming,
@@ -917,7 +1284,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_sequence_renaming(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 41, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -936,12 +1303,64 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<SequenceTransposeServices>
+      crateApiSequenceSequenceTransposeServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 42, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_sequence_transpose_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceSequenceTransposeServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceSequenceTransposeServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "sequence_transpose_services_new",
+        argNames: [],
+      );
+
+  @override
+  Future<void> crateApiSequenceSequenceTransposeServicesTranspose(
+      {required SequenceTransposeServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_sequence_transpose_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 43, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceSequenceTransposeServicesTransposeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSequenceSequenceTransposeServicesTransposeConstMeta =>
+          const TaskConstMeta(
+            debugName: "sequence_transpose_services_transpose",
+            argNames: ["that"],
+          );
+
+  @override
   Future<String> crateApiSequenceShowDnaUppercase() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 44, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -965,7 +1384,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 45, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_split_alignment_services,
@@ -991,7 +1410,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_split_alignment_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 46, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1016,7 +1435,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 47, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_translation_services,
@@ -1042,7 +1461,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_translation_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 48, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -1061,6 +1480,84 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             argNames: ["that"],
           );
 
+  @override
+  Future<void> crateApiSequenceTranslationServicesTranslateSequenceAutoFrame(
+      {required TranslationServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_translation_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 49, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta:
+          kCrateApiSequenceTranslationServicesTranslateSequenceAutoFrameConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSequenceTranslationServicesTranslateSequenceAutoFrameConstMeta =>
+          const TaskConstMeta(
+            debugName: "translation_services_translate_sequence_auto_frame",
+            argNames: ["that"],
+          );
+
+  @override
+  Future<UnalignmentServices> crateApiSequenceUnalignmentServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 50, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unalignment_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceUnalignmentServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceUnalignmentServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "unalignment_services_new",
+        argNames: [],
+      );
+
+  @override
+  Future<void> crateApiSequenceUnalignmentServicesUnalign(
+      {required UnalignmentServices that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_unalignment_services(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 51, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSequenceUnalignmentServicesUnalignConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSequenceUnalignmentServicesUnalignConstMeta =>
+      const TaskConstMeta(
+        debugName: "unalignment_services_unalign",
+        argNames: ["that"],
+      );
+
   @protected
   Map<String, String> dco_decode_Map_String_String_None(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -1075,6 +1572,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AlignmentDistanceServices dco_decode_alignment_distance_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return AlignmentDistanceServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
+      model: dco_decode_String(arr[4]),
+      triangle: dco_decode_String(arr[5]),
+      diagonal: dco_decode_String(arr[6]),
+      prefix: dco_decode_opt_String(arr[7]),
+    );
+  }
+
+  @protected
   AlignmentServices dco_decode_alignment_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1085,6 +1601,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       inputFmt: dco_decode_String(arr[1]),
       datatype: dco_decode_String(arr[2]),
       outputDir: dco_decode_String(arr[3]),
+    );
+  }
+
+  @protected
+  AlignmentTrimmingServices dco_decode_alignment_trimming_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return AlignmentTrimmingServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
+      outputFmt: dco_decode_String(arr[4]),
+      params: dco_decode_trimming_params(arr[5]),
     );
   }
 
@@ -1107,9 +1640,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AlignmentDistanceServices dco_decode_box_autoadd_alignment_distance_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_alignment_distance_services(raw);
+  }
+
+  @protected
   AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_alignment_services(raw);
+  }
+
+  @protected
+  AlignmentTrimmingServices dco_decode_box_autoadd_alignment_trimming_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_alignment_trimming_services(raw);
   }
 
   @protected
@@ -1144,6 +1691,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MafConversionServices dco_decode_box_autoadd_maf_conversion_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_maf_conversion_services(raw);
+  }
+
+  @protected
   PartitionServices dco_decode_box_autoadd_partition_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_partition_services(raw);
@@ -1153,6 +1707,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_raw_read_services(raw);
+  }
+
+  @protected
+  SequenceAdditionServices dco_decode_box_autoadd_sequence_addition_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_sequence_addition_services(raw);
   }
 
   @protected
@@ -1169,6 +1730,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceFilteringServices dco_decode_box_autoadd_sequence_filtering_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_sequence_filtering_services(raw);
+  }
+
+  @protected
   SequenceRemoval dco_decode_box_autoadd_sequence_removal(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_sequence_removal(raw);
@@ -1178,6 +1746,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SequenceRenaming dco_decode_box_autoadd_sequence_renaming(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_sequence_renaming(raw);
+  }
+
+  @protected
+  SequenceTransposeServices dco_decode_box_autoadd_sequence_transpose_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_sequence_transpose_services(raw);
   }
 
   @protected
@@ -1191,6 +1766,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TranslationServices dco_decode_box_autoadd_translation_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_translation_services(raw);
+  }
+
+  @protected
+  UnalignmentServices dco_decode_box_autoadd_unalignment_services(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_unalignment_services(raw);
   }
 
   @protected
@@ -1243,18 +1824,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_usize(raw[1]),
         );
       case 2:
-        return FilteringParams_ParsInf(
+        return FilteringParams_MaxAlnLen(
           dco_decode_usize(raw[1]),
         );
       case 3:
+        return FilteringParams_ParsInf(
+          dco_decode_usize(raw[1]),
+        );
+      case 4:
+        return FilteringParams_MaxParsInf(
+          dco_decode_usize(raw[1]),
+        );
+      case 5:
         return FilteringParams_PercInf(
           dco_decode_f_64(raw[1]),
         );
-      case 4:
+      case 6:
+        return FilteringParams_MissingData(
+          dco_decode_f_64(raw[1]),
+        );
+      case 7:
         return FilteringParams_TaxonAll(
           dco_decode_list_String(raw[1]),
         );
-      case 5:
+      case 8:
         return const FilteringParams_None();
       default:
         throw Exception("unreachable");
@@ -1321,6 +1914,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MafConversionServices dco_decode_maf_conversion_services(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return MafConversionServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      bedFile: dco_decode_String(arr[1]),
+      outputDir: dco_decode_String(arr[2]),
+      outputFmt: dco_decode_String(arr[3]),
+    );
+  }
+
+  @protected
   String? dco_decode_opt_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_String(raw);
@@ -1371,6 +1978,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     return (
       dco_decode_String(arr[0]),
       dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  SequenceAdditionServices dco_decode_sequence_addition_services(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return SequenceAdditionServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      destinationFiles: dco_decode_list_String(arr[3]),
+      destinationFmt: dco_decode_String(arr[4]),
+      outputDir: dco_decode_String(arr[5]),
+      outputFmt: dco_decode_String(arr[6]),
+      isAddedOnly: dco_decode_bool(arr[7]),
     );
   }
 
@@ -1428,6 +2053,46 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw Exception("unreachable");
     }
+  }
+
+  @protected
+  SequenceFilteringParams dco_decode_sequence_filtering_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SequenceFilteringParams_MinLength(
+          dco_decode_usize(raw[1]),
+        );
+      case 1:
+        return SequenceFilteringParams_MaxLength(
+          dco_decode_usize(raw[1]),
+        );
+      case 2:
+        return SequenceFilteringParams_MaxGap(
+          dco_decode_f_64(raw[1]),
+        );
+      case 3:
+        return const SequenceFilteringParams_None();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  SequenceFilteringServices dco_decode_sequence_filtering_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return SequenceFilteringServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
+      outputFmt: dco_decode_String(arr[4]),
+      params: dco_decode_sequence_filtering_params(arr[5]),
+    );
   }
 
   @protected
@@ -1499,6 +2164,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceTransposeServices dco_decode_sequence_transpose_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return SequenceTransposeServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
+      outputFmt: dco_decode_String(arr[4]),
+    );
+  }
+
+  @protected
   SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -1535,9 +2216,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TrimmingParams dco_decode_trimming_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return TrimmingParams_MissingData(
+          dco_decode_f_64(raw[1]),
+        );
+      case 1:
+        return TrimmingParams_ParsInf(
+          dco_decode_usize(raw[1]),
+        );
+      case 2:
+        return const TrimmingParams_None();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  UnalignmentServices dco_decode_unalignment_services(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return UnalignmentServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      datatype: dco_decode_String(arr[2]),
+      outputDir: dco_decode_String(arr[3]),
+      outputFmt: dco_decode_String(arr[4]),
+    );
   }
 
   @protected
@@ -1568,6 +2283,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AlignmentDistanceServices sse_decode_alignment_distance_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_model = sse_decode_String(deserializer);
+    var var_triangle = sse_decode_String(deserializer);
+    var var_diagonal = sse_decode_String(deserializer);
+    var var_prefix = sse_decode_opt_String(deserializer);
+    return AlignmentDistanceServices(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir,
+        model: var_model,
+        triangle: var_triangle,
+        diagonal: var_diagonal,
+        prefix: var_prefix);
+  }
+
+  @protected
   AlignmentServices sse_decode_alignment_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1580,6 +2318,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         inputFmt: var_inputFmt,
         datatype: var_datatype,
         outputDir: var_outputDir);
+  }
+
+  @protected
+  AlignmentTrimmingServices sse_decode_alignment_trimming_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    var var_params = sse_decode_trimming_params(deserializer);
+    return AlignmentTrimmingServices(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt,
+        params: var_params);
   }
 
   @protected
@@ -1598,10 +2355,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AlignmentDistanceServices sse_decode_box_autoadd_alignment_distance_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_alignment_distance_services(deserializer));
+  }
+
+  @protected
   AlignmentServices sse_decode_box_autoadd_alignment_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_alignment_services(deserializer));
+  }
+
+  @protected
+  AlignmentTrimmingServices sse_decode_box_autoadd_alignment_trimming_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_alignment_trimming_services(deserializer));
   }
 
   @protected
@@ -1640,6 +2411,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MafConversionServices sse_decode_box_autoadd_maf_conversion_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_maf_conversion_services(deserializer));
+  }
+
+  @protected
   PartitionServices sse_decode_box_autoadd_partition_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1651,6 +2429,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_raw_read_services(deserializer));
+  }
+
+  @protected
+  SequenceAdditionServices sse_decode_box_autoadd_sequence_addition_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_sequence_addition_services(deserializer));
   }
 
   @protected
@@ -1669,6 +2454,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceFilteringServices sse_decode_box_autoadd_sequence_filtering_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_sequence_filtering_services(deserializer));
+  }
+
+  @protected
   SequenceRemoval sse_decode_box_autoadd_sequence_removal(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1683,6 +2475,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceTransposeServices sse_decode_box_autoadd_sequence_transpose_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_sequence_transpose_services(deserializer));
+  }
+
+  @protected
   SplitAlignmentServices sse_decode_box_autoadd_split_alignment_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1694,6 +2493,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_translation_services(deserializer));
+  }
+
+  @protected
+  UnalignmentServices sse_decode_box_autoadd_unalignment_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_unalignment_services(deserializer));
   }
 
   @protected
@@ -1743,14 +2549,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return FilteringParams_AlnLen(var_field0);
       case 2:
         var var_field0 = sse_decode_usize(deserializer);
-        return FilteringParams_ParsInf(var_field0);
+        return FilteringParams_MaxAlnLen(var_field0);
       case 3:
+        var var_field0 = sse_decode_usize(deserializer);
+        return FilteringParams_ParsInf(var_field0);
+      case 4:
+        var var_field0 = sse_decode_usize(deserializer);
+        return FilteringParams_MaxParsInf(var_field0);
+      case 5:
         var var_field0 = sse_decode_f_64(deserializer);
         return FilteringParams_PercInf(var_field0);
-      case 4:
+      case 6:
+        var var_field0 = sse_decode_f_64(deserializer);
+        return FilteringParams_MissingData(var_field0);
+      case 7:
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
-      case 5:
+      case 8:
         return const FilteringParams_None();
       default:
         throw UnimplementedError('');
@@ -1840,6 +2655,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MafConversionServices sse_decode_maf_conversion_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_bedFile = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    return MafConversionServices(
+        inputFiles: var_inputFiles,
+        bedFile: var_bedFile,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt);
+  }
+
+  @protected
   String? sse_decode_opt_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -1897,6 +2727,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_field0 = sse_decode_String(deserializer);
     var var_field1 = sse_decode_String(deserializer);
     return (var_field0, var_field1);
+  }
+
+  @protected
+  SequenceAdditionServices sse_decode_sequence_addition_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_destinationFiles = sse_decode_list_String(deserializer);
+    var var_destinationFmt = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    var var_isAddedOnly = sse_decode_bool(deserializer);
+    return SequenceAdditionServices(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        destinationFiles: var_destinationFiles,
+        destinationFmt: var_destinationFmt,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt,
+        isAddedOnly: var_isAddedOnly);
   }
 
   @protected
@@ -1958,6 +2811,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       default:
         throw UnimplementedError('');
     }
+  }
+
+  @protected
+  SequenceFilteringParams sse_decode_sequence_filtering_params(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_usize(deserializer);
+        return SequenceFilteringParams_MinLength(var_field0);
+      case 1:
+        var var_field0 = sse_decode_usize(deserializer);
+        return SequenceFilteringParams_MaxLength(var_field0);
+      case 2:
+        var var_field0 = sse_decode_f_64(deserializer);
+        return SequenceFilteringParams_MaxGap(var_field0);
+      case 3:
+        return const SequenceFilteringParams_None();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  SequenceFilteringServices sse_decode_sequence_filtering_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    var var_params = sse_decode_sequence_filtering_params(deserializer);
+    return SequenceFilteringServices(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt,
+        params: var_params);
   }
 
   @protected
@@ -2033,6 +2928,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SequenceTransposeServices sse_decode_sequence_transpose_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    return SequenceTransposeServices(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt);
+  }
+
+  @protected
   SplitAlignmentServices sse_decode_split_alignment_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2079,9 +2991,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TrimmingParams sse_decode_trimming_params(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_field0 = sse_decode_f_64(deserializer);
+        return TrimmingParams_MissingData(var_field0);
+      case 1:
+        var var_field0 = sse_decode_usize(deserializer);
+        return TrimmingParams_ParsInf(var_field0);
+      case 2:
+        return const TrimmingParams_None();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
+  }
+
+  @protected
+  UnalignmentServices sse_decode_unalignment_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_datatype = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    return UnalignmentServices(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        datatype: var_datatype,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt);
   }
 
   @protected
@@ -2110,6 +3058,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_alignment_distance_services(
+      AlignmentDistanceServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.model, serializer);
+    sse_encode_String(self.triangle, serializer);
+    sse_encode_String(self.diagonal, serializer);
+    sse_encode_opt_String(self.prefix, serializer);
+  }
+
+  @protected
   void sse_encode_alignment_services(
       AlignmentServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2117,6 +3079,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.inputFmt, serializer);
     sse_encode_String(self.datatype, serializer);
     sse_encode_String(self.outputDir, serializer);
+  }
+
+  @protected
+  void sse_encode_alignment_trimming_services(
+      AlignmentTrimmingServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+    sse_encode_trimming_params(self.params, serializer);
   }
 
   @protected
@@ -2134,10 +3108,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_alignment_distance_services(
+      AlignmentDistanceServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_alignment_distance_services(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_alignment_services(
       AlignmentServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_alignment_services(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_alignment_trimming_services(
+      AlignmentTrimmingServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_alignment_trimming_services(self, serializer);
   }
 
   @protected
@@ -2176,6 +3164,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_maf_conversion_services(
+      MafConversionServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_maf_conversion_services(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_partition_services(
       PartitionServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2187,6 +3182,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       RawReadServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_raw_read_services(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_sequence_addition_services(
+      SequenceAdditionServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_sequence_addition_services(self, serializer);
   }
 
   @protected
@@ -2204,6 +3206,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_sequence_filtering_services(
+      SequenceFilteringServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_sequence_filtering_services(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_sequence_removal(
       SequenceRemoval self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2218,6 +3227,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_sequence_transpose_services(
+      SequenceTransposeServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_sequence_transpose_services(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_split_alignment_services(
       SplitAlignmentServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2229,6 +3245,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       TranslationServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_translation_services(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_unalignment_services(
+      UnalignmentServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_unalignment_services(self, serializer);
   }
 
   @protected
@@ -2271,17 +3294,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case FilteringParams_AlnLen(field0: final field0):
         sse_encode_i_32(1, serializer);
         sse_encode_usize(field0, serializer);
-      case FilteringParams_ParsInf(field0: final field0):
+      case FilteringParams_MaxAlnLen(field0: final field0):
         sse_encode_i_32(2, serializer);
         sse_encode_usize(field0, serializer);
-      case FilteringParams_PercInf(field0: final field0):
+      case FilteringParams_ParsInf(field0: final field0):
         sse_encode_i_32(3, serializer);
+        sse_encode_usize(field0, serializer);
+      case FilteringParams_MaxParsInf(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_usize(field0, serializer);
+      case FilteringParams_PercInf(field0: final field0):
+        sse_encode_i_32(5, serializer);
+        sse_encode_f_64(field0, serializer);
+      case FilteringParams_MissingData(field0: final field0):
+        sse_encode_i_32(6, serializer);
         sse_encode_f_64(field0, serializer);
       case FilteringParams_TaxonAll(field0: final field0):
-        sse_encode_i_32(4, serializer);
+        sse_encode_i_32(7, serializer);
         sse_encode_list_String(field0, serializer);
       case FilteringParams_None():
-        sse_encode_i_32(5, serializer);
+        sse_encode_i_32(8, serializer);
     }
   }
 
@@ -2346,6 +3378,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_maf_conversion_services(
+      MafConversionServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.bedFile, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+  }
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -2396,6 +3438,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_sequence_addition_services(
+      SequenceAdditionServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_list_String(self.destinationFiles, serializer);
+    sse_encode_String(self.destinationFmt, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+    sse_encode_bool(self.isAddedOnly, serializer);
+  }
+
+  @protected
   void sse_encode_sequence_conversion_services(
       SequenceConversionServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2436,6 +3492,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case SequenceExtractionParams_None():
         sse_encode_i_32(3, serializer);
     }
+  }
+
+  @protected
+  void sse_encode_sequence_filtering_params(
+      SequenceFilteringParams self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SequenceFilteringParams_MinLength(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_usize(field0, serializer);
+      case SequenceFilteringParams_MaxLength(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_usize(field0, serializer);
+      case SequenceFilteringParams_MaxGap(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_f_64(field0, serializer);
+      case SequenceFilteringParams_None():
+        sse_encode_i_32(3, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_sequence_filtering_services(
+      SequenceFilteringServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+    sse_encode_sequence_filtering_params(self.params, serializer);
   }
 
   @protected
@@ -2503,6 +3590,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_sequence_transpose_services(
+      SequenceTransposeServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+  }
+
+  @protected
   void sse_encode_split_alignment_services(
       SplitAlignmentServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2531,9 +3629,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_trimming_params(
+      TrimmingParams self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case TrimmingParams_MissingData(field0: final field0):
+        sse_encode_i_32(0, serializer);
+        sse_encode_f_64(field0, serializer);
+      case TrimmingParams_ParsInf(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_usize(field0, serializer);
+      case TrimmingParams_None():
+        sse_encode_i_32(2, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
+  }
+
+  @protected
+  void sse_encode_unalignment_services(
+      UnalignmentServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.datatype, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
   }
 
   @protected
