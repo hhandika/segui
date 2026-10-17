@@ -148,6 +148,10 @@ end;
 
 The alignment conversion task converts the alignment file format to another format.
 
+### Alignment Distance
+
+The alignment distance task computes pairwise genetic distances between samples for each alignment. It supports the uncorrected p-distance, Jukes-Cantor (JC69), Kimura 2-parameter (K2P), Tamura-Nei (TN93), and Poisson (amino acid) models. Gaps, missing data, and ambiguous characters are skipped for each pair of samples (pairwise deletion). The output is a distance matrix for each locus and a summary table of the pairwise distances for each locus. See [the CLI usage](/docs/cli-usage/align-distance/) for details.
+
 ### Alignment Filtering
 
 ### Alignment Partition Conversion
@@ -177,3 +181,7 @@ The alignment conversion task converts the alignment file format to another form
 ### Sequence Removal
 
 ### Sequence Translation
+
+### Sequence Transposition
+
+The sequence transposition task turns locus alignments into per-sample sequence files. Each sample gets its own file with one sequence for each locus where the sample is present. Sequences are named after the locus, and gaps and missing data are removed. See [the CLI usage](/docs/cli-usage/sequence-transpose/) for details.

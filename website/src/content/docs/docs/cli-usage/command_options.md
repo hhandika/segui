@@ -20,12 +20,13 @@ In summary, we keep SEGUL CLI commands, subcommands, and options consistent:
 4. Options with equal sign (`=`), such as `--re=`, require the input values to be in a single or double quotation. For example, `--re="^Genus"`.
 5. Some options are available in both long and short versions, while the rest are only available in long versions. The SEGUL CLI command options will never be available only in a short version.
 
-SEGUL CLI command option as of v0.21.3:
+SEGUL CLI command option as of v0.24.0:
 
 ```bash
 Commands:
   read       Sequence read analyses
   contig     Contiguous sequence analyses
+  maf        Multi alignment format (MAF) analyses
   align      Alignment analyses
   partition  Alignment partition conversion
   sequence   Sequence analyses
@@ -36,12 +37,15 @@ Example subcommands for the alignment category:
 
 ```bash
 Commands:
-  concat   Concatenate alignments
-  convert  Convert sequence formats
-  filter   Filter alignments
-  split    Split alignment by partitions
-  summary  Compute Alignment Statistics
-  help     Print this message or the help of the given subcommand(s)
+  concat    Concatenate alignments
+  convert   Convert sequence formats
+  distance  Compute pairwise genetic distances
+  filter    Filter alignments
+  split     Split alignment by partitions
+  summary   Compute Alignment Statistics
+  trim      Trim alignment
+  unalign   Convert alignment to unaligned sequences
+  help      Print this message or the help of the given subcommand(s)
 ```
 
 Example options and flags available for the alignment concatenation feature:
