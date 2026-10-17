@@ -43,6 +43,11 @@ enum WindowSizeClass {
   bool isAtLeast(WindowSizeClass other) => index >= other.index;
 }
 
+/// Width of the open navigation drawer beside the page. Material's 360 dp
+/// default crowds the tool page and file panel, so it uses a width within
+/// the 220 to 360 dp range of an expanded navigation rail.
+const double navigationDrawerWidth = 240;
+
 /// Widest content area for pages that lay out cards in a grid, so wide
 /// monitors fill with more columns instead of empty margins.
 const double maxGridContentWidth = 2400;

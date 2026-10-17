@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/alignment/entry_page.dart';
+import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
@@ -22,6 +23,7 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/styles/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,6 +78,22 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Open navigation drawer keeps to its narrow width',
+      (tester) async {
+    await pumpPage(
+      tester,
+      const Size(1600, 1000),
+      page: const Row(
+        children: [ExpandedScreenDrawer(), Expanded(child: AlignmentPage())],
+      ),
+    );
+
+    expect(
+      tester.getSize(find.byType(NavigationDrawer)).width,
+      navigationDrawerWidth,
+    );
   });
 
   testWidgets('Medium tool page swaps the tool list for a switcher',

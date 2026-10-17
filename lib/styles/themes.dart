@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:segui/styles/decoration.dart';
 
 /// SEGUI's "leaf and pollen" palette, taken from the app icon: the field
 /// green of the icon background, an olive between that green and the
@@ -23,6 +24,7 @@ class SeguiTheme {
       colorScheme: lightColorScheme,
       useMaterial3: true,
       visualDensity: VisualDensity.adaptivePlatformDensity,
+      drawerTheme: _drawerTheme,
     );
   }
 
@@ -31,8 +33,13 @@ class SeguiTheme {
       colorScheme: darkColorScheme,
       useMaterial3: true,
       visualDensity: VisualDensity.adaptivePlatformDensity,
+      drawerTheme: _drawerTheme,
     );
   }
+
+  static const DrawerThemeData _drawerTheme = DrawerThemeData(
+    width: navigationDrawerWidth,
+  );
 
   static ColorScheme _colorScheme(Brightness brightness) {
     return SeedColorScheme.fromSeeds(
