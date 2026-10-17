@@ -18,6 +18,7 @@ export default defineConfig({
     "/docs/category/python": "/docs/api-usage/python/intro/",
     "/docs/category/advanced-guides": "/docs/advance-guides/architecture/",
     "/docs/category/tutorials": "/docs/tutorials/tutorial-1/",
+    "/docs/cli-usage/genomic-convert": "/docs/cli-usage/maf-convert/",
   },
   integrations: [
     starlight({

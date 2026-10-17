@@ -38,7 +38,7 @@ segul-core = { version = "0.24", default-features = false, features = ["align", 
 | `sequence` | Sequence extract, filter, rename, remove, translate, transpose, ID |
 | `read`     | Raw read (FASTQ) summary statistics                               |
 | `contig`   | Contiguous sequence summary statistics                            |
-| `maf`      | Multiple alignment format (MAF) conversion                        |
+| `maf`      | Multiple alignment format (MAF) conversion and summary            |
 
 The base modules, such as the helpers, the FASTA, NEXUS, and PHYLIP parsers, and the sequence and partition writers, are always available.
 
@@ -61,6 +61,28 @@ let mut writer = SeqWriter::new(output, &matrix, &header);
 writer
     .write_sequence(&OutputFmt::Phylip)
     .expect("Failed to write the alignment");
+```
+
+Convert MAF blocks to one FASTA alignment per BED locus, keeping blocks with at least 50 reference bases:
+
+```rust
+use std::path::{Path, PathBuf};
+
+use segul_core::core::maf::{convert::MafConverter, BlockFilter};
+use segul_core::helper::types::OutputFmt;
+
+let files = vec![PathBuf::from("genome.maf.gz")];
+let bed = Path::new("loci.bed");
+let filter = BlockFilter {
+    min_ref_len: Some(50),
+    ..Default::default()
+};
+let report = MafConverter::new(&files, Path::new("loci"), &OutputFmt::Fasta)
+    .with_bed(bed)
+    .with_filter(filter)
+    .convert()
+    .expect("Failed to convert MAF files");
+println!("Wrote {} loci", report.loci_written);
 ```
 
 ### Migrating from SEGUL v0.23 and earlier

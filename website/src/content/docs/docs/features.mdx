@@ -30,7 +30,7 @@ SEGUL groups its features by the kind of input they take. In the GUI, each group
 
 <TaskGroups />
 
-The CLI splits the genomic group into two commands: `read` for FASTQ files and `contig` for FASTA contigs. The GUI keeps both in one group.
+The CLI splits the genomic group into three commands: `read` for FASTQ files, `contig` for FASTA contigs, and `maf` for Multiple Alignment Format (MAF) files. The GUI keeps all three in one group.
 
 ### Alignments and standard sequence files
 
@@ -140,6 +140,14 @@ Both tasks compute summary statistics for genomic files: raw reads in FASTQ form
 <Guides feature="genomic-summary" />
 
 <GenomicSummary />
+
+### MAF Conversion and Summary
+
+Whole-genome aligners, such as Progressive Cactus and LASTZ with MULTIZ, write Multiple Alignment Format (MAF) files: blocks that align a stretch of a reference genome to other genomes. MAF conversion turns the blocks into alignments that phylogenetic software can read. With a BED file of loci, each block is clipped to every locus it overlaps, and blocks of the same locus are joined across files, with species missing from a block filled with gaps. Without a BED file, each block, or each reference chromosome, becomes its own alignment. MAF summary reports the number of blocks, the alignment length, and how much of the reference each species covers.
+
+<Guides feature="maf-convert" />
+
+<Guides feature="maf-summary" />
 
 ## Sequence Task Groups
 

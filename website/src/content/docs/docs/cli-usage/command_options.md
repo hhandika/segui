@@ -48,6 +48,15 @@ Commands:
   help      Print this message or the help of the given subcommand(s)
 ```
 
+Subcommands for the MAF category:
+
+```bash
+Commands:
+  convert  Convert MAF blocks to per-locus alignments
+  summary  Summarize MAF blocks, species, and reference coverage
+  help     Print this message or the help of the given subcommand(s)
+```
+
 Example options and flags available for the alignment concatenation feature:
 
 ```bash
