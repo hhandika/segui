@@ -36,6 +36,14 @@ class MafConversionPage extends ConsumerStatefulWidget {
 class MafConversionPageState extends ConsumerState<MafConversionPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
+  final TextEditingController _refSpecies = TextEditingController();
+  final TextEditingController _species = TextEditingController();
+  final TextEditingController _minBlockLength = TextEditingController();
+  final TextEditingController _minSpecies = TextEditingController();
+  final TextEditingController _minScore = TextEditingController();
+  String _groupBy = mafGroupingOptions.keys.first;
+  bool _isClipped = true;
+  bool _isStrandAware = false;
   bool _isInterleave = false;
 
   @override
@@ -44,12 +52,19 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
   @override
   void dispose() {
     _ctr.dispose();
+    _refSpecies.dispose();
+    _species.dispose();
+    _minBlockLength.dispose();
+    _minSpecies.dispose();
+    _minScore.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final bool hasBed = (ref.watch(fileInputProvider).value ?? [])
+        .any((e) => e.type == SegulType.bed);
     return ToolFormLayout(
       form: [
         const CardTitle(step: 1, title: 'Input'),
@@ -63,7 +78,7 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
             task: task,
           ),
         ]),
-        const CardTitle(step: 2, title: 'Locus names'),
+        const CardTitle(step: 2, title: 'Loci (optional)'),
         FormCard(children: [
           const SharedFilePicker(
             label: 'Select BED file',
@@ -74,12 +89,84 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
             allowDirectorySelection: false,
           ),
           Text(
-            'Loci are named by matching the reference start position to '
-            'the BED file. Unmatched blocks go to a missing-refs folder.',
+            hasBed
+                ? 'Each block is matched to every locus it overlaps on the '
+                    'same chromosome, and blocks of a locus are joined.'
+                : 'Without a BED file, each block or each reference '
+                    'chromosome becomes its own alignment.',
             style: Theme.of(context).textTheme.labelSmall,
           ),
+          if (hasBed) ...[
+            SwitchForm(
+              label: 'Clip blocks to each locus',
+              value: _isClipped,
+              onPressed: (value) {
+                setState(() {
+                  _isClipped = value;
+                });
+              },
+            ),
+            SwitchForm(
+              label: 'Reverse complement minus-strand loci',
+              value: _isStrandAware,
+              onPressed: (value) {
+                setState(() {
+                  _isStrandAware = value;
+                });
+              },
+            ),
+          ] else
+            SharedMapDropdownField(
+              value: _groupBy,
+              label: 'Group blocks',
+              items: mafGroupingOptions,
+              onChanged: (String? value) {
+                setState(() {
+                  if (value != null) {
+                    _groupBy = value;
+                  }
+                });
+              },
+            ),
         ]),
-        const CardTitle(step: 3, title: 'Output'),
+        const CardTitle(step: 3, title: 'Blocks (optional)'),
+        FormCard(children: [
+          SharedTextField(
+            controller: _refSpecies,
+            label: 'Reference species',
+            hint: 'Default: first species in the first block',
+          ),
+          SharedTextField(
+            controller: _species,
+            label: 'Species to write',
+            hint: 'Comma-separated, e.g., hg38, panTro6',
+          ),
+          SharedTextField(
+            controller: _minBlockLength,
+            label: 'Minimum reference bases',
+            hint: 'E.g., 50',
+            keyboardType: TextInputType.number,
+            onChanged: (_) => setState(() {}),
+          ),
+          SharedTextField(
+            controller: _minSpecies,
+            label: 'Minimum species',
+            hint: 'Counting the reference, e.g., 3',
+            keyboardType: TextInputType.number,
+            onChanged: (_) => setState(() {}),
+          ),
+          SharedTextField(
+            controller: _minScore,
+            label: 'Minimum score',
+            hint: 'E.g., 0',
+            keyboardType: const TextInputType.numberWithOptions(
+              signed: true,
+              decimal: true,
+            ),
+            onChanged: (_) => setState(() {}),
+          ),
+        ]),
+        const CardTitle(step: 4, title: 'Output'),
         FormCard(children: [
           SharedOutputDirField(
             ctr: _ctr.outputDir,
@@ -154,8 +241,11 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
     final bedCount = value.where((e) => e.type == SegulType.bed).length;
     return _ctr.isValid &&
         hasMaf &&
-        bedCount == 1 &&
-        _ctr.outputFormatController != null;
+        bedCount <= 1 &&
+        _ctr.outputFormatController != null &&
+        isValidOptionalCount(_minBlockLength.text) &&
+        isValidOptionalCount(_minSpecies.text) &&
+        isValidOptionalNumber(_minScore.text);
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -186,6 +276,14 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
         outputDir: outputDir,
         outputFormat: _ctr.outputFormatController!,
         isInterleave: _isInterleave,
+        groupBy: _groupBy,
+        isClipped: _isClipped,
+        isStrandAware: _isStrandAware,
+        refSpecies: _refSpecies.text,
+        minBlockLength: _minBlockLength.text,
+        minSpecies: _minSpecies.text,
+        minScore: _minScore.text,
+        species: _species.text,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
@@ -196,6 +294,18 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
   void _setNewRun() {
     setState(() {
       _ctr.reset();
+      for (final field in [
+        _refSpecies,
+        _species,
+        _minBlockLength,
+        _minSpecies,
+        _minScore,
+      ]) {
+        field.clear();
+      }
+      _groupBy = mafGroupingOptions.keys.first;
+      _isClipped = true;
+      _isStrandAware = false;
       _ctr.isSuccess = false;
       ref.invalidate(fileInputProvider);
       ref.invalidate(fileOutputProvider);

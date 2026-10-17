@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:segui/services/io/directory.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/alignment.dart';
+import 'package:segui/services/tasks/genomics.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
 
@@ -70,6 +73,30 @@ void main() {
         SegulType.destinationSequence);
     expect(matchTypeByXTypeGroup(mafTypeGroup), SegulType.multipleAlignment);
     expect(matchTypeByXTypeGroup(bedTypeGroup), SegulType.bed);
+  });
+
+  test('MAF and BED files match by their full extension', () {
+    expect(isMafPath('genome.maf'), isTrue);
+    expect(isMafPath('genome.MAF.gz'), isTrue);
+    expect(isMafPath('reads.fq.gz'), isFalse);
+    expect(isMafPath('genome.maf.bak'), isFalse);
+    expect(isBedPath('loci.bed.gz'), isTrue);
+    expect(isBedPath('genome.maf'), isFalse);
+    expect(matchesTypeGroup(File('a.maf.gz'), mafTypeGroup), isTrue);
+    expect(matchesTypeGroup(File('a.fq.gz'), mafTypeGroup), isFalse);
+    expect(matchesTypeGroup(File('a.fq.gz'), genomicRawReadTypeGroup), isTrue);
+  });
+
+  test('MAF options parse optional fields', () {
+    expect(parseSpeciesList(' hg38, panTro6 ,,'), ['hg38', 'panTro6']);
+    expect(parseSpeciesList(''), isEmpty);
+    expect(isValidOptionalCount(''), isTrue);
+    expect(isValidOptionalCount('50'), isTrue);
+    expect(isValidOptionalCount('-1'), isFalse);
+    expect(isValidOptionalCount('1.5'), isFalse);
+    expect(isValidOptionalNumber('-12.5'), isTrue);
+    expect(isValidOptionalNumber('1e3'), isTrue);
+    expect(isValidOptionalNumber('abc'), isFalse);
   });
 
   test('Every task has a default output directory', () {

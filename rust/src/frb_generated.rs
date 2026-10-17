@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -387899672;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 499389584;
 
 // Section: executor
 
@@ -846,12 +846,12 @@ fn wire__crate__api__maf__maf_conversion_services_convert_impl(
             let api_that = <crate::api::maf::MafConversionServices>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Ok::<_, ()>({
-                        crate::api::maf::MafConversionServices::convert(&api_that);
-                    })?;
-                    std::result::Result::Ok(output_ok)
-                })())
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::maf::MafConversionServices::convert(&api_that)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
             }
         },
     )
@@ -884,6 +884,73 @@ fn wire__crate__api__maf__maf_conversion_services_new_impl(
                     let output_ok = Ok::<_, ()>(crate::api::maf::MafConversionServices::new())?;
                     std::result::Result::Ok(output_ok)
                 })())
+            }
+        },
+    )
+}
+fn wire__crate__api__maf__maf_summary_services_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "maf_summary_services_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Ok::<_, ()>(crate::api::maf::MafSummaryServices::new())?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__maf__maf_summary_services_summarize_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "maf_summary_services_summarize",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <crate::api::maf::MafSummaryServices>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::maf::MafSummaryServices::summarize(&api_that)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
             }
         },
     )
@@ -1824,6 +1891,14 @@ fn wire__crate__api__sequence__unalignment_services_unalign_impl(
 
 // Section: dart2rust
 
+impl SseDecode for flutter_rust_bridge::for_generated::anyhow::Error {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::anyhow::anyhow!("{}", inner);
+    }
+}
+
 impl SseDecode for std::collections::HashMap<String, String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2107,14 +2182,48 @@ impl SseDecode for crate::api::maf::MafConversionServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
-        let mut var_bedFile = <String>::sse_decode(deserializer);
+        let mut var_bedFile = <Option<String>>::sse_decode(deserializer);
         let mut var_outputDir = <String>::sse_decode(deserializer);
         let mut var_outputFmt = <String>::sse_decode(deserializer);
+        let mut var_groupBy = <String>::sse_decode(deserializer);
+        let mut var_clip = <bool>::sse_decode(deserializer);
+        let mut var_strandAware = <bool>::sse_decode(deserializer);
+        let mut var_refSpecies = <Option<String>>::sse_decode(deserializer);
+        let mut var_minBlockLen = <Option<usize>>::sse_decode(deserializer);
+        let mut var_minSpecies = <Option<usize>>::sse_decode(deserializer);
+        let mut var_minScore = <Option<f64>>::sse_decode(deserializer);
+        let mut var_species = <Vec<String>>::sse_decode(deserializer);
         return crate::api::maf::MafConversionServices {
             input_files: var_inputFiles,
             bed_file: var_bedFile,
             output_dir: var_outputDir,
             output_fmt: var_outputFmt,
+            group_by: var_groupBy,
+            clip: var_clip,
+            strand_aware: var_strandAware,
+            ref_species: var_refSpecies,
+            min_block_len: var_minBlockLen,
+            min_species: var_minSpecies,
+            min_score: var_minScore,
+            species: var_species,
+        };
+    }
+}
+
+impl SseDecode for crate::api::maf::MafSummaryServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_inputFiles = <Vec<String>>::sse_decode(deserializer);
+        let mut var_outputDir = <String>::sse_decode(deserializer);
+        let mut var_prefix = <Option<String>>::sse_decode(deserializer);
+        let mut var_refSpecies = <Option<String>>::sse_decode(deserializer);
+        let mut var_species = <Vec<String>>::sse_decode(deserializer);
+        return crate::api::maf::MafSummaryServices {
+            input_files: var_inputFiles,
+            output_dir: var_outputDir,
+            prefix: var_prefix,
+            ref_species: var_refSpecies,
+            species: var_species,
         };
     }
 }
@@ -2124,6 +2233,28 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<f64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<f64>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<usize> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<usize>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -2667,34 +2798,43 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        25 => wire__crate__api__sequence__partition_services_convert_partition_impl(
+        25 => {
+            wire__crate__api__maf__maf_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
+        }
+        26 => wire__crate__api__maf__maf_summary_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__sequence__partition_services_new_impl(
+        27 => wire__crate__api__sequence__partition_services_convert_partition_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        27 => {
+        28 => wire__crate__api__sequence__partition_services_new_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        29 => {
             wire__crate__api__reads__raw_read_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        28 => wire__crate__api__reads__raw_read_services_summarize_impl(
+        30 => wire__crate__api__reads__raw_read_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+        31 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => {
+        32 => {
             wire__crate__api__sequence__sequence_addition_services_add_sequence_to_single_file_impl(
                 port,
                 ptr,
@@ -2702,121 +2842,121 @@ fn pde_ffi_dispatcher_primary_impl(
                 data_len,
             )
         }
-        31 => wire__crate__api__sequence__sequence_addition_services_new_impl(
+        33 => wire__crate__api__sequence__sequence_addition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
+        34 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
+        35 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__sequence__sequence_extraction_extract_impl(
+        36 => wire__crate__api__sequence__sequence_extraction_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__api__sequence__sequence_extraction_new_impl(
+        37 => wire__crate__api__sequence__sequence_extraction_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
+        38 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
+        39 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        38 => {
+        40 => {
             wire__crate__api__sequence__sequence_removal_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        39 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
+        41 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__sequence__sequence_renaming_new_impl(
+        42 => wire__crate__api__sequence__sequence_renaming_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        41 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
+        43 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        42 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
+        44 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        43 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
+        45 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => {
+        46 => {
             wire__crate__api__sequence__show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len)
         }
-        45 => wire__crate__api__sequence__split_alignment_services_new_impl(
+        47 => wire__crate__api__sequence__split_alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        46 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
+        48 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        47 => wire__crate__api__sequence__translation_services_new_impl(
+        49 => wire__crate__api__sequence__translation_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
+        50 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
+        51 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__sequence__unalignment_services_new_impl(
+        52 => wire__crate__api__sequence__unalignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        51 => wire__crate__api__sequence__unalignment_services_unalign_impl(
+        53 => wire__crate__api__sequence__unalignment_services_unalign_impl(
             port,
             ptr,
             rust_vec_len,
@@ -3107,6 +3247,14 @@ impl flutter_rust_bridge::IntoDart for crate::api::maf::MafConversionServices {
             self.bed_file.into_into_dart().into_dart(),
             self.output_dir.into_into_dart().into_dart(),
             self.output_fmt.into_into_dart().into_dart(),
+            self.group_by.into_into_dart().into_dart(),
+            self.clip.into_into_dart().into_dart(),
+            self.strand_aware.into_into_dart().into_dart(),
+            self.ref_species.into_into_dart().into_dart(),
+            self.min_block_len.into_into_dart().into_dart(),
+            self.min_species.into_into_dart().into_dart(),
+            self.min_score.into_into_dart().into_dart(),
+            self.species.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -3119,6 +3267,30 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::maf::MafConversionServices>
     for crate::api::maf::MafConversionServices
 {
     fn into_into_dart(self) -> crate::api::maf::MafConversionServices {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::maf::MafSummaryServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.input_files.into_into_dart().into_dart(),
+            self.output_dir.into_into_dart().into_dart(),
+            self.prefix.into_into_dart().into_dart(),
+            self.ref_species.into_into_dart().into_dart(),
+            self.species.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::maf::MafSummaryServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::maf::MafSummaryServices>
+    for crate::api::maf::MafSummaryServices
+{
+    fn into_into_dart(self) -> crate::api::maf::MafSummaryServices {
         self
     }
 }
@@ -3562,6 +3734,13 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::UnalignmentServices
     }
 }
 
+impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(format!("{:?}", self), serializer);
+    }
+}
+
 impl SseEncode for std::collections::HashMap<String, String> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3784,9 +3963,28 @@ impl SseEncode for crate::api::maf::MafConversionServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<String>>::sse_encode(self.input_files, serializer);
-        <String>::sse_encode(self.bed_file, serializer);
+        <Option<String>>::sse_encode(self.bed_file, serializer);
         <String>::sse_encode(self.output_dir, serializer);
         <String>::sse_encode(self.output_fmt, serializer);
+        <String>::sse_encode(self.group_by, serializer);
+        <bool>::sse_encode(self.clip, serializer);
+        <bool>::sse_encode(self.strand_aware, serializer);
+        <Option<String>>::sse_encode(self.ref_species, serializer);
+        <Option<usize>>::sse_encode(self.min_block_len, serializer);
+        <Option<usize>>::sse_encode(self.min_species, serializer);
+        <Option<f64>>::sse_encode(self.min_score, serializer);
+        <Vec<String>>::sse_encode(self.species, serializer);
+    }
+}
+
+impl SseEncode for crate::api::maf::MafSummaryServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<String>>::sse_encode(self.input_files, serializer);
+        <String>::sse_encode(self.output_dir, serializer);
+        <Option<String>>::sse_encode(self.prefix, serializer);
+        <Option<String>>::sse_encode(self.ref_species, serializer);
+        <Vec<String>>::sse_encode(self.species, serializer);
     }
 }
 
@@ -3796,6 +3994,26 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<f64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <f64>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<usize> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <usize>::sse_encode(value, serializer);
         }
     }
 }

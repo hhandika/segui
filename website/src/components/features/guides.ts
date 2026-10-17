@@ -57,7 +57,7 @@ export const featureGuides = {
   },
   "sequence-add": { gui: gui("sequence-add"), cli: cli("sequence-add"), python: none },
   "maf-convert": { gui: gui("maf-convert"), cli: cli("maf-convert"), python: none },
-  "maf-summary": { gui: none, cli: cli("maf-summary"), python: none },
+  "maf-summary": { gui: gui("maf-summary"), cli: cli("maf-summary"), python: none },
   "sequence-id": { gui: gui("sequence-id"), cli: cli("sequence-id"), python: python("sequence_id") },
   "sequence-map": { gui: gui("sequence-id-map"), cli: cli("sequence-map"), python: python("sequence_id") },
   "sequence-rename": { gui: gui("sequence-rename"), cli: cli("sequence-rename"), python: none },

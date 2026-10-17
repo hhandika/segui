@@ -206,14 +206,22 @@ void main() {
       expect(content, contains('sample_b'));
     });
 
-    test('MAF conversion names loci from the BED file', () async {
-      final maf = File(p.join(directory.path, 'genome.maf'));
-      await maf.writeAsString('##maf version=1\n'
+    Future<File> writeMaf({bool gzip = false}) async {
+      const text = '##maf version=1\n'
           'a score=1.0\n'
           's ref.chr1 100 8 + 1000 ACGTACGT\n'
-          's other.chr1 50 8 + 900 ACGTACGA\n\n');
+          's other.chr1 50 8 + 900 ACGTACGA\n\n';
+      if (gzip) {
+        final file = File(p.join(directory.path, 'genome.maf.gz'));
+        return file.writeAsBytes(GZipCodec().encode(text.codeUnits));
+      }
+      return File(p.join(directory.path, 'genome.maf')).writeAsString(text);
+    }
+
+    test('MAF conversion names loci from a four-column BED file', () async {
+      final maf = await writeMaf();
       final bed = File(p.join(directory.path, 'loci.bed'));
-      await bed.writeAsString('chr1\t100\t108\tlocus_a\t0\t+\n');
+      await bed.writeAsString('chr1\t100\t108\tlocus_a\n');
       final output = Directory(p.join(directory.path, 'maf'));
       await MafConversionRunner(
         inputFiles: [
@@ -224,7 +232,56 @@ void main() {
         outputFormat: 'FASTA',
         isInterleave: false,
       ).run();
-      expect(await outputNames(output), ['locus_a-chr1-100-108.fas']);
+      expect(await outputNames(output),
+          unorderedEquals(['locus_a-chr1-100-108.fas', 'maf_convert.csv']));
+      final locus = await File(p.join(output.path, 'locus_a-chr1-100-108.fas'))
+          .readAsString();
+      expect(locus, contains('>ref'));
+      expect(locus, contains('>other'));
+      expect(locus, isNot(contains('chr1')));
+    });
+
+    test('Gzipped MAF converts by block without a BED file', () async {
+      final maf = await writeMaf(gzip: true);
+      final output = Directory(p.join(directory.path, 'maf-gz'));
+      await MafConversionRunner(
+        inputFiles: [
+          SegulInputFile(file: maf, type: SegulType.multipleAlignment),
+        ],
+        outputDir: output,
+        outputFormat: 'NEXUS',
+        isInterleave: false,
+      ).run();
+      expect(await outputNames(output), ['chr1-100-108.nex']);
+    });
+
+    test('MAF summary writes per-file and per-species tables', () async {
+      final maf = await writeMaf();
+      final output = Directory(p.join(directory.path, 'maf-summary'));
+      await MafSummaryRunner(
+        inputFiles: [
+          SegulInputFile(file: maf, type: SegulType.multipleAlignment),
+        ],
+        outputDir: output,
+      ).run();
+      expect(
+          await outputNames(output),
+          unorderedEquals(
+              ['maf_summary_per_file.csv', 'maf_summary_per_species.csv']));
+    });
+
+    test('A non-MAF file is rejected with a clear error', () async {
+      final reads = File(p.join(directory.path, 'reads.fq.gz'));
+      await reads.writeAsBytes(GZipCodec().encode('@r\nA\n+\nI\n'.codeUnits));
+      expect(
+        MafSummaryRunner(
+          inputFiles: [
+            SegulInputFile(file: reads, type: SegulType.multipleAlignment),
+          ],
+          outputDir: Directory(p.join(directory.path, 'bad')),
+        ).run(),
+        throwsA(contains('Not a MAF file')),
+      );
     });
   });
 }

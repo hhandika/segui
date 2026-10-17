@@ -80,19 +80,24 @@ const XTypeGroup destinationSequenceTypeGroup = XTypeGroup(
   ],
 );
 
+/// MAF files, plain or gzipped. The picker accepts any `.gz` file, so use
+/// [isMafPath] to check the full extension.
 const XTypeGroup mafTypeGroup = XTypeGroup(
   label: 'MAF',
-  extensions: mafExtensions,
+  extensions: [...mafExtensions, ...gunzipExtensions],
   uniformTypeIdentifiers: [
     'public.plain-text',
+    'org.gnu.gnu-zip-archive',
   ],
 );
 
+/// BED files, plain or gzipped. Use [isBedPath] to check the full extension.
 const XTypeGroup bedTypeGroup = XTypeGroup(
   label: 'BED',
-  extensions: bedExtensions,
+  extensions: [...bedExtensions, ...gunzipExtensions],
   uniformTypeIdentifiers: [
     'public.plain-text',
+    'org.gnu.gnu-zip-archive',
   ],
 );
 
@@ -131,6 +136,34 @@ const List<String> mafExtensions = [
 const List<String> bedExtensions = [
   'bed',
 ];
+
+/// Whether [path] is a MAF file, such as `genome.maf` or `genome.maf.gz`.
+bool isMafPath(String path) => _hasExtension(path, mafExtensions);
+
+/// Whether [path] is a BED file, such as `loci.bed` or `loci.bed.gz`.
+bool isBedPath(String path) => _hasExtension(path, bedExtensions);
+
+/// Whether [file] belongs to [type]. MAF and BED files match by their full
+/// extension, so gzipped reads are not mistaken for gzipped MAF files.
+bool matchesTypeGroup(File file, XTypeGroup type) {
+  if (type == mafTypeGroup) {
+    return isMafPath(file.path);
+  }
+  if (type == bedTypeGroup) {
+    return isBedPath(file.path);
+  }
+  return type.extensions?.contains(file.fileExtension) ?? false;
+}
+
+// Matches [extensions] case-insensitively, ignoring a gzip extension.
+bool _hasExtension(String path, List<String> extensions) {
+  String name = p.basename(path).toLowerCase();
+  if (gunzipExtensions.contains(p.extension(name).replaceFirst('.', ''))) {
+    name = p.withoutExtension(name);
+  }
+  final String ext = p.extension(name);
+  return ext.length > 1 && extensions.contains(ext.substring(1));
+}
 
 const List<String> fastqExtensions = [
   'fastq',

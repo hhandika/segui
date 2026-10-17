@@ -60,50 +60,54 @@ class SeguiIcons {
       IconData(0xe018, fontFamily: _fontFamily);
   static const IconData mafConvertOutlined =
       IconData(0xe019, fontFamily: _fontFamily);
-  static const IconData outputFolderFilled =
+  static const IconData mafSummaryFilled =
       IconData(0xe01a, fontFamily: _fontFamily);
-  static const IconData outputFolderOutlined =
+  static const IconData mafSummaryOutlined =
       IconData(0xe01b, fontFamily: _fontFamily);
-  static const IconData partitionFilled =
+  static const IconData outputFolderFilled =
       IconData(0xe01c, fontFamily: _fontFamily);
-  static const IconData partitionOutlined =
+  static const IconData outputFolderOutlined =
       IconData(0xe01d, fontFamily: _fontFamily);
-  static const IconData readSummaryFilled =
+  static const IconData partitionFilled =
       IconData(0xe01e, fontFamily: _fontFamily);
-  static const IconData readSummaryOutlined =
+  static const IconData partitionOutlined =
       IconData(0xe01f, fontFamily: _fontFamily);
-  static const IconData removeFilled =
+  static const IconData readSummaryFilled =
       IconData(0xe020, fontFamily: _fontFamily);
-  static const IconData removeOutlined =
+  static const IconData readSummaryOutlined =
       IconData(0xe021, fontFamily: _fontFamily);
-  static const IconData renameFilled =
+  static const IconData removeFilled =
       IconData(0xe022, fontFamily: _fontFamily);
-  static const IconData renameOutlined =
+  static const IconData removeOutlined =
       IconData(0xe023, fontFamily: _fontFamily);
-  static const IconData sequenceFilterFilled =
+  static const IconData renameFilled =
       IconData(0xe024, fontFamily: _fontFamily);
-  static const IconData sequenceFilterOutlined =
+  static const IconData renameOutlined =
       IconData(0xe025, fontFamily: _fontFamily);
-  static const IconData sequencesFilled =
+  static const IconData sequenceFilterFilled =
       IconData(0xe026, fontFamily: _fontFamily);
-  static const IconData sequencesOutlined =
+  static const IconData sequenceFilterOutlined =
       IconData(0xe027, fontFamily: _fontFamily);
-  static const IconData splitFilled = IconData(0xe028, fontFamily: _fontFamily);
-  static const IconData splitOutlined =
+  static const IconData sequencesFilled =
+      IconData(0xe028, fontFamily: _fontFamily);
+  static const IconData sequencesOutlined =
       IconData(0xe029, fontFamily: _fontFamily);
-  static const IconData translateFilled =
-      IconData(0xe02a, fontFamily: _fontFamily);
-  static const IconData translateOutlined =
+  static const IconData splitFilled = IconData(0xe02a, fontFamily: _fontFamily);
+  static const IconData splitOutlined =
       IconData(0xe02b, fontFamily: _fontFamily);
-  static const IconData transposeFilled =
+  static const IconData translateFilled =
       IconData(0xe02c, fontFamily: _fontFamily);
-  static const IconData transposeOutlined =
+  static const IconData translateOutlined =
       IconData(0xe02d, fontFamily: _fontFamily);
-  static const IconData trimFilled = IconData(0xe02e, fontFamily: _fontFamily);
-  static const IconData trimOutlined =
+  static const IconData transposeFilled =
+      IconData(0xe02e, fontFamily: _fontFamily);
+  static const IconData transposeOutlined =
       IconData(0xe02f, fontFamily: _fontFamily);
-  static const IconData unalignFilled =
-      IconData(0xe030, fontFamily: _fontFamily);
-  static const IconData unalignOutlined =
+  static const IconData trimFilled = IconData(0xe030, fontFamily: _fontFamily);
+  static const IconData trimOutlined =
       IconData(0xe031, fontFamily: _fontFamily);
+  static const IconData unalignFilled =
+      IconData(0xe032, fontFamily: _fontFamily);
+  static const IconData unalignOutlined =
+      IconData(0xe033, fontFamily: _fontFamily);
 }

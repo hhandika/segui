@@ -20,6 +20,7 @@ import add from "../assets/icons/add_outlined.svg";
 import sequenceFilter from "../assets/icons/sequence_filter_outlined.svg";
 import transpose from "../assets/icons/transpose_outlined.svg";
 import mafConvert from "../assets/icons/maf_convert_outlined.svg";
+import mafSummary from "../assets/icons/maf_summary_outlined.svg";
 import genomics from "../assets/icons/genomics_outlined.svg";
 import alignments from "../assets/icons/alignments_outlined.svg";
 import sequences from "../assets/icons/sequences_outlined.svg";
@@ -208,9 +209,16 @@ export const tools: {
   {
     category: "genomics",
     title: "Convert MAF alignments",
-    description: "Turn whole-genome MAF blocks into per-locus FASTA or PHYLIP.",
+    description: "Turn whole-genome MAF blocks into per-locus FASTA, NEXUS, or PHYLIP.",
     icon: mafConvert,
     docs: "/docs/gui-usage/maf-convert/",
+  },
+  {
+    category: "genomics",
+    title: "Summarize MAF alignments",
+    description: "Blocks, species, reference coverage, and gaps in MAF files.",
+    icon: mafSummary,
+    docs: "/docs/gui-usage/maf-summary/",
   },
 ];
 

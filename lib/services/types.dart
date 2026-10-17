@@ -1,11 +1,17 @@
 enum PlatformType { isDesktop, isMobile }
 
-enum GenomicOperationType { readSummary, contigSummary, mafConversion }
+enum GenomicOperationType {
+  readSummary,
+  contigSummary,
+  mafConversion,
+  mafSummary,
+}
 
 const Map<GenomicOperationType, String> genomicOperationMap = {
   GenomicOperationType.readSummary: 'Summarize genomic reads',
   GenomicOperationType.contigSummary: 'Summarize genomic contigs',
   GenomicOperationType.mafConversion: 'Convert MAF alignments',
+  GenomicOperationType.mafSummary: 'Summarize MAF alignments',
 };
 
 const List<String> sequenceReadFormat = [
@@ -105,7 +111,13 @@ const List<String> summaryInt = ["1", "2", "5", "10"];
 const List<String> fastaOutputFormat = ['FASTA'];
 
 /// Output formats for MAF conversion.
-const List<String> mafOutputFormat = ['FASTA', 'PHYLIP'];
+const List<String> mafOutputFormat = ['FASTA', 'NEXUS', 'PHYLIP'];
+
+/// How MAF blocks are grouped without a BED file, keyed by the SEGUL value.
+const Map<String, String> mafGroupingOptions = {
+  'block': 'One file per block',
+  'chrom': 'One file per chromosome',
+};
 
 /// Pairwise distance models, keyed by the SEGUL model name.
 const Map<String, String> distanceModels = {

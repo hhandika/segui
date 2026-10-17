@@ -212,11 +212,15 @@ class SharedTextField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.controller,
+    this.keyboardType,
+    this.onChanged,
   });
 
   final String label;
   final String hint;
   final TextEditingController controller;
+  final TextInputType? keyboardType;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +228,8 @@ class SharedTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
         controller: controller,
+        keyboardType: keyboardType,
+        onChanged: onChanged,
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,

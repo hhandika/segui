@@ -26,6 +26,7 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.alignmentTrimming: 'segui-alignment-trimming',
   SupportedTask.alignmentUnalignment: 'segui-alignment-unalignment',
   SupportedTask.genomicMafConversion: 'segui-genomic-maf-conversion',
+  SupportedTask.genomicMafSummary: 'segui-genomic-maf-summary',
   SupportedTask.sequenceAddition: 'segui-sequence-addition',
   SupportedTask.sequenceFiltering: 'segui-sequence-filtering',
   SupportedTask.sequenceTransposition: 'segui-sequence-transposition',
@@ -84,7 +85,7 @@ class DirectoryCrawler extends FileUtils {
         dir.listSync(recursive: true).whereType<File>().toList();
     // Filter files by matching type.
     for (var file in foundFiles) {
-      if (type.extensions!.contains(file.fileExtension)) {
+      if (matchesTypeGroup(file, type)) {
         inputFiles.add(file);
       }
     }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/genomics/contig.dart';
 import 'package:segui/screens/genomics/maf_convert.dart';
+import 'package:segui/screens/genomics/maf_summary.dart';
 import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
@@ -36,6 +37,8 @@ class GenomicOptions extends StatelessWidget {
         return const ContigView();
       case GenomicOperationType.mafConversion:
         return const MafConversionView();
+      case GenomicOperationType.mafSummary:
+        return const MafSummaryView();
     }
   }
 }

@@ -104,13 +104,29 @@ const HomeTool mafConversionTool = HomeTool(
   category: ToolCategory.genomics,
   operation: GenomicOperationType.mafConversion,
   title: 'Convert MAF alignments',
-  description: 'Turn whole-genome MAF blocks into per-locus FASTA or PHYLIP.',
-  about: 'Convert Multiple Alignment Format (MAF) files into one alignment '
-      'per locus. A BED file names each locus by the start position of the '
-      'reference sequence.',
+  description:
+      'Turn whole-genome MAF blocks into FASTA, NEXUS, or PHYLIP loci.',
+  about: 'Convert Multiple Alignment Format (MAF) files, plain or gzipped, '
+      'into alignments. With a BED file, blocks are clipped to every locus '
+      'they overlap and joined across files. Without one, each block or each '
+      'reference chromosome becomes its own alignment.',
   icon: SeguiIcons.mafConvertOutlined,
   filledIcon: SeguiIcons.mafConvertFilled,
   svgAsset: 'assets/icons/maf_convert_outlined.svg',
+);
+
+const HomeTool mafSummaryTool = HomeTool(
+  category: ToolCategory.genomics,
+  operation: GenomicOperationType.mafSummary,
+  title: 'Summarize MAF alignments',
+  description: 'Blocks, species, reference coverage, and gaps in MAF files.',
+  about: 'Summarize Multiple Alignment Format (MAF) files: the number of '
+      'blocks, the alignment length, how much of the reference each species '
+      'covers, and the proportion of gaps. Writes one CSV row per file and '
+      'one per species.',
+  icon: SeguiIcons.mafSummaryOutlined,
+  filledIcon: SeguiIcons.mafSummaryFilled,
+  svgAsset: 'assets/icons/maf_summary_outlined.svg',
 );
 
 const HomeTool concatenationTool = HomeTool(
@@ -327,6 +343,7 @@ const List<HomeTool> homeTools = [
   readSummaryTool,
   contigSummaryTool,
   mafConversionTool,
+  mafSummaryTool,
   concatenationTool,
   conversionTool,
   distanceTool,
@@ -385,7 +402,12 @@ const List<HomeWorkflow> homeWorkflows = [
     title: 'Build loci from genome alignments',
     description: 'Split whole-genome MAF files into loci, then check '
         'and filter them.',
-    steps: [mafConversionTool, alignmentSummaryTool, filterTool],
+    steps: [
+      mafSummaryTool,
+      mafConversionTool,
+      alignmentSummaryTool,
+      filterTool
+    ],
   ),
   HomeWorkflow(
     title: 'Prepare loci for realignment',

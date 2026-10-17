@@ -29,6 +29,7 @@ enum SupportedTask {
   alignmentTrimming,
   alignmentUnalignment,
   genomicMafConversion,
+  genomicMafSummary,
   sequenceAddition,
   sequenceFiltering,
   sequenceTransposition,

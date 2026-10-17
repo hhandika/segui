@@ -71,7 +71,7 @@ void main() {
     expect(filterHomeTools(ToolCategory.sequence, 'sequences'), hasLength(8));
     expect(
       filterHomeTools(ToolCategory.genomics, 'maf').map((t) => t.title),
-      ['Convert MAF alignments'],
+      ['Convert MAF alignments', 'Summarize MAF alignments'],
     );
     expect(
       filterHomeTools(ToolCategory.alignment, 'k2p').map((t) => t.title),
@@ -108,6 +108,12 @@ void main() {
     expect(
       container.read(genomicOperationSelectionProvider),
       GenomicOperationType.mafConversion,
+    );
+
+    navigator.open(mafSummaryTool);
+    expect(
+      container.read(genomicOperationSelectionProvider),
+      GenomicOperationType.mafSummary,
     );
 
     navigator.open(distanceTool);
@@ -162,7 +168,11 @@ void main() {
     expect(find.byType(TextField), findsNothing);
     expect(container.read(homeViewProvider), HomeView.workflows);
 
-    await tester.tap(find.widgetWithText(ActionChip, 'Translate sequences'));
+    final translateChip =
+        find.widgetWithText(ActionChip, 'Translate sequences');
+    await tester.ensureVisible(translateChip);
+    await tester.pumpAndSettle();
+    await tester.tap(translateChip);
     await tester.pumpAndSettle();
     expect(container.read(tabSelectionProvider), 3);
     expect(tester.takeException(), isNull);
@@ -212,6 +222,58 @@ void main() {
         .map((card) => tester.getTopLeft(find.byWidget(card)).dy)
         .toSet();
     expect(rows, hasLength((alignmentCards.length / 6).ceil()));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('All tools panel matches the workflow height and scrolls',
+      (tester) async {
+    // Wide enough for three workflow columns, which are shorter than the list.
+    tester.view.physicalSize = const Size(2400, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await preferences.setString('homeView', 'workflows');
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: Scaffold(body: HomePage())),
+    ));
+    await tester.pumpAndSettle();
+
+    final Rect workflows = tester.getRect(find.byType(WorkflowList));
+    final Rect tools = tester.getRect(find.byType(ToolIndex));
+    expect(tools.top, workflows.top);
+    expect(tools.bottom, workflows.bottom);
+    expect(
+        find.descendant(
+            of: find.byType(ToolIndex), matching: find.text('All tools')),
+        findsOneWidget);
+    final ScrollableState list = tester.state(find.descendant(
+      of: find.byType(ToolIndex),
+      matching: find.byType(Scrollable),
+    ));
+    expect(list.position.maxScrollExtent, greaterThan(0));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('All tools panel shows every tool below narrow workflows',
+      (tester) async {
+    tester.view.physicalSize = const Size(700, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await preferences.setString('homeView', 'workflows');
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: const MaterialApp(home: Scaffold(body: HomePage())),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.descendant(
+          of: find.byType(ToolIndex), matching: find.byType(Scrollable)),
+      findsNothing,
+    );
+    expect(find.byType(ToolIndexTile), findsNWidgets(homeTools.length));
     expect(tester.takeException(), isNull);
   });
 

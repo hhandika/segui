@@ -5,7 +5,10 @@ import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/styles/decoration.dart';
 
-/// Common workflows next to an alphabetical index of every tool.
+/// Width of the tool list beside the workflows on wide screens.
+const double toolIndexWidth = 300;
+
+/// Common workflows next to an alphabetical list of every tool.
 class WorkflowPanel extends StatelessWidget {
   const WorkflowPanel({super.key});
 
@@ -13,12 +16,21 @@ class WorkflowPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth >= expandedScreenSize) {
-        return const Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        // The workflows set the height. The tool list fills the same height
+        // and scrolls, so it never extends past the workflow cards.
+        return const Stack(
           children: [
-            Expanded(child: WorkflowList()),
-            SizedBox(width: 24),
-            SizedBox(width: 300, child: ToolIndex()),
+            Padding(
+              padding: EdgeInsets.only(right: toolIndexWidth + 24),
+              child: WorkflowList(),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: toolIndexWidth,
+              child: ToolIndex(isScrollable: true),
+            ),
           ],
         );
       }
@@ -119,40 +131,69 @@ class WorkflowCard extends ConsumerWidget {
 }
 
 /// Alphabetical list of every tool.
+///
+/// With [isScrollable], the list fills the height it is given and scrolls.
+/// Otherwise, it shows every tool at full height.
 class ToolIndex extends ConsumerWidget {
-  const ToolIndex({super.key});
+  const ToolIndex({super.key, this.isScrollable = false});
+
+  final bool isScrollable;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = Theme.of(context);
     final List<HomeTool> tools = sortedHomeTools;
+    final Widget title = Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 4, 4),
+      child: Text('All tools', style: theme.textTheme.titleMedium),
+    );
     return Card.filled(
       margin: EdgeInsets.zero,
       color: theme.colorScheme.surfaceContainerLow,
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-              child: Text(
-                'Tool index (${tools.length})',
-                style: theme.textTheme.titleMedium,
+        // Equal right and bottom padding keeps the scrollbar off both edges.
+        padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+        child: isScrollable
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  title,
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: tools.length,
+                      itemBuilder: (context, index) =>
+                          ToolIndexTile(tool: tools[index]),
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  title,
+                  for (final tool in tools) ToolIndexTile(tool: tool)
+                ],
               ),
-            ),
-            for (final tool in tools)
-              ListTile(
-                dense: true,
-                leading: ToolCategoryIcon(tool: tool, size: 28),
-                title: Text(tool.title, overflow: TextOverflow.ellipsis),
-                subtitle: Text(tool.category.label),
-                onTap: () => ref.read(homeToolNavigatorProvider).open(tool),
-              ),
-          ],
-        ),
       ),
+    );
+  }
+}
+
+/// A tool in [ToolIndex] that opens the tool when tapped.
+class ToolIndexTile extends ConsumerWidget {
+  const ToolIndexTile({super.key, required this.tool});
+
+  final HomeTool tool;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      dense: true,
+      leading: ToolCategoryIcon(tool: tool, size: 28),
+      title: Text(tool.title, overflow: TextOverflow.ellipsis),
+      subtitle: Text(tool.category.label),
+      onTap: () => ref.read(homeToolNavigatorProvider).open(tool),
     );
   }
 }

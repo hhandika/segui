@@ -6,19 +6,35 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `match_output_fmt`
+// These functions are ignored because they are not marked as `pub`: `match_output_fmt`, `species_list`
 
 class MafConversionServices {
   final List<String> inputFiles;
-  final String bedFile;
+  final String? bedFile;
   final String outputDir;
   final String outputFmt;
+  final String groupBy;
+  final bool clip;
+  final bool strandAware;
+  final String? refSpecies;
+  final BigInt? minBlockLen;
+  final BigInt? minSpecies;
+  final double? minScore;
+  final List<String> species;
 
   const MafConversionServices({
     required this.inputFiles,
-    required this.bedFile,
+    this.bedFile,
     required this.outputDir,
     required this.outputFmt,
+    required this.groupBy,
+    required this.clip,
+    required this.strandAware,
+    this.refSpecies,
+    this.minBlockLen,
+    this.minSpecies,
+    this.minScore,
+    required this.species,
   });
 
   Future<void> convert() =>
@@ -35,7 +51,15 @@ class MafConversionServices {
       inputFiles.hashCode ^
       bedFile.hashCode ^
       outputDir.hashCode ^
-      outputFmt.hashCode;
+      outputFmt.hashCode ^
+      groupBy.hashCode ^
+      clip.hashCode ^
+      strandAware.hashCode ^
+      refSpecies.hashCode ^
+      minBlockLen.hashCode ^
+      minSpecies.hashCode ^
+      minScore.hashCode ^
+      species.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -45,5 +69,57 @@ class MafConversionServices {
           inputFiles == other.inputFiles &&
           bedFile == other.bedFile &&
           outputDir == other.outputDir &&
-          outputFmt == other.outputFmt;
+          outputFmt == other.outputFmt &&
+          groupBy == other.groupBy &&
+          clip == other.clip &&
+          strandAware == other.strandAware &&
+          refSpecies == other.refSpecies &&
+          minBlockLen == other.minBlockLen &&
+          minSpecies == other.minSpecies &&
+          minScore == other.minScore &&
+          species == other.species;
+}
+
+class MafSummaryServices {
+  final List<String> inputFiles;
+  final String outputDir;
+  final String? prefix;
+  final String? refSpecies;
+  final List<String> species;
+
+  const MafSummaryServices({
+    required this.inputFiles,
+    required this.outputDir,
+    this.prefix,
+    this.refSpecies,
+    required this.species,
+  });
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<MafSummaryServices> newInstance() =>
+      RustLib.instance.api.crateApiMafMafSummaryServicesNew();
+
+  Future<void> summarize() =>
+      RustLib.instance.api.crateApiMafMafSummaryServicesSummarize(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      outputDir.hashCode ^
+      prefix.hashCode ^
+      refSpecies.hashCode ^
+      species.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MafSummaryServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          outputDir == other.outputDir &&
+          prefix == other.prefix &&
+          refSpecies == other.refSpecies &&
+          species == other.species;
 }
