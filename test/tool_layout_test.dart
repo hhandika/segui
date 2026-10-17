@@ -288,14 +288,70 @@ void main() {
 
     await tester.tap(find.widgetWithText(TextButton, 'Edit'));
     await tester.pumpAndSettle();
-    expect(find.byType(PickerActionSheet), findsOneWidget);
+    // Wide windows list the actions in a dialog.
+    expect(find.byType(PickerActionDialog), findsOneWidget);
+    expect(find.byType(PickerActionSheet), findsNothing);
     expect(find.text('Add files'), findsOneWidget);
     expect(find.text('Add folder'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(PickerActionDialog),
+        matching: find.byType(Divider),
+      ),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text('Clear files'));
     await tester.pumpAndSettle();
-    expect(find.byType(PickerActionSheet), findsNothing);
+    expect(find.byType(PickerActionDialog), findsNothing);
     expect(container.read(fileInputProvider).value, isEmpty);
+  });
+
+  testWidgets('Compact window lists picker actions in a bottom sheet',
+      (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    final Directory dir = Directory.systemTemp.createTempSync('segui-sheet-');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final XFile file = XFile(
+        (File(p.join(dir.path, 'locus.nex'))..writeAsStringSync('x')).path);
+    await pumpPage(tester, const Size(390, 900), container: container);
+    expect(find.byType(PickerDropZoneRow), findsWidgets);
+
+    await tester.runAsync(() => container
+        .read(fileInputProvider.notifier)
+        .addFiles([file], sequenceTypeGroup));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(TextButton, 'Edit').first);
+    await tester.pumpAndSettle();
+    expect(find.byType(PickerActionSheet), findsOneWidget);
+    expect(find.byType(PickerActionDialog), findsNothing);
+  });
+
+  testWidgets('iPad portrait window lists picker actions in a dialog',
+      (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    final Directory dir = Directory.systemTemp.createTempSync('segui-dialog-');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final XFile file = XFile(
+        (File(p.join(dir.path, 'locus.nex'))..writeAsStringSync('x')).path);
+    await pumpPage(tester, const Size(768, 1024), container: container);
+
+    await tester.runAsync(() => container
+        .read(fileInputProvider.notifier)
+        .addFiles([file], sequenceTypeGroup));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(TextButton, 'Edit').first);
+    await tester.pumpAndSettle();
+    expect(find.byType(PickerActionDialog), findsOneWidget);
+    expect(find.byType(PickerActionSheet), findsNothing);
   });
 
   testWidgets('File panel opens on the input and output summary',

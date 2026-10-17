@@ -1,15 +1,47 @@
 import 'package:material_ui/material_ui.dart';
 
-/// Material You design system recommend screen size
-/// Desktop/Expanded screen: 840dp
-/// Tablet/Medium screen: 600dp
-/// Mobile/Compact screen: 360dp
-/// Extra-large screen: 1600dp, such as a 1440p desktop monitor.
+/// Material 3 window size class breakpoints, in logical pixels (dp).
+/// https://m3.material.io/foundations/layout/applying-layout/window-size-classes
 const double extraLargeScreenSize = 1600;
 const double largeScreenSize = 1200;
 const double expandedScreenSize = 840;
 const double mediumScreenSize = 600;
+
+/// Narrowest common phone width. Not a window size class breakpoint.
 const double compactScreenSize = 360;
+
+/// Material 3 window size classes, picked by the width of the app window.
+///
+/// - [compact]: under 600 dp, phones in portrait.
+/// - [medium]: 600 to 839 dp, tablets in portrait and foldables.
+/// - [expanded]: 840 to 1199 dp, tablets in landscape and small desktops.
+/// - [large]: 1200 to 1599 dp, desktops.
+/// - [extraLarge]: 1600 dp and wider, such as a 1440p desktop monitor.
+enum WindowSizeClass {
+  compact(0),
+  medium(mediumScreenSize),
+  expanded(expandedScreenSize),
+  large(largeScreenSize),
+  extraLarge(extraLargeScreenSize);
+
+  const WindowSizeClass(this.minWidth);
+
+  /// Narrowest window width in this class.
+  final double minWidth;
+
+  /// Size class of a window [width] wide.
+  static WindowSizeClass fromWidth(double width) {
+    return values.lastWhere((e) => width >= e.minWidth);
+  }
+
+  /// Size class of the window holding [context].
+  static WindowSizeClass of(BuildContext context) {
+    return fromWidth(MediaQuery.sizeOf(context).width);
+  }
+
+  /// Whether this class is [other] or wider.
+  bool isAtLeast(WindowSizeClass other) => index >= other.index;
+}
 
 /// Widest content area for pages that lay out cards in a grid, so wide
 /// monitors fill with more columns instead of empty margins.
@@ -80,17 +112,19 @@ Color getBorderColor(BuildContext context) {
   return Theme.of(context).colorScheme.primary.withAlpha(40);
 }
 
+/// Whether the window is [WindowSizeClass.compact].
 bool isPhoneScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width < mediumScreenSize;
+  return WindowSizeClass.of(context) == WindowSizeClass.compact;
 }
 
-// Large screen is defined as screen width >= 840 dp
-// Based on Material Design guidelines for expanded screen.
-// https://material.io/blog/material-you-large-screens
+/// Whether the window is [WindowSizeClass.expanded] or wider, the large
+/// screens of the Material guidelines.
+/// https://material.io/blog/material-you-large-screens
 bool isTabletScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width >= expandedScreenSize;
+  return WindowSizeClass.of(context).isAtLeast(WindowSizeClass.expanded);
 }
 
+/// Whether the window is [WindowSizeClass.large] or wider.
 bool isDesktopScreen(BuildContext context) {
-  return MediaQuery.of(context).size.width >= largeScreenSize;
+  return WindowSizeClass.of(context).isAtLeast(WindowSizeClass.large);
 }

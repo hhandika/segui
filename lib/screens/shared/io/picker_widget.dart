@@ -385,7 +385,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
   }
 }
 
-/// An action offered by a file picker, as a button or a bottom sheet item.
+/// An action offered by a file picker, as a button or a sheet or dialog item.
 @immutable
 class PickerAction {
   const PickerAction({
@@ -458,8 +458,8 @@ class _FileDropTargetState extends State<FileDropTarget> {
 /// Dashed area that asks for files before any are selected.
 ///
 /// Shows every action as a button on wide screens. On phones, and when
-/// [compact], tapping the area runs the action, or opens a bottom sheet
-/// when there are several.
+/// [compact], tapping the area runs the action, or lists them with
+/// [showPickerActions] when there are several.
 class PickerDropZone extends StatelessWidget {
   const PickerDropZone({
     super.key,
@@ -522,7 +522,7 @@ class PickerDropZone extends StatelessWidget {
       actions.first.onSelected();
       return;
     }
-    PickerActionSheet.show(context, title: title, actions: actions);
+    showPickerActions(context, title: title, actions: actions);
   }
 }
 
@@ -643,8 +643,8 @@ class PickerDropZoneRow extends StatelessWidget {
   }
 }
 
-/// Summary of the selected files with an edit button that opens the
-/// picker actions in a bottom sheet.
+/// Summary of the selected files with an edit button that lists the
+/// picker actions with [showPickerActions].
 class PickerSelectionCard extends StatelessWidget {
   const PickerSelectionCard({
     super.key,
@@ -698,7 +698,7 @@ class PickerSelectionCard extends StatelessWidget {
                     style: TextButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                     ),
-                    onPressed: () => PickerActionSheet.show(
+                    onPressed: () => showPickerActions(
                       context,
                       title: sheetTitle,
                       actions: actions,
@@ -762,6 +762,29 @@ class PickerProgress extends StatelessWidget {
   }
 }
 
+/// Shows the actions of a file picker in a bottom sheet on compact windows,
+/// such as phones, and in a dialog on medium and wider windows, from an iPad
+/// in portrait up.
+Future<void> showPickerActions(
+  BuildContext context, {
+  required String title,
+  required List<PickerAction> actions,
+}) {
+  if (WindowSizeClass.of(context).isAtLeast(WindowSizeClass.medium)) {
+    return showDialog<void>(
+      context: context,
+      barrierLabel: title,
+      builder: (context) => PickerActionDialog(title: title, actions: actions),
+    );
+  }
+  return showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    barrierLabel: title,
+    builder: (context) => PickerActionSheet(title: title, actions: actions),
+  );
+}
+
 /// Bottom sheet listing the actions of a file picker.
 class PickerActionSheet extends StatelessWidget {
   const PickerActionSheet({
@@ -772,19 +795,6 @@ class PickerActionSheet extends StatelessWidget {
 
   final String title;
   final List<PickerAction> actions;
-
-  static Future<void> show(
-    BuildContext context, {
-    required String title,
-    required List<PickerAction> actions,
-  }) {
-    return showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      barrierLabel: title,
-      builder: (context) => PickerActionSheet(title: title, actions: actions),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -805,13 +815,67 @@ class PickerActionSheet extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            for (final PickerAction action in actions)
+            for (final (int i, PickerAction action) in actions.indexed) ...[
+              if (_startsDestructiveGroup(actions, i))
+                const Divider(height: 16),
               PickerActionTile(action: action),
+            ],
           ],
         ),
       ),
     );
   }
+}
+
+/// Dialog listing the actions of a file picker.
+class PickerActionDialog extends StatelessWidget {
+  const PickerActionDialog({
+    super.key,
+    required this.title,
+    required this.actions,
+  });
+
+  final String title;
+  final List<PickerAction> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+      contentPadding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+      content: SizedBox(
+        width: pickerDialogWidth,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final (int i, PickerAction action) in actions.indexed) ...[
+              if (_startsDestructiveGroup(actions, i))
+                const Divider(height: 16),
+              PickerActionTile(action: action),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+      ],
+    );
+  }
+}
+
+/// Content width of the picker action dialog, within the 280 to 560 dp
+/// range of Material dialogs.
+const double pickerDialogWidth = 360;
+
+/// Whether the action at [index] is the first destructive action after
+/// other actions, so a divider sets it apart.
+bool _startsDestructiveGroup(List<PickerAction> actions, int index) {
+  return index > 0 &&
+      actions[index].isDestructive &&
+      !actions[index - 1].isDestructive;
 }
 
 class PickerActionTile extends StatelessWidget {

@@ -16,6 +16,26 @@ void main() {
     expect(columns(4000), 6);
   });
 
+  test('Window size classes follow the Material 3 breakpoints', () {
+    expect(WindowSizeClass.fromWidth(0), WindowSizeClass.compact);
+    expect(WindowSizeClass.fromWidth(599), WindowSizeClass.compact);
+    expect(WindowSizeClass.fromWidth(600), WindowSizeClass.medium);
+    expect(WindowSizeClass.fromWidth(839), WindowSizeClass.medium);
+    expect(WindowSizeClass.fromWidth(840), WindowSizeClass.expanded);
+    expect(WindowSizeClass.fromWidth(1199), WindowSizeClass.expanded);
+    expect(WindowSizeClass.fromWidth(1200), WindowSizeClass.large);
+    expect(WindowSizeClass.fromWidth(1599), WindowSizeClass.large);
+    expect(WindowSizeClass.fromWidth(1600), WindowSizeClass.extraLarge);
+    expect(
+      WindowSizeClass.large.isAtLeast(WindowSizeClass.expanded),
+      isTrue,
+    );
+    expect(
+      WindowSizeClass.medium.isAtLeast(WindowSizeClass.expanded),
+      isFalse,
+    );
+  });
+
   testWidgets('Equal height grid sizes every child like the tallest',
       (tester) async {
     await tester.pumpWidget(MaterialApp(
