@@ -12,7 +12,7 @@ SEGUI is the Flutter GUI for SEGUL, a Rust toolkit for phylogenomic data manipul
 - `rust_builder/`: local Flutter FFI plugin and Cargokit integration for building the native Rust library.
 - `test/`: Dart unit tests and fixtures in `test/files/`; `integration_test/` checks native startup, navigation, and bridge file IO, and `test_driver/` contains a currently commented-out integration driver. Rust unit tests are inline in the API modules, with fixtures in `rust/src/tests/`.
 - `assets/`: illustrations in `images/`, app icons in `launcher/`, and bundled help in `markdown/`. Tool and navigation icon SVGs live in `icons/` as outlined/filled pairs; tool cards draw these SVGs, and everything else uses the `SeguiIcons` font in `fonts/`, built from the same SVGs with nahpu-icon-generator (commands in `scripts/icons/anatomy.toml`). Ship `assets/fonts/segui_icons.ttf` and the generated `lib/styles/segui_icons.dart` together.
-- `website/`: Docusaurus documentation and website; content is in `docs/` and `blog/`, React/TypeScript UI is in `src/`, and public assets are in `static/`.
+- `website/`: Astro + Starlight documentation and website managed with Bun; docs are in `src/content/docs/docs/`, news posts in `src/content/blog/`, the landing page in `src/content/docs/index.mdx`, Astro components in `src/components/`, sidebar and redirects in `astro.config.mjs`, and public assets in `public/`.
 - `android/`, `ios/`, `linux/`, `macos/`, and `windows/`: Native Flutter platform projects. Native Rust packaging is configured through `rust_builder/` for these five platforms; SEGUI does not target web browsers.
 - `scripts.py` and `scripts/`: development and packaging helpers, including PowerShell scripts in `scripts/windows/`. `installer/` and `snap/` contain packaging configuration; `.github/workflows/` contains CI and release workflows.
 
@@ -29,7 +29,7 @@ Run Flutter and bridge commands from the repository root:
 - `flutter test integration_test -d <device-id>`: run startup, navigation, and file IO integration tests on a native target with the Rust library available.
 - `cargo check`, `cargo clippy`, and `cargo test`: run from `rust/` to check, lint, and test the Rust crate.
 
-For the documentation website, run `yarn install`, `yarn start`, `yarn typecheck`, or `yarn build` from `website/`. Inspect legacy helper scripts before running them: some clean generated files, upgrade dependencies, or install an older bridge generator.
+For the documentation website, run `bun install`, `bun run dev`, `bun run check`, or `bun run build` from `website/`. Inspect legacy helper scripts before running them: some clean generated files, upgrade dependencies, or install an older bridge generator.
 
 ## Coding Style & Naming Conventions
 
@@ -55,6 +55,6 @@ Add focused `*_test.dart` files in `test/`. Prefer service tests for file discov
 
 Preserve user changes and avoid unrelated refactors. Write the GUI product name as `SEGUI` and the underlying toolkit as `SEGUL`; Dart package imports use `package:segui/`. Agents must not create commits, branches, pushes, or pull requests; leave Git under user control. After bridge API edits, regenerate bindings and verify analysis plus `cargo check` and `cargo clippy`. Do not hand-edit generated bridge or Freezed files. Add assets to `pubspec.yaml` only when needed.
 
-Edit website documentation directly under `website/docs/` and bundled in-app help under `assets/markdown/`. Keep documentation aligned with the affected GUI or SEGUL behavior; do not edit generated website output or dependency directories.
+Edit website documentation directly under `website/src/content/docs/docs/` and bundled in-app help under `assets/markdown/`. Keep documentation aligned with the affected GUI or SEGUL behavior; do not edit generated website output or dependency directories.
 
 `AGENTS.md` is the repository's single source of agent guidance; `CLAUDE.md` only imports it.
