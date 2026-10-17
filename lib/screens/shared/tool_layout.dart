@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/illustrations.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
@@ -507,26 +508,42 @@ class ToolFormLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isCompact = isPhoneScreen(context);
+    final double sidePadding = isCompact ? 16 : 32;
     return Column(
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-              isCompact ? 16 : 32,
-              0,
-              isCompact ? 16 : 32,
-              24,
-            ),
-            child: Center(
+          child: LayoutBuilder(builder: (context, constraints) {
+            return SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: maxToolFormWidth),
+                // Fill the height so the gull scene sits on the run bar
+                // when the form is short.
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: form,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: sidePadding),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: maxToolFormWidth,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: form,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 24),
+                      child: ToolScene(),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ),
+            );
+          }),
         ),
         ToolRunBar(action: action),
       ],

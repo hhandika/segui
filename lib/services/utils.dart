@@ -99,6 +99,11 @@ void launchSegulDocUrl() {
   launchUrl(uri);
 }
 
+/// Opens the feature guides on the SEGUL website.
+void launchSegulFeaturesUrl() {
+  launchUrl(Uri.parse('${segulDocUrl}docs/features/'));
+}
+
 class SegulVersion {
   SegulVersion({
     required this.name,

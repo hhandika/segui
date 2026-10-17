@@ -5,6 +5,7 @@ import 'package:segui/screens/alignment/entry_page.dart';
 import 'package:segui/screens/genomics/entry_page.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/illustrations.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/styles/themes.dart';
@@ -54,6 +55,7 @@ void main() {
 
         expect(find.byType(ExecutionButton), findsOneWidget,
             reason: tool.title);
+        expect(find.byType(ToolScene), findsOneWidget, reason: tool.title);
         expect(tester.takeException(), isNull, reason: tool.title);
       }
     });

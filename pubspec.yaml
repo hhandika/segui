@@ -110,6 +110,8 @@ flutter:
     - assets/images/
     - assets/images/files/
     - assets/images/greeting/
+    - assets/images/features/
+    - assets/images/tools/
     - assets/launcher/icon.png
     - assets/markdown/
 
