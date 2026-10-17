@@ -283,6 +283,24 @@ export const cliExamples = [
   },
 ];
 
+/// Input formats shown on the landing page. `glyph` picks the illustration in
+/// `components/landing/FormatGlyph.astro`; `gzip` marks formats read compressed.
+export const fileFormats: {
+  name: string;
+  role: string;
+  exts: string[];
+  glyph: "fasta" | "nexus" | "phylip" | "fastq" | "maf" | "bed" | "partition";
+  gzip?: boolean;
+}[] = [
+  { name: "FASTA", role: "Alignments, contigs", exts: [".fasta", ".fa", ".fas"], glyph: "fasta" },
+  { name: "NEXUS", role: "Alignments", exts: [".nex", ".nexus"], glyph: "nexus" },
+  { name: "PHYLIP", role: "Relaxed alignments", exts: [".phy", ".phylip"], glyph: "phylip" },
+  { name: "FASTQ", role: "Raw reads", exts: [".fastq", ".fq"], glyph: "fastq", gzip: true },
+  { name: "MAF", role: "Genome alignments", exts: [".maf"], glyph: "maf", gzip: true },
+  { name: "BED", role: "Loci", exts: [".bed"], glyph: "bed", gzip: true },
+  { name: "Partitions", role: "RAxML, NEXUS", exts: [".txt", ".nex"], glyph: "partition" },
+];
+
 export const workflows = [
   {
     title: "Build a phylogenomic supermatrix",

@@ -20,6 +20,11 @@ import Renaming from "../../../components/features/Renaming.astro";
 import RowSelection from "../../../components/features/RowSelection.astro";
 import Translation from "../../../components/features/Translation.astro";
 import Transposition from "../../../components/features/Transposition.astro";
+import Trimming from "../../../components/features/Trimming.astro";
+import Unalignment from "../../../components/features/Unalignment.astro";
+import SequenceAddition from "../../../components/features/SequenceAddition.astro";
+import MafConversion from "../../../components/features/MafConversion.astro";
+import MafSummary from "../../../components/features/MafSummary.astro";
 import Guides from "../../../components/features/Guides.astro";
 
 This page shows what each SEGUL feature does with your data. Each diagram uses a small example; the same rules apply to datasets with thousands of loci. Under each feature, the guide links open its step-by-step instructions for the GUI, CLI, and Python API, or say when an interface does not support it yet. The [Rust](/docs/api-usage/rust-api/) and [R](/docs/api-usage/r-api/) APIs use the SEGUL library directly.
@@ -131,6 +136,22 @@ Computes summary statistics for a set of alignments at three levels: the whole d
 
 <AlignmentSummary />
 
+### Alignment Trimming
+
+Removes sites, not whole alignments, that have too much missing data or that fall below a count of parsimony-informative characters.
+
+<Guides feature="align-trim" />
+
+<Trimming />
+
+### Alignment Unalignment
+
+Removes the gaps from every aligned sequence, so you can align the sequences again with a different aligner or settings.
+
+<Guides feature="align-unalign" />
+
+<Unalignment />
+
 ## Genomic Task Groups
 
 ### Sequence Read and Contig Summary
@@ -141,13 +162,21 @@ Both tasks compute summary statistics for genomic files: raw reads in FASTQ form
 
 <GenomicSummary />
 
-### MAF Conversion and Summary
+### MAF Conversion
 
-Whole-genome aligners, such as Progressive Cactus and LASTZ with MULTIZ, write Multiple Alignment Format (MAF) files: blocks that align a stretch of a reference genome to other genomes. MAF conversion turns the blocks into alignments that phylogenetic software can read. With a BED file of loci, each block is clipped to every locus it overlaps, and blocks of the same locus are joined across files, with species missing from a block filled with gaps. Without a BED file, each block, or each reference chromosome, becomes its own alignment. MAF summary reports the number of blocks, the alignment length, and how much of the reference each species covers.
+Whole-genome aligners, such as Progressive Cactus and LASTZ with MULTIZ, write Multiple Alignment Format (MAF) files: blocks that align a stretch of a reference genome to other genomes. MAF conversion turns the blocks into alignments that phylogenetic software can read. With a BED file of loci, each block is clipped to every locus it overlaps, and blocks of the same locus are joined across files. Without a BED file, each block, or each reference chromosome, becomes its own alignment.
 
 <Guides feature="maf-convert" />
 
+<MafConversion />
+
+### MAF Summary
+
+Reports the number of blocks, the alignment length, and how much of the reference genome each species covers, so you can check a whole-genome alignment before converting it.
+
 <Guides feature="maf-summary" />
+
+<MafSummary />
 
 ## Sequence Task Groups
 
@@ -174,6 +203,14 @@ Replaces sample names across all files using a table of original and new names.
 <Guides feature="sequence-rename" />
 
 <Renaming />
+
+### Sequence Addition
+
+Adds sequences to existing files that share the same file name, such as new samples to a set of loci, or collects every sequence into one file. The output is unaligned, ready to realign.
+
+<Guides feature="sequence-add" />
+
+<SequenceAddition />
 
 ### Sequence Extraction
 

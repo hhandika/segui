@@ -1,0 +1,51 @@
+---
+import Chip from "./Chip.astro";
+import Figure from "./Figure.astro";
+import { chipRow } from "./layout";
+
+/// Per-species reference coverage for the `genome.maf` example.
+const species = [
+  { name: "hg38", coverage: 1, blocks: 2, reference: true },
+  { name: "mm10", coverage: 1, blocks: 2 },
+  { name: "panTro6", coverage: 10 / 15, blocks: 1 },
+];
+const totals = ["2 blocks", "3 species", "17 aligned columns", "15 reference bases"];
+const left = 90;
+const track = 330;
+const top = 92;
+const step = 32;
+---
+
+<Figure
+  id="maf-summary"
+  viewBox={`0 0 640 ${top + species.length * step + 4}`}
+  title="MAF summary"
+  desc={`genome.maf has ${totals.join(", ")}. Reference coverage: ${species
+    .map((s) => `${s.name} ${Math.round(s.coverage * 100)}% in ${s.blocks} of 2 blocks`)
+    .join(", ")}.`}
+  caption="One CSV row per file and one per species. Coverage is the share of reference bases aligned to a base of the species."
+>
+  <text x="0" y="18" class="fx-title">genome.maf</text>
+  {chipRow(totals, 0).map((x, i) => <Chip x={x} y={30} text={totals[i]} accent={i === 0} />)}
+  <text x="0" y={top - 14} class="fx-muted">Reference coverage</text>
+  {
+    species.map((s, i) => {
+      const y = top + i * step;
+      return (
+        <g>
+          <text x={left - 10} y={y + 10} text-anchor="end" dominant-baseline="central" class="fx-mono fx-small">
+            {s.name}
+          </text>
+          <rect x={left} y={y} width={track} height="20" rx="5" class="fx-panel" />
+          <rect x={left} y={y} width={track * s.coverage} height="20" rx="5" class="fx-l1" />
+          <text x={left + track + 12} y={y + 10} dominant-baseline="central" class="fx-accent-text fx-small">
+            {Math.round(s.coverage * 100)}%
+          </text>
+          <text x={left + track + 60} y={y + 10} dominant-baseline="central" class="fx-muted fx-small">
+            {s.blocks} of 2 blocks{s.reference ? " · reference" : ""}
+          </text>
+        </g>
+      );
+    })
+  }
+</Figure>

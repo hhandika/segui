@@ -16,25 +16,31 @@ const sections = [
   {
     title: "Genomic tasks",
     formats: [
-      { name: "Reads", exts: [".fastq", ".fq"] },
-      { name: "Compressed reads", exts: [".fastq.gz", ".fq.gz"] },
-      { name: "Contigs", exts: fasta },
+      { name: "Reads", exts: [".fastq", ".fq", ".fastq.gz", ".fq.gz"] },
+      { name: "Contigs", exts: [...fasta, ".fasta.gz"] },
+      { name: "MAF", exts: [".maf", ".maf.gz"] },
+      { name: "BED loci", exts: [".bed", ".bed.gz"] },
     ],
   },
 ];
 const rowHeight = 34;
-const sectionHeight = 40 + 3 * rowHeight + 16;
+const sectionHeights = sections.map((section) => 40 + section.formats.length * rowHeight + 16);
+const sectionTops = sectionHeights.map((_, s) =>
+  sectionHeights.slice(0, s).reduce((sum, h) => sum + h, 0),
+);
+const viewHeight = sectionHeights.reduce((sum, h) => sum + h, 0);
 ---
 
 <Figure
   id="file-formats"
-  viewBox={`0 0 640 ${sections.length * sectionHeight}`}
+  viewBox={`0 0 640 ${viewHeight}`}
   title="Supported file extensions"
-  desc="Alignment and sequence tasks read NEXUS (.nex, .nexus, .nxs), FASTA (.fasta, .fa, .fna, .fsa, .fas), and relaxed PHYLIP (.phy, .phylip, .ph). Genomic tasks read FASTQ reads (.fastq, .fq), compressed reads (.fastq.gz, .fq.gz), and FASTA contigs (.fasta, .fa, .fna, .fsa, .fas)."
+  desc="Alignment and sequence tasks read NEXUS (.nex, .nexus, .nxs), FASTA (.fasta, .fa, .fna, .fsa, .fas), and relaxed PHYLIP (.phy, .phylip, .ph). Genomic tasks read FASTQ reads (.fastq, .fq, .fastq.gz, .fq.gz), FASTA contigs (.fasta, .fa, .fna, .fsa, .fas, and gzipped such as .fasta.gz), MAF whole-genome alignments (.maf, .maf.gz), and BED loci for MAF conversion (.bed, .bed.gz)."
+  caption="Compressed files end in .gz. SEGUL reads them directly, without decompressing them first."
 >
   {
     sections.map((section, s) => {
-      const top = s * sectionHeight;
+      const top = sectionTops[s];
       return (
         <g>
           <text x="0" y={top + 22} class="fx-title">

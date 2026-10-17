@@ -1,0 +1,79 @@
+---
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import Chip from "./Chip.astro";
+import Figure from "./Figure.astro";
+
+/// The `genome.maf` and `loci.bed` example from the MAF conversion guide.
+const blocks = [
+  {
+    label: "block 1 · chr1:100–110",
+    ids: ["hg38", "panTro6", "mm10"],
+    rows: ["ACGT--ACGTAC", "ACGTTTACGTAC", "ACGA--ACGTAC"],
+  },
+  { label: "block 2 · chr1:110–115", ids: ["hg38", "mm10"], rows: ["GGCCA", "GGCTA"] },
+];
+const samples = ["hg38", "panTro6", "mm10"];
+// Join the blocks and fill species missing from a block with gaps.
+const joined = samples.map((id) =>
+  blocks
+    .map((block) => {
+      const row = block.ids.indexOf(id);
+      return row >= 0 ? block.rows[row] : "-".repeat(block.rows[0].length);
+    })
+    .join(""),
+);
+
+const cell = 12;
+const pitch = cell + 2;
+const blockX = 70;
+const blockTops = [58, 136];
+const outX = 395;
+const outY = 104;
+const spans = blocks.reduce<{ start: number; width: number }[]>((acc, block) => {
+  const start = acc.length ? acc[acc.length - 1].start + acc[acc.length - 1].width : 0;
+  return [...acc, { start, width: block.rows[0].length }];
+}, []);
+---
+
+<Figure
+  id="maf-conversion"
+  viewBox="0 0 640 222"
+  title="MAF conversion"
+  desc={`Two MAF blocks on chr1 overlap the BED locus geneA (chr1:100–115). SEGUL joins them into one alignment named geneA-chr1-100-115. panTro6 is missing from block 2, so its part is filled with gaps: ${joined
+    .map((row, i) => `${samples[i]} ${row}`)
+    .join(", ")}.`}
+  caption="Blocks are clipped to each BED locus they overlap and joined in reference order. Species missing from a block are filled with gaps."
+>
+  <text x="0" y="18" class="fx-title">genome.maf</text>
+  {
+    blocks.map((block, i) => (
+      <g>
+        <text x={blockX} y={blockTops[i] - 10} class="fx-muted fx-small">
+          {block.label}
+        </text>
+        <Alignment x={blockX} y={blockTops[i]} rows={block.rows} ids={block.ids} cell={cell} />
+      </g>
+    ))
+  }
+  <Chip x={0} y={190} text="loci.bed: geneA chr1:100–115" mono accent />
+
+  <Arrow x1={256} y1={outY + 20} x2={326} y2={outY + 20} label="clip, join" />
+
+  <text x={outX} y={outY - 44} class="fx-title fx-small fx-mono">geneA-chr1-100-115</text>
+  {
+    spans.map((span, i) => {
+      const x1 = outX + span.start * pitch;
+      const x2 = x1 + span.width * pitch - 2;
+      return (
+        <g>
+          <path d={`M${x1},${outY - 8} v-6 H${x2} v6`} class="fx-line" style="stroke-width: 1.5" />
+          <text x={(x1 + x2) / 2} y={outY - 20} text-anchor="middle" class="fx-muted fx-small">
+            block {i + 1}
+          </text>
+        </g>
+      );
+    })
+  }
+  <Alignment x={outX} y={outY} rows={joined} ids={samples} cell={cell} />
+</Figure>

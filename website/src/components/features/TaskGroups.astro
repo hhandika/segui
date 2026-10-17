@@ -14,6 +14,8 @@ const groups = [
       "Partition conversion",
       "Splitting",
       "Summary",
+      "Trimming",
+      "Unalignment",
     ],
   },
   {
@@ -27,6 +29,7 @@ const groups = [
     input: "Aligned or unaligned files",
     command: "segul sequence …",
     tools: [
+      "Addition",
       "ID extraction",
       "ID mapping",
       "ID renaming",
@@ -39,14 +42,17 @@ const groups = [
   },
 ];
 const width = 212;
-const height = 334;
+const toolStep = 25;
+const mostTools = Math.max(...groups.map((group) => group.tools.length));
+// Room for the header, every tool, and the command at the bottom.
+const height = 108 + (mostTools - 1) * toolStep + 44;
 ---
 
 <Figure
   id="task-groups"
-  viewBox="0 0 660 338"
+  viewBox={`0 0 660 ${height + 4}`}
   title="SEGUL task groups"
-  desc="Three task groups. Alignments takes aligned files or partitions and offers concatenation, conversion, distance, filtering, partition conversion, splitting, and summary. Genomic takes FASTQ reads, FASTA contigs, or MAF whole-genome alignments and offers read and contig summaries plus MAF conversion and summary. Sequences takes aligned or unaligned files and offers ID extraction, mapping, renaming, sequence extraction, filtering, removal, translation, and transposition."
+  desc="Three task groups. Alignments takes aligned files or partitions and offers concatenation, conversion, distance, filtering, partition conversion, splitting, summary, trimming, and unalignment. Genomic takes FASTQ reads, FASTA contigs, or MAF whole-genome alignments and offers read and contig summaries plus MAF conversion and summary. Sequences takes aligned or unaligned files and offers addition, ID extraction, mapping, renaming, sequence extraction, filtering, removal, translation, and transposition."
   caption="Each task group is a button in the GUI navigation and a command group in the CLI."
 >
   {
@@ -67,8 +73,8 @@ const height = 334;
           <line x1={x + 16} x2={x + width - 16} y1="86" y2="86" class="fx-line" style="stroke-width: 1; opacity: 0.4" />
           {group.tools.map((tool, t) => (
             <g>
-              <circle cx={x + 22} cy={108 + t * 25} r="4" class="fx-on" />
-              <text x={x + 34} y={108 + t * 25} dominant-baseline="central">
+              <circle cx={x + 22} cy={108 + t * toolStep} r="4" class="fx-on" />
+              <text x={x + 34} y={108 + t * toolStep} dominant-baseline="central">
                 {tool}
               </text>
             </g>

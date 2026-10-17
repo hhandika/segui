@@ -35,6 +35,8 @@ export const featureGuides = {
     python: python("align_partition"),
   },
   "align-split": { gui: gui("align-split"), cli: cli("align-split"), python: python("align_split") },
+  "align-trim": { gui: gui("align-trim"), cli: cli("align-trim"), python: none },
+  "align-unalign": { gui: gui("align-unalign"), cli: cli("align-unalign"), python: none },
   "align-summary": { gui: gui("align-summary"), cli: cli("align-summary"), python: python("align_summary") },
   "genomic-summary": {
     gui: [
@@ -53,6 +55,7 @@ export const featureGuides = {
       },
     ],
   },
+  "sequence-add": { gui: gui("sequence-add"), cli: cli("sequence-add"), python: none },
   "maf-convert": { gui: gui("maf-convert"), cli: cli("maf-convert"), python: none },
   "maf-summary": { gui: none, cli: cli("maf-summary"), python: none },
   "sequence-id": { gui: gui("sequence-id"), cli: cli("sequence-id"), python: python("sequence_id") },

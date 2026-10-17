@@ -1,0 +1,54 @@
+---
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import Figure from "./Figure.astro";
+
+const ids = ["seq1", "seq2", "seq3", "seq4"];
+const rows = ["AGT--C?ATG", "AGT--CTA-G", "AGTC--CATG", "A-T--CTATG"];
+const threshold = 0.5;
+const missing = new Set(["-", "?"]);
+const removed = [...rows[0]].flatMap((_, col) => {
+  const count = rows.filter((row) => missing.has(row[col])).length;
+  return count / rows.length > threshold ? [col] : [];
+});
+const trimmed = rows.map((row) => [...row].filter((_, col) => !removed.includes(col)).join(""));
+
+const cell = 18;
+const pitch = cell + 2;
+const inX = 60;
+const outX = 420;
+const top = 48;
+---
+
+<Figure
+  id="alignment-trimming"
+  viewBox={`0 0 640 ${top + rows.length * pitch + 12}`}
+  title="Alignment trimming"
+  desc={`With a missing data threshold of ${threshold}, sites ${removed
+    .map((c) => c + 1)
+    .join(" and ")} have more than half of the samples missing and are removed. The trimmed alignment: ${trimmed.join(", ")}.`}
+  caption="Sites with more missing data than the threshold are removed. Trimming can also keep only parsimony-informative sites."
+>
+  <text x={inX} y="18" class="fx-title">Missing data ≤ {threshold * 100}% per site</text>
+  {
+    removed.map((col) => (
+      <g>
+        <rect
+          x={inX + col * pitch - 2}
+          y={top - 4}
+          width={pitch + 2}
+          height={rows.length * pitch + 6}
+          rx="4"
+          class="fx-line fx-dashed"
+          style="stroke: #d9534f"
+        />
+        <text x={inX + col * pitch + cell / 2} y={top - 12} text-anchor="middle" class="fx-danger-text fx-small">
+          ✕
+        </text>
+      </g>
+    ))
+  }
+  <Alignment x={inX} y={top} rows={rows} ids={ids} cell={cell} />
+  <Arrow x1={278} y1={top + 38} x2={360} y2={top + 38} label="trim" />
+  <Alignment x={outX} y={top} rows={trimmed} ids={ids} cell={cell} />
+</Figure>
