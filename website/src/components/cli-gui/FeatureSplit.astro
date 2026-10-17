@@ -1,0 +1,66 @@
+---
+/// What only the CLI does, what both do, and what only the GUI does.
+import Figure from "../features/Figure.astro";
+
+const columns = [
+  {
+    title: "CLI only",
+    items: [
+      "--dry-run preview",
+      "--npercent cutoffs",
+      "Nested input folders",
+      "Non-standard extensions",
+    ],
+    accent: false,
+  },
+  {
+    title: "Both",
+    items: ["Every alignment task", "Every sequence task", "Read, contig, and MAF tools", "Same output files"],
+    accent: true,
+  },
+  {
+    title: "GUI only",
+    items: ["Text and table viewer", "iOS, iPadOS, Android", "File picker input", "Point-and-click options"],
+    accent: false,
+  },
+];
+const width = 220;
+const gap = 15;
+const lineStep = 30;
+const height = 64 + columns[0].items.length * lineStep;
+---
+
+<Figure
+  id="feature-split"
+  viewBox={`0 0 ${3 * width + 2 * gap + 4} ${height + 4}`}
+  title="Feature differences"
+  desc={columns.map((column) => `${column.title}: ${column.items.join(", ")}.`).join(" ")}
+  caption="The main tasks are the same in both. The differences are in how you give input and look at output."
+>
+  {
+    columns.map((column, i) => {
+      const x = 2 + i * (width + gap);
+      return (
+        <g>
+          <rect x={x} y="2" width={width} height={height} rx="12" class={column.accent ? "fx-panel-accent" : "fx-panel"} />
+          <text x={x + width / 2} y="34" text-anchor="middle" class="fx-title fx-accent-text">
+            {column.title}
+          </text>
+          {column.items.map((item, n) => (
+            <g>
+              <circle cx={x + 20} cy={64 + n * lineStep} r="4" class={column.accent ? "fx-on" : "fx-head"} />
+              <text
+                x={x + 32}
+                y={64 + n * lineStep}
+                dominant-baseline="central"
+                class={`fx-small${item.includes("--") ? " fx-mono" : ""}`}
+              >
+                {item}
+              </text>
+            </g>
+          ))}
+        </g>
+      );
+    })
+  }
+</Figure>

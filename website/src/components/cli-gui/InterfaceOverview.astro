@@ -1,0 +1,131 @@
+---
+/// Side-by-side sketch of the CLI and GUI with what each is best at.
+import Figure from "../features/Figure.astro";
+
+const panels = [
+  {
+    name: "CLI",
+    tagline: "Commands and scripts",
+    strengths: [
+      "Fastest, smallest memory use",
+      "Runs on HPC clusters and WSL",
+      "Scriptable for pipelines",
+      "Builds from source anywhere Rust runs",
+    ],
+  },
+  {
+    name: "GUI",
+    tagline: "Point and click",
+    strengths: [
+      "No command line needed",
+      "Built-in text and table viewer",
+      "Runs on phones and tablets",
+      "Guided input and output options",
+    ],
+  },
+];
+const width = 318;
+const gap = 24;
+const terminal = [
+  { text: "$ segul align concat \\", cls: "fx-mono fx-small" },
+  { text: "    -d loci/ -f nexus", cls: "fx-mono fx-small" },
+  { text: "Input  4,060 alignments", cls: "fx-mono fx-small fx-muted" },
+  { text: "Output concat.nex", cls: "fx-mono fx-small fx-muted" },
+  { text: "✓ Done in 2.5 s", cls: "fx-mono fx-small fx-accent-text" },
+];
+---
+
+<Figure
+  id="interface-overview"
+  viewBox="0 0 660 362"
+  title="CLI and GUI at a glance"
+  desc="Left: the CLI runs SEGUL from a terminal, for example segul align concat on a folder of NEXUS loci. It is the fastest option, runs on HPC clusters and WSL, is scriptable, and builds from source anywhere Rust runs. Right: the GUI is a desktop and mobile app with a navigation rail, a file picker, and a run button. It needs no command line, includes a text and table viewer, runs on phones and tablets, and guides input and output options."
+  caption="Both run the same SEGUL core, so results match. Install one or both; they do not interfere."
+>
+  {
+    panels.map((panel, i) => {
+      const x = 2 + i * (width + gap);
+      return (
+        <g>
+          <rect x={x} y="2" width={width} height="356" rx="12" class="fx-panel" />
+          <text x={x + 18} y="32" class="fx-title fx-accent-text" style="font-size: 18px">
+            {panel.name}
+          </text>
+          <text x={x + width - 18} y="32" text-anchor="end" class="fx-muted fx-small">
+            {panel.tagline}
+          </text>
+          {/* Window frame shared by both sketches. */}
+          <rect x={x + 18} y="48" width={width - 36} height="150" rx="8" class="oi-window" />
+          <circle cx={x + 32} cy="61" r="4" class="oi-dot" />
+          <circle cx={x + 45} cy="61" r="4" class="oi-dot" />
+          <circle cx={x + 58} cy="61" r="4" class="oi-dot" />
+          {i === 0 &&
+            terminal.map((line, l) => (
+              <text x={x + 32} y={92 + l * 22} class={line.cls} style="white-space: pre">
+                {line.text}
+              </text>
+            ))}
+          {i === 1 && (
+            <g>
+              <rect x={x + 18} y="72" width="44" height="126" class="oi-rail" />
+              {[0, 1, 2].map((n) => (
+                <rect
+                  x={x + 30}
+                  y={86 + n * 34}
+                  width="20"
+                  height="20"
+                  rx="6"
+                  class={n === 0 ? "fx-on" : "oi-icon"}
+                />
+              ))}
+              <text x={x + 76} y="94" class="fx-small fx-title">
+                Alignment concatenation
+              </text>
+              <rect x={x + 76} y="106" width="206" height="34" rx="6" class="fx-panel" />
+              <text x={x + 88} y="127" class="fx-small fx-muted">
+                Input: loci/ · 4,060 files
+              </text>
+              <rect x={x + 76} y="148" width="98" height="12" rx="6" class="oi-icon" />
+              <rect x={x + 202} y="160" width="80" height="28" rx="14" class="fx-on" />
+              <text x={x + 242} y="174" text-anchor="middle" dominant-baseline="central" class="oi-button-text">
+                Run
+              </text>
+            </g>
+          )}
+          <text x={x + 18} y="228" class="fx-muted fx-small">
+            Best for
+          </text>
+          {panel.strengths.map((strength, s) => (
+            <g>
+              <circle cx={x + 26} cy={252 + s * 26} r="4" class="fx-on" />
+              <text x={x + 40} y={252 + s * 26} dominant-baseline="central">
+                {strength}
+              </text>
+            </g>
+          ))}
+        </g>
+      );
+    })
+  }
+</Figure>
+
+<style is:global>
+  .fx-figure .oi-window {
+    fill: var(--sl-color-gray-6);
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+  .fx-figure .oi-dot,
+  .fx-figure .oi-icon {
+    fill: var(--sl-color-gray-4);
+  }
+  .fx-figure .oi-rail {
+    fill: var(--sl-color-gray-5);
+    opacity: 0.6;
+  }
+  .fx-figure .oi-button-text {
+    fill: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+</style>

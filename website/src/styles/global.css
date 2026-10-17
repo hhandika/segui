@@ -84,3 +84,20 @@ html.sg-menu-open,
 html.sg-menu-open body {
   overflow: hidden;
 }
+
+/* Benchmark series on the CLI vs GUI page, checked for color-vision
+   deficiency against each surface. */
+:root {
+  --bc-cli: #17ad5c;
+  --bc-gui: #4a8fe0;
+  --bc-ipad: #cc7a08;
+  --bc-android: #a77ad8;
+  --bc-other: #6b716d;
+}
+:root[data-theme="light"] {
+  --bc-cli: #00843f;
+  --bc-gui: #2565b0;
+  --bc-ipad: #c46a00;
+  --bc-android: #8a4fbf;
+  --bc-other: #9aa09c;
+}
