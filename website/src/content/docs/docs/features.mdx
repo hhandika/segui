@@ -20,8 +20,9 @@ import Renaming from "../../../components/features/Renaming.astro";
 import RowSelection from "../../../components/features/RowSelection.astro";
 import Translation from "../../../components/features/Translation.astro";
 import Transposition from "../../../components/features/Transposition.astro";
+import Guides from "../../../components/features/Guides.astro";
 
-This page shows what each SEGUL feature does with your data. Each diagram uses a small example; the same rules apply to datasets with thousands of loci. For options and commands, follow the links to the CLI usage pages.
+This page shows what each SEGUL feature does with your data. Each diagram uses a small example; the same rules apply to datasets with thousands of loci. Under each feature, the guide links open its step-by-step instructions for the GUI, CLI, and Python API, or say when an interface does not support it yet. The [Rust](/docs/api-usage/rust-api/) and [R](/docs/api-usage/r-api/) APIs use the SEGUL library directly.
 
 ## Task Group
 
@@ -72,7 +73,9 @@ genus_species_museumNo3    ATCGATCGATATCGATCGAT
 
 ### Alignment Concatenation
 
-Joins many alignments into one and writes a partition that records where each locus starts and ends. Sequences are matched by sample name, so a typo or inconsistent name leaves a sequence unmatched. See [the CLI usage](/docs/cli-usage/align-concat/).
+Joins many alignments into one and writes a partition that records where each locus starts and ends. Sequences are matched by sample name, so a typo or inconsistent name leaves a sequence unmatched.
+
+<Guides feature="align-concat" />
 
 <Concatenation />
 
@@ -82,37 +85,49 @@ Use [Sequence ID Extraction](#sequence-id-extraction) to check names for typos b
 
 ### Alignment Conversion
 
-Changes the file format of alignments. See [the CLI usage](/docs/cli-usage/align-convert/).
+Changes the file format of alignments.
+
+<Guides feature="align-convert" />
 
 <Conversion />
 
 ### Alignment Distance
 
-Computes pairwise genetic distances between samples in each alignment. See [the CLI usage](/docs/cli-usage/align-distance/).
+Computes pairwise genetic distances between samples in each alignment.
+
+<Guides feature="align-distance" />
 
 <Distance />
 
 ### Alignment Filtering
 
-Keeps the alignments that meet a criterion and drops the rest. See [the CLI usage](/docs/cli-usage/align-filter/).
+Keeps the alignments that meet a criterion and drops the rest.
+
+<Guides feature="align-filter" />
 
 <Filtering />
 
 ### Alignment Partition Conversion
 
-Converts partitions between RAxML and NEXUS formats. See [the CLI usage](/docs/cli-usage/align-partition/).
+Converts partitions between RAxML and NEXUS formats.
+
+<Guides feature="align-partition" />
 
 <PartitionConversion />
 
 ### Alignment Splitting
 
-Splits a concatenated alignment back into separate loci using its partition. See [the CLI usage](/docs/cli-usage/align-split/).
+Splits a concatenated alignment back into separate loci using its partition.
+
+<Guides feature="align-split" />
 
 <Splitting />
 
 ### Alignment Summary
 
-Computes summary statistics for a set of alignments at three levels: the whole dataset, each alignment, and each sample. See [the CLI usage](/docs/cli-usage/align-summary/).
+Computes summary statistics for a set of alignments at three levels: the whole dataset, each alignment, and each sample.
+
+<Guides feature="align-summary" />
 
 <AlignmentSummary />
 
@@ -120,7 +135,9 @@ Computes summary statistics for a set of alignments at three levels: the whole d
 
 ### Sequence Read and Contig Summary
 
-Both tasks compute summary statistics for genomic files: raw reads in FASTQ format and assembled contigs in FASTA format. See [the CLI usage](/docs/cli-usage/genomic-summary/).
+Both tasks compute summary statistics for genomic files: raw reads in FASTQ format and assembled contigs in FASTA format.
+
+<Guides feature="genomic-summary" />
 
 <GenomicSummary />
 
@@ -128,25 +145,33 @@ Both tasks compute summary statistics for genomic files: raw reads in FASTQ form
 
 ### Sequence ID Extraction
 
-Lists every unique sample name across your files. See [the CLI usage](/docs/cli-usage/sequence-id/).
+Lists every unique sample name across your files.
+
+<Guides feature="sequence-id" />
 
 <SequenceIds />
 
 ### Sequence ID Mapping
 
-Shows which samples are present in each file. See [the CLI usage](/docs/cli-usage/sequence-map/).
+Shows which samples are present in each file.
+
+<Guides feature="sequence-map" />
 
 <SequenceIds map />
 
 ### Sequence ID Renaming
 
-Replaces sample names across all files using a table of original and new names. See [the CLI usage](/docs/cli-usage/sequence-rename/).
+Replaces sample names across all files using a table of original and new names.
+
+<Guides feature="sequence-rename" />
 
 <Renaming />
 
 ### Sequence Extraction
 
-Keeps only the sequences you select by ID, by a list in a text file, or by a regular expression. See [the CLI usage](/docs/cli-usage/sequence-extract/).
+Keeps only the sequences you select by ID, by a list in a text file, or by a regular expression.
+
+<Guides feature="sequence-extract" />
 
 <RowSelection
   id="sequence-extract"
@@ -160,7 +185,9 @@ Keeps only the sequences you select by ID, by a list in a text file, or by a reg
 
 ### Sequence Filtering
 
-Drops single sequences that fail a criterion, such as too few non-gap sites or too many gaps, and keeps the rest of each file. To drop whole alignments instead, use [Alignment Filtering](#alignment-filtering). See [the CLI usage](/docs/cli-usage/sequence-filter/).
+Drops single sequences that fail a criterion, such as too few non-gap sites or too many gaps, and keeps the rest of each file. To drop whole alignments instead, use [Alignment Filtering](#alignment-filtering).
+
+<Guides feature="sequence-filter" />
 
 <RowSelection
   id="sequence-filter"
@@ -174,7 +201,9 @@ Drops single sequences that fail a criterion, such as too few non-gap sites or t
 
 ### Sequence Removal
 
-Deletes the sequences you select by ID or by a regular expression. Removing a few sequences is faster than extracting the rest. See [the CLI usage](/docs/cli-usage/sequence-remove/).
+Deletes the sequences you select by ID or by a regular expression. Removing a few sequences is faster than extracting the rest.
+
+<Guides feature="sequence-remove" />
 
 <RowSelection
   id="sequence-remove"
@@ -188,12 +217,16 @@ Deletes the sequences you select by ID or by a regular expression. Removing a fe
 
 ### Sequence Translation
 
-Translates DNA sequences to amino acids. See [the CLI usage](/docs/cli-usage/sequence-translate/).
+Translates DNA sequences to amino acids.
+
+<Guides feature="sequence-translate" />
 
 <Translation />
 
 ### Sequence Transposition
 
-Turns locus alignments into one file per sample. Each file holds one sequence for every locus where the sample is present, named after that locus, with gaps and missing data removed. See [the CLI usage](/docs/cli-usage/sequence-transpose/).
+Turns locus alignments into one file per sample. Each file holds one sequence for every locus where the sample is present, named after that locus, with gaps and missing data removed.
+
+<Guides feature="sequence-transpose" />
 
 <Transposition />
