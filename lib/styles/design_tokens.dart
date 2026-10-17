@@ -63,11 +63,11 @@ abstract final class SeguiControlSize {
   /// Height of the feature diagram preview on quick start guide cards.
   static const double diagramPreview = 140;
 
-  /// Height of a theme choice card in the theme settings.
-  static const double themeCard = 120;
+  /// Width of the gull scene preview on a compact theme choice.
+  static const double themePreview = 120;
 
-  /// Height of the horizontal theme picker strip.
-  static const double themePicker = 200;
+  /// Height of the mascot art on the about sheet.
+  static const double aboutArt = 128;
 
   /// Tallest tool search suggestions view on larger screens.
   static const double searchViewMax = 520;
@@ -108,6 +108,9 @@ abstract final class SeguiContentWidth {
 
   /// Statistic tiles, such as the file count on the data usage page.
   static const double statTile = 200;
+
+  /// Narrowest theme choice card before the choices stack as rows.
+  static const double themeChoice = 200;
 
   /// App bar tool search field.
   static const double searchBar = 280;

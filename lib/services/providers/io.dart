@@ -185,6 +185,22 @@ class FileOutput extends AsyncNotifier<SegulOutputFile> {
     });
   }
 
+  /// Treat only files written from now on as new outputs.
+  /// This is used before each run, so a rerun does not count
+  /// the previous run's files as its own.
+  void markRunStart() {
+    final SegulOutputFile? current = state.value;
+    if (current == null || current.directory == null) {
+      return;
+    }
+    state = AsyncValue.data(SegulOutputFile(
+      directory: current.directory,
+      files: [for (final f in current.files) (file: f.file, isNew: false)],
+      // Some filesystems store modification times in whole seconds.
+      selectedAt: DateTime.now().subtract(const Duration(seconds: 1)),
+    ));
+  }
+
   /// Update the files in the output directory.
   /// This is use after the use executes a task.
   /// We can also do stream with `FileEntity().watch`

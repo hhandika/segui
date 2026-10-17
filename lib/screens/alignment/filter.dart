@@ -135,6 +135,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
               decoration: filteringOptionsInput[_filteringOptionsController],
               keyboardType: TextInputType.number,
               onChanged: (value) {
+                const FormEditedNotification().dispatch(context);
                 setState(() {
                   _isValid;
                 });

@@ -1,7 +1,9 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/illustrations.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
@@ -505,7 +507,11 @@ class FileSidePanel extends StatelessWidget {
 ///
 /// [form] holds the input and output sections; [action] is the execution
 /// button shown in the run bar.
-class ToolFormLayout extends StatelessWidget {
+/// Form and run bar of a tool page.
+///
+/// Tracks whether the user edited the form since the last run started, so the
+/// execution button can offer a re-run after a successful run.
+class ToolFormLayout extends ConsumerStatefulWidget {
   const ToolFormLayout({
     super.key,
     required this.form,
@@ -516,48 +522,139 @@ class ToolFormLayout extends StatelessWidget {
   final Widget? action;
 
   @override
+  ConsumerState<ToolFormLayout> createState() => _ToolFormLayoutState();
+}
+
+class _ToolFormLayoutState extends ConsumerState<ToolFormLayout> {
+  bool _isEdited = false;
+
+  /// Last selected output directory. Output updates pass through a loading
+  /// state, so the listener's previous value cannot be compared directly.
+  String? _outputDir;
+
+  @override
+  void initState() {
+    super.initState();
+    _outputDir = ref.read(fileOutputProvider).value?.directory?.path;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Input files change only through user actions.
+    ref.listen(fileInputProvider, (_, __) => _markEdited());
+    ref.listen(
+      fileOutputProvider.select((value) => value.value?.directory?.path),
+      (_, String? next) {
+        if (next == null) {
+          return;
+        }
+        if (_outputDir != null && _outputDir != next) {
+          _markEdited();
+        }
+        _outputDir = next;
+      },
+    );
     final bool isCompact = isPhoneScreen(context);
     final double sidePadding = isCompact ? 16 : 32;
-    return Column(
-      children: [
-        Expanded(
-          child: LayoutBuilder(builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                // Fill the height so the gull scene sits on the run bar
-                // when the form is short.
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: sidePadding),
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxWidth: maxToolFormWidth,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: form,
+    return ToolFormEditScope(
+      isEdited: _isEdited,
+      onRunStarted: _clearEdited,
+      child: NotificationListener<FormEditedNotification>(
+        onNotification: (_) {
+          _markEdited();
+          return true;
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: LayoutBuilder(builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    // Fill the height so the gull scene sits on the run bar
+                    // when the form is short.
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: sidePadding),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: maxToolFormWidth,
+                              ),
+                              child: Form(
+                                onChanged: _markEdited,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: widget.form,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: SeguiSpacing.xxl),
+                          child: ToolScene(),
+                        ),
+                      ],
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: SeguiSpacing.xxl),
-                      child: ToolScene(),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
+                  ),
+                );
+              }),
+            ),
+            ToolRunBar(action: widget.action),
+          ],
         ),
-        ToolRunBar(action: action),
-      ],
+      ),
     );
+  }
+
+  void _markEdited() {
+    if (_isEdited || !mounted) {
+      return;
+    }
+    // Provider listeners can fire while widgets build, such as after a
+    // provider is invalidated.
+    final SchedulerBinding binding = SchedulerBinding.instance;
+    if (binding.schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      binding.addPostFrameCallback((_) => _markEdited());
+      return;
+    }
+    setState(() => _isEdited = true);
+  }
+
+  void _clearEdited() {
+    if (_isEdited) {
+      setState(() => _isEdited = false);
+    }
+  }
+}
+
+/// Shares a tool form's edit state with its execution button.
+class ToolFormEditScope extends InheritedWidget {
+  const ToolFormEditScope({
+    super.key,
+    required this.isEdited,
+    required this.onRunStarted,
+    required super.child,
+  });
+
+  /// Whether the user edited the form since the last run started.
+  final bool isEdited;
+
+  /// Called when a run starts, so later edits count against that run.
+  final VoidCallback onRunStarted;
+
+  static ToolFormEditScope? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ToolFormEditScope>();
+  }
+
+  @override
+  bool updateShouldNotify(ToolFormEditScope oldWidget) {
+    return isEdited != oldWidget.isEdited;
   }
 }
 

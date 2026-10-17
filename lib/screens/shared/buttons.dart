@@ -7,12 +7,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/info.dart';
+import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 
 /// Runs a tool, then offers a new run and sharing after it succeeds.
-class ExecutionButton extends StatelessWidget {
+///
+/// Editing the form after a successful run turns it into a re-run button,
+/// which runs again with the current input and options.
+class ExecutionButton extends ConsumerWidget {
   const ExecutionButton({
     super.key,
     required this.label,
@@ -33,8 +37,10 @@ class ExecutionButton extends StatelessWidget {
   final void Function() onNewRun;
 
   @override
-  Widget build(BuildContext context) {
-    if (isSuccess) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ToolFormEditScope? scope = ToolFormEditScope.maybeOf(context);
+    final bool isEdited = scope?.isEdited ?? false;
+    if (isSuccess && !isRunning && !isEdited) {
       return Wrap(
         spacing: SeguiSpacing.lg,
         runSpacing: SeguiSpacing.md,
@@ -52,13 +58,41 @@ class ExecutionButton extends StatelessWidget {
       );
     }
     return Tooltip(
-      message: isRunning ? 'Keep this screen open to avoid interruption.' : '',
+      message: _tooltip,
       child: PrimaryButton(
-        label: isRunning ? 'Running' : label,
-        onPressed: isRunning ? null : onExecuted,
+        label: _label,
+        onPressed: isRunning ? null : _runCallback(ref, scope),
         isRunning: isRunning,
       ),
     );
+  }
+
+  String get _label {
+    if (isRunning) {
+      return 'Running';
+    }
+    return isSuccess ? 'Re-run' : label;
+  }
+
+  String get _tooltip {
+    if (isRunning) {
+      return 'Keep this screen open to avoid interruption.';
+    }
+    return isSuccess ? 'Run again with the current input and options.' : '';
+  }
+
+  /// Starts each run with a fresh output baseline, so new-file highlights and
+  /// Quick Share cover only that run's files.
+  VoidCallback? _runCallback(WidgetRef ref, ToolFormEditScope? scope) {
+    final VoidCallback? execute = onExecuted;
+    if (execute == null) {
+      return null;
+    }
+    return () {
+      scope?.onRunStarted();
+      ref.read(fileOutputProvider.notifier).markRunStart();
+      execute();
+    };
   }
 }
 

@@ -111,7 +111,6 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
                 setState(() {
                   if (value != null) {
                     _ctr.outputFormatController = value;
-                    _ctr.isSuccess = false;
                   }
                 });
               },

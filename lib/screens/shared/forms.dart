@@ -8,6 +8,14 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/styles/design_tokens.dart';
 
+/// Tells the enclosing tool form that the user changed a field.
+///
+/// Fields that are not [FormField]s dispatch this from their change handler.
+/// [FormField]s, such as dropdowns, are tracked by the enclosing [Form].
+class FormEditedNotification extends Notification {
+  const FormEditedNotification();
+}
+
 class SharedSequenceInputForm extends ConsumerStatefulWidget {
   const SharedSequenceInputForm({
     super.key,
@@ -250,7 +258,10 @@ class SharedTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
-      onChanged: onChanged,
+      onChanged: (String value) {
+        const FormEditedNotification().dispatch(context);
+        onChanged?.call(value);
+      },
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
@@ -261,6 +272,7 @@ class SharedTextField extends StatelessWidget {
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   controller.clear();
+                  const FormEditedNotification().dispatch(context);
                 },
               )
             : null,
@@ -425,6 +437,7 @@ class SegmentedField extends StatelessWidget {
                 ? null
                 : (selection) {
                     if (selection.isNotEmpty) {
+                      const FormEditedNotification().dispatch(context);
                       onChanged!(selection.first);
                     }
                   },
@@ -484,7 +497,10 @@ class SwitchForm extends StatelessWidget {
         const SizedBox(width: SeguiSpacing.lg),
         Switch(
           value: value,
-          onChanged: onPressed,
+          onChanged: (bool value) {
+            const FormEditedNotification().dispatch(context);
+            onPressed(value);
+          },
         ),
       ],
     );

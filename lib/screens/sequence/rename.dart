@@ -84,7 +84,6 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
               onChanged: (RenamingOptions? value) {
                 setState(() {
                   _renamingOptionController = value;
-                  _ctr.isSuccess = false;
                 });
               },
             ),
@@ -151,7 +150,6 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
               setState(() {
                 if (value != null) {
                   _ctr.outputFormatController = value;
-                  _ctr.isSuccess = false;
                 }
               });
             },

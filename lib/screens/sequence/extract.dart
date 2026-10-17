@@ -71,7 +71,6 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
             onChanged: (ExtractionOptions? newValue) {
               setState(() {
                 _extractionOptionsController = newValue!;
-                _ctr.isSuccess = false;
               });
             },
           ),
@@ -112,7 +111,6 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
               setState(() {
                 if (value != null) {
                   _ctr.outputFormatController = value;
-                  _ctr.isSuccess = false;
                 }
               });
             },

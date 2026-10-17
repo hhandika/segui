@@ -63,14 +63,7 @@ class _GreetingIllustrationState extends State<GreetingIllustration>
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final ColorMapper mapper = HomeIllustrationColors(
-      line: colors.onSurface,
-      // Container tones go muddy in dark mode, so the sun stays bright there.
-      accent: colors.brightness == Brightness.dark
-          ? colors.tertiary
-          : colors.tertiaryContainer,
-      fill: colors.surface,
-    );
+    final ColorMapper mapper = HomeIllustrationColors.scene(colors);
     final GreetingTime time = widget.time;
     // Built once per build so animation frames reuse the same widgets.
     final Widget sky = GreetingLayer(asset: time.skyAsset, colorMapper: mapper);
@@ -195,6 +188,28 @@ class _GreetingIllustrationState extends State<GreetingIllustration>
     return FractionalOffset(
       point.dx / GreetingIllustration.viewBox,
       point.dy / GreetingIllustration.viewBox,
+    );
+  }
+}
+
+/// The greeting scene for [time] in its final pose, without animation.
+class GullScene extends StatelessWidget {
+  const GullScene({super.key, required this.time});
+
+  final GreetingTime time;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorMapper mapper =
+        HomeIllustrationColors.scene(Theme.of(context).colorScheme);
+    return ExcludeSemantics(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          for (final asset in time.assets)
+            GreetingLayer(asset: asset, colorMapper: mapper),
+        ],
+      ),
     );
   }
 }

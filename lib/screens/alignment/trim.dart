@@ -104,6 +104,7 @@ class AlignmentTrimmingPageState extends ConsumerState<AlignmentTrimmingPage>
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               onChanged: (value) {
+                const FormEditedNotification().dispatch(context);
                 setState(() {});
               },
             ),

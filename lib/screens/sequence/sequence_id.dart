@@ -68,7 +68,6 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
               onPressed: (value) {
                 setState(() {
                   _isMap = value;
-                  _ctr.isSuccess = false;
                 });
               }),
         ]),

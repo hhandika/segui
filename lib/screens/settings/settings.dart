@@ -58,14 +58,7 @@ class AboutMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SecondaryMenuTile(
       text: 'About',
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const AppAbout(),
-          ),
-        );
-      },
+      onTap: () => showAppAbout(context),
     );
   }
 }
@@ -153,7 +146,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
           child: _selectedIndex == 0
               ? const LogListView()
               : _selectedIndex == 1
-                  ? const DesktopThemeSettingView()
+                  ? const ThemeSettingView()
                   : const DataUsageView(),
         ),
       ],
@@ -219,14 +212,7 @@ class SmallScreenSettings extends ConsumerWidget {
                       title: 'About',
                       subtitle: 'View app information',
                       icon: Icons.info_outline,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AppAbout(),
-                          ),
-                        );
-                      },
+                      onTap: () => showAppAbout(context),
                     ),
                   ],
                 ),
