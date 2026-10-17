@@ -4,28 +4,48 @@ sidebar:
   order: 1
 ---
 
+import { LinkCard, TabItem, Tabs } from "@astrojs/starlight/components";
 import StoreBadges from "../../../../components/StoreBadges.astro";
 
-Each version of SEGUL is self-contained. This means you can install the GUI and CLI without conflicts in any operating system that supports them. Learn more about the differences between the [GUI and CLI versions](/docs/cli_gui/).
+The GUI and CLI are self-contained, so you can install both on the same system without conflicts. Not sure which you need? See [CLI vs GUI](/docs/cli_gui/).
 
-## GUI Installation
+<Tabs syncKey="interface">
+<TabItem label="GUI">
 
-**SEGUI**, the native GUI for SEGUL, supports Linux, macOS, Windows, Android, iOS, and iPadOS. It does not run in a web browser. Follow the [GUI installation guide](/docs/installation/install_gui/) for platform requirements and installation instructions. Quick links for installation from the official app stores are provided below:
+**SEGUI**, the SEGUL app, runs on Linux, macOS, Windows, Android, iOS, and iPadOS. It does not run in a web browser.
 
-### Desktop
+<StoreBadges stores={["microsoft", "app", "play", "snap"]} />
 
-<StoreBadges stores={["microsoft", "app", "snap"]} />
+<LinkCard title="GUI installation" description="Requirements and GitHub downloads for each platform" href="/docs/installation/install_gui/" />
 
-### Mobile
+</TabItem>
+<TabItem label="CLI">
 
-<StoreBadges stores={["app", "play"]} />
+The quickest route on Linux and macOS:
 
-## CLI Installation
+```bash
+curl -fsSL https://segul.app/install.sh | sh
+```
 
-We provide several installation methods for the command-line interface (CLI) app. Each method has advantages and disadvantages, so we recommend choosing the one that best suits your needs.
+Or with conda on Linux and macOS:
 
-1. Using a **pre-compiled binary** is the CLI version's quickest and most straightforward installation route. Learn more about the [pre-compiled binary installation](/docs/installation/install_binary/).
-2. Install from the **Bioconda channel**. This installation route is the fastest option for Linux and macOS users with [conda](https://docs.conda.io/projects/conda/en/stable/user-guide/install/index.html) installed. Learn more about the [Bioconda installation](/docs/installation/install_conda/).
-3. Use the **Rust package manager**, [cargo](https://doc.rust-lang.org/cargo/). If you already use Rust, this installation route is the best option. The cargo install provides the most platform support. Learn more about [the cargo installation](/docs/installation/install_cargo/).
-4. Compiling it from **the source code** in the GitHub repository gives you the most up-to-date version, but the resulting binary may not be fully tested. Learn more about the [source code installation](/docs/installation/install_source/).
-5. Compiling from the **development branch**. We keep new features in the development branch until we finish testing them. This installation method will allow you to test new features before release. However, the development branch may be unstable. Learn more about the [development branch installation](/docs/installation/install_dev/).
+```bash
+conda install bioconda::segul
+```
+
+<LinkCard title="CLI installation" description="Installer script, binaries for Windows and HPC, conda, Cargo, and source builds" href="/docs/installation/install_cli/" />
+
+</TabItem>
+<TabItem label="API">
+
+```bash
+pip install pysegul   # Python
+cargo add segul       # Rust
+```
+
+<LinkCard title="API usage" description="Python, Rust, and R" href="/docs/api-usage/" />
+
+</TabItem>
+</Tabs>
+
+<LinkCard title="Update SEGUL" description="Keep the GUI and CLI up to date" href="/docs/installation/update/" />

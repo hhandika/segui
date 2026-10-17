@@ -21,7 +21,7 @@ Or if you use mamba:
 mamba install segul
 ```
 
-Learn more about the installation using Bioconda [here](/docs/installation/install_conda/).
+Learn more about the installation using Bioconda [here](/docs/installation/install_cli/#conda).
 :::
 
 ## Citation

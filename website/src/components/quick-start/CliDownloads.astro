@@ -1,0 +1,112 @@
+---
+/// Download cards for the pre-compiled CLI binaries, grouped by operating
+/// system. Links point to the latest GitHub release.
+const release = "https://github.com/hhandika/segul/releases/latest/download/";
+
+const systems = [
+  {
+    os: "Linux",
+    builds: [
+      { arch: "x86_64", file: "segul-Linux-x86_64.tar.gz", note: "Modern distributions and WSL" },
+      { arch: "x86_64 static", file: "segul-Linux-musl-x86_64.tar.gz", note: "Older GLIBC, common on HPC" },
+      { arch: "ARM64", file: "segul-Linux-arm64.tar.gz", note: "ARM servers and boards" },
+    ],
+  },
+  {
+    os: "macOS",
+    builds: [
+      { arch: "Apple silicon", file: "segul-macOS-arm64.tar.gz", note: "M-series Macs" },
+      { arch: "Intel", file: "segul-macOS-x86_64.tar.gz", note: "Intel Macs" },
+    ],
+  },
+  {
+    os: "Windows",
+    builds: [
+      { arch: "x86_64", file: "segul-Windows-x86_64.zip", note: "Most Windows PCs" },
+      { arch: "ARM64", file: "segul-Windows-arm64.zip", note: "Windows on ARM, Copilot+ PCs" },
+    ],
+  },
+];
+---
+
+<div class="qs-downloads not-content">
+  {
+    systems.map((system) => (
+      <section class="qs-os">
+        <h4>{system.os}</h4>
+        <ul>
+          {system.builds.map((build) => (
+            <li>
+              <a href={release + build.file} class="qs-build">
+                <span class="qs-arch">{build.arch}</span>
+                <span class="qs-note">{build.note}</span>
+                <span class="qs-get" aria-hidden="true">
+                  ↓
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .qs-downloads {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1rem;
+    margin-block: 1.25rem;
+  }
+  .qs-os {
+    padding: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.75rem;
+    background: var(--sl-color-gray-6);
+  }
+  h4 {
+    margin: 0 0 0.75rem;
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-lg);
+    font-weight: 700;
+  }
+  ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .qs-build {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-black);
+    color: var(--sl-color-white);
+    text-decoration: none;
+  }
+  .qs-build:hover,
+  .qs-build:focus-visible {
+    border-color: var(--sl-color-accent);
+    background: var(--sl-color-accent-low);
+  }
+  .qs-arch {
+    font-weight: 600;
+  }
+  .qs-note {
+    grid-column: 1;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+  .qs-get {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    color: var(--sl-color-accent-high);
+    font-size: 1.25rem;
+  }
+</style>

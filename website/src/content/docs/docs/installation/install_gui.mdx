@@ -4,148 +4,110 @@ sidebar:
   order: 2
 ---
 
+import { Steps, TabItem, Tabs } from "@astrojs/starlight/components";
 import StoreBadges from "../../../../components/StoreBadges.astro";
 
-SEGUI is the native desktop and mobile GUI for SEGUL. It supports Android, iOS, iPadOS, macOS, Windows, and Linux; there is no browser version. Use the platform-specific instructions below to install the app.
+SEGUI is the native desktop and mobile GUI for SEGUL. It runs on Android, iOS, iPadOS, macOS, Windows, and Linux; there is no browser version. Install it from your platform's store, or download it from the [GitHub release page](https://github.com/hhandika/segui/releases).
 
-:::note
-To build SEGUI from source, follow the [advanced guide](/docs/advance-guides/build-gui/).
+<StoreBadges stores={["microsoft", "app", "play", "snap"]} />
+
+## Install by platform
+
+<Tabs syncKey="gui-platform">
+<TabItem label="Windows">
+
+**Requires** Windows 10 or newer, 64-bit.
+
+<StoreBadges stores={["microsoft"]} />
+
+**From GitHub:** download `segui-Windows-x86_64.zip` from the [release page](https://github.com/hhandika/segui/releases), extract it, and run `segui.exe`. Create a desktop or Start menu shortcut for easier access.
+
+:::caution
+Windows may ask before running an app downloaded from GitHub. Check that the file came from the official release page before selecting **More info** and **Run anyway**.
 :::
 
-### Quick Download Links
+</TabItem>
+<TabItem label="macOS">
 
-- [Google Play Store](https://play.google.com/store/apps/details?id=com.hhandika.segui&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
-- [App Store (macOS, iOS, and iPadOS)](https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&itscg=30200)
-- [Microsoft Store](https://apps.microsoft.com/detail/SEGUI/9NP1BQ6FW9PW?mode=direct)
-- [Snap Store](https://snapcraft.io/segui)
-
-## System Requirements
-
-| Platform | Minimum requirement |
-| --- | --- |
-| Android | Android 8.0 Oreo (API 26) |
-| iOS and iPadOS | Version 15.0 |
-| macOS | macOS 12.0 Monterey |
-| Windows | Windows 10, 64-bit |
-| Linux | Ubuntu 22.04 or another compatible 64-bit distribution with GLIBC 2.34+ |
-
-:::note[Apple compatibility]
-The Apple minimum versions above apply to the next SEGUI release containing the native-platform upgrade. Versions currently available in the app stores may have different requirements; check the listing for the version you install.
-:::
-
-## Installation
-
-### Android
-
-SEGUI works on Android phones, tablets, and Chromebooks. We recommend installing the app from Google Play Store. You can download the app by clicking the download button below:
-
-<StoreBadges stores={["play"]} />
-
-**Requirements**
-
-- Android 8.0 Oreo+ (API 26)
-
-#### Alternative Installation
-
-Download an APK from the [GitHub release page](https://github.com/hhandika/segui/releases). Select the APK based on your device architecture. The available options are:
-
-- `segui-arm64-v8a-release.apk` for 64-bit ARM devices. Most modern Android devices use this architecture.
-- `segui-armeabi-v7a-release.apk` for 32-bit ARM devices. Provided for compatibility with older devices.
-- `segui-x86_64-release.apk` for 64-bit x86 devices. Used in some Chromebooks.
-
-Then, install the app on your Android device. You may need to allow installation from unknown sources. Depending on your devices, usually you can do this by going to Settings > Apps & notifications > Advanced > Special app access > Install unknown apps. Then, select the browser you use to download the apk file.
-
-### Apple Devices
-
-#### macOS
-
-We recommend installing the app from the [App Store](https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&itscg=30200). You can download the app by clicking the download button below:
+**Requires** macOS 12.0 Monterey or newer.
 
 <img src="https://tools-qr-production.s3.amazonaws.com/output/apple-toolbox/fa86fccd2076c98231750ad7f8755a16/d8686a5163ad967d5b029b7faf7ad928.png" width="140" alt="QR code for SEGUI on the App Store" />
 
 <StoreBadges stores={["app"]} />
 
-**Requirements**
+Want to test new versions early? Join the beta on [Apple TestFlight](https://testflight.apple.com/join/LSJD5D0i).
 
-- macOS 12.0 Monterey+
+</TabItem>
+<TabItem label="Linux">
 
-#### iOS and iPadOS
-
-You can download the app by clicking the download button below:
-
-<img src="https://tools-qr-production.s3.amazonaws.com/output/apple-toolbox/fa86fccd2076c98231750ad7f8755a16/d8686a5163ad967d5b029b7faf7ad928.png" width="140" alt="QR code for SEGUI on the App Store" />
-
-<StoreBadges stores={["app"]} />
-
-**Requirements**
-
-- iOS 15.0+ or iPadOS 15.0+
-
-#### Beta Testing for Apple Devices
-
-Interested in helping us to test the app before the official release? You can join the beta testing program by installing the app from [Apple TestFlight](https://testflight.apple.com/join/LSJD5D0i).
-
-### Linux
-
-If you are using Ubuntu or other distributions that support Snapcraft, you can install the app from the Snap Store. Click the button below to install the app:
+**Requires** Ubuntu 22.04 or another 64-bit distribution with GLIBC 2.34 or newer. Check yours with `ldd --version`.
 
 <StoreBadges stores={["snap"]} />
 
-**Requirements**
+**From GitHub:** download the package for your distribution from the [release page](https://github.com/hhandika/segui/releases).
 
-- Ubuntu 22.04+ or other distributions with GLIBC 2.34+
-
-#### Alternative Installation
-
-Download the latest release from [here](https://github.com/hhandika/segui/releases). We provide a pre-built binary for Linux in `.deb`, `.rpm`, and `.tar.gz` formats. Choose the format that is compatible with your distribution.
-
-For Debian and Ubuntu-based distributions, download the `.deb` file. For Fedora, CentOS, and other Red Hat-based distributions, download the `.rpm` file. For other distributions, download the `.tar.gz` file.
-
-For Debian and Ubuntu-based distributions, install the app using the following command:
+<Tabs syncKey="linux-package">
+<TabItem label="Debian and Ubuntu">
 
 ```bash
 sudo dpkg -i segui-Linux-x86_64.deb
 ```
 
-For Fedora, CentOS, and other Red Hat-based distributions, install the app using the following command:
+</TabItem>
+<TabItem label="Fedora and RHEL">
 
 ```bash
 sudo rpm -i segui-Linux-x86_64.rpm
 ```
 
-For other distributions, download the `.tar.gz` file. Extract the `segui-Linux-x86_64.tar.gz` file to your desired location:
+</TabItem>
+<TabItem label="Other">
+
+Extract the archive anywhere, then run the `segui` executable inside it.
 
 ```bash
 tar -xvzf segui-Linux-x86_64.tar.gz
 ```
 
-Then, run the `segui` executable.
+</TabItem>
+</Tabs>
 
-:::note
-The app may work on any Linux distribution with 64-bit architecture and GLIBC 2.34+.
+</TabItem>
+<TabItem label="iOS and iPadOS">
 
-To check your GLIBC version, run the following command in the terminal:
+**Requires** iOS or iPadOS 15.0 or newer.
 
-```bash
-ldd --version
-```
+<img src="https://tools-qr-production.s3.amazonaws.com/output/apple-toolbox/fa86fccd2076c98231750ad7f8755a16/d8686a5163ad967d5b029b7faf7ad928.png" width="140" alt="QR code for SEGUI on the App Store" />
 
+<StoreBadges stores={["app"]} />
+
+Want to test new versions early? Join the beta on [Apple TestFlight](https://testflight.apple.com/join/LSJD5D0i).
+
+</TabItem>
+<TabItem label="Android">
+
+**Requires** Android 8.0 Oreo (API 26) or newer. SEGUI runs on phones, tablets, and Chromebooks.
+
+<StoreBadges stores={["play"]} />
+
+**From GitHub:** install an APK from the [release page](https://github.com/hhandika/segui/releases).
+
+<Steps>
+
+1. Pick the APK for your device:
+   - `segui-arm64-v8a-release.apk` for 64-bit ARM, which most modern devices use.
+   - `segui-armeabi-v7a-release.apk` for older 32-bit ARM devices.
+   - `segui-x86_64-release.apk` for 64-bit x86, used in some Chromebooks.
+2. Allow your browser to install unknown apps. The setting is usually under **Settings › Apps › Special app access › Install unknown apps**.
+3. Open the downloaded APK to install it.
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+:::note[Apple compatibility]
+The Apple minimum versions above apply to the next SEGUI release containing the native-platform upgrade. Versions currently in the app stores may have different requirements; check the listing for the version you install.
 :::
 
-### Windows
-
-We recommend installing SEGUI directly from the Microsoft Store. You can download the app by clicking the download button below:
-
-<StoreBadges stores={["microsoft"]} />
-
-**Requirements**
-
-- Windows 10+ (64-bit)
-
-#### Alternative Installation
-
-Download the latest release from [GitHub](https://github.com/hhandika/segui/releases). Extract the `segui-Windows-x86_64.zip` file to your desired location. Then, run the `segui.exe` file. For easier access, we recommend creating a desktop or start menu shortcut to the executable file.
-
-:::caution
-Installing the Windows version of SEGUI from GitHub may prompt you to allow the application to run on your device. Verify that you downloaded it from the official release page before clicking “More info” and selecting “Run anyway.”
-:::
+To build SEGUI from source, follow the [advanced guide](/docs/advance-guides/build-gui/).

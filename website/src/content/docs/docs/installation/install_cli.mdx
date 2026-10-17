@@ -1,0 +1,289 @@
+---
+title: CLI Installation
+sidebar:
+  order: 3
+---
+
+import { Steps, TabItem, Tabs } from "@astrojs/starlight/components";
+import CliDownloads from "../../../../components/quick-start/CliDownloads.astro";
+
+The SEGUL CLI is a single executable named `segul`. Pick the method that fits your system:
+
+| Method | Platforms | Best for |
+| --- | --- | --- |
+| [Installer script](#installer-script) | Linux, macOS | The quickest install, no root access needed |
+| [Pre-compiled binary](#pre-compiled-binary) | Linux, macOS, Windows, WSL | Manual installs, Windows, offline machines |
+| [Conda](#conda) | Linux, macOS | Conda users and shared environments |
+| [Cargo](#cargo) | Any platform Rust supports | Rust users; builds tuned for your hardware |
+| [Source code](#source-code) | Any platform Rust supports | The latest code, or beta features |
+
+After installing, check that `segul` runs from any folder:
+
+```bash
+segul --version
+```
+
+## Installer script
+
+On Linux and macOS, run:
+
+```bash
+curl -fsSL https://segul.app/install.sh | sh
+```
+
+The script picks the right binary for your system and installs it to `~/.local/bin` without root access. It tells you if that folder is not on your `PATH`. On Linux x86_64, it uses the static musl build when your GLIBC is older than 2.34, which is common on HPC clusters.
+
+Pass options after `sh -s --`, for example `curl -fsSL https://segul.app/install.sh | sh -s -- --dir ~/bin`.
+
+| Option | Description |
+| --- | --- |
+| `--dir <path>` | Install into another folder, such as `--dir ~/bin`. |
+| `--version <tag>` | Install a specific release, such as `--version v0.23.2`. |
+| `--musl` | Use the static Linux build even when GLIBC is new enough. |
+| `--uninstall` | Remove the installed binary. Add `--dir` if you used a custom folder. |
+
+## Pre-compiled binary
+
+Download the archive for your system from the [latest release](https://github.com/hhandika/segul/releases/latest):
+
+<CliDownloads />
+
+<Tabs syncKey="os">
+<TabItem label="Linux and WSL">
+
+Linux x86_64 comes in two builds. Check your GLIBC version to choose:
+
+```bash
+ldd --version
+```
+
+- **GLIBC 2.34 or newer:** use `segul-Linux-x86_64.tar.gz`. The compiler optimizes it more, so it is faster.
+- **Older GLIBC:** use the fully static `segul-Linux-musl-x86_64.tar.gz`. It runs on any Linux, including older HPC systems.
+- **ARM64:** use `segul-Linux-arm64.tar.gz`, available since 0.21.3. It needs GLIBC 2.34 or newer.
+
+<Steps>
+
+1. Download and extract the archive. Replace the file name with the build you chose.
+
+   ```bash
+   curl -LJO https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz
+   tar xfvz segul-Linux-x86_64.tar.gz
+   ```
+
+2. If your shell does not recognize the binary, make it executable. Use `chmod a+x` instead to allow all users.
+
+   ```bash
+   chmod +x segul
+   ```
+
+3. Move `segul` to a folder on your `PATH`, such as `~/bin`. If the folder is not on your `PATH` yet, add it to your shell profile. Run `echo $SHELL` to see your shell: use `~/.bashrc` (or `~/.bash_profile`) for bash and `~/.zshrc` for zsh.
+
+   ```bash
+   mkdir -p ~/bin && mv segul ~/bin/
+   echo 'export PATH=$PATH:~/bin' >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+4. Check the installation with `segul --version`.
+
+</Steps>
+
+:::tip[WSL performance]
+On WSL 2, the default, keep large datasets in the Linux file system. Reading files from the Windows partition is 2–3 times faster on WSL 1. See the [Microsoft WSL comparison](https://learn.microsoft.com/en-us/windows/wsl/compare-versions). Native Windows is faster than either.
+:::
+
+</TabItem>
+<TabItem label="macOS">
+
+Use `segul-macOS-arm64.tar.gz` for Apple silicon (M-series) Macs and `segul-macOS-x86_64.tar.gz` for Intel Macs.
+
+<Steps>
+
+1. Download and extract the archive.
+
+   ```bash
+   curl -LJO https://github.com/hhandika/segul/releases/latest/download/segul-macOS-arm64.tar.gz
+   tar xfvz segul-macOS-arm64.tar.gz
+   ```
+
+2. If your shell does not recognize the binary, make it executable.
+
+   ```bash
+   chmod +x segul
+   ```
+
+3. Move `segul` to a folder on your `PATH`. macOS uses zsh by default, so add the folder to `~/.zshrc`.
+
+   ```bash
+   mkdir -p ~/bin && mv segul ~/bin/
+   echo 'export PATH=$PATH:~/bin' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+
+4. Check the installation with `segul --version`.
+
+</Steps>
+
+:::tip
+If you already keep other single-file tools in a folder on your `PATH`, put `segul` there. Many `PATH` entries slow down terminal startup.
+:::
+
+</TabItem>
+<TabItem label="Windows">
+
+Use `segul-Windows-x86_64.zip` for most PCs and `segul-Windows-arm64.zip` for [Windows on ARM](https://learn.microsoft.com/en-us/windows/arm/overview), such as Copilot+ PCs. Native Windows is faster than running the Linux build in WSL.
+
+<Steps>
+
+1. Download the zip file, right-click it, and select **Extract All…**.
+2. Move `segul.exe` to a folder you keep for command-line tools, such as `C:\Tools`.
+3. Search for `env` and open **Edit the system environment variables**. Select **Environment Variables…**, pick `Path` under **System variables**, and select **Edit…**. Select **New**, add your folder, and close each dialog with **OK**.
+4. Open a new terminal and check the installation with `segul --version`.
+
+</Steps>
+
+:::tip
+[Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install) with [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows) makes terminal work easier. Windows Terminal comes with Windows 11.
+:::
+
+</TabItem>
+</Tabs>
+
+## Conda
+
+SEGUL is on [Bioconda](https://anaconda.org/bioconda/segul) for Linux (x86_64 and ARM64, GLIBC 2.17+) and macOS (Intel and Apple silicon).
+
+<Tabs syncKey="conda">
+<TabItem label="I have conda">
+
+With the Bioconda channel set up, install SEGUL with conda or mamba:
+
+```bash
+conda install bioconda::segul
+```
+
+```bash
+mamba install segul
+```
+
+</TabItem>
+<TabItem label="Start fresh">
+
+<Steps>
+
+1. Download and run the [Miniforge](https://github.com/conda-forge/miniforge) installer:
+
+   ```bash
+   curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+   bash Miniforge3-$(uname)-$(uname -m).sh
+   ```
+
+2. Open a new terminal and check that conda and mamba work. It prints both versions.
+
+   ```bash
+   mamba --version
+   ```
+
+3. Add the Bioconda channel:
+
+   ```bash
+   conda config --add channels bioconda
+   ```
+
+4. Install SEGUL and check it:
+
+   ```bash
+   mamba install segul
+   segul --version
+   ```
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+:::tip[libgcc-ng errors]
+The conda package needs [`libgcc-ng`](https://anaconda.org/conda-forge/libgcc-ng) 12 or newer, which older Linux systems may lack. Update it with `conda install conda-forge::libgcc-ng`, then try again. On Linux, the static [pre-compiled binary](#pre-compiled-binary) or [Cargo](#cargo) also avoid the problem.
+:::
+
+## Cargo
+
+If you use Rust, Cargo compiles SEGUL for your hardware and makes updates easy. Install [the Rust toolchain](https://www.rust-lang.org/learn/get-started), check that it works, then install SEGUL:
+
+```bash
+cargo --version
+cargo install segul
+```
+
+If compiling fails with a linker or build tool error, install the C build tools for your system and try again:
+
+<Tabs syncKey="build-tools">
+<TabItem label="Debian and Ubuntu">
+
+```bash
+sudo apt install build-essential
+```
+
+</TabItem>
+<TabItem label="Fedora">
+
+```bash
+sudo dnf groupinstall "Development Tools" "Development Libraries"
+```
+
+</TabItem>
+<TabItem label="openSUSE">
+
+```bash
+sudo zypper install -t pattern devel_basis
+```
+
+</TabItem>
+<TabItem label="Windows">
+
+Install the GNU toolchain with rustup, which comes with Rust, and make it the default:
+
+```bash
+rustup toolchain install stable-x86_64-pc-windows-gnu
+rustup default stable-x86_64-pc-windows-gnu
+```
+
+</TabItem>
+</Tabs>
+
+## Source code
+
+Building from source also needs [the Rust toolchain](https://www.rust-lang.org/learn/get-started).
+
+<Tabs syncKey="source">
+<TabItem label="Latest code">
+
+Install straight from the main branch on GitHub:
+
+```bash
+cargo install --git https://github.com/hhandika/segul.git
+```
+
+Or clone and build it yourself. The binary is written to `target/release/segul`; copy it to a folder on your `PATH`.
+
+```bash
+git clone https://github.com/hhandika/segul
+cd segul/
+cargo build --release
+```
+
+</TabItem>
+<TabItem label="Beta features">
+
+New features live in the `dev` branch until testing finishes, and the documentation marks them as beta. Use them for testing only; they may be unstable.
+
+```bash
+cargo install --git https://github.com/hhandika/segul.git --branch dev
+```
+
+</TabItem>
+</Tabs>
+
+:::tip
+If `cargo` is not found right after installing Rust, open a new terminal, or reload your profile with `source ~/.zshrc` or `source ~/.bashrc`. If compiling fails, install the [C build tools](#cargo).
+:::

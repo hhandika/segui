@@ -19,6 +19,12 @@ export default defineConfig({
     "/docs/category/advanced-guides": "/docs/advance-guides/architecture/",
     "/docs/category/tutorials": "/docs/tutorials/tutorial-1/",
     "/docs/cli-usage/genomic-convert": "/docs/cli-usage/maf-convert/",
+    // CLI installation methods now share one page.
+    "/docs/installation/install_binary": "/docs/installation/install_cli/#pre-compiled-binary",
+    "/docs/installation/install_conda": "/docs/installation/install_cli/#conda",
+    "/docs/installation/install_cargo": "/docs/installation/install_cli/#cargo",
+    "/docs/installation/install_source": "/docs/installation/install_cli/#source-code",
+    "/docs/installation/install_dev": "/docs/installation/install_cli/#source-code",
   },
   integrations: [
     starlight({
