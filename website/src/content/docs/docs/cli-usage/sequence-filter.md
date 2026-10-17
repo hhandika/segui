@@ -13,7 +13,7 @@ Available filtering methods:
 
 The command is structured as below:
 
-```Bash
+```bash
 segul sequence filter <input-option> [alignment-path] <filtering-option> <value>
 ```
 
@@ -32,7 +32,7 @@ agtcgatct
 
 We want to filter sequences that contain at least 5 bp of sequences, excluding gaps. We can use the `--min-length` option:
 
-```Bash
+```bash
 segul sequence filter --dir alignments/ --min-length 5
 ```
 
@@ -49,6 +49,6 @@ agtcgatct
 
 SEGUL considers `-` and `?` as gap characters. The app will remove sequences with a proportion of gaps greater than the specified value. To filter sequences, use the `--max-gap` option with a value between 0 and 1.
 
-```Bash
+```bash
 segul sequence filter --dir alignments/ --max-gap 0.3
 ```

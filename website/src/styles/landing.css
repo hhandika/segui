@@ -1,0 +1,211 @@
+/* Landing, get started, and about page treatments and motion.
+   Class names are prefixed `sg-` so they never collide with Tailwind utilities
+   or Starlight styles. Every animation is disabled under reduced motion. */
+
+/* Starlight's Tailwind integration omits preflight. These pages do not use
+   Starlight, so they load it here; the docs are unaffected. */
+@import "tailwindcss/preflight.css" layer(base);
+
+/* ---------------------------------------------------------- navigation ---- */
+
+.sg-nav-overlay {
+  background-color: transparent;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.sg-nav-overlay.sg-nav-scrolled {
+  background-color: color-mix(in srgb, white 88%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-leaf-600) 20%, transparent);
+}
+
+:root[data-theme="dark"] .sg-nav-overlay.sg-nav-scrolled {
+  background-color: color-mix(in srgb, #111613 88%, transparent);
+}
+
+/* Overlay text sits on the green hero until the bar turns solid. */
+.sg-nav-overlay:not(.sg-nav-scrolled)[data-tone="light"] > a span {
+  color: white;
+}
+
+.sg-mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  visibility: hidden;
+  transition: visibility 0s linear 0.24s;
+}
+
+.sg-mobile-menu[data-open="true"] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.sg-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: color-mix(in srgb, black 45%, transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.sg-mobile-menu[data-open="true"] .sg-menu-backdrop {
+  opacity: 1;
+}
+
+.sg-menu-panel {
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+  transition:
+    transform 0.24s ease-out,
+    opacity 0.24s ease-out;
+}
+
+.sg-mobile-menu[data-open="true"] .sg-menu-panel {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------- reveal ---- */
+
+.sg-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.sg-reveal.sg-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------- field sketch ---- */
+
+/* The app's line-art palette: line, accent, and fill, swapped per theme just
+   as `HomeIllustrationColors` does in SEGUI. */
+.sg-sketch {
+  --sk-line: var(--color-leaf-800);
+  --sk-accent: var(--color-pollen-300);
+  --sk-fill: #ffffff;
+}
+
+:root[data-theme="dark"] .sg-sketch {
+  --sk-line: var(--color-leaf-300);
+  --sk-accent: var(--color-pollen-300);
+  --sk-fill: #111613;
+}
+
+.sg-gull-wing {
+  transform-origin: 62px 50px;
+  animation: sg-flap 3.2s ease-in-out infinite;
+}
+
+@keyframes sg-flap {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+  78% {
+    transform: rotate(-22deg);
+  }
+  86% {
+    transform: rotate(4deg);
+  }
+  92% {
+    transform: rotate(-12deg);
+  }
+}
+
+/* ------------------------------------------------------------ ribbon ---- */
+
+/* The app icon's field-green tile, used full bleed. */
+.sg-leaf-field {
+  background:
+    radial-gradient(120% 90% at 85% 10%, #17ad5c55 0%, transparent 60%),
+    linear-gradient(135deg, #009245 0%, #00813f 35%, #006e39 75%, #006837 100%);
+}
+
+.sg-float {
+  animation: sg-float 9s ease-in-out infinite;
+}
+
+@keyframes sg-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(-1.5deg);
+  }
+}
+
+.sg-ribbon-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sg-draw 2.4s ease-out 0.2s forwards;
+}
+
+@keyframes sg-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ----------------------------------------------------------- terminal ---- */
+
+.sg-caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.2em;
+  background: var(--color-pollen-300);
+  animation: sg-blink 1s steps(1) infinite;
+}
+
+@keyframes sg-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-mobile-menu,
+  .sg-menu-backdrop,
+  .sg-menu-panel,
+  .sg-reveal {
+    transition: none;
+  }
+
+  .sg-reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sg-gull-wing,
+  .sg-float,
+  .sg-caret::after {
+    animation: none;
+  }
+
+  .sg-ribbon-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Long commands scroll sideways without a visible scrollbar. */
+.sg-scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sg-scroll-x::-webkit-scrollbar {
+  display: none;
+}

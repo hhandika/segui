@@ -16,7 +16,7 @@ segul align concat -d alignment_dir/ --log my_log_file
 
 Below is an example of the terminal output as of v0.21.3:
 
-```Text
+```text
 =========================================================
 SEGUL v0.21.3
 An ultrafast and memory efficient tool for phylogenomics
@@ -41,7 +41,7 @@ Execution time    : 3.185152458s
 
 The log file is as follows:
 
-```Text
+```text
 2024-07-12 16:09:39 -05:00 - INFO - =========================================================
 2024-07-12 16:09:39 -05:00 - INFO - SEGUL v0.21.3
 2024-07-12 16:09:39 -05:00 - INFO - An ultrafast and memory efficient tool for phylogenomics

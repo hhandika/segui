@@ -14,19 +14,19 @@ The operating system usually updates the app automatically. However, you can che
 
 To update the CLI, you must first check where the SEGUL binary is. The Conda/Mamba or Cargo installation should be straightforward to update. If you are unsure how the app was installed, you can use the `which` command on macOS and Linux to check the binary location. Windows users using PowerShell 7+ can use the same command.
 
-```Bash
+```bash
 which segul
 ```
 
 On Windows, another option is using the `Get-Command` command:
 
-```Bash
+```bash
 Get-Command segul
 ```
 
 If the path contains `~/.cargo/bin` or `~/cargo/bin`, your SEGUL binary is installed using Cargo. You can update it by running the following command:
 
-```Bash
+```bash
 cargo install segul
 ```
 
@@ -34,12 +34,12 @@ If the path contains `/usr/local/bin`, `/usr/bin`, `/bin,`, `~/programs` or a si
 
 If the path contains `miniforge` or `conda`, your SEGUL binary is installed using Conda. You can update it by running the following command:
 
-```Bash
+```bash
 conda update segul
 ```
 
 or with mamba if you have it installed:
 
-```Bash
+```bash
 mamba update segul
 ```

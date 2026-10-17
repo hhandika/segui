@@ -10,13 +10,13 @@ To split an alignment, you need two input files: the concatenated alignment and 
 
 The command is as follows:
 
-```Bash
+```bash
 segul align split --input <path-to-alignment> --input-partition <path-to-partition-file>
 ```
 
 For example:
 
-```Bash
+```bash
 segul align split --input concat-alignment.nexus --input-partition concat-alignment-partition.nex
 ```
 
@@ -29,7 +29,7 @@ The command above assumes the partition following this rule:
 
 Use the `--skip-checking` flag to skip the partition check. This is helpful if you only want to extract a specific part of a concatenated alignment.
 
-```Bash
+```bash
 segul align split --input concat-alignment.nexus --input-partition concat-alignment-partition.nex --skip-checking
 ```
 
@@ -39,21 +39,21 @@ SEGUL supports two kinds of RaXML format:
 
 With datatype written in the partitions:
 
-```Text
+```text
 DNA, locus_1 = 1-5
 DNA, locus_2 = 6-10
 ```
 
 Or without the datatype:
 
-```Text
+```text
 locus_1 = 1-5
 locus_2 = 6-10
 ```
 
 For NEXUS partition:
 
-```Text
+```text
 #Nexus
 begin set
   charset locus_1 = 1-5;
@@ -65,7 +65,7 @@ The SEGUL partition parser is robust when dealing with extra spaces but forbids 
 
 This nexus format will work:
 
-```Text
+```text
 #Nexus
 begin set
   charset locus_1 = 1 - 5 ;
@@ -75,7 +75,7 @@ end;
 
 But this will not work (note the space inside the quotes between the locus and number):
 
-```Text
+```text
 #Nexus
 begin set
   charset 'locus 1' = 1-5;
@@ -100,7 +100,7 @@ Some other programs write locus names with file extensions (which contain a dot)
 
 For example:
 
-```Text
+```text
 #Nexus
 begin set
   charset locus_1.nex = 1 - 5 ;

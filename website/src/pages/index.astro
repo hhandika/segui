@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import LandingRibbon from "../components/landing/LandingRibbon.astro";
+import { summary, tagline } from "../data/site";
+---
+
+<Layout title={`SEGUL: ${tagline}`} description={summary}>
+  <LandingRibbon />
+</Layout>

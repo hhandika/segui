@@ -34,19 +34,19 @@ This page is quite long due to the detailed explanations and examples for each f
 
 The command is structured as below:
 
-```Bash
+```bash
 segul align filter <input-option> [alignment-path] <filtering-option> <value>
 ```
 
 To filter alignments in the `alignments/` directory with a minimal length of 500 bp, use the command below:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --min-len 500
 ```
 
 All command examples:
 
-```Python
+```python
 # Minimum alignment length
 segul align filter --dir alignments/ --input-format nexus --min-len 500
 
@@ -80,7 +80,7 @@ segul align filter --dir alignments/ --taxon-id path/to/taxon_ids.txt
 
 To check the available filtering options and other command arguments, use the `--help` option:
 
-```Bash
+```bash
 segul align filter --help
 ```
 
@@ -100,7 +100,7 @@ We recommend starting with [the sequence filtering method](/docs/cli-usage/seque
 
 You can filter alignments based on their length using the `--min-len` option. For example, if you want to filter alignments in the `alignments/` below:
 
-```Bash
+```bash
 alignments/
 ├── locus_1.nexus
 ├── locus_2.nexus
@@ -109,7 +109,7 @@ alignments/
 
 To filter alignments with a minimum length of 200 bp, use the command below:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --min-len 200
 ```
 
@@ -117,7 +117,7 @@ segul align filter --dir alignments/ --input-format nexus --min-len 200
 
 To filter alignments based on the maximum length, use the `--max-len` option. For example:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --max-len 800
 ```
 
@@ -125,7 +125,7 @@ segul align filter --dir alignments/ --input-format nexus --max-len 800
 
 For versions prior to v0.23.0, Use the following command:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --len 500
 ```
 
@@ -137,7 +137,7 @@ This filtering method is based on the percentage of minimal taxa present in your
 
 We use the `--percent` option with input in decimals to filter alignments based on data matrix completeness. For example, here we will filter alignments in the `alignments` directory with 80 percent data matrix completeness:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --percent 0.8
 ```
 
@@ -147,7 +147,7 @@ You can also write the percentage as `.8`, and it will parse the same way you wr
 
 Sometimes, we want to build phylogenetic trees with different data matrix completeness. Using `segul`, we can do it in a single command using the `npercent` option:
 
-```Bash
+```bash
 segul align filter --dir segul --dir alignments/ --input-format nexus --npercent 0.9 0.8 0.75
 ```
 
@@ -167,7 +167,7 @@ For example, in the command below, we will filter alignments in the `alignments`
 
 For versions prior to v0.23.0, use the following command:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --pinf 50
 ```
 
@@ -181,7 +181,7 @@ Supported in SEGUL v0.23.0 and later versions.
 
 To filter alignments based on the maximum number of informative sites, use the `--max-pinf` option. For example:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --max-pinf 200
 ```
 
@@ -191,7 +191,7 @@ This value is counted based on the highest number of informative sites on your a
 
 For example, the highest number of informative sites in the input alignments is 100. We will filter with a minimal 80 percent of the highest parsimony informative value. Using the `--percent-inf .8` option, SEGUL will filter alignments with at least containing 80 parsimony informative sites:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --percent-inf 0.8
 ```
 
@@ -207,7 +207,7 @@ It works at per alignment level. For example, if an alignment has 1000 character
 
 SEGUL will will copy the matching alignments to the output directory. To filter alignments based on the proportion of missing data, use the `--missing-data` option. For example:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --missing-data 0.3
 ```
 
@@ -215,7 +215,7 @@ segul align filter --dir alignments/ --missing-data 0.3
 
 To filter alignments based on the minimum number of taxa present in each alignment, use the `--min-ntax` option. For example, to filter alignments with at least 100 taxa, use the command below:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --min-ntax 100
 ```
 
@@ -227,7 +227,7 @@ Available in SEGUL v0.23.0 and later versions.
 
 The taxon ID is the same as your sequence ID. To use this feature, you need to provide a text file containing a list of taxon IDs (one taxon ID per line). SEGUL will filter alignments that contain the taxon IDs specified in the file. For example, if you have a file named `taxon_ids.txt` with the following content:
 
-```Text
+```text
 taxon_1
 taxon_2
 taxon_3
@@ -235,7 +235,7 @@ taxon_3
 
 You can use the following command to filter alignments in the `alignments/` directory that contain these taxon IDs:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --taxon-id path/to/taxon_ids.txt
 ```
 
@@ -247,7 +247,7 @@ Available in SEGUL v0.23.0 and later versions.
 
 By default, SEGUL output directories for filtering are based on the input directory names suffixed with filtering values. The format is as follows:
 
-```Text
+```text
 [input-dir](underscore)[filtering-values]
 ```
 
@@ -261,7 +261,7 @@ By default, SEGUL copies the alignments that match the filtering option. Instead
 
 For example, in the command below, we will filter based on alignments with a length of 500 bp and will concat the result:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --min-len 500 --concat --partition-format raxml -o concat_alignment
 ```
 
@@ -269,7 +269,7 @@ segul align filter --dir alignments/ --input-format nexus --min-len 500 --concat
 
 For versions prior to v0.23.0, use `--part` to specify the partition format:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format nexus --len 500 --concat --part raxml -output concat_alignment
 ```
 
@@ -279,7 +279,7 @@ segul align filter --dir alignments/ --input-format nexus --len 500 --concat --p
 
 You can use `--input` or `-i` to specify a single alignment file or multiple alignments using [wildcards](https://en.wikipedia.org/wiki/Wildcard_character). For example:
 
-```Bash
+```bash
 segul align filter --input alignments/*.fasta --min-len 300
 ```
 
@@ -287,6 +287,6 @@ segul align filter --input alignments/*.fasta --min-len 300
 
 By default, SEGUL assumes the input alignments are DNA sequences. It will fails to run if the data is amino acid sequences. To filter amino acid alignments, use the `--datatype aa` option. For example:
 
-```Bash
+```bash
 segul align filter --dir alignments/ --input-format fasta --datatype aa --min-len 300
 ```

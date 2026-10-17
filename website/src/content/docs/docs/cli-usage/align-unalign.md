@@ -11,7 +11,7 @@ Under the hood, SEGUL will read the alignment files and remove all gap character
 :::note
 This feature is available in SEGUL v0.23.0 and later versions. To check your SEGUL version, run in your terminal:
 
-```Bash
+```bash
 segul --version
 # Compatible version example:
 # segul 0.23.0
@@ -35,7 +35,7 @@ ATGCATA--
 
 To unalign the sequences, use the following command:
 
-```Bash
+```bash
 segul align unalign --dir alignments/
 ```
 
@@ -58,7 +58,7 @@ ATGCATA
 
 To unalign alignments, use the `align unalign` command with the following options. It will automatically detect the input format.
 
-```Bash
+```bash
 segul align unalign --dir <alignment-dir>
 ```
 
@@ -66,7 +66,7 @@ segul align unalign --dir <alignment-dir>
 
 To unalign amino acid alignments, use the `--amino-acid` flag as follows:
 
-```Bash
+```bash
 segul align unalign --dir <alignment-dir> --input-format aa
 ```
 
@@ -74,7 +74,7 @@ segul align unalign --dir <alignment-dir> --input-format aa
 
 By default, the output directory will be named `Align-Unalign` in the current working directory. You can change the output directory name using the `--output` or `-o` option. For example, to name the output directory `unalign-output`, use the command below:
 
-```Bash
+```bash
 segul align unalign --dir <alignment-dir> --output unalign-output
 ```
 
@@ -86,6 +86,6 @@ Due to the nature of unaligning, the output format will always be in FASTA forma
 
 You can also specify input files using the `--input` or `-i` option. This option allows you to provide a single alignment file or multiple alignment files using [wildcards](https://en.wikipedia.org/wiki/Wildcard_character). For example:
 
-```Bash
+```bash
 segul align unalign --input alignments/*.fasta
 ```

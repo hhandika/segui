@@ -6,13 +6,13 @@ sidebar:
 
 SEGUL CLI can convert single and multiple partition files. It can also extract partitions embedded in NEXUS sequence files.
 
-```Bash
+```bash
 segul partition convert --input <a-path/wildcard-to-partition> --input-part <input-partition-format> --output-part<output-partition-format>
 ```
 
 If you output to RaXML partition and it is a DNA sequence, we recommend using the `--datatype dna` option. The partition format will include the datatype as below:
 
-```Text
+```text
 DNA, locus_1 = 1-100
 DNA, locus_2 = 101-150
 DNA, locus_3 = 151-200
@@ -25,13 +25,13 @@ By default, `segul` checks the partition format:
 
 Passing the `--uncheck` flag allows you to ignore format checking. For example, to extract nexus in-file partitions (called charset format in `segul`):
 
-```Bash
+```bash
 segul partition convert --input concatenated_alignment.nex --input-part charset --output-part nexus
 ```
 
 You can also use wildcard to convert multiple concatenated alignment partitions at once:
 
-```Bash
+```bash
 segul partition convert --input ./*/concatenated_alignment.nex --input-part charset --output-part nexus
 ```
 

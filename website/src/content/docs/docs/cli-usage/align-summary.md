@@ -6,7 +6,7 @@ sidebar:
 
 SEGUL generates different summary statistics for DNA and amino acid sequences. By default, the data type is set to the DNA sequence. In general, the command is as follows:
 
-```Bash
+```bash
 segul align summary <input-option> [alignment-path] --datatype [datatype]
 ```
 
@@ -22,13 +22,13 @@ Learn more about specifying the output directory and filenames [here](/docs/cli-
 
 Because the SEGUL datatype defaults to DNA, we don't need to pass the command's `--datatype` option. For example, to generate summary statistics for alignments in the folder `alignments/`:
 
-```Bash
+```bash
 segul align summary -d alignments/
 ```
 
 or using the `--input` or `-i` option:
 
-```Bash
+```bash
 segul align summary -i alignments/*.nexus
 ```
 
@@ -38,7 +38,7 @@ Below is an example of segul terminal output for DNA sequence summary statistics
 Since v0.21.0, SEGUL writes the alignment summary in a separate text file (default name: `alignment_summary.txt`) consistent with the GUI version.
 :::
 
-```Text
+```text
 =========================================================
 SEGUL v0.11.1
 An alignment tool for phylogenomics
@@ -125,13 +125,13 @@ Execution time    : 4.3725607s
 
 We need to use the `--datatype aa` option to compute the summary statistics for amino acid sequences. For example:
 
-```Bash
+```bash
 segul align summary -d alignments/ --datatype aa
 ```
 
 If we use the `--input` or `-i` option, the command will be:
 
-```Bash
+```bash
 segul align summary -i alignments/*.nexus --datatype aa
 ```
 
@@ -141,13 +141,13 @@ By default, SEGUL will print the percentage of data matrix completeness with a d
 
 Use the `--interval` option to change the interval setting. SEGUL supports intervals 1, 2, 5, and 10. For example:
 
-```Bash
+```bash
 segul align summary -i alignments/*.nexus --interval 1
 ```
 
 Using Oliveros et al. (2019) dataset with 1% interval, the data matrix completeness result will be as below:
 
-```Text
+```text
 Data Matrix Completeness
 100% taxa         : 15
 99% taxa          : 520
@@ -176,13 +176,13 @@ Data Matrix Completeness
 
 The two CSV files are saved in the `SEGUL-Stats` directory by default. You can change the directory name by using the `--output` or `-o` option. For example:
 
-```Bash
+```bash
 segul align summary -d alignments/ -f nexus -o alignment_stats
 ```
 
 You can also add a prefix to the CSV filenames using the `-- prefix` option. For example:
 
-```Bash
+```bash
 segul align summary -d alignments/ -f nexus -o alignment_stats --prefix my_samples
 ```
 

@@ -1,60 +1,131 @@
 ---
-/// Official store download badge for SEGUI.
+/// A SEGUI store download button. All stores share one size and style, drawn
+/// with the site palette instead of each store's remote badge image.
+export type Store = "microsoft" | "app" | "play" | "snap";
+
 interface Props {
-  store: "microsoft" | "mac" | "app" | "play" | "snap";
+  store: Store;
+  /// `auto` follows the light or dark theme; `brand` sits on the green hero.
+  tone?: "auto" | "brand";
 }
 
-const badges = {
+const { store, tone = "auto" } = Astro.props;
+
+const badges: Record<Store, { href: string; caption: string; name: string; icon: string }> = {
   microsoft: {
     href: "https://apps.microsoft.com/detail/SEGUI/9NP1BQ6FW9PW?mode=direct",
-    src: "https://get.microsoft.com/images/en-us%20dark.svg",
-    alt: "Get it from Microsoft",
-    height: 56,
-  },
-  mac: {
-    href: "https://apps.apple.com/us/app/segui/id6447999874?mt=12&itsct=apps_box_badge&itscg=30200",
-    src: "https://tools.applemediaservices.com/api/badges/download-on-the-mac-app-store/black/en-us?size=250x83&releaseDate=1716076800",
-    alt: "Download on the Mac App Store",
-    height: 56,
+    caption: "Get it from",
+    name: "Microsoft Store",
+    icon: "M3 3h8.5v8.5H3zM12.5 3H21v8.5h-8.5zM3 12.5h8.5V21H3zM12.5 12.5H21V21h-8.5z",
   },
   app: {
     href: "https://apps.apple.com/us/app/segui/id6447999874?itsct=apps_box_badge&itscg=30200",
-    src: "https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&releaseDate=1716076800",
-    alt: "Download on the App Store",
-    height: 56,
+    caption: "Download on the",
+    name: "App Store",
+    icon: "M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.2 0 2-1.1 2.8-2.3.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-1-2.5-3.8zM14.1 5.8c.6-.8 1.1-1.8 1-2.8-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.7-1 2.7 1 .1 2-.5 2.7-1.3z",
   },
   play: {
-    href: "https://play.google.com/store/apps/details?id=com.hhandika.segui&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1",
-    src: "https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png",
-    alt: "Get it on Google Play",
-    // The Google Play image includes transparent padding.
-    height: 82,
+    href: "https://play.google.com/store/apps/details?id=com.hhandika.segui",
+    caption: "Get it on",
+    name: "Google Play",
+    icon: "M4.5 2.6c-.3.3-.5.8-.5 1.4v16c0 .6.2 1.1.5 1.4L13.6 12zM14.8 13.2l2.8 2.8-11.2 6.4 8.4-9.2zM14.8 10.8 6.4 1.6l11.2 6.4zM18.9 8.7l3 1.7c.9.5.9 2.7 0 3.2l-3 1.7-3-3.3z",
   },
   snap: {
     href: "https://snapcraft.io/segui",
-    src: "https://snapcraft.io/static/images/badges/en/snap-store-black.svg",
-    alt: "Get it from the Snap Store",
-    height: 56,
+    caption: "Get it from the",
+    name: "Snap Store",
+    icon: "M12 2 3 6.5v11L12 22l9-4.5v-11zm0 2.2 6.6 3.3L12 10.8 5.4 7.5zM5 9.1l6 3v7.6l-6-3zm8 10.6v-7.6l6-3v7.6z",
   },
-} as const;
+};
 
-const badge = badges[Astro.props.store];
+const badge = badges[store];
 ---
 
-<a class="store-badge" href={badge.href} target="_blank" rel="noopener">
-  <img src={badge.src} alt={badge.alt} style={`height: ${badge.height}px`} />
+<a
+  class="store-badge"
+  data-tone={tone}
+  href={badge.href}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={`${badge.caption} ${badge.name}`}
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d={badge.icon} fill="currentColor" fill-rule="evenodd"></path></svg>
+  <span class="text">
+    <span class="caption">{badge.caption}</span>
+    <span class="name">{badge.name}</span>
+  </span>
 </a>
 
 <style>
   .store-badge {
+    --badge-bg: var(--color-leaf-950);
+    --badge-fg: #ffffff;
+    --badge-border: var(--color-leaf-950);
+    --badge-hover: var(--color-leaf-800);
     display: inline-flex;
     align-items: center;
-    height: 82px;
-    margin: 0 !important;
+    gap: 0.7rem;
+    box-sizing: border-box;
+    width: 12.5rem;
+    max-width: 100%;
+    height: 3.5rem;
+    margin: 0;
+    padding: 0 1.1rem 0 0.95rem;
+    border: 1px solid var(--badge-border);
+    border-radius: 0.9rem;
+    background: var(--badge-bg);
+    color: var(--badge-fg);
+    text-decoration: none;
+    line-height: 1.1;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
   }
 
-  .store-badge img {
-    width: auto;
-    max-width: 100%;
+  :global([data-theme="dark"]) .store-badge[data-tone="auto"] {
+    --badge-bg: #0b120e;
+    --badge-border: var(--color-leaf-800);
+    --badge-hover: var(--color-leaf-950);
+  }
+
+  .store-badge[data-tone="brand"] {
+    --badge-bg: #ffffff;
+    --badge-fg: var(--color-leaf-950);
+    --badge-border: #ffffff;
+    --badge-hover: var(--color-pollen-100);
+  }
+
+  .store-badge:hover {
+    background: var(--badge-hover);
+    transform: translateY(-1px);
+  }
+
+  .store-badge:focus-visible {
+    outline: 2px solid var(--color-pollen-300);
+    outline-offset: 2px;
+  }
+
+  svg {
+    flex: none;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .caption {
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+    opacity: 0.8;
+  }
+
+  .name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 </style>

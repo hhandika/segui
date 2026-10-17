@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+     fill="none" stroke="currentColor" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd">
+  <path d="M 3,4.5 H 21" />
+  <path data-role="detail" fill="none" d="M 3,9.5 H 8" />
+  <path data-role="detail" fill="none" d="M 12,9.5 H 21" />
+  <path data-role="detail" fill="none" d="M 3,14.5 H 15" />
+  <path data-role="detail" fill="none" d="M 19,14.5 H 21" />
+  <path data-role="detail" fill="none" d="M 8,19.5 H 21" />
+</svg>

@@ -6,7 +6,7 @@ sidebar:
 
 SEGUL CLI command is structured this way:
 
-```Bash
+```bash
 <PROGRAM-NAME> <COMMAND> <SUBCOMMAND> <OPTIONS> [VALUES] <FLAGS>
 ```
 
@@ -22,7 +22,7 @@ In summary, we keep SEGUL CLI commands, subcommands, and options consistent:
 
 SEGUL CLI command option as of v0.21.3:
 
-```Bash
+```bash
 Commands:
   read       Sequence read analyses
   contig     Contiguous sequence analyses
@@ -84,7 +84,7 @@ To show available subcommands in each of the commands, use `segul <COMMAND> <SUB
 
 For example, terminal output for `segul align convert -h`:
 
-```Bash
+```bash
 Convert sequence formats
 
 Usage: segul align convert [OPTIONS]
@@ -123,7 +123,7 @@ The standard input option relies on the operating system to provide input paths.
 
 For example, your alignment files are stored in multiple folders, and you would like to generate summary statistics for files with specific names. Instead of running SEGUL multiple times, you can generate the statistics in a single run using the wildcard option:
 
-```Bash
+```bash
 segul align summary -i parent_dir/*/contig.fasta
 ```
 
@@ -131,13 +131,13 @@ Below are several other examples of using `--input` (or `-i` in short format):
 
 Inputting multiple files in a directory using wildcard:
 
-```Bash
+```bash
 segul <COMMAND> <SUBCOMMAND> -i alignment-dir/*.fasta
 ```
 
 For unusual file extensions or if the app failed to detect the file format, specify the input format:
 
-```Bash
+```bash
 segul <COMMAND> <SUBCOMMAND> -i alignment-dir/*.aln -f fasta
 ```
 

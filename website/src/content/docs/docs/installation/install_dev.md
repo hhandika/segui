@@ -20,7 +20,7 @@ Follow the instructions on the [Rust website](https://www.rust-lang.org/tools/in
 
 After the installation, on your terminal, run this command to verify the installation:
 
-```Bash
+```bash
 cargo --version
 ```
 
@@ -47,7 +47,7 @@ source ~/.bashrc
 
 To install the SEGUL development version on your terminal application, use the command below:
 
-```Bash
+```bash
 cargo install --git https://github.com/hhandika/segul.git --branch dev
 ```
 

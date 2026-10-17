@@ -16,13 +16,13 @@ The table must contain two columns with a header for each column. Both the heade
 :::tip
 If you need to rename a lot of sequence IDs, you can simplify the process by [generating the unique IDs first](/docs/cli-usage/sequence-id/). Then, copy the IDs you want to rename in the `csv` or `tsv` input. Use the `-replace-id` option to input this file. SEGUL will infer the file format based on its extension. The full command is structured as below:
 
-```Bash
+```bash
 segul sequence rename -d [alignment-dir] -f [sequence-format-keyword] --replace-id [file-path-to-IDs]
 ```
 
 For example:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ -f nexus --replace-id new_names.csv
 ```
 
@@ -30,19 +30,19 @@ segul sequence rename -d alignments/ -f nexus --replace-id new_names.csv
 
 You can use `--dry-run` option to check if the input names are parsed correctly:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ -f nexus --replace-id new_names.csv --dry-run
 ```
 
 By default, SEGUL will write the result in `SEGUL-Rename` directory. To change the output directory, use the `--output` or `-o` option.
 
-```Bash
+```bash
 segul sequence rename -d alignments/ --input-format nexus --replace-id new_names.csv --output new_seq_names/
 ```
 
 Like other functions, SEGUL will not overwrite your original files. The output files will default to NEXUS. To change the output format, use the `--output-format` or `-F` function:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ --input-format nexus --replace-id new_names.csv --output new_seq_names/ --output-format fasta
 ```
 
@@ -52,7 +52,7 @@ segul sequence rename -d alignments/ --input-format nexus --replace-id new_names
 
 You can remove a matching text from the sequence ID. This is useful if you have a common text in all your sequence IDs that you want to remove. For example, if all your sequence IDs have a common suffix `_contigs`, you can remove this suffix using the `--remove` or `-r` option:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ --input-format nexus --remove _contigs
 ```
 
@@ -60,7 +60,7 @@ segul sequence rename -d alignments/ --input-format nexus --remove _contigs
 
 You can also remove a matching regular expression from the sequence ID. This is useful if you have a common pattern in all your sequence IDs that you want to remove. For example, if all your sequence IDs have a common prefix `locus` followed by a number, you can remove this pattern using the `--remove-re`:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ --input-format nexus --remove-re="^locus[0-9]"
 ```
 
@@ -68,7 +68,7 @@ Suppose multiple patterns exist in a single sequence ID. The command above will 
 
 You can also remove all the matches found in a single sequence ID by using the `--remove-all` option:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ --input-format nexus --remove-re="^locus[0-9]" --remove-all
 ```
 
@@ -76,7 +76,7 @@ segul sequence rename -d alignments/ --input-format nexus --remove-re="^locus[0-
 
 You can also replace a matching text from the sequence ID. For example, you can replace `locus01` with `locus1` using the `--replace-from` and `--replace-to` options:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ --input-format nexus --replace-from locus01 --replace-to locus1
 ```
 
@@ -84,6 +84,6 @@ segul sequence rename -d alignments/ --input-format nexus --replace-from locus01
 
 You can also replace a regular expression matching the sequence ID. For example, if all your sequence IDs have a common prefix `locus` followed by a number, you can use the regular expression `^locus[0-9]` to match the pattern. Use the `--replace-from-re` and `--replace-to` options to replace the matching prefix:
 
-```Bash
+```bash
 segul sequence rename -d alignments/ --input-format nexus --replace-from-re ^locus[0-9] --replace-to locus
 ```

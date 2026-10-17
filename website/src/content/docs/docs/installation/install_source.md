@@ -6,7 +6,7 @@ sidebar:
 
 To install from the source code, you will need [the Rust compiler toolchain](https://www.rust-lang.org/learn/get-started). The setup procedure is similar to installing the app using cargo. To install the development version for any supported platform:
 
-```Bash
+```bash
 cargo install --git https://github.com/hhandika/segul.git
 ```
 
@@ -14,7 +14,7 @@ You should have SEGUL ready to use.
 
 It is equivalent to:
 
-```Bash
+```bash
 git clone https://github.com/hhandika/segul
 
 cd segul/
@@ -26,6 +26,6 @@ The different is that, for the latter, the executable will be in the `segul` rep
 
 Then, try to call SEGUL:
 
-```Bash
+```bash
 segul --version
 ```

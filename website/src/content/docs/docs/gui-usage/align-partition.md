@@ -26,7 +26,7 @@ The app supports input and output partition formats. The input partition format 
 
 For DNA sequences, we recommend using the `--datatype dna` option when converting to RAxML partition format. The partition format will include the datatype as below:
 
-```Text
+```text
 DNA, locus_1 = 1-100
 DNA, locus_2 = 101-150
 DNA, locus_3 = 151-200

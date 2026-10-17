@@ -6,25 +6,25 @@ sidebar:
 
 To translate DNA alignment to amino acid:
 
-```Bash
+```bash
 segul sequence translate -d [path-to-alignment-files] -f [sequence-format-keyword]
 ```
 
 The app will default to the standard code table (NCBI Table 1). Use the `--table` option to set the translation table. For example, to translate DNA sequences using NCBI Table 2 (vertebrate MtDNA):
 
-```Bash
+```bash
 segul sequence translate -d loci/ -f fasta --table 2
 ```
 
 You can also set the reading frame using the `--rf` option:
 
-```Bash
+```bash
 segul sequence translate -d loci/ -f fasta --table 2 --rf 2
 ```
 
 To show all the table options, use the `--show-tables` flag:
 
-```Bash
+```bash
 segul sequence translate --show-tables
 ```
 

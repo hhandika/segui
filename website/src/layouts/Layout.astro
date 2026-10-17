@@ -1,0 +1,57 @@
+---
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/SiteFooter.astro";
+import cntl from "cntl";
+
+import "../styles/global.css";
+import "../styles/landing.css";
+
+interface Props {
+  title: string;
+  description: string;
+  /// Draw the page behind a transparent navigation bar, as a landing hero does.
+  overlayNav?: boolean;
+}
+
+const { title, description, overlayNav = false } = Astro.props;
+
+const bodyClasses = cntl`
+  min-h-full
+  bg-white dark:bg-[#111613]
+  text-leaf-950 dark:text-leaf-50
+  antialiased
+`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    {/* Shares the theme stored by the Starlight docs and avoids a flash. */}
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("starlight-theme");
+        const light = window.matchMedia("(prefers-color-scheme: light)").matches;
+        const theme = stored || (light ? "light" : "dark");
+        document.documentElement.dataset.theme = theme === "light" ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body class={bodyClasses}>
+    <Navbar overlay={overlayNav} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import { observeReveals } from "../scripts/reveal";
+      observeReveals();
+    </script>
+  </body>
+</html>

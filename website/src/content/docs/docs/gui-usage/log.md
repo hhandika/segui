@@ -21,7 +21,7 @@ The current input from the GUI is not written to the log file. We are working on
 
 Example log file:
 
-```Text
+```text
 2024-02-05 19:38:51 -06:00 - INFO - Input path        : STDIN
 2024-02-05 19:38:51 -06:00 - INFO - File counts       : 1
 2024-02-05 19:38:51 -06:00 - INFO - Input format:     : auto

@@ -18,7 +18,7 @@ segul sequence id -d alignment_dir
 
 SEGUL will generate the unique ID across all input alignments. The output is a text file containing a list of the IDs in alphabetical order. By default, the output directory is `SEGUL-ID`. The file will be saved as `id.txt` in the output directory. For example, if all your alignments contain three samples, the output file will look like this:
 
-```Text
+```text
 sequence_1
 sequence_2
 sequence_3
@@ -26,13 +26,13 @@ sequence_3
 
 To change the output directory, use the `-o` or `--output` option:
 
-```Bash
+```bash
 segul sequence id -i alignments/ -o my_alignment_id
 ```
 
 To change the output file name, use the `--prefix` option:
 
-```Bash
+```bash
 segul sequence id -i alignments/ --prefix my_alignment_id
 ```
 

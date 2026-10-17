@@ -31,9 +31,9 @@ bun run preview
 
 ## Project structure
 
-- `src/content/docs/docs/`: documentation pages, served under `/docs/`.
-- `src/content/docs/index.mdx`: the landing page.
-- `src/content/blog/`: news posts named `YYYY-MM-DD-name.md`, served at `/blog/YYYY/MM/DD/name/`.
+- `src/content/docs/docs/`: Starlight documentation pages, served under `/docs/`.
+- `src/pages/`: the landing (`index.astro`), get started, and about pages, styled with Tailwind. `src/layouts/Layout.astro` and `src/components/Navbar.astro` frame them.
+- `src/data/site.ts`: shared content for those pages, such as the tool list and citation.
 - `src/components/`: Astro components.
 - `src/assets/` and `public/`: images and static files.
 - `astro.config.mjs`: site configuration, sidebar, and redirects from former Docusaurus URLs.

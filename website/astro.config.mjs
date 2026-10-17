@@ -9,6 +9,8 @@ export default defineConfig({
   // Keep links from the former Docusaurus site working.
   redirects: {
     "/docs": "/docs/intro/",
+    "/blog": "/",
+    "/blog/2023/07/08/updates": "/",
     "/docs/category/installation": "/docs/installation/intro/",
     "/docs/category/gui-usages": "/docs/gui-usage/intro/",
     "/docs/category/cli-usages": "/docs/cli-usage/intro/",
@@ -92,7 +94,6 @@ export default defineConfig({
           items: [{ autogenerate: { directory: "docs/tutorials" } }],
         },
         { label: "Support", slug: "docs/support" },
-        { label: "News", link: "/blog/" },
         { label: "Terms and Conditions", slug: "docs/terms" },
         { label: "Privacy Policy", slug: "docs/privacy" },
       ],

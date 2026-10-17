@@ -9,7 +9,7 @@ Trim alignments based on the proportion of missing data or the number of parsimo
 :::note
 This feature is available in SEGUL v0.23.0 and later versions. To check your SEGUL version, run in your terminal:
 
-```Bash
+```bash
 segul --version
 # Compatible version example:
 # segul 0.23.0
@@ -35,7 +35,7 @@ ATGCATA--
 
 If we set the proportion of missing data to 0.5. It will generate an output without the last two sites using the following command:
 
-```Bash
+```bash
 segul align trim --dir alignments/ --missing-data 0.5
 ```
 
@@ -58,13 +58,13 @@ ATGCATA
 
 To trim alignments, use the `align trim` command with the following options:
 
-```Bash
+```bash
 segul align trim --dir <alignment-dir> --missing-data <value>
 ```
 
 For example:
 
-```Bash
+```bash
 segul align trim --dir alignments/ --missing-data 0.5
 ```
 
@@ -72,13 +72,13 @@ segul align trim --dir alignments/ --missing-data 0.5
 
 To trim based on the minimum threshold of parsimony informative sites, use the `--pinf` option:
 
-```Bash
+```bash
 segul align trim --dir <alignment-dir> --pinf <value>
 ```
 
 For example, this command will retain sites with at least 50 parsimony informative sites:
 
-```Bash
+```bash
 segul align trim --dir alignments/ --pinf 50
 ```
 
@@ -86,7 +86,7 @@ segul align trim --dir alignments/ --pinf 50
 
 If the input is amino acid sequences, you need to use the `datatype aa` option. For example:
 
-```Bash
+```bash
 segul align trim --dir alignments/ --missing-data 0.5 --datatype aa
 ```
 
@@ -94,12 +94,12 @@ segul align trim --dir alignments/ --missing-data 0.5 --datatype aa
 
 By default, the output directory is `Align-Trim`. You can change the output directory name using the `--output` or `-o` option. For example, to name the output directory `align-trim`, use the command below:
 
-```Bash
+```bash
 segul align trim --dir alignments/ --output align-trim
 ```
 
 To specify the output format, use the `--output-format` or `-F` option. The default output format is NEXUS. For example, to change the output format to FASTA, use the command below:
 
-```Bash
+```bash
 segul align trim --dir alignments/ --output-format fasta
 ```

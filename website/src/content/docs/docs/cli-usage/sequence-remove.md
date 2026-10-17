@@ -10,13 +10,13 @@ Based on a list of IDs, you can remove sequences in a collection of alignments. 
 
 You can remove sequences based on a list of sequence IDs. Input a list of IDs as a string separated by semi-colons.
 
-```Bash
+```bash
 segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --id="[list-of-id]"
 ```
 
 Example:
 
-```Bash
+```bash
 segul sequence remove --dir ./data/ -f fasta --id="seq_1;seq_2;seq_3"
 ```
 
@@ -28,7 +28,7 @@ To input a list of IDs, you must use the equal sign "=" and quotation marks `"`.
 
 Using regular expression:
 
-```Bash
+```bash
 segul sequence remove --dir [alignment-dir] -f [sequence-format-keyword] --re=["regex"]
 ```
 
@@ -36,6 +36,6 @@ Example:
 
 The command below will remove all sequences whose IDs with the name started with `Mus`.
 
-```Bash
+```bash
 segul sequence remove --dir ./data/ -f fasta --re="^Mus"
 ```

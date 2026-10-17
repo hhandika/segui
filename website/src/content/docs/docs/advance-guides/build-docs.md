@@ -79,8 +79,8 @@ bun run preview
 ## Project structure
 
 - `src/content/docs/docs/`: documentation pages. The folder structure maps to the URL, for example `src/content/docs/docs/cli-usage/align-concat.md` is served at `/docs/cli-usage/align-concat/`.
-- `src/content/docs/index.mdx`: the landing page.
-- `src/content/blog/`: news posts. Name each file `YYYY-MM-DD-name.md`; it is served at `/blog/YYYY/MM/DD/name/`.
+- `src/pages/`: the landing (`index.astro`), get started, and about pages, styled with Tailwind. `src/layouts/Layout.astro` and `src/components/Navbar.astro` frame them.
+- `src/data/site.ts`: shared content for those pages, such as the tool list and citation.
 - `src/components/`: Astro components used by pages.
 - `src/assets/` and `public/`: images and static files.
 - `astro.config.mjs`: site configuration, including the sidebar and redirects.

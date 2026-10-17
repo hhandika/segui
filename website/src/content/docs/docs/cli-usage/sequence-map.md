@@ -20,12 +20,12 @@ It will generate two files, saved to `SEGUL-ID` by default. The first file is th
 
 To change the output directory, use the `-o` or `--output` option:
 
-```Bash
+```bash
 segul sequence id -i alignments/ --map -o my_alignment_id
 ```
 
 To change the output file name, use the `--prefix` option:
 
-```Bash
+```bash
 segul sequence id -i alignments/ --map --prefix my_alignment_id
 ```

@@ -28,7 +28,7 @@ The app supports input partition formats. The input partition format is the form
 
 It supports standard and codon model partitions. However, merged partitions are not supported. The partition format will include the datatype as below:
 
-```Text
+```text
 DNA, locus_1 = 1-100
 DNA, locus_2 = 101-150
 DNA, locus_3 = 151-200
@@ -36,7 +36,7 @@ DNA, locus_3 = 151-200
 
 Unsupported partition format examples:
 
-```Text
+```text
 DNA, part1 = 1-100, 201-300
 DNA, part2 = 101-200
 ```

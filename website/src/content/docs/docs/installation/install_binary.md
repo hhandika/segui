@@ -72,19 +72,19 @@ We recommend using the dynamically linked executable version if your OS has the 
 
 You can download the file from the release page or use `wget` or `curl` in your terminal app. The example below is for the **dynamically linked executable** version. Replace the file name with the version you want to download.
 
-```Bash
+```bash
 wget https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz
 ```
 
 Or using curl:
 
-```Bash
+```bash
 curl -LJO https://github.com/hhandika/segul/releases/latest/download/segul-Linux-x86_64.tar.gz
 ```
 
 #### Decompress Linux executable
 
-```Bash
+```bash
 tar xfvz segul-Linux-x86_64.tar.gz
 ```
 
@@ -92,13 +92,13 @@ tar xfvz segul-Linux-x86_64.tar.gz
 
 It may not be necessary. However, you can try this step if your terminal app does not recognize the binary.
 
-```Bash
+```bash
 chmod +x segul
 ```
 
 If you would like the binary executable for all users:
 
-```Bash
+```bash
 chmod a+x segul
 ```
 
@@ -106,25 +106,25 @@ chmod a+x segul
 
 If you already have a PATH registered in your environment variable, put the executable in the folder. If you don't have one, you can create a new folder in your home directory and put the executable in it. Then, add the path to the folder to your PATH variable. To do this, on your terminal, type:
 
-```Bash
+```bash
 which $SHELL
 ```
 
 If it shows `bash`, add the following line to your `.bashrc` file or `.bash_profile`, whichever is available in your system. If it shows `zsh`, add the line to your `.zshrc` file.
 
-```Bash
+```bash
 export PATH=$PATH:/path/to/segul/folder
 ```
 
 For example, if you put the SEGUL executable in the `~/bin` folder, add the following line to your `.bashrc` file:
 
-```Bash
+```bash
 export PATH=$PATH:~/bin
 ```
 
 Then, run the following command to apply the changes. Change the file name if you use `.zshrc` or `.bash_profile`.
 
-```Bash
+```bash
 source ~/.bashrc
 ```
 
@@ -133,13 +133,13 @@ To check which bash profile file is available in your home directory, you can us
 
 Make sure you are in your home directory or `cd ~`. Then, run:
 
-```Bash
+```bash
 ls -a .
 ```
 
 It will show all files in your home directory, including hidden files. Look for `.bashrc`, `.bash_profile`, or `.zshrc`. You can create one if you don't have any of these files.
 
-```Bash
+```bash
 touch .bashrc
 ```
 
@@ -150,7 +150,7 @@ Then, add the export PATH line to the file.
 
 Try to call SEGUL from anywhere in your system:
 
-```Bash
+```bash
 segul --version
 ```
 
@@ -169,20 +169,20 @@ For macOS, the executables are available for Intel Macs and Apple ARM M series p
 
 Similar to the Linux version, you can download the file using `wget` or `curl`.
 
-```Bash
+```bash
 
 wget https://github.com/hhandika/segul/releases/latest/download/segul-macOS-arm64.tar.gz
 ```
 
 Or using curl:
 
-```Bash
+```bash
 curl -LJO https://github.com/hhandika/segul/releases/latest/download/segul-macOS-arm64.tar.gz
 ```
 
 #### Decompress MacOS executable
 
-```Bash
+```bash
 tar xfvz segul-macOS-arm64.tar.gz
 ```
 
@@ -190,13 +190,13 @@ tar xfvz segul-macOS-arm64.tar.gz
 
 This step may not be necessary. However, you can try this step if your terminal app does not recognize the binary.
 
-```Bash
+```bash
 chmod +x segul
 ```
 
 If you would like the binary executable for all users:
 
-```Bash
+```bash
 chmod a+x segul
 ```
 
@@ -204,13 +204,13 @@ chmod a+x segul
 
 Recent macOS versions use ZSH as the default shell. If you are using ZSH, you can add the path to the folder where you put the SEGUL executable to your PATH variable by adding the following line to your `.zshrc` file:
 
-```Bash
+```bash
 export PATH=$PATH:/path/to/segul/folder
 ```
 
 Copy the SEGUL executable to the folder. Then, try calling SEGUL from anywhere in your system:
 
-```Bash
+```bash
 segul --version
 ```
 
@@ -242,7 +242,7 @@ Click search and type `env`. Select `Edit the system environment variables`. The
 
 - Open a new terminal and try to call SEGUL from anywhere in your system:
 
-```Bash
+```bash
 segul --version
 ```
 

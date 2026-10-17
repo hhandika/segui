@@ -9,11 +9,12 @@
         "@astrojs/starlight-tailwind": "^5.0.0",
         "@tailwindcss/vite": "^4.3.3",
         "astro": "7.3.8",
+        "cntl": "^1.0.0",
         "sharp": "^0.34.5",
         "tailwindcss": "^4.3.3",
       },
       "devDependencies": {
-        "@astrojs/check": "latest",
+        "@astrojs/check": "^0.9.10",
         "typescript": "^5.9.0",
       },
     },
@@ -386,6 +387,8 @@
     "cliui": ["cliui@9.0.1", "", { "dependencies": { "string-width": "^7.2.0", "strip-ansi": "^7.1.0", "wrap-ansi": "^9.0.0" } }, "sha512-k7ndgKhwoQveBL+/1tqGJYNz097I7WOvwbmmU2AR5+magtbjPWQTS1C5vzGkBC8Ym8UWRzfKUzUUqFLypY4Q+w=="],
 
     "clsx": ["clsx@2.1.1", "", {}, "sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA=="],
+
+    "cntl": ["cntl@1.0.0", "", {}, "sha512-Z42/BmPqeuE81Ar5OhgyRSgP4/paMSYPO41iFOhouACpWsZwfLTxrARBUqfbr+ftukF/I9zov6w8+VpOPLnamA=="],
 
     "comma-separated-tokens": ["comma-separated-tokens@2.0.3", "", {}, "sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg=="],
 

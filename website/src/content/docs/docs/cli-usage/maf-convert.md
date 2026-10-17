@@ -9,7 +9,7 @@ Multiple Alignment Format (MAF) is a text-based format for representing multiple
 :::note
 This feature is available in SEGUL v0.23.0 and later versions. To check your SEGUL version, run in your terminal:
 
-```Bash
+```bash
 segul --version
 # Compatible version example:
 # segul 0.23.0
