@@ -1,0 +1,199 @@
+---
+title: Features
+sidebar:
+  order: 4
+---
+
+import TaskGroups from "../../../components/features/TaskGroups.astro";
+import AlignedVsUnaligned from "../../../components/features/AlignedVsUnaligned.astro";
+import FileFormats from "../../../components/features/FileFormats.astro";
+import Concatenation from "../../../components/features/Concatenation.astro";
+import Conversion from "../../../components/features/Conversion.astro";
+import Distance from "../../../components/features/Distance.astro";
+import Filtering from "../../../components/features/Filtering.astro";
+import PartitionConversion from "../../../components/features/PartitionConversion.astro";
+import Splitting from "../../../components/features/Splitting.astro";
+import AlignmentSummary from "../../../components/features/AlignmentSummary.astro";
+import GenomicSummary from "../../../components/features/GenomicSummary.astro";
+import SequenceIds from "../../../components/features/SequenceIds.astro";
+import Renaming from "../../../components/features/Renaming.astro";
+import RowSelection from "../../../components/features/RowSelection.astro";
+import Translation from "../../../components/features/Translation.astro";
+import Transposition from "../../../components/features/Transposition.astro";
+
+This page shows what each SEGUL feature does with your data. Each diagram uses a small example; the same rules apply to datasets with thousands of loci. For options and commands, follow the links to the CLI usage pages.
+
+## Task Group
+
+SEGUL groups its features by the kind of input they take. In the GUI, each group is a button in the navigation bar or rail. In the CLI, each group is a command.
+
+<TaskGroups />
+
+The CLI splits the genomic group into two commands: `read` for FASTQ files and `contig` for FASTA contigs. The GUI keeps both in one group.
+
+### Alignments and standard sequence files
+
+Alignment tasks need **alignments**: every sequence in a file has the same length. Partition conversion is the exception and takes partition files, such as RAxML or NEXUS partitions. SEGUL checks only lengths, so it cannot detect misaligned sequences that happen to share a length.
+
+Sequence tasks take aligned or unaligned files and do not check lengths. The documentation calls these **standard sequence files**.
+
+<AlignedVsUnaligned />
+
+## File Input
+
+SEGUL accepts many input files at once. Alignment Splitting is the exception: it takes one concatenated alignment.
+
+### Supported file extensions
+
+<FileFormats />
+
+:::note
+SEGUL supports relaxed PHYLIP, not strict PHYLIP. Strict PHYLIP limits sample names to 10 characters and splits sequences into blocks with spaces:
+
+```plaintext
+3 20
+Seq1      ATCGATCGAT ATCGATCGAT
+Seq2      ATCGATCGAT ATCGATCGAT
+Seq3      ATCGATCGAT ATCGATCGAT
+```
+
+Relaxed PHYLIP allows longer names and writes each sequence without spaces:
+
+```plaintext
+3 20
+genus_species_museumNo1    ATCGATCGATATCGATCGAT
+genus_species_museumNo2    ATCGATCGATATCGATCGAT
+genus_species_museumNo3    ATCGATCGATATCGATCGAT
+```
+
+:::
+
+## Alignment Task Groups
+
+### Alignment Concatenation
+
+Joins many alignments into one and writes a partition that records where each locus starts and ends. Sequences are matched by sample name, so a typo or inconsistent name leaves a sequence unmatched. See [the CLI usage](/docs/cli-usage/align-concat/).
+
+<Concatenation />
+
+:::tip
+Use [Sequence ID Extraction](#sequence-id-extraction) to check names for typos before concatenating.
+:::
+
+### Alignment Conversion
+
+Changes the file format of alignments. See [the CLI usage](/docs/cli-usage/align-convert/).
+
+<Conversion />
+
+### Alignment Distance
+
+Computes pairwise genetic distances between samples in each alignment. See [the CLI usage](/docs/cli-usage/align-distance/).
+
+<Distance />
+
+### Alignment Filtering
+
+Keeps the alignments that meet a criterion and drops the rest. See [the CLI usage](/docs/cli-usage/align-filter/).
+
+<Filtering />
+
+### Alignment Partition Conversion
+
+Converts partitions between RAxML and NEXUS formats. See [the CLI usage](/docs/cli-usage/align-partition/).
+
+<PartitionConversion />
+
+### Alignment Splitting
+
+Splits a concatenated alignment back into separate loci using its partition. See [the CLI usage](/docs/cli-usage/align-split/).
+
+<Splitting />
+
+### Alignment Summary
+
+Computes summary statistics for a set of alignments at three levels: the whole dataset, each alignment, and each sample. See [the CLI usage](/docs/cli-usage/align-summary/).
+
+<AlignmentSummary />
+
+## Genomic Task Groups
+
+### Sequence Read and Contig Summary
+
+Both tasks compute summary statistics for genomic files: raw reads in FASTQ format and assembled contigs in FASTA format. See [the CLI usage](/docs/cli-usage/genomic-summary/).
+
+<GenomicSummary />
+
+## Sequence Task Groups
+
+### Sequence ID Extraction
+
+Lists every unique sample name across your files. See [the CLI usage](/docs/cli-usage/sequence-id/).
+
+<SequenceIds />
+
+### Sequence ID Mapping
+
+Shows which samples are present in each file. See [the CLI usage](/docs/cli-usage/sequence-map/).
+
+<SequenceIds map />
+
+### Sequence ID Renaming
+
+Replaces sample names across all files using a table of original and new names. See [the CLI usage](/docs/cli-usage/sequence-rename/).
+
+<Renaming />
+
+### Sequence Extraction
+
+Keeps only the sequences you select by ID, by a list in a text file, or by a regular expression. See [the CLI usage](/docs/cli-usage/sequence-extract/).
+
+<RowSelection
+  id="sequence-extract"
+  title="Sequence extraction"
+  caption="Extraction keeps the selected sequences. Removal is its opposite."
+  rule="Keep IDs: seq1; seq3"
+  verb="extract"
+  rows={["AGTCCCCATA", "AGTCCGCATA", "AGTACGCTT-", "GGTACGTTTA"]}
+  keep={[0, 2]}
+/>
+
+### Sequence Filtering
+
+Drops single sequences that fail a criterion, such as too few non-gap sites or too many gaps, and keeps the rest of each file. To drop whole alignments instead, use [Alignment Filtering](#alignment-filtering). See [the CLI usage](/docs/cli-usage/sequence-filter/).
+
+<RowSelection
+  id="sequence-filter"
+  title="Sequence filtering"
+  caption="Each sequence is checked on its own, so a file keeps every sequence that passes."
+  rule="Minimum length: 6 non-gap sites"
+  verb="filter"
+  rows={["AGTCCCCATA", "AGTC------", "AGTACGCTT-", "GG--------"]}
+  keep={[0, 2]}
+/>
+
+### Sequence Removal
+
+Deletes the sequences you select by ID or by a regular expression. Removing a few sequences is faster than extracting the rest. See [the CLI usage](/docs/cli-usage/sequence-remove/).
+
+<RowSelection
+  id="sequence-remove"
+  title="Sequence removal"
+  caption="Removal is the opposite of extraction."
+  rule="Remove IDs: seq2"
+  verb="remove"
+  rows={["AGTCCCCATA", "AGTCCGCATA", "AGTACGCTT-", "GGTACGTTTA"]}
+  keep={[0, 2, 3]}
+/>
+
+### Sequence Translation
+
+Translates DNA sequences to amino acids. See [the CLI usage](/docs/cli-usage/sequence-translate/).
+
+<Translation />
+
+### Sequence Transposition
+
+Turns locus alignments into one file per sample. Each file holds one sequence for every locus where the sample is present, named after that locus, with gaps and missing data removed. See [the CLI usage](/docs/cli-usage/sequence-transpose/).
+
+<Transposition />

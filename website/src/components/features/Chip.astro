@@ -1,0 +1,32 @@
+---
+import { chipWidth } from "./layout";
+
+/// A rounded label sized from its text. Width is estimated from the
+/// character count, so keep chip text short.
+interface Props {
+  x: number;
+  y: number;
+  text: string;
+  mono?: boolean;
+  accent?: boolean;
+  /// Anchor the chip by its right edge instead of its left edge.
+  alignEnd?: boolean;
+}
+
+const { x, y, text, mono = false, accent = false, alignEnd = false } = Astro.props;
+const width = chipWidth(text, mono);
+const left = alignEnd ? x - width : x;
+---
+
+<g>
+  <rect x={left} y={y} width={width} height="24" rx="12" class={accent ? "fx-panel-accent" : "fx-panel"} />
+  <text
+    x={left + width / 2}
+    y={y + 12}
+    text-anchor="middle"
+    dominant-baseline="central"
+    class={`fx-small${mono ? " fx-mono" : ""}`}
+  >
+    {text}
+  </text>
+</g>

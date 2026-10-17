@@ -1,0 +1,99 @@
+---
+/// A grid of sequence cells with optional sample labels on the left. Cells
+/// are colored by nucleotide unless a locus or amino acid tone is given.
+interface Props {
+  x: number;
+  y: number;
+  rows: string[];
+  /// Labels drawn right-aligned to the left of each row.
+  ids?: string[];
+  /// Heading drawn above the grid.
+  title?: string;
+  /// One tone for every cell, such as `l1` or `aa`.
+  tone?: string;
+  /// One tone per column, for concatenated alignments.
+  colTones?: string[];
+  /// One tone per row, for per-sample files holding several loci.
+  rowTones?: string[];
+  /// Rows to draw faded, such as removed sequences.
+  faded?: number[];
+  cell?: number;
+  letters?: boolean;
+}
+
+const {
+  x,
+  y,
+  rows,
+  ids = [],
+  title,
+  tone,
+  colTones,
+  rowTones,
+  faded = [],
+  cell = 18,
+  letters = true,
+} = Astro.props;
+
+const pitch = cell + 2;
+const darkTones = new Set(["G", "l2"]);
+const gapChars = new Set(["-", "?", "."]);
+
+function toneFor(char: string, row: number, col: number): string {
+  if (gapChars.has(char)) return "gap";
+  return tone ?? colTones?.[col] ?? rowTones?.[row] ?? char.toUpperCase();
+}
+---
+
+<g>
+  {title && <text x={x} y={y - 10} class="fx-title">{title}</text>}
+  {
+    rows.map((seq, r) => (
+      <g class={faded.includes(r) ? "fx-faded" : undefined}>
+        {ids[r] && (
+          <text
+            x={x - 8}
+            y={y + r * pitch + cell / 2}
+            text-anchor="end"
+            dominant-baseline="central"
+            class="fx-mono fx-small"
+          >
+            {ids[r]}
+          </text>
+        )}
+        {[...seq].map((char, c) => {
+          const t = toneFor(char, r, c);
+          const textClass = [
+            "fx-cell-text",
+            t === "gap" ? "fx-gap-text" : "",
+            darkTones.has(t) ? "fx-dark" : "",
+          ].join(" ");
+          return (
+            <g>
+              <rect
+                x={x + c * pitch}
+                y={y + r * pitch}
+                width={cell}
+                height={cell}
+                rx="3"
+                class={`fx-${t}`}
+              />
+              {letters && (
+                <text
+                  x={x + c * pitch + cell / 2}
+                  y={y + r * pitch + cell / 2}
+                  text-anchor="middle"
+                  dominant-baseline="central"
+                  class={textClass}
+                  style={`font-size: ${Math.round(cell * 0.62)}px`}
+                >
+                  {char}
+                </text>
+              )}
+            </g>
+          );
+        })}
+      </g>
+    ))
+  }
+</g>

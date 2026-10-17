@@ -1,0 +1,29 @@
+---
+import { listCardHeight } from "./layout";
+
+/// A titled panel listing short lines, such as sequence IDs or file content.
+interface Props {
+  x: number;
+  y: number;
+  w: number;
+  title: string;
+  lines: string[];
+  accent?: boolean;
+  lineHeight?: number;
+}
+
+const { x, y, w, title, lines, accent = false, lineHeight = 20 } = Astro.props;
+const height = listCardHeight(lines.length, lineHeight);
+---
+
+<g>
+  <rect x={x} y={y} width={w} height={height} rx="8" class={accent ? "fx-panel-accent" : "fx-panel"} />
+  <text x={x + 12} y={y + 22} class="fx-title fx-small">{title}</text>
+  {
+    lines.map((line, i) => (
+      <text x={x + 12} y={y + 46 + i * lineHeight} class="fx-mono fx-small" style="white-space: pre">
+        {line}
+      </text>
+    ))
+  }
+</g>

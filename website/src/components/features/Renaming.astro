@@ -1,0 +1,33 @@
+---
+import Arrow from "./Arrow.astro";
+import Figure from "./Figure.astro";
+import ListCard from "./ListCard.astro";
+
+const names = [
+  ["sample_1", "Genus_species1_V01"],
+  ["sample_2", "Genus_species2_V02"],
+  ["sample_3", "Genus_species3_V03"],
+];
+---
+
+<Figure
+  id="sequence-rename"
+  viewBox="0 0 690 140"
+  title="Sequence ID renaming"
+  desc={`An alignment with IDs ${names.map(([old]) => old).join(", ")} and a two-column table of original and new names give the same alignment with IDs ${names
+    .map(([, renamed]) => renamed)
+    .join(", ")}.`}
+  caption="The table is a CSV or TSV file with a header row: original IDs in the first column and new IDs in the second."
+>
+  <ListCard x={0} y={4} w={110} title="locus_1" lines={names.map(([old]) => old)} />
+  <text x="124" y="70" class="fx-title" style="font-size: 20px">+</text>
+  <ListCard
+    x={148}
+    y={4}
+    w={250}
+    title="names.csv"
+    lines={names.map(([old, renamed]) => `${old},${renamed}`)}
+  />
+  <Arrow x1={410} y1={60} x2={464} y2={60} label="rename" />
+  <ListCard x={476} y={4} w={200} title="locus_1" lines={names.map(([, renamed]) => renamed)} accent />
+</Figure>

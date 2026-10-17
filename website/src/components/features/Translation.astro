@@ -1,0 +1,48 @@
+---
+import Alignment from "./Alignment.astro";
+import Figure from "./Figure.astro";
+
+const dna = "ATGGCTTGGAAATAA";
+const protein = ["M", "A", "W", "K", "*"];
+const names = ["Met", "Ala", "Trp", "Lys", "Stop"];
+const x = 80;
+const pitch = 20;
+const codon = pitch * 3 - 2;
+---
+
+<Figure
+  id="sequence-translation"
+  viewBox="0 0 400 150"
+  title="Sequence translation"
+  desc="The DNA sequence ATG GCT TGG AAA TAA is read three bases at a time with the standard code to give the protein M A W K followed by a stop codon."
+  caption="Defaults to NCBI table 1, the standard code, in reading frame 1. You can choose another table or frame."
+>
+  <Alignment x={x} y={10} rows={[dna]} ids={["DNA"]} />
+  {
+    protein.map((aa, i) => {
+      const left = x + i * pitch * 3;
+      return (
+        <g>
+          <path d={`M${left + 2},36 v5 H${left + codon - 2} v-5`} class="fx-line" style="stroke-width: 1.5" />
+          <rect x={left} y={52} width={codon} height="26" rx="4" class="fx-aa" />
+          <text
+            x={left + codon / 2}
+            y={65}
+            text-anchor="middle"
+            dominant-baseline="central"
+            class="fx-cell-text"
+            style="font-size: 14px"
+          >
+            {aa}
+          </text>
+          <text x={left + codon / 2} y={96} text-anchor="middle" class="fx-muted fx-small">
+            {names[i]}
+          </text>
+        </g>
+      );
+    })
+  }
+  <text x={x - 8} y={65} text-anchor="end" dominant-baseline="central" class="fx-mono fx-small">
+    Protein
+  </text>
+</Figure>

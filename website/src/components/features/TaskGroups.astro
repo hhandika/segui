@@ -1,0 +1,83 @@
+---
+import Figure from "./Figure.astro";
+
+const groups = [
+  {
+    name: "Alignments",
+    input: "Aligned files or partitions",
+    command: "segul align …",
+    tools: [
+      "Concatenation",
+      "Conversion",
+      "Distance",
+      "Filtering",
+      "Partition conversion",
+      "Splitting",
+      "Summary",
+    ],
+  },
+  {
+    name: "Genomic",
+    input: "FASTQ reads or FASTA contigs",
+    command: "segul read | contig …",
+    tools: ["Sequence read summary", "Contig summary"],
+  },
+  {
+    name: "Sequences",
+    input: "Aligned or unaligned files",
+    command: "segul sequence …",
+    tools: [
+      "ID extraction",
+      "ID mapping",
+      "ID renaming",
+      "Extraction",
+      "Filtering",
+      "Removal",
+      "Translation",
+      "Transposition",
+    ],
+  },
+];
+const width = 212;
+const height = 334;
+---
+
+<Figure
+  id="task-groups"
+  viewBox="0 0 660 338"
+  title="SEGUL task groups"
+  desc="Three task groups. Alignments takes aligned files or partitions and offers concatenation, conversion, distance, filtering, partition conversion, splitting, and summary. Genomic takes FASTQ reads or FASTA contigs and offers read and contig summaries. Sequences takes aligned or unaligned files and offers ID extraction, mapping, renaming, sequence extraction, filtering, removal, translation, and transposition."
+  caption="Each task group is a button in the GUI navigation and a command group in the CLI."
+>
+  {
+    groups.map((group, i) => {
+      const x = 2 + i * (width + 12);
+      return (
+        <g>
+          <rect x={x} y="2" width={width} height={height} rx="12" class="fx-panel" />
+          <text x={x + 16} y="32" class="fx-title fx-accent-text" style="font-size: 17px">
+            {group.name}
+          </text>
+          <text x={x + 16} y="54" class="fx-muted fx-small">
+            Input
+          </text>
+          <text x={x + 16} y="72" class="fx-small">
+            {group.input}
+          </text>
+          <line x1={x + 16} x2={x + width - 16} y1="86" y2="86" class="fx-line" style="stroke-width: 1; opacity: 0.4" />
+          {group.tools.map((tool, t) => (
+            <g>
+              <circle cx={x + 22} cy={108 + t * 25} r="4" class="fx-on" />
+              <text x={x + 34} y={108 + t * 25} dominant-baseline="central">
+                {tool}
+              </text>
+            </g>
+          ))}
+          <text x={x + 16} y={height - 12} class="fx-mono fx-muted fx-small">
+            {group.command}
+          </text>
+        </g>
+      );
+    })
+  }
+</Figure>

@@ -1,0 +1,51 @@
+---
+import Arrow from "./Arrow.astro";
+import FileCard from "./FileCard.astro";
+import Figure from "./Figure.astro";
+
+const lanes = [
+  {
+    input: "sample.fq.gz",
+    inputSub: "FASTQ reads",
+    output: "Read summary",
+    stats: ["Read count and lengths", "GC and AT content, base counts", "Base quality (min, mean, max)"],
+    note: "Modes: minimal · default · complete",
+  },
+  {
+    input: "sample.fasta",
+    inputSub: "FASTA contigs",
+    output: "Contig summary",
+    stats: ["Contig count and lengths", "N50, N75, N90", "GC content, base counts"],
+    note: "Counts of contigs ≥ 750, 1000, 1500 bp",
+  },
+];
+---
+
+<Figure
+  id="genomic-summary"
+  viewBox="0 0 660 230"
+  title="Genomic summaries"
+  desc="FASTQ read files, plain or gzip-compressed, produce a read summary table with read counts and lengths, GC and AT content, and base quality. FASTA contig files produce a contig summary table with contig counts and lengths, N50, N75, N90, and GC content."
+  caption="Both summaries accept many files at once and write one CSV table."
+>
+  {
+    lanes.map((lane, i) => {
+      const y = 8 + i * 116;
+      return (
+        <g>
+          <FileCard x={10} y={y + 10} w={140} name={lane.input} sub={lane.inputSub} stack />
+          <Arrow x1={164} y1={y + 42} x2={222} y2={y + 42} />
+          <FileCard x={236} y={y + 10} w={150} name={lane.output} sub="CSV table" accent />
+          {lane.stats.map((stat, s) => (
+            <text x="410" y={y + 18 + s * 22} class="fx-small">
+              • {stat}
+            </text>
+          ))}
+          <text x="410" y={y + 18 + 3 * 22} class="fx-small fx-accent-text">
+            {lane.note}
+          </text>
+        </g>
+      );
+    })
+  }
+</Figure>

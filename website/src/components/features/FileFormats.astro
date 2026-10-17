@@ -1,0 +1,61 @@
+---
+import Chip from "./Chip.astro";
+import Figure from "./Figure.astro";
+import { chipRow } from "./layout";
+
+const fasta = [".fasta", ".fa", ".fna", ".fsa", ".fas"];
+const sections = [
+  {
+    title: "Alignment and sequence tasks",
+    formats: [
+      { name: "NEXUS", exts: [".nex", ".nexus", ".nxs"] },
+      { name: "FASTA", exts: fasta },
+      { name: "Relaxed PHYLIP", exts: [".phy", ".phylip", ".ph"] },
+    ],
+  },
+  {
+    title: "Genomic tasks",
+    formats: [
+      { name: "Reads", exts: [".fastq", ".fq"] },
+      { name: "Compressed reads", exts: [".fastq.gz", ".fq.gz"] },
+      { name: "Contigs", exts: fasta },
+    ],
+  },
+];
+const rowHeight = 34;
+const sectionHeight = 40 + 3 * rowHeight + 16;
+---
+
+<Figure
+  id="file-formats"
+  viewBox={`0 0 640 ${sections.length * sectionHeight}`}
+  title="Supported file extensions"
+  desc="Alignment and sequence tasks read NEXUS (.nex, .nexus, .nxs), FASTA (.fasta, .fa, .fna, .fsa, .fas), and relaxed PHYLIP (.phy, .phylip, .ph). Genomic tasks read FASTQ reads (.fastq, .fq), compressed reads (.fastq.gz, .fq.gz), and FASTA contigs (.fasta, .fa, .fna, .fsa, .fas)."
+>
+  {
+    sections.map((section, s) => {
+      const top = s * sectionHeight;
+      return (
+        <g>
+          <text x="0" y={top + 22} class="fx-title">
+            {section.title}
+          </text>
+          {section.formats.map((format, f) => {
+            const y = top + 38 + f * rowHeight;
+            const lefts = chipRow(format.exts, 170, 8, true);
+            return (
+              <g>
+                <text x="0" y={y + 12} dominant-baseline="central" class="fx-accent-text">
+                  {format.name}
+                </text>
+                {format.exts.map((ext, e) => (
+                  <Chip x={lefts[e]} y={y} text={ext} mono />
+                ))}
+              </g>
+            );
+          })}
+        </g>
+      );
+    })
+  }
+</Figure>

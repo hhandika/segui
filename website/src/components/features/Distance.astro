@@ -1,0 +1,92 @@
+---
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import Chip from "./Chip.astro";
+import Figure from "./Figure.astro";
+import { chipRow } from "./layout";
+
+const ids = ["seq1", "seq2", "seq3", "seq4"];
+const rows = ["AGTCCCCATA", "AGTCCGCATA", "AGTACGCTT-", "GGTACGTTTA"];
+
+/// Uncorrected p-distance with pairwise deletion of non-ACGT sites.
+function pDistance(a: string, b: string): number {
+  let compared = 0;
+  let differences = 0;
+  for (let i = 0; i < a.length; i++) {
+    if (!"ACGT".includes(a[i]) || !"ACGT".includes(b[i])) continue;
+    compared++;
+    if (a[i] !== b[i]) differences++;
+  }
+  return compared === 0 ? 0 : differences / compared;
+}
+
+const matrix = rows.map((a) => rows.map((b) => pDistance(a, b)));
+const max = Math.max(...matrix.flat());
+const mx = 400;
+const my = 40;
+const size = 44;
+const models = ["p-distance", "JC69", "K2P", "TN93", "Poisson (amino acid)"];
+const modelLefts = chipRow(models, 72);
+---
+
+<Figure
+  id="distance"
+  viewBox="0 0 600 280"
+  title="Alignment distance"
+  desc={`Four aligned samples are compared pair by pair to give a 4 by 4 matrix of p-distances. ${ids
+    .map((id, i) => `${id}: ${matrix[i].map((d) => d.toFixed(2)).join(", ")}`)
+    .join("; ")}. Supported models are p-distance, JC69, K2P, TN93, and Poisson for amino acids.`}
+  caption="Gaps and missing or ambiguous sites are skipped for each pair. SEGUL writes one matrix per locus and a summary table."
+>
+  <Alignment x={56} y={my} rows={rows} ids={ids} title="locus_1" />
+  <Arrow x1={276} y1={my + 40} x2={336} y2={my + 40} label="compare" />
+
+  <text x={mx} y={my - 10} class="fx-title">p-distance</text>
+  {
+    ids.map((id, i) => (
+      <text x={mx - 8} y={my + 16 + i * size + size / 2} text-anchor="end" dominant-baseline="central" class="fx-mono fx-small">
+        {id}
+      </text>
+    ))
+  }
+  {
+    matrix.map((row, i) =>
+      row.map((d, j) => {
+        const strength = max === 0 ? 0 : d / max;
+        return (
+          <g>
+            <rect x={mx + j * size} y={my + 16 + i * size} width={size - 3} height={size - 3} rx="4" class="fx-gap" />
+            <rect
+              x={mx + j * size}
+              y={my + 16 + i * size}
+              width={size - 3}
+              height={size - 3}
+              rx="4"
+              class="fx-on"
+              style={`fill-opacity: ${(0.1 + strength * 0.9).toFixed(2)}`}
+            />
+            <text
+              x={mx + j * size + (size - 3) / 2}
+              y={my + 16 + i * size + (size - 3) / 2}
+              text-anchor="middle"
+              dominant-baseline="central"
+              class={`fx-small fx-mono${strength > 0.5 ? " fx-cell-text" : ""}`}
+            >
+              {d.toFixed(2)}
+            </text>
+          </g>
+        );
+      }),
+    )
+  }
+  {
+    ids.map((id, j) => (
+      <text x={mx + j * size + (size - 3) / 2} y={my + 8} text-anchor="middle" class="fx-mono fx-small">
+        {id}
+      </text>
+    ))
+  }
+
+  <text x="0" y="264" dominant-baseline="central" class="fx-muted">Models</text>
+  {models.map((model, i) => <Chip x={modelLefts[i]} y={252} text={model} accent={i === 0} />)}
+</Figure>
