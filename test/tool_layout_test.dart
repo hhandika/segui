@@ -251,7 +251,7 @@ void main() {
     );
   });
 
-  testWidgets('Input picker shows the tool icon after files are selected',
+  testWidgets('Input picker switches from drop zone to selection card',
       (tester) async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],
@@ -266,19 +266,36 @@ void main() {
     }).toList();
     await pumpPage(tester, const Size(1600, 1000), container: container);
 
-    Finder pickerIcon(IconData icon) => find.descendant(
-          of: find.byType(PickerLabel),
+    Finder pickerIcon(Type picker, IconData icon) => find.descendant(
+          of: find.byType(picker),
           matching: find.byIcon(icon),
         );
-    expect(pickerIcon(Icons.file_copy_outlined), findsOneWidget);
-    expect(pickerIcon(SeguiIcons.concatenateFilled), findsNothing);
+    expect(
+        pickerIcon(PickerDropZone, Icons.upload_file_outlined), findsOneWidget);
+    expect(find.text('Browse files'), findsOneWidget);
+    expect(find.text('Browse folder'), findsOneWidget);
+    expect(find.byType(PickerSelectionCard), findsNothing);
 
     await tester.runAsync(() => container
         .read(fileInputProvider.notifier)
         .addFiles(files, sequenceTypeGroup));
     await tester.pump();
-    expect(pickerIcon(SeguiIcons.concatenateFilled), findsOneWidget);
-    expect(pickerIcon(Icons.file_copy_outlined), findsNothing);
+    expect(pickerIcon(PickerSelectionCard, SeguiIcons.concatenateFilled),
+        findsOneWidget);
+    expect(find.text('2 files selected'), findsOneWidget);
+    expect(
+        pickerIcon(PickerDropZone, Icons.upload_file_outlined), findsNothing);
+
+    await tester.tap(find.widgetWithText(TextButton, 'Edit'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PickerActionSheet), findsOneWidget);
+    expect(find.text('Add files'), findsOneWidget);
+    expect(find.text('Add folder'), findsOneWidget);
+
+    await tester.tap(find.text('Clear files'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PickerActionSheet), findsNothing);
+    expect(container.read(fileInputProvider).value, isEmpty);
   });
 
   testWidgets('File panel opens on the input and output summary',

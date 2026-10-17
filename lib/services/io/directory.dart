@@ -44,6 +44,18 @@ class DirectorySelectionServices {
     }
   }
 
+  /// Use the first directory in [paths] as the output directory.
+  /// Returns false when no path is a directory.
+  bool addDroppedOutputDir(List<String> paths) {
+    for (final String path in paths) {
+      if (FileSystemEntity.isDirectorySync(path)) {
+        ref.read(fileOutputProvider.notifier).add(Directory(path));
+        return true;
+      }
+    }
+    return false;
+  }
+
   Future<Directory?> selectDirectoryAdaptive() async {
     if (Platform.isAndroid || Platform.isMacOS) {
       return await _selectDirectoryFilePicker();

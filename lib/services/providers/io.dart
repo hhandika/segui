@@ -45,6 +45,28 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
     });
   }
 
+  /// Replace the files of [xTypeGroup]'s type, keeping files of other types.
+  Future<void> replaceType(
+      List<XFile> inputFiles, XTypeGroup xTypeGroup) async {
+    final SegulType type = matchTypeByXTypeGroup(xTypeGroup);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final files = [...?state.value]..removeWhere((e) => e.type == type);
+      files.addAll(inputFiles.map(
+        (file) => SegulInputFile.fromXFile(file, xTypeGroup),
+      ));
+      return files;
+    });
+  }
+
+  /// Remove the files of [type], keeping files of other types.
+  Future<void> removeType(SegulType type) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      return [...?state.value]..removeWhere((e) => e.type == type);
+    });
+  }
+
   Future<void> removeFromList(SegulInputFile file) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {

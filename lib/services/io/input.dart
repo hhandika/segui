@@ -124,6 +124,62 @@ class FileInputServices {
     return 0;
   }
 
+  /// Select a file in place of the current file of this type.
+  Future<void> replaceFile() async {
+    final List<XFile> results = await _selectFileAdaptive();
+    if (results.isNotEmpty) {
+      await ref
+          .read(fileInputProvider.notifier)
+          .replaceType(results, allowedExtension);
+    }
+  }
+
+  /// Add dropped [paths], searching dropped directories when
+  /// [allowDirectory] is true. Files that do not match the allowed
+  /// extensions are skipped. A new selection replaces the files of this
+  /// type, and a single-file picker keeps only the first matching file.
+  Future<({int duplicates, int skipped})> addDropped(
+    List<String> paths, {
+    required List<File> currentFiles,
+    required bool allowDirectory,
+  }) async {
+    final List<XFile> matches = [];
+    int skipped = 0;
+    for (final String path in paths) {
+      if (FileSystemEntity.isDirectorySync(path)) {
+        if (!allowDirectory) {
+          skipped++;
+          continue;
+        }
+        final files =
+            DirectoryCrawler(Directory(path)).crawlByType(allowedExtension);
+        matches.addAll(files.map((e) => XFile(e.path)));
+      } else if (matchesTypeGroup(File(path), allowedExtension)) {
+        matches.add(XFile(path));
+      } else {
+        skipped++;
+      }
+    }
+    final notifier = ref.read(fileInputProvider.notifier);
+    if (!allowMultiple) {
+      if (matches.isNotEmpty) {
+        await notifier.replaceType([matches.first], allowedExtension);
+      }
+      return (duplicates: 0, skipped: skipped + _extraCount(matches));
+    }
+    final newFiles = _checkDuplicateFiles(currentFiles, matches);
+    if (currentFiles.isEmpty) {
+      await notifier.replaceType(newFiles.files, allowedExtension);
+    } else {
+      await _addMoreToProvider(newFiles.files);
+    }
+    return (duplicates: newFiles.duplicate, skipped: skipped);
+  }
+
+  int _extraCount(List<XFile> matches) {
+    return matches.isEmpty ? 0 : matches.length - 1;
+  }
+
   Future<List<XFile>> _selectMultiFileAdaptive() async {
     if (Platform.isAndroid) {
       return await _selectMultiUsingFilePicker(allowedExtension);
