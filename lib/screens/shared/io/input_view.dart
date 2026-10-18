@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io/file_browser.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/common.dart';
@@ -61,6 +62,14 @@ class InputFileList extends ConsumerWidget {
             icon: Icons.playlist_remove_rounded,
             isDestructive: true,
             onSelected: (context, selected) async {
+              final bool? isConfirmed = await showResponsiveSheet<bool>(
+                context: context,
+                builder: (context) =>
+                    RemoveInputFilesAlert(count: selected.length),
+              );
+              if (isConfirmed != true) {
+                return false;
+              }
               await ref
                   .read(fileInputProvider.notifier)
                   .removeFiles(selected.map((e) => e.path).toSet());
@@ -69,6 +78,36 @@ class InputFileList extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Asks before removing [count] selected files from the input list.
+class RemoveInputFilesAlert extends StatelessWidget {
+  const RemoveInputFilesAlert({super.key, required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final String files = count == 1 ? '1 file' : '$count files';
+    return SheetContent(
+      title: 'Remove $files?',
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(
+            'Remove',
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ],
+      child: Text('This removes $files from the input list. '
+          'The files stay on your computer.'),
     );
   }
 }

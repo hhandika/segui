@@ -9,6 +9,10 @@ import 'package:segui/styles/design_tokens.dart';
 /// Indent of each nesting level in a [FileTreeView].
 const double fileTreeIndent = 16;
 
+/// Space between the innermost guide line and the rows beside it, so a
+/// selected row's highlight does not touch the line.
+const double fileTreeGuideGap = SeguiSpacing.md;
+
 /// Lists a [FileTree] by folder. Folders open and close on tap, and each
 /// lists [fileListPageSize] files at a time. Small trees, and trees of
 /// search results for [query], open every folder.
@@ -26,7 +30,6 @@ class FileTreeView extends StatefulWidget {
     this.onSelectionChanged,
     this.query = '',
     this.trailingBuilder,
-    this.bottomPadding = 8,
   });
 
   final FileTree tree;
@@ -45,9 +48,6 @@ class FileTreeView extends StatefulWidget {
   /// Builds the trailing widget of a file row outside selection.
   final Widget Function(BuildContext context, FileTreeFile file)?
       trailingBuilder;
-
-  /// Space below the last row, such as room for a floating toolbar.
-  final double bottomPadding;
 
   @override
   State<FileTreeView> createState() => _FileTreeViewState();
@@ -79,8 +79,7 @@ class _FileTreeViewState extends State<FileTreeView> {
     final int unsupported = widget.tree.unsupportedCount;
     final int leading = unsupported > 0 ? 1 : 0;
     return ListView.builder(
-      padding: EdgeInsets.fromLTRB(
-          SeguiSpacing.md, 0, SeguiSpacing.md, widget.bottomPadding),
+      padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
       itemCount: rows.length + leading,
       itemBuilder: (context, index) {
         if (index < leading) {
@@ -173,7 +172,8 @@ class _FileTreeViewState extends State<FileTreeView> {
 }
 
 /// Indents [child] by [depth] levels and draws a guide line for each, so
-/// the files of a folder line up under it.
+/// the files of a folder line up under it, [fileTreeGuideGap] past the
+/// innermost line.
 class FileTreeGuides extends StatelessWidget {
   const FileTreeGuides({super.key, required this.depth, required this.child});
 
@@ -191,7 +191,9 @@ class FileTreeGuides extends StatelessWidget {
         color: Theme.of(context).colorScheme.outlineVariant,
       ),
       child: Padding(
-        padding: EdgeInsets.only(left: depth * fileTreeIndent),
+        padding: EdgeInsets.only(
+          left: depth * fileTreeIndent + fileTreeGuideGap,
+        ),
         child: child,
       ),
     );
@@ -211,7 +213,8 @@ class FileTreeGuidePainter extends CustomPainter {
       ..strokeWidth = 1;
     for (int i = 0; i < depth; i++) {
       // Lines up with the chevron of the parent folder.
-      final double x = i * fileTreeIndent + 20;
+      final double x =
+          i * fileTreeIndent + SeguiSpacing.md + SeguiControlSize.iconSmall / 2;
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
   }
@@ -252,7 +255,7 @@ class FileTreeFolderHeader extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-            SeguiSpacing.lg, SeguiSpacing.md, SeguiSpacing.md, SeguiSpacing.xs),
+            SeguiSpacing.md, SeguiSpacing.xs, SeguiSpacing.xs, 0),
         child: Row(
           children: [
             Icon(
@@ -268,33 +271,41 @@ class FileTreeFolderHeader extends StatelessWidget {
               color: theme.colorScheme.primary,
             ),
             const SizedBox(width: SeguiSpacing.md),
-            Flexible(
-              child: Tooltip(
-                message: folder.path,
-                child: Text(
-                  folder.name,
-                  style: theme.textTheme.labelLarge,
-                  overflow: TextOverflow.ellipsis,
-                ),
+            // One expanded group, so the checkbox reaches the row end and
+            // lines up with the file checkboxes.
+            Expanded(
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Tooltip(
+                      message: folder.path,
+                      child: Text(
+                        folder.name,
+                        style: theme.textTheme.labelLarge,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  if (folder.hasNewFiles) const NewFileBadge(),
+                  const SizedBox(width: SeguiSpacing.md),
+                  Text(
+                    count == 1 ? '1 file' : '$count files',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
             ),
-            if (folder.hasNewFiles) const NewFileBadge(),
-            const SizedBox(width: SeguiSpacing.md),
-            Text(
-              count == 1 ? '1 file' : '$count files',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const Spacer(),
             if (isSelecting)
               Checkbox(
                 tristate: true,
                 value: selection,
+                visualDensity: VisualDensity.compact,
                 onChanged: (_) => onSelected(selection != true),
               )
             else
-              const SizedBox(height: kMinInteractiveDimension),
+              const SizedBox(height: SeguiControlSize.control),
           ],
         ),
       ),
@@ -327,25 +338,40 @@ class FileBrowserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    return ListTile(
-      minVerticalPadding: SeguiSpacing.xxs,
-      selected: isSelecting && isSelected,
-      selectedTileColor: colors.secondaryContainer,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(SeguiRadius.md)),
-      leading: FileIconTile(icon: FileIcon(file: file.file)),
-      title: Row(
-        children: [
-          Flexible(child: FileIOTitle(file: file.file)),
-          if (file.isNew) const NewFileBadge(),
-        ],
+    // The gap keeps the highlights of neighboring selected rows apart.
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: SeguiSpacing.xxs),
+      child: ListTile(
+        dense: true,
+        visualDensity: VisualDensity.compact,
+        minVerticalPadding: 0,
+        contentPadding: const EdgeInsets.only(
+          left: SeguiSpacing.md,
+          right: SeguiSpacing.xs,
+        ),
+        horizontalTitleGap: SeguiSpacing.lg,
+        selected: isSelecting && isSelected,
+        selectedTileColor: colors.secondaryContainer,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(SeguiRadius.md)),
+        leading: FileIconTile(icon: FileIcon(file: file.file)),
+        title: Row(
+          children: [
+            Flexible(child: FileIOTitle(file: file.file)),
+            if (file.isNew) const NewFileBadge(),
+          ],
+        ),
+        subtitle: FileIOSubtitle(file: file.file, isCompact: true),
+        trailing: isSelecting
+            ? Checkbox(
+                value: isSelected,
+                visualDensity: VisualDensity.compact,
+                onChanged: onSelected,
+              )
+            : trailing,
+        onTap: onTap,
+        onLongPress: onLongPress,
       ),
-      subtitle: FileIOSubtitle(file: file.file),
-      trailing: isSelecting
-          ? Checkbox(value: isSelected, onChanged: onSelected)
-          : trailing,
-      onTap: onTap,
-      onLongPress: onLongPress,
     );
   }
 }
@@ -379,7 +405,7 @@ class UnsupportedFilesNote extends StatelessWidget {
     final Color color = theme.colorScheme.onSurfaceVariant;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-          SeguiSpacing.xl, SeguiSpacing.xs, SeguiSpacing.xl, SeguiSpacing.md),
+          SeguiSpacing.md, SeguiSpacing.xs, SeguiSpacing.md, SeguiSpacing.xs),
       child: Row(
         children: [
           Icon(Icons.visibility_off_outlined,

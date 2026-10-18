@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/services/io/export.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/info.dart';
@@ -50,10 +51,11 @@ class ExecutionButton extends ConsumerWidget {
             controller: controller,
             onPressed: onNewRun,
           ),
-          ShareButton(
-            isRunning: isRunning,
-            onPressed: onShared,
-          ),
+          if (canShareFiles)
+            ShareButton(
+              isRunning: isRunning,
+              onPressed: onShared,
+            ),
         ],
       );
     }

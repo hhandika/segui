@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
+import 'package:segui/screens/shared/io/file_browser.dart';
+import 'package:segui/screens/shared/io/file_list.dart';
 import 'package:segui/screens/shared/io/file_tree_view.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
@@ -12,6 +14,7 @@ import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/file_tree.dart';
 import 'package:segui/services/io/output.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
 void main() {
@@ -182,6 +185,22 @@ void main() {
         [p.join(dir.path, 'old.nex')]);
   });
 
+  testWidgets('Nested rows leave a gap after the guide line', (tester) async {
+    const Key row = Key('row');
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(
+        body: FileTreeGuides(
+          depth: 2,
+          child: SizedBox(key: row, height: 40),
+        ),
+      ),
+    ));
+    // The innermost line sits at the second level's chevron.
+    const double line =
+        fileTreeIndent + SeguiSpacing.md + SeguiControlSize.iconSmall / 2;
+    expect(tester.getTopLeft(find.byKey(row)).dx, line + fileTreeGuideGap);
+  });
+
   testWidgets('Output tree opens folders and notes unsupported files',
       (tester) async {
     tester.view.physicalSize = const Size(600, 2000);
@@ -244,13 +263,23 @@ void main() {
     return container;
   }
 
+  testWidgets('Search shows only for more than a page of files',
+      (tester) async {
+    await pumpInput(tester, [
+      for (int i = 0; i < fileListPageSize; i++)
+        createFile(['set_a', 'uce-$i.nex']),
+    ]);
+    expect(find.byType(FileSearchField), findsNothing);
+  });
+
   testWidgets('Search lists matching files in their folders', (tester) async {
     await pumpInput(tester, [
       createFile(['set_a', 'uce-1.nex']),
       createFile(['set_a', 'uce-2.nex']),
-      createFile(['set_b', 'exon-1.nex']),
+      for (int i = 0; i < fileListPageSize - 1; i++)
+        createFile(['set_b', 'exon-$i.nex']),
     ]);
-    expect(find.byType(FileBrowserTile), findsNWidgets(3));
+    expect(find.byType(FileSearchField), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), 'UCE');
     await tester.pump();
@@ -280,6 +309,13 @@ void main() {
     expect(find.text('Clear all'), findsOneWidget);
     expect(find.text('Select files'), findsOneWidget);
 
+    // Folder and file checkboxes line up at the row end.
+    final Set<double> checkboxEnds = {
+      for (final Element box in find.byType(Checkbox).evaluate())
+        tester.getRect(find.byWidget(box.widget)).right,
+    };
+    expect(checkboxEnds, hasLength(1));
+
     // A folder checkbox selects every file in it.
     await tester.tap(find.descendant(
       of: find.widgetWithText(FileTreeFolderHeader, 'set_a'),
@@ -308,7 +344,32 @@ void main() {
 
     await tester.tap(find.widgetWithText(FileBrowserTile, 'c.nex'));
     await tester.pump();
+    // The toolbar sits under the tree instead of covering its rows.
+    expect(
+      tester.getRect(find.byType(FileTreeView)).bottom,
+      lessThanOrEqualTo(tester.getTopLeft(find.byType(FileActionToolbar)).dy),
+    );
+    // The count sits between the actions and the destructive Remove.
+    expect(
+      tester.getCenter(find.text('1 selected')).dx,
+      lessThan(tester.getCenter(find.text('Remove')).dx),
+    );
+
+    // Removing asks first, and Cancel keeps the files.
     await tester.tap(find.text('Remove'));
+    await tester.pumpAndSettle();
+    expect(find.byType(RemoveInputFilesAlert), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(container.read(fileInputProvider).value, hasLength(3));
+    expect(find.text('1 selected'), findsOneWidget);
+
+    await tester.tap(find.text('Remove'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+      of: find.byType(RemoveInputFilesAlert),
+      matching: find.text('Remove'),
+    ));
     await tester.pumpAndSettle();
 
     final names = container

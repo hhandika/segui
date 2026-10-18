@@ -114,10 +114,30 @@ class FileIOTitle extends StatelessWidget {
   }
 }
 
-class FileIOSubtitle extends StatelessWidget {
-  const FileIOSubtitle({super.key, required this.file});
+class FileIOSubtitle extends StatefulWidget {
+  const FileIOSubtitle({super.key, required this.file, this.isCompact = false});
 
   final File file;
+
+  /// Whether to use the small text of compact file rows.
+  final bool isCompact;
+
+  @override
+  State<FileIOSubtitle> createState() => _FileIOSubtitleState();
+}
+
+class _FileIOSubtitleState extends State<FileIOSubtitle> {
+  // Read once per file, so rebuilds such as selecting a row do not blank
+  // the subtitle and change the row height while it reloads.
+  late Future<String> _metadata = _readMetadata();
+
+  @override
+  void didUpdateWidget(FileIOSubtitle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.file.path != widget.file.path) {
+      _metadata = _readMetadata();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +148,9 @@ class FileIOSubtitle extends StatelessWidget {
           // We use interpunction to separate the size and last modified
           return Text(
             snapshot.data!,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: widget.isCompact
+                ? Theme.of(context).textTheme.bodySmall
+                : Theme.of(context).textTheme.bodyMedium,
             overflow: TextOverflow.ellipsis,
           );
         } else {
@@ -138,7 +160,7 @@ class FileIOSubtitle extends StatelessWidget {
     );
   }
 
-  Future<String> get _metadata async {
-    return await FileMetadata(file: file).metadataText;
+  Future<String> _readMetadata() {
+    return FileMetadata(file: widget.file).metadataText;
   }
 }

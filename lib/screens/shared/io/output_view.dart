@@ -5,11 +5,13 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io/file_browser.dart';
+import 'package:segui/screens/shared/io/export_view.dart';
 import 'package:segui/screens/shared/io/file_list.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/common.dart';
+import 'package:segui/services/io/export.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/file_tree.dart';
 import 'package:segui/services/io/io.dart';
@@ -78,7 +80,8 @@ class _OutputFileListState extends ConsumerState<OutputFileList> {
           'Show other files to see everything in the directory. '
           'Files SEGUI does not recognize are not shown. '
           'Click on a file to view its content. '
-          'Select files to share or delete them. '
+          'Select files to export them as a ZIP or gzip archive, or to '
+          'delete them. '
           'Deleting a file will remove it from the system.',
       child: FileBrowser(
         files: files,
@@ -104,12 +107,9 @@ class _OutputFileListState extends ConsumerState<OutputFileList> {
         },
         actions: [
           FileBrowserAction(
-            label: 'Share',
-            icon: Icons.adaptive.share_rounded,
-            onSelected: (context, files) async {
-              await IOServices().shareFiles(context, files);
-              return false;
-            },
+            label: 'Export',
+            icon: Icons.save_alt_rounded,
+            onSelected: _export,
           ),
           if (isDesktop)
             FileBrowserAction(
@@ -147,6 +147,49 @@ class _OutputFileListState extends ConsumerState<OutputFileList> {
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, 'No app found to open this file.'),
       );
+    }
+  }
+
+  /// Asks for an archive format, then saves or shares the archive.
+  Future<bool> _export(BuildContext context, List<File> files) async {
+    final ExportRequest? request = await showResponsiveSheet<ExportRequest>(
+      context: context,
+      builder: (context) => ExportFilesSheet(
+        count: files.length,
+        canShare: canShareFiles,
+      ),
+    );
+    if (request == null) {
+      return false;
+    }
+    final FileExportServices exporter =
+        FileExportServices(files: files, format: request.format);
+    try {
+      if (request.isSharing) {
+        final File archive = await exporter.writeTemp();
+        if (!context.mounted) {
+          return false;
+        }
+        await IOServices().shareFile(context, archive);
+        return true;
+      }
+      final String? savedPath = await exporter.save();
+      if (savedPath == null) {
+        return false;
+      }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          showSharedSnackBar(context, 'Exported to $savedPath'),
+        );
+      }
+      return true;
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          showSharedSnackBar(context, 'Export failed: $e'),
+        );
+      }
+      return false;
     }
   }
 
@@ -269,8 +312,10 @@ class OutputActionMenu extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CommonShareTile(file: file),
-                        const SizedBox(height: SeguiSpacing.xxs),
+                        if (canShareFiles) ...[
+                          CommonShareTile(file: file),
+                          const SizedBox(height: SeguiSpacing.xxs),
+                        ],
                         ExternalAppLauncher(
                           file: file,
                           fromPopUp: true,
@@ -293,9 +338,10 @@ class OutputActionMenu extends StatelessWidget {
         : PopupMenuButton<PopupMenuItem>(
             itemBuilder: (context) {
               return [
-                PopupMenuItem(
-                  child: CommonShareTile(file: file),
-                ),
+                if (canShareFiles)
+                  PopupMenuItem(
+                    child: CommonShareTile(file: file),
+                  ),
                 if (runningPlatform == PlatformType.isDesktop)
                   PopupMenuItem(
                     child: ExternalAppLauncher(

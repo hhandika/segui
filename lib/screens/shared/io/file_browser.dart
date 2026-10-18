@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/shared/io/file_list.dart';
 import 'package:segui/screens/shared/io/file_tree_view.dart';
 import 'package:segui/services/io/file_tree.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -29,11 +30,13 @@ class FileBrowserAction {
   final bool isSingleFile;
 }
 
-/// Files listed by folder with a search field and a selection mode.
+/// Files listed by folder with a selection mode, and a search field once
+/// there are more than [fileListPageSize] files.
 ///
 /// Above the tree, Select switches to selection, where Select all and
 /// Clear all sit on the left and Done on the right. While selecting, a
-/// floating toolbar at the bottom runs [actions] on the selected files.
+/// toolbar docked under the tree runs [actions] on the selected files, so
+/// it never covers a row.
 class FileBrowser extends StatefulWidget {
   const FileBrowser({
     super.key,
@@ -96,21 +99,23 @@ class _FileBrowserState extends State<FileBrowser> {
             .map((e) => e.file.path));
     final FileTree allFiles =
         FileTree.fromFiles(widget.files, rootPath: rootPath);
-    final FileTree tree = _query.isEmpty
+    // Short lists fit on screen, so search shows only past one page.
+    final bool canSearch = allFiles.root.fileCount > fileListPageSize;
+    final String query = canSearch ? _query : '';
+    final FileTree tree = query.isEmpty
         ? allFiles
-        : FileTree.fromFiles(widget.files, rootPath: rootPath, query: _query);
+        : FileTree.fromFiles(widget.files, rootPath: rootPath, query: query);
     final bool hasFiles = !allFiles.isEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-              SeguiSpacing.xl, 0, SeguiSpacing.xl, SeguiSpacing.xs),
-          child: FileSearchField(
+        if (canSearch) ...[
+          FileSearchField(
             controller: _search,
             onChanged: (value) => setState(() => _query = value.trim()),
           ),
-        ),
+          const SizedBox(height: SeguiSpacing.xs),
+        ],
         FileSelectionBar(
           isSelecting: _isSelecting,
           rootPath: rootPath,
@@ -124,40 +129,30 @@ class _FileBrowserState extends State<FileBrowser> {
         ),
         if (widget.header != null) widget.header!,
         Expanded(
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: _hasNoRows(tree, hasFiles)
-                    ? (hasFiles && _query.isNotEmpty
-                        ? NoMatchingFiles(query: _query)
-                        : widget.emptyChild)
-                    : FileTreeView(
-                        tree: tree,
-                        query: _query,
-                        isSelecting: _isSelecting,
-                        selected: _selected,
-                        trailingBuilder: widget.trailingBuilder,
-                        bottomPadding: _isSelecting ? 88 : 8,
-                        onFileTap: widget.onFileTap,
-                        onFileLongPress: (file) => setState(() {
-                          _isSelecting = true;
-                          _selected.add(file.file.path);
-                        }),
-                        onSelectionChanged: _changeSelection,
-                      ),
-              ),
-              if (_isSelecting)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: FileActionToolbar(
-                    count: _selected.length,
-                    actions: widget.actions,
-                    onSelected: _runAction,
-                  ),
+          child: _hasNoRows(tree, hasFiles)
+              ? (hasFiles && query.isNotEmpty
+                  ? NoMatchingFiles(query: query)
+                  : widget.emptyChild)
+              : FileTreeView(
+                  tree: tree,
+                  query: query,
+                  isSelecting: _isSelecting,
+                  selected: _selected,
+                  trailingBuilder: widget.trailingBuilder,
+                  onFileTap: widget.onFileTap,
+                  onFileLongPress: (file) => setState(() {
+                    _isSelecting = true;
+                    _selected.add(file.file.path);
+                  }),
+                  onSelectionChanged: _changeSelection,
                 ),
-            ],
-          ),
         ),
+        if (_isSelecting)
+          FileActionToolbar(
+            count: _selected.length,
+            actions: widget.actions,
+            onSelected: _runAction,
+          ),
       ],
     );
   }
@@ -267,25 +262,52 @@ class FileSelectionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String? root = rootPath;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xl),
+    // Compact buttons keep the bar one short row.
+    const VisualDensity density = VisualDensity.compact;
+    return SizedBox(
+      height: SeguiControlSize.control,
       child: Row(
         children: [
           if (isSelecting) ...[
-            TextButton(onPressed: onSelectAll, child: const Text('Select all')),
-            TextButton(onPressed: onClearAll, child: const Text('Clear all')),
-            const Spacer(),
-            FilledButton.tonal(onPressed: onDone, child: const Text('Done')),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(visualDensity: density),
+                      onPressed: onSelectAll,
+                      child: const Text('Select all'),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(visualDensity: density),
+                      onPressed: onClearAll,
+                      child: const Text('Clear all'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            FilledButton.tonal(
+              style: FilledButton.styleFrom(visualDensity: density),
+              onPressed: onDone,
+              child: const Text('Done'),
+            ),
           ] else ...[
             Expanded(
               child: root == null || root.isEmpty
                   ? const SizedBox.shrink()
-                  : FileTreeRootHeader(path: root),
+                  : Padding(
+                      padding: const EdgeInsets.only(left: SeguiSpacing.md),
+                      child: FileTreeRootHeader(path: root),
+                    ),
             ),
             if (canSelect)
-              TextButton(onPressed: onSelect, child: const Text('Select'))
-            else
-              const SizedBox(height: kMinInteractiveDimension),
+              TextButton(
+                style: TextButton.styleFrom(visualDensity: density),
+                onPressed: onSelect,
+                child: const Text('Select'),
+              ),
           ],
         ],
       ),
@@ -293,7 +315,10 @@ class FileSelectionBar extends StatelessWidget {
   }
 }
 
-/// Floating toolbar with the selection count and the actions for it.
+/// Flat, compact toolbar centered under the file tree. Actions sit on the
+/// left, destructive actions alone on the right, and the selection count
+/// between them behind dividers, so a destructive action is hard to tap by
+/// accident.
 class FileActionToolbar extends StatelessWidget {
   const FileActionToolbar({
     super.key,
@@ -301,6 +326,12 @@ class FileActionToolbar extends StatelessWidget {
     required this.actions,
     required this.onSelected,
   });
+
+  /// Narrowest toolbar that shows labels on the non-destructive actions.
+  static const double labelWidth = 420;
+
+  /// Narrowest toolbar that shows the label on destructive actions.
+  static const double destructiveLabelWidth = 300;
 
   final int count;
   final List<FileBrowserAction> actions;
@@ -313,50 +344,119 @@ class FileActionToolbar extends StatelessWidget {
     final List<FileBrowserAction> available = count == 0
         ? const []
         : actions.where((e) => !e.isSingleFile || count == 1).toList();
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          SeguiSpacing.lg, 0, SeguiSpacing.lg, SeguiSpacing.xl),
-      child: Material(
-        color: colors.surfaceContainerHighest,
-        elevation: SeguiElevation.medium,
-        shape: const StadiumBorder(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: SeguiSpacing.md, vertical: SeguiSpacing.sm),
-          child: Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: SeguiSpacing.xs,
-            runSpacing: SeguiSpacing.xs,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: SeguiSpacing.md),
-                child: Text(
-                  count == 0 ? 'Select files' : '$count selected',
-                  style: theme.textTheme.labelLarge,
-                ),
-              ),
-              for (final FileBrowserAction action in available)
-                action.isDestructive
-                    ? FilledButton.tonalIcon(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: colors.errorContainer,
-                          foregroundColor: colors.onErrorContainer,
-                        ),
-                        onPressed: () => onSelected(action),
-                        icon: Icon(action.icon),
-                        label: Text(action.label),
-                      )
-                    : TextButton.icon(
-                        onPressed: () => onSelected(action),
-                        icon: Icon(action.icon),
-                        label: Text(action.label),
+    final List<FileBrowserAction> actionsStart =
+        available.where((e) => !e.isDestructive).toList();
+    final List<FileBrowserAction> actionsEnd =
+        available.where((e) => e.isDestructive).toList();
+    // Labels show only when the panel has room, and the toolbar shrinks to
+    // its buttons instead of spanning the panel.
+    return LayoutBuilder(builder: (context, constraints) {
+      final bool showLabels = constraints.maxWidth >= labelWidth;
+      return Padding(
+        padding: const EdgeInsets.only(top: SeguiSpacing.xs),
+        child: Center(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(SeguiRadius.full),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(SeguiSpacing.xs),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final FileBrowserAction action in actionsStart)
+                    FileActionButton(
+                      action: action,
+                      showLabel: showLabels,
+                      onPressed: () => onSelected(action),
+                    ),
+                  if (actionsStart.isNotEmpty) const FileActionDivider(),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SeguiSpacing.lg,
                       ),
-            ],
+                      child: Text(
+                        count == 0 ? 'Select files' : '$count selected',
+                        style: theme.textTheme.labelLarge,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  if (actionsEnd.isNotEmpty) const FileActionDivider(),
+                  for (final FileBrowserAction action in actionsEnd)
+                    FileActionButton(
+                      action: action,
+                      showLabel: constraints.maxWidth >= destructiveLabelWidth,
+                      onPressed: () => onSelected(action),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
+      );
+    });
+  }
+}
+
+/// Short vertical line between the groups of a [FileActionToolbar].
+class FileActionDivider extends StatelessWidget {
+  const FileActionDivider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      height: SeguiControlSize.iconMedium,
+      child: VerticalDivider(
+        width: SeguiSpacing.xs,
+        thickness: SeguiStroke.thin,
       ),
+    );
+  }
+}
+
+/// Flat toolbar button for a [FileBrowserAction], in the error color when
+/// destructive, kept as narrow as its content. Without a label it shows the
+/// icon with a tooltip.
+class FileActionButton extends StatelessWidget {
+  const FileActionButton({
+    super.key,
+    required this.action,
+    required this.showLabel,
+    required this.onPressed,
+  });
+
+  final FileBrowserAction action;
+  final bool showLabel;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final Color? color = action.isDestructive ? colors.error : null;
+    if (!showLabel) {
+      return IconButton(
+        tooltip: action.label,
+        color: color,
+        visualDensity: VisualDensity.compact,
+        onPressed: onPressed,
+        icon: Icon(action.icon),
+      );
+    }
+    // Sized to its label, so the button never stretches.
+    return TextButton.icon(
+      style: TextButton.styleFrom(
+        foregroundColor: color,
+        visualDensity: VisualDensity.compact,
+        minimumSize: const Size(0, SeguiControlSize.control),
+        padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.md),
+      ),
+      onPressed: onPressed,
+      icon: Icon(action.icon),
+      label: Text(action.label),
     );
   }
 }

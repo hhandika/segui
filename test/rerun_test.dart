@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
+import 'package:segui/services/io/export.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
@@ -47,7 +48,9 @@ void main() {
       await pumpTool(tester, onExecuted: () {});
 
       expect(find.text('New run'), findsOneWidget);
-      expect(find.text('Quick Share'), findsOneWidget);
+      // Linux has no share sheet.
+      expect(find.text('Quick Share'),
+          canShareFiles ? findsOneWidget : findsNothing);
       expect(find.text('Re-run'), findsNothing);
     });
 

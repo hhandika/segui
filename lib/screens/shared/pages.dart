@@ -122,35 +122,36 @@ class _IOListContainerState extends State<IOListContainer> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: SeguiSpacing.md),
-        RichText(
-          text: TextSpan(
-            children: [
-              WidgetSpan(
-                child: Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(
+                widget.title,
+                style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
               ),
-              WidgetSpan(
-                child: IconButton(
-                  icon: Icon(
-                    size: SeguiControlSize.iconSmall,
-                    Icons.info_outline,
-                    color: Theme.of(context).disabledColor,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isShowingInfo = !isShowingInfo;
-                    });
-                  },
-                ),
+            ),
+            IconButton(
+              tooltip: isShowingInfo ? 'Hide info' : 'Show info',
+              visualDensity: VisualDensity.compact,
+              icon: Icon(
+                size: SeguiControlSize.iconSmall,
+                Icons.info_outline,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-            ],
-          ),
+              onPressed: () {
+                setState(() {
+                  isShowingInfo = !isShowingInfo;
+                });
+              },
+            ),
+          ],
         ),
-        const SizedBox(height: SeguiSpacing.md),
+        const SizedBox(height: SeguiSpacing.xs),
         isShowingInfo
             ? SharedInfoForm(
                 description: widget.infoText,

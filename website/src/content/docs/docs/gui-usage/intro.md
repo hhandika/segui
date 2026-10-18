@@ -60,11 +60,20 @@ Some tasks have optional parameters. Follow the task's documentation to learn mo
 
 ## Output
 
-On desktop platforms, the application saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To copy the output or share it with other applications or devices, simply utilize the `Share` button. The quick share button will compress output files and share it as a single file, whereas the `Share` button the `Output` window allows you to share the output individually.
+On desktop platforms, the application saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To keep a copy elsewhere, export the output files as an archive or share them with other apps.
+
+## Exporting Output
+
+In the `Output` panel, choose `Select`, then pick the files or folders you want. Select `Export` in the toolbar under the file list and choose a format:
+
+- **ZIP**: a `.zip` archive that opens on any computer.
+- **Gzip**: a `.tar.gz` archive, common on Linux and computing clusters.
+
+Select `Export` to save the archive where you choose. Files keep their folders inside the archive. On macOS, Windows, Android, and iOS, you can select `Share` instead to send the archive to another app.
 
 ## Sharing Output
 
-The app allows you to share the output files to other devices or with other apps, such as [OneDrive](https://onedrive.live.com/), [DropBox](https://www.dropbox.com/), and other installed cloud provider apps. For instance, using AirDrop for macOS. After the app finishes executing a task, the "Run" button will be replace by a `Quick Share` button. Pressing this button will compress the output files and share them as a single file. Additionally, you can share individual files by clicking the `three dots menu button` for each file. Then, select `Share`.
+On macOS, Windows, Android, and iOS, the app can share output files with other devices or apps, such as [OneDrive](https://onedrive.live.com/), [DropBox](https://www.dropbox.com/), and other installed cloud provider apps. For instance, using AirDrop for macOS. After the app finishes executing a task, the "Run" button will be replaced by a `Quick Share` button. Pressing this button will compress the output files and share them as a single file. Additionally, you can share individual files by clicking the `three dots menu button` for each file. Then, select `Share`. Linux has no system share sheet, so use `Export` there instead.
 
 ## In-App built-in file viewer
 
