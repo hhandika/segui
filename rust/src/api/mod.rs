@@ -7,6 +7,7 @@ pub mod archive;
 pub mod common;
 pub mod contig;
 pub mod csv;
+pub mod file_sort;
 pub mod maf;
 pub mod reads;
 pub mod sequence;

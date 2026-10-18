@@ -8,6 +8,7 @@ import 'api/archive.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/csv.dart';
+import 'api/file_sort.dart';
 import 'api/maf.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
@@ -89,7 +90,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_box_autoadd_f_64(dynamic raw);
 
   @protected
+  FileListServices dco_decode_box_autoadd_file_list_services(dynamic raw);
+
+  @protected
   FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw);
 
   @protected
   IDExtractionServices dco_decode_box_autoadd_id_extraction_services(
@@ -177,6 +184,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double dco_decode_f_64(dynamic raw);
 
   @protected
+  FileListServices dco_decode_file_list_services(dynamic raw);
+
+  @protected
+  FileSortKey dco_decode_file_sort_key(dynamic raw);
+
+  @protected
   FilteringParams dco_decode_filtering_params(dynamic raw);
 
   @protected
@@ -184,6 +197,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int dco_decode_i_32(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
 
   @protected
   IDExtractionServices dco_decode_id_extraction_services(dynamic raw);
@@ -196,6 +212,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<PlatformInt64?> dco_decode_list_opt_box_autoadd_i_64(dynamic raw);
+
+  @protected
+  Uint32List dco_decode_list_prim_u_32_strict(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
@@ -214,6 +236,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
+
+  @protected
+  PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
 
   @protected
   BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
@@ -360,8 +385,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
 
   @protected
+  FileListServices sse_decode_box_autoadd_file_list_services(
+      SseDeserializer deserializer);
+
+  @protected
   FilteringServices sse_decode_box_autoadd_filtering_services(
       SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
   IDExtractionServices sse_decode_box_autoadd_id_extraction_services(
@@ -462,6 +494,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   double sse_decode_f_64(SseDeserializer deserializer);
 
   @protected
+  FileListServices sse_decode_file_list_services(SseDeserializer deserializer);
+
+  @protected
+  FileSortKey sse_decode_file_sort_key(SseDeserializer deserializer);
+
+  @protected
   FilteringParams sse_decode_filtering_params(SseDeserializer deserializer);
 
   @protected
@@ -469,6 +507,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
 
   @protected
   IDExtractionServices sse_decode_id_extraction_services(
@@ -484,6 +525,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   List<Uint8List> sse_decode_list_list_prim_u_8_strict(
       SseDeserializer deserializer);
+
+  @protected
+  List<PlatformInt64?> sse_decode_list_opt_box_autoadd_i_64(
+      SseDeserializer deserializer);
+
+  @protected
+  Uint32List sse_decode_list_prim_u_32_strict(SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
@@ -505,6 +553,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
@@ -665,8 +716,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_file_list_services(
+      FileListServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_filtering_services(
       FilteringServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_i_64(
+      PlatformInt64 self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_id_extraction_services(
@@ -769,6 +828,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
+  void sse_encode_file_list_services(
+      FileListServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_file_sort_key(FileSortKey self, SseSerializer serializer);
+
+  @protected
   void sse_encode_filtering_params(
       FilteringParams self, SseSerializer serializer);
 
@@ -778,6 +844,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
 
   @protected
   void sse_encode_id_extraction_services(
@@ -793,6 +862,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_list_prim_u_8_strict(
       List<Uint8List> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_opt_box_autoadd_i_64(
+      List<PlatformInt64?> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_prim_u_32_strict(
+      Uint32List self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
@@ -815,6 +892,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_64(
+      PlatformInt64? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);

@@ -101,7 +101,11 @@ class _OutputFileListState extends ConsumerState<OutputFileList> {
               : 'No new output files yet.',
           description: 'Run an analysis to generate output files.',
         ),
-        onFileTap: (file) => openFileView(context, file.file),
+        onFileTap: (file) => openFileView(
+          context,
+          file.file,
+          siblings: files.map((output) => output.file),
+        ),
         trailingBuilder: (context, file) {
           return OutputActionMenu(file: file.file, showDelete: false);
         },

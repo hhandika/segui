@@ -129,7 +129,7 @@ abstract final class SeguiAlignmentLayout {
   static const double cellMax = 24;
   static const double cellDefault = 14;
 
-  /// Zoom step for the zoom buttons and Ctrl + scroll.
+  /// Zoom step for the zoom buttons and Ctrl (or Cmd) + scroll.
   static const double cellStep = 2;
 
   /// Narrowest cell that still shows residue letters.
@@ -141,7 +141,13 @@ abstract final class SeguiAlignmentLayout {
   /// Rows stay tall enough for taxon names when cells are narrow.
   static const double rowMin = 14;
 
+  /// Room below the last sequence, so it clears the panel border.
+  static const double gridBottomPadding = SeguiSpacing.sm;
+
   static const double ruler = 24;
+
+  /// Shortest the grid panel gets; shorter windows scroll the viewer.
+  static const double gridMin = 320;
 
   /// Height of the gull at work above the toolbar.
   static const double mascot = 48;
@@ -157,6 +163,13 @@ abstract final class SeguiAlignmentLayout {
   static const double nameDivider = 8;
   static const double chunkSidebar = 200;
 
+  /// List of files to switch between, beside the viewer.
+  static const double fileList = 240;
+
   /// Widest the go-to-site field grows to fit its label and hint.
   static const double siteFieldMax = 200;
+
+  /// Narrowest the file switcher gets beside the gull; narrower rows hide
+  /// the gull.
+  static const double fileSwitcherMin = 320;
 }

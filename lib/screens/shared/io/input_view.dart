@@ -55,7 +55,11 @@ class InputFileList extends ConsumerWidget {
           description: 'Select one or more input files. '
               'The selected files will be shown here.',
         ),
-        onFileTap: (file) => openFileView(context, file.file),
+        onFileTap: (file) => openFileView(
+          context,
+          file.file,
+          siblings: files.map((input) => input.file),
+        ),
         actions: [
           FileBrowserAction(
             label: 'Remove',

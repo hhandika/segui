@@ -166,6 +166,8 @@ The app can directly view the supported file types. The content will be displaye
 
 FASTA, NEXUS, and PHYLIP files open in the alignment viewer. It draws only the part of the alignment on screen, so alignments of 10,000 sites or more scroll smoothly. Taxon names stay pinned on the left and site numbers on the top.
 
+- **Switch files**: when you open a file from the input or output list, the viewer can move between the other alignment files in that list without going back. The file switcher sits above the toolbar, next to the gull. Use its arrows, press `Alt` + `↑` or `↓` (`Option` on macOS), or click the file name to search for a file. Files are listed in natural order, so `uce-2` comes before `uce-10`. Select the list button at the end of the switcher to show every file beside the viewer. Filter it by name, and use the sort button in the filter box to sort by name or size, in either direction. On phones, the list opens as a sheet. Zoom, colors, chunk size, and the name panel width stay the same when you switch. Selected sequences and the current chunk reset.
+
 - **Colors**: `Base` colors nucleotides (A green, C blue, G amber, T red) or amino acids by chemistry. `Mono` shows residues in one color, which makes gaps easy to spot. `Diff to first` grays out residues that match the first sequence, so only the differences stand out.
 - **Zoom**: use the zoom buttons or slider, or hold `Ctrl` (`Cmd` on macOS) and scroll. When zoomed out, letters are hidden and each site becomes a colored block. Select `Letters` to hide or show residue letters.
 - **Overview**: the strip above the grid shows the whole alignment. The outlined box marks what is on screen. Tap or drag the strip to jump to another part.

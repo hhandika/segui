@@ -216,7 +216,8 @@ class RowSelection {
   bool get isEmpty => rows.isEmpty;
 
   /// Selection after tapping [row]. Shift extends from the anchor over the
-  /// rows in display [order]; [toggle] (Ctrl or Cmd) adds or removes [row];
+  /// rows in display [order]; [toggle] (Ctrl, or Cmd on Apple platforms)
+  /// adds or removes [row];
   /// a plain tap selects [row] alone, or clears it when it is the only one.
   RowSelection tap(
     int row,

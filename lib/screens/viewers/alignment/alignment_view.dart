@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -7,49 +8,199 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/alignment/alignment_axes.dart';
+import 'package:segui/screens/viewers/alignment/alignment_files.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
 import 'package:segui/screens/viewers/alignment/alignment_gull.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/chunk_sidebar.dart';
 import 'package:segui/services/providers/alignment_view.dart';
+import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/viewers/alignment.dart';
+import 'package:segui/services/viewers/alignment_files.dart';
 import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 final NumberFormat _siteFormat = NumberFormat('#,###');
 
-/// Colored, zoomable view of a FASTA, NEXUS, or PHYLIP file.
-class AlignmentFileView extends StatelessWidget {
-  const AlignmentFileView({super.key, required this.file});
+/// Colored, zoomable view of a FASTA, NEXUS, or PHYLIP file. With
+/// [siblings], such as the other files of the list it was opened from, the
+/// app bar steps between them and a file list can be shown beside the
+/// viewer. Display settings carry over between files.
+class AlignmentFileView extends ConsumerStatefulWidget {
+  const AlignmentFileView({
+    super.key,
+    required this.file,
+    this.siblings = const [],
+  });
 
   final File file;
+  final Iterable<File> siblings;
+
+  @override
+  ConsumerState<AlignmentFileView> createState() => _AlignmentFileViewState();
+}
+
+class _AlignmentFileViewState extends ConsumerState<AlignmentFileView> {
+  late final AlignmentFileList _files = AlignmentFileList(
+    widget.file,
+    widget.siblings,
+    order: ref.read(fileOrderProvider),
+  );
+  late int _index = _files.indexOf(widget.file);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(p.basename(file.path)),
-        backgroundColor: getSEGULBackgroundColor(context),
-        actions: [
-          InfoButton(file: file),
-        ],
+    // Watching keeps the settings alive while the next file loads.
+    final AlignmentViewSettings settings =
+        ref.watch(alignmentViewSettingsProvider);
+    final File file = _files.files[_index];
+    final bool hasOtherFiles = _files.length > 1;
+    final bool isCompact = isPhoneScreen(context);
+    final bool showFileList =
+        hasOtherFiles && settings.showFileList && !isCompact;
+    return CallbackShortcuts(
+      bindings: {
+        if (hasOtherFiles) ...{
+          const SingleActivator(LogicalKeyboardKey.arrowUp, alt: true): () =>
+              _select(_files.step(_index, -1)),
+          const SingleActivator(LogicalKeyboardKey.arrowDown, alt: true): () =>
+              _select(_files.step(_index, 1)),
+        },
+      },
+      child: Focus(
+        autofocus: true,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(p.basename(file.path)),
+            backgroundColor: getSEGULBackgroundColor(context),
+            actions: [
+              InfoButton(file: file),
+            ],
+          ),
+          backgroundColor: getSEGULBackgroundColor(context),
+          body: Padding(
+            padding: const EdgeInsets.all(SeguiSpacing.xl),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (showFileList) ...[
+                  SizedBox(
+                    width: SeguiAlignmentLayout.fileList,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          // A Material panel, so list tiles keep their ink
+                          // and color.
+                          child: OutlinedPanel(
+                            child: AlignmentFileRail(
+                              files: _files,
+                              index: _index,
+                              onSelected: _select,
+                            ),
+                          ),
+                        ),
+                        // Ends level with the status line under the grid.
+                        const AlignmentFileHint(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: SeguiSpacing.md),
+                ],
+                Expanded(
+                  child: AlignmentViewBody(
+                    key: ValueKey(file.path),
+                    path: file.path,
+                    leading: hasOtherFiles
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: AlignmentFileSwitcher(
+                                  files: _files,
+                                  index: _index,
+                                  onSelected: _select,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: SeguiControlSize.iconMedium,
+                                child: VerticalDivider(
+                                  width: SeguiSpacing.sm,
+                                ),
+                              ),
+                              IconButton(
+                                tooltip: settings.showFileList && !isCompact
+                                    ? 'Hide file list'
+                                    : 'Show file list',
+                                visualDensity: VisualDensity.compact,
+                                isSelected: showFileList,
+                                icon: const Icon(Icons.list_rounded),
+                                selectedIcon:
+                                    const Icon(Icons.playlist_play_rounded),
+                                onPressed: isCompact
+                                    ? _showFileSheet
+                                    : ref
+                                        .read(alignmentViewSettingsProvider
+                                            .notifier)
+                                        .toggleFileList,
+                              ),
+                            ],
+                          )
+                        : null,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-      backgroundColor: getSEGULBackgroundColor(context),
-      body: Padding(
-        padding: const EdgeInsets.all(SeguiSpacing.xl),
-        child: AlignmentViewBody(path: file.path),
+    );
+  }
+
+  /// Opens the file at [index]. Sequence selections and the chunk belong
+  /// to one file, so they reset.
+  void _select(int index) {
+    if (index == _index) return;
+    ref.read(alignmentRowSelectionProvider.notifier).clear();
+    ref.read(alignmentViewSettingsProvider.notifier).setChunk(0);
+    setState(() => _index = index);
+  }
+
+  // Narrow screens show the file list as a sheet that closes on a pick.
+  Future<void> _showFileSheet() {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => FractionallySizedBox(
+        heightFactor: 0.8,
+        child: Center(
+          child: AlignmentFileRail(
+            files: _files,
+            index: _index,
+            onSelected: (index) {
+              Navigator.of(context).pop();
+              _select(index);
+            },
+          ),
+        ),
       ),
     );
   }
 }
 
 class AlignmentViewBody extends ConsumerWidget {
-  const AlignmentViewBody({super.key, required this.path});
+  const AlignmentViewBody({super.key, required this.path, this.leading});
 
   final String path;
+
+  /// Shown beside the gull, above the toolbar, such as the file switcher.
+  /// Stays in place while the file loads.
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,8 +209,29 @@ class AlignmentViewBody extends ConsumerWidget {
     return data.when(
       data: (data) => data.sequences.isEmpty
           ? const Center(child: Text('This file has no sequences.'))
-          : AlignmentExplorer(fileName: p.basename(path), data: data),
-      loading: () => const Center(child: CircularProgressIndicator()),
+          : AlignmentExplorer(
+              fileName: p.basename(path),
+              data: data,
+              leading: leading,
+            ),
+      loading: () => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (leading != null)
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final bool showsGull =
+                    _HeaderRow.fitsGull(constraints.maxWidth, leading);
+                // Same height and inset as when loaded, without the gull.
+                return SizedBox(
+                  height: _HeaderRow.heightFor(leading, showsGull: showsGull),
+                  child: _HeaderRow(leading: leading!, showsGull: showsGull),
+                );
+              },
+            ),
+          const Expanded(child: Center(child: CircularProgressIndicator())),
+        ],
+      ),
       error: (error, _) => Center(
         child: Text(
           'Could not open this file as an alignment. $error',
@@ -76,10 +248,14 @@ class AlignmentExplorer extends ConsumerStatefulWidget {
     super.key,
     required this.fileName,
     required this.data,
+    this.leading,
   });
 
   final String fileName;
   final AlignmentViewData data;
+
+  /// Shown beside the gull, above the toolbar.
+  final Widget? leading;
 
   @override
   ConsumerState<AlignmentExplorer> createState() => _AlignmentExplorerState();
@@ -136,162 +312,219 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
         (isCompact
             ? SeguiAlignmentLayout.nameColumnCompact
             : SeguiAlignmentLayout.nameColumn);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // The gull stands on the toolbar's top edge near its right corner.
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: AlignmentGull.standingHeight),
-              child: Container(
-                decoration: getContainerDecoration(context),
-                padding: const EdgeInsets.all(SeguiSpacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AlignmentToolbar(
-                      fileName: widget.fileName,
-                      data: data,
-                      canShowChunkList: !isCompact,
-                      siteController: _siteController,
-                      onPrevious: () => _goToChunk(settings.chunk - 1),
-                      onNext: () => _goToChunk(settings.chunk + 1),
-                      onGoToSite: _goToSiteText,
+    return CustomScrollView(
+      // The grid and chunk list scroll on their own. This only scrolls the
+      // header away when the window is too short for it and the grid.
+      primary: false,
+      slivers: [
+        SliverToBoxAdapter(
+          // The gull stands on the toolbar's top edge near its right corner
+          // when it fits; the file switcher sits above the toolbar's left
+          // edge.
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final bool showsGull =
+                  _HeaderRow.fitsGull(constraints.maxWidth, widget.leading);
+              final double headerHeight =
+                  _HeaderRow.heightFor(widget.leading, showsGull: showsGull);
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: headerHeight,
                     ),
-                    const SizedBox(height: SeguiSpacing.lg),
-                    AlignmentOverview(
-                      data: data,
-                      rowOrder: order,
-                      selectedRows: rowSelection.rows,
-                      window: window,
-                      cellSize: settings.cellSize,
-                      rowHeight: settings.rowHeight,
-                      horizontalController: _horizontal,
-                      verticalController: _vertical,
-                      onJump: (site, row) => _goToSite(site, row: row),
-                    ),
-                    const SizedBox(height: SeguiSpacing.sm),
-                    AlignmentLegend(isDna: data.isDna),
-                  ],
-                ),
-              ),
-            ),
-            const Positioned(
-              top: 0,
-              right: SeguiSpacing.xl,
-              child: AlignmentGull(),
-            ),
-          ],
-        ),
-        const SizedBox(height: SeguiSpacing.md),
-        Expanded(
-          child: Container(
-            decoration: getContainerDecoration(context),
-            clipBehavior: Clip.antiAlias,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (showChunkList) ...[
-                  ChunkSidebar(
-                    data: data,
-                    chunkSize: settings.chunkSize,
-                    currentChunk: settings.chunk,
-                    onSelected: _goToChunk,
-                  ),
-                  const VerticalDivider(width: SeguiStroke.thin),
-                ],
-                Expanded(
-                  child: Column(
-                    children: [
-                      Row(
+                    child: Container(
+                      decoration: getContainerDecoration(context),
+                      padding: const EdgeInsets.all(SeguiSpacing.lg),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          SizedBox(
-                            width: nameWidth + SeguiAlignmentLayout.nameDivider,
+                          AlignmentToolbar(
+                            fileName: widget.fileName,
+                            data: data,
+                            canShowChunkList: !isCompact,
+                            siteController: _siteController,
+                            onPrevious: () => _goToChunk(settings.chunk - 1),
+                            onNext: () => _goToChunk(settings.chunk + 1),
+                            onGoToSite: _goToSiteText,
                           ),
+                          const SizedBox(height: SeguiSpacing.lg),
+                          AlignmentOverview(
+                            data: data,
+                            rowOrder: order,
+                            selectedRows: rowSelection.rows,
+                            window: window,
+                            cellSize: settings.cellSize,
+                            rowHeight: settings.rowHeight,
+                            horizontalController: _horizontal,
+                            verticalController: _vertical,
+                            onJump: (site, row) => _goToSite(site, row: row),
+                          ),
+                          const SizedBox(height: SeguiSpacing.sm),
+                          AlignmentLegend(isDna: data.isDna),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (widget.leading != null)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: _HeaderRow(
+                        leading: widget.leading!,
+                        showsGull: showsGull,
+                      ),
+                    ),
+                  if (showsGull)
+                    Positioned(
+                      top: headerHeight - AlignmentGull.standingHeight,
+                      right: SeguiSpacing.xl,
+                      child: const AlignmentGull(),
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+        SliverLayoutBuilder(
+          builder: (context, constraints) => SliverToBoxAdapter(
+            child: SizedBox(
+              height: math.max(
+                SeguiAlignmentLayout.gridMin,
+                constraints.viewportMainAxisExtent -
+                    constraints.precedingScrollExtent,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: SeguiSpacing.md),
+                  Expanded(
+                    child: Container(
+                      decoration: getContainerDecoration(context),
+                      clipBehavior: Clip.antiAlias,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (showChunkList) ...[
+                            ChunkSidebar(
+                              data: data,
+                              chunkSize: settings.chunkSize,
+                              currentChunk: settings.chunk,
+                              onSelected: _goToChunk,
+                            ),
+                            const VerticalDivider(width: SeguiStroke.thin),
+                          ],
                           Expanded(
-                            child: AlignmentRuler(
-                              controller: _horizontal,
-                              window: window,
-                              cellSize: settings.cellSize,
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: nameWidth +
+                                          SeguiAlignmentLayout.nameDivider,
+                                    ),
+                                    Expanded(
+                                      child: AlignmentRuler(
+                                        controller: _horizontal,
+                                        window: window,
+                                        cellSize: settings.cellSize,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(height: SeguiStroke.thin),
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      AlignmentNames(
+                                        names: data.names,
+                                        rowOrder: order,
+                                        selectedRows: rowSelection.rows,
+                                        controller: _vertical,
+                                        rowHeight: settings.rowHeight,
+                                        width: nameWidth,
+                                        selection: _selection,
+                                        onRowTap: (row,
+                                                {required extend,
+                                                required toggle}) =>
+                                            _rowSelectionNotifier.tap(
+                                          row,
+                                          order,
+                                          extend: extend,
+                                          toggle: toggle,
+                                        ),
+                                      ),
+                                      AlignmentNameDivider(
+                                        onDrag: (dx) => _notifier
+                                            .setNameWidth(nameWidth + dx),
+                                        onReset: _notifier.resetNameWidth,
+                                      ),
+                                      Expanded(
+                                        child: AlignmentGrid(
+                                          data: data,
+                                          rowOrder: order,
+                                          selectedRows: rowSelection.rows,
+                                          window: window,
+                                          cellSize: settings.cellSize,
+                                          rowHeight: settings.rowHeight,
+                                          colorMode: settings.colorMode,
+                                          showLetters: settings.showLetters,
+                                          chunkSize: settings.chunkSize,
+                                          showChunkBoundaries:
+                                              !settings.isPaged,
+                                          horizontalController: _horizontal,
+                                          verticalController: _vertical,
+                                          hover: _hover,
+                                          selection: _selection,
+                                          onZoom: _zoom,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      const Divider(height: SeguiStroke.thin),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            AlignmentNames(
-                              names: data.names,
-                              rowOrder: order,
-                              selectedRows: rowSelection.rows,
-                              controller: _vertical,
-                              rowHeight: settings.rowHeight,
-                              width: nameWidth,
-                              selection: _selection,
-                              onRowTap: (row,
-                                      {required extend, required toggle}) =>
-                                  _rowSelectionNotifier.tap(
-                                row,
-                                order,
-                                extend: extend,
-                                toggle: toggle,
-                              ),
-                            ),
-                            AlignmentNameDivider(
-                              onDrag: (dx) =>
-                                  _notifier.setNameWidth(nameWidth + dx),
-                              onReset: _notifier.resetNameWidth,
-                            ),
-                            Expanded(
-                              child: AlignmentGrid(
-                                data: data,
-                                rowOrder: order,
-                                selectedRows: rowSelection.rows,
-                                window: window,
-                                cellSize: settings.cellSize,
-                                rowHeight: settings.rowHeight,
-                                colorMode: settings.colorMode,
-                                showLetters: settings.showLetters,
-                                chunkSize: settings.chunkSize,
-                                showChunkBoundaries: !settings.isPaged,
-                                horizontalController: _horizontal,
-                                verticalController: _vertical,
-                                hover: _hover,
-                                selection: _selection,
-                                onZoom: _zoom,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  // The text sits at the bottom, level with the file list's
+                  // bottom edge, inset like the panels' content.
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      SeguiSpacing.lg,
+                      SeguiSpacing.xs,
+                      SeguiSpacing.lg,
+                      0,
+                    ),
+                    child: Wrap(
+                      spacing: SeguiSpacing.lg,
+                      runSpacing: SeguiSpacing.xs,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        AlignmentStatusBar(
+                          data: data,
+                          window: window,
+                          cellSize: settings.cellSize,
+                          horizontalController: _horizontal,
+                          hover: _hover,
+                          selection: _selection,
+                          ungapped: _ungapped,
+                        ),
+                        if (!rowSelection.isEmpty)
+                          AlignmentSelectionBar(data: data),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: SeguiSpacing.sm),
-        Wrap(
-          spacing: SeguiSpacing.lg,
-          runSpacing: SeguiSpacing.xs,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            AlignmentStatusBar(
-              data: data,
-              window: window,
-              cellSize: settings.cellSize,
-              horizontalController: _horizontal,
-              hover: _hover,
-              selection: _selection,
-              ungapped: _ungapped,
-            ),
-            if (!rowSelection.isEmpty) AlignmentSelectionBar(data: data),
-          ],
         ),
       ],
     );
@@ -459,6 +692,55 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   }
 }
 
+/// Small panel above the toolbar's left edge that holds [leading], styled
+/// like the toolbar and leaving room for the gull. On phones [leading]
+/// takes the whole row and the gull steps aside.
+class _HeaderRow extends StatelessWidget {
+  const _HeaderRow({required this.leading, required this.showsGull});
+
+  final Widget leading;
+
+  /// Whether the gull stands to the right, so [leading] leaves it room.
+  final bool showsGull;
+
+  /// Whether a row [width] wide has room for the gull beside [leading].
+  static bool fitsGull(double width, Widget? leading) {
+    final double needed = AlignmentGull.width +
+        SeguiSpacing.xl * 2 +
+        (leading == null ? 0 : SeguiAlignmentLayout.fileSwitcherMin);
+    return width >= needed;
+  }
+
+  /// Space above the toolbar: room for the gull to stand, and for
+  /// [leading] with a gap below it.
+  static double heightFor(Widget? leading, {required bool showsGull}) {
+    const double row = SeguiControlSize.touchTarget + SeguiSpacing.md;
+    if (leading == null) return showsGull ? AlignmentGull.standingHeight : 0;
+    if (!showsGull) return row;
+    return math.max(row, AlignmentGull.standingHeight);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        right: showsGull ? AlignmentGull.width + SeguiSpacing.xl * 2 : 0,
+      ),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Container(
+          height: SeguiControlSize.touchTarget,
+          decoration: getContainerDecoration(context),
+          // With the compact buttons' own padding, content sits
+          // SeguiSpacing.lg from the border, as in the toolbar.
+          padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xs),
+          child: leading,
+        ),
+      ),
+    );
+  }
+}
+
 /// Count of selected sequences and what to do with them.
 class AlignmentSelectionBar extends ConsumerWidget {
   const AlignmentSelectionBar({super.key, required this.data});
@@ -588,9 +870,10 @@ class AlignmentStatusBar extends StatelessWidget {
       itemSize: cellSize,
       count: window.length,
     );
-    if (cols.length == 0) return 'Ctrl or Cmd + scroll to zoom';
+    final String zoomHint = '${PlatformKeys.primaryLabel} + scroll to zoom';
+    if (cols.length == 0) return zoomHint;
     return 'Showing sites ${_siteFormat.format(window.start + cols.first + 1)}–'
         '${_siteFormat.format(window.start + cols.last)} of '
-        '${_siteFormat.format(data.length)} · Ctrl or Cmd + scroll to zoom';
+        '${_siteFormat.format(data.length)} · $zoomHint';
   }
 }

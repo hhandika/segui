@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
+import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -109,7 +110,7 @@ class _RulerPainter extends CustomPainter {
 
 /// Taxon names beside the grid, scrolled with it. Scrolling over the names
 /// scrolls the grid. Tap a name to select its sequence; Shift extends and
-/// Ctrl or Cmd toggles.
+/// Ctrl (Cmd on Apple platforms) toggles.
 class AlignmentNames extends StatelessWidget {
   const AlignmentNames({
     super.key,
@@ -177,11 +178,10 @@ class AlignmentNames extends StatelessWidget {
     final double dy = controller.hasClients ? controller.offset : 0;
     final int index = ((details.localPosition.dy + dy) / rowHeight).floor();
     if (index < 0 || index >= rowOrder.length) return;
-    final HardwareKeyboard keyboard = HardwareKeyboard.instance;
     onRowTap(
       rowOrder[index],
-      extend: keyboard.isShiftPressed,
-      toggle: keyboard.isControlPressed || keyboard.isMetaPressed,
+      extend: HardwareKeyboard.instance.isShiftPressed,
+      toggle: PlatformKeys.isPrimaryPressed,
     );
   }
 

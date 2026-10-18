@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:segui/screens/viewers/alignment/alignment_axes.dart';
@@ -432,6 +433,78 @@ void main() {
       final List<Matrix4> still = pose();
       await tester.pump(const Duration(milliseconds: 1200));
       expect(pose(), equals(still));
+    });
+
+    testWidgets('The last sequence clears the panel border', (tester) async {
+      tester.view.physicalSize = const Size(1600, 1200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      // Taller than the grid, so it scrolls.
+      await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: Scaffold(
+            body: AlignmentExplorer(
+              fileName: 'tall.fas',
+              data: _data([for (int i = 0; i < 100; i++) 'ACGT' * 50]),
+            ),
+          ),
+        ),
+      ));
+      await tester.pump();
+      final ScrollPosition vertical = tester
+          .stateList<ScrollableState>(find.descendant(
+            of: find.byType(AlignmentGrid),
+            matching: find.byWidgetPredicate((w) => w is Scrollable),
+          ))
+          .firstWhere((s) => s.position.axis == Axis.vertical)
+          .position;
+      const double rows = 100 * SeguiAlignmentLayout.cellDefault;
+      expect(
+        vertical.maxScrollExtent + vertical.viewportDimension,
+        rows + SeguiAlignmentLayout.gridBottomPadding,
+      );
+    });
+
+    testWidgets('Selection toggles with the platform key', (tester) async {
+      Future<void> tapName(int row) => tester.tapAt(
+            tester.getTopLeft(find.byType(AlignmentNames)) +
+                Offset(20, SeguiAlignmentLayout.cellDefault * (row + 0.5)),
+          );
+      for (final (
+            TargetPlatform platform,
+            LogicalKeyboardKey key,
+            LogicalKeyboardKey other
+          ) in [
+        (
+          TargetPlatform.macOS,
+          LogicalKeyboardKey.metaLeft,
+          LogicalKeyboardKey.controlLeft
+        ),
+        (
+          TargetPlatform.linux,
+          LogicalKeyboardKey.controlLeft,
+          LogicalKeyboardKey.metaLeft
+        ),
+      ]) {
+        debugDefaultTargetPlatformOverride = platform;
+        await pumpExplorer(tester);
+        await tapName(0);
+        await tester.pump();
+        // The other platform's key starts a new selection.
+        await tester.sendKeyDownEvent(other);
+        await tapName(1);
+        await tester.sendKeyUpEvent(other);
+        await tester.pump();
+        expect(find.text('1 selected'), findsOneWidget, reason: '$platform');
+        await tester.sendKeyDownEvent(key);
+        await tapName(2);
+        await tester.sendKeyUpEvent(key);
+        await tester.pump();
+        expect(find.text('2 selected'), findsOneWidget, reason: '$platform');
+        await tester.pumpWidget(const SizedBox());
+      }
+      debugDefaultTargetPlatformOverride = null;
     });
 
     testWidgets('Rejects a site outside the alignment', (tester) async {

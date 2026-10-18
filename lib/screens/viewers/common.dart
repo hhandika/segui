@@ -12,16 +12,21 @@ class FileView extends StatelessWidget {
     super.key,
     required this.file,
     required this.type,
+    this.siblings = const [],
   });
 
   final File file;
   final CommonFileType type;
 
+  /// Files listed beside [file], which viewers that can switch files step
+  /// through.
+  final Iterable<File> siblings;
+
   @override
   Widget build(BuildContext context) {
     switch (type) {
       case CommonFileType.sequence when isAlignmentViewable(file):
-        return AlignmentFileView(file: file);
+        return AlignmentFileView(file: file, siblings: siblings);
       case CommonFileType.plainText:
         return PlainTextView(file: file);
       case CommonFileType.tabulated:
@@ -32,13 +37,19 @@ class FileView extends StatelessWidget {
   }
 }
 
-/// Opens [file] in the viewer that matches its type.
-Future<void> openFileView(BuildContext context, File file) {
+/// Opens [file] in the viewer that matches its type. [siblings] are the
+/// files listed with it, so the viewer can switch between them.
+Future<void> openFileView(
+  BuildContext context,
+  File file, {
+  Iterable<File> siblings = const [],
+}) {
   return Navigator.of(context).push(
     MaterialPageRoute(
       builder: (context) => FileView(
         file: file,
         type: FileAssociation(file: file).commonFileTYpe,
+        siblings: siblings,
       ),
     ),
   );

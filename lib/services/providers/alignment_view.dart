@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/viewers/alignment.dart';
+import 'package:segui/services/viewers/alignment_files.dart';
 import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -15,7 +16,17 @@ final alignmentChunkStatsProvider = FutureProvider.autoDispose
   (ref, args) => computeChunkStats(args.data, args.chunkSize),
 );
 
-/// Display settings of the open alignment viewer.
+/// How the viewer orders its file list: in Rust, unless overridden.
+final fileOrderProvider = Provider<FileOrder>((ref) => rustFileOrder);
+
+/// Sizes in bytes of the files the viewer can switch between.
+final alignmentFileSizesProvider =
+    FutureProvider.autoDispose.family<Map<String, int>, AlignmentFileList>(
+  (ref, files) => alignmentFileSizes(files),
+);
+
+/// Display settings of the open alignment viewer. They carry over when
+/// the viewer switches files.
 class AlignmentViewSettings {
   const AlignmentViewSettings({
     this.cellSize = SeguiAlignmentLayout.cellDefault,
@@ -26,6 +37,9 @@ class AlignmentViewSettings {
     this.chunk = 0,
     this.showChunkList = true,
     this.nameWidth,
+    this.showFileList = false,
+    this.fileSort = AlignmentFileSort.name,
+    this.fileSortAscending = true,
   });
 
   final double cellSize;
@@ -43,6 +57,11 @@ class AlignmentViewSettings {
   /// Width of the name panel set by dragging, or null for the default.
   final double? nameWidth;
 
+  /// Shows the list of files to switch between beside the viewer.
+  final bool showFileList;
+  final AlignmentFileSort fileSort;
+  final bool fileSortAscending;
+
   /// Height of a row, which stays readable when cells are narrow.
   double get rowHeight => cellSize < SeguiAlignmentLayout.rowMin
       ? SeguiAlignmentLayout.rowMin
@@ -57,6 +76,9 @@ class AlignmentViewSettings {
     int? chunk,
     bool? showChunkList,
     double? Function()? nameWidth,
+    bool? showFileList,
+    AlignmentFileSort? fileSort,
+    bool? fileSortAscending,
   }) {
     return AlignmentViewSettings(
       cellSize: cellSize ?? this.cellSize,
@@ -67,6 +89,9 @@ class AlignmentViewSettings {
       chunk: chunk ?? this.chunk,
       showChunkList: showChunkList ?? this.showChunkList,
       nameWidth: nameWidth == null ? this.nameWidth : nameWidth(),
+      showFileList: showFileList ?? this.showFileList,
+      fileSort: fileSort ?? this.fileSort,
+      fileSortAscending: fileSortAscending ?? this.fileSortAscending,
     );
   }
 }
@@ -128,6 +153,18 @@ class AlignmentViewSettingsNotifier extends Notifier<AlignmentViewSettings> {
 
   void resetNameWidth() {
     state = state.copyWith(nameWidth: () => null);
+  }
+
+  void toggleFileList() {
+    state = state.copyWith(showFileList: !state.showFileList);
+  }
+
+  void setFileSort(AlignmentFileSort sort) {
+    state = state.copyWith(fileSort: sort);
+  }
+
+  void setFileSortAscending(bool ascending) {
+    state = state.copyWith(fileSortAscending: ascending);
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/services/viewers/alignment.dart';
+import 'package:segui/services/keyboard.dart';
 import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
@@ -82,7 +83,8 @@ class AlignmentGrid extends StatelessWidget {
   final ValueNotifier<AlignmentCell?> hover;
   final ValueNotifier<AlignmentCell?> selection;
 
-  /// Called with +1 to zoom in or -1 to zoom out on Ctrl or Cmd + scroll.
+  /// Called with +1 to zoom in or -1 to zoom out on Ctrl + scroll, or
+  /// Cmd + scroll on Apple platforms.
   final ValueChanged<int> onZoom;
 
   @override
@@ -160,8 +162,7 @@ class AlignmentGrid extends StatelessWidget {
 
   void _onPointerSignal(PointerSignalEvent event) {
     if (event is! PointerScrollEvent) return;
-    final HardwareKeyboard keyboard = HardwareKeyboard.instance;
-    if (!keyboard.isControlPressed && !keyboard.isMetaPressed) return;
+    if (!PlatformKeys.isPrimaryPressed) return;
     // Registered before the scrollable, so zooming replaces scrolling.
     GestureBinding.instance.pointerSignalResolver.register(event, (event) {
       final double dy = (event as PointerScrollEvent).scrollDelta.dy;
@@ -483,7 +484,9 @@ class _RenderAlignmentGrid extends RenderBox {
   @override
   void performLayout() {
     final double contentWidth = _window.length * _cellSize;
-    final double contentHeight = _rowOrder.length * _rowHeight;
+    // A little room below the last row, so it clears the panel border.
+    final double contentHeight =
+        _rowOrder.length * _rowHeight + SeguiAlignmentLayout.gridBottomPadding;
     _horizontalOffset.applyViewportDimension(size.width);
     _horizontalOffset.applyContentDimensions(
       0,

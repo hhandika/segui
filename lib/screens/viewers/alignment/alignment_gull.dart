@@ -34,6 +34,10 @@ class AlignmentGull extends StatefulWidget {
   static const String rowsAsset = 'assets/images/alignment_gull_rows.svg';
   static const String tileAsset = 'assets/images/alignment_gull_tile.svg';
 
+  /// Width of the art, so neighbors can leave room for it.
+  static const double width =
+      SeguiAlignmentLayout.mascot * _viewWidth / _viewHeight;
+
   /// Height of the art above the panel edge, which the panel below should
   /// leave free so the gull's feet meet its top border.
   static double get standingHeight =>
@@ -70,7 +74,7 @@ class _AlignmentGullState extends State<AlignmentGull>
     final HomeIllustrationColors colors =
         HomeIllustrationColors.scene(Theme.of(context).colorScheme);
     const double height = SeguiAlignmentLayout.mascot;
-    const double width = height * _viewWidth / _viewHeight;
+    const double width = AlignmentGull.width;
     const double scale = height / _viewHeight;
     return ExcludeSemantics(
       child: SizedBox(

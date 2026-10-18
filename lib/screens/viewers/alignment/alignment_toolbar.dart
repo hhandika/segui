@@ -71,15 +71,21 @@ class AlignmentToolbar extends ConsumerWidget {
         _ToolbarGroup(
           label: 'Color',
           children: [
-            SegmentedButton<AlignmentColorMode>(
-              showSelectedIcon: false,
-              style: const ButtonStyle(visualDensity: VisualDensity.compact),
-              segments: [
-                for (final AlignmentColorMode mode in AlignmentColorMode.values)
-                  ButtonSegment(value: mode, label: Text(mode.label)),
-              ],
-              selected: {settings.colorMode},
-              onSelectionChanged: (modes) => notifier.setColorMode(modes.first),
+            // Shrinks rather than overflows when the toolbar is narrow.
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: SegmentedButton<AlignmentColorMode>(
+                showSelectedIcon: false,
+                style: const ButtonStyle(visualDensity: VisualDensity.compact),
+                segments: [
+                  for (final AlignmentColorMode mode
+                      in AlignmentColorMode.values)
+                    ButtonSegment(value: mode, label: Text(mode.label)),
+                ],
+                selected: {settings.colorMode},
+                onSelectionChanged: (modes) =>
+                    notifier.setColorMode(modes.first),
+              ),
             ),
             FilterChip(
               label: const Text('Letters'),
