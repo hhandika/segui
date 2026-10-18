@@ -119,4 +119,41 @@ void main() {
         GenomicOperationType.mafSummary);
     expect(tester.takeException(), isNull);
   });
+
+  test('Every platform has input guidelines', () {
+    for (final platform in InputPlatform.values) {
+      expect(inputGuidelinesFor(platform), isNotEmpty, reason: platform.name);
+    }
+    final List<String> ios =
+        inputGuidelinesFor(InputPlatform.ios).map((e) => e.title).toList();
+    expect(ios, contains('SEGUI folder'));
+    final List<String> desktop =
+        inputGuidelinesFor(InputPlatform.desktop).map((e) => e.title).toList();
+    expect(desktop, isNot(contains('SEGUI folder')));
+    expect(desktop, isNot(contains('Use shared files')));
+  });
+
+  for (final platform in InputPlatform.values) {
+    testWidgets('Input guide shows ${platform.name} guidelines',
+        (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: QuickStartInputGuide(platform: platform),
+          ),
+        ),
+      ));
+
+      expect(find.text(platform.label), findsOneWidget);
+      expect(find.byType(InputGuidelineCard),
+          findsNWidgets(inputGuidelinesFor(platform).length));
+      expect(find.byType(MobileInputTip),
+          platform.isMobile ? findsOneWidget : findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

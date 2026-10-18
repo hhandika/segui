@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/home/components/citation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/greeting.dart';
 import 'package:segui/screens/home/components/illustration.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
@@ -260,12 +259,6 @@ class ResourceLinks extends StatelessWidget {
           label: const Text('Quick start'),
           onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const QuickStartPage())),
-        ),
-        TextButton.icon(
-          icon: const Icon(Icons.help_outline_outlined),
-          label: const Text('FAQ'),
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const FaqPage())),
         ),
         TextButton.icon(
           icon: const Icon(Icons.description_outlined),

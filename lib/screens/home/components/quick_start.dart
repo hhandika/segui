@@ -15,7 +15,10 @@ import 'package:segui/styles/design_tokens.dart';
 
 /// How to run a task, then a guide for every tool with its feature diagram.
 class QuickStartPage extends StatefulWidget {
-  const QuickStartPage({super.key});
+  const QuickStartPage({super.key, this.inputPlatform});
+
+  /// Platform whose input guidelines to show, the running one when null.
+  final InputPlatform? inputPlatform;
 
   @override
   State<QuickStartPage> createState() => _QuickStartPageState();
@@ -50,6 +53,10 @@ class _QuickStartPageState extends State<QuickStartPage> {
                 const QuickStartHeader(),
                 const SizedBox(height: SeguiSpacing.xl),
                 const QuickStartSteps(),
+                const SizedBox(height: SeguiSpacing.xxxl),
+                QuickStartInputGuide(
+                  platform: widget.inputPlatform ?? InputPlatform.current,
+                ),
                 const SizedBox(height: SeguiSpacing.xxxl),
                 Text('Feature guides', style: theme.textTheme.titleMedium),
                 const SizedBox(height: SeguiSpacing.xs),
@@ -213,6 +220,118 @@ class QuickStartStepCard extends StatelessWidget {
               step.description,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Ways to add input files on [platform], with advice for large inputs
+/// on phones and tablets.
+class QuickStartInputGuide extends StatelessWidget {
+  const QuickStartInputGuide({super.key, required this.platform});
+
+  final InputPlatform platform;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final List<InputGuideline> guidelines = inputGuidelinesFor(platform);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Adding input files', style: theme.textTheme.titleMedium),
+        const SizedBox(height: SeguiSpacing.xs),
+        Text(
+          platform.label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: SeguiSpacing.lg),
+        LayoutBuilder(builder: (context, constraints) {
+          return EqualHeightGrid(
+            columns: gridColumnCount(
+              constraints.maxWidth,
+              minItemWidth: 200,
+              maxColumns: guidelines.length,
+            ),
+            children: [
+              for (final guideline in guidelines)
+                InputGuidelineCard(guideline: guideline),
+            ],
+          );
+        }),
+        if (platform.isMobile) ...[
+          const SizedBox(height: SeguiSpacing.lg),
+          const MobileInputTip(),
+        ],
+      ],
+    );
+  }
+}
+
+class InputGuidelineCard extends StatelessWidget {
+  const InputGuidelineCard({super.key, required this.guideline});
+
+  final InputGuideline guideline;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colors = theme.colorScheme;
+    return Card.outlined(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(SeguiSpacing.xl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(guideline.icon, color: colors.primary),
+            const SizedBox(height: SeguiSpacing.md),
+            Text(guideline.title, style: theme.textTheme.titleSmall),
+            const SizedBox(height: SeguiSpacing.xs),
+            Text(
+              guideline.description,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Advice for loading many files on phones and tablets.
+class MobileInputTip extends StatelessWidget {
+  const MobileInputTip({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colors = theme.colorScheme;
+    return Card.filled(
+      margin: EdgeInsets.zero,
+      color: colors.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(SeguiSpacing.lg),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.lightbulb_outline_rounded,
+                color: colors.onSecondaryContainer),
+            const SizedBox(width: SeguiSpacing.lg),
+            Expanded(
+              child: Text(
+                mobileInputTip,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colors.onSecondaryContainer,
+                ),
               ),
             ),
           ],
