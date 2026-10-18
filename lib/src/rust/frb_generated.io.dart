@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/alignment_view.dart';
 import 'api/archive.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
@@ -43,6 +44,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignmentTrimmingServices dco_decode_alignment_trimming_services(dynamic raw);
 
   @protected
+  AlignmentViewData dco_decode_alignment_view_data(dynamic raw);
+
+  @protected
+  AlignmentViewServices dco_decode_alignment_view_services(dynamic raw);
+
+  @protected
   ArchiveServices dco_decode_archive_services(dynamic raw);
 
   @protected
@@ -57,6 +64,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentTrimmingServices dco_decode_box_autoadd_alignment_trimming_services(
+      dynamic raw);
+
+  @protected
+  AlignmentViewServices dco_decode_box_autoadd_alignment_view_services(
       dynamic raw);
 
   @protected
@@ -178,6 +189,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<DistanceGroupCount> dco_decode_list_distance_group_count(dynamic raw);
 
   @protected
+  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
@@ -251,6 +265,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TrimmingParams dco_decode_trimming_params(dynamic raw);
 
   @protected
+  int dco_decode_u_32(dynamic raw);
+
+  @protected
   int dco_decode_u_8(dynamic raw);
 
   @protected
@@ -284,6 +301,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  AlignmentViewData sse_decode_alignment_view_data(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignmentViewServices sse_decode_alignment_view_services(
+      SseDeserializer deserializer);
+
+  @protected
   ArchiveServices sse_decode_archive_services(SseDeserializer deserializer);
 
   @protected
@@ -299,6 +324,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentTrimmingServices sse_decode_box_autoadd_alignment_trimming_services(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignmentViewServices sse_decode_box_autoadd_alignment_view_services(
       SseDeserializer deserializer);
 
   @protected
@@ -440,6 +469,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
+      SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
@@ -526,6 +559,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TrimmingParams sse_decode_trimming_params(SseDeserializer deserializer);
 
   @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer);
 
   @protected
@@ -562,6 +598,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AlignmentTrimmingServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_alignment_view_data(
+      AlignmentViewData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_alignment_view_services(
+      AlignmentViewServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_archive_services(
       ArchiveServices self, SseSerializer serializer);
 
@@ -579,6 +623,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_alignment_trimming_services(
       AlignmentTrimmingServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_alignment_view_services(
+      AlignmentViewServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_archive_services(
@@ -722,6 +770,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<DistanceGroupCount> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_list_prim_u_8_strict(
+      List<Uint8List> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
 
@@ -812,6 +864,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_trimming_params(
       TrimmingParams self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);

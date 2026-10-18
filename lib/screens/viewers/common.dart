@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/viewers/alignment/alignment_view.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/screens/viewers/text.dart';
 import 'package:segui/screens/viewers/unknown.dart';
@@ -19,6 +20,8 @@ class FileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (type) {
+      case CommonFileType.sequence when isAlignmentViewable(file):
+        return AlignmentFileView(file: file);
       case CommonFileType.plainText:
         return PlainTextView(file: file);
       case CommonFileType.tabulated:

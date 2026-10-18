@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/settings/about.dart';
 import 'package:segui/screens/settings/themes.dart';
+import 'package:segui/screens/shared/motion.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/themes.dart';
@@ -132,5 +133,58 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('—'), findsNWidgets(3));
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Reduce motion saves and turns off animations', (tester) async {
+    setWindowSize(tester, const Size(1000, 1400));
+    final ProviderContainer container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    bool? disabled;
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        builder: (context, child) => ReduceMotionScope(child: child!),
+        home: Scaffold(
+          body: Column(
+            children: [
+              const Expanded(child: ThemeSettingView()),
+              Builder(builder: (context) {
+                disabled = MediaQuery.disableAnimationsOf(context);
+                return const SizedBox.shrink();
+              }),
+            ],
+          ),
+        ),
+      ),
+    ));
+    expect(disabled, isFalse);
+    await tester.scrollUntilVisible(find.text('Reduce motion'), 200);
+    await tester.tap(find.text('Reduce motion'));
+    await tester.pumpAndSettle();
+    expect(disabled, isTrue);
+    expect(preferences.getBool('reduceMotion'), isTrue);
+    expect(container.read(reduceMotionProvider), isTrue);
+  });
+
+  testWidgets('Reduce motion follows the device setting', (tester) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    setWindowSize(tester, const Size(1000, 1400));
+    await tester.pumpWidget(ProviderScope(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+      child: MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        home: const Scaffold(body: ThemeSettingView()),
+      ),
+    ));
+    await tester.scrollUntilVisible(find.text('Reduce motion'), 200);
+    final SwitchListTile tile = tester.widget(find.byType(SwitchListTile));
+    expect(tile.value, isTrue);
+    expect(tile.onChanged, isNull);
+    expect(find.textContaining('Your device reduces motion'), findsOneWidget);
   });
 }

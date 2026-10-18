@@ -91,5 +91,19 @@ Supported file types:
 
 - Plain-text files (`.txt`)
 - Comma separated values (`.csv`)
+- Sequence files in FASTA, NEXUS, or PHYLIP format
 
 The app can directly view the supported file types. The content will be displayed in a new window. For a CSV file, the data is visualized in a table format with numbers formatted based on the locale settings of the device. For example in the US, the number will be formatted with thousand separator for integer and two decimal points for floating numbers (e.g., `1,000`, `0.65`). For the desktop version, you can also select open the file in other app. It will open default on default apps for the file type. This method also works for unsupported file types.
+
+### Alignment viewer
+
+FASTA, NEXUS, and PHYLIP files open in the alignment viewer. It draws only the part of the alignment on screen, so alignments of 10,000 sites or more scroll smoothly. Taxon names stay pinned on the left and site numbers on the top.
+
+- **Colors**: `Base` colors nucleotides (A green, C blue, G amber, T red) or amino acids by chemistry. `Mono` shows residues in one color, which makes gaps easy to spot. `Diff to first` grays out residues that match the first sequence, so only the differences stand out.
+- **Zoom**: use the zoom buttons or slider, or hold `Ctrl` (`Cmd` on macOS) and scroll. When zoomed out, letters are hidden and each site becomes a colored block. Select `Letters` to hide or show residue letters.
+- **Overview**: the strip above the grid shows the whole alignment. The outlined box marks what is on screen. Tap or drag the strip to jump to another part.
+- **Chunks**: the alignment is split into chunks of 250 to 2,000 sites (`Chunk` in the toolbar). The chunk list on the left shows each chunk's share of gaps and variable sites, so you can find informative or gappy regions fast. Select a chunk, or use the arrows, to move between chunks. Turn on `Page` to show one chunk at a time.
+- **Go to site**: enter a site number to jump to it.
+- **Details**: hover over or select a cell to see the taxon, site, ungapped position, and residue below the grid.
+- **Name panel**: drag the divider between the names and the grid to resize the names. Double-click it to reset the width.
+- **Select sequences**: click a name to select its sequence. Hold `Shift` to select a range, or `Ctrl` (`Cmd` on macOS) to add or remove one. Selected sequences are highlighted in the grid, and the overview dims the rest. Below the grid, choose `Copy as FASTA` to copy them, `Only selected` to hide the others, or `Pin to top` to move them above the rest. When `Diff to first` is on, residues are compared with the top sequence, so you can pin a sequence to use it as the reference. Select `Clear` to deselect all.

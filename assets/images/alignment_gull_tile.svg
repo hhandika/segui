@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 28 122 38">
+<!-- SEGUI alignment viewer layer: the tile the gull nudges into the slot, at rest by its beak.
+     Layers share this view box and stack in AlignmentGull. y = 64 sits on
+     the top edge of the toolbar panel.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<rect x="59" y="38" width="7" height="7" rx="1.5" fill="#FFD64F"/>
+</g>
+</svg>

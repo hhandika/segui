@@ -175,6 +175,14 @@ bool _hasExtension(String path, List<String> extensions) {
   return ext.length > 1 && extensions.contains(ext.substring(1));
 }
 
+/// Whether the alignment viewer can open [file]: FASTA, NEXUS, and PHYLIP.
+bool isAlignmentViewable(File file) {
+  final String ext = file.fileExtension.toLowerCase();
+  return fastaExtensions.contains(ext) ||
+      nexusExtensions.contains(ext) ||
+      phylipExtensions.contains(ext);
+}
+
 const List<String> fastqExtensions = [
   'fastq',
   'fq',
@@ -299,7 +307,8 @@ class FileAssociation extends FileUtils {
   bool get isSupportedViewExtension {
     final fileType = commonFileTYpe;
     return fileType == CommonFileType.plainText ||
-        fileType == CommonFileType.tabulated;
+        fileType == CommonFileType.tabulated ||
+        isAlignmentViewable(file);
   }
 
   CommonFileType get commonFileTYpe {

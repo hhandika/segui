@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/home/components/greeting.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/utils.dart';
@@ -101,6 +102,10 @@ class ThemeSettingView extends ConsumerWidget {
                   ],
                 );
               }),
+              const SizedBox(height: SeguiSpacing.xxl),
+              Text('Motion', style: theme.textTheme.titleMedium),
+              const SizedBox(height: SeguiSpacing.md),
+              const ReduceMotionTile(),
             ],
           ),
         ),
@@ -331,4 +336,37 @@ class ThemeSplitClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(ThemeSplitClipper oldClipper) => false;
+}
+
+/// Switch for the app's reduce motion setting. When the device already
+/// reduces motion, the switch shows on and explains why it cannot be off.
+class ReduceMotionTile extends ConsumerWidget {
+  const ReduceMotionTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isDeviceSetting = MediaQuery.disableAnimationsOf(context) &&
+        !ref.watch(reduceMotionProvider);
+    final bool reduceMotion =
+        ref.watch(reduceMotionProvider) || isDeviceSetting;
+    return OutlinedPanel(
+      child: SwitchListTile(
+        title: const Text('Reduce motion'),
+        subtitle: Text(
+          isDeviceSetting
+              ? 'Your device reduces motion, so animations stay off.'
+              : 'Stop animations, such as the gull at work in the '
+                  'alignment viewer.',
+        ),
+        secondary: Icon(
+          Icons.motion_photos_off_outlined,
+          color: getIconColor(context),
+        ),
+        value: reduceMotion,
+        onChanged: isDeviceSetting
+            ? null
+            : ref.read(reduceMotionProvider.notifier).setReduceMotion,
+      ),
+    );
+  }
 }

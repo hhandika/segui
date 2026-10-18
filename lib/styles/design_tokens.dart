@@ -121,3 +121,42 @@ abstract final class SeguiContentWidth {
   /// Narrowest tool search suggestions view on larger screens.
   static const double searchViewMin = 360;
 }
+
+/// Sizes in the alignment viewer.
+abstract final class SeguiAlignmentLayout {
+  /// Narrowest and widest residue cell, and the starting width.
+  static const double cellMin = 2;
+  static const double cellMax = 24;
+  static const double cellDefault = 14;
+
+  /// Zoom step for the zoom buttons and Ctrl + scroll.
+  static const double cellStep = 2;
+
+  /// Narrowest cell that still shows residue letters.
+  static const double letterMin = 10;
+
+  /// Narrowest cell drawn with a gap between neighbors.
+  static const double cellGapMin = 6;
+
+  /// Rows stay tall enough for taxon names when cells are narrow.
+  static const double rowMin = 14;
+
+  static const double ruler = 24;
+
+  /// Height of the gull at work above the toolbar.
+  static const double mascot = 48;
+  static const double overview = 48;
+  static const double nameColumn = 160;
+  static const double nameColumnCompact = 96;
+
+  /// Range the name panel can be dragged to.
+  static const double nameColumnMin = 64;
+  static const double nameColumnMax = 400;
+
+  /// Grab area of the divider between the names and the grid.
+  static const double nameDivider = 8;
+  static const double chunkSidebar = 200;
+
+  /// Widest the go-to-site field grows to fit its label and hint.
+  static const double siteFieldMax = 200;
+}

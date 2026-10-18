@@ -161,6 +161,36 @@ class FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return FormFieldTheme(
+      child: Container(
+        padding: const EdgeInsets.all(SeguiFormLayout.cardPadding),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(SeguiFormLayout.cardRadius),
+          color: colors.surfaceContainerLowest,
+          border: Border.all(color: colors.outlineVariant),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          spacing: SeguiFormLayout.fieldGap,
+          children: children,
+        ),
+      ),
+    );
+  }
+}
+
+/// Gives text fields in [child] the rounded, filled look of tool form
+/// fields, so fields outside a [FormCard] match those inside one.
+class FormFieldTheme extends StatelessWidget {
+  const FormFieldTheme({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
     final OutlineInputBorder border = OutlineInputBorder(
@@ -183,21 +213,7 @@ class FormCard extends StatelessWidget {
           helperMaxLines: 3,
         ),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(SeguiFormLayout.cardPadding),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(SeguiFormLayout.cardRadius),
-          color: colors.surfaceContainerLowest,
-          border: Border.all(color: colors.outlineVariant),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          spacing: SeguiFormLayout.fieldGap,
-          children: children,
-        ),
-      ),
+      child: child,
     );
   }
 }

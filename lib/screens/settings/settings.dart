@@ -259,7 +259,7 @@ class MainSettings extends ConsumerWidget {
         children: [
           SettingTile(
             title: 'Theme',
-            subtitle: 'Change app theme',
+            subtitle: 'Change app theme and motion',
             icon: Icons.color_lens_outlined,
             onTap: () {
               Navigator.push(

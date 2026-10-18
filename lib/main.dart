@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/screens/home/home.dart';
+import 'package:segui/screens/shared/motion.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/src/rust/api/common.dart';
 import 'package:segui/src/rust/frb_generated.dart';
@@ -44,6 +45,8 @@ class MyApp extends ConsumerWidget {
             loading: () => ThemeMode.system,
             error: (err, stack) => ThemeMode.system,
           ),
+      builder: (context, child) =>
+          ReduceMotionScope(child: child ?? const SizedBox.shrink()),
       home: const SegulHome(),
     );
   }
