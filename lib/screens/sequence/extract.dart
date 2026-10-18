@@ -14,6 +14,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceExtraction;
 
@@ -159,6 +160,21 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
     );
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Extract by',
+          extractionOptionsMap[_extractionOptionsController] ?? '',
+        ),
+        if (_extractionOptionsController == ExtractionOptions.regex)
+          RunParameter('Regular expression', _idRegexController.text),
+        if (_extractionOptionsController == ExtractionOptions.id)
+          RunParameter('Sequence ID', _idRegexController.text),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+      ];
+
   bool _isValid(List<SegulInputFile> inputFiles) {
     final hasOutputFormat = _ctr.outputFormatController != null;
     final isValidInput = _ctr.isValid && hasOutputFormat;
@@ -254,6 +270,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

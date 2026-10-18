@@ -14,6 +14,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/services/tasks/genomics.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.genomicMafConversion;
 
@@ -247,6 +248,29 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
         isValidOptionalNumber(_minScore.text);
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters {
+    final bool hasBed = (ref.read(fileInputProvider).value ?? [])
+        .any((e) => e.type == SegulType.bed);
+    return [
+      if (hasBed) ...[
+        RunParameter('Clip blocks to each locus', _isClipped ? 'Yes' : 'No'),
+        RunParameter(
+          'Reverse complement minus-strand loci',
+          _isStrandAware ? 'Yes' : 'No',
+        ),
+      ] else
+        RunParameter('Group blocks', mafGroupingOptions[_groupBy] ?? ''),
+      RunParameter('Reference species', _refSpecies.text),
+      RunParameter('Species to write', _species.text),
+      RunParameter('Minimum reference bases', _minBlockLength.text),
+      RunParameter('Minimum species', _minSpecies.text),
+      RunParameter('Minimum score', _minScore.text),
+      RunParameter('Output format', _ctr.outputFormatController ?? ''),
+      RunParameter('Interleaved format', _isInterleave ? 'Yes' : 'No'),
+    ];
+  }
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -345,6 +369,7 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

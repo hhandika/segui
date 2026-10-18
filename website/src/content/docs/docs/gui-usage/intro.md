@@ -62,6 +62,16 @@ Some tasks have optional parameters. Follow the task's documentation to learn mo
 
 On desktop platforms, the application saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To keep a copy elsewhere, export the output files as an archive or share them with other apps.
 
+## Workbench and Next Steps
+
+The `Workbench` tab in the file panel summarizes the input and output files. After a run finishes, it also lists:
+
+- **Parameters**: the settings used by the run.
+- **Suggested workflows**: each common workflow from the home screen that includes the tool, with its progress. Select `Continue` to open the next step.
+- **Other compatible tools**: tools that can take the run's data.
+
+Opening a next step or compatible tool passes the run's output files to it as input, so you can chain analyses without returning to the home screen. Tools that write only summaries, such as `Summarize alignments`, pass on their input files instead. Choose an output folder for each new step.
+
 ## Exporting Output
 
 In the `Output` panel, choose `Select`, then pick the files or folders you want. Select `Export` in the toolbar under the file list and choose a format:

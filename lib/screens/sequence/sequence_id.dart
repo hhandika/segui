@@ -13,6 +13,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceUniqueId;
 
@@ -118,6 +119,14 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
     return _ctr.isValid;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Output prefix', _ctr.prefixController.text),
+        RunParameter('Map sequence ID', _isMap ? 'Yes' : 'No'),
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -191,6 +200,7 @@ class IDExtractionPageState extends ConsumerState<IDExtractionPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -13,6 +13,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/tasks/alignment.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentTrimming;
 
@@ -180,6 +181,19 @@ class AlignmentTrimmingPageState extends ConsumerState<AlignmentTrimmingPage>
     );
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Trim by', trimmingOptions[_option] ?? ''),
+        RunParameter(
+          _trimmingInput[_option]?.labelText ?? 'Value',
+          _valueController.text,
+        ),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+        RunParameter('Interleaved format', _isInterleave ? 'Yes' : 'No'),
+      ];
+
   bool _isValid(List<SegulInputFile> value) {
     return _ctr.isValid &&
         _ctr.outputFormatController != null &&
@@ -269,6 +283,7 @@ class AlignmentTrimmingPageState extends ConsumerState<AlignmentTrimmingPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

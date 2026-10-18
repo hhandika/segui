@@ -13,6 +13,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentSummary;
 
@@ -143,6 +144,18 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     return _ctr.isValid && isPrefixValid;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Output prefix', _ctr.prefixController.text),
+        RunParameter(
+          'Summarize each locus separately',
+          _isPerLocus ? 'Yes' : 'No',
+        ),
+        if (!_isPerLocus) RunParameter('Summary interval', _interval ?? '5'),
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -233,6 +246,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, 'Summarization successful! 🎉'));

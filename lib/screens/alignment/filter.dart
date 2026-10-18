@@ -13,6 +13,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/alignment.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentFiltering;
 
@@ -239,6 +240,27 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
     return _ctr.isValid && filteringOptionsValid && isFormatVld;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Filter by',
+          filteringOptions[_filteringOptionsController] ?? '',
+        ),
+        RunParameter(
+          filteringOptionsInput[_filteringOptionsController]?.labelText ??
+              'Value',
+          _valueController.text,
+        ),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+        RunParameter('Concatenate output', _isConcatenated ? 'Yes' : 'No'),
+        if (_isConcatenated) ...[
+          RunParameter('Output prefix', _prefixController.text),
+          RunParameter('Partition format', _outputPartitionFmtController ?? ''),
+        ],
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -322,6 +344,7 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

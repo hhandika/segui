@@ -13,6 +13,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/tasks/genomics.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.genomicMafSummary;
 
@@ -132,6 +133,13 @@ class MafSummaryPageState extends ConsumerState<MafSummaryPage>
     );
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Reference species', _refSpecies.text),
+        RunParameter('Species to report', _species.text),
+        RunParameter('Output prefix', _ctr.prefixController.text),
+      ];
+
   bool _isValid(List<SegulInputFile> value) {
     final hasMaf = value.any((e) => e.type == SegulType.multipleAlignment);
     return _ctr.isValid && hasMaf;
@@ -218,6 +226,7 @@ class MafSummaryPageState extends ConsumerState<MafSummaryPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

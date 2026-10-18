@@ -13,6 +13,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceRemoval;
 
@@ -167,6 +168,23 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
     return _ctr.isValid && isRemovalMethodValid;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Remove by',
+          removalOptionsMap[_removalMethodController] ?? '',
+        ),
+        RunParameter(
+          _removalMethodController == RemovalOptions.regex
+              ? 'Regular expression'
+              : 'Sequence IDs',
+          _idRegexController.text,
+        ),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -247,6 +265,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

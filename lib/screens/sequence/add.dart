@@ -14,6 +14,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/services/tasks/sequences.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceAddition;
 
@@ -174,6 +175,27 @@ class SequenceAdditionPageState extends ConsumerState<SequenceAdditionPage>
     );
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Add all to a single file',
+          _isSingleDestination ? 'Yes' : 'No',
+        ),
+        RunParameter('Destination format', _destinationFormat ?? ''),
+        if (_isSingleDestination)
+          RunParameter(
+            'Add source file name to IDs',
+            _isFilenameIncluded ? 'Yes' : 'No',
+          ),
+        RunParameter('Interleaved format', _isInterleave ? 'Yes' : 'No'),
+        RunParameter(
+          'Only write files with added sequences',
+          _isAddedOnly ? 'Yes' : 'No',
+        ),
+      ];
+
   bool _isValid(List<SegulInputFile> value) {
     final hasSource = value.any((e) => e.type == SegulType.standardSequence);
     final destinations =
@@ -270,6 +292,7 @@ class SequenceAdditionPageState extends ConsumerState<SequenceAdditionPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -7,7 +7,7 @@ import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/illustrations.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
-import 'package:segui/screens/shared/io/summary_view.dart';
+import 'package:segui/screens/shared/io/workbench_view.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/styles/decoration.dart';
@@ -420,7 +420,7 @@ class FilesPage extends StatelessWidget {
   }
 }
 
-/// Input and output summary and file lists, switched with a segmented
+/// Workbench and input and output file lists, switched with a segmented
 /// control.
 class FilePanel extends ConsumerWidget {
   const FilePanel({super.key});
@@ -446,8 +446,8 @@ class FilePanel extends ConsumerWidget {
             showSelectedIcon: false,
             segments: [
               const ButtonSegment(
-                value: FilePanelView.summary,
-                label: Text('Summary'),
+                value: FilePanelView.workbench,
+                label: Text('Workbench'),
               ),
               ButtonSegment(
                 value: FilePanelView.input,
@@ -468,7 +468,7 @@ class FilePanel extends ConsumerWidget {
               index: view.index,
               sizing: StackFit.expand,
               children: const [
-                FileSummaryView(),
+                WorkbenchView(),
                 InputScreen(),
                 OutputScreen(),
               ],

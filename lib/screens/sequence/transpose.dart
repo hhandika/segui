@@ -13,6 +13,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/tasks/sequences.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceTransposition;
 
@@ -118,6 +119,13 @@ class SequenceTranspositionPageState
     );
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Interleaved format', _isInterleave ? 'Yes' : 'No'),
+      ];
+
   bool _isValid(List<SegulInputFile> value) {
     return _ctr.isValid;
   }
@@ -201,6 +209,7 @@ class SequenceTranspositionPageState
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

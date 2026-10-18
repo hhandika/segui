@@ -96,14 +96,14 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
 }
 
 /// File list shown in the tool page's file panel.
-enum FilePanelView { summary, input, output }
+enum FilePanelView { workbench, input, output }
 
 final filePanelViewProvider =
     NotifierProvider<FilePanelViewSelection, FilePanelView>(
         FilePanelViewSelection.new);
 
-/// Shows the summary by default and whenever the input files change, and
-/// the output files after a run.
+/// Shows the workbench by default, whenever the input files change, and
+/// after a run, where it suggests the next steps.
 class FilePanelViewSelection extends Notifier<FilePanelView> {
   @override
   FilePanelView build() {
@@ -111,7 +111,7 @@ class FilePanelViewSelection extends Notifier<FilePanelView> {
     // Setting state from a listener throws when an invalidated input
     // provider rebuilds during a widget's build.
     ref.watch(fileInputProvider);
-    return FilePanelView.summary;
+    return FilePanelView.workbench;
   }
 
   void show(FilePanelView view) {
@@ -215,9 +215,9 @@ class FileOutput extends AsyncNotifier<SegulOutputFile> {
       final updates = SegulOutputFile.updateFiles(state.value!);
       return updates;
     });
-    // A refresh follows a finished run, so show its output files.
+    // A refresh follows a finished run, so show its next steps.
     if (state.value?.directory != null) {
-      ref.read(filePanelViewProvider.notifier).show(FilePanelView.output);
+      ref.read(filePanelViewProvider.notifier).show(FilePanelView.workbench);
     }
   }
 

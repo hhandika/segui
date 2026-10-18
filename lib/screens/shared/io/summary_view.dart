@@ -8,9 +8,10 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/styles/design_tokens.dart';
 
-/// Input and output summaries, each with a button to open its file list.
-class FileSummaryView extends ConsumerWidget {
-  const FileSummaryView({super.key});
+/// Input and output summaries side by side, each opening its file list.
+/// The tiles stack when the panel is too narrow for both.
+class FileSummaryTiles extends ConsumerWidget {
+  const FileSummaryTiles({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,48 +20,65 @@ class FileSummaryView extends ConsumerWidget {
     final OutputSummary? output = ref.watch(outputSummaryProvider).value;
     final String? outputDir = output?.directory?.path;
     final int otherCount = output?.otherFileCount ?? 0;
-    return ListView(
-      padding:
-          const EdgeInsets.only(top: SeguiSpacing.xl, bottom: SeguiSpacing.md),
-      children: [
-        FileSummaryCard(
-          title: 'Input',
-          icon: SeguiIcons.inputFolderFilled,
-          summary: input,
-          emptyText: 'No input files selected.',
-          buttonLabel: 'View input files',
-          onViewFiles: input.isEmpty
-              ? null
-              : () => ref
-                  .read(filePanelViewProvider.notifier)
-                  .show(FilePanelView.input),
-        ),
-        const SizedBox(height: SeguiSpacing.lg),
-        FileSummaryCard(
-          title: 'Output',
-          icon: SeguiIcons.outputFolderFilled,
-          subtitle: outputDir == null ? null : p.basename(outputDir),
-          summary: output?.newFiles ?? const FileSetSummary.empty(),
-          emptyText: outputDir == null
-              ? 'No output folder selected.'
-              : 'No new output files yet.',
-          note: otherCount > 0
-              ? '$otherCount other ${otherCount == 1 ? 'file' : 'files'} '
-                  'already in the folder'
-              : null,
-          buttonLabel: 'View output files',
-          onViewFiles: outputDir == null
-              ? null
-              : () => ref
-                  .read(filePanelViewProvider.notifier)
-                  .show(FilePanelView.output),
-        ),
-      ],
+    final Widget inputTile = FileSummaryCard(
+      title: 'Input',
+      icon: SeguiIcons.inputFolderFilled,
+      summary: input,
+      emptyText: 'No input files selected.',
+      buttonLabel: 'View input files',
+      onViewFiles: input.isEmpty
+          ? null
+          : () => ref
+              .read(filePanelViewProvider.notifier)
+              .show(FilePanelView.input),
     );
+    final Widget outputTile = FileSummaryCard(
+      title: 'Output',
+      icon: SeguiIcons.outputFolderFilled,
+      subtitle: outputDir == null ? null : p.basename(outputDir),
+      summary: output?.newFiles ?? const FileSetSummary.empty(),
+      emptyText: outputDir == null
+          ? 'No output folder selected.'
+          : 'No new output files yet.',
+      note: otherCount > 0
+          ? '$otherCount other ${otherCount == 1 ? 'file' : 'files'} '
+              'already in the folder'
+          : null,
+      buttonLabel: 'View output files',
+      onViewFiles: outputDir == null
+          ? null
+          : () => ref
+              .read(filePanelViewProvider.notifier)
+              .show(FilePanelView.output),
+    );
+    return LayoutBuilder(builder: (context, constraints) {
+      final bool isSideBySide = constraints.maxWidth >=
+          SeguiContentWidth.summaryTile * 2 + SeguiSpacing.md;
+      if (!isSideBySide) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            inputTile,
+            const SizedBox(height: SeguiSpacing.md),
+            outputTile,
+          ],
+        );
+      }
+      return IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: inputTile),
+            const SizedBox(width: SeguiSpacing.md),
+            Expanded(child: outputTile),
+          ],
+        ),
+      );
+    });
   }
 }
 
-/// Count, size, and formats of one file set, with a button to list them.
+/// Count, size, and formats of one file set. Tapping it lists the files.
 class FileSummaryCard extends StatelessWidget {
   const FileSummaryCard({
     super.key,
@@ -78,6 +96,8 @@ class FileSummaryCard extends StatelessWidget {
   final IconData icon;
   final FileSetSummary summary;
   final String emptyText;
+
+  /// Semantic label of the tile's tap action.
   final String buttonLabel;
   final VoidCallback? onViewFiles;
   final String? subtitle;
@@ -89,97 +109,86 @@ class FileSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-          SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.md),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerLowest,
+    final TextStyle? mutedSmall =
+        textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant);
+    return Material(
+      color: colors.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(SeguiRadius.lg),
-        border: Border.all(color: colors.outlineVariant),
+        side: BorderSide(color: colors.outlineVariant),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: colors.primary),
-              const SizedBox(width: SeguiSpacing.md),
-              Text(
-                title,
-                style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              if (subtitle != null) ...[
-                const SizedBox(width: SeguiSpacing.md),
-                Expanded(
-                  child: Text(
-                    subtitle!,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onViewFiles,
+        child: Semantics(
+          button: onViewFiles != null,
+          label: buttonLabel,
+          child: Padding(
+            padding: const EdgeInsets.all(SeguiSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      icon,
+                      color: colors.primary,
+                      size: SeguiControlSize.iconMedium,
                     ),
-                    textAlign: TextAlign.end,
+                    const SizedBox(width: SeguiSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    if (onViewFiles != null)
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: SeguiControlSize.iconMedium,
+                        color: colors.onSurfaceVariant,
+                      ),
+                  ],
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: mutedSmall,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
-            ],
-          ),
-          const SizedBox(height: SeguiSpacing.lg),
-          if (summary.isEmpty)
-            Text(
-              emptyText,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colors.onSurfaceVariant,
-              ),
-            )
-          else ...[
-            Row(
-              children: [
-                Expanded(
-                  child: SummaryStat(
+                const SizedBox(height: SeguiSpacing.md),
+                if (summary.isEmpty)
+                  Text(emptyText, style: mutedSmall)
+                else ...[
+                  SummaryStat(
                     value: '${summary.fileCount}',
-                    label: summary.fileCount == 1 ? 'file' : 'files',
+                    label: '${summary.fileCount == 1 ? 'file' : 'files'}'
+                        ' · ${summary.totalSize}',
                   ),
-                ),
-                Expanded(
-                  child: SummaryStat(
-                    value: summary.totalSize,
-                    label: 'total size',
+                  const SizedBox(height: SeguiSpacing.md),
+                  Wrap(
+                    spacing: SeguiSpacing.sm,
+                    runSpacing: SeguiSpacing.sm,
+                    children: [
+                      for (final format in summary.formatCounts)
+                        FormatCountChip(
+                          format: format.format,
+                          count: format.count,
+                        ),
+                    ],
                   ),
-                ),
+                ],
+                if (note != null) ...[
+                  const SizedBox(height: SeguiSpacing.md),
+                  Text(note!, style: mutedSmall),
+                ],
               ],
-            ),
-            const SizedBox(height: SeguiSpacing.lg),
-            Wrap(
-              spacing: SeguiSpacing.md,
-              runSpacing: SeguiSpacing.md,
-              children: [
-                for (final format in summary.formatCounts)
-                  FormatCountChip(format: format.format, count: format.count),
-              ],
-            ),
-          ],
-          if (note != null) ...[
-            const SizedBox(height: SeguiSpacing.md),
-            Text(
-              note!,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.onSurfaceVariant,
-              ),
-            ),
-          ],
-          const SizedBox(height: SeguiSpacing.xs),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-              onPressed: onViewFiles,
-              icon: const Icon(Icons.arrow_forward_rounded),
-              iconAlignment: IconAlignment.end,
-              label: Text(buttonLabel),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -232,8 +241,8 @@ class FormatCountChip extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-          SeguiSpacing.md, SeguiSpacing.sm, SeguiSpacing.md, SeguiSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+          horizontal: SeguiSpacing.sm, vertical: SeguiSpacing.xs),
       decoration: BoxDecoration(
         color: colors.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(SeguiRadius.md),
@@ -248,11 +257,11 @@ class FormatCountChip extends StatelessWidget {
             colorFilter: ColorFilter.mode(colors.tertiary, BlendMode.srcIn),
           ),
           const SizedBox(width: SeguiSpacing.sm),
-          Text(format.label, style: textTheme.labelLarge),
-          const SizedBox(width: SeguiSpacing.sm),
+          Text(format.label, style: textTheme.labelMedium),
+          const SizedBox(width: SeguiSpacing.xs),
           Text(
             '$count',
-            style: textTheme.labelLarge?.copyWith(
+            style: textTheme.labelMedium?.copyWith(
               color: colors.onSurfaceVariant,
               fontWeight: FontWeight.w700,
             ),

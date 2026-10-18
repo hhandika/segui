@@ -14,6 +14,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceRenaming;
 
@@ -229,6 +230,35 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
         _renamingOptionController == RenamingOptions.replaceRegex;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Rename by',
+          renamingOptionsMap[_renamingOptionController] ?? '',
+        ),
+        if (_renamingOptionController != RenamingOptions.renameFile)
+          RunParameter(
+            _isRemove
+                ? _isRegex
+                    ? 'Regex pattern'
+                    : 'Input text'
+                : _isRegex
+                    ? 'Find matches'
+                    : 'Find',
+            _paramValueController.text,
+          ),
+        if (_isReplace)
+          RunParameter('Replace with', _paramReplaceWithController.text),
+        if (_isRegex)
+          RunParameter(
+            _isRemove ? 'Remove all matches' : 'Replace all matches',
+            _isRegexMatchAll ? 'Yes' : 'No',
+          ),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -311,6 +341,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

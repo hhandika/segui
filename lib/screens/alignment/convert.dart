@@ -13,6 +13,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentConversion;
 
@@ -154,6 +155,15 @@ class ConvertPageState extends ConsumerState<ConvertPage>
     return isValid;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+        RunParameter('Interleaved format', _isInterleave ? 'Yes' : 'No'),
+        RunParameter('Sort by sequence ID', _isSortSequence ? 'Yes' : 'No'),
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -228,6 +238,7 @@ class ConvertPageState extends ConsumerState<ConvertPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

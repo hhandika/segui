@@ -14,6 +14,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentConversion;
 
@@ -160,6 +161,19 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     );
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Partition format', _partitionFormatController ?? ''),
+        RunParameter('Output prefix', _ctr.prefixController.text),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+        RunParameter(
+          'Check partition for errors',
+          _isUnchecked ? 'Yes' : 'No',
+        ),
+      ];
+
   bool _isValid(List<SegulInputFile> value) {
     // Find files contain sequence and partition
     final hasSequence = value.any((e) => e.type == SegulType.standardSequence);
@@ -266,6 +280,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
   }
 
   void _setSuccess(Directory directory) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

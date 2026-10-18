@@ -16,6 +16,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/tasks/alignment.dart';
 import 'package:segui/src/rust/api/sequence.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentDistance;
 
@@ -337,6 +338,32 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
     }
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Distance model', distanceModels[_model] ?? ''),
+        RunParameter('Matrix', distanceMatrixTriangles[_triangle] ?? ''),
+        RunParameter('Diagonal', distanceMatrixDiagonals[_diagonal] ?? ''),
+        RunParameter(
+          'Group samples',
+          distanceGroupingMethods[_grouping] ?? '',
+        ),
+        if (_grouping == 'delimiter') ...[
+          RunParameter('Delimiter', _groupDelimiter.text),
+          RunParameter('Fields to keep', _groupFields.text),
+        ],
+        if (_grouping == 'regex')
+          RunParameter('Regex pattern', _groupPattern.text),
+        if (_grouping != 'none')
+          RunParameter(
+            'Group matrix diagonal',
+            distanceGroupDiagonals[_groupDiagonal] ?? '',
+          ),
+        RunParameter('Summary prefix', _ctr.prefixController.text),
+        RunParameter('Long-format tables', _isLongFormat ? 'Yes' : 'No'),
+      ];
+
   bool _isValid(List<SegulInputFile> value) {
     return _ctr.isValid && _groupingParams.isValid(value);
   }
@@ -439,6 +466,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

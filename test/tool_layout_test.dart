@@ -14,6 +14,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
+import 'package:segui/screens/shared/io/workbench_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/services/home_features.dart';
@@ -188,7 +189,7 @@ void main() {
     expect(width, greaterThan(minFilePanelWidth));
   });
 
-  test('File panel shows output after a run and summary after new files',
+  test('File panel shows the workbench after a run and after new files',
       () async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],
@@ -197,14 +198,16 @@ void main() {
     final Directory dir = await Directory.systemTemp.createTemp('segui-run-');
     addTearDown(() => dir.delete(recursive: true));
 
-    expect(container.read(filePanelViewProvider), FilePanelView.summary);
+    expect(container.read(filePanelViewProvider), FilePanelView.workbench);
     await container.read(fileOutputProvider.notifier).add(dir);
     await File(p.join(dir.path, 'concat.nex')).writeAsString('#NEXUS\n');
+    container.read(filePanelViewProvider.notifier).show(FilePanelView.output);
     await container.read(fileOutputProvider.notifier).refresh();
-    expect(container.read(filePanelViewProvider), FilePanelView.output);
+    expect(container.read(filePanelViewProvider), FilePanelView.workbench);
 
+    container.read(filePanelViewProvider.notifier).show(FilePanelView.input);
     await container.read(fileInputProvider.notifier).clearAll();
-    expect(container.read(filePanelViewProvider), FilePanelView.summary);
+    expect(container.read(filePanelViewProvider), FilePanelView.workbench);
   });
 
   testWidgets('New tool page resets the file panel without a build error',
@@ -231,7 +234,7 @@ void main() {
       ),
     ));
     expect(tester.takeException(), isNull);
-    expect(find.text('summary'), findsOneWidget);
+    expect(find.text('workbench'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 1));
   });
@@ -372,8 +375,7 @@ void main() {
     expect(find.byType(PickerActionSheet), findsNothing);
   });
 
-  testWidgets('File panel opens on the input and output summary',
-      (tester) async {
+  testWidgets('File panel opens on the workbench summary', (tester) async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],
     );
@@ -387,7 +389,8 @@ void main() {
     ];
     await pumpPage(tester, const Size(1600, 1000), container: container);
 
-    expect(find.byType(FileSummaryView), findsOneWidget);
+    expect(find.byType(WorkbenchView), findsOneWidget);
+    expect(find.byType(NextStepsHint), findsOneWidget);
     expect(find.byType(FileSummaryCard), findsNWidgets(2));
     expect(find.byIcon(SeguiIcons.inputFolderFilled), findsOneWidget);
     expect(find.byIcon(SeguiIcons.outputFolderFilled), findsOneWidget);
@@ -405,13 +408,12 @@ void main() {
     Finder inInput(Finder finder) =>
         find.descendant(of: inputCard, matching: finder);
     expect(inInput(find.text('3')), findsOneWidget);
-    expect(inInput(find.text('files')), findsOneWidget);
-    expect(inInput(find.text('0.01 Kb')), findsOneWidget);
+    expect(inInput(find.text('files · 0.01 Kb')), findsOneWidget);
     expect(inInput(find.text('NEXUS')), findsOneWidget);
     expect(inInput(find.text('2')), findsOneWidget);
     expect(inInput(find.text('FASTA')), findsOneWidget);
 
-    await tester.tap(find.text('View input files'));
+    await tester.tap(inputCard);
     await tester.pumpAndSettle();
     expect(container.read(filePanelViewProvider), FilePanelView.input);
   });

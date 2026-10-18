@@ -109,6 +109,9 @@ abstract final class SeguiContentWidth {
   /// Statistic tiles, such as the file count on the data usage page.
   static const double statTile = 200;
 
+  /// Narrowest workbench file summary tile before input and output stack.
+  static const double summaryTile = 140;
+
   /// Narrowest theme choice card before the choices stack as rows.
   static const double themeChoice = 200;
 
