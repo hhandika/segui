@@ -1,17 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/viewers/csv.dart';
-import 'package:segui/src/rust/api/alignment_view.dart';
+import 'package:segui/services/viewers/alignment.dart';
 
 /// Bytes read from the start of a NEXUS file to tell its blocks apart.
 const int _nexusHeaderBytes = 16 * 1024;
 
-/// Largest file the inspector reads in full for its counts.
+/// Largest file the inspector reads in full for its counts. FASTA
+/// alignments are indexed rather than read, so any size is counted.
 const int inspectorContentLimitBytes = 64 * 1024 * 1024;
+
+/// Counts shown with thousands separators, such as 12,345.
+final NumberFormat _countFormat = NumberFormat('#,##0');
 
 /// NEXUS blocks that hold sequences.
 const Set<String> _nexusSequenceBlocks = {'data', 'characters', 'unaligned'};
@@ -205,7 +210,9 @@ class FileInspector {
         details: details,
       );
     }
-    if (bytes > inspectorContentLimitBytes) {
+    final bool isIndexed =
+        kind == FileContentKind.alignment && format == FileIconType.fasta;
+    if (bytes > inspectorContentLimitBytes && !isIndexed) {
       return FileInspection(
         file: file,
         kind: kind,
@@ -240,11 +247,12 @@ class FileInspector {
     switch (kind) {
       case FileContentKind.alignment:
         final AlignmentViewData data = await loadAlignment(file.path);
+        data.dispose();
         return [
-          InspectionDetail('Sequences', '${data.names.length}'),
+          InspectionDetail('Sequences', _countFormat.format(data.names.length)),
           InspectionDetail(
             data.isAligned ? 'Sites' : 'Longest sequence',
-            '${data.length}',
+            _countFormat.format(data.length),
           ),
           InspectionDetail('Data type', data.isDna ? 'DNA' : 'Amino acid'),
           InspectionDetail('Aligned', data.isAligned ? 'Yes' : 'No'),
@@ -257,15 +265,21 @@ class FileInspector {
           (last, entry) => entry.lastSite > last ? entry.lastSite : last,
         );
         return [
-          InspectionDetail('Partitions', '${partitions.length}'),
-          if (sites > 0) InspectionDetail('Sites', '$sites'),
+          InspectionDetail(
+              'Partitions', _countFormat.format(partitions.length)),
+          if (sites > 0) InspectionDetail('Sites', _countFormat.format(sites)),
         ];
       case FileContentKind.table:
         final List<List<dynamic>> rows = await CsvParser().parse(file);
         return [
-          InspectionDetail('Rows', '${rows.isEmpty ? 0 : rows.length - 1}'),
           InspectionDetail(
-              'Columns', '${rows.isEmpty ? 0 : rows.first.length}'),
+            'Rows',
+            _countFormat.format(rows.isEmpty ? 0 : rows.length - 1),
+          ),
+          InspectionDetail(
+            'Columns',
+            _countFormat.format(rows.isEmpty ? 0 : rows.first.length),
+          ),
         ];
       case FileContentKind.text:
         final int lines = await file
@@ -273,7 +287,7 @@ class FileInspector {
             .transform(utf8.decoder)
             .transform(const LineSplitter())
             .length;
-        return [InspectionDetail('Lines', '$lines')];
+        return [InspectionDetail('Lines', _countFormat.format(lines))];
       case FileContentKind.other:
         return const [];
     }

@@ -3,11 +3,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/services/keyboard.dart';
-import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -361,7 +359,9 @@ class _RenderAlignmentGrid extends RenderBox {
   AlignmentViewData _data;
   set data(AlignmentViewData value) {
     if (identical(value, _data)) return;
+    if (attached) _data.residues.removeListener(markNeedsPaint);
     _data = value;
+    if (attached) _data.residues.addListener(markNeedsPaint);
     markNeedsLayout();
   }
 
@@ -472,6 +472,7 @@ class _RenderAlignmentGrid extends RenderBox {
     _horizontalOffset.addListener(markNeedsPaint);
     _verticalOffset.addListener(markNeedsPaint);
     _selection.addListener(markNeedsPaint);
+    _data.residues.addListener(markNeedsPaint);
   }
 
   @override
@@ -479,6 +480,7 @@ class _RenderAlignmentGrid extends RenderBox {
     _horizontalOffset.removeListener(markNeedsPaint);
     _verticalOffset.removeListener(markNeedsPaint);
     _selection.removeListener(markNeedsPaint);
+    _data.residues.removeListener(markNeedsPaint);
     super.detach();
   }
 
@@ -567,28 +569,48 @@ class _RenderAlignmentGrid extends RenderBox {
       _transforms = Float32List(capacity);
       _rects = Float32List(capacity);
     }
-    final List<Uint8List> rows = _data.sequences;
+    final AlignmentResidues residues = _data.residues;
+    final int blockSites = residues.blockSites;
+    final Uint32List lengths = _data.lengths;
     // Compare with the top row, which pinning can change.
-    final Uint8List reference = rows[_rowOrder.first];
+    final int reference = _rowOrder.first;
+    final int referenceLength = lengths[reference];
     final bool isReference = _colorMode == AlignmentColorMode.reference;
     final Int32List lookup = atlas.lookup;
     final Float32List sprites = atlas.sprites;
     final double scale = 1 / _devicePixelRatio;
     int n = 0;
     for (int r = visibleRows.first; r < visibleRows.last; r++) {
-      final Uint8List seq = rows[_rowOrder[r]];
+      final int row = _rowOrder[r];
+      final int length = lengths[row];
       final double y = r * _rowHeight - dy;
-      for (int c = cols.first; c < cols.last; c++) {
+      ResidueBlock? block;
+      ResidueBlock? referenceBlock;
+      int c = cols.first;
+      while (c < cols.last) {
         final int site = _window.start + c;
-        if (site >= seq.length) break;
-        final int code = seq[site];
-        final int sprite = isReference &&
-                r > 0 &&
-                site < reference.length &&
-                code == reference[site] &&
-                !isGapResidue(code)
-            ? _ResidueAtlas.identitySprite
-            : lookup[code];
+        if (site >= length) break;
+        if (block == null || site < block.start || site >= block.end) {
+          block = residues.blockAt(row, site);
+          if (block == null) {
+            // Not loaded yet: skip to the next block. It paints on arrival.
+            c += blockSites - site % blockSites;
+            continue;
+          }
+        }
+        final int code = block[site];
+        bool isSame = false;
+        if (isReference && r > 0 && site < referenceLength) {
+          if (referenceBlock == null ||
+              site < referenceBlock.start ||
+              site >= referenceBlock.end) {
+            referenceBlock = residues.blockAt(reference, site);
+          }
+          isSame = referenceBlock != null &&
+              code == referenceBlock[site] &&
+              !isGapResidue(code);
+        }
+        final int sprite = isSame ? _ResidueAtlas.identitySprite : lookup[code];
         final int i = n * 4;
         _transforms[i] = scale;
         _transforms[i + 1] = 0;
@@ -600,6 +622,7 @@ class _RenderAlignmentGrid extends RenderBox {
         _rects[i + 2] = sprites[s + 2];
         _rects[i + 3] = sprites[s + 3];
         n++;
+        c++;
       }
     }
     if (n == 0) return;

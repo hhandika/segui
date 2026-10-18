@@ -20,7 +20,6 @@ import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/services/viewers/alignment_files.dart';
-import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -207,7 +206,7 @@ class AlignmentViewBody extends ConsumerWidget {
     final AsyncValue<AlignmentViewData> data =
         ref.watch(alignmentDataProvider(path));
     return data.when(
-      data: (data) => data.sequences.isEmpty
+      data: (data) => data.rowCount == 0
           ? const Center(child: Text('This file has no sequences.'))
           : AlignmentExplorer(
               fileName: p.basename(path),
@@ -267,7 +266,6 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   final ValueNotifier<AlignmentCell?> _hover = ValueNotifier(null);
   final ValueNotifier<AlignmentCell?> _selection = ValueNotifier(null);
   final TextEditingController _siteController = TextEditingController();
-  late UngappedIndex _ungapped = UngappedIndex(widget.data.sequences);
   _ScrollTarget? _pending;
   RowSelection? _orderSelection;
   List<int> _order = const [];
@@ -282,7 +280,6 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   void didUpdateWidget(AlignmentExplorer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!identical(oldWidget.data, widget.data)) {
-      _ungapped = UngappedIndex(widget.data.sequences);
       _orderSelection = null;
     }
   }
@@ -529,7 +526,6 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                           horizontalController: _horizontal,
                           hover: _hover,
                           selection: _selection,
-                          ungapped: _ungapped,
                         ),
                         if (!rowSelection.isEmpty)
                           AlignmentSelectionBar(data: data),
@@ -559,7 +555,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   List<int> _orderOf(RowSelection selection) {
     if (!identical(selection, _orderSelection)) {
       _orderSelection = selection;
-      _order = selection.orderOf(widget.data.sequences.length);
+      _order = selection.orderOf(widget.data.rowCount);
     }
     return _order;
   }
@@ -801,9 +797,8 @@ class AlignmentSelectionBar extends ConsumerWidget {
   }
 
   Future<void> _copy(BuildContext context, RowSelection selection) async {
-    await Clipboard.setData(ClipboardData(
-      text: fastaOf(data.names, data.sequences, selection.rows),
-    ));
+    final String fasta = await data.residues.fasta(selection.rows);
+    await Clipboard.setData(ClipboardData(text: fasta));
     if (!context.mounted) return;
     final int count = selection.rows.length;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -835,7 +830,6 @@ class AlignmentStatusBar extends StatelessWidget {
     required this.horizontalController,
     required this.hover,
     required this.selection,
-    required this.ungapped,
   });
 
   final AlignmentViewData data;
@@ -844,13 +838,14 @@ class AlignmentStatusBar extends StatelessWidget {
   final ScrollController horizontalController;
   final ValueNotifier<AlignmentCell?> hover;
   final ValueNotifier<AlignmentCell?> selection;
-  final UngappedIndex ungapped;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return ListenableBuilder(
-      listenable: Listenable.merge([hover, selection, horizontalController]),
+      listenable: Listenable.merge(
+        [hover, selection, horizontalController, data.residues],
+      ),
       builder: (context, _) => Text(
         _status(),
         maxLines: 1,
@@ -864,11 +859,10 @@ class AlignmentStatusBar extends StatelessWidget {
 
   String _status() {
     final AlignmentCell? cell = hover.value ?? selection.value;
-    if (cell != null && cell.row < data.sequences.length) {
-      final Uint8List seq = data.sequences[cell.row];
-      final String residue =
-          cell.site < seq.length ? String.fromCharCode(seq[cell.site]) : '';
-      final int? position = ungapped.positionOf(cell.row, cell.site);
+    if (cell != null && cell.row < data.rowCount) {
+      final int? code = data.residueAt(cell.row, cell.site);
+      final String residue = code == null ? '' : String.fromCharCode(code);
+      final int? position = data.residues.ungappedPosition(cell.row, cell.site);
       return '${data.names[cell.row]} · site ${_siteFormat.format(cell.site + 1)}'
           ' · ${position == null ? 'gap' : 'ungapped ${_siteFormat.format(position)}'}'
           '${residue.isEmpty ? '' : ' · $residue'}';

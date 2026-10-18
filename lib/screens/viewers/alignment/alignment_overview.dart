@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
-import 'package:segui/src/rust/api/alignment_view.dart';
+import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -50,6 +50,8 @@ class AlignmentOverview extends StatefulWidget {
 class _AlignmentOverviewState extends State<AlignmentOverview> {
   ui.Image? _image;
   Brightness? _brightness;
+  // Bumped per build, so a slower earlier sample is dropped.
+  int _generation = 0;
 
   @override
   void didChangeDependencies() {
@@ -122,7 +124,7 @@ class _AlignmentOverviewState extends State<AlignmentOverview> {
     widget.onJump(site, row);
   }
 
-  void _buildImage() {
+  Future<void> _buildImage() async {
     final AlignmentViewData data = widget.data;
     final List<int> order = widget.rowOrder;
     final Set<int> selected = widget.selectedRows;
@@ -134,32 +136,34 @@ class _AlignmentOverviewState extends State<AlignmentOverview> {
     final ResiduePalette palette = data.isDna
         ? ResiduePalette.nucleotide(_brightness!)
         : ResiduePalette.aminoAcid(_brightness!);
+    final List<int> sampled = [
+      for (int y = 0; y < height; y++) order[y * rows ~/ height],
+    ];
+    final int generation = ++_generation;
+    final Uint8List codes = await data.residues.sample(sampled, width);
+    if (!mounted || generation != _generation) return;
     final Map<int, int> rgba = {};
     final Uint8List pixels = Uint8List(width * height * 4);
     for (int y = 0; y < height; y++) {
-      final int row = order[y * rows ~/ height];
-      final Uint8List seq = data.sequences[row];
+      final int row = sampled[y];
       final bool isDimmed = selected.isNotEmpty && !selected.contains(row);
       for (int x = 0; x < width; x++) {
-        final int site = x * data.length ~/ width;
+        final int code = codes[y * width + x];
+        // Zero is past the row's end.
+        if (code == 0) continue;
         final int i = (y * width + x) * 4;
-        if (site >= seq.length) continue;
         final int color = isDimmed
             ? palette.gap.toARGB32()
-            : rgba.putIfAbsent(
-                seq[site],
-                () => palette.colorOf(seq[site]).toARGB32(),
-              );
+            : rgba.putIfAbsent(code, () => palette.colorOf(code).toARGB32());
         pixels[i] = (color >> 16) & 0xFF;
         pixels[i + 1] = (color >> 8) & 0xFF;
         pixels[i + 2] = color & 0xFF;
         pixels[i + 3] = 0xFF;
       }
     }
-    final List<int> source = order;
     ui.decodeImageFromPixels(pixels, width, height, ui.PixelFormat.rgba8888,
         (image) {
-      if (!mounted || !identical(source, widget.rowOrder)) {
+      if (!mounted || generation != _generation) {
         image.dispose();
         return;
       }

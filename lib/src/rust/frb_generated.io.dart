@@ -26,14 +26,36 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.portManager,
   });
 
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_AlignmentHandlePtr => wire
+          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
+  AlignmentHandle
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          dynamic raw);
+
+  @protected
+  AlignmentHandle
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          dynamic raw);
 
   @protected
   Map<String, String> dco_decode_Map_String_String_None(dynamic raw);
 
   @protected
+  AlignmentHandle
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
+
+  @protected
+  AlignmentChunkStat dco_decode_alignment_chunk_stat(dynamic raw);
 
   @protected
   AlignmentDistanceServices dco_decode_alignment_distance_services(dynamic raw);
@@ -42,13 +64,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignmentServices dco_decode_alignment_services(dynamic raw);
 
   @protected
+  AlignmentSummary dco_decode_alignment_summary(dynamic raw);
+
+  @protected
   AlignmentTrimmingServices dco_decode_alignment_trimming_services(dynamic raw);
-
-  @protected
-  AlignmentViewData dco_decode_alignment_view_data(dynamic raw);
-
-  @protected
-  AlignmentViewServices dco_decode_alignment_view_services(dynamic raw);
 
   @protected
   ArchiveServices dco_decode_archive_services(dynamic raw);
@@ -65,10 +84,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentTrimmingServices dco_decode_box_autoadd_alignment_trimming_services(
-      dynamic raw);
-
-  @protected
-  AlignmentViewServices dco_decode_box_autoadd_alignment_view_services(
       dynamic raw);
 
   @protected
@@ -148,6 +163,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TranslationServices dco_decode_box_autoadd_translation_services(dynamic raw);
 
   @protected
+  int dco_decode_box_autoadd_u_32(dynamic raw);
+
+  @protected
   UnalignmentServices dco_decode_box_autoadd_unalignment_services(dynamic raw);
 
   @protected
@@ -208,13 +226,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> dco_decode_list_String(dynamic raw);
 
   @protected
+  List<AlignmentChunkStat> dco_decode_list_alignment_chunk_stat(dynamic raw);
+
+  @protected
   List<DistanceGroupCount> dco_decode_list_distance_group_count(dynamic raw);
 
   @protected
-  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw);
+  List<PlatformInt64?> dco_decode_list_opt_box_autoadd_i_64(dynamic raw);
 
   @protected
-  List<PlatformInt64?> dco_decode_list_opt_box_autoadd_i_64(dynamic raw);
+  List<int> dco_decode_list_prim_u_32_loose(dynamic raw);
 
   @protected
   Uint32List dco_decode_list_prim_u_32_strict(dynamic raw);
@@ -239,6 +260,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
+
+  @protected
+  int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
 
   @protected
   BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
@@ -314,11 +338,30 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
+  AlignmentHandle
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          SseDeserializer deserializer);
+
+  @protected
+  AlignmentHandle
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          SseDeserializer deserializer);
+
+  @protected
   Map<String, String> sse_decode_Map_String_String_None(
       SseDeserializer deserializer);
 
   @protected
+  AlignmentHandle
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
+
+  @protected
+  AlignmentChunkStat sse_decode_alignment_chunk_stat(
+      SseDeserializer deserializer);
 
   @protected
   AlignmentDistanceServices sse_decode_alignment_distance_services(
@@ -328,15 +371,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignmentServices sse_decode_alignment_services(SseDeserializer deserializer);
 
   @protected
+  AlignmentSummary sse_decode_alignment_summary(SseDeserializer deserializer);
+
+  @protected
   AlignmentTrimmingServices sse_decode_alignment_trimming_services(
-      SseDeserializer deserializer);
-
-  @protected
-  AlignmentViewData sse_decode_alignment_view_data(
-      SseDeserializer deserializer);
-
-  @protected
-  AlignmentViewServices sse_decode_alignment_view_services(
       SseDeserializer deserializer);
 
   @protected
@@ -355,10 +393,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentTrimmingServices sse_decode_box_autoadd_alignment_trimming_services(
-      SseDeserializer deserializer);
-
-  @protected
-  AlignmentViewServices sse_decode_box_autoadd_alignment_view_services(
       SseDeserializer deserializer);
 
   @protected
@@ -453,6 +487,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
+
+  @protected
   UnalignmentServices sse_decode_box_autoadd_unalignment_services(
       SseDeserializer deserializer);
 
@@ -519,16 +556,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
-  List<DistanceGroupCount> sse_decode_list_distance_group_count(
+  List<AlignmentChunkStat> sse_decode_list_alignment_chunk_stat(
       SseDeserializer deserializer);
 
   @protected
-  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
+  List<DistanceGroupCount> sse_decode_list_distance_group_count(
       SseDeserializer deserializer);
 
   @protected
   List<PlatformInt64?> sse_decode_list_opt_box_autoadd_i_64(
       SseDeserializer deserializer);
+
+  @protected
+  List<int> sse_decode_list_prim_u_32_loose(SseDeserializer deserializer);
 
   @protected
   Uint32List sse_decode_list_prim_u_32_strict(SseDeserializer deserializer);
@@ -556,6 +596,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
+
+  @protected
+  int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
@@ -643,11 +686,30 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AnyhowException self, SseSerializer serializer);
 
   @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          AlignmentHandle self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          AlignmentHandle self, SseSerializer serializer);
+
+  @protected
   void sse_encode_Map_String_String_None(
       Map<String, String> self, SseSerializer serializer);
 
   @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          AlignmentHandle self, SseSerializer serializer);
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_alignment_chunk_stat(
+      AlignmentChunkStat self, SseSerializer serializer);
 
   @protected
   void sse_encode_alignment_distance_services(
@@ -658,16 +720,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AlignmentServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_alignment_summary(
+      AlignmentSummary self, SseSerializer serializer);
+
+  @protected
   void sse_encode_alignment_trimming_services(
       AlignmentTrimmingServices self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_alignment_view_data(
-      AlignmentViewData self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_alignment_view_services(
-      AlignmentViewServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_archive_services(
@@ -687,10 +745,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_alignment_trimming_services(
       AlignmentTrimmingServices self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_alignment_view_services(
-      AlignmentViewServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_archive_services(
@@ -784,6 +838,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TranslationServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_unalignment_services(
       UnalignmentServices self, SseSerializer serializer);
 
@@ -856,16 +913,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_alignment_chunk_stat(
+      List<AlignmentChunkStat> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_distance_group_count(
       List<DistanceGroupCount> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_list_prim_u_8_strict(
-      List<Uint8List> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_opt_box_autoadd_i_64(
       List<PlatformInt64?> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_prim_u_32_loose(
+      List<int> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_32_strict(
@@ -896,6 +957,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_i_64(
       PlatformInt64? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
@@ -997,4 +1061,36 @@ class RustLibWire implements BaseWire {
   /// The symbols are looked up in [dynamicLibrary].
   RustLibWire(ffi.DynamicLibrary dynamicLibrary)
       : _lookup = dynamicLibrary.lookup;
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 }

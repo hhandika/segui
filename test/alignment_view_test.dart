@@ -15,21 +15,21 @@ import 'package:segui/screens/viewers/alignment/alignment_view.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment.dart';
-import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
 Uint8List _seq(String residues) => Uint8List.fromList(residues.codeUnits);
 
 AlignmentViewData _data(List<String> rows, {bool isDna = true}) {
-  final int length = rows.map((r) => r.length).fold(0, (a, b) => a > b ? a : b);
-  return AlignmentViewData(
-    names: [for (int i = 0; i < rows.length; i++) 'taxon_$i'],
-    sequences: rows.map(_seq).toList(),
-    length: length,
-    isAligned: rows.every((r) => r.length == length),
+  return AlignmentViewData.fromSequences(
+    [for (int i = 0; i < rows.length; i++) 'taxon_$i'],
+    rows.map(_seq).toList(),
     isDna: isDna,
   );
+}
+
+List<Uint8List> _rows(AlignmentViewData data) {
+  return (data.residues as MemoryResidues).rows;
 }
 
 void main() {
@@ -88,32 +88,6 @@ void main() {
       expect(empty.count, 0);
       expect(empty.chunkOf(10), 0);
       expect(empty.clamp(3), 0);
-    });
-  });
-
-  group('chunkStats', () {
-    test('Counts gaps and variable sites per chunk', () {
-      final AlignmentViewData data = _data([
-        'ACGT',
-        'ACGA',
-        'A-N-',
-      ]);
-      final List<ChunkStat> stats =
-          chunkStats(data.sequences, data.length, 2, isDna: true);
-      expect(stats, hasLength(2));
-      // Sites 1-2: one gap in six cells, no variable site.
-      expect(stats[0].gapFraction, closeTo(1 / 6, 1e-9));
-      expect(stats[0].variableFraction, 0);
-      // Sites 3-4: N is ignored, so only site 4 (T, A) varies.
-      expect(stats[1].gapFraction, closeTo(1 / 6, 1e-9));
-      expect(stats[1].variableFraction, 0.5);
-    });
-
-    test('Counts sites past a short sequence as gaps', () {
-      final AlignmentViewData data = _data(['ACGT', 'AC']);
-      final List<ChunkStat> stats =
-          chunkStats(data.sequences, data.length, 4, isDna: true);
-      expect(stats.single.gapFraction, 0.25);
     });
   });
 
@@ -229,7 +203,7 @@ void main() {
   test('fastaOf writes selected sequences in alignment order', () {
     final AlignmentViewData data = _data(['AC-T', 'GGCC', 'TTAA']);
     expect(
-      fastaOf(data.names, data.sequences, {2, 0}),
+      fastaOf(data.names, _rows(data), {2, 0}),
       '>taxon_0\nAC-T\n>taxon_2\nTTAA\n',
     );
   });

@@ -4,16 +4,41 @@ import 'package:segui/services/viewers/alignment_files.dart';
 import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/design_tokens.dart';
 
-/// Sequences of the file at a path, parsed by SEGUL.
+/// The open alignment at a path. Its residues are read as they are shown
+/// and released when the viewer closes.
 final alignmentDataProvider =
     FutureProvider.autoDispose.family<AlignmentViewData, String>(
-  (ref, path) => loadAlignmentView(path),
+  (ref, path) async {
+    bool isDisposed = false;
+    AlignmentViewData? data;
+    ref.onDispose(() {
+      isDisposed = true;
+      data?.dispose();
+    });
+    final AlignmentViewData loaded = await loadAlignmentView(path);
+    if (isDisposed) {
+      loaded.dispose();
+    } else {
+      data = loaded;
+    }
+    return loaded;
+  },
 );
 
-/// Gap and variable-site shares per chunk of loaded sequences.
-final alignmentChunkStatsProvider = FutureProvider.autoDispose
-    .family<List<ChunkStat>, ({AlignmentViewData data, int chunkSize})>(
-  (ref, args) => computeChunkStats(args.data, args.chunkSize),
+/// Chunks summarized per request to Rust.
+const int chunkPageSize = 64;
+
+/// Gap and variable-site shares of one page of [chunkPageSize] chunks.
+/// Rust keeps the counts behind them, so a page scrolled back into view or
+/// another chunk size over the same sites is quick.
+final alignmentChunkPageProvider = FutureProvider.autoDispose.family<
+    List<AlignmentChunkStat>,
+    ({AlignmentViewData data, int chunkSize, int page})>(
+  (ref, args) => args.data.residues.chunkStats(
+    args.chunkSize,
+    args.page * chunkPageSize,
+    chunkPageSize,
+  ),
 );
 
 /// How the viewer orders its file list: in Rust, unless overridden.

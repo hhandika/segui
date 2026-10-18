@@ -6,14 +6,86 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `build`, `is_dna`
+// These functions are ignored because they are not marked as `pub`: `build`, `count_block`, `format_of`, `is_dna`, `is_gap`, `len`, `new`, `offset_of`, `parse`, `read`, `read`, `record`, `residue`, `rows`, `scan`, `site_blocks`, `ungapped_counts`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `FastaIndex`, `FastaRecord`, `Line`, `Lines`, `SiteBlock`, `Store`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `eq`, `fmt`, `next`
 
-/// Sequences ready to draw in the alignment viewer.
-class AlignmentViewData {
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>>
+abstract class AlignmentHandle implements RustOpaqueInterface {
+  /// Gap and variable-site shares of up to `count` chunks of `chunk_size`
+  /// sites, from chunk `first`. Only the sites of those chunks are read;
+  /// their counts are kept, so later calls and other chunk sizes reuse them.
+  Future<List<AlignmentChunkStat>> chunkStats(
+      {required int chunkSize, required int first, required int count});
+
+  /// Rows in FASTA format, in alignment order.
+  Future<String> fasta({required List<int> rows});
+
+  /// Opens FASTA, NEXUS, or PHYLIP, inferring the format from the extension.
+  static Future<AlignmentHandle> open({required String path}) =>
+      RustLib.instance.api.crateApiAlignmentViewAlignmentHandleOpen(path: path);
+
+  /// Residues of `rows` at `width` evenly spaced sites, row after row, for
+  /// the overview. Cells past a row's end are zero.
+  Future<Uint8List> sample({required List<int> rows, required int width});
+
+  AlignmentSummary summary();
+
+  /// Residues of `row_count` rows from `row_start`, `site_count` sites each
+  /// from `site_start`, row after row. Cells past a row's end are zero.
+  Future<Uint8List> tile(
+      {required int rowStart,
+      required int rowCount,
+      required int siteStart,
+      required int siteCount});
+
+  /// One-based position of `site` in `row` without gaps, or none on a gap.
+  int? ungappedPosition({required int row, required int site});
+}
+
+/// Gap and variable-site share of a run of sites.
+class AlignmentChunkStat {
+  /// Zero-based first site and exclusive last site.
+  final int start;
+  final int end;
+
+  /// Share of cells that are gaps, missing data, or past a sequence's end.
+  final double gapFraction;
+
+  /// Share of sites with more than one residue, ignoring gaps and unknowns.
+  final double variableFraction;
+
+  const AlignmentChunkStat({
+    required this.start,
+    required this.end,
+    required this.gapFraction,
+    required this.variableFraction,
+  });
+
+  @override
+  int get hashCode =>
+      start.hashCode ^
+      end.hashCode ^
+      gapFraction.hashCode ^
+      variableFraction.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlignmentChunkStat &&
+          runtimeType == other.runtimeType &&
+          start == other.start &&
+          end == other.end &&
+          gapFraction == other.gapFraction &&
+          variableFraction == other.variableFraction;
+}
+
+/// Names and shape of an open alignment.
+class AlignmentSummary {
   final List<String> names;
 
-  /// Upper-case ASCII residues, one row per taxon.
-  final List<Uint8List> sequences;
+  /// Residues in each row.
+  final Uint32List lengths;
 
   /// Longest sequence length.
   final int length;
@@ -24,9 +96,9 @@ class AlignmentViewData {
   /// Whether the sequences are DNA rather than amino acids.
   final bool isDna;
 
-  const AlignmentViewData({
+  const AlignmentSummary({
     required this.names,
-    required this.sequences,
+    required this.lengths,
     required this.length,
     required this.isAligned,
     required this.isDna,
@@ -35,7 +107,7 @@ class AlignmentViewData {
   @override
   int get hashCode =>
       names.hashCode ^
-      sequences.hashCode ^
+      lengths.hashCode ^
       length.hashCode ^
       isAligned.hashCode ^
       isDna.hashCode;
@@ -43,41 +115,11 @@ class AlignmentViewData {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AlignmentViewData &&
+      other is AlignmentSummary &&
           runtimeType == other.runtimeType &&
           names == other.names &&
-          sequences == other.sequences &&
+          lengths == other.lengths &&
           length == other.length &&
           isAligned == other.isAligned &&
           isDna == other.isDna;
-}
-
-class AlignmentViewServices {
-  final String inputPath;
-
-  const AlignmentViewServices({
-    required this.inputPath,
-  });
-
-  /// Parses FASTA, NEXUS, or PHYLIP, inferring the format from the extension.
-  Future<AlignmentViewData> load() =>
-      RustLib.instance.api.crateApiAlignmentViewAlignmentViewServicesLoad(
-        that: this,
-      );
-
-  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<AlignmentViewServices> newInstance(
-          {required String inputPath}) =>
-      RustLib.instance.api
-          .crateApiAlignmentViewAlignmentViewServicesNew(inputPath: inputPath);
-
-  @override
-  int get hashCode => inputPath.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AlignmentViewServices &&
-          runtimeType == other.runtimeType &&
-          inputPath == other.inputPath;
 }

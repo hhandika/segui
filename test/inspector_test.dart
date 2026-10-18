@@ -11,7 +11,7 @@ import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/inspector.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/viewers/inspector.dart';
-import 'package:segui/src/rust/api/alignment_view.dart';
+import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/styles/themes.dart';
 
 const String _nexusPartition = '''#nexus
@@ -37,12 +37,9 @@ end;
 ''';
 
 Future<AlignmentViewData> _fakeAlignment(String path) async {
-  return AlignmentViewData(
-    names: const ['a', 'b', 'c'],
-    sequences: [Uint8List(4), Uint8List(4), Uint8List(4)],
-    length: 4,
-    isAligned: true,
-    isDna: true,
+  return AlignmentViewData.fromSequences(
+    const ['a', 'b', 'c'],
+    [Uint8List(4), Uint8List(4), Uint8List(4)],
   );
 }
 
@@ -184,6 +181,12 @@ void main() {
       final FileInspection text =
           await inspector.inspect(write('run.log', 'one\ntwo\nthree\n'));
       expect(details(text), containsPair('Lines', '3'));
+    });
+
+    test('Separates thousands in counts', () async {
+      final FileInspection text =
+          await inspector.inspect(write('long.log', 'line\n' * 12345));
+      expect(details(text), containsPair('Lines', '12,345'));
     });
 
     test('Notes a missing file', () async {

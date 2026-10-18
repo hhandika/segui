@@ -9,8 +9,9 @@ import 'package:segui/styles/design_tokens.dart';
 
 final NumberFormat _siteFormat = NumberFormat('#,###');
 
-/// Chunks of the alignment with their gap and variable-site shares.
-class ChunkSidebar extends ConsumerWidget {
+/// Chunks of the alignment with their gap and variable-site shares. Shares
+/// load from Rust a page at a time, only for the chunks scrolled into view.
+class ChunkSidebar extends StatelessWidget {
   const ChunkSidebar({
     super.key,
     required this.data,
@@ -25,49 +26,55 @@ class ChunkSidebar extends ConsumerWidget {
   final ValueChanged<int> onSelected;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<ChunkStat>> stats = ref.watch(
-      alignmentChunkStatsProvider((data: data, chunkSize: chunkSize)),
-    );
+  Widget build(BuildContext context) {
+    final AlignmentChunks chunks =
+        AlignmentChunks(length: data.length, size: chunkSize);
     return SizedBox(
       width: SeguiAlignmentLayout.chunkSidebar,
-      child: stats.when(
-        data: (stats) => ListView.builder(
-          primary: false,
-          itemCount: stats.length,
-          itemBuilder: (context, index) => _ChunkTile(
-            stat: stats[index],
-            index: index,
-            isSelected: index == currentChunk,
-            onTap: () => onSelected(index),
-          ),
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Padding(
-          padding: const EdgeInsets.all(SeguiSpacing.lg),
-          child: Text('Could not summarize chunks. $error'),
+      child: ListView.builder(
+        primary: false,
+        itemCount: chunks.count,
+        itemBuilder: (context, index) => _ChunkTile(
+          data: data,
+          chunks: chunks,
+          index: index,
+          isSelected: index == currentChunk,
+          onTap: () => onSelected(index),
         ),
       ),
     );
   }
 }
 
-class _ChunkTile extends StatelessWidget {
+class _ChunkTile extends ConsumerWidget {
   const _ChunkTile({
-    required this.stat,
+    required this.data,
+    required this.chunks,
     required this.index,
     required this.isSelected,
     required this.onTap,
   });
 
-  final ChunkStat stat;
+  final AlignmentViewData data;
+  final AlignmentChunks chunks;
   final int index;
   final bool isSelected;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = Theme.of(context);
+    final AsyncValue<List<AlignmentChunkStat>> page = ref.watch(
+      alignmentChunkPageProvider((
+        data: data,
+        chunkSize: chunks.size,
+        page: index ~/ chunkPageSize,
+      )),
+    );
+    final int offset = index % chunkPageSize;
+    final List<AlignmentChunkStat>? stats = page.value;
+    final AlignmentChunkStat? stat =
+        stats != null && offset < stats.length ? stats[offset] : null;
     final ColorScheme colors = theme.colorScheme;
     final TextStyle detail = theme.textTheme.labelSmall!.copyWith(
       color: colors.onSurfaceVariant,
@@ -96,21 +103,20 @@ class _ChunkTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${_siteFormat.format(stat.start + 1)}–'
-                    '${_siteFormat.format(stat.end)}',
+                    '${_siteFormat.format(chunks.startOf(index) + 1)}–'
+                    '${_siteFormat.format(chunks.endOf(index))}',
                     style: theme.textTheme.labelLarge,
                   ),
                   const SizedBox(height: SeguiSpacing.xxs),
                   Text(
-                    'Gaps ${_percent(stat.gapFraction)} · '
-                    'Variable ${_percent(stat.variableFraction)}',
+                    _summary(page, stat),
                     style: detail,
                   ),
                   const SizedBox(height: SeguiSpacing.xs),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(SeguiRadius.xs),
                     child: LinearProgressIndicator(
-                      value: stat.variableFraction,
+                      value: stat?.variableFraction ?? 0,
                       minHeight: SeguiStroke.thick,
                       color: colors.tertiary,
                       backgroundColor: colors.surfaceContainerHighest,
@@ -124,6 +130,18 @@ class _ChunkTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _summary(
+    AsyncValue<List<AlignmentChunkStat>> page,
+    AlignmentChunkStat? stat,
+  ) {
+    if (stat != null) {
+      return 'Gaps ${_percent(stat.gapFraction)} · '
+          'Variable ${_percent(stat.variableFraction)}';
+    }
+    if (page.hasError) return 'Could not summarize this chunk';
+    return page.isLoading ? 'Counting…' : 'No summary';
   }
 
   String _percent(double fraction) => '${(fraction * 100).round()}%';

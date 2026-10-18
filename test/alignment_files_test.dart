@@ -12,7 +12,7 @@ import 'package:segui/screens/viewers/alignment/alignment_view.dart';
 import 'package:segui/screens/viewers/alignment/selected_row_mark.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment_files.dart';
-import 'package:segui/src/rust/api/alignment_view.dart';
+import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/src/rust/api/file_sort.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
@@ -22,16 +22,13 @@ File _file(String name) => File(p.join('data', name));
 AlignmentViewData _data(String path) {
   // Each file gets its own length, so tests can tell them apart.
   final int length = 100 + p.basename(path).length;
-  return AlignmentViewData(
-    names: const ['a', 'b'],
-    sequences: [
-      Uint8List.fromList(List.filled(length, 0x41)),
-      Uint8List.fromList(List.filled(length, 0x43)),
-    ],
-    length: length,
-    isAligned: true,
-    isDna: true,
-  );
+  return AlignmentViewData.fromSequences(const [
+    'a',
+    'b'
+  ], [
+    Uint8List.fromList(List.filled(length, 0x41)),
+    Uint8List.fromList(List.filled(length, 0x43)),
+  ]);
 }
 
 /// Stand-in for the Rust file order, which needs the native library.
