@@ -1,0 +1,33 @@
+---
+title: Sequence ID Extraction
+sidebar:
+  order: 10
+---
+
+{% screenshots
+   large="gui/sequence-id-large.webp"
+   largeAlt="SEGUI Extract and map sequence IDs page on a desktop with the tool form and file panel"
+   small="gui/sequence-id-small.webp"
+   smallAlt="SEGUI Extract and map sequence IDs page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[51.6, 13.5] small=[83.0, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+Extract unique sequence IDs from alignment files.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Extract and map sequence IDs` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+5. Add prefix for the output files.
+6. Turn on `Map sequence ID` to map the IDs across files (optional). See [Sequence ID Mapping](/docs/gui-usage/sequence-id-map/) for more details.
+7. Select the run button {% ref id="D" /%}, labeled `Extract ID`, to start the task.
+
+## Output
+
+The app will generate a file containing the list of unique sequence IDs in your dataset. The default name is the `prefix` input.

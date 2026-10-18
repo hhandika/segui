@@ -1,0 +1,110 @@
+---
+title: GUI Installation
+sidebar:
+  order: 2
+---
+
+SEGUI is the native desktop and mobile GUI for SEGUL. It runs on Android, iOS, iPadOS, macOS, Windows, and Linux; there is no browser version. Install it from your platform's store, or download it from the [GitHub release page](https://github.com/hhandika/segui/releases).
+
+{% storebadges stores=["microsoft", "app", "play", "snap"] /%}
+
+## Install by platform
+
+{% tabs syncKey="gui-platform" %}
+{% tabitem label="Windows" %}
+
+**Requires** Windows 10 or newer, 64-bit.
+
+{% storebadges stores=["microsoft"] /%}
+
+**From GitHub:** download `segui-Windows-x86_64.zip` from the [release page](https://github.com/hhandika/segui/releases), extract it, and run `segui.exe`. Create a desktop or Start menu shortcut for easier access.
+
+{% aside type="caution" %}
+Windows may ask before running an app downloaded from GitHub. Check that the file came from the official release page before selecting **More info** and **Run anyway**.
+{% /aside %}
+
+{% /tabitem %}
+{% tabitem label="macOS" %}
+
+**Requires** macOS 12.0 Monterey or newer.
+
+{% sizedimage src="https://tools-qr-production.s3.amazonaws.com/output/apple-toolbox/fa86fccd2076c98231750ad7f8755a16/d8686a5163ad967d5b029b7faf7ad928.png" width=140 alt="QR code for SEGUI on the App Store" /%}
+
+{% storebadges stores=["app"] /%}
+
+Want to test new versions early? Join the beta on [Apple TestFlight](https://testflight.apple.com/join/LSJD5D0i).
+
+{% /tabitem %}
+{% tabitem label="Linux" %}
+
+**Requires** Ubuntu 22.04 or another 64-bit distribution with GLIBC 2.34 or newer. Check yours with `ldd --version`.
+
+{% storebadges stores=["snap"] /%}
+
+**From GitHub:** download the package for your distribution from the [release page](https://github.com/hhandika/segui/releases).
+
+{% tabs syncKey="linux-package" %}
+{% tabitem label="Debian and Ubuntu" %}
+
+```bash
+sudo dpkg -i segui-Linux-x86_64.deb
+```
+
+{% /tabitem %}
+{% tabitem label="Fedora and RHEL" %}
+
+```bash
+sudo rpm -i segui-Linux-x86_64.rpm
+```
+
+{% /tabitem %}
+{% tabitem label="Other" %}
+
+Extract the archive anywhere, then run the `segui` executable inside it.
+
+```bash
+tar -xvzf segui-Linux-x86_64.tar.gz
+```
+
+{% /tabitem %}
+{% /tabs %}
+
+{% /tabitem %}
+{% tabitem label="iOS and iPadOS" %}
+
+**Requires** iOS or iPadOS 15.0 or newer.
+
+{% sizedimage src="https://tools-qr-production.s3.amazonaws.com/output/apple-toolbox/fa86fccd2076c98231750ad7f8755a16/d8686a5163ad967d5b029b7faf7ad928.png" width=140 alt="QR code for SEGUI on the App Store" /%}
+
+{% storebadges stores=["app"] /%}
+
+Want to test new versions early? Join the beta on [Apple TestFlight](https://testflight.apple.com/join/LSJD5D0i).
+
+{% /tabitem %}
+{% tabitem label="Android" %}
+
+**Requires** Android 8.0 Oreo (API 26) or newer. SEGUI runs on phones, tablets, and Chromebooks.
+
+{% storebadges stores=["play"] /%}
+
+**From GitHub:** install an APK from the [release page](https://github.com/hhandika/segui/releases).
+
+{% steps %}
+
+1. Pick the APK for your device:
+   - `segui-arm64-v8a-release.apk` for 64-bit ARM, which most modern devices use.
+   - `segui-armeabi-v7a-release.apk` for older 32-bit ARM devices.
+   - `segui-x86_64-release.apk` for 64-bit x86, used in some Chromebooks.
+2. Allow your browser to install unknown apps. The setting is usually under **Settings › Apps › Special app access › Install unknown apps**.
+3. Open the downloaded APK to install it.
+
+{% /steps %}
+
+{% /tabitem %}
+{% /tabs %}
+
+{% aside type="note" title="Apple compatibility" %}
+The Apple minimum versions above apply to the next SEGUI release containing the native-platform upgrade. Versions currently in the app stores may have different requirements; check the listing for the version you install.
+{% /aside %}
+
+To build SEGUI from source, follow the [advanced guide](/docs/advance-guides/build-gui/).

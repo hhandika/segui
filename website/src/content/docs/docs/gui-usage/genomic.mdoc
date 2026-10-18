@@ -1,0 +1,92 @@
+---
+title: Genomic Summary
+sidebar:
+  order: 8
+---
+
+{% screenshots
+   large="gui/genomic-read-large.webp"
+   largeAlt="SEGUI Summarize genomic reads page on a desktop with the tool form and file panel"
+   small="gui/genomic-read-small.webp"
+   smallAlt="SEGUI Summarize genomic reads page on a phone with the tool form"
+   large2="gui/genomic-contig-large.webp"
+   large2Alt="SEGUI Summarize genomic contigs page on a desktop with the tool form and file panel"
+   small2="gui/genomic-contig-small.webp"
+   small2Alt="SEGUI Summarize genomic contigs page on a phone with the tool form" %}
+{% pin id="A" label="Genomics tab" large=[5, 18.1] small=[37.3, 94.8] large2=[5, 18.1] small2=[37.3, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[48.0, 13.5] small=[73.8, 11.8] large2=[49.7, 13.5] small2=[78.4, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] large2=[24.6, 34.6] small2=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] large2=[66, 94.5] small2=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] large2=[85.8, 11.8] small2=[91.5, 11.8] /%}
+{% /screenshots %}
+
+This feature provides summary statistics for sequence reads and contiguous sequences (contigs).
+
+## Sequence Read Summary Statistics
+
+### Steps for Sequence Read Summary Statistics
+
+1. Select `Genomics` in the navigation bar {% ref id="A" /%}.
+2. Open `Summarize genomic reads` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
+5. Select the summary mode.
+6. Select the run button {% ref id="D" /%}, labeled `Summarize`, to start the task.
+7. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
+
+### Summary Mode
+
+The app supports the following summary modes:
+
+- **Minimal**: read count only
+- **Default**: generate essential statistics (see below)
+- **Complete**: generate all the essential statistics plus summary statistics per position in read for each file.
+
+### Essential statistics for raw reads
+
+- Number of reads
+- Number of bases
+- Mean read length
+- Minimum read length
+- Maximum read length
+- GC count
+- GC content
+- AT count
+- AT content
+- A, C, G, T, N count
+- Low quality base count
+- Mean base quality
+- Min base quality
+- Max base quality
+
+## Contig Summary Statistics
+
+### Steps for Contig Summary Statistics
+
+1. Select `Genomics` in the navigation bar {% ref id="A" /%}.
+2. Open `Summarize genomic contigs` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
+5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+6. Select the run button {% ref id="D" /%}, labeled `Summarize`, to start the task.
+7. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
+
+### Available statistics for contiguous sequences
+
+- Contig count
+- Base count
+- Nucleotide
+- GC content
+- AT content
+- Minimum contig length
+- Maximum contig length
+- Mean contig length
+- Median contig length
+- N50
+- N75
+- N90
+- Contig 750 bp
+- Contig 1000 bp
+- Contig 1500 bp
+- Cumulative length
+- A, C, G, T, N counts

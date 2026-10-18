@@ -1,0 +1,44 @@
+---
+title: Alignment Conversion
+sidebar:
+  order: 4
+---
+
+{% screenshots
+   large="gui/align-convert-large.webp"
+   largeAlt="SEGUI Convert alignments page on a desktop with the tool form and file panel"
+   small="gui/align-convert-small.webp"
+   smallAlt="SEGUI Convert alignments page on a phone with the tool form" %}
+{% pin id="A" label="Alignments tab" large=[5, 25.6] small=[62.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[41.5, 13.5] small=[56.8, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 32.3] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+Convert alignment from one format to another.
+
+## Steps
+
+1. Select `Alignments` in the navigation bar {% ref id="A" /%}.
+2. Open `Convert alignments` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
+5. Select input format (optional). See the [supported file extensions](/docs/features/#supported-file-extensions) for the list of supported extensions for alignment files.
+6. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+7. Set the output format.
+8. Set the sort sequences (optional).
+9. Select the run button {% ref id="D" /%}, labeled `Convert`, to start the task.
+10. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
+
+### Output
+
+The app will create converted files in the output directory. The app will display the output in the output files panel once it's done.
+
+#### Output format
+
+The app supports FASTA, NEXUS, and PHYLIP output formats. By default, it writes non-interleaved output. To write interleaved output, select `Advanced options` and turn on `Set interleaved format`.
+
+### Sort sequences
+
+By default the app keep the original order of the sequence. To sort the sequences, turn on `Sort by sequence ID`. The app will sort the sequences based on the sequence ID. The sorting is in alphanumeric order.

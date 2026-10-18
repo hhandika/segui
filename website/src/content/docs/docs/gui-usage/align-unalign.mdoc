@@ -1,0 +1,33 @@
+---
+title: Unalign Alignments
+sidebar:
+  order: 7
+---
+
+{% screenshots
+   large="gui/align-unalign-large.webp"
+   largeAlt="SEGUI Unalign sequences page on a desktop with the tool form and file panel"
+   small="gui/align-unalign-small.webp"
+   smallAlt="SEGUI Unalign sequences page on a phone with the tool form" %}
+{% pin id="A" label="Alignments tab" large=[5, 25.6] small=[62.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[40.9, 13.5] small=[55.4, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+Remove alignment gaps to produce unaligned sequences, for example to realign them with a different aligner.
+
+## Steps
+
+1. Select `Alignments` in the navigation bar {% ref id="A" /%}.
+2. Open `Unalign sequences` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select the input format (optional) and the data type.
+5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+6. Turn on `Set interleaved format` to write interleaved FASTA (optional).
+7. Select the run button {% ref id="D" /%}, labeled `Unalign`, to start the task.
+
+## Output
+
+The app writes one FASTA file for each input alignment, named after the input file. Gap characters are removed from every sequence. The output is always FASTA because unaligned sequences cannot be stored in NEXUS or PHYLIP.

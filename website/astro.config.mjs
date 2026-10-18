@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwindcss from "@tailwindcss/vite";
+import markdoc from "@astrojs/markdoc";
 
 // https://astro.build/config
 export default defineConfig({
@@ -106,6 +107,7 @@ export default defineConfig({
         { label: "Privacy Policy", slug: "docs/privacy" },
       ],
     }),
+    markdoc(),
   ],
   vite: {
     plugins: [tailwindcss()],

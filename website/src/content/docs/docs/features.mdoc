@@ -1,0 +1,251 @@
+---
+title: Features
+sidebar:
+  order: 4
+---
+
+This page shows what each SEGUL feature does with your data. Each diagram uses a small example; the same rules apply to datasets with thousands of loci. Under each feature, the guide links open its step-by-step instructions for the GUI, CLI, and Python API, or say when an interface does not support it yet. The [Rust](/docs/api-usage/rust-api/) and [R](/docs/api-usage/r-api/) APIs use the SEGUL library directly.
+
+## Task Group
+
+SEGUL groups its features by the kind of input they take. In the GUI, each group is a button in the navigation bar or rail. In the CLI, each group is a command.
+
+{% taskgroups /%}
+
+The CLI splits the genomic group into three commands: `read` for FASTQ files, `contig` for FASTA contigs, and `maf` for Multiple Alignment Format (MAF) files. The GUI keeps all three in one group.
+
+### Alignments and standard sequence files
+
+Alignment tasks need **alignments**: every sequence in a file has the same length. Partition conversion is the exception and takes partition files, such as RAxML or NEXUS partitions. SEGUL checks only lengths, so it cannot detect misaligned sequences that happen to share a length.
+
+Sequence tasks take aligned or unaligned files and do not check lengths. The documentation calls these **standard sequence files**.
+
+{% alignedvsunaligned /%}
+
+## File Input
+
+SEGUL accepts many input files at once. Alignment Splitting is the exception: it takes one concatenated alignment.
+
+### Supported file extensions
+
+{% fileformats /%}
+
+:::note
+SEGUL supports relaxed PHYLIP, not strict PHYLIP. Strict PHYLIP limits sample names to 10 characters and splits sequences into blocks with spaces:
+
+```plaintext
+3 20
+Seq1      ATCGATCGAT ATCGATCGAT
+Seq2      ATCGATCGAT ATCGATCGAT
+Seq3      ATCGATCGAT ATCGATCGAT
+```
+
+Relaxed PHYLIP allows longer names and writes each sequence without spaces:
+
+```plaintext
+3 20
+genus_species_museumNo1    ATCGATCGATATCGATCGAT
+genus_species_museumNo2    ATCGATCGATATCGATCGAT
+genus_species_museumNo3    ATCGATCGATATCGATCGAT
+```
+
+:::
+
+## Alignment Task Groups
+
+### Alignment Concatenation
+
+Joins many alignments into one and writes a partition that records where each locus starts and ends. Sequences are matched by sample name, so a typo or inconsistent name leaves a sequence unmatched.
+
+{% guides feature="align-concat" /%}
+
+{% concatenation /%}
+
+{% aside type="tip" %}
+Use [Sequence ID Extraction](#sequence-id-extraction) to check names for typos before concatenating.
+{% /aside %}
+
+### Alignment Conversion
+
+Changes the file format of alignments.
+
+{% guides feature="align-convert" /%}
+
+{% conversion /%}
+
+### Alignment Distance
+
+Computes pairwise genetic distances between samples in each alignment. Optionally averages the distances within and between populations or species, using groups from sample names, a regular expression, or a group file, and writes all distances as long tables.
+
+{% guides feature="align-distance" /%}
+
+{% distance /%}
+
+### Alignment Filtering
+
+Keeps the alignments that meet a criterion and drops the rest.
+
+{% guides feature="align-filter" /%}
+
+{% filtering /%}
+
+### Alignment Partition Conversion
+
+Converts partitions between RAxML and NEXUS formats.
+
+{% guides feature="align-partition" /%}
+
+{% partitionconversion /%}
+
+### Alignment Splitting
+
+Splits a concatenated alignment back into separate loci using its partition.
+
+{% guides feature="align-split" /%}
+
+{% splitting /%}
+
+### Alignment Summary
+
+Computes summary statistics for a set of alignments at three levels: the whole dataset, each alignment, and each sample.
+
+{% guides feature="align-summary" /%}
+
+{% alignmentsummary /%}
+
+### Alignment Trimming
+
+Removes sites, not whole alignments, that have too much missing data or that fall below a count of parsimony-informative characters.
+
+{% guides feature="align-trim" /%}
+
+{% trimming /%}
+
+### Alignment Unalignment
+
+Removes the gaps from every aligned sequence, so you can align the sequences again with a different aligner or settings.
+
+{% guides feature="align-unalign" /%}
+
+{% unalignment /%}
+
+## Genomic Task Groups
+
+### Sequence Read and Contig Summary
+
+Both tasks compute summary statistics for genomic files: raw reads in FASTQ format and assembled contigs in FASTA format.
+
+{% guides feature="genomic-summary" /%}
+
+{% genomicsummary /%}
+
+### MAF Conversion
+
+Whole-genome aligners, such as Progressive Cactus and LASTZ with MULTIZ, write Multiple Alignment Format (MAF) files: blocks that align a stretch of a reference genome to other genomes. MAF conversion turns the blocks into alignments that phylogenetic software can read. With a BED file of loci, each block is clipped to every locus it overlaps, and blocks of the same locus are joined across files. Without a BED file, each block, or each reference chromosome, becomes its own alignment.
+
+{% guides feature="maf-convert" /%}
+
+{% mafconversion /%}
+
+### MAF Summary
+
+Reports the number of blocks, the alignment length, and how much of the reference genome each species covers, so you can check a whole-genome alignment before converting it.
+
+{% guides feature="maf-summary" /%}
+
+{% mafsummary /%}
+
+## Sequence Task Groups
+
+### Sequence ID Extraction
+
+Lists every unique sample name across your files.
+
+{% guides feature="sequence-id" /%}
+
+{% sequenceids /%}
+
+### Sequence ID Mapping
+
+Shows which samples are present in each file.
+
+{% guides feature="sequence-map" /%}
+
+{% sequenceids map=true /%}
+
+### Sequence ID Renaming
+
+Replaces sample names across all files using a table of original and new names.
+
+{% guides feature="sequence-rename" /%}
+
+{% renaming /%}
+
+### Sequence Addition
+
+Adds sequences to existing files that share the same file name, such as new samples to a set of loci, or collects every sequence into one file. The output is unaligned, ready to realign.
+
+{% guides feature="sequence-add" /%}
+
+{% sequenceaddition /%}
+
+### Sequence Extraction
+
+Keeps only the sequences you select by ID, by a list in a text file, or by a regular expression.
+
+{% guides feature="sequence-extract" /%}
+
+{% rowselection
+   id="sequence-extract"
+   title="Sequence extraction"
+   caption="Extraction keeps the selected sequences. Removal is its opposite."
+   rule="Keep IDs: seq1; seq3"
+   verb="extract"
+   rows=["AGTCCCCATA", "AGTCCGCATA", "AGTACGCTT-", "GGTACGTTTA"]
+   keep=[0, 2] /%}
+
+### Sequence Filtering
+
+Drops single sequences that fail a criterion, such as too few non-gap sites or too many gaps, and keeps the rest of each file. To drop whole alignments instead, use [Alignment Filtering](#alignment-filtering).
+
+{% guides feature="sequence-filter" /%}
+
+{% rowselection
+   id="sequence-filter"
+   title="Sequence filtering"
+   caption="Each sequence is checked on its own, so a file keeps every sequence that passes."
+   rule="Minimum length: 6 non-gap sites"
+   verb="filter"
+   rows=["AGTCCCCATA", "AGTC------", "AGTACGCTT-", "GG--------"]
+   keep=[0, 2] /%}
+
+### Sequence Removal
+
+Deletes the sequences you select by ID or by a regular expression. Removing a few sequences is faster than extracting the rest.
+
+{% guides feature="sequence-remove" /%}
+
+{% rowselection
+   id="sequence-remove"
+   title="Sequence removal"
+   caption="Removal is the opposite of extraction."
+   rule="Remove IDs: seq2"
+   verb="remove"
+   rows=["AGTCCCCATA", "AGTCCGCATA", "AGTACGCTT-", "GGTACGTTTA"]
+   keep=[0, 2, 3] /%}
+
+### Sequence Translation
+
+Translates DNA sequences to amino acids.
+
+{% guides feature="sequence-translate" /%}
+
+{% translation /%}
+
+### Sequence Transposition
+
+Turns locus alignments into one file per sample. Each file holds one sequence for every locus where the sample is present, named after that locus, with gaps and missing data removed.
+
+{% guides feature="sequence-transpose" /%}
+
+{% transposition /%}

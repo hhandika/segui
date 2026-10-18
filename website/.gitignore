@@ -22,3 +22,7 @@ bun-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+build
+
+.docusaurus/

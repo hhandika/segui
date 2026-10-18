@@ -1,0 +1,44 @@
+---
+title: Alignment Trimming
+sidebar:
+  order: 7
+---
+
+{% screenshots
+   large="gui/align-trim-large.webp"
+   largeAlt="SEGUI Trim alignments page on a desktop with the tool form and file panel"
+   small="gui/align-trim-small.webp"
+   smallAlt="SEGUI Trim alignments page on a phone with the tool form" %}
+{% pin id="A" label="Alignments tab" large=[5, 25.6] small=[62.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[38.3, 13.5] small=[47.7, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+Trim alignment sites based on the proportion of missing data or the number of parsimony informative sites.
+
+## Steps
+
+1. Select `Alignments` in the navigation bar {% ref id="A" /%}.
+2. Open `Trim alignments` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select the input format (optional) and the data type.
+5. Select the trimming method and enter its value.
+6. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+7. Select the output format. Turn on `Set interleaved format` to write interleaved output (optional).
+8. Select the run button {% ref id="D" /%}, labeled `Trim`, to start the task.
+
+## Parameters
+
+### Maximal missing data per site
+
+The app keeps sites whose proportion of missing data (`-` or `?`) is at most the value. The input is a decimal number between 0 and 1. For example, 0.5 removes sites where more than half of the samples have missing data.
+
+### Parsimony informative sites
+
+The app keeps sites with at least the given number of parsimony informative characters. The input is a whole number, such as 2.
+
+## Output
+
+The trimmed alignments are written to a `trimmed_alignments` folder in the output directory. The app also writes `trimming_summary.csv`, which lists the number of sites in each alignment before and after trimming. Alignments with no remaining sites are not written.
