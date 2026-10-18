@@ -12,6 +12,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/home_features.dart';
+import 'package:segui/services/io/archive_input.dart';
 import 'package:segui/services/io/directory.dart';
 import 'package:segui/services/io/drop.dart';
 import 'package:segui/services/io/input.dart';
@@ -196,9 +197,11 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
 
   bool get _canSelectDirectory => widget.allowDirectorySelection;
 
-  /// Archives and the SEGUI folder hold many files, so they serve
-  /// pickers that take many files.
-  bool get _canSelectArchive => widget.allowMultiple;
+  /// Archives hold many files, so they serve pickers that take many
+  /// files. Raw reads stay gzipped and are added as regular files.
+  bool get _canSelectArchive {
+    return widget.allowMultiple && acceptsArchiveInput(widget.xTypeGroup);
+  }
 
   bool get _canSelectSeguiFolder {
     return Platform.isIOS && widget.allowDirectorySelection;

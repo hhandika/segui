@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:segui/services/io/directory.dart';
+import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input_cache.dart';
 import 'package:segui/src/rust/api/archive.dart';
 
@@ -22,6 +23,13 @@ bool isArchivePath(String path) {
   return name.endsWith('.zip') ||
       name.endsWith('.tar.gz') ||
       name.endsWith('.tgz');
+}
+
+/// Whether files of [type] can come from an archive. SEGUL reads gzipped
+/// raw reads as they are, so a `.gz` read file must not be mistaken for an
+/// archive; raw reads are added as regular files instead.
+bool acceptsArchiveInput(XTypeGroup type) {
+  return type != genomicRawReadTypeGroup;
 }
 
 /// Extracts archives into the input cache, so one picked file can carry a

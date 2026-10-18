@@ -57,6 +57,13 @@ void main() {
     });
   });
 
+  group('Archive input', () {
+    test('Raw reads are added as regular files, not extracted', () {
+      expect(acceptsArchiveInput(genomicRawReadTypeGroup), isFalse);
+      expect(acceptsArchiveInput(sequenceTypeGroup), isTrue);
+    });
+  });
+
   group('Shared files', () {
     test('Desktop apps have no shared files', () {
       final container = ProviderContainer();
@@ -94,6 +101,34 @@ void main() {
       expect(find.text('Open archive'), findsOneWidget);
       expect(find.text('SEGUI folder'),
           Platform.isIOS ? findsOneWidget : findsNothing);
+    });
+
+    testWidgets('Raw read pickers do not offer an archive', (tester) async {
+      tester.view.physicalSize = const Size(1200, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: SeguiTheme.lightTheme(),
+            home: const Scaffold(
+              body: SharedFilePicker(
+                label: 'Raw reads',
+                allowMultiple: true,
+                xTypeGroup: genomicRawReadTypeGroup,
+                hasSecondaryPicker: false,
+                task: SupportedTask.genomicRawReadSummary,
+                allowDirectorySelection: true,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Browse files'), findsOneWidget);
+      expect(find.text('Browse folder'), findsOneWidget);
+      expect(find.text('Open archive'), findsNothing);
     });
 
     testWidgets('Single-file pickers do not offer an archive', (tester) async {

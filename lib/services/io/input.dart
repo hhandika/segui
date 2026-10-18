@@ -153,6 +153,12 @@ class FileInputServices {
 
   /// Extracts a picked zip or tar.gz archive and adds its matching files.
   Future<InputAddResult> addArchive(List<File> currentFiles) async {
+    if (!acceptsArchiveInput(allowedExtension)) {
+      throw InputPickException(
+        '${allowedExtension.label} files are read compressed, so archives '
+        'are not extracted. Use Browse files or Browse folder.',
+      );
+    }
     final List<XFile>? files = await _pickArchive();
     if (files == null) {
       return _nothingSkipped;
@@ -189,7 +195,7 @@ class FileInputServices {
       final List<XFile> matches = [];
       int skipped = 0;
       for (final String path in paths) {
-        if (isArchivePath(path)) {
+        if (isArchivePath(path) && acceptsArchiveInput(allowedExtension)) {
           final files = await ArchiveInputServices(cache)
               .extract(File(path), allowedExtension);
           matches.addAll(files.map((e) => XFile(e.path)));

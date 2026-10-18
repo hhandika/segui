@@ -89,7 +89,8 @@ class InputGuideline {
 const InputGuideline _archiveGuideline = InputGuideline(
   title: 'Open archive',
   description: 'Pick one .zip or .tar.gz file. SEGUI extracts it and keeps '
-      'the matching files.',
+      'the matching files. Not for raw reads: add .fastq.gz files as files '
+      'or a folder.',
   icon: Icons.folder_zip_outlined,
 );
 
@@ -126,7 +127,8 @@ List<InputGuideline> inputGuidelinesFor(InputPlatform platform) {
         InputGuideline(
           title: 'Open archive',
           description: 'For the largest datasets. Only one file is copied, '
-              'then SEGUI extracts it.',
+              'then SEGUI extracts it. Not for raw reads: add .fastq.gz '
+              'files as files or a folder.',
           icon: Icons.folder_zip_outlined,
         ),
         InputGuideline(
