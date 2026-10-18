@@ -71,6 +71,10 @@ abstract final class SeguiControlSize {
 
   /// Tallest tool search suggestions view on larger screens.
   static const double searchViewMax = 520;
+
+  /// Lane beside scrolling content that holds its scrollbar, as wide as
+  /// a hovered Material scrollbar, so the thumb never covers content.
+  static const double scrollbarGutter = SeguiSpacing.lg;
 }
 
 /// Spacing inside tool forms. Fields in a [FormCard] sit [fieldGap] apart,

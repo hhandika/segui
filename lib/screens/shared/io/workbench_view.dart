@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/screens/shared/io/inspector_view.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/workbench.dart';
@@ -8,8 +9,8 @@ import 'package:segui/styles/design_tokens.dart';
 /// Compatible tools listed before the rest are folded away.
 const int _visibleToolCount = 4;
 
-/// File summary and run settings, then the next steps after a run:
-/// workflow steps and other tools that take the run's data.
+/// File summary, run settings, and file inspector, then the next steps
+/// after a run: workflow steps and other tools that take the run's data.
 class WorkbenchView extends ConsumerWidget {
   const WorkbenchView({super.key});
 
@@ -19,8 +20,12 @@ class WorkbenchView extends ConsumerWidget {
     final WorkbenchSuggestions? suggestions =
         ref.watch(workbenchSuggestionsProvider);
     return ListView(
-      padding:
-          const EdgeInsets.only(top: SeguiSpacing.xl, bottom: SeguiSpacing.md),
+      // The scrollbar runs in the right gutter, clear of the cards.
+      padding: const EdgeInsets.only(
+        top: SeguiSpacing.xl,
+        bottom: SeguiSpacing.md,
+        right: SeguiControlSize.scrollbarGutter,
+      ),
       children: [
         const WorkbenchSectionTitle(title: 'Summary'),
         const FileSummaryTiles(),
@@ -28,6 +33,8 @@ class WorkbenchView extends ConsumerWidget {
           const SizedBox(height: SeguiSpacing.md),
           RunParametersCard(run: run),
         ],
+        const SizedBox(height: SeguiSpacing.md),
+        const FileInspectorCard(),
         if (suggestions == null) ...[
           const SizedBox(height: SeguiSpacing.xl),
           const NextStepsHint(),

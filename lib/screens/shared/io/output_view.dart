@@ -12,7 +12,6 @@ import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/services/io/export.dart';
-import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/file_tree.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/output.dart';
@@ -251,7 +250,6 @@ class OutputFileTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FileAssociation association = FileAssociation(file: file);
     return ListTile(
       minVerticalPadding: SeguiSpacing.xxs,
       leading: FileIconTile(icon: FileIcon(file: file)),
@@ -274,16 +272,7 @@ class OutputFileTiles extends StatelessWidget {
             ),
       subtitle: FileIOSubtitle(file: file),
       trailing: OutputActionMenu(file: file),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => FileView(
-              file: file,
-              type: association.commonFileTYpe,
-            ),
-          ),
-        );
-      },
+      onTap: () => openFileView(context, file),
     );
   }
 }

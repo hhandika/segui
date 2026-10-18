@@ -131,7 +131,11 @@ On desktop platforms, the application saves the output in the user's chosen dire
 
 ## Workbench and Next Steps
 
-The `Workbench` tab in the file panel summarizes the input and output files. After a run finishes, it also lists:
+The `Workbench` tab in the file panel summarizes the input and output files.
+
+Use the **Inspector** card to check a single file without leaving the tool. Choose `Input` or `Output`, then pick a file from the searchable list. The inspector shows the file's format, content, and size, plus counts that match its content: sequences, sites, and data type for alignments; the number of partitions for partition files; rows and columns for tables; and lines for text files. Select `Open` to view the file, or `View all sequences` to open the alignment viewer on every FASTA, NEXUS, and PHYLIP file in the list, so you can step through them without picking each one. Before a run, the inspector lists the input files; after a run, it lists the new output files.
+
+After a run finishes, the workbench also lists:
 
 - **Parameters**: the settings used by the run.
 - **Suggested workflows**: each common workflow from the home screen that includes the tool, with its progress. Select `Continue` to open the next step.
@@ -164,7 +168,7 @@ The app can directly view the supported file types. The content will be displaye
 
 ### Alignment viewer
 
-FASTA, NEXUS, and PHYLIP files open in the alignment viewer. It draws only the part of the alignment on screen, so alignments of 10,000 sites or more scroll smoothly. Taxon names stay pinned on the left and site numbers on the top.
+FASTA, NEXUS, and PHYLIP files open in the alignment viewer. NEXUS partition files, which hold only a `sets` block of charsets, open as text instead, and the viewer leaves them out when it switches between files. It draws only the part of the alignment on screen, so alignments of 10,000 sites or more scroll smoothly. Taxon names stay pinned on the left and site numbers on the top.
 
 - **Switch files**: when you open a file from the input or output list, the viewer can move between the other alignment files in that list without going back. The file switcher sits above the toolbar, next to the gull. Use its arrows, press `Alt` + `↑` or `↓` (`Option` on macOS), or click the file name to search for a file. Files are listed in natural order, so `uce-2` comes before `uce-10`. Select the list button at the end of the switcher to show every file beside the viewer. Filter it by name, and use the sort button in the filter box to sort by name or size, in either direction. On phones, the list opens as a sheet. Zoom, colors, chunk size, and the name panel width stay the same when you switch. Selected sequences and the current chunk reset.
 

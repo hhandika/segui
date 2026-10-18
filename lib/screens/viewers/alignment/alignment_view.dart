@@ -314,8 +314,11 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
             : SeguiAlignmentLayout.nameColumn);
     return CustomScrollView(
       // The grid and chunk list scroll on their own. This only scrolls the
-      // header away when the window is too short for it and the grid.
+      // header away when the window is too short for it and the grid, so it
+      // draws no scrollbar over the grid's own.
       primary: false,
+      scrollBehavior:
+          ScrollConfiguration.of(context).copyWith(scrollbars: false),
       slivers: [
         SliverToBoxAdapter(
           // The gull stands on the toolbar's top edge near its right corner
@@ -432,6 +435,10 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                                         cellSize: settings.cellSize,
                                       ),
                                     ),
+                                    // Above the grid's scrollbar lane.
+                                    const SizedBox(
+                                      width: SeguiControlSize.scrollbarGutter,
+                                    ),
                                   ],
                                 ),
                                 const Divider(height: SeguiStroke.thin),
@@ -440,22 +447,30 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
-                                      AlignmentNames(
-                                        names: data.names,
-                                        rowOrder: order,
-                                        selectedRows: rowSelection.rows,
-                                        controller: _vertical,
-                                        rowHeight: settings.rowHeight,
-                                        width: nameWidth,
-                                        selection: _selection,
-                                        onRowTap: (row,
-                                                {required extend,
-                                                required toggle}) =>
-                                            _rowSelectionNotifier.tap(
-                                          row,
-                                          order,
-                                          extend: extend,
-                                          toggle: toggle,
+                                      // Ends level with the grid, above
+                                      // its scrollbar lane.
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom:
+                                              SeguiControlSize.scrollbarGutter,
+                                        ),
+                                        child: AlignmentNames(
+                                          names: data.names,
+                                          rowOrder: order,
+                                          selectedRows: rowSelection.rows,
+                                          controller: _vertical,
+                                          rowHeight: settings.rowHeight,
+                                          width: nameWidth,
+                                          selection: _selection,
+                                          onRowTap: (row,
+                                                  {required extend,
+                                                  required toggle}) =>
+                                              _rowSelectionNotifier.tap(
+                                            row,
+                                            order,
+                                            extend: extend,
+                                            toggle: toggle,
+                                          ),
                                         ),
                                       ),
                                       AlignmentNameDivider(

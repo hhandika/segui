@@ -100,52 +100,60 @@ class AlignmentGrid extends StatelessWidget {
           controller: horizontalController,
           thumbVisibility: true,
           notificationPredicate: (n) => n.metrics.axis == Axis.horizontal,
-          child: TwoDimensionalScrollable(
-            diagonalDragBehavior: DiagonalDragBehavior.free,
-            horizontalDetails:
-                ScrollableDetails.horizontal(controller: horizontalController),
-            verticalDetails:
-                ScrollableDetails.vertical(controller: verticalController),
-            viewportBuilder: (context, verticalOffset, horizontalOffset) {
-              return Listener(
-                onPointerSignal: _onPointerSignal,
-                child: MouseRegion(
-                  onHover: (event) => hover.value = _cellAt(
-                    event.localPosition,
-                    horizontalOffset.pixels,
-                    verticalOffset.pixels,
-                  ),
-                  onExit: (_) => hover.value = null,
-                  child: GestureDetector(
-                    onTapUp: (details) {
-                      final AlignmentCell? cell = _cellAt(
-                        details.localPosition,
-                        horizontalOffset.pixels,
-                        verticalOffset.pixels,
-                      );
-                      selection.value = cell == selection.value ? null : cell;
-                    },
-                    child: _AlignmentGridViewport(
-                      horizontalOffset: horizontalOffset,
-                      verticalOffset: verticalOffset,
-                      data: data,
-                      rowOrder: rowOrder,
-                      selectedRows: selectedRows,
-                      window: window,
-                      cellSize: cellSize,
-                      rowHeight: rowHeight,
-                      colorMode: colorMode,
-                      showLetters: showLetters,
-                      chunkSize: chunkSize,
-                      showChunkBoundaries: showChunkBoundaries,
-                      devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
-                      style: _GridStyle.of(theme, data.isDna, colorMode),
-                      selection: selection,
+          // The scrollbars run in lanes right of and below the cells.
+          child: Padding(
+            padding: const EdgeInsets.only(
+              right: SeguiControlSize.scrollbarGutter,
+              bottom: SeguiControlSize.scrollbarGutter,
+            ),
+            child: TwoDimensionalScrollable(
+              diagonalDragBehavior: DiagonalDragBehavior.free,
+              horizontalDetails: ScrollableDetails.horizontal(
+                  controller: horizontalController),
+              verticalDetails:
+                  ScrollableDetails.vertical(controller: verticalController),
+              viewportBuilder: (context, verticalOffset, horizontalOffset) {
+                return Listener(
+                  onPointerSignal: _onPointerSignal,
+                  child: MouseRegion(
+                    onHover: (event) => hover.value = _cellAt(
+                      event.localPosition,
+                      horizontalOffset.pixels,
+                      verticalOffset.pixels,
+                    ),
+                    onExit: (_) => hover.value = null,
+                    child: GestureDetector(
+                      onTapUp: (details) {
+                        final AlignmentCell? cell = _cellAt(
+                          details.localPosition,
+                          horizontalOffset.pixels,
+                          verticalOffset.pixels,
+                        );
+                        selection.value = cell == selection.value ? null : cell;
+                      },
+                      child: _AlignmentGridViewport(
+                        horizontalOffset: horizontalOffset,
+                        verticalOffset: verticalOffset,
+                        data: data,
+                        rowOrder: rowOrder,
+                        selectedRows: selectedRows,
+                        window: window,
+                        cellSize: cellSize,
+                        rowHeight: rowHeight,
+                        colorMode: colorMode,
+                        showLetters: showLetters,
+                        chunkSize: chunkSize,
+                        showChunkBoundaries: showChunkBoundaries,
+                        devicePixelRatio:
+                            MediaQuery.devicePixelRatioOf(context),
+                        style: _GridStyle.of(theme, data.isDna, colorMode),
+                        selection: selection,
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
