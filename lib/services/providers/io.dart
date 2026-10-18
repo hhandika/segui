@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/io/input.dart';
+import 'package:segui/services/io/input_cache.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/io/mobile_io.dart';
 import 'package:segui/services/io/output.dart';
 import 'package:segui/services/io/summary.dart';
 
@@ -28,6 +30,7 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
       }).toList();
       return files;
     });
+    _pruneCache();
   }
 
   Future<void> addMoreFiles(
@@ -43,6 +46,7 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
       ));
       return files;
     });
+    _pruneCache();
   }
 
   /// Replace the files of [xTypeGroup]'s type, keeping files of other types.
@@ -57,6 +61,7 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
       ));
       return files;
     });
+    _pruneCache();
   }
 
   /// Remove the files of [type], keeping files of other types.
@@ -65,6 +70,7 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
     state = await AsyncValue.guard(() async {
       return [...?state.value]..removeWhere((e) => e.type == type);
     });
+    _pruneCache();
   }
 
   /// Remove the files at [paths] from the list. The files stay on disk.
@@ -73,6 +79,7 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
     state = await AsyncValue.guard(() async {
       return [...?state.value]..removeWhere((e) => paths.contains(e.file.path));
     });
+    _pruneCache();
   }
 
   Future<void> removeFromList(SegulInputFile file) async {
@@ -85,6 +92,7 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
       files.remove(file);
       return files;
     });
+    _pruneCache();
   }
 
   Future<void> clearAll() async {
@@ -92,6 +100,33 @@ class FileInput extends AsyncNotifier<List<SegulInputFile>> {
     state = await AsyncValue.guard(() async {
       return [];
     });
+    _pruneCache();
+  }
+
+  /// Deletes cached copies of files that are no longer inputs. When no
+  /// inputs are left, also ends access to folders picked on iOS.
+  void _pruneCache() {
+    if (state.hasError) {
+      return;
+    }
+    final Set<String> keep = {
+      for (final input in state.value ?? const <SegulInputFile>[])
+        input.file.path,
+    };
+    unawaited(_pruneCacheKeeping(keep));
+  }
+
+  Future<void> _pruneCacheKeeping(Set<String> keep) async {
+    try {
+      final cache = await InputCacheServices.create();
+      await cache.prune(keep);
+      if (keep.isEmpty && Platform.isIOS) {
+        await MobileIoChannel.instance.releaseFolders();
+      }
+    } catch (_) {
+      // Cleanup is best effort and must never fail an input change, even
+      // without platform paths, as in tests. The next change retries it.
+    }
   }
 }
 
@@ -116,6 +151,40 @@ class FilePanelViewSelection extends Notifier<FilePanelView> {
 
   void show(FilePanelView view) {
     state = view;
+  }
+}
+
+/// The number of files shared to SEGUI from other apps that no tool has
+/// taken yet.
+final sharedInputProvider = NotifierProvider<SharedInput, int>(SharedInput.new);
+
+class SharedInput extends Notifier<int> {
+  @override
+  int build() {
+    if (!MobileIoChannel.isSupported) {
+      return 0;
+    }
+    final channel = MobileIoChannel.instance;
+    final subscription = channel.onShared.listen((count) => state = count);
+    ref.onDispose(subscription.cancel);
+    unawaited(_loadPending(channel));
+    return 0;
+  }
+
+  /// Marks the shared files as taken by a tool.
+  void clear() {
+    state = 0;
+  }
+
+  Future<void> _loadPending(MobileIoChannel channel) async {
+    try {
+      final int count = await channel.pendingSharedCount();
+      if (ref.mounted) {
+        state = count;
+      }
+    } on Exception {
+      // No shared files when the native channel is unavailable.
+    }
   }
 }
 

@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
@@ -14,6 +16,7 @@ import 'package:segui/services/io/directory.dart';
 import 'package:segui/services/io/drop.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/io/mobile_io.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -135,12 +138,17 @@ class SharedFilePicker extends ConsumerStatefulWidget {
   SharedFilePickerState createState() => SharedFilePickerState();
 }
 
+/// Where a file picker gets its files.
+enum InputSource { files, folder, archive, seguiFolder, shared }
+
 class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
   bool _isLoading = false;
+  InputCopyProgress? _progress;
 
   @override
   Widget build(BuildContext context) {
     final type = matchTypeByXTypeGroup(widget.xTypeGroup);
+    final int sharedCount = ref.watch(sharedInputProvider);
     return ref.watch(fileInputProvider).when(
           data: (data) {
             final files = data.where((e) => e.type == type).toList();
@@ -152,10 +160,12 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                     compact: !widget.allowMultiple,
                     icon: Icons.upload_file_outlined,
                     title: widget.label,
-                    hint: _dropHint,
+                    hint: _progressLabel ?? _dropHint(sharedCount),
                     isDragging: isDragging,
                     isLoading: _isLoading,
-                    actions: _emptyActions,
+                    progress: _progress?.fraction,
+                    onCancel: _cancelAction,
+                    actions: _emptyActions(sharedCount),
                   );
                 }
                 return PickerSelectionCard(
@@ -168,11 +178,13 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                     style: Theme.of(context).textTheme.labelLarge,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: _selectedHint,
+                  subtitle: _progressLabel ?? _selectedHint(sharedCount),
                   isDragging: isDragging,
                   isLoading: _isLoading,
+                  progress: _progress?.fraction,
+                  onCancel: _cancelAction,
                   sheetTitle: _selectionLabel(files),
-                  actions: _selectedActions(files),
+                  actions: _selectedActions(files, sharedCount),
                 );
               },
             );
@@ -182,13 +194,45 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
         );
   }
 
-  bool get _canSelectDirectory {
-    return widget.allowDirectorySelection && isFileDropSupported;
+  bool get _canSelectDirectory => widget.allowDirectorySelection;
+
+  /// Archives and the SEGUI folder hold many files, so they serve
+  /// pickers that take many files.
+  bool get _canSelectArchive => widget.allowMultiple;
+
+  bool get _canSelectSeguiFolder {
+    return Platform.isIOS && widget.allowDirectorySelection;
   }
 
-  String get _dropHint {
+  /// Only an Android folder copy reports progress and can stop.
+  VoidCallback? get _cancelAction {
+    if (_progress == null || _progress!.isCounting || !Platform.isAndroid) {
+      return null;
+    }
+    return () => MobileIoChannel.instance.cancelCopy();
+  }
+
+  String? get _progressLabel {
+    final InputCopyProgress? progress = _progress;
+    if (!_isLoading || progress == null) {
+      return null;
+    }
+    if (progress.isCounting) {
+      return 'Copying files into SEGUI…';
+    }
+    final format = NumberFormat.decimalPattern();
+    return 'Copying ${format.format(progress.copied)} / '
+        '${format.format(progress.total)}';
+  }
+
+  String _dropHint(int sharedCount) {
+    if (sharedCount > 0) {
+      return _sharedLabel(sharedCount);
+    }
     if (!isFileDropSupported) {
-      return '${widget.xTypeGroup.label} files';
+      return _canSelectArchive
+          ? '${widget.xTypeGroup.label} files, a folder, or an archive'
+          : '${widget.xTypeGroup.label} files';
     }
     if (!widget.allowMultiple) {
       return 'Drop a file here, or browse.';
@@ -198,7 +242,10 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
         : 'Drop files here, or browse.';
   }
 
-  String get _selectedHint {
+  String _selectedHint(int sharedCount) {
+    if (sharedCount > 0) {
+      return _sharedLabel(sharedCount);
+    }
     if (!isFileDropSupported) {
       return '${widget.xTypeGroup.label} files';
     }
@@ -207,23 +254,48 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
         : 'Drop a file to replace it';
   }
 
-  List<PickerAction> get _emptyActions {
+  String _sharedLabel(int count) {
+    return count == 1 ? '1 shared file ready' : '$count shared files ready';
+  }
+
+  List<PickerAction> _emptyActions(int sharedCount) {
     return [
+      if (sharedCount > 0)
+        PickerAction(
+          label: 'Use shared files',
+          icon: Icons.move_to_inbox_outlined,
+          onSelected: () => _addFrom(const [], InputSource.shared),
+        ),
       PickerAction(
         label: widget.allowMultiple ? 'Browse files' : 'Browse file',
         icon: Icons.note_add_outlined,
-        onSelected: () => _addFiles(isDir: false),
+        onSelected: () => _addFiles(InputSource.files),
       ),
       if (_canSelectDirectory)
         PickerAction(
           label: 'Browse folder',
           icon: Icons.create_new_folder_outlined,
-          onSelected: () => _addFiles(isDir: true),
+          onSelected: () => _addFiles(InputSource.folder),
+        ),
+      if (_canSelectArchive)
+        PickerAction(
+          label: 'Open archive',
+          icon: Icons.folder_zip_outlined,
+          onSelected: () => _addFrom(const [], InputSource.archive),
+        ),
+      if (_canSelectSeguiFolder)
+        PickerAction(
+          label: 'SEGUI folder',
+          icon: Icons.snippet_folder_outlined,
+          onSelected: () => _addFrom(const [], InputSource.seguiFolder),
         ),
     ];
   }
 
-  List<PickerAction> _selectedActions(List<SegulInputFile> files) {
+  List<PickerAction> _selectedActions(
+    List<SegulInputFile> files,
+    int sharedCount,
+  ) {
     final type = matchTypeByXTypeGroup(widget.xTypeGroup);
     final notifier = ref.read(fileInputProvider.notifier);
     if (!widget.allowMultiple) {
@@ -242,16 +314,34 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
       ];
     }
     return [
+      if (sharedCount > 0)
+        PickerAction(
+          label: 'Use shared files',
+          icon: Icons.move_to_inbox_outlined,
+          onSelected: () => _addFrom(files, InputSource.shared),
+        ),
       PickerAction(
         label: 'Add files',
         icon: Icons.note_add_outlined,
-        onSelected: () => _addMoreFiles(files, isDir: false),
+        onSelected: () => _addFrom(files, InputSource.files),
       ),
       if (_canSelectDirectory)
         PickerAction(
           label: 'Add folder',
           icon: Icons.create_new_folder_outlined,
-          onSelected: () => _addMoreFiles(files, isDir: true),
+          onSelected: () => _addFrom(files, InputSource.folder),
+        ),
+      if (_canSelectArchive)
+        PickerAction(
+          label: 'Add archive',
+          icon: Icons.folder_zip_outlined,
+          onSelected: () => _addFrom(files, InputSource.archive),
+        ),
+      if (_canSelectSeguiFolder)
+        PickerAction(
+          label: 'Add from SEGUI folder',
+          icon: Icons.snippet_folder_outlined,
+          onSelected: () => _addFrom(files, InputSource.seguiFolder),
         ),
       PickerAction(
         label: 'Clear files',
@@ -262,20 +352,21 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     ];
   }
 
-  Future<void> _addFiles({required bool isDir}) async {
+  /// Starts a new selection from [source], which replaces all inputs
+  /// unless other pickers share them.
+  Future<void> _addFiles(InputSource source) async {
     if (widget.hasSecondaryPicker) {
       // A new selection would also clear the files of other pickers.
-      await _addMoreFiles(const [], isDir: isDir);
+      await _addFrom(const [], source);
       return;
     }
     _startLoading();
     try {
       final selection = _getFileSelection();
-      if (isDir) {
-        await selection.addDirectory();
-      } else {
-        await selection.selectFiles();
-      }
+      final InputAddResult result = source == InputSource.folder
+          ? await selection.addDirectory()
+          : await selection.selectFiles();
+      _showSkipped(result);
     } catch (e) {
       _showError(e.toString());
     }
@@ -283,23 +374,38 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     _stopLoading();
   }
 
-  Future<void> _addMoreFiles(List<SegulInputFile> currentFiles,
-      {required bool isDir}) async {
+  /// Adds files from [source] to [currentFiles].
+  Future<void> _addFrom(
+    List<SegulInputFile> currentFiles,
+    InputSource source,
+  ) async {
     _startLoading();
     final selection = _getFileSelection();
     final files = currentFiles.map((e) => e.file).toList();
     try {
-      int duplicates = 0;
-      if (isDir) {
-        duplicates = await selection.addMoreDirectory(files);
-      } else {
-        duplicates = await selection.addMoreFiles(files);
-      }
-      _showDuplicates(duplicates);
+      final InputAddResult result = switch (source) {
+        InputSource.files => await selection.addMoreFiles(files),
+        InputSource.folder => await selection.addMoreDirectory(files),
+        InputSource.archive => await selection.addArchive(files),
+        InputSource.seguiFolder => await selection.addSeguiFolder(files),
+        InputSource.shared => await _addShared(selection, files),
+      };
+      _showSkipped(result);
     } catch (e) {
       _showError(e.toString());
     }
     _stopLoading();
+  }
+
+  Future<InputAddResult> _addShared(
+    FileInputServices selection,
+    List<File> files,
+  ) async {
+    try {
+      return await selection.addSharedFiles(files);
+    } finally {
+      ref.read(sharedInputProvider.notifier).clear();
+    }
   }
 
   Future<void> _replaceFile() async {
@@ -341,6 +447,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
       ref,
       allowedExtension: widget.xTypeGroup,
       allowMultiple: widget.allowMultiple,
+      onProgress: _setProgress,
     );
     return selection;
   }
@@ -357,7 +464,26 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
   void _startLoading() {
     setState(() {
       _isLoading = true;
+      _progress = null;
     });
+  }
+
+  void _setProgress(InputCopyProgress progress) {
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _progress = progress;
+    });
+  }
+
+  void _showSkipped(InputAddResult result) {
+    if (result.skipped > 0) {
+      _showError('Skipping ${result.skipped} file'
+          '${result.skipped > 1 ? 's' : ''} in other formats.');
+    } else {
+      _showDuplicates(result.duplicates);
+    }
   }
 
   void _showDuplicates(int duplicates) {
@@ -382,6 +508,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     }
     setState(() {
       _isLoading = false;
+      _progress = null;
     });
   }
 }
@@ -467,6 +594,8 @@ class PickerDropZone extends StatelessWidget {
     this.compact = false,
     this.isDragging = false,
     this.isLoading = false,
+    this.progress,
+    this.onCancel,
   });
 
   final IconData icon;
@@ -476,6 +605,12 @@ class PickerDropZone extends StatelessWidget {
   final bool compact;
   final bool isDragging;
   final bool isLoading;
+
+  /// Fraction of files copied, or null while the total is unknown.
+  final double? progress;
+
+  /// Stops the running copy, when it can stop.
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -500,6 +635,8 @@ class PickerDropZone extends StatelessWidget {
                   title: isDragging ? 'Release to add' : title,
                   hint: hint,
                   isLoading: isLoading,
+                  progress: progress,
+                  onCancel: onCancel,
                   onBrowse: () => _onTap(context),
                 )
               : PickerDropZoneColumn(
@@ -507,6 +644,8 @@ class PickerDropZone extends StatelessWidget {
                   title: isDragging ? 'Release to add' : title,
                   hint: hint,
                   isLoading: isLoading,
+                  progress: progress,
+                  onCancel: onCancel,
                   actions: actions,
                 ),
         ),
@@ -532,6 +671,8 @@ class PickerDropZoneColumn extends StatelessWidget {
     required this.hint,
     required this.isLoading,
     required this.actions,
+    this.progress,
+    this.onCancel,
   });
 
   final IconData icon;
@@ -539,6 +680,8 @@ class PickerDropZoneColumn extends StatelessWidget {
   final String hint;
   final bool isLoading;
   final List<PickerAction> actions;
+  final double? progress;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -567,10 +710,8 @@ class PickerDropZoneColumn extends StatelessWidget {
           ),
           const SizedBox(height: SeguiSpacing.lg),
           if (isLoading)
-            const SizedBox.square(
-              dimension: 24,
-              child:
-                  CircularProgressIndicator(strokeWidth: SeguiStroke.regular),
+            Center(
+              child: PickerProgress(value: progress, onCancel: onCancel),
             )
           else
             Wrap(
@@ -607,6 +748,8 @@ class PickerDropZoneRow extends StatelessWidget {
     required this.hint,
     required this.isLoading,
     required this.onBrowse,
+    this.progress,
+    this.onCancel,
   });
 
   final IconData icon;
@@ -614,6 +757,8 @@ class PickerDropZoneRow extends StatelessWidget {
   final String hint;
   final bool isLoading;
   final VoidCallback onBrowse;
+  final double? progress;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -630,7 +775,7 @@ class PickerDropZoneRow extends StatelessWidget {
           ),
           const SizedBox(width: SeguiSpacing.md),
           isLoading
-              ? const PickerProgress()
+              ? PickerProgress(value: progress, onCancel: onCancel)
               : FilledButton.tonal(
                   style: FilledButton.styleFrom(
                     visualDensity: VisualDensity.compact,
@@ -656,6 +801,8 @@ class PickerSelectionCard extends StatelessWidget {
     required this.actions,
     this.isDragging = false,
     this.isLoading = false,
+    this.progress,
+    this.onCancel,
   });
 
   final IconData icon;
@@ -665,6 +812,8 @@ class PickerSelectionCard extends StatelessWidget {
   final List<PickerAction> actions;
   final bool isDragging;
   final bool isLoading;
+  final double? progress;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -695,7 +844,7 @@ class PickerSelectionCard extends StatelessWidget {
             ),
             const SizedBox(width: SeguiSpacing.md),
             isLoading
-                ? const PickerProgress()
+                ? PickerProgress(value: progress, onCancel: onCancel)
                 : TextButton.icon(
                     style: TextButton.styleFrom(
                       visualDensity: VisualDensity.compact,
@@ -749,18 +898,40 @@ class PickerText extends StatelessWidget {
   }
 }
 
-/// Progress indicator sized to sit in place of a picker button.
+/// Progress indicator sized to sit in place of a picker button, with a
+/// cancel button when [onCancel] is set.
 class PickerProgress extends StatelessWidget {
-  const PickerProgress({super.key});
+  const PickerProgress({super.key, this.value, this.onCancel});
+
+  /// Fraction done, or null for an indeterminate indicator.
+  final double? value;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: SeguiSpacing.xl),
-      child: SizedBox.square(
-        dimension: 20,
-        child: CircularProgressIndicator(strokeWidth: SeguiStroke.regular),
+    final Widget indicator = SizedBox.square(
+      dimension: 20,
+      child: CircularProgressIndicator(
+        value: value,
+        strokeWidth: SeguiStroke.regular,
       ),
+    );
+    if (onCancel == null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xl),
+        child: indicator,
+      );
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        indicator,
+        IconButton(
+          tooltip: 'Stop copying',
+          onPressed: onCancel,
+          icon: const Icon(Icons.close_rounded),
+        ),
+      ],
     );
   }
 }

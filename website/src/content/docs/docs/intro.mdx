@@ -1,0 +1,81 @@
+---
+title: Introduction
+sidebar:
+  order: 1
+---
+
+import { Aside, CardGrid, LinkCard } from "@astrojs/starlight/components";
+import PlatformMatrix from "../../../components/cli-gui/PlatformMatrix.astro";
+
+**Thank you for using SEGUL!** 🙏🏻
+
+**SEGUL (SEquence and Genomic UtiLities)** is a fast, memory-efficient tool for phylogenomic
+datasets, from a few Sanger loci to thousands of loci across hundreds of samples. It runs on
+phones, tablets, desktops, and computing clusters. For an independent review, see the
+[Chan 2024 perspective](https://onlinelibrary.wiley.com/doi/full/10.1111/1755-0998.13993).
+
+<Aside>
+The SEGUL CLI is on [Bioconda](https://anaconda.org/bioconda/segul) for Linux and macOS on
+[ARM](https://en.wikipedia.org/wiki/ARM_architecture_family) or
+[x86_64](https://en.wikipedia.org/wiki/X86-64) CPUs:
+
+```bash
+conda install bioconda::segul
+# or
+mamba install segul
+```
+
+See [installing with conda](/docs/installation/install_cli/#conda).
+</Aside>
+
+## Platform support
+
+<PlatformMatrix />
+
+## Find your way
+
+<CardGrid>
+  <LinkCard title="Quick start" description="From install to a first run." href="/docs/quick_start/" />
+  <LinkCard title="Installation" description="GUI, CLI, and API setup." href="/docs/installation/intro/" />
+  <LinkCard title="GUI usage" description="Desktop and mobile app guides." href="/docs/gui-usage/intro/" />
+  <LinkCard title="CLI usage" description="Terminal commands and options." href="/docs/cli-usage/intro/" />
+  <LinkCard title="API usage" description="Python, Rust, and R libraries." href="/docs/api-usage/" />
+  <LinkCard title="Features" description="How each feature works." href="/docs/features/" />
+  <LinkCard title="Support" description="Questions, issues, and feedback." href="/docs/support/" />
+</CardGrid>
+
+Each feature page stands on its own, but start with the introduction of your interface's section
+for input, output, and data type basics.
+
+<Aside type="tip">
+On phones, use the menu at the top of the page to move between sections.
+</Aside>
+
+## Citation
+
+> Handika, H., and J. A. Esselstyn. 2024. SEGUL: Ultrafast, memory-efficient and mobile-friendly software for manipulating and summarizing phylogenomic datasets. _Molecular Ecology Resources_, 24(7). [https://doi.org/10.1111/1755-0998.13964](https://doi.org/10.1111/1755-0998.13964).
+
+No access to the article? Request a copy on
+[ResearchGate](https://www.researchgate.net/publication/380125709_SEGUL_Ultrafast_memory-efficient_and_mobile-friendly_software_for_manipulating_and_summarizing_phylogenomic_datasets).
+
+## Acknowledgments
+
+We thank Andre E. Moncrieff, Austin S. Chipps, Carl R. Hutter, Darwin Morales-Martínez, Diego J.
+Elias, Giovani Hernández-Canchola, Glaucia C. Del-Rio, Roberta C. Canton, Samantha L. Rutledge,
+Sarin Tiatragul, and Spenser J. Babb-Biernacki for feedback on the app and its documentation, and
+Spenser J. Babb-Biernacki for suggesting the expansion of the SEGUL acronym. Funding came from the
+National Science Foundation
+([DEB-1754393](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1754393) and
+[DEB-2244754](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2244754)) and the Alfred L.
+Gardner and Mark S. Hafner Mammalogy Fund. Several features are inspired by
+[Phyluce](https://phyluce.readthedocs.io/en/latest/), [AMAS](https://github.com/marekborowiec/AMAS),
+[goalign](https://github.com/evolbioinfo/goalign), and
+[FrogCap](https://github.com/chutter/FrogCap-Sequence-Capture). SEGUL also builds on excellent
+open-source libraries from the Rust and Flutter communities.
+
+## Additional resources
+
+- [API documentation](https://docs.rs/segul/0.18.1/segul/)
+- [GUI source code](https://github.com/hhandika/segui)
+- [CLI and Rust API source code](https://github.com/hhandika/segul)
+- [Python API source code](https://github.com/hhandika/pysegul)

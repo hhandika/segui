@@ -5,6 +5,7 @@ import 'package:segui/screens/home/components/faq.dart';
 import 'package:segui/screens/home/components/greeting.dart';
 import 'package:segui/screens/home/components/illustration.dart';
 import 'package:segui/screens/home/components/quick_start.dart';
+import 'package:segui/screens/home/components/shared_files.dart';
 import 'package:segui/screens/home/components/tool_catalog.dart';
 import 'package:segui/screens/home/components/workflows.dart';
 import 'package:segui/screens/home/large_screen.dart';
@@ -92,6 +93,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const HomeHeader(),
+                        const SharedFilesBanner(),
                         const SizedBox(height: SeguiSpacing.xl),
                         Wrap(
                           spacing: SeguiSpacing.xl,

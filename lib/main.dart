@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/screens/home/home.dart';
 import 'package:segui/screens/shared/motion.dart';
+import 'package:segui/services/io/input_cache.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/src/rust/api/common.dart';
 import 'package:segui/src/rust/frb_generated.dart';
@@ -22,12 +25,26 @@ Future<void> main() async {
       print('Failed to initialize logger. It may have been initiated');
     }
   }
+  unawaited(_clearInputCache());
   runApp(ProviderScope(
     overrides: [
       settingProvider.overrideWithValue(prefs),
     ],
     child: const MyApp(),
   ));
+}
+
+/// Deletes input copies left by the last session, which no input uses
+/// at startup.
+Future<void> _clearInputCache() async {
+  try {
+    final cache = await InputCacheServices.create();
+    await cache.clear();
+  } on Exception catch (e) {
+    if (kDebugMode) {
+      print('Failed to clear the input cache: $e');
+    }
+  }
 }
 
 class MyApp extends ConsumerWidget {
