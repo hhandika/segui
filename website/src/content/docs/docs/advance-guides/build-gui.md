@@ -29,7 +29,7 @@ Follow the instructions to install Flutter [here](https://flutter.dev/docs/get-s
 
 #### Install Rust
 
-Follow the instructions to install Rust [here](https://www.rust-lang.org/tools/install).
+Install Rust with [rustup](https://www.rust-lang.org/tools/install). SEGUI builds its Rust library through Flutter native assets, which requires rustup. The `rust/rust-toolchain.toml` file pins the Rust version and targets, and rustup installs them on the first build. Flutter then compiles the Rust library during `flutter run`, `flutter test`, and `flutter build`, so the first build takes several minutes.
 
 #### Install Flutter Rust Bridge
 

@@ -196,7 +196,6 @@ class BuildRust:
         print("Cleaning frb code...")
         try:
             self.remove_old_frb_code()
-            subprocess.run(["rm", "-rf", "rust_builder"])
             subprocess.run(["rm", "-rf", "flutter_rust_bridge.yaml"])
             subprocess.run(["rm", "-rf", "integration_test"])
             print("Frb code cleaned successfully\n")
