@@ -392,8 +392,12 @@ void main() {
     expect(find.byType(WorkbenchView), findsOneWidget);
     expect(find.byType(NextStepsHint), findsOneWidget);
     expect(find.byType(FileSummaryCard), findsNWidgets(2));
-    expect(find.byIcon(SeguiIcons.inputFolderFilled), findsOneWidget);
-    expect(find.byIcon(SeguiIcons.outputFolderFilled), findsOneWidget);
+    Finder inTiles(Finder finder) =>
+        find.descendant(of: find.byType(FileSummaryTiles), matching: finder);
+    expect(
+        inTiles(find.byIcon(SeguiIcons.inputFolderOutlined)), findsOneWidget);
+    expect(
+        inTiles(find.byIcon(SeguiIcons.outputFolderOutlined)), findsOneWidget);
     expect(find.text('No input files selected.'), findsOneWidget);
     expect(find.text('No output folder selected.'), findsOneWidget);
 

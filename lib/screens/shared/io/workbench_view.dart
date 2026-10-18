@@ -121,37 +121,12 @@ class RunParametersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
     return WorkbenchCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.tune_rounded,
-                size: SeguiControlSize.iconMedium,
-                color: colors.primary,
-              ),
-              const SizedBox(width: SeguiSpacing.sm),
-              Expanded(
-                child: Text(
-                  'Parameters',
-                  style: textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Text(
-            run.tool.title,
-            style: textTheme.bodySmall?.copyWith(
-              color: colors.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: SeguiSpacing.md),
+          const PanelCardHeader(icon: Icons.tune_outlined, title: 'Parameters'),
+          RunParameterRow(parameter: RunParameter('Tool', run.tool.title)),
           for (final parameter in run.parameters)
             RunParameterRow(parameter: parameter),
         ],

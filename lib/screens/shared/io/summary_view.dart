@@ -22,7 +22,7 @@ class FileSummaryTiles extends ConsumerWidget {
     final int otherCount = output?.otherFileCount ?? 0;
     final Widget inputTile = FileSummaryCard(
       title: 'Input',
-      icon: SeguiIcons.inputFolderFilled,
+      icon: SeguiIcons.inputFolderOutlined,
       summary: input,
       emptyText: 'No input files selected.',
       buttonLabel: 'View input files',
@@ -34,8 +34,8 @@ class FileSummaryTiles extends ConsumerWidget {
     );
     final Widget outputTile = FileSummaryCard(
       title: 'Output',
-      icon: SeguiIcons.outputFolderFilled,
-      subtitle: outputDir == null ? null : p.basename(outputDir),
+      icon: SeguiIcons.outputFolderOutlined,
+      folderName: outputDir == null ? null : p.basename(outputDir),
       summary: output?.newFiles ?? const FileSetSummary.empty(),
       emptyText: outputDir == null
           ? 'No output folder selected.'
@@ -88,7 +88,7 @@ class FileSummaryCard extends StatelessWidget {
     required this.emptyText,
     required this.buttonLabel,
     required this.onViewFiles,
-    this.subtitle,
+    this.folderName,
     this.note,
   });
 
@@ -100,7 +100,9 @@ class FileSummaryCard extends StatelessWidget {
   /// Semantic label of the tile's tap action.
   final String buttonLabel;
   final VoidCallback? onViewFiles;
-  final String? subtitle;
+
+  /// Name of the folder that holds the files, shown above the counts.
+  final String? folderName;
 
   /// Extra line below the formats, such as files from earlier runs.
   final String? note;
@@ -128,38 +130,21 @@ class FileSummaryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      icon,
-                      color: colors.primary,
-                      size: SeguiControlSize.iconMedium,
-                    ),
-                    const SizedBox(width: SeguiSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
+                PanelCardHeader(
+                  icon: icon,
+                  title: title,
+                  trailing: onViewFiles == null
+                      ? null
+                      : Icon(
+                          Icons.chevron_right_rounded,
+                          size: SeguiControlSize.iconMedium,
+                          color: colors.onSurfaceVariant,
                         ),
-                      ),
-                    ),
-                    if (onViewFiles != null)
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        size: SeguiControlSize.iconMedium,
-                        color: colors.onSurfaceVariant,
-                      ),
-                  ],
                 ),
-                if (subtitle != null)
-                  Text(
-                    subtitle!,
-                    style: mutedSmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                const SizedBox(height: SeguiSpacing.md),
+                if (folderName != null) ...[
+                  FolderNameRow(name: folderName!),
+                  const SizedBox(height: SeguiSpacing.md),
+                ],
                 if (summary.isEmpty)
                   Text(emptyText, style: mutedSmall)
                 else ...[
@@ -189,6 +174,90 @@ class FileSummaryCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Card title with its icon, ruled off from the card content below.
+class PanelCardHeader extends StatelessWidget {
+  const PanelCardHeader({
+    super.key,
+    required this.icon,
+    required this.title,
+    this.trailing,
+  });
+
+  final IconData icon;
+  final String title;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Icon(
+              icon,
+              color: colors.primary,
+              size: SeguiControlSize.iconMedium,
+            ),
+            const SizedBox(width: SeguiSpacing.sm),
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ),
+            if (trailing != null) trailing!,
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: SeguiSpacing.md),
+          child: Divider(
+            height: SeguiStroke.thin,
+            thickness: SeguiStroke.thin,
+            color: colors.outlineVariant,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Folder that holds a file set, as card content rather than a caption.
+class FolderNameRow extends StatelessWidget {
+  const FolderNameRow({super.key, required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: 'Output folder',
+      child: Row(
+        children: [
+          Icon(
+            Icons.folder_outlined,
+            size: SeguiControlSize.iconSmall,
+            color: colors.onSurfaceVariant,
+          ),
+          const SizedBox(width: SeguiSpacing.sm),
+          Expanded(
+            child: Text(
+              name,
+              style: Theme.of(context).textTheme.bodyMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/alignment/entry_page.dart';
+import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/screens/shared/io/workbench_view.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/io/file.dart';
@@ -238,12 +239,22 @@ void main() {
         RunParameter('Value', '800'),
       ]);
       await container.read(fileOutputProvider.notifier).refresh();
+      await container.read(outputSummaryProvider.future);
     });
     await tester.pumpAndSettle();
 
     expect(find.byType(NextStepsHint), findsNothing);
     expect(find.byType(RunParametersCard), findsOneWidget);
     expect(find.text('Minimum length'), findsOneWidget);
+    // The tool and output folder read as card content, not captions.
+    final Finder parameters = find.byType(RunParametersCard);
+    expect(find.descendant(of: parameters, matching: find.text('Tool')),
+        findsOneWidget);
+    expect(
+        find.descendant(
+            of: parameters, matching: find.text('Filter alignments')),
+        findsOneWidget);
+    expect(find.widgetWithText(FolderNameRow, 'out'), findsOneWidget);
     expect(find.text('Suggested workflows'), findsOneWidget);
     expect(find.byType(WorkflowProgressCard), findsNWidgets(2));
     expect(find.text('Next: Concatenate alignments'), findsOneWidget);
