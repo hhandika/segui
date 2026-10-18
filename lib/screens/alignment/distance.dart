@@ -42,8 +42,8 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
   String _model = distanceModels.keys.first;
   String _triangle = distanceMatrixTriangles.keys.first;
   String _diagonal = distanceMatrixDiagonals.keys.first;
+  bool _isDiagonalChosen = false;
   String _grouping = distanceGroupingMethods.keys.first;
-  String _groupDiagonal = distanceGroupDiagonals.keys.first;
   final TextEditingController _groupDelimiter = TextEditingController();
   final TextEditingController _groupFields = TextEditingController();
   final TextEditingController _groupPattern = TextEditingController();
@@ -102,13 +102,20 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
             },
           ),
           SharedMapDropdownField(
+            // Rebuild when grouping changes the options or the default.
+            key: ValueKey('diagonal-$_isGrouped-$_diagonal'),
             value: _diagonal,
             label: 'Diagonal',
-            items: distanceMatrixDiagonals,
+            items: _diagonals,
+            helper: _isGrouped
+                ? 'Within-group values apply to the group matrices. '
+                    'Sample matrices then hold zero.'
+                : null,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
                   _diagonal = value;
+                  _isDiagonalChosen = true;
                 }
               });
             },
@@ -125,7 +132,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
             helper: _groupingHelper,
             onChanged: (String? value) {
               if (value != null) {
-                _updateGrouping(() => _grouping = value);
+                _updateGrouping(() => _setGrouping(value));
               }
             },
           ),
@@ -168,21 +175,6 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
                 task: task,
                 allowDirectorySelection: false,
               ),
-            ),
-          if (_grouping != 'none')
-            SharedMapDropdownField(
-              value: _groupDiagonal,
-              label: 'Group matrix diagonal',
-              items: distanceGroupDiagonals,
-              helper: 'Highest mean in the row is the largest mean distance '
-                  'from the group to any other group.',
-              onChanged: (String? value) {
-                setState(() {
-                  if (value != null) {
-                    _groupDiagonal = value;
-                  }
-                });
-              },
             ),
           if (_grouping != 'none')
             SecondaryButton(
@@ -285,6 +277,24 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
   }
 
   /// Apply a grouping change and drop the preview, which no longer applies.
+  bool get _isGrouped => _grouping != 'none';
+
+  Map<String, String> get _diagonals =>
+      _isGrouped ? distanceGroupMatrixDiagonals : distanceMatrixDiagonals;
+
+  /// Sets the grouping method and keeps the diagonal valid for it.
+  /// Until users choose a diagonal, it follows the default:
+  /// zero without groups and the within-group mean with groups.
+  void _setGrouping(String value) {
+    _grouping = value;
+    if (!_isDiagonalChosen) {
+      _diagonal = _diagonals.keys.first;
+    } else if (!_diagonals.containsKey(_diagonal)) {
+      _diagonal = distanceMatrixDiagonals.keys.first;
+      _isDiagonalChosen = false;
+    }
+  }
+
   void _updateGrouping(VoidCallback update) {
     setState(() {
       update();
@@ -344,7 +354,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
         RunParameter('Data type', _ctr.dataTypeController),
         RunParameter('Distance model', distanceModels[_model] ?? ''),
         RunParameter('Matrix', distanceMatrixTriangles[_triangle] ?? ''),
-        RunParameter('Diagonal', distanceMatrixDiagonals[_diagonal] ?? ''),
+        RunParameter('Diagonal', _diagonals[_diagonal] ?? ''),
         RunParameter(
           'Group samples',
           distanceGroupingMethods[_grouping] ?? '',
@@ -355,11 +365,6 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
         ],
         if (_grouping == 'regex')
           RunParameter('Regex pattern', _groupPattern.text),
-        if (_grouping != 'none')
-          RunParameter(
-            'Group matrix diagonal',
-            distanceGroupDiagonals[_groupDiagonal] ?? '',
-          ),
         RunParameter('Summary prefix', _ctr.prefixController.text),
         RunParameter('Long-format tables', _isLongFormat ? 'Yes' : 'No'),
       ];
@@ -407,7 +412,6 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
         triangle: _triangle,
         diagonal: _diagonal,
         grouping: _groupingParams,
-        groupDiagonal: _groupDiagonal,
         isLongFormat: _isLongFormat,
       ).run();
       _setSuccess(outputDir);
@@ -419,8 +423,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
   void _setNewRun() {
     setState(() {
       _ctr.reset();
-      _grouping = distanceGroupingMethods.keys.first;
-      _groupDiagonal = distanceGroupDiagonals.keys.first;
+      _setGrouping(distanceGroupingMethods.keys.first);
       _groupDelimiter.clear();
       _groupFields.clear();
       _groupPattern.clear();

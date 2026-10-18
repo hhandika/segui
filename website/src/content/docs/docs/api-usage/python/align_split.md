@@ -1,7 +1,7 @@
 ---
 title: Alignment Splitting
 sidebar:
-  order: 5
+  order: 7
 ---
 
 Split an alignment into multiple alignments based on partition information.
@@ -25,6 +25,7 @@ def split_alignment():
     datatype = 'dna'
     partition_format = 'nexus'
     output_format = 'fasta'
+    # Check the partition before splitting. Set to False to skip checking.
     check_partition = True
     input_partition = 'tests/split-data/split-data_partition.nex'
     output_dir = 'tests/output'
@@ -40,3 +41,9 @@ def split_alignment():
         )
     split.split()
 ```
+
+If `input_partition` is not set, PySEGUL reads the partition from the input alignment.
+
+:::note
+In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. The upcoming release fixes it.
+:::

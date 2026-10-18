@@ -1,7 +1,7 @@
 ---
 title: Sequence Extraction
 sidebar:
-  order: 8
+  order: 14
 ---
 
 Extract sequences based on the sequence ID. Available methods:

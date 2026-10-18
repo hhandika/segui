@@ -1,7 +1,7 @@
 ---
 title: Sequence ID Extraction & Mapping
 sidebar:
-  order: 9
+  order: 16
 ---
 
 Extract unique sequence IDs from a collection of alignments and map them to the corresponding loci.

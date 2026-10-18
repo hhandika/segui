@@ -47,7 +47,14 @@ The distance matrix is symmetric, so each value appears twice. Select `Lower tri
 
 ### Diagonal
 
-The diagonal holds the distance of each sample to itself. Write `Zero` (the default), leave it `Blank`, or write the `Highest distance in the row`, which is the largest distance from that sample to any other sample.
+The diagonal holds the distance of each sample to itself. Write `Zero` (the default), leave it `Blank`, or write `NA`.
+
+With groups, the option also sets the diagonal of the group mean matrices and adds two choices:
+
+- `Mean within the group` (the default with groups): the mean distance within each group.
+- `Highest within the group`: the highest distance between two samples of the group.
+
+Both are `NA` for a group with one sample, and the sample matrices hold zero on the diagonal. `Zero`, `Blank`, and `NA` apply to both the sample and group matrices.
 
 ### Groups
 
@@ -75,13 +82,7 @@ With groups, the app also writes:
 - `distance_group_mean.csv`: group means pooled over every sample pair of every alignment, so alignments with more pairs count more.
 - `distance_group_pairs.csv`: the number of pairs behind each pooled mean.
 
-The `Matrix` option applies to the group matrices too. The `Diagonal` option sets the sample matrices only. Use `Group matrix diagonal` in the groups card for the group mean matrices:
-
-- `Mean within the group` (default): the mean distance within each group.
-- `Zero` or `Blank`: write zero or leave the diagonal empty.
-- `Highest mean in the row`: the largest mean distance from the group to any other group. It is `NA` if the group has no defined mean to another group.
-
-With `Zero`, `Blank`, or `Highest mean in the row`, the within-group means are still listed in `distance_group_long.csv` when `Long-format tables` is on. The diagonal of `distance_group_pairs.csv` always holds the number of within-group pairs.
+The `Matrix` and `Diagonal` options apply to the group matrices too. The diagonal of `distance_group_pairs.csv` always holds the number of within-group pairs.
 
 With `Long-format tables` on, the app also writes:
 

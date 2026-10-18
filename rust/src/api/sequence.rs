@@ -5,9 +5,7 @@ use flutter_rust_bridge::frb;
 use segul::core::align::concat::AlignmentConcatenation;
 use segul::core::align::convert::AlignmentConversion;
 use segul::core::align::distance::group::SampleGrouping;
-use segul::core::align::distance::{
-    AlignmentDistance, GroupDiagonal, MatrixDiagonal, MatrixTriangle,
-};
+use segul::core::align::distance::{AlignmentDistance, MatrixDiagonal, MatrixTriangle};
 use segul::core::align::filter::{AlignmentFiltering, FilteringParameters};
 use segul::core::align::partition::PartitionConverter;
 use segul::core::align::split::AlignmentSplitting;
@@ -848,13 +846,13 @@ pub struct AlignmentDistanceServices {
     pub model: String,
     // Matrix triangle: full, lower, or upper
     pub triangle: String,
-    // Matrix diagonal: zero, blank, or max
-    pub diagonal: String,
+    // Matrix diagonal: zero, blank, or na. With grouping, mean or max writes the
+    // within-group mean or highest distance on the group matrices.
+    // Defaults to zero, and the within-group mean on the group matrices.
+    pub diagonal: Option<String>,
     pub prefix: Option<String>,
     // How to group samples for group mean distances
     pub grouping: DistanceGroupingParams,
-    // Group matrix diagonal: within, zero, blank, or max
-    pub group_diagonal: String,
     // Write pairwise distances and group statistics of all loci as long tables
     pub long_format: bool,
 }
@@ -870,10 +868,9 @@ impl AlignmentDistanceServices {
             output_dir: String::new(),
             model: String::from("p"),
             triangle: String::from("full"),
-            diagonal: String::from("zero"),
+            diagonal: None,
             prefix: None,
             grouping: DistanceGroupingParams::None,
-            group_diagonal: String::from("within"),
             long_format: false,
         }
     }
@@ -895,28 +892,27 @@ impl AlignmentDistanceServices {
             .triangle
             .parse::<MatrixTriangle>()
             .expect("Invalid matrix triangle");
-        let diagonal = self
-            .diagonal
-            .parse::<MatrixDiagonal>()
-            .expect("Invalid matrix diagonal");
+        let diagonal = self.diagonal.as_deref().map(|d| {
+            d.parse::<MatrixDiagonal>()
+                .expect("Invalid matrix diagonal")
+        });
         let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
         let task = "Pairwise Genetic Distance";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let grouping = self
             .match_grouping(&input_files, &input_fmt, &datatype)
             .unwrap_or_else(|e| panic!("{:#}", e));
+        if diagonal.is_some_and(|d| d.requires_grouping()) && grouping.is_none() {
+            panic!("The mean and max diagonals require grouping.");
+        }
         let mut handle = AlignmentDistance::new(&input_fmt, &datatype, &model, output_path)
             .with_triangle(triangle)
-            .with_diagonal(diagonal)
             .with_long_format(self.long_format);
+        if let Some(diagonal) = diagonal {
+            handle = handle.with_diagonal(diagonal);
+        }
         if let Some(grouping) = grouping {
-            let group_diagonal = self
-                .group_diagonal
-                .parse::<GroupDiagonal>()
-                .expect("Invalid group matrix diagonal");
-            handle = handle
-                .with_grouping(grouping)
-                .with_group_diagonal(group_diagonal);
+            handle = handle.with_grouping(grouping);
         }
         handle.compute(&input_files, self.prefix.as_deref());
         let duration = time.elapsed();
@@ -1443,7 +1439,6 @@ mod test {
             grouped_distance_services(DistanceGroupingParams::Regex(String::from("^sample_[ab]")));
         services.output_dir = output.to_string_lossy().into_owned();
         services.long_format = true;
-        services.group_diagonal = String::from("blank");
         services.compute_distance();
         for name in [
             "distance_group_mean.csv",
@@ -1456,8 +1451,34 @@ mod test {
         let mean = fs::read_to_string(output.join("distance_group_mean.csv")).unwrap();
         assert!(mean.starts_with(",sample_a,sample_b"));
         let second_line = mean.lines().nth(1).unwrap();
-        assert!(second_line.starts_with("sample_a,,"), "{}", second_line);
+        assert!(second_line.starts_with("sample_a,NA,"), "{}", second_line);
         clean(&output);
+    }
+
+    #[test]
+    fn test_compute_distance_group_max_diagonal() {
+        let output = output_dir("distance-group-max");
+        let mut services =
+            grouped_distance_services(DistanceGroupingParams::Regex(String::from("^sample_[ab]")));
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.diagonal = Some(String::from("max"));
+        services.compute_distance();
+        let mean = fs::read_to_string(output.join("distance_group_mean.csv")).unwrap();
+        let second_line = mean.lines().nth(1).unwrap();
+        assert!(second_line.starts_with("sample_a,NA,"), "{}", second_line);
+        clean(&output);
+    }
+
+    #[test]
+    #[should_panic(expected = "require grouping")]
+    fn test_compute_distance_group_diagonal_without_groups() {
+        let mut services = AlignmentDistanceServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output_dir("distance-mean").to_string_lossy().into_owned();
+        services.diagonal = Some(String::from("mean"));
+        services.compute_distance();
     }
 
     #[test]

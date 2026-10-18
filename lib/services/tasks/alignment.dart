@@ -417,7 +417,6 @@ class AlignmentDistanceRunner {
     required this.triangle,
     required this.diagonal,
     this.grouping = const DistanceGrouping.none(),
-    this.groupDiagonal = 'within',
     this.isLongFormat = false,
   });
 
@@ -438,9 +437,6 @@ class AlignmentDistanceRunner {
 
   final DistanceGrouping grouping;
 
-  /// A key of [distanceGroupDiagonals].
-  final String groupDiagonal;
-
   /// Whether to also write long-format tables of all loci.
   final bool isLongFormat;
 
@@ -460,7 +456,6 @@ class AlignmentDistanceRunner {
       diagonal: diagonal,
       prefix: prefix.isEmpty ? null : prefix,
       grouping: grouping.toParams(inputFiles),
-      groupDiagonal: groupDiagonal,
       longFormat: isLongFormat,
     ).computeDistance();
   }
@@ -496,7 +491,6 @@ class DistanceGroupPreviewRunner {
       triangle: distanceMatrixTriangles.keys.first,
       diagonal: distanceMatrixDiagonals.keys.first,
       grouping: grouping.toParams(inputFiles),
-      groupDiagonal: distanceGroupDiagonals.keys.first,
       longFormat: false,
     ).previewGroups();
   }

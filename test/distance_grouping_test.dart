@@ -140,14 +140,15 @@ void main() {
     }
 
     expect(find.text('Delimiter'), findsNothing);
-    expect(find.text('Group matrix diagonal'), findsNothing);
     expect(find.text('Long-format tables'), findsOneWidget);
+    expect(find.text('Zero'), findsOneWidget);
 
+    // With groups, the diagonal defaults to the within-group mean.
     await selectMethod('No grouping', 'Split sample names');
+    expect(find.text('Mean within the group'), findsOneWidget);
     expect(find.text('Delimiter'), findsOneWidget);
     expect(find.text('Fields to keep'), findsOneWidget);
     expect(find.text('Preview groups'), findsOneWidget);
-    expect(find.text('Mean within the group'), findsOneWidget);
 
     await selectMethod('Split sample names', 'Regular expression');
     expect(find.text('Delimiter'), findsNothing);
@@ -156,6 +157,11 @@ void main() {
     await selectMethod('Regular expression', 'Detect from sample names');
     expect(find.text('Regex pattern'), findsNothing);
     expect(find.text('Detect groups'), findsOneWidget);
+
+    // Without groups, the diagonal returns to zero.
+    await selectMethod('Detect from sample names', 'No grouping');
+    expect(find.text('Mean within the group'), findsNothing);
+    expect(find.text('Zero'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

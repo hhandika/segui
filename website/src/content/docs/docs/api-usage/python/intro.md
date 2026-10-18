@@ -71,6 +71,34 @@ if __name__ == '__main__':
 python concat_alignments.py
 ```
 
+## Available features
+
+| SEGUL command | PySEGUL class |
+| --- | --- |
+| `segul align concat` | [`AlignmentConcatenation`](/docs/api-usage/python/align_concat/) |
+| `segul align convert` | [`AlignmentConversion`](/docs/api-usage/python/align_convert/) |
+| `segul align distance` | [`AlignmentDistance`](/docs/api-usage/python/align_distance/) *(upcoming)* |
+| `segul align filter` | [`AlignmentFiltering`](/docs/api-usage/python/align_filter/) |
+| `segul align split` | [`AlignmentSplitting`](/docs/api-usage/python/align_split/) |
+| `segul align summary` | [`AlignmentSummary`](/docs/api-usage/python/align_summary/) |
+| `segul align trim` | [`AlignmentTrimming`](/docs/api-usage/python/align_trim/) *(upcoming)* |
+| `segul align unalign` | [`AlignmentUnalignment`](/docs/api-usage/python/align_unalign/) *(upcoming)* |
+| `segul partition` | [`PartitionConversion`](/docs/api-usage/python/align_partition/) |
+| `segul read summary` | [`ReadSummary`](/docs/api-usage/python/genomic_summary/) |
+| `segul contig summary` | [`ContigSummary`](/docs/api-usage/python/genomic_summary/) |
+| `segul maf convert` | [`MafConversion`](/docs/api-usage/python/maf/) *(upcoming)* |
+| `segul maf summary` | [`MafSummary`](/docs/api-usage/python/maf/) *(upcoming)* |
+| `segul sequence add` | [`SequenceAddition`](/docs/api-usage/python/sequence_addition/) *(upcoming)* |
+| `segul sequence extract` | [`SequenceExtraction`](/docs/api-usage/python/sequence_extract/) |
+| `segul sequence filter` | [`SequenceFiltering`](/docs/api-usage/python/sequence_filter/) *(upcoming)* |
+| `segul sequence id` | [`IDExtraction`](/docs/api-usage/python/sequence_id/) |
+| `segul sequence remove` | [`SequenceRemoval`](/docs/api-usage/python/sequence_remove/) |
+| `segul sequence rename` | [`SequenceRenaming`](/docs/api-usage/python/sequence_rename/) *(upcoming)* |
+| `segul sequence translate` | [`SequenceTranslation`](/docs/api-usage/python/sequence_translation/) |
+| `segul sequence transpose` | [`SequenceTranspose`](/docs/api-usage/python/sequence_transpose/) *(upcoming)* |
+
+Features marked *(upcoming)* are not yet published on PyPI. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+
 :::note
 The [pysegul](https://pypi.org/project/pysegul/) library is still in beta. If you encounter any issues, please report them in the [issue tracker](https://github.com/hhandika/pysegul/issues). It is now support all major features that CLI and GUI versions supports. Our goal is to expose more SEGUL public functions to Python, including the helper functions. It will allow Python developers to create a custom analyses using SEGUL API in Python.
 :::

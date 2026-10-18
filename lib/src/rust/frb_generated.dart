@@ -1699,8 +1699,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 11)
-      throw Exception('unexpected arr length: expect 11 but see ${arr.length}');
+    if (arr.length != 10)
+      throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
     return AlignmentDistanceServices(
       inputFiles: dco_decode_list_String(arr[0]),
       inputFmt: dco_decode_String(arr[1]),
@@ -1708,11 +1708,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       outputDir: dco_decode_String(arr[3]),
       model: dco_decode_String(arr[4]),
       triangle: dco_decode_String(arr[5]),
-      diagonal: dco_decode_String(arr[6]),
+      diagonal: dco_decode_opt_String(arr[6]),
       prefix: dco_decode_opt_String(arr[7]),
       grouping: dco_decode_distance_grouping_params(arr[8]),
-      groupDiagonal: dco_decode_String(arr[9]),
-      longFormat: dco_decode_bool(arr[10]),
+      longFormat: dco_decode_bool(arr[9]),
     );
   }
 
@@ -2000,9 +1999,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const DistanceGroupingParams_Auto();
+        return DistanceGroupingParams_Auto();
       case 4:
-        return const DistanceGroupingParams_None();
+        return DistanceGroupingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -2070,7 +2069,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_String(raw[1]),
         );
       case 8:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -2312,7 +2311,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -2335,7 +2334,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_f_64(raw[1]),
         );
       case 3:
-        return const SequenceFilteringParams_None();
+        return SequenceFilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -2420,7 +2419,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_bool(raw[3]),
         );
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -2491,7 +2490,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_usize(raw[1]),
         );
       case 2:
-        return const TrimmingParams_None();
+        return TrimmingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -2562,10 +2561,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_outputDir = sse_decode_String(deserializer);
     var var_model = sse_decode_String(deserializer);
     var var_triangle = sse_decode_String(deserializer);
-    var var_diagonal = sse_decode_String(deserializer);
+    var var_diagonal = sse_decode_opt_String(deserializer);
     var var_prefix = sse_decode_opt_String(deserializer);
     var var_grouping = sse_decode_distance_grouping_params(deserializer);
-    var var_groupDiagonal = sse_decode_String(deserializer);
     var var_longFormat = sse_decode_bool(deserializer);
     return AlignmentDistanceServices(
         inputFiles: var_inputFiles,
@@ -2577,7 +2575,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         diagonal: var_diagonal,
         prefix: var_prefix,
         grouping: var_grouping,
-        groupDiagonal: var_groupDiagonal,
         longFormat: var_longFormat);
   }
 
@@ -2876,9 +2873,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return DistanceGroupingParams_MapFile(var_field0);
       case 3:
-        return const DistanceGroupingParams_Auto();
+        return DistanceGroupingParams_Auto();
       case 4:
-        return const DistanceGroupingParams_None();
+        return DistanceGroupingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -2940,7 +2937,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
       case 8:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -3249,7 +3246,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return SequenceExtractionParams_Regex(var_field0);
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -3272,7 +3269,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_f_64(deserializer);
         return SequenceFilteringParams_MaxGap(var_field0);
       case 3:
-        return const SequenceFilteringParams_None();
+        return SequenceFilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -3363,7 +3360,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return SequenceRenamingParams_ReplaceRegex(
             var_field0, var_field1, var_field2);
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -3445,7 +3442,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_usize(deserializer);
         return TrimmingParams_ParsInf(var_field0);
       case 2:
-        return const TrimmingParams_None();
+        return TrimmingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -3516,10 +3513,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.outputDir, serializer);
     sse_encode_String(self.model, serializer);
     sse_encode_String(self.triangle, serializer);
-    sse_encode_String(self.diagonal, serializer);
+    sse_encode_opt_String(self.diagonal, serializer);
     sse_encode_opt_String(self.prefix, serializer);
     sse_encode_distance_grouping_params(self.grouping, serializer);
-    sse_encode_String(self.groupDiagonal, serializer);
     sse_encode_bool(self.longFormat, serializer);
   }
 

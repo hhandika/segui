@@ -21,10 +21,9 @@ class AlignmentDistanceServices {
   final String outputDir;
   final String model;
   final String triangle;
-  final String diagonal;
+  final String? diagonal;
   final String? prefix;
   final DistanceGroupingParams grouping;
-  final String groupDiagonal;
   final bool longFormat;
 
   const AlignmentDistanceServices({
@@ -34,10 +33,9 @@ class AlignmentDistanceServices {
     required this.outputDir,
     required this.model,
     required this.triangle,
-    required this.diagonal,
+    this.diagonal,
     this.prefix,
     required this.grouping,
-    required this.groupDiagonal,
     required this.longFormat,
   });
 
@@ -66,7 +64,6 @@ class AlignmentDistanceServices {
       diagonal.hashCode ^
       prefix.hashCode ^
       grouping.hashCode ^
-      groupDiagonal.hashCode ^
       longFormat.hashCode;
 
   @override
@@ -83,7 +80,6 @@ class AlignmentDistanceServices {
           diagonal == other.diagonal &&
           prefix == other.prefix &&
           grouping == other.grouping &&
-          groupDiagonal == other.groupDiagonal &&
           longFormat == other.longFormat;
 }
 

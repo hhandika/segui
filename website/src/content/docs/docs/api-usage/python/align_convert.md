@@ -1,7 +1,7 @@
 ---
 title: Alignment Conversion
 sidebar:
-  order: 2
+  order: 3
 ---
 
 Convert an alignment from one format to another format. Optimized for converting many alignments in parallel without the limitation for Python's GIL.

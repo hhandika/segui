@@ -151,15 +151,15 @@ const Map<String, String> distanceMatrixTriangles = {
 const Map<String, String> distanceMatrixDiagonals = {
   'zero': 'Zero',
   'blank': 'Blank',
-  'max': 'Highest distance in the row',
+  'na': 'NA',
 };
 
-/// Group mean matrix diagonals, keyed by the SEGUL option name.
-const Map<String, String> distanceGroupDiagonals = {
-  'within': 'Mean within the group',
-  'zero': 'Zero',
-  'blank': 'Blank',
-  'max': 'Highest mean in the row',
+/// Diagonals of the group mean matrices, keyed by the SEGUL option name.
+/// Sample matrices hold zero with `mean` and `max`.
+const Map<String, String> distanceGroupMatrixDiagonals = {
+  'mean': 'Mean within the group',
+  'max': 'Highest within the group',
+  ...distanceMatrixDiagonals,
 };
 
 /// Ways to assign samples to groups, such as populations or species,

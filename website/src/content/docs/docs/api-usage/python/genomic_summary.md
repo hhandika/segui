@@ -1,7 +1,7 @@
 ---
 title: Genomic Summary
 sidebar:
-  order: 7
+  order: 11
 ---
 
 Genomic summary statistics is available for FASTQ reads and contiguous sequences.

@@ -1,7 +1,7 @@
 ---
 title: Alignment Summary
 sidebar:
-  order: 6
+  order: 8
 ---
 
 Generate summary statistics for DNA and amino acid alignments.
@@ -57,4 +57,23 @@ def summarize_alignments():
         prefix
         )
     concat.from_files(input_path)
+```
+
+## Per-locus summary
+
+:::caution[Upcoming]
+The `per_locus` option is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::
+
+Set `per_locus` to `True` to write a summary for each alignment instead of one summary across all alignments:
+
+```python
+summary = pysegul.AlignmentSummary(
+    'nexus',
+    'dna',
+    'tests/output',
+    5,
+    per_locus=True,
+    )
+summary.from_dir('tests/align-data')
 ```

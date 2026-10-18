@@ -138,7 +138,9 @@ Use the `--diagonal` option to choose what to write on the diagonal:
 
 - `zero` (default): the distance of each sample to itself, `0.000000`.
 - `blank`: leave the diagonal empty.
-- `max`: the highest distance between the sample and any other sample in the locus. It is written as `NA` if the sample has no defined distances.
+- `na`: write `NA`.
+
+With grouping, `--diagonal` also accepts `mean` and `max` for the group matrices. See [Group matrix diagonal](#group-matrix-diagonal).
 
 For example, to write a lower triangle with an empty diagonal:
 
@@ -154,8 +156,6 @@ seq1,,,
 seq2,0.166667,,
 seq3,0.200000,0.400000,
 ```
-
-With `--diagonal max`, the diagonal shows the highest distance of each sample: `0.200000` for `seq1`, `0.400000` for `seq2`, and `0.400000` for `seq3`.
 
 ### Summary file
 
@@ -238,22 +238,21 @@ A within-group mean is `NA` if the group has a single sample in the locus. Sampl
 
 #### Group matrix diagonal
 
-`--diagonal` sets the diagonal of the sample matrices only. Use the `--group-diagonal` option to set the diagonal of the group mean matrices, both per locus and pooled:
+With grouping, `--diagonal` sets the diagonal of the group mean matrices, both per locus and pooled:
 
-- `within` (default): the mean distance within the group.
-- `zero`: `0.000000`.
-- `blank`: leave the diagonal empty.
-- `max`: the highest mean distance from the group to any other group in the row. It is written as `NA` if the group has no defined mean to another group.
+- `mean` (default with grouping): the mean distance within the group.
+- `max`: the highest distance between two samples of the group.
+- `zero`, `blank`, or `na`: the same as for the sample matrices.
 
-For example, with the pooled means of the two species, sp1 to sp1 0.208333, sp2 to sp2 0.166667, and sp1 to sp2 0.430556, `--group-diagonal max` writes:
+With `mean` and `max`, the sample matrices hold zero on the diagonal. Both are `NA` for a group with a single sample, and both require a grouping option. For example, to write the highest within-group distance:
 
-```plaintext
-,sp1,sp2
-sp1,0.430556,0.430556
-sp2,0.430556,0.430556
+```bash
+segul align distance --dir alignments/ --group-delimiter _ --group-fields 1 --diagonal max
 ```
 
-With `zero`, `blank`, or `max`, the within-group means are still listed in `<prefix>_group_long.csv` when you use `--long`. The diagonal of `<prefix>_group_pairs.csv` always holds the number of within-group pairs.
+In the example above, each species has a single within-group pair, so `max` and `mean` are the same. With three or more samples in a group, `max` shows the most divergent pair, while `mean` averages all pairs. Pooled over loci, `max` is the highest within-group distance in any locus.
+
+The diagonal of `<prefix>_group_pairs.csv` always holds the number of within-group pairs.
 
 ### Long-format tables
 
@@ -332,13 +331,12 @@ segul align distance --input alignments/*.fasta
 | `--datatype`            | Data type: `dna` (default) or `aa`                                                            |
 | `--model`               | Distance model: `p` (default), `jc69`, `k2p`, `tn93`, or `poisson`                            |
 | `--triangle`            | Matrix layout: `full` (default), `lower`, or `upper`                                          |
-| `--diagonal`            | Diagonal value: `zero` (default), `blank`, or `max`                                           |
+| `--diagonal`            | Diagonal value: `zero` (default), `blank`, or `na`. With grouping, also `mean` (default) or `max` |
 | `--group-delimiter`     | Group samples by splitting names on this character. Use with `--group-fields`                 |
 | `--group-fields`        | Number of leading name parts that name the group. Use with `--group-delimiter`                |
 | `--group-regex`         | Group samples by the first capture group, or the whole match, of a regular expression         |
 | `--group-file`          | Group samples using a CSV or TSV file with a header and sample and group columns              |
 | `--group-auto`          | Detect the group delimiter and number of fields from sample names                             |
-| `--group-diagonal`      | Group matrix diagonal: `within` (default), `zero`, `blank`, or `max`                          |
 | `--long`                | Also write pairwise distances, and group statistics with grouping, of all loci as long tables |
 | `-o`, `--output`        | Output directory. Default: `Align-Distance`                                                   |
 | `--prefix`              | Prefix of the output files. Default: `distance`                                               |

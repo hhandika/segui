@@ -1,7 +1,7 @@
 ---
 title: Sequence Removal
 sidebar:
-  order: 10
+  order: 17
 ---
 
 Remove sequences based on the sequence ID. It is the opposite of [sequence extraction](/docs/api-usage/python/sequence_extract/). It is faster when the sequence to be removed is less than a half of the total sequences. Available methods:
@@ -38,5 +38,5 @@ def remove_sequences():
     # Using regular expression method
     remove.remove_regex("(?i)^(abce)")
     # using list of sequence ID method
-    remove.remove_list(['abce1', 'abce2'])
+    remove.remove_id_list(['abce1', 'abce2'])
 ```

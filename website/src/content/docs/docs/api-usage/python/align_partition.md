@@ -1,7 +1,7 @@
 ---
 title: Alignment Partition Conversion
 sidebar:
-  order: 4
+  order: 6
 ---
 
 Convert alignment partition data between different formats. Available partition formats:
@@ -34,6 +34,8 @@ def convert_partitions():
     input_format = 'raxml'
     output_format = 'nexus'
     datatype = 'dna'
+    # Check the partition before converting. Set to False to skip checking.
+    check_partition = True
     output_dir = 'tests/output'
     convert = pysegul.PartitionConversion(
         input_format,
@@ -47,4 +49,8 @@ def convert_partitions():
 
 :::note
 Unlike most of other features, partition conversion does not support input directory.
+:::
+
+:::note
+In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. The upcoming release fixes it.
 :::

@@ -1998,11 +1998,10 @@ impl SseDecode for crate::api::sequence::AlignmentDistanceServices {
         let mut var_outputDir = <String>::sse_decode(deserializer);
         let mut var_model = <String>::sse_decode(deserializer);
         let mut var_triangle = <String>::sse_decode(deserializer);
-        let mut var_diagonal = <String>::sse_decode(deserializer);
+        let mut var_diagonal = <Option<String>>::sse_decode(deserializer);
         let mut var_prefix = <Option<String>>::sse_decode(deserializer);
         let mut var_grouping =
             <crate::api::sequence::DistanceGroupingParams>::sse_decode(deserializer);
-        let mut var_groupDiagonal = <String>::sse_decode(deserializer);
         let mut var_longFormat = <bool>::sse_decode(deserializer);
         return crate::api::sequence::AlignmentDistanceServices {
             input_files: var_inputFiles,
@@ -2014,7 +2013,6 @@ impl SseDecode for crate::api::sequence::AlignmentDistanceServices {
             diagonal: var_diagonal,
             prefix: var_prefix,
             grouping: var_grouping,
-            group_diagonal: var_groupDiagonal,
             long_format: var_longFormat,
         };
     }
@@ -3188,7 +3186,6 @@ impl flutter_rust_bridge::IntoDart for crate::api::sequence::AlignmentDistanceSe
             self.diagonal.into_into_dart().into_dart(),
             self.prefix.into_into_dart().into_dart(),
             self.grouping.into_into_dart().into_dart(),
-            self.group_diagonal.into_into_dart().into_dart(),
             self.long_format.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -4085,10 +4082,9 @@ impl SseEncode for crate::api::sequence::AlignmentDistanceServices {
         <String>::sse_encode(self.output_dir, serializer);
         <String>::sse_encode(self.model, serializer);
         <String>::sse_encode(self.triangle, serializer);
-        <String>::sse_encode(self.diagonal, serializer);
+        <Option<String>>::sse_encode(self.diagonal, serializer);
         <Option<String>>::sse_encode(self.prefix, serializer);
         <crate::api::sequence::DistanceGroupingParams>::sse_encode(self.grouping, serializer);
-        <String>::sse_encode(self.group_diagonal, serializer);
         <bool>::sse_encode(self.long_format, serializer);
     }
 }
