@@ -103,7 +103,7 @@ const HomeTool readSummaryTool = HomeTool(
   filledIcon: SeguiIcons.readSummaryFilled,
   svgAsset: 'assets/icons/read_summary_outlined.svg',
   scene: 'read_summary',
-  diagrams: ['genomic-summary'],
+  diagrams: ['read-summary'],
 );
 
 const HomeTool contigSummaryTool = HomeTool(
@@ -117,7 +117,7 @@ const HomeTool contigSummaryTool = HomeTool(
   filledIcon: SeguiIcons.contigSummaryFilled,
   svgAsset: 'assets/icons/contig_summary_outlined.svg',
   scene: 'contig_summary',
-  diagrams: ['genomic-summary'],
+  diagrams: ['contig-summary'],
 );
 
 const HomeTool mafConversionTool = HomeTool(

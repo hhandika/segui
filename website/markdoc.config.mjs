@@ -150,8 +150,12 @@ export default defineMarkdocConfig({
       render: component("./src/components/features/Filtering.astro"),
       selfClosing: true,
     },
-    genomicsummary: {
-      render: component("./src/components/features/GenomicSummary.astro"),
+    fastqsummary: {
+      render: component("./src/components/features/ReadSummary.astro"),
+      selfClosing: true,
+    },
+    contigsummary: {
+      render: component("./src/components/features/ContigSummary.astro"),
       selfClosing: true,
     },
     mafconversion: {

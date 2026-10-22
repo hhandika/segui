@@ -3,7 +3,7 @@
 
 export interface GuideLink {
   href: string;
-  /// Distinguishes several guides for one interface, such as reads and contigs.
+  /// Distinguishes several guides for one interface.
   label?: string;
 }
 
@@ -38,22 +38,11 @@ export const featureGuides = {
   "align-trim": { gui: gui("align-trim"), cli: cli("align-trim"), python: none },
   "align-unalign": { gui: gui("align-unalign"), cli: cli("align-unalign"), python: none },
   "align-summary": { gui: gui("align-summary"), cli: cli("align-summary"), python: python("align_summary") },
-  "genomic-summary": {
-    gui: [
-      { label: "reads", href: "/docs/gui-usage/read-summary/" },
-      { label: "contigs", href: "/docs/gui-usage/contig-summary/" },
-    ],
-    cli: [
-      { label: "reads", href: "/docs/cli-usage/read-summary/" },
-      { label: "contigs", href: "/docs/cli-usage/contig-summary/" },
-    ],
-    python: [
-      { label: "reads", href: "/docs/api-usage/python/read_summary/" },
-      {
-        label: "contigs",
-        href: "/docs/api-usage/python/contig_summary/",
-      },
-    ],
+  "read-summary": { gui: gui("read-summary"), cli: cli("read-summary"), python: python("read_summary") },
+  "contig-summary": {
+    gui: gui("contig-summary"),
+    cli: cli("contig-summary"),
+    python: python("contig_summary"),
   },
   "sequence-add": { gui: gui("sequence-add"), cli: cli("sequence-add"), python: none },
   "maf-convert": { gui: gui("maf-convert"), cli: cli("maf-convert"), python: none },

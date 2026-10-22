@@ -1,0 +1,21 @@
+---
+import Figure from "./Figure.astro";
+import GenomicLane from "./GenomicLane.astro";
+---
+
+<Figure
+  id="contig-summary"
+  viewBox="0 0 660 104"
+  title="Contig summary"
+  desc="FASTA contig files, plain or gzip-compressed, produce a contig summary table with contig counts and lengths, N50, N75, N90, and GC content."
+  caption="Accepts many files at once and writes one CSV table."
+>
+  <GenomicLane
+    input="sample.fasta"
+    inputSub="FASTA contigs"
+    output="Contig summary"
+    outputSub="CSV table"
+    stats={["Contig count and lengths", "N50, N75, N90", "GC content, base counts"]}
+    note="Counts of contigs ≥ 750, 1000, 1500 bp"
+  />
+</Figure>
