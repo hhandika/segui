@@ -2,16 +2,22 @@ import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/styles/design_tokens.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/services/io/export.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/info.dart';
+import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 
 /// Runs a tool, then offers a new run and sharing after it succeeds.
-class ExecutionButton extends StatelessWidget {
+///
+/// Editing the form after a successful run turns it into a re-run button,
+/// which runs again with the current input and options.
+class ExecutionButton extends ConsumerWidget {
   const ExecutionButton({
     super.key,
     required this.label,
@@ -32,32 +38,63 @@ class ExecutionButton extends StatelessWidget {
   final void Function() onNewRun;
 
   @override
-  Widget build(BuildContext context) {
-    if (isSuccess) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ToolFormEditScope? scope = ToolFormEditScope.maybeOf(context);
+    final bool isEdited = scope?.isEdited ?? false;
+    if (isSuccess && !isRunning && !isEdited) {
       return Wrap(
-        spacing: 12,
-        runSpacing: 8,
+        spacing: SeguiSpacing.lg,
+        runSpacing: SeguiSpacing.md,
         alignment: WrapAlignment.end,
         children: [
           NewRunButton(
             controller: controller,
             onPressed: onNewRun,
           ),
-          ShareButton(
-            isRunning: isRunning,
-            onPressed: onShared,
-          ),
+          if (canShareFiles)
+            ShareButton(
+              isRunning: isRunning,
+              onPressed: onShared,
+            ),
         ],
       );
     }
     return Tooltip(
-      message: isRunning ? 'Keep this screen open to avoid interruption.' : '',
+      message: _tooltip,
       child: PrimaryButton(
-        label: isRunning ? 'Running' : label,
-        onPressed: isRunning ? null : onExecuted,
+        label: _label,
+        onPressed: isRunning ? null : _runCallback(ref, scope),
         isRunning: isRunning,
       ),
     );
+  }
+
+  String get _label {
+    if (isRunning) {
+      return 'Running';
+    }
+    return isSuccess ? 'Re-run' : label;
+  }
+
+  String get _tooltip {
+    if (isRunning) {
+      return 'Keep this screen open to avoid interruption.';
+    }
+    return isSuccess ? 'Run again with the current input and options.' : '';
+  }
+
+  /// Starts each run with a fresh output baseline, so new-file highlights and
+  /// Quick Share cover only that run's files.
+  VoidCallback? _runCallback(WidgetRef ref, ToolFormEditScope? scope) {
+    final VoidCallback? execute = onExecuted;
+    if (execute == null) {
+      return null;
+    }
+    return () {
+      scope?.onRunStarted();
+      ref.read(fileOutputProvider.notifier).markRunStart();
+      execute();
+    };
   }
 }
 
@@ -99,13 +136,15 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        elevation: 0,
+        elevation: SeguiElevation.none,
       ),
       icon: isRunning
           ? const SizedBox(
-              height: 8,
-              width: 8,
-              child: CircularProgressIndicator(),
+              height: SeguiControlSize.iconSmall,
+              width: SeguiControlSize.iconSmall,
+              child: CircularProgressIndicator(
+                strokeWidth: SeguiStroke.regular,
+              ),
             )
           : Icon(Icons.adaptive.share),
       onPressed: onPressed,
@@ -133,8 +172,8 @@ class PrimaryButton extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return FilledButton.icon(
       style: FilledButton.styleFrom(
-        minimumSize: const Size(0, 52),
-        padding: const EdgeInsets.symmetric(horizontal: 28),
+        minimumSize: const Size(0, SeguiControlSize.primaryAction),
+        padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xxl),
         shape: const StadiumBorder(),
         textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
@@ -142,10 +181,10 @@ class PrimaryButton extends StatelessWidget {
       ),
       icon: isRunning
           ? SizedBox(
-              height: 18,
-              width: 18,
+              height: SeguiControlSize.iconSmall,
+              width: SeguiControlSize.iconSmall,
               child: CircularProgressIndicator(
-                strokeWidth: 2,
+                strokeWidth: SeguiStroke.regular,
                 color: colors.onSurfaceVariant,
               ),
             )
@@ -191,15 +230,12 @@ class ShowMoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: TextButton.icon(
-          onPressed: onPressed,
-          icon: Icon(
-            isShowMore ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-          ),
-          label: Text(isShowMore ? 'Fewer options' : 'Advanced options'),
+      child: TextButton.icon(
+        onPressed: onPressed,
+        icon: Icon(
+          isShowMore ? Icons.expand_less_rounded : Icons.expand_more_rounded,
         ),
+        label: Text(isShowMore ? 'Fewer options' : 'Advanced options'),
       ),
     );
   }
@@ -253,7 +289,7 @@ class _ExternalAppLauncherState extends State<ExternalAppLauncher> {
             );
     } else {
       return Padding(
-          padding: const EdgeInsets.only(top: 2),
+          padding: const EdgeInsets.only(top: SeguiSpacing.xxs),
           child: TextButton.icon(
             onPressed: () async =>
                 isMobile ? await _shareFile() : await _openExternalViewer(),
@@ -354,7 +390,7 @@ class CommonShareTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(SeguiRadius.lg)),
       ),
       leading: Icon(Icons.adaptive.share_rounded),
       title: const Text('Share'),
@@ -375,7 +411,7 @@ class FileInfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(SeguiRadius.lg)),
       ),
       leading: const Icon(Icons.info_outline_rounded),
       title: const Text('Details'),
@@ -399,7 +435,7 @@ class CommonDeleteTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(SeguiRadius.lg)),
       ),
       leading: Icon(
         Icons.delete_outline_rounded,

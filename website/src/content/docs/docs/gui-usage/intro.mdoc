@@ -1,0 +1,199 @@
+---
+title: Introduction
+sidebar:
+  order: 0
+---
+
+{% screenshots
+   large="gui/home-large.webp"
+   largeAlt="SEGUI home screen on a desktop with the navigation drawer, tool search, and tool catalog"
+   large2="gui/align-concat-large.webp"
+   large2Alt="SEGUI Concatenate alignments page on a desktop with twelve input files and the workbench"
+   small="gui/home-small.webp"
+   smallAlt="SEGUI home screen on a phone with the tool search, tool catalog, and navigation bar"
+   small2="gui/align-concat-small.webp"
+   small2Alt="SEGUI Concatenate alignments page on a phone with twelve input files" %}
+{% pin id="A" label="Navigation" large=[5, 25.6] small=[62, 94.8] /%}
+{% pin id="B" label="Tool catalog" large=[33, 67] small=[42.8, 49.1] /%}
+{% pin id="C" label="Tool search" large=[59, 22.8] small=[50, 32.8] /%}
+{% pin id="D" label="Input files" large2=[24.6, 34.6] small2=[14, 34.4] /%}
+{% pin id="E" label="File panel" large2=[85.8, 11.8] small2=[91.5, 11.8] /%}
+{% pin id="F" label="Run button" large2=[66, 94.5] small2=[88, 84.8] /%}
+{% /screenshots %}
+
+These guidelines apply to every task in the app. For task-specific options, see each task's page.
+
+## Task selection
+
+Pick a task group from the navigation bar {% ref id="A" /%}. Tasks are grouped into
+**Genomics**, **Alignments**, and **Sequences**, following the
+[task groups](/docs/features/#task-group). You can also open a tool from the catalog on the home
+screen {% ref id="B" /%}, or find it by name or file format with the tool search {% ref id="C" /%}.
+
+## File input
+
+Each tool starts with an input card {% ref id="D" /%}. It offers these routes:
+
+{% inputroutes /%}
+
+On phones and tablets, the operating system does not let apps read your files directly, so most
+routes copy or extract the input into SEGUI's private cache first:
+
+{% mobileflow /%}
+
+{% tabs syncKey="platform" %}
+{% tabitem label="Desktop" %}
+
+{% steps %}
+
+1. Select **Browse files** and pick the files. Hold `Ctrl`/`Cmd` or `Shift` to pick several, or
+   press `Ctrl`/`Cmd` + `A` to pick all.
+2. Or select **Browse folder**. SEGUI searches the folder and its subfolders and adds only files
+   that match the tool's input format.
+3. Or select **Open archive** and pick one `.zip`, `.tar.gz`, or `.tgz` file. You can also drag
+   files or folders onto the input area.
+4. Use **Add files**, **Add folder**, or **Add archive** to add more input to the list.
+
+{% /steps %}
+
+{% /tabitem %}
+{% tabitem label="Android" %}
+
+{% steps %}
+
+1. For a few files, select **Browse files**. Android copies each file into SEGUI, which shows
+   **Copying files…** while it works.
+2. For many files, select **Browse folder**. SEGUI copies matching files from the folder and its
+   subfolders and shows a counter, such as **Copying 120 / 1,500**. Select **✕** to stop
+   copying; files copied so far are kept.
+3. For the largest datasets, compress them into one `.zip` or `.tar.gz` file and select
+   **Open archive**. Only one file is copied, then SEGUI extracts it.
+4. You can also share files or an archive to SEGUI from Files, email, or a cloud drive. A
+   **shared files ready** banner appears; select **Use shared files** in the tool's picker.
+
+{% /steps %}
+
+{% /tabitem %}
+{% tabitem label="iOS & iPadOS" %}
+
+{% steps %}
+
+1. For a few files, select **Browse files**. iOS copies each file into SEGUI first.
+2. For many files, select **Browse folder**. SEGUI opens the folder in place, without copying,
+   and adds matching files from its subfolders.
+3. Or select **Open archive** and pick one `.zip` or `.tar.gz` file for SEGUI to extract.
+4. Or copy your data into the **SEGUI** folder: in the Files app, go to
+   **On My iPhone › SEGUI › inputs** (or use Finder on a Mac). Then select **SEGUI folder** in
+   the picker.
+5. You can also use **Open in SEGUI** or **Share** from another app. Select
+   **Use shared files** in the tool's picker.
+
+{% /steps %}
+
+{% /tabitem %}
+{% /tabs %}
+
+### Large datasets on mobile
+
+{% aside type="tip" %}
+For more than about 500 files on a phone, use **Folder** or **Archive** instead of picking files
+one by one. An archive is fastest because only one file is copied.
+{% /aside %}
+
+{% aside type="caution" title="Raw reads are not extracted" %}
+SEGUI reads gzipped raw reads (`.fastq.gz`, `.fq.gz`) as they are, so the raw read picker has no
+**Open archive** button and shared archives are not extracted for it. Add read files with
+**Browse files** or **Browse folder**.
+{% /aside %}
+
+### Removing files
+
+Open the input files panel {% ref id="E" /%} (on phones and narrow windows, tap the files button next to the tool
+name) and select **remove** next to a file. This only removes it from the list, not from your
+storage. Clearing the inputs also deletes SEGUI's cached copies, which are cleaned again at app
+start.
+
+### macOS file access
+
+SEGUI runs in the [App Sandbox](https://developer.apple.com/documentation/security/app_sandbox),
+so macOS may ask for permission the first time you pick files. If access still fails, add SEGUI
+under **System Settings › Privacy & Security › Full Disk Access**.
+
+## Input format
+
+SEGUI reads NEXUS, FASTA, and PHYLIP. **Auto** (the default) detects the format from the file
+extension; set it with the **Format** button otherwise. Unlike the CLI, the GUI only accepts
+standard extensions, so rename other files or use the CLI.
+
+{% aside %}
+Android may still accept non-standard extensions, but standard ones avoid issues and may become
+required.
+{% /aside %}
+
+## Data Type (alignment and standard sequence only)
+
+The app supports both nucleotide and amino acid sequences. By default, it sets to `DNA`. You can also use `Ignore` to ignore the data type.
+
+{% aside type="caution" %}
+We recommend using the `Ignore` option only if you are sure the file is intact and the output is not NEXUS.
+{% /aside %}
+
+## Optional Parameters
+
+Some tasks have optional parameters. Follow the task's documentation to learn more about the parameters and their usage.
+
+## Output
+
+On desktop platforms, the application saves the output in the user's chosen directory. However, due to the restrictive nature of mobile platforms, the application defaults to saving the output in its designated directory. To keep a copy elsewhere, export the output files as an archive or share them with other apps.
+
+## Workbench and Next Steps
+
+The `Workbench` tab in the file panel summarizes the input and output files.
+
+Use the **Inspector** card to check a single file without leaving the tool. Choose `Input` or `Output`, then pick a file from the searchable list. The inspector shows the file's format, content, and size, plus counts that match its content: sequences, sites, and data type for alignments; the number of partitions for partition files; rows and columns for tables; and lines for text files. Select `Open` to view the file, or `View all sequences` to open the alignment viewer on every FASTA, NEXUS, and PHYLIP file in the list, so you can step through them without picking each one. Before a run, the inspector lists the input files; after a run, it lists the new output files.
+
+After a run finishes, the workbench also lists:
+
+- **Parameters**: the settings used by the run.
+- **Suggested workflows**: each common workflow from the home screen that includes the tool, with its progress. Select `Continue` to open the next step.
+- **Other compatible tools**: tools that can take the run's data.
+
+Opening a next step or compatible tool passes the run's output files to it as input, so you can chain analyses without returning to the home screen. Tools that write only summaries, such as `Summarize alignments`, pass on their input files instead. Choose an output folder for each new step.
+
+## Exporting Output
+
+In the `Output` panel, choose `Select`, then pick the files or folders you want. Select `Export` in the toolbar under the file list and choose a format:
+
+- **ZIP**: a `.zip` archive that opens on any computer.
+- **Gzip**: a `.tar.gz` archive, common on Linux and computing clusters.
+
+Select `Export` to save the archive where you choose. Files keep their folders inside the archive. On macOS, Windows, Android, and iOS, you can select `Share` instead to send the archive to another app.
+
+## Sharing Output
+
+On macOS, Windows, Android, and iOS, the app can share output files with other devices or apps, such as [OneDrive](https://onedrive.live.com/), [DropBox](https://www.dropbox.com/), and other installed cloud provider apps. For instance, using AirDrop for macOS. After a task finishes, the run button {% ref id="F" /%} becomes `Quick Share`. Select it to compress the output files and share them as a single file. To share one file, open the menu (⋮) next to it in the `Output` tab and select `Share`. Linux has no system share sheet, so use `Export` there instead.
+
+## In-App built-in file viewer
+
+Supported file types:
+
+- Plain-text files (`.txt`)
+- Comma separated values (`.csv`)
+- Sequence files in FASTA, NEXUS, or PHYLIP format
+
+The app can directly view the supported file types. The content will be displayed in a new window. For a CSV file, the data is visualized in a table format with numbers formatted based on the locale settings of the device. For example in the US, the number will be formatted with thousand separator for integer and two decimal points for floating numbers (e.g., `1,000`, `0.65`). For the desktop version, you can also select open the file in other app. It will open default on default apps for the file type. This method also works for unsupported file types.
+
+### Alignment viewer
+
+FASTA, NEXUS, and PHYLIP files open in the alignment viewer. NEXUS partition files, which hold only a `sets` block of charsets, open as text instead, and the viewer leaves them out when it switches between files. It draws only the part of the alignment on screen, so alignments of 10,000 sites or more scroll smoothly. Taxon names stay pinned on the left and site numbers on the top.
+
+- **Switch files**: when you open a file from the input or output list, the viewer can move between the other alignment files in that list without going back. The file switcher sits above the toolbar, next to the gull. Use its arrows, press `Alt` + `↑` or `↓` (`Option` on macOS), or click the file name to search for a file. Files are listed in natural order, so `uce-2` comes before `uce-10`. Select the list button at the end of the switcher to show every file beside the viewer. Filter it by name, and use the sort button in the filter box to sort by name or size, in either direction. On phones, the list opens as a sheet. Zoom, colors, chunk size, and the name panel width stay the same when you switch. Selected sequences and the current chunk reset.
+
+- **Colors**: `Base` colors nucleotides (A green, C blue, G amber, T red) or amino acids by chemistry. `Mono` shows residues in one color, which makes gaps easy to spot. `Diff to first` grays out residues that match the first sequence, so only the differences stand out.
+- **Zoom**: use the zoom buttons or slider, or hold `Ctrl` (`Cmd` on macOS) and scroll. When zoomed out, letters are hidden and each site becomes a colored block. Select `Letters` to hide or show residue letters.
+- **Overview**: the strip above the grid shows the whole alignment. The outlined box marks what is on screen. Tap or drag the strip to jump to another part.
+- **Chunks**: the alignment is split into chunks of 250 to 2,000 sites (`Chunk` in the toolbar). The chunk list on the left shows each chunk's share of gaps and variable sites, so you can find informative or gappy regions fast. Select a chunk, or use the arrows, to move between chunks. Turn on `Page` to show one chunk at a time.
+- **Go to site**: enter a site number to jump to it.
+- **Details**: hover over or select a cell to see the taxon, site, ungapped position, and residue below the grid.
+- **Name panel**: drag the divider between the names and the grid to resize the names. Double-click it to reset the width.
+- **Select sequences**: click a name to select its sequence. Hold `Shift` to select a range, or `Ctrl` (`Cmd` on macOS) to add or remove one. Selected sequences are highlighted in the grid, and the overview dims the rest. Below the grid, choose `Copy as FASTA` to copy them, `Only selected` to hide the others, or `Pin to top` to move them above the rest. When `Diff to first` is on, residues are compared with the top sequence, so you can pin a sequence to use it as the reference. Select `Clear` to deselect all.

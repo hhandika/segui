@@ -1,0 +1,183 @@
+---
+title: Command Options
+sidebar:
+  order: 2
+---
+
+Every SEGUL task runs as a command and a subcommand, followed by options. Most tasks share the same input, output, and format options, so once you learn them for one task, they work for the rest. This page covers the shared options. Options specific to a task are listed on its own page.
+
+## 1. Read a command
+
+{% commandanatomy /%}
+
+The program is `segul` on Linux, macOS, and Windows Subsystem for Linux, and `segul.exe` in the Windows Command Prompt. SEGUL keeps its options consistent:
+
+| Part         | Form                                    | Example                         |
+| ------------ | --------------------------------------- | ------------------------------- |
+| Long option  | Two dashes, followed by a value         | `--dir alignments/`             |
+| Short option | One dash. Not every option has one      | `-d alignments/`                |
+| Flag         | No value. Turns a setting on            | `--force`                       |
+| `=` option   | Value in single or double quotes        | `--re="^Genus"`                 |
+
+Every short option also has a long form. Some options, such as `--datatype`, only have a long form.
+
+## 2. Choose a command
+
+SEGUL groups its tasks by the kind of input they take. Each command has its own subcommands:
+
+| Command     | Input                      | Subcommands |
+| ----------- | -------------------------- | ----------- |
+| `align`     | Alignments                 | [`concat`](/docs/cli-usage/align-concat/), [`convert`](/docs/cli-usage/align-convert/), [`distance`](/docs/cli-usage/align-distance/), [`filter`](/docs/cli-usage/align-filter/), [`split`](/docs/cli-usage/align-split/), [`summary`](/docs/cli-usage/align-summary/), [`trim`](/docs/cli-usage/align-trim/), [`unalign`](/docs/cli-usage/align-unalign/) |
+| `sequence`  | Alignments or sequences    | [`add`](/docs/cli-usage/sequence-add/), [`extract`](/docs/cli-usage/sequence-extract/), [`filter`](/docs/cli-usage/sequence-filter/), [`id`](/docs/cli-usage/sequence-id/), [`remove`](/docs/cli-usage/sequence-remove/), [`rename`](/docs/cli-usage/sequence-rename/), [`translate`](/docs/cli-usage/sequence-translate/), [`transpose`](/docs/cli-usage/sequence-transpose/) |
+| `partition` | Partition files            | [`convert`](/docs/cli-usage/align-partition/) |
+| `maf`       | Multiple alignment format  | [`convert`](/docs/cli-usage/maf-convert/), [`summary`](/docs/cli-usage/maf-summary/) |
+| `read`      | FASTQ reads                | [`summary`](/docs/cli-usage/read-summary/) |
+| `contig`    | Contigs                    | [`summary`](/docs/cli-usage/contig-summary/) |
+
+## 3. Get help
+
+The help output lists every option of a task, with its default and allowed values:
+
+```bash
+segul --help                         # All commands
+segul align --help                   # Subcommands of a command
+segul align concat --help            # Options of a task
+segul --version                      # Installed version
+```
+
+Use `-h` and `-V` as short forms of `--help` and `--version`. The options on these pages match SEGUL v0.24.0.
+
+## 4. Shared options
+
+| Option                 | Description                                                    | Available in |
+| ---------------------- | -------------------------------------------------------------- | ------------ |
+| `-d`, `--dir`          | Directory with the input files. Searched recursively           | All, except `align split` and `partition convert` |
+| `-i`, `--input`        | Input files. Allows wildcards                                  | All          |
+| `-f`, `--input-format` | Input format. Default: `auto`                                  | All, except `maf` |
+| `--datatype`           | Data type: `dna` (default), `aa`, or `ignore`                  | `align`, `sequence`, `partition` |
+| `-o`, `--output`       | Output directory. Default: named after the task                | All          |
+| `-F`, `--output-format`| Output sequence format                                         | Tasks that write sequences |
+| `--prefix`             | Prefix of the output files                                     | Tasks that write a single file or summary |
+| `--force`              | Overwrite an existing output directory without asking          | All          |
+| `--log`                | Log file path. Default: `segul.log`                            | All          |
+| `-h`, `--help`         | Print help                                                     | All          |
+
+### Input
+
+Use one of the two input options:
+
+{% tabs syncKey="segul-input" %}
+{% tabitem label="--dir" %}
+
+Point SEGUL to a directory. It finds every matching file in the directory and its subdirectories, and writes the directory path to the log:
+
+```bash
+segul align summary --dir alignments/
+```
+
+Most tasks should use `--dir`. Versions before v0.19.0 also need `--input-format` with `--dir`.
+
+{% /tabitem %}
+{% tabitem label="--input" %}
+
+List files, or let the shell expand a wildcard. Use it for nested folders or to pick files by name:
+
+```bash
+segul align summary --input parent_dir/*/contig.fasta
+```
+
+SEGUL detects the format of each file from its extension. For extensions it does not know, such as `.aln`, set the format:
+
+```bash
+segul align summary --input alignments/*.aln --input-format fasta
+```
+
+{% aside type="note" %}
+Wildcards in the Windows Command Prompt only match files, not directories.
+{% /aside %}
+
+{% /tabitem %}
+{% /tabs %}
+
+### Input format
+
+SEGUL detects the input format from the file extension, so most commands need no `--input-format`. Set it for unusual extensions. Interleaved and sequential files are both read.
+
+| Command                  | Formats                                    |
+| ------------------------ | ------------------------------------------ |
+| `align`, `sequence`, `partition` | `auto` (default), `fasta`, `nexus`, `phylip` |
+| `read`                   | `auto` (default), `fastq`, `gzip`          |
+| `contig`                 | `auto` (default), `fasta`, `gzip`          |
+
+`read` commands detect gzip and BGZF compression from the file content, so the input format only decides which files `-d` finds.
+
+`maf` commands read `.maf` and `.maf.gz` files and take no input format.
+
+:::note
+SEGUL reads relaxed PHYLIP, where names and sequences are separated by spaces and names can be any length. Strict PHYLIP, with blocks of ten characters separated by spaces, is not supported:
+
+```plaintext
+3 20
+Seq1    ATCGATCGATATCGATCGAT
+Seq2    ATCGATCGATATCGATCGAT
+Seq3    ATCGATCGATATCGATCGAT
+```
+
+:::
+
+### Data types
+
+Sequences are DNA by default. Use `--datatype aa` for amino acid sequences. SEGUL then checks that every sequence holds only valid IUPAC characters.
+
+| Value    | Use for                                                       |
+| -------- | ------------------------------------------------------------- |
+| `dna`    | DNA sequences (default)                                       |
+| `aa`     | Amino acid sequences                                          |
+| `ignore` | Skip the character check. Up to 40% faster                    |
+
+`--datatype ignore` is safe when:
+
+1. The sequences are DNA.
+2. The sequences are amino acids, and either the input or the output is not NEXUS.
+3. You have already run the same dataset through SEGUL, or you are sure it holds only IUPAC characters and no spaces in sequence names.
+
+Tasks that compute statistics, such as `align summary` and `align distance`, need `dna` or `aa`.
+
+### Output
+
+Every task writes to its own default directory in the current working directory, such as `Align-Concat` for `align concat`. Use `--output` or `-o` to choose another directory:
+
+```bash
+segul align concat --dir alignments/ --output concat
+```
+
+If the directory exists, SEGUL asks before removing it. Add `--force` to remove it without asking. Use `--force` on HPC clusters and in scripts, where no one can answer the prompt.
+
+### Output format
+
+Tasks that write sequences take `--output-format` or `-F`. Most default to `nexus`. Check each task's default with `--help`.
+
+| Sequential | Interleaved |
+| ---------- | ----------- |
+| `nexus`    | `nexus-int` |
+| `phylip`   | `phylip-int` |
+| `fasta`    | `fasta-int` |
+
+`align unalign`, `sequence add`, and `sequence transpose` write FASTA only: `fasta` or `fasta-int`.
+
+### Prefix and log
+
+`--prefix` sets the name of the output files of tasks that write a single file or a summary, such as `align concat`, `align summary`, and `read summary`. `sequence id` also takes `-p` as a short form.
+
+SEGUL records every run in `segul.log` in the current working directory. Use `--log` to write it elsewhere. See [Log file](/docs/cli-usage/log/).
+
+## 5. Find task options
+
+Each task page ends with an **All options** table that lists the shared and task-specific options together.
+
+{% cardgrid %}
+{% linkcard title="Alignment concatenation" description="segul align concat" href="/docs/cli-usage/align-concat/" /%}
+{% linkcard title="Alignment filtering" description="segul align filter" href="/docs/cli-usage/align-filter/" /%}
+{% linkcard title="Sequence renaming" description="segul sequence rename" href="/docs/cli-usage/sequence-rename/" /%}
+{% linkcard title="MAF conversion" description="segul maf convert" href="/docs/cli-usage/maf-convert/" /%}
+{% /cardgrid %}

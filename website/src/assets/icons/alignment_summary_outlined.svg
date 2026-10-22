@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+     fill="none" stroke="currentColor" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd">
+  <path d="M 15.5,12 A 3.5,3.5 0 1 1 15.49,12 Z" />
+  <path data-role="detail" fill="none" d="M 18,18 L 21,21" />
+  <path data-role="detail" fill="none" d="M 3,4 H 21" />
+  <path data-role="detail" fill="none" d="M 3,8 H 8" />
+  <path data-role="detail" fill="none" d="M 12,8 H 21" />
+  <path data-role="detail" fill="none" d="M 3,12 H 7.5" />
+  <path data-role="detail" fill="none" d="M 3,16 H 7.5" />
+  <path data-role="detail" fill="none" d="M 3,20 H 9" />
+</svg>

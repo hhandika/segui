@@ -1,0 +1,42 @@
+---
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import FileCard from "./FileCard.astro";
+import Figure from "./Figure.astro";
+import { concatTones, locusOne, locusTwo, sampleIds } from "./layout";
+
+const pitch = 18;
+const rows = locusOne.map((seq, i) => seq + locusTwo[i]);
+const left = 56;
+const splitAt = left + locusOne[0].length * pitch;
+const end = left + rows[0].length * pitch - 2;
+---
+
+<Figure
+  id="splitting"
+  viewBox="0 0 730 230"
+  title="Alignment splitting"
+  desc="A concatenated 18-site alignment and a partition defining locus_1 at sites 1 to 10 and locus_2 at sites 11 to 18 are split back into two separate alignments, locus_1 and locus_2."
+  caption="Splitting is the reverse of concatenation. It takes one concatenated alignment and its partition."
+>
+  <Alignment
+    x={left}
+    y={40}
+    rows={rows}
+    ids={sampleIds}
+    title="concatenated"
+    colTones={concatTones}
+    cell={16}
+  />
+  <path d={`M${left},102 v6 H${splitAt - 4} v-6`} class="fx-line" />
+  <path d={`M${splitAt},102 v6 H${end} v-6`} class="fx-line" />
+  <text x={(left + splitAt) / 2} y="128" text-anchor="middle" class="fx-mono fx-small">1–10</text>
+  <text x={(splitAt + end) / 2} y="128" text-anchor="middle" class="fx-mono fx-small">11–18</text>
+
+  <FileCard x={left} y={150} w={230} h={60} name="partition.txt" sub="or NEXUS in-file charset" />
+
+  <Arrow x1={398} y1={110} x2={470} y2={110} label="split" />
+
+  <Alignment x={540} y={36} rows={locusOne} ids={sampleIds} title="locus_1" tone="l1" cell={16} />
+  <Alignment x={540} y={140} rows={locusTwo} ids={sampleIds} title="locus_2" tone="l2" cell={16} />
+</Figure>

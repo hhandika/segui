@@ -1,0 +1,42 @@
+---
+import { Image } from "astro:assets";
+import logo from "../assets/logo.svg";
+import { docsPath, githubUrl, navItems } from "../data/site";
+
+const links = [
+  ...navItems,
+  { path: docsPath, label: "Docs" },
+  { path: "/docs/support/", label: "Support" },
+  { path: "/docs/privacy/", label: "Privacy" },
+  { path: "/docs/terms/", label: "Terms" },
+];
+---
+
+<footer
+  class="border-t border-leaf-100 bg-leaf-50/60 px-6 py-10 text-sm text-leaf-900 dark:border-leaf-900 dark:bg-leaf-950/40 dark:text-leaf-100"
+>
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <a href="/" class="flex items-center gap-3 no-underline">
+      <Image src={logo} alt="" width={32} height={32} class="h-8 w-8 rounded-lg" />
+      <span class="font-semibold tracking-wide">SEGUL</span>
+    </a>
+    <nav aria-label="Footer" class="flex flex-wrap gap-x-5 gap-y-2">
+      {
+        links.map(({ path, label }) => (
+          <a href={path} class="no-underline hover:text-leaf-600 dark:hover:text-leaf-300">
+            {label}
+          </a>
+        ))
+      }
+      <a href={githubUrl} class="no-underline hover:text-leaf-600 dark:hover:text-leaf-300">
+        GitHub
+      </a>
+    </nav>
+  </div>
+  <p class="mx-auto mt-6 max-w-6xl text-xs text-leaf-800/70 dark:text-leaf-200/60">
+    © {new Date().getFullYear()} H. Handika &amp; J. A. Esselstyn. Funded in part by the
+    National Science Foundation.
+  </p>
+</footer>

@@ -6,6 +6,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/text.dart';
 import 'package:segui/services/io/logging.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class LogScreen extends StatefulWidget {
   const LogScreen({super.key});
@@ -41,7 +42,7 @@ class LogListView extends StatelessWidget {
           if (snapshot.hasData) {
             final logs = snapshot.data;
             return Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(SeguiSpacing.xl),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,

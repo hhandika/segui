@@ -6,6 +6,9 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `common_parent`, `entries`, `extract_tar_gz`, `extract_zip`, `target_path`, `write_entry`, `write_tar_gz`, `write_zip`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `clone`, `eq`, `fmt`
+
 class ArchiveServices {
   final String outputPath;
   final List<String> inputFiles;
@@ -33,4 +36,77 @@ class ArchiveServices {
           runtimeType == other.runtimeType &&
           outputPath == other.outputPath &&
           inputFiles == other.inputFiles;
+}
+
+/// Archive format for exporting files.
+enum ExportFormat {
+  /// A zip archive, readable on any operating system.
+  zip,
+
+  /// A gzip-compressed tar archive.
+  tarGz,
+  ;
+}
+
+/// Bundles files into one archive. Entries keep their paths relative to
+/// the deepest folder the input files share, so files with the same name
+/// in different folders stay apart.
+class ExportServices {
+  final String outputPath;
+  final List<String> inputFiles;
+  final ExportFormat format;
+
+  const ExportServices({
+    required this.outputPath,
+    required this.inputFiles,
+    required this.format,
+  });
+
+  Future<void> write() =>
+      RustLib.instance.api.crateApiArchiveExportServicesWrite(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      outputPath.hashCode ^ inputFiles.hashCode ^ format.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ExportServices &&
+          runtimeType == other.runtimeType &&
+          outputPath == other.outputPath &&
+          inputFiles == other.inputFiles &&
+          format == other.format;
+}
+
+/// Extracts a zip or gzip-compressed tar archive into a folder. Entries
+/// that would land outside the folder, hidden files, and macOS metadata
+/// are skipped.
+class ExtractServices {
+  final String inputPath;
+  final String outputDir;
+
+  const ExtractServices({
+    required this.inputPath,
+    required this.outputDir,
+  });
+
+  /// Extracts the archive and returns the number of files written.
+  Future<int> extract() =>
+      RustLib.instance.api.crateApiArchiveExtractServicesExtract(
+        that: this,
+      );
+
+  @override
+  int get hashCode => inputPath.hashCode ^ outputDir.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ExtractServices &&
+          runtimeType == other.runtimeType &&
+          inputPath == other.inputPath &&
+          outputDir == other.outputDir;
 }

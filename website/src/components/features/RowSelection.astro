@@ -1,0 +1,49 @@
+---
+/// Sequences in, a subset out: shared by extraction, removal, and sequence
+/// filtering. Rows not in `keep` are marked and left out of the result.
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import Chip from "./Chip.astro";
+import Figure from "./Figure.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  caption: string;
+  rule: string;
+  verb: string;
+  rows: string[];
+  keep: number[];
+}
+
+const { id, title, caption, rule, verb, rows, keep } = Astro.props;
+const ids = rows.map((_, i) => `seq${i + 1}`);
+const dropped = rows.map((_, i) => i).filter((i) => !keep.includes(i));
+const top = 70;
+const pitch = 20;
+---
+
+<Figure
+  id={id}
+  viewBox={`0 0 640 ${top + rows.length * pitch + 10}`}
+  title={title}
+  desc={`${rule}. Of ${ids.join(", ")}, the result keeps ${keep.map((i) => ids[i]).join(", ")}.`}
+  caption={caption}
+>
+  <Chip x={0} y={0} text={rule} accent />
+  <Alignment x={56} y={top} rows={rows} ids={ids} title="locus_1" faded={dropped} />
+  {
+    rows.map((_, i) => (
+      <text
+        x="266"
+        y={top + i * pitch + 9}
+        dominant-baseline="central"
+        class={keep.includes(i) ? "fx-accent-text fx-small" : "fx-danger-text fx-small"}
+      >
+        {keep.includes(i) ? "✓" : "✕"}
+      </text>
+    ))
+  }
+  <Arrow x1={290} y1={top + 30} x2={360} y2={top + 30} label={verb} />
+  <Alignment x={430} y={top} rows={keep.map((i) => rows[i])} ids={keep.map((i) => ids[i])} title="result" />
+</Figure>

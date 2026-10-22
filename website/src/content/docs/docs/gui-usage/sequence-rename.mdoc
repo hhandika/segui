@@ -1,0 +1,62 @@
+---
+title: Sequence ID Renaming
+sidebar:
+  order: 12
+---
+
+{% screenshots
+   large="gui/sequence-rename-large.webp"
+   largeAlt="SEGUI Rename sequence IDs page on a desktop with the tool form and file panel"
+   small="gui/sequence-rename-small.webp"
+   smallAlt="SEGUI Rename sequence IDs page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[43.8, 13.5] small=[63.1, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+A quick way to rename sequence IDs in across many alignments.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Rename sequence IDs` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select renaming parameters.
+5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+6. Select the output sequence format.
+7. Select the run button {% ref id="D" /%}, labeled `Rename`, to start the task.
+
+## Renaming Parameters
+
+### Input file
+
+Example input file:
+
+The first column should be the original IDs and the second column should the new IDs. Save as `.tsv` or `.csv`. For example:
+
+| Original_names        | New_names                |
+| --------------------- | ------------------------ |
+| Genus_species1_random | Genus_species1_voucherID |
+| Genus_species2_random | Genus_species2_voucherID |
+
+{% aside type="tip" %}
+You can use the [sequence ID extraction](/docs/gui-usage/sequence-id/) feature to generate all the unique sequence IDs in your dataset. Then, input the file into an Excel sheet and add the new names in the second column.
+{% /aside %}
+
+### Remove text
+
+You can remove a specific text from the sequence IDs. For example, you can remove `_contigs` from all the sequence IDs.
+
+### Remove regular expression
+
+Use the regular expression to remove a specific pattern from the sequence IDs. For example, you can remove `^locus[0-9]` from all the sequence IDs. This will remove all the sequence IDs starting with `locus` followed by a number. If you select `remove all matches`, it will remove all the matches found in a sequence ID. Otherwise, it will remove the first match found in a sequence ID, then continue to the next sequence ID.
+
+### Find and replace a matching text
+
+You can find a specific text and replace it with another text. For example, you can replace `locus01` with `locus`.
+
+### Find and replace regular expression
+
+Use the regular expression to find a specific pattern and replace it with a string. For example, you can replace `^locus[0-9]` with `locus`. This will replace all the sequence IDs starting with `locus` followed by a number with `locus`. Similar to other regular expression options, you can select `replace all matches` to replace all the matches found in a sequence ID.

@@ -8,6 +8,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/metadata.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class UnknownFileView extends StatelessWidget {
   const UnknownFileView({super.key, required this.file});
@@ -27,19 +28,19 @@ class UnknownFileView extends StatelessWidget {
       backgroundColor: getSEGULBackgroundColor(context),
       body: Center(
         child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(SeguiSpacing.xl),
             child: Container(
               decoration: getContainerDecoration(context),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(SeguiSpacing.xl),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         PrimaryFileIcon(file: file),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: SeguiSpacing.md),
                         FileIOSubtitle(file: file),
                       ],
                     ),
@@ -76,7 +77,7 @@ class UnknownFileViewBody extends StatelessWidget {
                   'Unsupported file format.',
                 ),
                 // Open external viewer
-                const SizedBox(height: 8),
+                const SizedBox(height: SeguiSpacing.md),
                 ExternalAppLauncher(file: file, fromPopUp: false)
               ],
             );
@@ -96,8 +97,8 @@ class UnknownViewIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return SvgPicture.asset(
       'assets/images/unknown.svg',
-      width: 80,
-      height: 80,
+      width: SeguiControlSize.illustration,
+      height: SeguiControlSize.illustration,
       colorFilter: ColorFilter.mode(
         Theme.of(context).colorScheme.primary,
         BlendMode.srcIn,

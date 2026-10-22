@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class CommonDivider extends StatelessWidget {
   const CommonDivider({super.key});
@@ -12,8 +13,8 @@ class CommonDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Divider(
-      thickness: 2,
-      height: 2,
+      thickness: SeguiStroke.regular,
+      height: SeguiStroke.regular,
       color: getBorderColor(context),
     );
   }
@@ -25,9 +26,9 @@ class DrawerDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Divider(
-      thickness: 2,
-      indent: 8,
-      endIndent: 8,
+      thickness: SeguiStroke.regular,
+      indent: SeguiSpacing.md,
+      endIndent: SeguiSpacing.md,
     );
   }
 }
@@ -38,8 +39,8 @@ class TopDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Divider(
-      thickness: 4,
-      height: 4,
+      thickness: SeguiStroke.thick,
+      height: SeguiStroke.thick,
       color: getBorderColor(context),
     );
   }
@@ -58,10 +59,10 @@ class SecondaryMenuTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 2),
+      padding: const EdgeInsets.only(left: SeguiSpacing.xxs),
       child: ListTile(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(SeguiRadius.sm),
         ),
         title: Text(text, style: Theme.of(context).textTheme.labelLarge),
         onTap: onTap,
@@ -76,9 +77,9 @@ class SharedProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: 8,
-      width: 8,
-      child: CircularProgressIndicator(),
+      height: SeguiControlSize.iconSmall,
+      width: SeguiControlSize.iconSmall,
+      child: CircularProgressIndicator(strokeWidth: SeguiStroke.regular),
     );
   }
 }
@@ -153,10 +154,10 @@ class FileErrorIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(SeguiSpacing.md),
         child: SvgPicture.asset(
           'assets/images/error.svg',
-          height: 80,
+          height: SeguiControlSize.illustration,
           colorFilter: ColorFilter.mode(
             getIconColor(context),
             BlendMode.srcIn,
@@ -246,22 +247,23 @@ class SheetContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isCompact = isPhoneScreen(context);
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, isCompact ? 0 : 24, 24, 16),
+      padding: EdgeInsets.fromLTRB(SeguiSpacing.xxl,
+          isCompact ? 0 : SeguiSpacing.xxl, SeguiSpacing.xxl, SeguiSpacing.xl),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 16),
+          const SizedBox(height: SeguiSpacing.xl),
           Flexible(child: SingleChildScrollView(child: child)),
           if (actions.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: SeguiSpacing.xl),
             SizedBox(
               width: double.infinity,
               child: Wrap(
                 alignment: WrapAlignment.end,
-                spacing: 8,
-                runSpacing: 8,
+                spacing: SeguiSpacing.md,
+                runSpacing: SeguiSpacing.md,
                 children: actions,
               ),
             ),

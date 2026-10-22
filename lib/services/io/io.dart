@@ -25,6 +25,14 @@ enum SupportedTask {
   sequenceRenaming,
   sequenceUniqueId,
   sequenceTranslation,
+  alignmentDistance,
+  alignmentTrimming,
+  alignmentUnalignment,
+  genomicMafConversion,
+  genomicMafSummary,
+  sequenceAddition,
+  sequenceFiltering,
+  sequenceTransposition,
 }
 
 class ArchiveRunner {
@@ -57,6 +65,15 @@ class IOServices {
     await SharePlus.instance.share(ShareParams(
       files: [XFile(file.path)],
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    ));
+  }
+
+  Future<void> shareFiles(BuildContext context, List<File> files) async {
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(ShareParams(
+      files: files.map((e) => XFile(e.path)).toList(),
+      sharePositionOrigin:
+          box == null ? null : box.localToGlobal(Offset.zero) & box.size,
     ));
   }
 
@@ -149,16 +166,24 @@ class TempDataServices extends FileUtils {
   TempDataServices();
 
   Future<String> calculateAppTempDirUsage() async {
-    final dir = await getTemporaryDirectory();
-    final files = dir.listSync().whereType<File>().toList();
+    final files = await _listTempFiles();
     final totalSize = await calculateTotalSize(files);
     return formatSize(totalSize);
   }
 
   Future<void> clearTempData() async {
-    final dir = await getTemporaryDirectory();
-    final files = dir.listSync().whereType<File>().toList();
+    final files = await _listTempFiles();
     await deleteFiles(files);
+  }
+
+  /// Files in the temporary directory and its subfolders, such as the
+  /// copies mobile pickers make.
+  Future<List<File>> _listTempFiles() async {
+    final dir = await getTemporaryDirectory();
+    return dir
+        .listSync(recursive: true, followLinks: false)
+        .whereType<File>()
+        .toList();
   }
 }
 
@@ -215,6 +240,18 @@ Future<Directory> getSeguiDirectory() async {
   const appDir = 'segui-data';
   final dir = await getApplicationDocumentsDirectory();
   final seguiDir = Directory(p.join(dir.path, appDir));
+  if (!await seguiDir.exists()) {
+    await seguiDir.create(recursive: true);
+  }
+  return seguiDir;
+}
+
+/// SEGUI's `inputs` folder in the app documents directory. On iOS, users
+/// can copy datasets into it through the Files app or Finder.
+Future<Directory> getSeguiInputDirectory() async {
+  const inputDir = 'inputs';
+  final dir = await getApplicationDocumentsDirectory();
+  final seguiDir = Directory(p.join(dir.path, inputDir));
   if (!await seguiDir.exists()) {
     await seguiDir.create(recursive: true);
   }

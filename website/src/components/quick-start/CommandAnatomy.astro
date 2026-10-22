@@ -1,0 +1,56 @@
+---
+/// The parts of a `segul` command, spread apart so each one can be
+/// underlined and labeled.
+import Figure from "../features/Figure.astro";
+
+const parts = [
+  { text: "segul", label: "Program" },
+  { text: "align", label: "Command", sub: "task group" },
+  { text: "concat", label: "Subcommand", sub: "task" },
+  { text: "--dir alignments/", label: "Input", sub: "folder or files" },
+  { text: "--output aln-concat", label: "Options", sub: "optional" },
+];
+const charWidth = 10.2;
+const startX = 24;
+const baseline = 56;
+// Labels are wider than short parts like `segul`, so each slot fits both.
+const labelCharWidth = 7.6;
+const slotGap = 14;
+let cursor = startX;
+const placed = parts.map((part) => {
+  const w = part.text.length * charWidth;
+  const slot = Math.max(w, part.label.length * labelCharWidth);
+  const x = cursor + (slot - w) / 2;
+  cursor += slot + slotGap;
+  return { ...part, x, w };
+});
+const width = Math.ceil(cursor - slotGap + startX);
+---
+
+<Figure
+  id="command-anatomy"
+  viewBox={`0 0 ${width} 140`}
+  title="Parts of a SEGUL command"
+  desc="The command segul align concat --dir alignments/ --output aln-concat has five parts: the program segul, the command align for the task group, the subcommand concat for the task, the input option --dir alignments/, and the optional --output option."
+  caption="Without --output, SEGUL writes to a default folder named after the task, such as Align-Concat."
+>
+  <rect x="2" y="18" width={width - 4} height="56" rx="10" class="fx-panel" />
+  {
+    placed.map((part, i) => (
+      <g>
+        <text x={part.x} y={baseline} class={`fx-mono${i < 3 ? " fx-accent-text" : ""}`} style="font-size: 16px; white-space: pre">
+          {part.text}
+        </text>
+        <line x1={part.x} x2={part.x + part.w} y1="86" y2="86" class={i < 3 ? "fx-line-accent" : "fx-line"} />
+        <text x={part.x + part.w / 2} y="106" text-anchor="middle" class="fx-small fx-title">
+          {part.label}
+        </text>
+        {part.sub && (
+          <text x={part.x + part.w / 2} y="124" text-anchor="middle" class="fx-muted fx-small">
+            {part.sub}
+          </text>
+        )}
+      </g>
+    ))
+  }
+</Figure>

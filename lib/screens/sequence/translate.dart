@@ -13,6 +13,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceTranslation;
 
@@ -37,6 +38,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
   final IOController _ctr = IOController.empty();
   bool _isInterleave = false;
   String _readingFrame = readingFrame[0];
+  bool _isAutoFrame = false;
   int _tableIndex = 0;
 
   @override
@@ -91,10 +93,20 @@ class TranslatePageState extends ConsumerState<TranslatePage>
               });
             },
           ),
+          SwitchForm(
+            label: 'Detect reading frame automatically',
+            value: _isAutoFrame,
+            onPressed: (value) {
+              setState(() {
+                _isAutoFrame = value;
+              });
+            },
+          ),
           SharedDropdownField(
             value: _readingFrame,
             label: 'Reading Frame',
             items: readingFrame,
+            enabled: !_isAutoFrame,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
@@ -152,6 +164,19 @@ class TranslatePageState extends ConsumerState<TranslatePage>
     return _ctr.isValid && _ctr.outputFormatController != null;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+        RunParameter('Interleaved format', _isInterleave ? 'Yes' : 'No'),
+        RunParameter('Translation table', translationTable[_tableIndex]),
+        RunParameter(
+          'Detect reading frame automatically',
+          _isAutoFrame ? 'Yes' : 'No',
+        ),
+        if (!_isAutoFrame) RunParameter('Reading frame', _readingFrame),
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -182,9 +207,10 @@ class TranslatePageState extends ConsumerState<TranslatePage>
         inputFmt: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir,
-        outputFmt: _ctr.outputFormatController!,
+        outputFmt: getOutputFmt(_ctr.outputFormatController!, _isInterleave),
         tableIndex: _tableIndex,
         readingFrame: _readingFrame,
+        isAutoFrame: _isAutoFrame,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
@@ -226,6 +252,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -14,6 +14,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceExtraction;
 
@@ -57,7 +58,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
         FormCard(children: [
           DropdownButtonFormField(
             decoration: const InputDecoration(
-              labelText: 'Select method',
+              labelText: 'Extract by',
             ),
             isExpanded: true,
             initialValue: _extractionOptionsController,
@@ -71,7 +72,6 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
             onChanged: (ExtractionOptions? newValue) {
               setState(() {
                 _extractionOptionsController = newValue!;
-                _ctr.isSuccess = false;
               });
             },
           ),
@@ -92,6 +92,10 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                   hint: _extractionOptionsController == ExtractionOptions.regex
                       ? '^Rattus'
                       : 'seq1;seq2;seq3',
+                  helper:
+                      _extractionOptionsController == ExtractionOptions.regex
+                          ? 'Extracts sequences whose IDs match the pattern.'
+                          : 'Separate IDs with semicolons.',
                 ),
         ]),
         const CardTitle(step: 3, title: 'Output'),
@@ -108,7 +112,6 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
               setState(() {
                 if (value != null) {
                   _ctr.outputFormatController = value;
-                  _ctr.isSuccess = false;
                 }
               });
             },
@@ -156,6 +159,21 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
           ),
     );
   }
+
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Extract by',
+          extractionOptionsMap[_extractionOptionsController] ?? '',
+        ),
+        if (_extractionOptionsController == ExtractionOptions.regex)
+          RunParameter('Regular expression', _idRegexController.text),
+        if (_extractionOptionsController == ExtractionOptions.id)
+          RunParameter('Sequence ID', _idRegexController.text),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+      ];
 
   bool _isValid(List<SegulInputFile> inputFiles) {
     final hasOutputFormat = _ctr.outputFormatController != null;
@@ -252,6 +270,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -7,12 +7,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/alignment/entry_page.dart';
+import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
+import 'package:segui/screens/shared/io/workbench_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/services/home_features.dart';
@@ -22,6 +24,7 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/styles/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,6 +79,22 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Open navigation drawer keeps to its narrow width',
+      (tester) async {
+    await pumpPage(
+      tester,
+      const Size(1600, 1000),
+      page: const Row(
+        children: [ExpandedScreenDrawer(), Expanded(child: AlignmentPage())],
+      ),
+    );
+
+    expect(
+      tester.getSize(find.byType(NavigationDrawer)).width,
+      navigationDrawerWidth,
+    );
   });
 
   testWidgets('Medium tool page swaps the tool list for a switcher',
@@ -170,7 +189,7 @@ void main() {
     expect(width, greaterThan(minFilePanelWidth));
   });
 
-  test('File panel shows output after a run and summary after new files',
+  test('File panel shows the workbench after a run and after new files',
       () async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],
@@ -179,14 +198,16 @@ void main() {
     final Directory dir = await Directory.systemTemp.createTemp('segui-run-');
     addTearDown(() => dir.delete(recursive: true));
 
-    expect(container.read(filePanelViewProvider), FilePanelView.summary);
+    expect(container.read(filePanelViewProvider), FilePanelView.workbench);
     await container.read(fileOutputProvider.notifier).add(dir);
     await File(p.join(dir.path, 'concat.nex')).writeAsString('#NEXUS\n');
+    container.read(filePanelViewProvider.notifier).show(FilePanelView.output);
     await container.read(fileOutputProvider.notifier).refresh();
-    expect(container.read(filePanelViewProvider), FilePanelView.output);
+    expect(container.read(filePanelViewProvider), FilePanelView.workbench);
 
+    container.read(filePanelViewProvider.notifier).show(FilePanelView.input);
     await container.read(fileInputProvider.notifier).clearAll();
-    expect(container.read(filePanelViewProvider), FilePanelView.summary);
+    expect(container.read(filePanelViewProvider), FilePanelView.workbench);
   });
 
   testWidgets('New tool page resets the file panel without a build error',
@@ -213,7 +234,7 @@ void main() {
       ),
     ));
     expect(tester.takeException(), isNull);
-    expect(find.text('summary'), findsOneWidget);
+    expect(find.text('workbench'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 1));
   });
@@ -251,7 +272,7 @@ void main() {
     );
   });
 
-  testWidgets('Input picker shows the tool icon after files are selected',
+  testWidgets('Input picker switches from drop zone to selection card',
       (tester) async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],
@@ -266,23 +287,95 @@ void main() {
     }).toList();
     await pumpPage(tester, const Size(1600, 1000), container: container);
 
-    Finder pickerIcon(IconData icon) => find.descendant(
-          of: find.byType(PickerLabel),
+    Finder pickerIcon(Type picker, IconData icon) => find.descendant(
+          of: find.byType(picker),
           matching: find.byIcon(icon),
         );
-    expect(pickerIcon(Icons.file_copy_outlined), findsOneWidget);
-    expect(pickerIcon(SeguiIcons.concatenateFilled), findsNothing);
+    expect(
+        pickerIcon(PickerDropZone, Icons.upload_file_outlined), findsOneWidget);
+    expect(find.text('Browse files'), findsOneWidget);
+    expect(find.text('Browse folder'), findsOneWidget);
+    expect(find.byType(PickerSelectionCard), findsNothing);
 
     await tester.runAsync(() => container
         .read(fileInputProvider.notifier)
         .addFiles(files, sequenceTypeGroup));
     await tester.pump();
-    expect(pickerIcon(SeguiIcons.concatenateFilled), findsOneWidget);
-    expect(pickerIcon(Icons.file_copy_outlined), findsNothing);
+    expect(pickerIcon(PickerSelectionCard, SeguiIcons.concatenateFilled),
+        findsOneWidget);
+    expect(find.text('2 files selected'), findsOneWidget);
+    expect(
+        pickerIcon(PickerDropZone, Icons.upload_file_outlined), findsNothing);
+
+    await tester.tap(find.widgetWithText(TextButton, 'Edit'));
+    await tester.pumpAndSettle();
+    // Wide windows list the actions in a dialog.
+    expect(find.byType(PickerActionDialog), findsOneWidget);
+    expect(find.byType(PickerActionSheet), findsNothing);
+    expect(find.text('Add files'), findsOneWidget);
+    expect(find.text('Add folder'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(PickerActionDialog),
+        matching: find.byType(Divider),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Clear files'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PickerActionDialog), findsNothing);
+    expect(container.read(fileInputProvider).value, isEmpty);
   });
 
-  testWidgets('File panel opens on the input and output summary',
+  testWidgets('Compact window lists picker actions in a bottom sheet',
       (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    final Directory dir = Directory.systemTemp.createTempSync('segui-sheet-');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final XFile file = XFile(
+        (File(p.join(dir.path, 'locus.nex'))..writeAsStringSync('x')).path);
+    await pumpPage(tester, const Size(390, 900), container: container);
+    expect(find.byType(PickerDropZoneRow), findsWidgets);
+
+    await tester.runAsync(() => container
+        .read(fileInputProvider.notifier)
+        .addFiles([file], sequenceTypeGroup));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(TextButton, 'Edit').first);
+    await tester.pumpAndSettle();
+    expect(find.byType(PickerActionSheet), findsOneWidget);
+    expect(find.byType(PickerActionDialog), findsNothing);
+  });
+
+  testWidgets('iPad portrait window lists picker actions in a dialog',
+      (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    final Directory dir = Directory.systemTemp.createTempSync('segui-dialog-');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final XFile file = XFile(
+        (File(p.join(dir.path, 'locus.nex'))..writeAsStringSync('x')).path);
+    await pumpPage(tester, const Size(768, 1024), container: container);
+
+    await tester.runAsync(() => container
+        .read(fileInputProvider.notifier)
+        .addFiles([file], sequenceTypeGroup));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(TextButton, 'Edit').first);
+    await tester.pumpAndSettle();
+    expect(find.byType(PickerActionDialog), findsOneWidget);
+    expect(find.byType(PickerActionSheet), findsNothing);
+  });
+
+  testWidgets('File panel opens on the workbench summary', (tester) async {
     final container = ProviderContainer(
       overrides: [settingProvider.overrideWithValue(preferences)],
     );
@@ -296,10 +389,15 @@ void main() {
     ];
     await pumpPage(tester, const Size(1600, 1000), container: container);
 
-    expect(find.byType(FileSummaryView), findsOneWidget);
+    expect(find.byType(WorkbenchView), findsOneWidget);
+    expect(find.byType(NextStepsHint), findsOneWidget);
     expect(find.byType(FileSummaryCard), findsNWidgets(2));
-    expect(find.byIcon(SeguiIcons.inputFolderFilled), findsOneWidget);
-    expect(find.byIcon(SeguiIcons.outputFolderFilled), findsOneWidget);
+    Finder inTiles(Finder finder) =>
+        find.descendant(of: find.byType(FileSummaryTiles), matching: finder);
+    expect(
+        inTiles(find.byIcon(SeguiIcons.inputFolderOutlined)), findsOneWidget);
+    expect(
+        inTiles(find.byIcon(SeguiIcons.outputFolderOutlined)), findsOneWidget);
     expect(find.text('No input files selected.'), findsOneWidget);
     expect(find.text('No output folder selected.'), findsOneWidget);
 
@@ -314,13 +412,12 @@ void main() {
     Finder inInput(Finder finder) =>
         find.descendant(of: inputCard, matching: finder);
     expect(inInput(find.text('3')), findsOneWidget);
-    expect(inInput(find.text('files')), findsOneWidget);
-    expect(inInput(find.text('0.01 Kb')), findsOneWidget);
+    expect(inInput(find.text('files · 0.01 Kb')), findsOneWidget);
     expect(inInput(find.text('NEXUS')), findsOneWidget);
     expect(inInput(find.text('2')), findsOneWidget);
     expect(inInput(find.text('FASTA')), findsOneWidget);
 
-    await tester.tap(find.text('View input files'));
+    await tester.tap(inputCard);
     await tester.pumpAndSettle();
     expect(container.read(filePanelViewProvider), FilePanelView.input);
   });

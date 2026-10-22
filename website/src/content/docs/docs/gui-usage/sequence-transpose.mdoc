@@ -1,0 +1,33 @@
+---
+title: Sequence Transposition
+sidebar:
+  order: 16
+---
+
+{% screenshots
+   large="gui/sequence-transpose-large.webp"
+   largeAlt="SEGUI Transpose sequences page on a desktop with the tool form and file panel"
+   small="gui/sequence-transpose-small.webp"
+   smallAlt="SEGUI Transpose sequences page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[43.6, 13.5] small=[62.4, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+Transpose locus alignments into per-sample sequence files. Locus alignments store one locus per file with a sequence for each sample. Transposing creates one file for each sample with a sequence for each locus, for example to build sample-level references for read mapping.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Transpose sequences` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select the input format (optional) and the data type.
+5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+6. Turn on `Set interleaved format` to write interleaved FASTA (optional).
+7. Select the run button {% ref id="D" /%}, labeled `Transpose`, to start the task.
+
+## Output
+
+The app writes each sample to its own folder: `<sample>/<sample>.fas`. Each sequence is named after the locus it comes from, which is the input file name without its extension. Gaps (`-`) and missing data (`?`) are removed, so the output is always unaligned FASTA. Samples missing from a locus are skipped for that locus.

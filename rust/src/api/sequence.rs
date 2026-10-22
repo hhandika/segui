@@ -4,15 +4,22 @@ use std::time::Instant;
 use flutter_rust_bridge::frb;
 use segul::core::align::concat::AlignmentConcatenation;
 use segul::core::align::convert::AlignmentConversion;
+use segul::core::align::distance::group::SampleGrouping;
+use segul::core::align::distance::{AlignmentDistance, MatrixDiagonal, MatrixTriangle};
 use segul::core::align::filter::{AlignmentFiltering, FilteringParameters};
 use segul::core::align::partition::PartitionConverter;
 use segul::core::align::split::AlignmentSplitting;
 use segul::core::align::summarize::AlignmentSummary;
+use segul::core::align::trim::{AlignmentTrimming, TrimmingParameters};
+use segul::core::align::unalign::UnalignAlignment;
+use segul::core::sequence::addition::SequenceAddition;
 use segul::core::sequence::extract::{self, SeqExtractionParameters};
+use segul::core::sequence::filter::{SeqFilteringParameters, SequenceFiltering};
 use segul::core::sequence::id::SequenceID;
 use segul::core::sequence::remove::{self, SeqRemovalParameters};
 use segul::core::sequence::rename::{self, SeqRenamingParameters};
 use segul::core::sequence::translate::SequenceTranslation;
+use segul::core::sequence::transpose::SequenceTranspose;
 use segul::helper::finder::{IDs, SeqFileFinder};
 use segul::helper::logger::{log_input_partition, AlignSeqLogger};
 use segul::helper::partition::construct_partition_path;
@@ -20,6 +27,7 @@ use segul::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul::helper::types::{OutputFmt, PartitionFmt};
 use segul::helper::{alphabet, utils};
 use segul::parser::{delimited, txt};
+use segul::stats::distance::DistanceModel;
 
 const INPUT_DIRECTORY: Option<&str> = None;
 
@@ -50,6 +58,15 @@ trait Sequence {
             .to_lowercase()
             .parse()
             .expect("Invalid output format")
+    }
+
+    // For tasks that only write unaligned FASTA output.
+    #[frb(ignore)]
+    fn match_fasta_output_fmt(&self, out_fmt_str: &str) -> OutputFmt {
+        match self.match_output_fmt(out_fmt_str) {
+            fmt @ (OutputFmt::Fasta | OutputFmt::FastaInt) => fmt,
+            _ => panic!("Only FASTA output is supported for this task"),
+        }
     }
 
     #[frb(ignore)]
@@ -129,6 +146,26 @@ impl TranslationServices {
         let translate =
             SequenceTranslation::new(&input_fmt, &translation_table, &datatype, &output_fmt);
         translate.translate(&mut input_files, self.reading_frame, &output_path);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+
+    // Detect the reading frame of each file automatically.
+    // Ignores the `reading_frame` field.
+    pub fn translate_sequence_auto_frame(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files =
+            self.find_input_input_files(&self.input_files, INPUT_DIRECTORY, &input_fmt);
+        let output_fmt = self.match_output_fmt(&self.output_fmt);
+        let translation_table = self.match_translation_table(&self.table);
+        let task = "Sequence Translation (auto reading frame)";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let translate =
+            SequenceTranslation::new(&input_fmt, &translation_table, &datatype, &output_fmt);
+        translate.translate_all_autoframe(&input_files, output_path);
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -287,6 +324,22 @@ impl AlignmentServices {
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
+
+    // Write a summary file for each locus instead of a combined summary.
+    pub fn summarize_alignment_per_locus(&self, output_prefix: Option<String>) {
+        let time = Instant::now();
+        let output_path = PathBuf::from(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let task = "Per Locus Alignment Summary";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        // The interval only applies to the combined summary.
+        let mut summary = AlignmentSummary::new(&input_fmt, &output_path, 5, &datatype);
+        summary.summarize_locus(&input_files, output_prefix.as_deref());
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
 }
 
 pub struct SplitAlignmentServices {
@@ -356,8 +409,12 @@ impl SplitAlignmentServices {
 pub enum FilteringParams {
     MinTax(f64),
     AlnLen(usize),
+    MaxAlnLen(usize),
     ParsInf(usize),
+    MaxParsInf(usize),
     PercInf(f64),
+    // Maximum proportion of missing data (0.0 - 1.0)
+    MissingData(f64),
     TaxonAll(Vec<String>),
     None,
 }
@@ -445,9 +502,21 @@ impl FilteringServices {
                 log::info!("{:18}: {} bp\n", "Min aln len", len);
                 FilteringParameters::MinLen(*len)
             }
+            FilteringParams::MaxAlnLen(len) => {
+                log::info!("{:18}: {} bp\n", "Max aln len", len);
+                FilteringParameters::MaxLen(*len)
+            }
             FilteringParams::ParsInf(inf) => {
                 log::info!("{:18}: {}\n", "Min pars. inf", inf);
                 FilteringParameters::MinParsInf(*inf)
+            }
+            FilteringParams::MaxParsInf(inf) => {
+                log::info!("{:18}: {}\n", "Max pars. inf", inf);
+                FilteringParameters::MaxParsInf(*inf)
+            }
+            FilteringParams::MissingData(prop) => {
+                log::info!("{:18}: {}%\n", "Max missing data", prop * 100.0);
+                FilteringParameters::MissingData(*prop)
             }
             FilteringParams::PercInf(perc_inf) => {
                 log::info!("{:18}: {}%\n", "% pars. inf", perc_inf * 100.0);
@@ -765,5 +834,819 @@ impl SequenceExtraction {
 
     fn parse_file<P: AsRef<Path>>(&self, path: P) -> Vec<String> {
         txt::parse_text_file(path.as_ref())
+    }
+}
+
+pub struct AlignmentDistanceServices {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    // Distance model: p, jc69, k2p, tn93, or poisson
+    pub model: String,
+    // Matrix triangle: full, lower, or upper
+    pub triangle: String,
+    // Matrix diagonal: zero, blank, or na. With grouping, mean or max writes the
+    // within-group mean or highest distance on the group matrices.
+    // Defaults to zero, and the within-group mean on the group matrices.
+    pub diagonal: Option<String>,
+    pub prefix: Option<String>,
+    // How to group samples for group mean distances
+    pub grouping: DistanceGroupingParams,
+    // Write pairwise distances and group statistics of all loci as long tables
+    pub long_format: bool,
+}
+
+impl Sequence for AlignmentDistanceServices {}
+
+impl AlignmentDistanceServices {
+    pub fn new() -> AlignmentDistanceServices {
+        AlignmentDistanceServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            model: String::from("p"),
+            triangle: String::from("full"),
+            diagonal: None,
+            prefix: None,
+            grouping: DistanceGroupingParams::None,
+            long_format: false,
+        }
+    }
+
+    pub fn compute_distance(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let model = self.match_model();
+        if !model.is_valid_for(&datatype) {
+            panic!(
+                "The {} model is not valid for {} data. Use p, jc69, k2p, or tn93 for DNA, \
+                and p, jc69, or poisson for amino acid.",
+                model, datatype
+            );
+        }
+        let triangle = self
+            .triangle
+            .parse::<MatrixTriangle>()
+            .expect("Invalid matrix triangle");
+        let diagonal = self.diagonal.as_deref().map(|d| {
+            d.parse::<MatrixDiagonal>()
+                .expect("Invalid matrix diagonal")
+        });
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let task = "Pairwise Genetic Distance";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let grouping = self
+            .match_grouping(&input_files, &input_fmt, &datatype)
+            .unwrap_or_else(|e| panic!("{:#}", e));
+        if diagonal.is_some_and(|d| d.requires_grouping()) && grouping.is_none() {
+            panic!("The mean and max diagonals require grouping.");
+        }
+        let mut handle = AlignmentDistance::new(&input_fmt, &datatype, &model, output_path)
+            .with_triangle(triangle)
+            .with_long_format(self.long_format);
+        if let Some(diagonal) = diagonal {
+            handle = handle.with_diagonal(diagonal);
+        }
+        if let Some(grouping) = grouping {
+            handle = handle.with_grouping(grouping);
+        }
+        handle.compute(&input_files, self.prefix.as_deref());
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+
+    // Assign the samples of the input files to groups without computing distances.
+    // With auto grouping, also returns the detected delimiter and field count.
+    pub fn preview_groups(&self) -> anyhow::Result<DistanceGroupPreview> {
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let ids = self.find_ids(&input_files, &input_fmt, &datatype);
+        let (grouping, suggestion) = match &self.grouping {
+            DistanceGroupingParams::Auto => {
+                let suggestion = SampleGrouping::detect(&ids).ok_or_else(no_groups_detected)?;
+                (suggestion.to_grouping(), Some(suggestion))
+            }
+            _ => match self.match_grouping(&input_files, &input_fmt, &datatype)? {
+                Some(grouping) => (grouping, None),
+                None => anyhow::bail!("No grouping method selected"),
+            },
+        };
+        let assignment = grouping.assign(&ids);
+        Ok(DistanceGroupPreview {
+            delimiter: suggestion.map(|s| s.delimiter.to_string()),
+            fields: suggestion.map(|s| s.fields),
+            sample_count: ids.len(),
+            groups: assignment
+                .counts()
+                .into_iter()
+                .map(|(name, count)| DistanceGroupCount { name, count })
+                .collect(),
+            unassigned: assignment.unassigned(),
+        })
+    }
+
+    #[frb(ignore)]
+    fn match_grouping(
+        &self,
+        input_files: &[PathBuf],
+        input_fmt: &InputFmt,
+        datatype: &DataType,
+    ) -> anyhow::Result<Option<SampleGrouping>> {
+        let grouping = match &self.grouping {
+            DistanceGroupingParams::Delimiter { delimiter, fields } => {
+                let mut chars = delimiter.chars();
+                match (chars.next(), chars.next()) {
+                    (Some(delimiter), None) => SampleGrouping::from_delimiter(delimiter, *fields)?,
+                    _ => anyhow::bail!("The group delimiter must be a single character"),
+                }
+            }
+            DistanceGroupingParams::Regex(pattern) => SampleGrouping::from_regex(pattern)?,
+            DistanceGroupingParams::MapFile(path) => {
+                SampleGrouping::from_map_file(Path::new(path))?
+            }
+            DistanceGroupingParams::Auto => {
+                let ids = self.find_ids(input_files, input_fmt, datatype);
+                let suggestion = SampleGrouping::detect(&ids).ok_or_else(no_groups_detected)?;
+                log::info!(
+                    "Detected groups: split on '{}', keep {} field(s), {} groups\n",
+                    suggestion.delimiter,
+                    suggestion.fields,
+                    suggestion.groups
+                );
+                suggestion.to_grouping()
+            }
+            DistanceGroupingParams::None => return Ok(None),
+        };
+        Ok(Some(grouping))
+    }
+
+    #[frb(ignore)]
+    fn find_ids(
+        &self,
+        input_files: &[PathBuf],
+        input_fmt: &InputFmt,
+        datatype: &DataType,
+    ) -> Vec<String> {
+        IDs::new(input_files, input_fmt, datatype)
+            .id_unique()
+            .into_iter()
+            .collect()
+    }
+
+    fn match_model(&self) -> DistanceModel {
+        self.model
+            .to_lowercase()
+            .parse::<DistanceModel>()
+            .expect("Invalid distance model")
+    }
+}
+
+fn no_groups_detected() -> anyhow::Error {
+    anyhow::anyhow!(
+        "Could not detect groups from sample names. \
+        Use a delimiter, a regular expression, or a group file."
+    )
+}
+
+// How to group samples for group mean distances.
+pub enum DistanceGroupingParams {
+    // Split sample names on a single-character delimiter and keep the first fields
+    Delimiter { delimiter: String, fields: usize },
+    // Use the first capture group of the regex, or the whole match
+    Regex(String),
+    // Path to a CSV/TSV file with a header and sample and group columns
+    MapFile(String),
+    // Detect the delimiter and field count from sample names
+    Auto,
+    None,
+}
+
+pub struct DistanceGroupCount {
+    pub name: String,
+    pub count: usize,
+}
+
+pub struct DistanceGroupPreview {
+    // The detected delimiter and field count, set only for auto grouping
+    pub delimiter: Option<String>,
+    pub fields: Option<usize>,
+    pub sample_count: usize,
+    pub groups: Vec<DistanceGroupCount>,
+    pub unassigned: Vec<String>,
+}
+
+// Holder for FRB generated code.
+// The same as FilteringParams.
+pub enum TrimmingParams {
+    // Maximum proportion of missing data per site (0.0 - 1.0)
+    MissingData(f64),
+    // Minimum parsimony informative count per site
+    ParsInf(usize),
+    None,
+}
+
+pub struct AlignmentTrimmingServices {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    pub output_fmt: String,
+    pub params: TrimmingParams,
+}
+
+impl Sequence for AlignmentTrimmingServices {}
+
+impl AlignmentTrimmingServices {
+    pub fn new() -> AlignmentTrimmingServices {
+        AlignmentTrimmingServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+            params: TrimmingParams::None,
+        }
+    }
+
+    pub fn trim(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let output_fmt = self.match_output_fmt(&self.output_fmt);
+        let task = "Alignment Trimming";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let params = self.match_params();
+        let trim = AlignmentTrimming::new(
+            &input_files,
+            &input_fmt,
+            &datatype,
+            output_path,
+            &output_fmt,
+            &params,
+        );
+        trim.trim();
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+
+    fn match_params(&self) -> TrimmingParameters {
+        log::info!("{}", "Params");
+        match &self.params {
+            TrimmingParams::MissingData(prop) => {
+                log::info!("{:18}: {}%\n", "Max missing data", prop * 100.0);
+                TrimmingParameters::MissingData(*prop)
+            }
+            TrimmingParams::ParsInf(count) => {
+                log::info!("{:18}: {}\n", "Min pars. inf", count);
+                TrimmingParameters::ParsInf(*count)
+            }
+            TrimmingParams::None => panic!("No trimming parameter selected"),
+        }
+    }
+}
+
+pub struct UnalignmentServices {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    // fasta or fasta-int
+    pub output_fmt: String,
+}
+
+impl Sequence for UnalignmentServices {}
+
+impl UnalignmentServices {
+    pub fn new() -> UnalignmentServices {
+        UnalignmentServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+        }
+    }
+
+    pub fn unalign(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let output_fmt = self.match_fasta_output_fmt(&self.output_fmt);
+        let task = "Alignment Unalignment";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let unalign = UnalignAlignment::new(
+            &input_files,
+            &input_fmt,
+            &datatype,
+            output_path,
+            &output_fmt,
+        );
+        unalign.unalign();
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+}
+
+pub struct SequenceAdditionServices {
+    // Files that contain the sequences to add
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    // Files that receive the sequences
+    pub destination_files: Vec<String>,
+    pub destination_fmt: String,
+    pub output_dir: String,
+    // fasta or fasta-int
+    pub output_fmt: String,
+    // Only write destination files that receive sequences
+    pub is_added_only: bool,
+}
+
+impl Sequence for SequenceAdditionServices {}
+
+impl SequenceAdditionServices {
+    pub fn new() -> SequenceAdditionServices {
+        SequenceAdditionServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            destination_files: Vec::new(),
+            destination_fmt: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+            is_added_only: false,
+        }
+    }
+
+    // Add sequences to destination files with the same name.
+    pub fn add_sequence(&self) {
+        let time = Instant::now();
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let dest_fmt = self.match_input_fmt(&self.destination_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let dest_files: Vec<PathBuf> = self.destination_files.iter().map(PathBuf::from).collect();
+        let output_fmt = self.match_fasta_output_fmt(&self.output_fmt);
+        let output_path = Path::new(&self.output_dir);
+        let task = "Sequence Addition";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        log::info!("{}", "Destination Files");
+        log::info!("{:18}: {}\n", "File counts", dest_files.len());
+        let add = SequenceAddition::new(
+            &input_files,
+            &input_fmt,
+            &datatype,
+            output_path,
+            &output_fmt,
+            self.is_added_only,
+        );
+        add.add(&dest_files, &dest_fmt);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+
+    // Add every input sequence to the first destination file.
+    pub fn add_sequence_to_single_file(&self, include_filename: bool) {
+        let time = Instant::now();
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let dest_file = match self.destination_files.first() {
+            Some(file) => PathBuf::from(file),
+            None => panic!("No destination file selected"),
+        };
+        let output_fmt = self.match_fasta_output_fmt(&self.output_fmt);
+        let output_path = Path::new(&self.output_dir);
+        let task = "Sequence Addition";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let add = SequenceAddition::new(
+            &input_files,
+            &input_fmt,
+            &datatype,
+            output_path,
+            &output_fmt,
+            self.is_added_only,
+        );
+        add.add_single(&dest_file, include_filename);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+}
+
+// Holder for FRB generated code.
+// The same as FilteringParams.
+pub enum SequenceFilteringParams {
+    // Minimum sequence length without gaps
+    MinLength(usize),
+    // Maximum sequence length without gaps
+    MaxLength(usize),
+    // Maximum proportion of gaps (0.0 - 1.0)
+    MaxGap(f64),
+    None,
+}
+
+pub struct SequenceFilteringServices {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    pub output_fmt: String,
+    pub params: SequenceFilteringParams,
+}
+
+impl Sequence for SequenceFilteringServices {}
+
+impl SequenceFilteringServices {
+    pub fn new() -> SequenceFilteringServices {
+        SequenceFilteringServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+            params: SequenceFilteringParams::None,
+        }
+    }
+
+    pub fn filter_sequence(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let output_fmt = self.match_output_fmt(&self.output_fmt);
+        let task = "Sequence Filtering";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let params = self.match_params();
+        let filter = SequenceFiltering::new(
+            &input_files,
+            &input_fmt,
+            &datatype,
+            output_path,
+            &output_fmt,
+            &params,
+        );
+        filter.filter();
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+
+    fn match_params(&self) -> SeqFilteringParameters {
+        log::info!("{}", "Params");
+        match &self.params {
+            SequenceFilteringParams::MinLength(len) => {
+                log::info!("{:18}: {}\n", "Minimum length", len);
+                SeqFilteringParameters::MinSequenceLength(*len)
+            }
+            SequenceFilteringParams::MaxLength(len) => {
+                log::info!("{:18}: {}\n", "Maximum length", len);
+                SeqFilteringParameters::MaxSequenceLength(*len)
+            }
+            SequenceFilteringParams::MaxGap(prop) => {
+                log::info!("{:18}: {}%\n", "Max gaps", prop * 100.0);
+                SeqFilteringParameters::PercentMaxGap(*prop)
+            }
+            SequenceFilteringParams::None => panic!("No filtering parameter selected"),
+        }
+    }
+}
+
+pub struct SequenceTransposeServices {
+    pub input_files: Vec<String>,
+    pub input_fmt: String,
+    pub datatype: String,
+    pub output_dir: String,
+    // fasta or fasta-int
+    pub output_fmt: String,
+}
+
+impl Sequence for SequenceTransposeServices {}
+
+impl SequenceTransposeServices {
+    pub fn new() -> SequenceTransposeServices {
+        SequenceTransposeServices {
+            input_files: Vec::new(),
+            input_fmt: String::new(),
+            datatype: String::new(),
+            output_dir: String::new(),
+            output_fmt: String::new(),
+        }
+    }
+
+    pub fn transpose(&self) {
+        let time = Instant::now();
+        let output_path = Path::new(&self.output_dir);
+        let input_fmt = self.match_input_fmt(&self.input_fmt);
+        let datatype = self.match_datatype(&self.datatype);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let output_fmt = self.match_fasta_output_fmt(&self.output_fmt);
+        let task = "Sequence Transposition";
+        AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        SequenceTranspose::new(&input_fmt, &datatype, output_path, &output_fmt)
+            .transpose(&input_files);
+        let duration = time.elapsed();
+        utils::print_execution_time(duration);
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::fs;
+
+    use super::*;
+
+    fn fixture_dir() -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join("tests")
+    }
+
+    fn alignment_files() -> Vec<String> {
+        ["gene_1.fas", "gene_2.fas"]
+            .iter()
+            .map(|name| fixture_dir().join("alignments").join(name))
+            .map(|path| path.to_string_lossy().into_owned())
+            .collect()
+    }
+
+    // A fresh output directory under the system temp directory.
+    fn output_dir(name: &str) -> PathBuf {
+        let dir = std::env::temp_dir().join(format!("segui-test-{}", name));
+        if dir.exists() {
+            fs::remove_dir_all(&dir).expect("Failed removing old test output");
+        }
+        dir
+    }
+
+    fn count_files(dir: &Path) -> usize {
+        walk(dir).len()
+    }
+
+    fn walk(dir: &Path) -> Vec<PathBuf> {
+        let mut files = Vec::new();
+        for entry in fs::read_dir(dir).expect("Missing output directory") {
+            let path = entry.expect("Invalid directory entry").path();
+            if path.is_dir() {
+                files.extend(walk(&path));
+            } else {
+                files.push(path);
+            }
+        }
+        files
+    }
+
+    fn clean(dir: &Path) {
+        fs::remove_dir_all(dir).expect("Failed removing test output");
+    }
+
+    #[test]
+    fn test_compute_distance() {
+        let output = output_dir("distance");
+        let mut services = AlignmentDistanceServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.model = String::from("k2p");
+        services.triangle = String::from("lower");
+        services.compute_distance();
+        assert!(count_files(&output) >= 2);
+        clean(&output);
+    }
+
+    fn grouped_distance_services(grouping: DistanceGroupingParams) -> AlignmentDistanceServices {
+        let mut services = AlignmentDistanceServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.grouping = grouping;
+        services
+    }
+
+    #[test]
+    fn test_compute_distance_groups_long() {
+        let output = output_dir("distance-groups");
+        let mut services =
+            grouped_distance_services(DistanceGroupingParams::Regex(String::from("^sample_[ab]")));
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.long_format = true;
+        services.compute_distance();
+        for name in [
+            "distance_group_mean.csv",
+            "distance_group_pairs.csv",
+            "distance_group_long.csv",
+            "distance_pairwise_long.csv",
+        ] {
+            assert!(output.join(name).is_file(), "Missing {}", name);
+        }
+        let mean = fs::read_to_string(output.join("distance_group_mean.csv")).unwrap();
+        assert!(mean.starts_with(",sample_a,sample_b"));
+        let second_line = mean.lines().nth(1).unwrap();
+        assert!(second_line.starts_with("sample_a,NA,"), "{}", second_line);
+        clean(&output);
+    }
+
+    #[test]
+    fn test_compute_distance_group_max_diagonal() {
+        let output = output_dir("distance-group-max");
+        let mut services =
+            grouped_distance_services(DistanceGroupingParams::Regex(String::from("^sample_[ab]")));
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.diagonal = Some(String::from("max"));
+        services.compute_distance();
+        let mean = fs::read_to_string(output.join("distance_group_mean.csv")).unwrap();
+        let second_line = mean.lines().nth(1).unwrap();
+        assert!(second_line.starts_with("sample_a,NA,"), "{}", second_line);
+        clean(&output);
+    }
+
+    #[test]
+    #[should_panic(expected = "require grouping")]
+    fn test_compute_distance_group_diagonal_without_groups() {
+        let mut services = AlignmentDistanceServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output_dir("distance-mean").to_string_lossy().into_owned();
+        services.diagonal = Some(String::from("mean"));
+        services.compute_distance();
+    }
+
+    #[test]
+    fn test_preview_distance_groups() {
+        let services = grouped_distance_services(DistanceGroupingParams::Delimiter {
+            delimiter: String::from("_"),
+            fields: 2,
+        });
+        let preview = services.preview_groups().unwrap();
+        assert_eq!(preview.sample_count, preview.groups.len());
+        assert_eq!(preview.groups[0].name, "sample_a");
+        assert!(preview.unassigned.is_empty());
+        assert_eq!(preview.delimiter, None);
+
+        let services =
+            grouped_distance_services(DistanceGroupingParams::Regex(String::from("^sample_a")));
+        let preview = services.preview_groups().unwrap();
+        assert_eq!(preview.groups.len(), 1);
+        assert_eq!(preview.unassigned.len(), preview.sample_count - 1);
+    }
+
+    #[test]
+    fn test_preview_distance_groups_errors() {
+        // All fixture samples share the same prefix, so no grouping is detected.
+        let auto = grouped_distance_services(DistanceGroupingParams::Auto);
+        assert!(auto.preview_groups().is_err());
+        let delimiter = grouped_distance_services(DistanceGroupingParams::Delimiter {
+            delimiter: String::from("__"),
+            fields: 1,
+        });
+        assert!(delimiter.preview_groups().is_err());
+        let regex = grouped_distance_services(DistanceGroupingParams::Regex(String::from("(")));
+        assert!(regex.preview_groups().is_err());
+        let none = grouped_distance_services(DistanceGroupingParams::None);
+        assert!(none.preview_groups().is_err());
+    }
+
+    #[test]
+    #[should_panic(expected = "not valid for")]
+    fn test_distance_rejects_aa_model_for_dna() {
+        let mut services = AlignmentDistanceServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.model = String::from("poisson");
+        services.compute_distance();
+    }
+
+    #[test]
+    fn test_trim_alignment() {
+        let output = output_dir("trim");
+        let mut services = AlignmentTrimmingServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.output_fmt = String::from("fasta");
+        services.params = TrimmingParams::MissingData(0.2);
+        services.trim();
+        // Two trimmed alignments and a trimming summary.
+        assert_eq!(count_files(&output), 3);
+        clean(&output);
+    }
+
+    #[test]
+    fn test_unalign() {
+        let output = output_dir("unalign");
+        let mut services = UnalignmentServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.output_fmt = String::from("fasta");
+        services.unalign();
+        let files = walk(&output);
+        assert_eq!(files.len(), 2);
+        let content: String = files
+            .iter()
+            .map(|file| fs::read_to_string(file).expect("Failed reading output"))
+            .collect();
+        assert!(!content.contains('-'));
+        clean(&output);
+    }
+
+    #[test]
+    #[should_panic(expected = "Only FASTA output")]
+    fn test_unalign_rejects_nexus_output() {
+        let mut services = UnalignmentServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_fmt = String::from("nexus");
+        services.unalign();
+    }
+
+    #[test]
+    fn test_filter_sequence() {
+        let output = output_dir("sequence-filter");
+        let mut services = SequenceFilteringServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.output_fmt = String::from("fasta");
+        services.params = SequenceFilteringParams::MaxGap(0.2);
+        services.filter_sequence();
+        let content: String = walk(&output)
+            .iter()
+            .map(|file| fs::read_to_string(file).expect("Failed reading output"))
+            .collect();
+        // sample_c and sample_d have more than 20% gaps.
+        assert!(content.contains("sample_a"));
+        assert!(!content.contains("sample_c"));
+        assert!(!content.contains("sample_d"));
+        clean(&output);
+    }
+
+    #[test]
+    fn test_transpose() {
+        let output = output_dir("transpose");
+        let mut services = SequenceTransposeServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.output_fmt = String::from("fasta");
+        services.transpose();
+        // One file per sample: sample_a, sample_b, sample_c, and sample_d.
+        assert_eq!(count_files(&output), 4);
+        clean(&output);
+    }
+
+    #[test]
+    fn test_add_sequence() {
+        let output = output_dir("add");
+        let destination = fixture_dir().join("destination").join("gene_1.fas");
+        let mut services = SequenceAdditionServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.destination_files = vec![destination.to_string_lossy().into_owned()];
+        services.destination_fmt = String::from("fasta");
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.output_fmt = String::from("fasta");
+        services.is_added_only = true;
+        services.add_sequence();
+        let files = walk(&output);
+        assert_eq!(files.len(), 1);
+        let content = fs::read_to_string(&files[0]).expect("Failed reading output");
+        assert!(content.contains("sample_x"));
+        assert!(content.contains("sample_a"));
+        clean(&output);
+    }
+
+    #[test]
+    fn test_filter_alignment_max_length() {
+        let output = output_dir("filter-max-len");
+        let mut services = FilteringServices::new();
+        services.input_files = alignment_files();
+        services.input_fmt = String::from("fasta");
+        services.datatype = String::from("dna");
+        services.output_dir = output.to_string_lossy().into_owned();
+        services.params = FilteringParams::MaxAlnLen(12);
+        services.filter();
+        let files = walk(&output);
+        // Only gene_2 (12 bp) is at most 12 bp long.
+        assert_eq!(files.len(), 1);
+        assert!(files[0].to_string_lossy().contains("gene_2"));
+        clean(&output);
     }
 }

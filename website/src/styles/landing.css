@@ -1,0 +1,347 @@
+/* Landing, get started, and about page treatments and motion.
+   Class names are prefixed `sg-` so they never collide with Tailwind utilities
+   or Starlight styles. Every animation is disabled under reduced motion. */
+
+/* Starlight's Tailwind integration omits preflight. These pages do not use
+   Starlight, so they load it here; the docs are unaffected. */
+@import "tailwindcss/preflight.css" layer(base);
+
+/* ---------------------------------------------------------- navigation ---- */
+
+.sg-nav-overlay {
+  background-color: transparent;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.sg-nav-overlay.sg-nav-scrolled {
+  background-color: color-mix(in srgb, white 88%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-leaf-600) 20%, transparent);
+}
+
+:root[data-theme="dark"] .sg-nav-overlay.sg-nav-scrolled {
+  background-color: color-mix(in srgb, #111613 88%, transparent);
+}
+
+/* Overlay text sits on the green hero until the bar turns solid. */
+.sg-nav-overlay:not(.sg-nav-scrolled)[data-tone="light"] > a span {
+  color: white;
+}
+
+.sg-mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  visibility: hidden;
+  transition: visibility 0s linear 0.24s;
+}
+
+.sg-mobile-menu[data-open="true"] {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.sg-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: color-mix(in srgb, black 45%, transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.sg-mobile-menu[data-open="true"] .sg-menu-backdrop {
+  opacity: 1;
+}
+
+.sg-menu-panel {
+  transform: translate3d(0, -100%, 0);
+  opacity: 0;
+  transition:
+    transform 0.24s ease-out,
+    opacity 0.24s ease-out;
+}
+
+.sg-mobile-menu[data-open="true"] .sg-menu-panel {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------- reveal ---- */
+
+.sg-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.sg-reveal.sg-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------- field sketch ---- */
+
+/* The app's line-art palette: line, accent, and fill, swapped per theme just
+   as `HomeIllustrationColors` does in SEGUI. */
+.sg-sketch {
+  --sk-line: var(--color-leaf-800);
+  --sk-accent: var(--color-pollen-300);
+  --sk-fill: #ffffff;
+}
+
+:root[data-theme="dark"] .sg-sketch {
+  --sk-line: var(--color-leaf-300);
+  --sk-accent: var(--color-pollen-300);
+  --sk-fill: #111613;
+}
+
+.sg-gull-wing {
+  transform-origin: 62px 50px;
+  animation: sg-flap 3.2s ease-in-out infinite;
+}
+
+@keyframes sg-flap {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+  78% {
+    transform: rotate(-22deg);
+  }
+  86% {
+    transform: rotate(4deg);
+  }
+  92% {
+    transform: rotate(-12deg);
+  }
+}
+
+/* ------------------------------------------------------------ ribbon ---- */
+
+/* The app icon's field-green tile, used full bleed. */
+.sg-leaf-field {
+  background:
+    radial-gradient(120% 90% at 85% 10%, #17ad5c55 0%, transparent 60%),
+    linear-gradient(135deg, #009245 0%, #00813f 35%, #006e39 75%, #006837 100%);
+}
+
+
+
+
+
+/* ----------------------------------------------------------- terminal ---- */
+
+.sg-caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.2em;
+  background: var(--color-pollen-300);
+  animation: sg-blink 1s steps(1) infinite;
+}
+
+@keyframes sg-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-mobile-menu,
+  .sg-menu-backdrop,
+  .sg-menu-panel,
+  .sg-reveal {
+    transition: none;
+  }
+
+  .sg-reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sg-gull-wing,
+  .sg-caret::after {
+    animation: none;
+  }
+
+}
+
+/* Long commands scroll sideways without a visible scrollbar. */
+.sg-scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sg-scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+/* ------------------------------------------------------- flying gull ---- */
+
+/* One landing, played once: the gull flaps in from 0.4 s, brakes and drops
+   its legs at 2.4 s, folds its wings, and settles at 3 s. Each hero scene
+   moves its own `.fg-flight` group on the same clock. */
+.fg-wing {
+  transform-origin: 62px 50px;
+  animation:
+    fg-flap 0.3s ease-in-out 0.4s 7 alternate,
+    fg-fold 0.6s ease-out 2.5s forwards;
+}
+
+.fg-far-wing {
+  opacity: 0;
+  transform-origin: 60px 47px;
+  animation:
+    fg-flap 0.3s ease-in-out 0.45s 7 alternate,
+    fg-far-wing 2.6s linear 0.4s both;
+}
+
+.fg-legs {
+  animation: fg-legs 0.25s ease-out 2.4s both;
+}
+
+.fg-body {
+  animation: fg-settle 0.5s ease-out 3s;
+}
+
+.fg-flight {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes fg-flap {
+  from {
+    transform: rotate(55deg);
+  }
+  to {
+    transform: rotate(-35deg);
+  }
+}
+
+@keyframes fg-fold {
+  0% {
+    transform: rotate(-35deg);
+  }
+  40% {
+    transform: rotate(65deg);
+  }
+  75% {
+    transform: rotate(-6deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes fg-far-wing {
+  0%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fg-legs {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fg-settle {
+  40% {
+    transform: translateY(1.5px);
+  }
+}
+
+/* Draws a path once, from start to end. */
+.fg-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fg-draw 2.6s cubic-bezier(0.4, 0, 0.6, 1) 0.4s forwards;
+}
+
+@keyframes fg-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* The DNA helix and phylogenetic tree draw in while the gull is in flight.
+   Their resting state is fully drawn, so reduced motion shows them at once. */
+.dna-strand,
+.phylo-branches {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.dna-strand {
+  animation: fg-grow 1.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+}
+
+.dna-strand-late {
+  animation-delay: 0.45s;
+}
+
+.dna-rung {
+  animation: fg-fade-in 0.35s ease-out both;
+  animation-delay: calc(0.9s + var(--i) * 0.14s);
+}
+
+.phylo-branches {
+  animation: fg-grow 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+}
+
+.phylo-tip {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fg-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  animation-delay: calc(1.6s + var(--i) * 0.15s);
+}
+
+@keyframes fg-grow {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes fg-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fg-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fg-wing,
+  .fg-far-wing,
+  .fg-legs,
+  .fg-body,
+  .fg-flight,
+  .fg-scene * {
+    animation: none !important;
+  }
+
+  .fg-draw {
+    stroke-dashoffset: 0;
+  }
+}

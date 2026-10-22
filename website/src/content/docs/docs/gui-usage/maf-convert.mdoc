@@ -1,0 +1,68 @@
+---
+title: MAF Conversion
+sidebar:
+  order: 8.5
+---
+
+{% screenshots
+   large="gui/maf-convert-large.webp"
+   largeAlt="SEGUI Convert MAF alignments page on a desktop with the tool form and file panel"
+   small="gui/maf-convert-small.webp"
+   smallAlt="SEGUI Convert MAF alignments page on a phone with the tool form" %}
+{% pin id="A" label="Genomics tab" large=[5, 18.1] small=[37.3, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[46.2, 13.5] small=[69.4, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 37.1] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+Convert Multiple Alignment Format (MAF) files, such as whole-genome alignments, into FASTA, NEXUS, or PHYLIP alignments: one per locus in a BED file, or one per block or chromosome without one.
+
+## Steps
+
+1. Select `Genomics` in the navigation bar {% ref id="A" /%}.
+2. Open `Convert MAF alignments` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the MAF files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select a BED file of loci (optional). Without a BED file, choose whether to write one file per block or one per reference chromosome.
+5. Set block options (optional). See [Block options](#block-options).
+6. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+7. Select the output format. Turn on `Set interleaved format` to write interleaved output (optional).
+8. Select the run button {% ref id="D" /%}, labeled `Convert`, to start the task.
+
+## Sample names
+
+The app names each sample after the text before the first dot of its MAF source, so `hg38.chr1` becomes `hg38` in every alignment. The reference is the species of the first sequence in the first block, unless you set `Reference species`. Positions always follow the forward strand of the reference.
+
+## With a BED file
+
+Each block is matched to every locus it overlaps on the same chromosome. Blocks of a locus are joined in reference order across all input files, and species missing from a block are filled with gaps (`-`).
+
+- `Clip blocks to each locus` (on by default) trims each block to the positions of the locus. Turn it off to keep whole blocks.
+- `Reverse complement minus-strand loci` writes loci whose BED strand is `-` in the orientation of the feature, for example before translating coding sequences.
+
+The BED file needs at least three columns without a header: chromosome, start, and end. The fourth column is the locus name and the sixth is the strand. Gzipped BED files (`.bed.gz`) work too.
+
+```plaintext
+chr1	100	200	locus_1
+chr1	300	400	locus_2	0	-
+```
+
+Each locus is written as `<locus>-<chromosome>-<start>-<end>`, for example `locus_1-chr1-100-200.fas`. The app also writes `maf_convert.csv`, which lists every locus, how many blocks it joined, and whether an alignment was written. Blocks that overlap no locus are skipped.
+
+## Without a BED file
+
+Choose `One file per block` to write each block as `<chromosome>-<start>-<end>`, such as `chr1-100-110.fas`, or `One file per chromosome` to join all blocks of each reference chromosome into one alignment, such as `chr1.fas`.
+
+## Block options
+
+All block options are optional:
+
+| Option                  | Description                                                         |
+| ----------------------- | ------------------------------------------------------------------- |
+| Reference species       | Species used for positions. Default: the first species in the file  |
+| Species to write        | Comma-separated species to keep, such as `hg38, panTro6`            |
+| Minimum reference bases | Skip blocks with fewer reference bases                              |
+| Minimum species         | Skip blocks with fewer species, counting the reference              |
+| Minimum score           | Skip blocks with a lower score. Blocks without a score are kept     |
+
+See the [CLI guide](/docs/cli-usage/maf-convert/) for examples of clipping and joining blocks. To check MAF files before converting them, use [MAF summary](/docs/gui-usage/maf-summary/).

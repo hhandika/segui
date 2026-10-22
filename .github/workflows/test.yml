@@ -30,12 +30,13 @@ jobs:
           flutter pub get
           flutter analyze
 
+      # The native assets build hook compiles the Rust crate for tests and builds.
+      - name: Setup Rust from rust/rust-toolchain.toml
+        working-directory: rust
+        run: rustup toolchain install
+
       - name: Run test
         run: flutter test
-
-      - name: Setup Rust for desktop builds
-        if: runner.os != 'macOS'
-        uses: dtolnay/rust-toolchain@stable
 
       - name: Install Linux build dependencies
         if: runner.os == 'Linux'

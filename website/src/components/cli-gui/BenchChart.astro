@@ -1,0 +1,240 @@
+---
+/// Horizontal bar chart of benchmark means with standard-deviation whiskers,
+/// drawn at build time from `bench.ts`. By default each panel gets its own
+/// scale so fast and slow results both stay readable; `shared` puts every
+/// panel on one scale for direct comparison. Hovering a bar shows its
+/// values, and a table view lists every number.
+import Figure from "../features/Figure.astro";
+import type { Bar } from "./bench";
+
+interface Panel {
+  title: string;
+  bars: Bar[];
+}
+
+interface Props {
+  id: string;
+  title: string;
+  /// What the chart compares; the means are appended for screen readers.
+  desc: string;
+  caption?: string;
+  /// Axis label, such as "Execution time (seconds)".
+  axis: string;
+  unit: string;
+  panels: Panel[];
+  /// Draw every panel on one scale, with tick labels under the last panel.
+  shared?: boolean;
+}
+
+const { id, title, desc, caption, axis, unit, panels, shared = false } = Astro.props;
+
+const labelWidth = 160;
+const plotWidth = 420;
+const valueRoom = 64;
+const width = labelWidth + plotWidth + valueRoom;
+const rowHeight = shared ? 26 : 30;
+const barHeight = shared ? 16 : 18;
+const panelTop = 30;
+const axisRoom = 30;
+const panelGap = shared ? 4 : 20;
+
+const panelHeights = panels.map(
+  (panel, i) =>
+    panelTop + panel.bars.length * rowHeight + (!shared || i === panels.length - 1 ? axisRoom : 0),
+);
+const height = panelHeights.reduce((sum, h) => sum + h + panelGap, 0) - panelGap + 30;
+
+const format = (value: number) =>
+  value >= 1000
+    ? value.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    : value >= 100
+      ? value.toFixed(0)
+      : value >= 10
+        ? value.toFixed(1)
+        : value.toFixed(2);
+
+// Screen readers get every mean, so the chart never relies on sight alone.
+const fullDesc = [
+  desc,
+  ...panels.map(
+    (panel) =>
+      `${panel.title}: ${panel.bars.map((bar) => `${bar.label} ${format(bar.mean)} ${unit}`).join(", ")}.`,
+  ),
+].join(" ");
+
+/// Round tick values that cover `max`, about four of them.
+function ticks(max: number): number[] {
+  const rough = max / 4;
+  const magnitude = 10 ** Math.floor(Math.log10(rough));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * magnitude).find((s) => s >= rough) ?? rough;
+  const values = [];
+  for (let v = 0; v <= max + step * 0.001; v += step) values.push(Number(v.toFixed(6)));
+  if (values[values.length - 1] < max) values.push(values[values.length - 1] + step);
+  return values;
+}
+
+const top = (bars: Bar[]) => Math.max(...bars.map((bar) => bar.mean + bar.sd));
+const sharedTicks = ticks(Math.max(...panels.map((panel) => top(panel.bars))));
+const layout = panels.map((panel, i) => {
+  const y = panelHeights.slice(0, i).reduce((sum, h) => sum + h + panelGap, 0);
+  const tickValues = shared ? sharedTicks : ticks(top(panel.bars));
+  const scale = plotWidth / tickValues[tickValues.length - 1];
+  const showTicks = !shared || i === panels.length - 1;
+  return { ...panel, x: 0, y, tickValues, scale, showTicks };
+});
+const panelWidth = width;
+---
+
+<Figure id={id} viewBox={`0 0 ${width} ${height}`} title={title} desc={fullDesc} caption={caption}>
+  {
+    layout.map((panel) => {
+      const plotX = panel.x + labelWidth;
+      const plotBottom = panel.y + panelTop + panel.bars.length * rowHeight;
+      return (
+        <g>
+          <text x={panel.x} y={panel.y + 14} class="fx-title fx-small">
+            {panel.title}
+          </text>
+          {panel.tickValues.map((tick) => (
+            <g>
+              <line
+                x1={plotX + tick * panel.scale}
+                x2={plotX + tick * panel.scale}
+                y1={panel.y + panelTop - 6}
+                y2={plotBottom}
+                class="bc-grid"
+              />
+              {panel.showTicks && (
+                <text
+                  x={plotX + tick * panel.scale}
+                  y={plotBottom + 16}
+                  text-anchor="middle"
+                  class="fx-muted fx-small"
+                >
+                  {tick.toLocaleString("en-US")}
+                </text>
+              )}
+            </g>
+          ))}
+          {panel.bars.map((bar, r) => {
+            const cy = panel.y + panelTop + r * rowHeight + rowHeight / 2;
+            const w = Math.max(bar.mean * panel.scale, 2);
+            const whiskerEnd = (bar.mean + bar.sd) * panel.scale;
+            const radius = Math.min(4, w / 2);
+            return (
+              <g class="bc-row">
+                <title>{`${bar.label}: ${format(bar.mean)} ${unit} ± ${format(bar.sd)} SD (n = ${bar.n})`}</title>
+                <rect
+                  x={panel.x}
+                  y={cy - rowHeight / 2}
+                  width={panelWidth}
+                  height={rowHeight}
+                  class="bc-hit"
+                />
+                <text x={plotX - 10} y={cy} text-anchor="end" dominant-baseline="central" class="fx-small">
+                  {bar.label}
+                </text>
+                <path
+                  d={`M${plotX},${cy - barHeight / 2} h${w - radius} a${radius},${radius} 0 0 1 ${radius},${radius} v${barHeight - 2 * radius} a${radius},${radius} 0 0 1 ${-radius},${radius} h${-(w - radius)} z`}
+                  class={`bc-bar bc-${bar.series}`}
+                />
+                {bar.sd * panel.scale > 1 && (
+                  <line
+                    x1={plotX + (bar.mean - bar.sd) * panel.scale}
+                    x2={plotX + whiskerEnd}
+                    y1={cy}
+                    y2={cy}
+                    class="bc-whisker"
+                  />
+                )}
+                <text
+                  x={plotX + Math.max(w, whiskerEnd) + 6}
+                  y={cy}
+                  dominant-baseline="central"
+                  class="fx-small bc-value"
+                >
+                  {format(bar.mean)}
+                </text>
+              </g>
+            );
+          })}
+          <line x1={plotX} x2={plotX} y1={panel.y + panelTop - 6} y2={plotBottom} class="bc-axis" />
+        </g>
+      );
+    })
+  }
+  <text x={width / 2} y={height - 4} text-anchor="middle" class="fx-muted fx-small">{axis}</text>
+</Figure>
+
+<details class="bc-table">
+  <summary>Show the numbers</summary>
+  <table>
+    <thead>
+      <tr>
+        <th>Panel</th>
+        <th>App</th>
+        <th>Mean ({unit})</th>
+        <th>SD</th>
+        <th>Runs</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        panels.flatMap((panel) =>
+          panel.bars.map((bar) => (
+            <tr>
+              <td>{panel.title}</td>
+              <td>{bar.label}</td>
+              <td>{format(bar.mean)}</td>
+              <td>{format(bar.sd)}</td>
+              <td>{bar.n}</td>
+            </tr>
+          )),
+        )
+      }
+    </tbody>
+  </table>
+</details>
+
+<style is:global>
+  .fx-figure .bc-cli { fill: var(--bc-cli); }
+  .fx-figure .bc-gui { fill: var(--bc-gui); }
+  .fx-figure .bc-ipad { fill: var(--bc-ipad); }
+  .fx-figure .bc-android { fill: var(--bc-android); }
+  .fx-figure .bc-other { fill: var(--bc-other); }
+  .fx-figure .bc-grid {
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1;
+  }
+  .fx-figure .bc-axis {
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1;
+  }
+  .fx-figure .bc-whisker {
+    stroke: var(--sl-color-white);
+    stroke-width: 1.5;
+    opacity: 0.7;
+  }
+  .fx-figure .bc-hit {
+    fill: transparent;
+  }
+  .fx-figure .bc-row:hover .bc-hit {
+    fill: var(--sl-color-gray-5);
+    opacity: 0.45;
+  }
+  .fx-figure .bc-value {
+    font-variant-numeric: tabular-nums;
+  }
+  .bc-table {
+    margin-top: -0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: var(--sl-text-sm);
+  }
+  .bc-table summary {
+    cursor: pointer;
+    color: var(--sl-color-gray-3);
+  }
+  .bc-table table {
+    margin-top: 0.5rem;
+  }
+</style>

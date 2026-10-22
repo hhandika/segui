@@ -1,0 +1,271 @@
+app,analysis,dataset,os,time_secs,ram_mb
+SEGUL CLI,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.03,587.86
+SEGUL CLI,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.8,590.42
+SEGUL CLI,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.86,596.46
+SEGUL CLI,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.82,586.36
+SEGUL CLI,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.88,587.75
+SEGUL GUI (Android),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Android,17.5,
+SEGUL GUI (Android),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Android,17,
+SEGUL GUI (Android),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Android,17,
+SEGUL GUI (Android),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Android,17,
+SEGUL GUI (Android),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Android,17.2,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.6,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.6,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.5,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,7.4,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,7.4,
+SEGUL GUI (Linux),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.8,767.32
+SEGUL GUI (Linux),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5,760.02
+SEGUL GUI (Linux),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5,762.27
+SEGUL GUI (Linux),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.9,771.39
+SEGUL GUI (Linux),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5,769.36
+AMAS,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.5,1735.05
+AMAS,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.5,1734.86
+AMAS,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.64,1732.88
+AMAS,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.57,1733.22
+AMAS,Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.5,1735.09
+goalign (single-core),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5.31,1895.39
+goalign (single-core),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5.46,1993.16
+goalign (single-core),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5.25,2244.76
+goalign (single-core),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5.4,2262.52
+goalign (single-core),Alignment Concatenation,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5.49,2135.12
+SEGUL CLI,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.51,638.25
+SEGUL CLI,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.52,636.29
+SEGUL CLI,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.53,638.97
+SEGUL CLI,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.52,638.4
+SEGUL CLI,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.48,635.73
+SEGUL GUI (Android),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,16.4,
+SEGUL GUI (Android),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,16.2,
+SEGUL GUI (Android),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,16.3,
+SEGUL GUI (Android),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,16.4,
+SEGUL GUI (Android),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,16.3,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.2,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.2,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.2,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.1,
+SEGUL GUI (iPadOS),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.1,
+SEGUL GUI (Linux),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.5,875.74
+SEGUL GUI (Linux),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.7,867.04
+SEGUL GUI (Linux),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.5,867.04
+SEGUL GUI (Linux),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.6,867.04
+SEGUL GUI (Linux),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.5,867.04
+AMAS,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.42,2263.41
+AMAS,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.39,2261.6
+AMAS,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.47,2261.59
+AMAS,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.41,2262.25
+AMAS,Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.47,2259.71
+goalign (single-core),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,7.13,3359.08
+goalign (single-core),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,6.97,3376.25
+goalign (single-core),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,7.16,3303.68
+goalign (single-core),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,7.09,2885.21
+goalign (single-core),Alignment Concatenation,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,7,2763.34
+SEGUL CLI,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.35,64.74
+SEGUL CLI,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.39,69.8
+SEGUL CLI,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.34,64.39
+SEGUL CLI,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.34,67.09
+SEGUL CLI,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.34,66.19
+SEGUL GUI (Android),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Android,4,
+SEGUL GUI (Android),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Android,3.5,
+SEGUL GUI (Android),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Android,3.5,
+SEGUL GUI (Android),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Android,3.5,
+SEGUL GUI (Android),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Android,3.6,
+SEGUL GUI (iPadOS),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3.8,
+SEGUL GUI (iPadOS),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,4.1,
+SEGUL GUI (iPadOS),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3.7,
+SEGUL GUI (iPadOS),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3.1,
+SEGUL GUI (iPadOS),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,2.9,
+SEGUL GUI (Linux),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.46,264.28
+SEGUL GUI (Linux),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.5,250.92
+SEGUL GUI (Linux),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.47,252.48
+SEGUL GUI (Linux),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.47,247.31
+SEGUL GUI (Linux),Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.5,255.16
+AMAS,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.59,585.54
+AMAS,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.61,584.26
+AMAS,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.62,587.82
+AMAS,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.59,583.41
+AMAS,Alignment Conversion,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.65,586.54
+SEGUL CLI,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.32,31.74
+SEGUL CLI,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.37,32.34
+SEGUL CLI,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.37,32.12
+SEGUL CLI,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.4,31.95
+SEGUL CLI,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.46,30.67
+SEGUL GUI (Android),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.4,
+SEGUL GUI (Android),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.8,
+SEGUL GUI (Android),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.9,
+SEGUL GUI (Android),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.6,
+SEGUL GUI (Android),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.5,
+SEGUL GUI (iPadOS),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,5.4,
+SEGUL GUI (iPadOS),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,4.1,
+SEGUL GUI (iPadOS),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,5.9,
+SEGUL GUI (iPadOS),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,5.4,
+SEGUL GUI (iPadOS),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,4.1,
+SEGUL GUI (Linux),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.39,222.57
+SEGUL GUI (Linux),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.4,220.51
+SEGUL GUI (Linux),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.43,223.05
+SEGUL GUI (Linux),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.4,227.59
+SEGUL GUI (Linux),Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.43,220.82
+AMAS,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.9,696.71
+AMAS,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.91,693.67
+AMAS,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.03,697.07
+AMAS,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.01,694.68
+AMAS,Alignment Conversion,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.03,694.56
+SEGUL CLI,Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,993.78,7.65
+SEGUL CLI,Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,994.37,9.9
+SEGUL CLI,Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,994.83,7.84
+SEGUL CLI,Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,999.52,9.86
+SEGUL CLI,Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,1001.19,9.92
+SEGUL GUI (Linux),Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,1007,188.5
+SEGUL GUI (Linux),Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,1008,180.85
+SEGUL GUI (Linux),Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,1005,178.93
+SEGUL GUI (Linux),Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,1009,213.09
+SEGUL GUI (Linux),Read Summary (FASTQ),"SRR26062012 (0.0 MBases, Whole Genome)",Linux,1015,177.89
+SEGUL CLI,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.35,65.82
+SEGUL CLI,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.35,66.51
+SEGUL CLI,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.34,64.84
+SEGUL CLI,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.35,67.48
+SEGUL CLI,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.35,68.37
+SEGUL GUI (Android),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Android,4.5,
+SEGUL GUI (Android),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Android,4.3,
+SEGUL GUI (Android),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Android,4.4,
+SEGUL GUI (Android),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Android,4.2,
+SEGUL GUI (Android),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Android,4.5,
+SEGUL GUI (iPadOS),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3.7,
+SEGUL GUI (iPadOS),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3.3,
+SEGUL GUI (iPadOS),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3,
+SEGUL GUI (iPadOS),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3,
+SEGUL GUI (iPadOS),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,3.1,
+SEGUL GUI (Linux),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.47,254.88
+SEGUL GUI (Linux),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.47,253.95
+SEGUL GUI (Linux),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.45,255.68
+SEGUL GUI (Linux),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.47,251.39
+SEGUL GUI (Linux),Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,0.47,262.28
+AMAS,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.69,621.69
+AMAS,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.74,620.8
+AMAS,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.7,621.5
+AMAS,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.69,620.75
+AMAS,Sequence Removal,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.69,621.03
+SEGUL CLI,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.4,33.6
+SEGUL CLI,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.46,33.76
+SEGUL CLI,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.45,33.84
+SEGUL CLI,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.43,33.6
+SEGUL CLI,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.42,32.54
+SEGUL GUI (Android),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.4,
+SEGUL GUI (Android),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.5,
+SEGUL GUI (Android),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.5,
+SEGUL GUI (Android),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.5,
+SEGUL GUI (Android),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,3.6,
+SEGUL GUI (iPadOS),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,4.3,
+SEGUL GUI (iPadOS),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,4.2,
+SEGUL GUI (iPadOS),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,4.1,
+SEGUL GUI (iPadOS),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,4.3,
+SEGUL GUI (iPadOS),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,4.1,
+SEGUL GUI (Linux),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.45,224.76
+SEGUL GUI (Linux),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.4,223.41
+SEGUL GUI (Linux),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.44,225.23
+SEGUL GUI (Linux),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.41,228.66
+SEGUL GUI (Linux),Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,0.4,230.31
+AMAS,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.12,720.61
+AMAS,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.12,719.99
+AMAS,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.15,720.05
+AMAS,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2,720.08
+AMAS,Sequence Removal,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,2.11,719.87
+SEGUL CLI,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.5,1568.62
+SEGUL CLI,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.54,1568.78
+SEGUL CLI,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.56,1568.71
+SEGUL CLI,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.56,1568.59
+SEGUL CLI,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,3.53,1568.61
+SEGUL GUI (Android),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,15.3,
+SEGUL GUI (Android),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,15.3,
+SEGUL GUI (Android),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,13.9,
+SEGUL GUI (Android),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,13.8,
+SEGUL GUI (Android),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,14.2,
+SEGUL GUI (iPadOS),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.8,
+SEGUL GUI (iPadOS),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.7,
+SEGUL GUI (iPadOS),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.7,
+SEGUL GUI (iPadOS),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.4,
+SEGUL GUI (iPadOS),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,6.4,
+SEGUL GUI (Linux),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,4.8,1737.04
+SEGUL GUI (Linux),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,4.8,1731.34
+SEGUL GUI (Linux),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,4.8,1736.32
+SEGUL GUI (Linux),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,4.9,1740.19
+SEGUL GUI (Linux),Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,4.8,1742.15
+AMAS,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,12.23,1573.28
+AMAS,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,12.21,1573.36
+AMAS,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,12.21,1573.26
+AMAS,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,12.08,1573.22
+AMAS,Alignment Splitting,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,12.44,1573.15
+SEGUL CLI,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,3.95,1149.9
+SEGUL CLI,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.14,1149.86
+SEGUL CLI,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.07,1149.78
+SEGUL CLI,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.09,1149.86
+SEGUL CLI,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.09,1149.86
+SEGUL GUI (Android),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Android,14.4,
+SEGUL GUI (Android),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Android,14.4,
+SEGUL GUI (Android),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Android,14.4,
+SEGUL GUI (Android),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Android,15.2,
+SEGUL GUI (Android),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Android,14.2,
+SEGUL GUI (iPadOS),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.7,
+SEGUL GUI (iPadOS),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.7,
+SEGUL GUI (iPadOS),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.8,
+SEGUL GUI (iPadOS),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.7,
+SEGUL GUI (iPadOS),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.8,
+SEGUL GUI (Linux),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.88,1317.89
+SEGUL GUI (Linux),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,5.07,1323.3
+SEGUL GUI (Linux),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.71,1322.6
+SEGUL GUI (Linux),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.92,1317.72
+SEGUL GUI (Linux),Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,4.92,144.29
+AMAS,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,6.64,1153.35
+AMAS,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,6.72,1153.44
+AMAS,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,6.76,1153.54
+AMAS,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,6.55,1153.45
+AMAS,Alignment Splitting,"Shen et al. 2018 (398.8 MBases, AA)",Linux,6.57,1153.36
+SEGUL CLI,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.4,640.8
+SEGUL CLI,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.39,634.11
+SEGUL CLI,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.4,639.72
+SEGUL CLI,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.39,642.12
+SEGUL CLI,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.4,644.3
+SEGUL GUI (Android),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Android,13.1,
+SEGUL GUI (Android),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Android,13.4,
+SEGUL GUI (Android),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Android,13.4,
+SEGUL GUI (Android),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Android,13.3,
+SEGUL GUI (Android),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Android,13.3,
+SEGUL GUI (iPadOS),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.1,
+SEGUL GUI (iPadOS),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,7.4,
+SEGUL GUI (iPadOS),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.1,
+SEGUL GUI (iPadOS),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.2,
+SEGUL GUI (iPadOS),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",iPadOS,6.8,
+SEGUL GUI (Linux),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.48,818.95
+SEGUL GUI (Linux),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.46,817.51
+SEGUL GUI (Linux),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.47,824.61
+SEGUL GUI (Linux),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.49,821.61
+SEGUL GUI (Linux),Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,1.49,819.6
+AMAS,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,72.93,1684.95
+AMAS,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,74.17,1685.67
+AMAS,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,73.2,1683.54
+AMAS,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,73.69,1685.99
+AMAS,Alignment Summary,"Shen et al. 2018 (398.8 MBases, AA)",Linux,73.03999999999999,1684.61
+SEGUL CLI,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.1,325.72
+SEGUL CLI,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.1,327.59
+SEGUL CLI,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.1,328.21
+SEGUL CLI,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.09,327.63
+SEGUL CLI,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.1,328.18
+SEGUL GUI (Android),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,14.2,
+SEGUL GUI (Android),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,14.3,
+SEGUL GUI (Android),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,14.4,
+SEGUL GUI (Android),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,14.1,
+SEGUL GUI (Android),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Android,14.2,
+SEGUL GUI (iPadOS),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,7.3,
+SEGUL GUI (iPadOS),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,7.6,
+SEGUL GUI (iPadOS),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,7.9,
+SEGUL GUI (iPadOS),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,7.8,
+SEGUL GUI (iPadOS),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",iPadOS,7.9,
+SEGUL GUI (Linux),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.2,514.5
+SEGUL GUI (Linux),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.21,515.59
+SEGUL GUI (Linux),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.2,519.02
+SEGUL GUI (Linux),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.2,515.32
+SEGUL GUI (Linux),Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,1.18,518.96
+AMAS,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,91.68,1976.66
+AMAS,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,91.86,1976.53
+AMAS,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,91.95,1974.94
+AMAS,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,91.23,1976.89
+AMAS,Alignment Summary,"Oliveros et al. 2019 (522.5 MBases, DNA)",Linux,91.76,1974.68

@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class SharedInfoForm extends StatelessWidget {
   const SharedInfoForm({
@@ -30,7 +31,7 @@ class SharedInfoForm extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 const Icon(Icons.info_outline_rounded),
-                const SizedBox(height: 4),
+                const SizedBox(height: SeguiSpacing.xs),
                 Text(
                   description ?? '',
                   style: Theme.of(context).textTheme.labelMedium,
@@ -39,7 +40,7 @@ class SharedInfoForm extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: SeguiSpacing.xxs),
         Center(
           child: IconButton(
             tooltip: isShowingInfo ? 'Hide info' : 'Show info',

@@ -10,10 +10,15 @@ class SegulOutputFile {
   SegulOutputFile({
     required this.directory,
     required this.files,
-  });
+    DateTime? selectedAt,
+  }) : selectedAt = selectedAt ?? DateTime.now();
 
   final Directory? directory;
   final List<({File file, bool isNew})> files;
+
+  /// When [directory] was selected. Files that appear or change later are
+  /// new.
+  final DateTime selectedAt;
 
   factory SegulOutputFile.empty() {
     return SegulOutputFile(
@@ -24,18 +29,29 @@ class SegulOutputFile {
 
   factory SegulOutputFile.fromDirectory(Directory dir,
       {required bool isRecursive}) {
+    final DateTime selectedAt = DateTime.now();
+    final DirectoryCrawler crawler = DirectoryCrawler(dir);
     return SegulOutputFile(
       directory: dir,
-      files: DirectoryCrawler(dir).crawl(recursive: isRecursive),
+      files: isRecursive
+          ? crawler.crawl(recursive: true)
+          : [
+              for (final file in crawler.crawlOutput())
+                (file: file, isNew: false)
+            ],
+      selectedAt: selectedAt,
     );
   }
 
-  factory SegulOutputFile.updateFiles(SegulOutputFile output,
-      {required bool isRecursive}) {
+  factory SegulOutputFile.updateFiles(SegulOutputFile output) {
     return SegulOutputFile(
-        directory: output.directory,
-        files: DirectoryCrawler(output.directory!)
-            .findNewFiles(output.files, isRecursive));
+      directory: output.directory,
+      files: DirectoryCrawler(output.directory!).findNewFiles(
+        output.files,
+        since: output.selectedAt,
+      ),
+      selectedAt: output.selectedAt,
+    );
   }
 
   // Update the list without accounting new files.
@@ -46,6 +62,7 @@ class SegulOutputFile {
     return SegulOutputFile(
       directory: file.directory,
       files: newFiles,
+      selectedAt: file.selectedAt,
     );
   }
 
@@ -53,6 +70,7 @@ class SegulOutputFile {
     return SegulOutputFile(
       directory: oldFile.directory,
       files: oldFile.files.where((f) => f.file.path != file.path).toList(),
+      selectedAt: oldFile.selectedAt,
     );
   }
 }

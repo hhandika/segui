@@ -1,0 +1,48 @@
+---
+title: Sequence Filtering
+sidebar:
+  order: 14
+---
+
+{% screenshots
+   large="gui/sequence-filter-large.webp"
+   largeAlt="SEGUI Filter sequences page on a desktop with the tool form and file panel"
+   small="gui/sequence-filter-small.webp"
+   smallAlt="SEGUI Filter sequences page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[38.7, 13.5] small=[48.9, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+Remove sequences inside each file based on their length or proportion of gaps. Unlike [alignment filtering](/docs/gui-usage/align-filter/), which keeps or drops whole alignments, this task keeps or drops individual sequences.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Filter sequences` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select the input format (optional) and the data type.
+5. Select the filtering method and enter its value.
+6. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+7. Select the output format. Turn on `Set interleaved format` to write interleaved output (optional).
+8. Select the run button {% ref id="D" /%}, labeled `Filter`, to start the task.
+
+## Parameters
+
+### Minimal sequence length
+
+The app removes sequences with fewer non-gap characters than the value. The input is a whole number, such as 100.
+
+### Maximal sequence length
+
+The app removes sequences with more non-gap characters than the value. The input is a whole number, such as 5000.
+
+### Maximal proportion of gaps
+
+The app removes sequences whose proportion of gaps (`-` or `?`) is greater than the value. The input is a decimal number between 0 and 1, such as 0.3.
+
+## Output
+
+The app writes one file for each input file, named after the input file, with the sequences that pass the filter.

@@ -63,6 +63,54 @@ const XTypeGroup partitionTypeGroup = XTypeGroup(
   ],
 );
 
+/// Sequence files that receive sequences in the sequence addition task.
+/// Same extensions as [sequenceTypeGroup], but a separate group so
+/// destination files stay apart from the files that supply sequences.
+const XTypeGroup destinationSequenceTypeGroup = XTypeGroup(
+  label: 'Destination sequence',
+  extensions: [
+    ...fastaExtensions,
+    ...nexusExtensions,
+    ...phylipExtensions,
+  ],
+  uniformTypeIdentifiers: [
+    'com.segui.fasta',
+    'com.segui.nexus',
+    'com.segui.phylip',
+  ],
+);
+
+/// MAF files, plain or gzipped. The picker accepts any `.gz` file, so use
+/// [isMafPath] to check the full extension.
+const XTypeGroup mafTypeGroup = XTypeGroup(
+  label: 'MAF',
+  extensions: [...mafExtensions, ...gunzipExtensions],
+  uniformTypeIdentifiers: [
+    'public.plain-text',
+    'org.gnu.gnu-zip-archive',
+  ],
+);
+
+/// BED files, plain or gzipped. Use [isBedPath] to check the full extension.
+const XTypeGroup bedTypeGroup = XTypeGroup(
+  label: 'BED',
+  extensions: [...bedExtensions, ...gunzipExtensions],
+  uniformTypeIdentifiers: [
+    'public.plain-text',
+    'org.gnu.gnu-zip-archive',
+  ],
+);
+
+/// Sample group tables with a header and sample and group columns.
+const XTypeGroup sampleGroupTypeGroup = XTypeGroup(
+  label: 'Sample groups',
+  extensions: ['csv', 'tsv'],
+  uniformTypeIdentifiers: [
+    'public.comma-separated-values-text',
+    'public.tab-separated-values-text',
+  ],
+);
+
 const XTypeGroup genomicContigTypeGroup = XTypeGroup(
   label: 'Contig',
   extensions: fastaExtensions,
@@ -90,6 +138,50 @@ const List<String> phylipExtensions = [
   'phy',
   'ph',
 ];
+
+const List<String> mafExtensions = [
+  'maf',
+];
+
+const List<String> bedExtensions = [
+  'bed',
+];
+
+/// Whether [path] is a MAF file, such as `genome.maf` or `genome.maf.gz`.
+bool isMafPath(String path) => _hasExtension(path, mafExtensions);
+
+/// Whether [path] is a BED file, such as `loci.bed` or `loci.bed.gz`.
+bool isBedPath(String path) => _hasExtension(path, bedExtensions);
+
+/// Whether [file] belongs to [type]. MAF and BED files match by their full
+/// extension, so gzipped reads are not mistaken for gzipped MAF files.
+bool matchesTypeGroup(File file, XTypeGroup type) {
+  if (type == mafTypeGroup) {
+    return isMafPath(file.path);
+  }
+  if (type == bedTypeGroup) {
+    return isBedPath(file.path);
+  }
+  return type.extensions?.contains(file.fileExtension) ?? false;
+}
+
+// Matches [extensions] case-insensitively, ignoring a gzip extension.
+bool _hasExtension(String path, List<String> extensions) {
+  String name = p.basename(path).toLowerCase();
+  if (gunzipExtensions.contains(p.extension(name).replaceFirst('.', ''))) {
+    name = p.withoutExtension(name);
+  }
+  final String ext = p.extension(name);
+  return ext.length > 1 && extensions.contains(ext.substring(1));
+}
+
+/// Whether the alignment viewer can open [file]: FASTA, NEXUS, and PHYLIP.
+bool isAlignmentViewable(File file) {
+  final String ext = file.fileExtension.toLowerCase();
+  return fastaExtensions.contains(ext) ||
+      nexusExtensions.contains(ext) ||
+      phylipExtensions.contains(ext);
+}
 
 const List<String> fastqExtensions = [
   'fastq',
@@ -125,6 +217,8 @@ const List<String> plainTextExtensions = [
   'toml',
   'yaml',
   'nex',
+  ...mafExtensions,
+  ...bedExtensions,
 ];
 
 const List<String> compressionExtensions = [
@@ -213,7 +307,8 @@ class FileAssociation extends FileUtils {
   bool get isSupportedViewExtension {
     final fileType = commonFileTYpe;
     return fileType == CommonFileType.plainText ||
-        fileType == CommonFileType.tabulated;
+        fileType == CommonFileType.tabulated ||
+        isAlignmentViewable(file);
   }
 
   CommonFileType get commonFileTYpe {

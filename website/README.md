@@ -1,41 +1,41 @@
-# Website
+# SEGUL Website
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+The SEGUL documentation and website, built with [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/), and managed with [Bun](https://bun.sh/).
 
-# Installation
+## Quick start
 
-```
-$ yarn
-```
+Install dependencies:
 
-## Local Development
-
-```
-$ yarn start
+```bash
+bun install
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Run the development server with hot reload:
 
-### Build
-
-```
-$ yarn build
+```bash
+bun run dev
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+Check types and build the static site into `dist/`:
 
-### Deployment
-
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
+```bash
+bun run check
+bun run build
 ```
 
-Not using SSH:
+Preview the production build:
 
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
+```bash
+bun run preview
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+## Project structure
+
+- `src/content/docs/docs/`: Starlight documentation pages, served under `/docs/`.
+- `src/pages/`: the landing (`index.astro`), get started, and about pages, styled with Tailwind. `src/layouts/Layout.astro` and `src/components/Navbar.astro` frame them.
+- `src/data/site.ts`: shared content for those pages, such as the tool list and citation.
+- `src/components/`: Astro components.
+- `src/assets/` and `public/`: images and static files.
+- `astro.config.mjs`: site configuration, sidebar, and redirects from former Docusaurus URLs.
+
+See the [documentation build guide](https://segul.app/docs/advance-guides/build-docs/) for details.

@@ -91,3 +91,20 @@ class HomeViewSetting extends Notifier<HomeView> {
     await ref.read(settingProvider).setString(_key, view.name);
   }
 }
+
+final reduceMotionProvider =
+    NotifierProvider<ReduceMotionSetting, bool>(ReduceMotionSetting.new);
+
+/// Remembers whether the app stops decorative animations, such as the gull
+/// at work. The device's reduce motion setting applies either way.
+class ReduceMotionSetting extends Notifier<bool> {
+  static const String _key = 'reduceMotion';
+
+  @override
+  bool build() => ref.watch(settingProvider).getBool(_key) ?? false;
+
+  Future<void> setReduceMotion(bool value) async {
+    state = value;
+    await ref.read(settingProvider).setBool(_key, value);
+  }
+}

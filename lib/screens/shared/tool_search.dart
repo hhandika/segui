@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
-const double _searchBarWidth = 280;
+const double _searchBarWidth = SeguiContentWidth.searchBar;
 
 /// App bar search that finds and opens any SEGUI tool.
 ///
@@ -20,9 +21,9 @@ class GlobalToolSearch extends StatelessWidget {
       isFullScreen: isCompact,
       viewBackgroundColor: Theme.of(context).colorScheme.surface,
       viewConstraints: const BoxConstraints(
-        minWidth: 360,
-        maxWidth: 480,
-        maxHeight: 520,
+        minWidth: SeguiContentWidth.searchViewMin,
+        maxWidth: SeguiContentWidth.dialog,
+        maxHeight: SeguiControlSize.searchViewMax,
       ),
       builder: (context, controller) {
         if (isCompact) {
@@ -37,7 +38,7 @@ class GlobalToolSearch extends StatelessWidget {
           child: SearchBar(
             controller: controller,
             hintText: 'Search tools',
-            elevation: const WidgetStatePropertyAll(0),
+            elevation: const WidgetStatePropertyAll(SeguiElevation.none),
             // A lighter tint of the app bar instead of the default grey.
             backgroundColor: WidgetStatePropertyAll(
               Color.lerp(
@@ -49,7 +50,8 @@ class GlobalToolSearch extends StatelessWidget {
             side: WidgetStatePropertyAll(
               BorderSide(color: getBorderColor(context)),
             ),
-            constraints: const BoxConstraints(minHeight: 44),
+            constraints:
+                const BoxConstraints(minHeight: SeguiControlSize.control),
             leading: const Icon(Icons.search),
             onTap: controller.openView,
             onChanged: (_) => controller.openView(),

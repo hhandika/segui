@@ -1,0 +1,150 @@
+---
+import Layout from "../layouts/Layout.astro";
+import FieldSketch from "../components/art/FieldSketch.astro";
+import Feather from "../components/art/Feather.astro";
+import { citation, githubUrl } from "../data/site";
+
+const kicker = "text-xs font-semibold uppercase tracking-[0.2em] text-olive-600 dark:text-olive-300";
+const sectionTitle = "mt-3 text-3xl font-bold tracking-tight text-leaf-950 sm:text-4xl dark:text-leaf-50";
+const body = "mt-4 leading-relaxed text-leaf-900/80 dark:text-leaf-100/75";
+const link = "font-semibold text-leaf-700 underline underline-offset-2 dark:text-leaf-300";
+
+const authors = [
+  { name: "Heru Handika", role: "Lead developer and maintainer", href: "https://github.com/hhandika" },
+  { name: "Jacob A. Esselstyn", role: "Co-author", href: "" },
+];
+
+const sources = [
+  { label: "SEGUI app (Flutter)", href: "https://github.com/hhandika/segui" },
+  { label: "SEGUL CLI and Rust API", href: githubUrl },
+  { label: "pysegul Python API", href: "https://github.com/hhandika/pysegul" },
+  { label: "API reference on docs.rs", href: "https://docs.rs/segul/latest/segul/" },
+];
+
+const inspirations = [
+  { label: "Phyluce", href: "https://phyluce.readthedocs.io/en/latest/" },
+  { label: "AMAS", href: "https://github.com/marekborowiec/AMAS" },
+  { label: "goalign", href: "https://github.com/evolbioinfo/goalign" },
+  { label: "FrogCap", href: "https://github.com/chutter/FrogCap-Sequence-Capture" },
+];
+---
+
+<Layout title="About | SEGUL" description="Why we build SEGUL, who builds it, and how to cite it.">
+  <section class="sg-leaf-field relative isolate overflow-hidden px-6 pt-16 pb-20 text-white sm:pt-24">
+    <Feather class="pointer-events-none absolute -right-40 -bottom-16 -z-10 w-[28rem] max-w-none opacity-20 lg:right-[-2rem] lg:top-20 lg:bottom-auto lg:w-[26rem] lg:opacity-90 xl:right-[4%]" />
+    <div class="mx-auto max-w-6xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.25em] text-pollen-300">About</p>
+      <h1 class="mt-4 max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">
+        Phylogenomic analyses for everyone, on any device.
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-leaf-50/85">
+        SEGUL, short for <strong>SEquence and Genomic UtiLities</strong>, is a phylogenomic toolkit that scales from smartphones to high-performance computing clusters.
+      </p>
+    </div>
+  </section>
+
+  <section class="px-6 py-16 sm:py-20">
+    <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+      <div class="sg-reveal">
+        <p class={kicker}>Why</p>
+        <h2 class={sectionTitle}>Accessible, fast phylogenomics</h2>
+        <p class={body}>
+          Phylogenomic projects routinely involve thousands of loci and hundreds of samples. Preparing those datasets often requires a powerful computer, a stack of dependencies, and command-line experience. We build SEGUL to improve equity in evolutionary biology by removing those barriers.
+        </p>
+        <p class={body}>
+          SEGUL is a practical solution to typical phylogenomic data analyses, and a proof of concept for genomic software that runs anywhere, from a phone in the field to a cluster in the lab. It handles small Sanger datasets just as well.
+        </p>
+      </div>
+      <div class="sg-reveal">
+        <p class={kicker}>How</p>
+        <h2 class={sectionTitle}>One Rust core, three interfaces</h2>
+        <p class={body}>
+          The core library is written in Rust for speed, memory safety, and parallelism. The command line wraps the library directly, the SEGUI app is built with Flutter, and pysegul brings the same functions to Python.
+        </p>
+        <p class={body}>
+          Read the <a href="/docs/advance-guides/architecture/" class={link}>architecture guide</a>, or the independent review by <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/1755-0998.13993" class={link}>Chan (2024)</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-leaf-50/70 px-6 py-16 sm:py-20 dark:bg-leaf-950/40">
+    <div class="mx-auto max-w-6xl">
+      <p class={kicker}>Cite</p>
+      <h2 class={sectionTitle}>How to cite SEGUL</h2>
+      <blockquote class="sg-reveal mt-8 rounded-2xl border-l-4 border-pollen-300 bg-white p-6 leading-relaxed text-leaf-950 shadow-sm dark:bg-[#141a16] dark:text-leaf-50">
+        {citation.text} <a href={citation.doi} class={link}>{citation.doi}</a>
+      </blockquote>
+      <p class="mt-4 text-sm text-leaf-900/70 dark:text-leaf-100/65">
+        Can't access the article? Request a copy on <a href="https://www.researchgate.net/publication/380125709_SEGUL_Ultrafast_memory-efficient_and_mobile-friendly_software_for_manipulating_and_summarizing_phylogenomic_datasets" class={link}>ResearchGate</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="px-6 py-16 sm:py-20">
+    <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+      <div>
+        <p class={kicker}>People</p>
+        <h2 class={sectionTitle}>Authors</h2>
+        <ul class="mt-8 space-y-4">
+          {
+            authors.map((author) => (
+              <li class="sg-reveal flex items-center gap-4 rounded-2xl border border-leaf-100 p-4 dark:border-leaf-900">
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-leaf-600 text-lg font-bold text-white">
+                  {author.name.split(" ").map((part) => part[0]).filter((c) => /[A-Z]/.test(c)).slice(0, 2).join("")}
+                </span>
+                <div>
+                  {author.href ? (
+                    <a href={author.href} class="font-semibold text-leaf-950 no-underline hover:text-leaf-600 dark:text-leaf-50">{author.name}</a>
+                  ) : (
+                    <p class="font-semibold text-leaf-950 dark:text-leaf-50">{author.name}</p>
+                  )}
+                  <p class="text-sm text-leaf-900/70 dark:text-leaf-100/65">{author.role}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <p class={kicker}>Open source</p>
+        <h2 class={sectionTitle}>Source code</h2>
+        <ul class="mt-8 grid gap-3 sm:grid-cols-2">
+          {
+            sources.map((source) => (
+              <li>
+                <a href={source.href} class="sg-reveal block rounded-2xl border border-leaf-100 p-4 font-semibold text-leaf-950 no-underline transition-colors hover:border-leaf-400 hover:bg-leaf-50 dark:border-leaf-900 dark:text-leaf-50 dark:hover:bg-leaf-950">
+                  {source.label} →
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-leaf-50/70 px-6 pt-16 dark:bg-leaf-950/40">
+    <div class="mx-auto max-w-4xl">
+      <p class={kicker}>Thanks</p>
+      <h2 class={sectionTitle}>Acknowledgments</h2>
+      <p class={body}>
+        We thank Andre E. Moncrieff, Austin S. Chipps, Carl R. Hutter, Darwin Morales-Martínez, Diego J. Elias, Giovani Hernández-Canchola, Glaucia C. Del-Rio, Roberta C. Canton, Samantha L. Rutledge, Sarin Tiatragul, and Spenser J. Babb-Biernacki for their valuable feedback on the application and its documentation. We are grateful to Spenser J. Babb-Biernacki for suggesting the expansion of the SEGUL acronym.
+      </p>
+      <p class={body}>
+        Financial support was provided by the National Science Foundation (<a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=1754393" class={link}>DEB-1754393</a> and <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2244754" class={link}>DEB-2244754</a>) and the Alfred L. Gardner and Mark S. Hafner Mammalogy Fund.
+      </p>
+      <p class={body}>
+        Several SEGUL features are inspired by {
+          inspirations.map((item, index) => (
+            <>
+              {index > 0 && (index === inspirations.length - 1 ? ", and " : ", ")}
+              <a href={item.href} class={link}>{item.label}</a>
+            </>
+          ))
+        }. SEGUL also benefits greatly from open-source libraries in the Rust and Flutter communities.
+      </p>
+    </div>
+    <FieldSketch class="mx-auto mt-12 block w-full max-w-6xl" />
+  </section>
+</Layout>

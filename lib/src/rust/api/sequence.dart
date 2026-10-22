@@ -8,11 +8,80 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'sequence.freezed.dart';
 
-// These functions are ignored because they are not marked as `pub`: `count_min_tax`, `create_final_output_path`, `extract_partition_fname`, `generate_input_partition_path`, `log_info`, `match_parameters`, `match_params`, `match_params`, `match_removal_type`, `match_translation_table`, `parse_file`
-// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`
+// These functions are ignored because they are not marked as `pub`: `count_min_tax`, `create_final_output_path`, `extract_partition_fname`, `find_ids`, `generate_input_partition_path`, `log_info`, `match_grouping`, `match_model`, `match_parameters`, `match_params`, `match_params`, `match_params`, `match_params`, `match_removal_type`, `match_translation_table`, `no_groups_detected`, `parse_file`
+// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `check_file_count`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `find_input_input_files`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_datatype`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_fasta_output_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_input_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_output_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`, `match_partition_fmt`
 
 Future<String> showDnaUppercase() =>
     RustLib.instance.api.crateApiSequenceShowDnaUppercase();
+
+class AlignmentDistanceServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String model;
+  final String triangle;
+  final String? diagonal;
+  final String? prefix;
+  final DistanceGroupingParams grouping;
+  final bool longFormat;
+
+  const AlignmentDistanceServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.model,
+    required this.triangle,
+    this.diagonal,
+    this.prefix,
+    required this.grouping,
+    required this.longFormat,
+  });
+
+  Future<void> computeDistance() => RustLib.instance.api
+          .crateApiSequenceAlignmentDistanceServicesComputeDistance(
+        that: this,
+      );
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<AlignmentDistanceServices> newInstance() =>
+      RustLib.instance.api.crateApiSequenceAlignmentDistanceServicesNew();
+
+  Future<DistanceGroupPreview> previewGroups() => RustLib.instance.api
+          .crateApiSequenceAlignmentDistanceServicesPreviewGroups(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      model.hashCode ^
+      triangle.hashCode ^
+      diagonal.hashCode ^
+      prefix.hashCode ^
+      grouping.hashCode ^
+      longFormat.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlignmentDistanceServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          model == other.model &&
+          triangle == other.triangle &&
+          diagonal == other.diagonal &&
+          prefix == other.prefix &&
+          grouping == other.grouping &&
+          longFormat == other.longFormat;
+}
 
 class AlignmentServices {
   final List<String> inputFiles;
@@ -46,6 +115,11 @@ class AlignmentServices {
       RustLib.instance.api.crateApiSequenceAlignmentServicesSummarizeAlignment(
           that: this, outputPrefix: outputPrefix, interval: interval);
 
+  Future<void> summarizeAlignmentPerLocus({String? outputPrefix}) =>
+      RustLib.instance.api
+          .crateApiSequenceAlignmentServicesSummarizeAlignmentPerLocus(
+              that: this, outputPrefix: outputPrefix);
+
   @override
   int get hashCode =>
       inputFiles.hashCode ^
@@ -64,6 +138,128 @@ class AlignmentServices {
           outputDir == other.outputDir;
 }
 
+class AlignmentTrimmingServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String outputFmt;
+  final TrimmingParams params;
+
+  const AlignmentTrimmingServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+    required this.params,
+  });
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<AlignmentTrimmingServices> newInstance() =>
+      RustLib.instance.api.crateApiSequenceAlignmentTrimmingServicesNew();
+
+  Future<void> trim() =>
+      RustLib.instance.api.crateApiSequenceAlignmentTrimmingServicesTrim(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode ^
+      params.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlignmentTrimmingServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt &&
+          params == other.params;
+}
+
+class DistanceGroupCount {
+  final String name;
+  final BigInt count;
+
+  const DistanceGroupCount({
+    required this.name,
+    required this.count,
+  });
+
+  @override
+  int get hashCode => name.hashCode ^ count.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DistanceGroupCount &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          count == other.count;
+}
+
+class DistanceGroupPreview {
+  final String? delimiter;
+  final BigInt? fields;
+  final BigInt sampleCount;
+  final List<DistanceGroupCount> groups;
+  final List<String> unassigned;
+
+  const DistanceGroupPreview({
+    this.delimiter,
+    this.fields,
+    required this.sampleCount,
+    required this.groups,
+    required this.unassigned,
+  });
+
+  @override
+  int get hashCode =>
+      delimiter.hashCode ^
+      fields.hashCode ^
+      sampleCount.hashCode ^
+      groups.hashCode ^
+      unassigned.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DistanceGroupPreview &&
+          runtimeType == other.runtimeType &&
+          delimiter == other.delimiter &&
+          fields == other.fields &&
+          sampleCount == other.sampleCount &&
+          groups == other.groups &&
+          unassigned == other.unassigned;
+}
+
+@freezed
+sealed class DistanceGroupingParams with _$DistanceGroupingParams {
+  const DistanceGroupingParams._();
+
+  const factory DistanceGroupingParams.delimiter({
+    required String delimiter,
+    required BigInt fields,
+  }) = DistanceGroupingParams_Delimiter;
+  const factory DistanceGroupingParams.regex(
+    String field0,
+  ) = DistanceGroupingParams_Regex;
+  const factory DistanceGroupingParams.mapFile(
+    String field0,
+  ) = DistanceGroupingParams_MapFile;
+  const factory DistanceGroupingParams.auto() = DistanceGroupingParams_Auto;
+  const factory DistanceGroupingParams.none() = DistanceGroupingParams_None;
+}
+
 @freezed
 sealed class FilteringParams with _$FilteringParams {
   const FilteringParams._();
@@ -74,12 +270,21 @@ sealed class FilteringParams with _$FilteringParams {
   const factory FilteringParams.alnLen(
     BigInt field0,
   ) = FilteringParams_AlnLen;
+  const factory FilteringParams.maxAlnLen(
+    BigInt field0,
+  ) = FilteringParams_MaxAlnLen;
   const factory FilteringParams.parsInf(
     BigInt field0,
   ) = FilteringParams_ParsInf;
+  const factory FilteringParams.maxParsInf(
+    BigInt field0,
+  ) = FilteringParams_MaxParsInf;
   const factory FilteringParams.percInf(
     double field0,
   ) = FilteringParams_PercInf;
+  const factory FilteringParams.missingData(
+    double field0,
+  ) = FilteringParams_MissingData;
   const factory FilteringParams.taxonAll(
     List<String> field0,
   ) = FilteringParams_TaxonAll;
@@ -242,6 +447,67 @@ class PartitionServices {
           isUncheck == other.isUncheck;
 }
 
+class SequenceAdditionServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final List<String> destinationFiles;
+  final String destinationFmt;
+  final String outputDir;
+  final String outputFmt;
+  final bool isAddedOnly;
+
+  const SequenceAdditionServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.destinationFiles,
+    required this.destinationFmt,
+    required this.outputDir,
+    required this.outputFmt,
+    required this.isAddedOnly,
+  });
+
+  Future<void> addSequence() =>
+      RustLib.instance.api.crateApiSequenceSequenceAdditionServicesAddSequence(
+        that: this,
+      );
+
+  Future<void> addSequenceToSingleFile({required bool includeFilename}) =>
+      RustLib.instance.api
+          .crateApiSequenceSequenceAdditionServicesAddSequenceToSingleFile(
+              that: this, includeFilename: includeFilename);
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<SequenceAdditionServices> newInstance() =>
+      RustLib.instance.api.crateApiSequenceSequenceAdditionServicesNew();
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      destinationFiles.hashCode ^
+      destinationFmt.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode ^
+      isAddedOnly.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SequenceAdditionServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          destinationFiles == other.destinationFiles &&
+          destinationFmt == other.destinationFmt &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt &&
+          isAddedOnly == other.isAddedOnly;
+}
+
 class SequenceConversionServices {
   final List<String> inputFiles;
   final String inputFmt;
@@ -352,6 +618,70 @@ sealed class SequenceExtractionParams with _$SequenceExtractionParams {
     String field0,
   ) = SequenceExtractionParams_Regex;
   const factory SequenceExtractionParams.none() = SequenceExtractionParams_None;
+}
+
+@freezed
+sealed class SequenceFilteringParams with _$SequenceFilteringParams {
+  const SequenceFilteringParams._();
+
+  const factory SequenceFilteringParams.minLength(
+    BigInt field0,
+  ) = SequenceFilteringParams_MinLength;
+  const factory SequenceFilteringParams.maxLength(
+    BigInt field0,
+  ) = SequenceFilteringParams_MaxLength;
+  const factory SequenceFilteringParams.maxGap(
+    double field0,
+  ) = SequenceFilteringParams_MaxGap;
+  const factory SequenceFilteringParams.none() = SequenceFilteringParams_None;
+}
+
+class SequenceFilteringServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String outputFmt;
+  final SequenceFilteringParams params;
+
+  const SequenceFilteringServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+    required this.params,
+  });
+
+  Future<void> filterSequence() => RustLib.instance.api
+          .crateApiSequenceSequenceFilteringServicesFilterSequence(
+        that: this,
+      );
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<SequenceFilteringServices> newInstance() =>
+      RustLib.instance.api.crateApiSequenceSequenceFilteringServicesNew();
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode ^
+      params.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SequenceFilteringServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt &&
+          params == other.params;
 }
 
 class SequenceRemoval {
@@ -480,6 +810,50 @@ sealed class SequenceRenamingParams with _$SequenceRenamingParams {
   const factory SequenceRenamingParams.none() = SequenceRenamingParams_None;
 }
 
+class SequenceTransposeServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String outputFmt;
+
+  const SequenceTransposeServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+  });
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<SequenceTransposeServices> newInstance() =>
+      RustLib.instance.api.crateApiSequenceSequenceTransposeServicesNew();
+
+  Future<void> transpose() =>
+      RustLib.instance.api.crateApiSequenceSequenceTransposeServicesTranspose(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SequenceTransposeServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt;
+}
+
 class SplitAlignmentServices {
   final String inputFile;
   final String inputFmt;
@@ -568,6 +942,11 @@ class TranslationServices {
         that: this,
       );
 
+  Future<void> translateSequenceAutoFrame() => RustLib.instance.api
+          .crateApiSequenceTranslationServicesTranslateSequenceAutoFrame(
+        that: this,
+      );
+
   @override
   int get hashCode =>
       inputFiles.hashCode ^
@@ -590,4 +969,61 @@ class TranslationServices {
           outputFmt == other.outputFmt &&
           table == other.table &&
           readingFrame == other.readingFrame;
+}
+
+@freezed
+sealed class TrimmingParams with _$TrimmingParams {
+  const TrimmingParams._();
+
+  const factory TrimmingParams.missingData(
+    double field0,
+  ) = TrimmingParams_MissingData;
+  const factory TrimmingParams.parsInf(
+    BigInt field0,
+  ) = TrimmingParams_ParsInf;
+  const factory TrimmingParams.none() = TrimmingParams_None;
+}
+
+class UnalignmentServices {
+  final List<String> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String outputDir;
+  final String outputFmt;
+
+  const UnalignmentServices({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFmt,
+  });
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<UnalignmentServices> newInstance() =>
+      RustLib.instance.api.crateApiSequenceUnalignmentServicesNew();
+
+  Future<void> unalign() =>
+      RustLib.instance.api.crateApiSequenceUnalignmentServicesUnalign(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      inputFiles.hashCode ^
+      inputFmt.hashCode ^
+      datatype.hashCode ^
+      outputDir.hashCode ^
+      outputFmt.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UnalignmentServices &&
+          runtimeType == other.runtimeType &&
+          inputFiles == other.inputFiles &&
+          inputFmt == other.inputFmt &&
+          datatype == other.datatype &&
+          outputDir == other.outputDir &&
+          outputFmt == other.outputFmt;
 }

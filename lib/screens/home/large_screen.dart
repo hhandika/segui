@@ -5,6 +5,7 @@ import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/home/components/navigation.dart';
 import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class LargeScreenView extends ConsumerStatefulWidget {
   const LargeScreenView({super.key});
@@ -32,15 +33,15 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
     final Color? mainColor = getSEGULBackgroundColor(context);
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        elevation: SeguiElevation.none,
         title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
         backgroundColor: mainColor,
         // Home has its own tool search.
         actions: [
           if (ref.watch(tabSelectionProvider) != 0) const GlobalToolSearch(),
-          const SizedBox(width: 16),
+          const SizedBox(width: SeguiSpacing.xl),
         ],
-        leading: screenWidth < 840
+        leading: screenWidth < expandedScreenSize
             ? null
             : IconButton(
                 icon: Icon(
@@ -59,7 +60,7 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
         top: false,
         child: Row(
           children: [
-            screenWidth < 840 || isUsingNavigationRail
+            screenWidth < expandedScreenSize || isUsingNavigationRail
                 ? const MediumScreenRail()
                 : const ExpandedScreenDrawer(),
             Expanded(

@@ -1,0 +1,71 @@
+---
+/// Two yes/no questions that point a reader to the API, the CLI, or the GUI.
+import Arrow from "../features/Arrow.astro";
+import Figure from "../features/Figure.astro";
+
+const questions = [
+  { y: 20, text: "Writing your own code?" },
+  { y: 150, text: "HPC, pipelines, or top speed?" },
+];
+const answers = [
+  { y: 6, name: "API", lines: ["PySEGUL for Python", "Rust crate, also from R"] },
+  { y: 136, name: "CLI", lines: ["Terminal command", "Runs on HPC and WSL"] },
+];
+const qx = 20;
+const qw = 270;
+const qh = 52;
+const ax = 400;
+const aw = 240;
+const ah = 80;
+---
+
+<Figure
+  id="choose-interface"
+  viewBox="0 0 660 380"
+  title="Choosing an interface"
+  desc="Start with one question: are you writing your own code? If yes, use the API: PySEGUL for Python, or the Rust crate, which also works from R. If no, ask whether you run SEGUL on an HPC cluster, in a pipeline, or need top speed. If yes, use the CLI. If no, use the GUI, the easiest way to start, though the CLI works too."
+  caption="Not sure? Install both. The GUI and CLI do not interfere with each other."
+>
+  {
+    questions.map((q, i) => (
+      <g>
+        <rect x={qx} y={q.y} width={qw} height={qh} rx="26" class="fx-panel" />
+        <text x={qx + qw / 2} y={q.y + qh / 2} text-anchor="middle" dominant-baseline="central" class="fx-title">
+          {q.text}
+        </text>
+        <Arrow x1={qx + qw + 6} y1={q.y + qh / 2} x2={ax - 6} y2={answers[i].y + ah / 2} />
+        <text x={(qx + qw + ax) / 2} y={q.y + qh / 2 - 12} text-anchor="middle" class="fx-muted">
+          Yes
+        </text>
+      </g>
+    ))
+  }
+  <Arrow x1={qx + qw / 2} y1={questions[0].y + qh + 6} x2={qx + qw / 2} y2={questions[1].y - 6} />
+  <text x={qx + qw / 2 + 12} y={(questions[0].y + qh + questions[1].y) / 2} dominant-baseline="central" class="fx-muted">
+    No
+  </text>
+  <Arrow x1={qx + qw / 2} y1={questions[1].y + qh + 6} x2={qx + qw / 2} y2={270} />
+  <text x={qx + qw / 2 + 12} y={(questions[1].y + qh + 270) / 2} dominant-baseline="central" class="fx-muted">
+    No
+  </text>
+  {
+    answers.map((a) => (
+      <g>
+        <rect x={ax} y={a.y} width={aw} height={ah} rx="12" class="fx-panel-accent" />
+        <text x={ax + 18} y={a.y + 28} class="fx-title fx-accent-text" style="font-size: 18px">
+          {a.name}
+        </text>
+        {a.lines.map((line, l) => (
+          <text x={ax + 18} y={a.y + 50 + l * 18} class="fx-small">
+            {line}
+          </text>
+        ))}
+      </g>
+    ))
+  }
+  <rect x={qx} y="276" width={qw} height="96" rx="12" class="fx-panel-accent" />
+  <text x={qx + 18} y="304" class="fx-title fx-accent-text" style="font-size: 18px">GUI</text>
+  <text x={qx + 18} y="326" class="fx-small">Desktop and mobile app</text>
+  <text x={qx + 18} y="344" class="fx-small">Easiest way to start</text>
+  <text x={qx + 18} y="362" class="fx-small fx-muted">The CLI works here too</text>
+</Figure>

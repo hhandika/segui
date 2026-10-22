@@ -1,0 +1,455 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+type Screen = "large" | "small";
+type Slot = "large" | "large2" | "small" | "small2";
+type Placement = [number, number];
+
+interface Pin {
+  /// One capital letter, also used by `<ShotRef id="A" />` in the text.
+  id: string;
+  label: string;
+  /// `[x, y]` in percent of that capture's width and height.
+  large?: Placement;
+  large2?: Placement;
+  small?: Placement;
+  small2?: Placement;
+}
+
+interface Props {
+  /// Path under `src/assets/screenshots/`, such as `gui/align-concat-large.webp`.
+  large: string;
+  largeAlt: string;
+  large2?: string;
+  large2Alt?: string;
+  small: string;
+  smallAlt: string;
+  small2?: string;
+  small2Alt?: string;
+  /// Every pin is placed on at least one capture of each screen size, so readers find every
+  /// element whichever device they use.
+  pins?: Pin[];
+}
+
+const props = Astro.props;
+const pins = props.pins ?? [];
+const slots: Slot[] = ["large", "large2", "small", "small2"];
+
+for (const shot of ["large2", "small2"] as const) {
+  if (Boolean(props[shot]) !== Boolean(props[`${shot}Alt`])) {
+    throw new Error(`UsageScreenshots: ${shot} and ${shot}Alt must be set together`);
+  }
+}
+for (const pin of pins) {
+  if (!/^[A-Z]$/.test(pin.id)) {
+    throw new Error(`UsageScreenshots: pin id must be one capital letter, got ${pin.id}`);
+  }
+  for (const slot of slots) {
+    const placement = pin[slot];
+    if (placement && !props[slot]) {
+      throw new Error(`pin ${pin.id}: ${slot} is placed, but the figure has no ${slot}`);
+    }
+    if (placement && !placement.every((n) => n >= 0 && n <= 100)) {
+      throw new Error(`pin ${pin.id}: ${slot} expects [x, y] percentages from 0 to 100`);
+    }
+  }
+  if (!pin.large && !pin.large2) {
+    throw new Error(`pin ${pin.id}: place it on a large-screen capture`);
+  }
+  if (!pin.small && !pin.small2) {
+    throw new Error(`pin ${pin.id}: place it on a small-screen capture`);
+  }
+}
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/screenshots/**/*.{png,jpg,jpeg,webp}",
+  { eager: true },
+);
+
+function resolveImage(path: string): ImageMetadata {
+  const image = images[`/src/assets/screenshots/${path}`];
+  if (!image) {
+    throw new Error(`Screenshot not found in src/assets/screenshots: ${path}`);
+  }
+  return image.default;
+}
+
+const labels: Record<Screen | "key" | "switch", string> = {
+  large: "Desktop",
+  small: "Phone",
+  key: "Screenshot key",
+  switch: "Screen size",
+};
+
+const slotsByScreen: Record<Screen, Slot[]> = {
+  large: ["large", "large2"],
+  small: ["small", "small2"],
+};
+const widths: Record<Screen, number> = { large: 1200, small: 420 };
+
+const panels = (["large", "small"] as const).map((screen) => ({
+  screen,
+  shots: slotsByScreen[screen]
+    .filter((slot) => props[slot])
+    .map((slot) => ({
+      slot,
+      src: resolveImage(props[slot] as string),
+      alt: props[`${slot}Alt`] as string,
+      pins: pins.flatMap((pin) => {
+        const placement = pin[slot];
+        return placement ? [{ ...pin, x: placement[0], y: placement[1] }] : [];
+      }),
+    })),
+}));
+---
+
+<div class="sg-shots not-content" id="usage-screenshots">
+  <div class="sg-shots__switch" role="group" aria-label={labels.switch} hidden>
+    {
+      panels.map(({ screen }) => (
+        <button type="button" data-screen={screen} aria-pressed="false">
+          {labels[screen]}
+        </button>
+      ))
+    }
+  </div>
+  {
+    panels.map(({ screen, shots }) => (
+      <section
+        class:list={["sg-shots__panel", `sg-shots__panel--${screen}`]}
+        data-screen={screen}
+        data-count={shots.length}
+        aria-label={labels[screen]}
+      >
+        <p class="sg-shots__caption">{labels[screen]}</p>
+        <div class="sg-shots__row">
+          {shots.map(({ src, alt, pins: shotPins }) => (
+            <figure class="sg-shots__screen">
+              <div class="sg-shots__frame">
+                <Image
+                  src={src}
+                  alt={alt}
+                  width={widths[screen]}
+                  densities={[1.5, 2]}
+                  quality="high"
+                />
+                {shotPins.map((pin) => (
+                  <a
+                    class="sg-shots__pin"
+                    href={`#shot-ref-${pin.id}`}
+                    data-shot-ref={pin.id}
+                    style={`left:${pin.x}%;top:${pin.y}%`}
+                    aria-label={`${pin.id}: ${pin.label}`}
+                  >
+                    {pin.id}
+                  </a>
+                ))}
+              </div>
+            </figure>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+  {
+    pins.length > 0 && (
+      <ul class="sg-shots__key" aria-label={labels.key}>
+        {pins.map((pin) => (
+          <li>
+            <a href={`#shot-ref-${pin.id}`} data-shot-ref={pin.id}>
+              <span class="sg-shots__chip">{pin.id}</span>
+              <span class="sg-shots__label">{pin.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</div>
+
+<style>
+  .sg-shots {
+    display: grid;
+    gap: 0.75rem;
+    margin-block: 1.5rem 2rem;
+    scroll-margin-top: calc(var(--sl-nav-height, 4rem) + 1rem);
+  }
+
+  .sg-shots__switch {
+    display: inline-flex;
+    justify-self: start;
+    padding: 0.125rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 999px;
+    background: var(--sl-color-bg-nav);
+  }
+
+  .sg-shots__switch[hidden] {
+    display: none;
+  }
+
+  .sg-shots__switch button {
+    padding: 0.125rem 0.625rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .sg-shots__switch button[aria-pressed="true"] {
+    background: var(--sl-color-accent);
+    color: var(--color-leaf-50);
+  }
+
+  .sg-shots__switch button:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  .sg-shots__panel {
+    display: grid;
+    gap: 0.375rem;
+  }
+
+  /* With the switch active, only the chosen screen size is shown. */
+  .sg-shots.is-switchable .sg-shots__panel:not(.is-current) {
+    display: none;
+  }
+
+  .sg-shots.is-switchable .sg-shots__caption {
+    display: none;
+  }
+
+  .sg-shots__caption {
+    margin: 0;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Large captures stack at full width so their text stays legible; phone captures sit side by
+     side. */
+  .sg-shots__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .sg-shots__panel--small .sg-shots__row {
+    grid-template-columns: repeat(var(--sg-shot-count, 1), minmax(0, 16rem));
+    justify-content: center;
+  }
+
+  .sg-shots__panel--small[data-count="2"] {
+    --sg-shot-count: 2;
+  }
+
+  .sg-shots__screen {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .sg-shots__frame {
+    position: relative;
+    container-type: inline-size;
+  }
+
+  .sg-shots__frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 0.625rem;
+  }
+
+  .sg-shots__pin {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: clamp(1.05rem, 5cqw, 1.625rem);
+    height: clamp(1.05rem, 5cqw, 1.625rem);
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--sl-color-bg);
+    border-radius: 0.45rem;
+    background: var(--sl-color-accent);
+    color: var(--color-leaf-50);
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+    font-size: clamp(0.62rem, 3cqw, 0.8rem);
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+      transform 0.15s ease,
+      background-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .sg-shots__panel--small .sg-shots__pin {
+    width: clamp(1.05rem, 9cqw, 1.625rem);
+    height: clamp(1.05rem, 9cqw, 1.625rem);
+    font-size: clamp(0.62rem, 5.5cqw, 0.8rem);
+  }
+
+  .sg-shots__key {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.25rem 1.25rem;
+    margin: 0;
+    padding: 0.75rem 0 0;
+    border-top: 1px solid var(--sl-color-hairline);
+    list-style: none;
+    font-size: var(--sl-text-sm);
+  }
+
+  .sg-shots__key a {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding-block: 0.125rem;
+    color: var(--sl-color-text);
+    text-decoration: none;
+  }
+
+  .sg-shots__key a:hover .sg-shots__label,
+  .sg-shots__key a:focus-visible .sg-shots__label {
+    text-decoration: underline;
+  }
+
+  .sg-shots__chip {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding-inline: 0.3rem;
+    border-radius: 0.375rem;
+    background: var(--sl-color-accent);
+    color: var(--color-leaf-50);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    transition:
+      background-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .sg-shots__pin:hover,
+  .sg-shots__pin:focus-visible,
+  .sg-shots__pin:global(.is-active) {
+    transform: translate(-50%, -50%) scale(1.25);
+    background: var(--color-pollen-400);
+    color: var(--color-leaf-950);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-pollen-400) 30%, transparent);
+    outline: none;
+  }
+
+  .sg-shots__key a:hover .sg-shots__chip,
+  .sg-shots__key a:focus-visible .sg-shots__chip,
+  .sg-shots__chip:global(.is-active) {
+    background: var(--color-pollen-400);
+    color: var(--color-leaf-950);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-pollen-400) 30%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sg-shots__pin,
+    .sg-shots__chip {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const figure = document.getElementById("usage-screenshots");
+  const refs = [...document.querySelectorAll<HTMLElement>(".sg-shot-ref[data-shot-ref]")];
+  const smooth = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  const storageKey = "segul-docs:screenshot-size";
+
+  // Show one screen size at a time. The choice follows the reader across pages; the first
+  // visit starts from the size that matches their viewport.
+  if (figure) {
+    const switcher = figure.querySelector<HTMLElement>(".sg-shots__switch");
+    const buttons = [...figure.querySelectorAll<HTMLButtonElement>(".sg-shots__switch button")];
+    const panels = [...figure.querySelectorAll<HTMLElement>(".sg-shots__panel")];
+
+    const readSaved = () => {
+      try {
+        return localStorage.getItem(storageKey);
+      } catch {
+        return null;
+      }
+    };
+
+    const show = (screen: string, save: boolean) => {
+      for (const button of buttons) {
+        button.setAttribute("aria-pressed", String(button.dataset.screen === screen));
+      }
+      for (const panel of panels) {
+        panel.classList.toggle("is-current", panel.dataset.screen === screen);
+      }
+      if (!save) return;
+      try {
+        localStorage.setItem(storageKey, screen);
+      } catch {
+        // Storage can be unavailable; the switch still works for this page.
+      }
+    };
+
+    const saved = readSaved();
+    const initial =
+      saved === "large" || saved === "small"
+        ? saved
+        : matchMedia("(max-width: 40rem)").matches
+          ? "small"
+          : "large";
+    show(initial, false);
+    figure.classList.add("is-switchable");
+    switcher?.removeAttribute("hidden");
+    for (const button of buttons) {
+      button.addEventListener("click", () => show(button.dataset.screen ?? "large", true));
+    }
+  }
+
+  // The first mention of each letter in the text becomes the target of its pin and key entry.
+  for (const ref of refs) {
+    const target = `shot-ref-${ref.dataset.shotRef}`;
+    if (!document.getElementById(target)) ref.id = target;
+  }
+
+  const highlightTargets = (id: string) =>
+    document.querySelectorAll<HTMLElement>(
+      `.sg-shots__pin[data-shot-ref="${id}"], .sg-shots__key [data-shot-ref="${id}"] .sg-shots__chip, .sg-shot-ref[data-shot-ref="${id}"]`,
+    );
+
+  const setActive = (id: string, active: boolean) =>
+    highlightTargets(id).forEach((el) => el.classList.toggle("is-active", active));
+
+  const flash = (id: string) => {
+    setActive(id, true);
+    setTimeout(() => setActive(id, false), 1600);
+  };
+
+  const linked = document.querySelectorAll<HTMLElement>("[data-shot-ref]");
+  for (const el of linked) {
+    const id = el.dataset.shotRef;
+    if (!id) continue;
+    el.addEventListener("mouseenter", () => setActive(id, true));
+    el.addEventListener("mouseleave", () => setActive(id, false));
+    el.addEventListener("focus", () => setActive(id, true));
+    el.addEventListener("blur", () => setActive(id, false));
+    el.addEventListener("click", (event) => {
+      event.preventDefault();
+      const toFigure = el.classList.contains("sg-shot-ref");
+      const destination = toFigure ? figure : document.getElementById(`shot-ref-${id}`);
+      destination?.scrollIntoView({ behavior: smooth, block: toFigure ? "start" : "center" });
+      flash(id);
+    });
+  }
+</script>

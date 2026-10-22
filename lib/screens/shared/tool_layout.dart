@@ -1,13 +1,17 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/illustrations.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
-import 'package:segui/screens/shared/io/summary_view.dart';
+import 'package:segui/screens/shared/io/workbench_view.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Widest the tool form, header, and action bar grow before centering.
 const double maxToolFormWidth = 760;
@@ -68,7 +72,8 @@ class ToolListPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 4),
+            padding: const EdgeInsets.fromLTRB(SeguiSpacing.xxl,
+                SeguiSpacing.xxl, SeguiSpacing.xxl, SeguiSpacing.xs),
             child: Text(
               category.label,
               style: textTheme.titleLarge?.copyWith(
@@ -77,7 +82,8 @@ class ToolListPanel extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+            padding: const EdgeInsets.fromLTRB(
+                SeguiSpacing.xxl, 0, SeguiSpacing.xxl, SeguiSpacing.lg),
             child: Text(
               '${tools.length} tools',
               style: textTheme.bodyMedium?.copyWith(
@@ -87,7 +93,8 @@ class ToolListPanel extends StatelessWidget {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+              padding: const EdgeInsets.fromLTRB(SeguiSpacing.lg,
+                  SeguiSpacing.xs, SeguiSpacing.lg, SeguiSpacing.xl),
               children: [
                 for (final tool in tools)
                   ToolListTile(
@@ -125,13 +132,13 @@ class ToolListTile extends ConsumerWidget {
     return ToolDescriptionTooltip(
       tool: tool,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 4),
+        padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
         child: Material(
           color:
               isSelected ? colors.surfaceContainerLowest : Colors.transparent,
           elevation: isSelected ? 1 : 0,
           shadowColor: colors.shadow.withAlpha(60),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(SeguiRadius.md),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: () {
@@ -141,11 +148,12 @@ class ToolListTile extends ConsumerWidget {
               onOpened?.call();
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: SeguiSpacing.lg, vertical: SeguiSpacing.md),
               child: Row(
                 children: [
                   ToolIconTile(tool: tool, isSelected: isSelected),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: SeguiSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,10 +270,10 @@ class ToolHeader extends StatelessWidget {
             ?.copyWith(fontWeight: FontWeight.w700);
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        isCompact ? 16 : 32,
-        isCompact ? 12 : 28,
-        isCompact ? 8 : 32,
-        isCompact ? 4 : 8,
+        isCompact ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+        isCompact ? SeguiSpacing.lg : SeguiSpacing.xxl,
+        isCompact ? SeguiSpacing.md : SeguiSpacing.xxxl,
+        isCompact ? SeguiSpacing.xs : SeguiSpacing.md,
       ),
       child: Center(
         child: ConstrainedBox(
@@ -283,7 +291,7 @@ class ToolHeader extends StatelessWidget {
                   if (isCompact) const FilesButton(),
                 ],
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: SeguiSpacing.xs),
               Text(
                 tool.about,
                 style: textTheme.bodyMedium?.copyWith(
@@ -314,13 +322,13 @@ class ToolSwitcherButton extends StatelessWidget {
       child: Tooltip(
         message: 'Switch tool',
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(SeguiRadius.md),
           onTap: () => showResponsiveSheet(
             context: context,
             builder: (context) => ToolSwitcherSheet(tool: tool),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: SeguiSpacing.xs),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -331,7 +339,7 @@ class ToolSwitcherButton extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: SeguiSpacing.xs),
                 const Icon(Icons.expand_more_rounded),
               ],
             ),
@@ -353,11 +361,15 @@ class ToolSwitcherSheet extends StatelessWidget {
       child: ListView(
         shrinkWrap: true,
         // Sheets have a drag handle above; dialogs need their own top space.
-        padding:
-            EdgeInsets.fromLTRB(12, isPhoneScreen(context) ? 0 : 20, 12, 16),
+        padding: EdgeInsets.fromLTRB(
+            SeguiSpacing.lg,
+            isPhoneScreen(context) ? 0 : SeguiSpacing.xl,
+            SeguiSpacing.lg,
+            SeguiSpacing.xl),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            padding: const EdgeInsets.fromLTRB(
+                SeguiSpacing.lg, 0, SeguiSpacing.lg, SeguiSpacing.lg),
             child: Text(
               tool.category.label,
               style: Theme.of(context).textTheme.titleLarge,
@@ -408,7 +420,7 @@ class FilesPage extends StatelessWidget {
   }
 }
 
-/// Input and output summary and file lists, switched with a segmented
+/// Workbench and input and output file lists, switched with a segmented
 /// control.
 class FilePanel extends ConsumerWidget {
   const FilePanel({super.key});
@@ -425,7 +437,8 @@ class FilePanel extends ConsumerWidget {
         0;
     final FilePanelView view = ref.watch(filePanelViewProvider);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.xl, SeguiSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -433,8 +446,8 @@ class FilePanel extends ConsumerWidget {
             showSelectedIcon: false,
             segments: [
               const ButtonSegment(
-                value: FilePanelView.summary,
-                label: Text('Summary'),
+                value: FilePanelView.workbench,
+                label: Text('Workbench'),
               ),
               ButtonSegment(
                 value: FilePanelView.input,
@@ -455,7 +468,7 @@ class FilePanel extends ConsumerWidget {
               index: view.index,
               sizing: StackFit.expand,
               children: const [
-                FileSummaryView(),
+                WorkbenchView(),
                 InputScreen(),
                 OutputScreen(),
               ],
@@ -494,7 +507,11 @@ class FileSidePanel extends StatelessWidget {
 ///
 /// [form] holds the input and output sections; [action] is the execution
 /// button shown in the run bar.
-class ToolFormLayout extends StatelessWidget {
+/// Form and run bar of a tool page.
+///
+/// Tracks whether the user edited the form since the last run started, so the
+/// execution button can offer a re-run after a successful run.
+class ToolFormLayout extends ConsumerStatefulWidget {
   const ToolFormLayout({
     super.key,
     required this.form,
@@ -505,32 +522,139 @@ class ToolFormLayout extends StatelessWidget {
   final Widget? action;
 
   @override
+  ConsumerState<ToolFormLayout> createState() => _ToolFormLayoutState();
+}
+
+class _ToolFormLayoutState extends ConsumerState<ToolFormLayout> {
+  bool _isEdited = false;
+
+  /// Last selected output directory. Output updates pass through a loading
+  /// state, so the listener's previous value cannot be compared directly.
+  String? _outputDir;
+
+  @override
+  void initState() {
+    super.initState();
+    _outputDir = ref.read(fileOutputProvider).value?.directory?.path;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final bool isCompact = isPhoneScreen(context);
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-              isCompact ? 16 : 32,
-              0,
-              isCompact ? 16 : 32,
-              24,
-            ),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: maxToolFormWidth),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: form,
-                ),
-              ),
-            ),
-          ),
-        ),
-        ToolRunBar(action: action),
-      ],
+    // Input files change only through user actions.
+    ref.listen(fileInputProvider, (_, __) => _markEdited());
+    ref.listen(
+      fileOutputProvider.select((value) => value.value?.directory?.path),
+      (_, String? next) {
+        if (next == null) {
+          return;
+        }
+        if (_outputDir != null && _outputDir != next) {
+          _markEdited();
+        }
+        _outputDir = next;
+      },
     );
+    final bool isCompact = isPhoneScreen(context);
+    final double sidePadding = isCompact ? 16 : 32;
+    return ToolFormEditScope(
+      isEdited: _isEdited,
+      onRunStarted: _clearEdited,
+      child: NotificationListener<FormEditedNotification>(
+        onNotification: (_) {
+          _markEdited();
+          return true;
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: LayoutBuilder(builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    // Fill the height so the gull scene sits on the run bar
+                    // when the form is short.
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: sidePadding),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: maxToolFormWidth,
+                              ),
+                              child: Form(
+                                onChanged: _markEdited,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: widget.form,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: SeguiSpacing.xxl),
+                          child: ToolScene(),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+            ToolRunBar(action: widget.action),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _markEdited() {
+    if (_isEdited || !mounted) {
+      return;
+    }
+    // Provider listeners can fire while widgets build, such as after a
+    // provider is invalidated.
+    final SchedulerBinding binding = SchedulerBinding.instance;
+    if (binding.schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      binding.addPostFrameCallback((_) => _markEdited());
+      return;
+    }
+    setState(() => _isEdited = true);
+  }
+
+  void _clearEdited() {
+    if (_isEdited) {
+      setState(() => _isEdited = false);
+    }
+  }
+}
+
+/// Shares a tool form's edit state with its execution button.
+class ToolFormEditScope extends InheritedWidget {
+  const ToolFormEditScope({
+    super.key,
+    required this.isEdited,
+    required this.onRunStarted,
+    required super.child,
+  });
+
+  /// Whether the user edited the form since the last run started.
+  final bool isEdited;
+
+  /// Called when a run starts, so later edits count against that run.
+  final VoidCallback onRunStarted;
+
+  static ToolFormEditScope? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ToolFormEditScope>();
+  }
+
+  @override
+  bool updateShouldNotify(ToolFormEditScope oldWidget) {
+    return isEdited != oldWidget.isEdited;
   }
 }
 
@@ -551,8 +675,8 @@ class ToolRunBar extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isCompact ? 16 : 32,
-          vertical: 12,
+          horizontal: isCompact ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+          vertical: SeguiSpacing.lg,
         ),
         child: Center(
           child: ConstrainedBox(
@@ -566,7 +690,7 @@ class ToolRunBar extends StatelessWidget {
                   children: [
                     const RunSummary(),
                     if (action != null) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: SeguiSpacing.md),
                       Align(alignment: Alignment.centerRight, child: action),
                     ],
                   ],
@@ -575,7 +699,7 @@ class ToolRunBar extends StatelessWidget {
               return Row(
                 children: [
                   const Expanded(child: RunSummary()),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: SeguiSpacing.lg),
                   if (action != null) action!,
                 ],
               );

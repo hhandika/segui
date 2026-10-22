@@ -13,6 +13,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceRemoval;
 
@@ -65,8 +66,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
             DropdownButtonFormField(
               isExpanded: true,
               decoration: const InputDecoration(
-                labelText: 'Select method',
-                hintText: 'Select removal method',
+                labelText: 'Remove by',
               ),
               initialValue: _removalMethodController,
               items: removalOptionsMap.entries
@@ -92,6 +92,9 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
               hint: _removalMethodController == RemovalOptions.regex
                   ? '^[A-Z]{3}[0-9]{5}'
                   : 'seq1;seq2;seq3',
+              helper: _removalMethodController == RemovalOptions.regex
+                  ? 'Removes sequences whose IDs match the pattern.'
+                  : 'Separate IDs with semicolons.',
             ),
           ],
         ),
@@ -109,7 +112,6 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
                 setState(() {
                   if (value != null) {
                     _ctr.outputFormatController = value;
-                    _ctr.isSuccess = false;
                   }
                 });
               },
@@ -165,6 +167,23 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
 
     return _ctr.isValid && isRemovalMethodValid;
   }
+
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Remove by',
+          removalOptionsMap[_removalMethodController] ?? '',
+        ),
+        RunParameter(
+          _removalMethodController == RemovalOptions.regex
+              ? 'Regular expression'
+              : 'Sequence IDs',
+          _idRegexController.text,
+        ),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+      ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
@@ -246,6 +265,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

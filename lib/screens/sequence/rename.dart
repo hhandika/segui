@@ -14,6 +14,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.sequenceRenaming;
 
@@ -71,7 +72,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
             DropdownButtonFormField(
               initialValue: _renamingOptionController,
               decoration: const InputDecoration(
-                labelText: 'Select method',
+                labelText: 'Rename by',
               ),
               isExpanded: true,
               items: renamingOptionsMap.entries
@@ -84,7 +85,6 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
               onChanged: (RenamingOptions? value) {
                 setState(() {
                   _renamingOptionController = value;
-                  _ctr.isSuccess = false;
                 });
               },
             ),
@@ -125,20 +125,16 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
               SwitchForm(
                 value: _isRegexMatchAll,
                 label: _isRemove ? 'Remove all matches' : 'Replace all matches',
+                helper: _isRegexMatchAll
+                    ? 'If multiple matches are found in a single sequence ID, '
+                        'they will be removed.'
+                    : null,
                 onPressed: (value) {
                   setState(() {
                     _isRegexMatchAll = value;
                   });
                 },
               ),
-            if (_isRegexMatchAll)
-              Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    'If multiple matches are found in a single sequence ID, '
-                    'they will be removed.',
-                    style: Theme.of(context).textTheme.labelSmall,
-                  )),
           ],
         ),
         const CardTitle(step: 3, title: 'Output'),
@@ -155,7 +151,6 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
               setState(() {
                 if (value != null) {
                   _ctr.outputFormatController = value;
-                  _ctr.isSuccess = false;
                 }
               });
             },
@@ -234,6 +229,35 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
     return _renamingOptionController == RenamingOptions.removeRegex ||
         _renamingOptionController == RenamingOptions.replaceRegex;
   }
+
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter(
+          'Rename by',
+          renamingOptionsMap[_renamingOptionController] ?? '',
+        ),
+        if (_renamingOptionController != RenamingOptions.renameFile)
+          RunParameter(
+            _isRemove
+                ? _isRegex
+                    ? 'Regex pattern'
+                    : 'Input text'
+                : _isRegex
+                    ? 'Find matches'
+                    : 'Find',
+            _paramValueController.text,
+          ),
+        if (_isReplace)
+          RunParameter('Replace with', _paramReplaceWithController.text),
+        if (_isRegex)
+          RunParameter(
+            _isRemove ? 'Remove all matches' : 'Replace all matches',
+            _isRegexMatchAll ? 'Yes' : 'No',
+          ),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+      ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
@@ -317,6 +341,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,0 +1,65 @@
+---
+import Chip from "./Chip.astro";
+import Figure from "./Figure.astro";
+import { chipRow } from "./layout";
+
+const loci = [
+  { name: "locus_1", length: 1240 },
+  { name: "locus_2", length: 380 },
+  { name: "locus_3", length: 860 },
+  { name: "locus_4", length: 450 },
+  { name: "locus_5", length: 1020 },
+];
+const minimum = 500;
+const left = 80;
+const scale = 340 / 1300;
+const threshold = left + minimum * scale;
+const top = 44;
+const step = 30;
+const rowOne = ["Alignment length", "Matrix completeness", "Parsimony-informative sites"];
+const rowTwo = ["Missing data", "Minimum taxa", "Taxon ID"];
+---
+
+<Figure
+  id="alignment-filtering"
+  viewBox="0 0 640 296"
+  title="Alignment filtering"
+  desc={`With a minimum length of ${minimum} bp, ${loci
+    .map((l) => `${l.name} (${l.length} bp) is ${l.length >= minimum ? "kept" : "removed"}`)
+    .join(", ")}. Other criteria are matrix completeness, parsimony-informative sites, missing data, minimum taxa, and taxon ID.`}
+  caption="Filtering keeps or drops whole alignments. To drop single sequences instead, use Sequence Filtering."
+>
+  <text x="0" y="18" class="fx-title">Example: minimum alignment length {minimum} bp</text>
+  {
+    loci.map((locus, i) => {
+      const kept = locus.length >= minimum;
+      const y = top + i * step;
+      return (
+        <g>
+          <text x={left - 8} y={y + 9} text-anchor="end" dominant-baseline="central" class="fx-mono fx-small">
+            {locus.name}
+          </text>
+          <rect
+            x={left}
+            y={y}
+            width={locus.length * scale}
+            height="18"
+            rx="4"
+            class={kept ? "fx-l1" : "fx-N fx-faded"}
+          />
+          <text x={left + locus.length * scale + 8} y={y + 9} dominant-baseline="central" class="fx-small fx-muted">
+            {locus.length} bp
+          </text>
+          <text x="560" y={y + 9} dominant-baseline="central" class={kept ? "fx-accent-text fx-small" : "fx-danger-text fx-small"}>
+            {kept ? "✓ kept" : "✕ removed"}
+          </text>
+        </g>
+      );
+    })
+  }
+  <line x1={threshold} x2={threshold} y1={top - 10} y2={top + loci.length * step} class="fx-line-accent fx-dashed" />
+
+  <text x="0" y="214" class="fx-muted">Other ways to filter</text>
+  {chipRow(rowOne, 0).map((x, i) => <Chip x={x} y={226} text={rowOne[i]} accent={i === 0} />)}
+  {chipRow(rowTwo, 0).map((x, i) => <Chip x={x} y={260} text={rowTwo[i]} />)}
+</Figure>

@@ -65,6 +65,18 @@ class HomeIllustrationColors extends ColorMapper {
     required this.fill,
   });
 
+  /// Colors for the gull scenes: strong lines on the surface, with an
+  /// accent that stays bright in dark mode, where container tones go muddy.
+  factory HomeIllustrationColors.scene(ColorScheme colors) {
+    return HomeIllustrationColors(
+      line: colors.onSurface,
+      accent: colors.brightness == Brightness.dark
+          ? colors.tertiary
+          : colors.tertiaryContainer,
+      fill: colors.surface,
+    );
+  }
+
   static const Color lineKey = Color(0xFF005224);
   static const Color accentKey = Color(0xFFFFD64F);
   static const Color fillKey = Color(0xFFFFFFFF);

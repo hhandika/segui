@@ -7,6 +7,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/viewers/text.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class PlainTextView extends StatelessWidget {
   const PlainTextView({super.key, required this.file});
@@ -37,7 +38,7 @@ class PlainTextViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(SeguiSpacing.xl),
       child: Container(
         width: double.infinity,
         decoration: getContainerDecoration(context),
@@ -47,12 +48,12 @@ class PlainTextViewBody extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(SeguiSpacing.xl),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   FileIcon(file: file),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: SeguiSpacing.md),
                   Flexible(
                     fit: FlexFit.loose,
                     child: FileIOSubtitle(file: file),
@@ -63,7 +64,7 @@ class PlainTextViewBody extends StatelessWidget {
             const TopDivider(),
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(SeguiSpacing.xl),
               child: SizedBox(
                 width: double.infinity,
                 child: FutureBuilder<String>(

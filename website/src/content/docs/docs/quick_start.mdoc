@@ -1,0 +1,165 @@
+---
+title: Quick Start
+sidebar:
+  order: 2
+---
+
+SEGUL comes as a desktop and mobile app (GUI), a terminal command (CLI), and libraries for Python, Rust, and R (API). This page gets you from install to a first run.
+
+## 1. Choose an interface
+
+{% chooseinterface /%}
+
+See [CLI vs GUI](/docs/cli_gui/) for platforms, feature differences, and benchmarks.
+
+## 2. Install
+
+{% tabs syncKey="interface" %}
+{% tabitem label="GUI" %}
+
+Install SEGUI, the SEGUL app, from your platform's store. See the [GUI installation guide](/docs/installation/install_gui/) for requirements and other options.
+
+{% storebadges stores=["microsoft", "app", "play", "snap"] /%}
+
+{% /tabitem %}
+{% tabitem label="CLI" %}
+
+On Linux and macOS, the installer script picks the right build and needs no root access:
+
+```bash
+curl -fsSL https://segul.app/install.sh | sh
+```
+
+On Windows, or to install by hand, download the binary for your system, unpack it, and put `segul` on your `PATH`. The [CLI installation guide](/docs/installation/install_cli/) walks through each method.
+
+{% clidownloads /%}
+
+On Linux or macOS with [Bioconda](https://bioconda.github.io/) set up, you can use conda instead. It may not work on older Linux systems found on some HPC clusters. See the [Bioconda guide](/docs/installation/install_cli/#conda).
+
+```bash
+conda install bioconda::segul
+```
+
+{% /tabitem %}
+{% tabitem label="Python" %}
+
+PySEGUL is the Python binding to the SEGUL library. It needs no Rust knowledge.
+
+```bash
+pip install pysegul
+```
+
+{% /tabitem %}
+{% tabitem label="Rust" %}
+
+Add the SEGUL crate from [crates.io](https://crates.io/crates/segul) to your project. The same crate also works from [R](/docs/api-usage/r-api/), which needs some Rust knowledge.
+
+```bash
+cargo add segul
+```
+
+{% /tabitem %}
+{% /tabs %}
+
+## 3. Run your first task
+
+Try SEGUL with a small example dataset, then move on to your own data.
+
+{% cardgrid %}
+{% linkcard title="NEXUS alignments" description="data-nexus.zip" href="https://github.com/hhandika/segul/raw/main/examples/data-nexus.zip" /%}
+{% linkcard title="FASTA alignments" description="data-fasta.zip" href="https://github.com/hhandika/segul/raw/main/examples/data-fasta.zip" /%}
+{% linkcard title="Relaxed PHYLIP alignments" description="data-phylip.zip, sequential and interleaved" href="https://github.com/hhandika/segul/raw/main/examples/data-phylip.zip" /%}
+{% linkcard title="Concatenated NEXUS" description="data-concat-nex.zip, for splitting" href="https://github.com/hhandika/segul/raw/main/examples/data-concat-nex.zip" /%}
+{% /cardgrid %}
+
+Genomic files are too large to bundle. Download reads or contigs from public repositories such as [NCBI SRA](https://www.ncbi.nlm.nih.gov/sra).
+
+{% tabs syncKey="interface" %}
+{% tabitem label="GUI" %}
+
+{% guisteps /%}
+
+{% steps %}
+
+1. Open the app and choose a task group in the navigation bar, such as **Alignments**. Then pick a tool, such as **Concatenate alignments**. On narrow windows, tap the tool name at the top to switch tools.
+2. Select **Browse files**, **Browse folder**, or **Open archive** to add the input.
+3. Choose an output folder and fill in any parameters the task needs. On mobile, output goes to the app's own folder.
+4. Select **Run**. Open the output files in the built-in viewer, or export them as a ZIP or gzip archive.
+
+{% /steps %}
+
+{% aside type="caution" %}
+Phones and tablets copy each picked file into the app first. For large datasets, use **Add folder** or **Open archive** instead. See [file input](/docs/gui-usage/intro/#file-input).
+{% /aside %}
+
+{% /tabitem %}
+{% tabitem label="CLI" %}
+
+{% commandanatomy /%}
+
+SEGUL detects the input format from the file extension. For other extensions, set it with `--input-format`. Common commands:
+
+```bash
+segul align concat -d alignments/   # Concatenate alignments
+segul align convert -d alignments/  # Convert alignment formats
+segul align summary -d alignments/  # Alignment summary statistics
+segul sequence remove -d alignments/ --id="seq_1;seq_2" # Remove sequences
+segul read summary -d reads/        # Read summary statistics
+segul <command> <subcommand> --help # Options for any task
+```
+
+See the [command options](/docs/cli-usage/command_options/) for every flag.
+
+{% aside type="note" %}
+SEGUL 0.19.0 introduced the `command subcommand` layout. Older versions use a single command and need an input format with a folder, such as `segul concat -d alignments/ -f nexus`.
+{% /aside %}
+
+{% /tabitem %}
+{% tabitem label="Python" %}
+
+Concatenate a folder of NEXUS alignments into FASTA with a RAxML partition file:
+
+```python
+import pysegul
+
+concat = pysegul.AlignmentConcatenation(
+    "nexus",          # input format
+    "dna",            # data type
+    "output",         # output folder
+    "fasta",          # output format
+    "raxml",          # partition format
+    "concatenated",   # output file prefix
+)
+concat.from_dir("alignments")
+```
+
+Most classes follow this pattern. Tasks with extra parameters, such as filtering or extraction, set the input first and then call a method. See the [PySEGUL guide](/docs/api-usage/python/intro/).
+
+{% /tabitem %}
+{% tabitem label="Rust" %}
+
+See the [Rust API guide](/docs/api-usage/rust-api/) and the [crate documentation](https://docs.rs/segul).
+
+{% /tabitem %}
+{% /tabs %}
+
+## 4. Explore the tools
+
+SEGUL groups its tools by the kind of input they take:
+
+{% taskgroups /%}
+
+It reads these file formats:
+
+{% fileformats /%}
+
+{% aside type="tip" %}
+The CLI also accepts non-standard extensions with `--input-format`. The GUI only lists supported extensions, so rename such files first.
+{% /aside %}
+
+{% cardgrid %}
+{% linkcard title="Features" description="What each tool does, with diagrams" href="/docs/features/" /%}
+{% linkcard title="GUI usage" description="Step-by-step guides for the app" href="/docs/gui-usage/intro/" /%}
+{% linkcard title="CLI usage" description="Commands and options" href="/docs/cli-usage/intro/" /%}
+{% linkcard title="API usage" description="Python, Rust, and R" href="/docs/api-usage/" /%}
+{% /cardgrid %}

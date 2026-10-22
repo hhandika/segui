@@ -1,0 +1,25 @@
+---
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import Figure from "./Figure.astro";
+
+const ids = ["seq1", "seq2", "seq3"];
+const rows = ["AGT--CCATG", "AGTCACC-TG", "A-TCA--ATG"];
+const unaligned = rows.map((row) => row.replaceAll("-", ""));
+const cell = 18;
+const top = 36;
+---
+
+<Figure
+  id="alignment-unalign"
+  viewBox={`0 0 640 ${top + rows.length * (cell + 2) + 8}`}
+  title="Unalign alignments"
+  desc={`Gaps are removed from each aligned sequence: ${unaligned
+    .map((row, i) => `${ids[i]} ${row}`)
+    .join(", ")}.`}
+  caption="The output is FASTA with gaps removed, ready for a new alignment."
+>
+  <Alignment x={60} y={top} rows={rows} ids={ids} title="aligned" cell={cell} />
+  <Arrow x1={278} y1={top + 30} x2={360} y2={top + 30} label="unalign" />
+  <Alignment x={420} y={top} rows={unaligned} ids={ids} title="unaligned" cell={cell} />
+</Figure>

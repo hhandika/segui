@@ -1,0 +1,87 @@
+---
+/// Links to a feature's usage guide for each interface, or a "not yet
+/// supported" label when an interface lacks the feature.
+import { Icon } from "@astrojs/starlight/components";
+import { featureGuides, interfaces, type Feature, type FeatureGuides } from "./guides";
+
+interface Props {
+  feature: Feature;
+}
+
+const guides: FeatureGuides = featureGuides[Astro.props.feature];
+---
+
+<div class="fx-guides not-content">
+  <span class="fx-guides-label">Guides</span>
+  {
+    interfaces.map(({ key, name, icon }) => {
+      const links = guides[key];
+      if (links.length === 0) {
+        return (
+          <span class="fx-guide fx-guide-off" title={`Not yet supported in the ${name}`}>
+            <Icon name={icon} class="fx-guide-icon" />
+            {name} <span class="fx-guide-note">not yet supported</span>
+          </span>
+        );
+      }
+      return links.map((link) => (
+        <a class="fx-guide" href={link.href}>
+          <Icon name={icon} class="fx-guide-icon" />
+          {name}
+          {link.label && <span class="fx-guide-note">{link.label}</span>}
+          <span aria-hidden="true">→</span>
+        </a>
+      ));
+    })
+  }
+</div>
+
+<style is:global>
+  .fx-guides {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block: 0.75rem 1rem;
+    font-size: var(--sl-text-sm);
+  }
+  .fx-guides-label {
+    color: var(--sl-color-gray-3);
+    font-weight: 600;
+    margin-inline-end: 0.25rem;
+  }
+  .fx-guide {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.75rem;
+    border: 1px solid var(--sl-color-accent);
+    border-radius: 999px;
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-accent-high);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  a.fx-guide:hover,
+  a.fx-guide:focus-visible {
+    background: var(--sl-color-accent);
+    color: var(--sl-color-black);
+  }
+  :root[data-theme="light"] a.fx-guide:hover,
+  :root[data-theme="light"] a.fx-guide:focus-visible {
+    color: #ffffff;
+  }
+  .fx-guide-icon {
+    flex-shrink: 0;
+    font-size: 1.1em;
+  }
+  .fx-guide-note {
+    font-weight: 400;
+  }
+  .fx-guide-off {
+    border-color: var(--sl-color-gray-5);
+    border-style: dashed;
+    background: transparent;
+    color: var(--sl-color-gray-3);
+  }
+</style>
