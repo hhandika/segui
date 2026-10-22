@@ -59,14 +59,20 @@ The app supports the following summary modes:
 
 ## Read report
 
-The read report shows the Complete mode statistics as interactive charts. Choose the sample at the top, and switch between tabs:
+The read report shows the Complete mode statistics as interactive charts, one sample at a time, much like the alignment viewer shows one file at a time.
 
-- **Overview**: statistics for every sample, with pass, warn, or fail checks for Q30 bases, mean quality, N content, duplication, adapters, poly-G, and overrepresented sequences. Sort by any column, and select a row to show that sample on the other tabs.
-- **Per-base quality**: median and mean quality at each position over the good, reasonable, and poor quality zones.
-- **Per-read quality**, **Read length**, and **N content**: compare several samples. Toggle samples with the chips above the chart.
-- **GC content**: reads by GC content with the theoretical distribution.
-- **Base composition**, **Duplication**, and **Adapters**: one sample at a time.
-- **Overrepresented**: sequences above 0.1% of all reads, with a button to copy each one.
+- **Switch samples**: step through samples with the arrows above the tabs, or with `Alt` + `↑` / `↓` (`Option` on macOS). Select the sample name to search for one.
+- **Sample list**: the list beside the report shows each sample's status, reads, and Q30 bases. Filter it by name, and sort it by name, status, reads, or Q30 bases. The arrows and the summary follow its order. Hide it with the list button next to the sample name. On phones, the same button opens the list as a sheet.
+
+The tabs are:
+
+- **Summary**: every sample at once. `Bars` plots one statistic per sample, such as reads, Q30 bases, GC content, duplication, or adapters; select a bar to open that sample. `Table` lists every statistic, sortable by column. Below are the pass, warn, or fail checks of the open sample.
+- **Quality**: per-base quality of the open sample over the good, reasonable, and poor quality zones, and per-read quality of several samples.
+- **Composition**: GC content with the theoretical distribution and base composition of the open sample, and N content of several samples.
+- **Length**: read length of several samples.
+- **Duplication**, **Adapters**, and **Overrepresented**: the open sample. Each overrepresented sequence has a button to copy it.
+
+Charts of several samples have chips above them to choose which samples to compare.
 
 In Complete mode, `Duplication sketch size` sets how many distinct sequences are kept to estimate duplication across every read. Leave it empty for the default of 100,000. Larger values are more accurate and use more memory, and `0` counts every sequence exactly.
 

@@ -198,6 +198,13 @@ abstract final class SeguiChartLayout {
   /// Width of a bar in bar charts.
   static const double barWidth = 10;
 
+  /// Row of a horizontal sample bar: its height, the sample name column,
+  /// the bar's thickness, and the value column.
+  static const double barRow = 28;
+  static const double barLabel = 140;
+  static const double barThickness = 14;
+  static const double barValue = 64;
+
   /// Dash and gap lengths of dashed lines.
   static const List<int> dash = [6, 4];
 }

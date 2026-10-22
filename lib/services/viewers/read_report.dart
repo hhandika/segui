@@ -147,3 +147,139 @@ ChartPoints indexedPoints(String name, List<double> counts) {
 List<ReadSampleData> samplesWithReads(ReadReportData report) {
   return report.samples.where((s) => s.metrics.readCount > 0).toList();
 }
+
+/// A per-sample statistic plotted on the summary bars.
+enum ReadMetric {
+  reads('Reads'),
+  bases('Bases'),
+  meanLength('Mean length (bp)'),
+  n50('N50 (bp)'),
+  q30('Q30 bases (%)'),
+  meanQuality('Mean quality'),
+  gc('GC (%)'),
+  duplication('Duplication (%)'),
+  adapters('Adapters (%)');
+
+  const ReadMetric(this.label);
+
+  final String label;
+
+  /// The metric for [metrics], or null when the run did not compute it.
+  double? valueOf(ReadMetricsData metrics) {
+    return switch (this) {
+      ReadMetric.reads => metrics.readCount,
+      ReadMetric.bases => metrics.baseCount,
+      ReadMetric.meanLength => metrics.meanReadLength,
+      ReadMetric.n50 => metrics.n50ReadLength,
+      ReadMetric.q30 => metrics.q30Pct,
+      ReadMetric.meanQuality => metrics.meanQscore,
+      ReadMetric.gc => 100 * metrics.gcContent,
+      ReadMetric.duplication => metrics.duplicatePct,
+      ReadMetric.adapters => metrics.adapterReadsPct,
+    };
+  }
+
+  /// [value] as shown beside a bar.
+  String format(double value) {
+    return switch (this) {
+      ReadMetric.reads || ReadMetric.bases => formatCompact(value),
+      ReadMetric.n50 => value.round().toString(),
+      _ => value.toStringAsFixed(1),
+    };
+  }
+
+  /// Metrics computed for every sample of [samples].
+  static List<ReadMetric> availableFor(List<ReadSampleData> samples) {
+    return [
+      for (final ReadMetric metric in values)
+        if (samples.every((s) => metric.valueOf(s.metrics) != null)) metric,
+    ];
+  }
+}
+
+/// A count with a K, M, or G suffix, such as 4.1M.
+String formatCompact(double value) {
+  const List<(double, String)> units = [(1e9, 'G'), (1e6, 'M'), (1e3, 'K')];
+  for (final (double size, String suffix) in units) {
+    if (value.abs() >= size) {
+      return '${(value / size).toStringAsFixed(1)}$suffix';
+    }
+  }
+  return value.round().toString();
+}
+
+/// Orders for the sample list.
+enum ReadSampleSort {
+  name('Name', 'A to Z', 'Z to A'),
+  status('Status', 'Failing last', 'Failing first'),
+  reads('Reads', 'Fewest first', 'Most first'),
+  q30('Q30 bases', 'Lowest first', 'Highest first');
+
+  const ReadSampleSort(this.label, this.ascending, this.descending);
+
+  final String label;
+
+  /// Names of the two directions in the sort menu.
+  final String ascending;
+  final String descending;
+}
+
+/// Positions in [samples] of those whose name contains [query], ignoring
+/// case, ordered by [sort]. Names sort naturally, so `s2` comes before
+/// `s10`, and break ties in the other orders.
+List<int> readSampleView(
+  List<ReadSampleData> samples, {
+  String query = '',
+  ReadSampleSort sort = ReadSampleSort.name,
+  bool ascending = true,
+}) {
+  final String needle = query.trim().toLowerCase();
+  final List<int> view = [
+    for (int i = 0; i < samples.length; i++)
+      if (samples[i].sample.toLowerCase().contains(needle)) i,
+  ];
+  int byName(int a, int b) =>
+      compareNatural(samples[a].sample, samples[b].sample);
+  int status(int i) => overallStatus(readQcChecks(samples[i])).index;
+  int byValue(int a, int b) => switch (sort) {
+        ReadSampleSort.name => 0,
+        ReadSampleSort.status => status(a).compareTo(status(b)),
+        ReadSampleSort.reads =>
+          samples[a].metrics.readCount.compareTo(samples[b].metrics.readCount),
+        ReadSampleSort.q30 =>
+          samples[a].metrics.q30Pct.compareTo(samples[b].metrics.q30Pct),
+      };
+
+  view.sort((a, b) {
+    final int primary = byValue(a, b);
+    final int ordered = primary != 0 ? primary : byName(a, b);
+    return ascending ? ordered : -ordered;
+  });
+  return view;
+}
+
+/// Compares strings with runs of digits as numbers, ignoring case.
+int compareNatural(String a, String b) {
+  final RegExp chunks = RegExp(r'\d+|\D+');
+  final List<String> left =
+      chunks.allMatches(a.toLowerCase()).map((m) => m[0]!).toList();
+  final List<String> right =
+      chunks.allMatches(b.toLowerCase()).map((m) => m[0]!).toList();
+  for (int i = 0; i < left.length && i < right.length; i++) {
+    final int? x = int.tryParse(left[i]);
+    final int? y = int.tryParse(right[i]);
+    final int result =
+        x != null && y != null ? x.compareTo(y) : left[i].compareTo(right[i]);
+    if (result != 0) return result;
+  }
+  return left.length.compareTo(right.length);
+}
+
+/// Position [delta] steps from [index] through [view], wrapping at both
+/// ends. Starts at either end when [index] is filtered out.
+int stepThrough(List<int> view, int index, int delta) {
+  if (view.isEmpty) return index;
+  final int position = view.indexOf(index);
+  if (position < 0) return delta > 0 ? view.first : view.last;
+  return view[(position + delta) % view.length];
+}

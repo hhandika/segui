@@ -6,8 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/buttons.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
+import 'package:segui/screens/viewers/read_report/sample_list.dart';
+import 'package:segui/screens/viewers/read_report/summary.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -58,19 +61,22 @@ class ReadReportBody extends ConsumerWidget {
   }
 }
 
-/// The report tabs, with the sample they show.
-class ReadReportContent extends StatefulWidget {
+/// The report of one open sample, with a sample list beside it and a
+/// switcher above it, like the file list of the alignment viewer.
+class ReadReportContent extends ConsumerStatefulWidget {
   const ReadReportContent({super.key, required this.report});
 
   final ReadReportData report;
 
   @override
-  State<ReadReportContent> createState() => _ReadReportContentState();
+  ConsumerState<ReadReportContent> createState() => _ReadReportContentState();
 }
 
-class _ReadReportContentState extends State<ReadReportContent> {
+class _ReadReportContentState extends ConsumerState<ReadReportContent> {
   late List<ReadSampleData> _samples;
-  int _focused = 0;
+
+  /// The open sample, as a position in [_samples].
+  int _index = 0;
   late Set<int> _compared;
 
   @override
@@ -95,7 +101,117 @@ class _ReadReportContentState extends State<ReadReportContent> {
         description: 'The input files have no reads to summarize.',
       );
     }
-    final ReadSampleData sample = _samples[_focused];
+    final ReadSampleListSettings list = ref.watch(readSampleListProvider);
+    final List<int> view = readSampleView(
+      _samples,
+      query: list.query,
+      sort: list.sort,
+      ascending: list.ascending,
+    );
+    final bool hasOtherSamples = _samples.length > 1;
+    final bool isCompact = isPhoneScreen(context);
+    final bool showList = hasOtherSamples && list.showList && !isCompact;
+    final List<ReportTab> tabs = _tabs(view);
+    return CallbackShortcuts(
+      bindings: {
+        if (hasOtherSamples) ...{
+          const SingleActivator(LogicalKeyboardKey.arrowUp, alt: true): () =>
+              _select(stepThrough(view, _index, -1)),
+          const SingleActivator(LogicalKeyboardKey.arrowDown, alt: true): () =>
+              _select(stepThrough(view, _index, 1)),
+        },
+      },
+      child: Focus(
+        autofocus: true,
+        child: Padding(
+          padding: const EdgeInsets.all(SeguiSpacing.xl),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (showList) ...[
+                SizedBox(
+                  width: SeguiAlignmentLayout.fileList,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        // A Material panel, so list tiles keep their ink.
+                        child: OutlinedPanel(
+                          child: ReadSampleRail(
+                            samples: _samples,
+                            index: _index,
+                            onSelected: _select,
+                          ),
+                        ),
+                      ),
+                      const ReadSampleHint(),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: SeguiSpacing.md),
+              ],
+              Expanded(
+                child: DefaultTabController(
+                  length: tabs.length,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (hasOtherSamples) ...[
+                        ReadReportHeader(
+                          switcher: ReadSampleSwitcher(
+                            samples: _samples,
+                            view: view,
+                            index: _index,
+                            onSelected: _select,
+                          ),
+                          isListShown: showList,
+                          onToggleList: isCompact
+                              ? _showSampleSheet
+                              : ref
+                                  .read(readSampleListProvider.notifier)
+                                  .toggleList,
+                        ),
+                        const SizedBox(height: SeguiSpacing.md),
+                      ],
+                      Expanded(
+                        child: OutlinedPanel(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              TabBar(
+                                isScrollable: true,
+                                tabAlignment: TabAlignment.start,
+                                tabs: [
+                                  for (final ReportTab tab in tabs)
+                                    Tab(text: tab.label),
+                                ],
+                              ),
+                              Expanded(
+                                child: TabBarView(
+                                  children: [
+                                    for (final ReportTab tab in tabs)
+                                      ReportPanel(tab: tab),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<ReportTab> _tabs(List<int> view) {
+    final ReadSampleData sample = _samples[_index];
+    final String name = sample.sample;
     final List<ReadSampleData> compared = [
       for (int i = 0; i < _samples.length; i++)
         if (_compared.contains(i)) _samples[i],
@@ -105,168 +221,163 @@ class _ReadReportContentState extends State<ReadReportContent> {
       selected: _compared,
       onChanged: (selected) => setState(() => _compared = selected),
     );
-    final List<ReportTab> tabs = [
-      ReportTab(
-        label: 'Overview',
-        child: ReadOverview(
-          samples: _samples,
-          focused: _focused,
-          onFocus: (i) => setState(() => _focused = i),
-        ),
-      ),
-      ReportTab(
-        label: 'Per-base quality',
-        description: 'Median and mean quality at each position, with the '
-            'middle half of bases and the 10th to 90th percentile shaded.',
-        child: PositionQualityChart(positions: sample.positions),
-      ),
-      ReportTab(
-        label: 'Per-read quality',
-        description: 'Reads by their mean quality score.',
-        header: chips,
-        child: ReadLineChart(
-          xLabel: 'Mean quality score',
-          yLabel: 'Reads',
-          lines: _overlay(
-            compared,
-            (s) => indexedPoints(s.sample, s.readQualityCounts),
+    return [
+      ReportTab(label: 'Summary', sections: [
+        ReportSection(
+          title: 'Samples',
+          description: 'Every sample in the order of the sample list. '
+              'Select one to open it.',
+          child: ReadSummaryPanel(
+            samples: _samples,
+            view: view,
+            index: _index,
+            onSelected: _select,
           ),
         ),
-      ),
-      ReportTab(
-        label: 'GC content',
-        description: 'Reads by GC content, with a normal distribution of the '
-            'same mean and deviation. Peaks away from the curve can mean '
-            'contamination.',
-        child: ReadLineChart(
-          xLabel: 'GC content (%)',
-          yLabel: 'Reads',
-          lines: [
-            ChartLine(
-              points: indexedPoints('Observed', sample.gcCounts),
-              color: ChartPalette.seriesAt(0),
-            ),
-            ChartLine(
-              points: indexedPoints('Theoretical', sample.gcTheoretical),
-              color: ChartPalette.seriesAt(1),
-              dashed: true,
-            ),
-          ],
+      ]),
+      ReportTab(label: 'Quality', sections: [
+        ReportSection(
+          title: 'Per-base quality: $name',
+          description: 'Median and mean quality at each position, with the '
+              'middle half of bases and the 10th to 90th percentile shaded.',
+          child: PositionQualityChart(positions: sample.positions),
         ),
-      ),
-      ReportTab(
-        label: 'Read length',
-        header: chips,
-        child: ReadLineChart(
-          xLabel: 'Read length (bp)',
-          yLabel: 'Reads',
-          lines: _overlay(
-            compared,
-            (s) => ChartPoints(
-              name: s.sample,
-              x: s.lengthValues,
-              y: s.lengthCounts,
+        ReportSection(
+          title: 'Per-read quality',
+          description: 'Reads by their mean quality score.',
+          header: chips,
+          child: ReadLineChart(
+            xLabel: 'Mean quality score',
+            yLabel: 'Reads',
+            lines: _overlay(
+              compared,
+              (s) => indexedPoints(s.sample, s.readQualityCounts),
             ),
           ),
         ),
-      ),
-      ReportTab(
-        label: 'Base composition',
-        description: 'Share of each base at each position. Lines should be '
-            'flat after the first few bases of most libraries.',
-        child: BaseCompositionChart(positions: sample.positions),
-      ),
-      ReportTab(
-        label: 'N content',
-        header: chips,
-        child: ReadLineChart(
-          xLabel: 'Position (bp)',
-          yLabel: 'N (%)',
-          minY: 0,
-          lines: _overlay(
-            compared,
-            (s) => ChartPoints(
-              name: s.sample,
-              x: s.positions.start,
-              y: s.positions.nPct,
-            ),
-          ),
-        ),
-      ),
-      ReportTab(
-        label: 'Duplication',
-        description: 'Copies of each sequence among the first reads of the '
-            'file. Most reads of a diverse library appear once.',
-        child: DuplicationChart(sample: sample),
-      ),
-      ReportTab(
-        label: 'Adapters',
-        description: 'Reads with an adapter starting at or before each '
-            'position. Rising lines suggest the reads need trimming.',
-        child: ReadLineChart(
-          xLabel: 'Position (bp)',
-          yLabel: 'Reads (%)',
-          minY: 0,
-          lines: [
-            for (int i = 0; i < sample.adapters.length; i++)
+      ]),
+      ReportTab(label: 'Composition', sections: [
+        ReportSection(
+          title: 'GC content: $name',
+          description: 'Reads by GC content, with a normal distribution of '
+              'the same mean and deviation. Peaks away from the curve can '
+              'mean contamination.',
+          child: ReadLineChart(
+            xLabel: 'GC content (%)',
+            yLabel: 'Reads',
+            lines: [
               ChartLine(
-                points: ChartPoints(
-                  name: sample.adapters[i].name,
-                  x: sample.positions.start,
-                  y: sample.adapters[i].cumulativePct,
-                ),
-                color: ChartPalette.seriesAt(i),
+                points: indexedPoints('Observed', sample.gcCounts),
+                color: ChartPalette.seriesAt(0),
               ),
-          ],
+              ChartLine(
+                points: indexedPoints('Theoretical', sample.gcTheoretical),
+                color: ChartPalette.seriesAt(1),
+                dashed: true,
+              ),
+            ],
+          ),
         ),
-      ),
-      ReportTab(
-        label: 'Overrepresented',
-        description: 'Read starts above 0.1% of all reads. Reads longer '
-            'than 75 bp are compared by their first 50 bp.',
-        child: OverrepresentedTable(sequences: sample.overrepresented),
-      ),
-    ];
-    return DefaultTabController(
-      length: tabs.length,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              SeguiSpacing.xl,
-              SeguiSpacing.lg,
-              SeguiSpacing.xl,
-              0,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: SampleSelector(
-                samples: _samples,
-                focused: _focused,
-                onChanged: (i) => setState(() => _focused = i),
+        ReportSection(
+          title: 'Base composition: $name',
+          description: 'Share of each base at each position. Lines should '
+              'be flat after the first few bases of most libraries.',
+          child: BaseCompositionChart(positions: sample.positions),
+        ),
+        ReportSection(
+          title: 'N content',
+          header: chips,
+          child: ReadLineChart(
+            xLabel: 'Position (bp)',
+            yLabel: 'N (%)',
+            minY: 0,
+            lines: _overlay(
+              compared,
+              (s) => ChartPoints(
+                name: s.sample,
+                x: s.positions.start,
+                y: s.positions.nPct,
               ),
             ),
           ),
-          TabBar(
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            tabs: [for (final ReportTab tab in tabs) Tab(text: tab.label)],
-          ),
-          Expanded(
-            child: TabBarView(
-              children: [
-                for (final ReportTab tab in tabs) ReportPanel(tab: tab)
-              ],
+        ),
+      ]),
+      ReportTab(label: 'Length', sections: [
+        ReportSection(
+          title: 'Read length',
+          header: chips,
+          child: ReadLineChart(
+            xLabel: 'Read length (bp)',
+            yLabel: 'Reads',
+            lines: _overlay(
+              compared,
+              (s) => ChartPoints(
+                name: s.sample,
+                x: s.lengthValues,
+                y: s.lengthCounts,
+              ),
             ),
           ),
-        ],
-      ),
-    );
+        ),
+      ]),
+      ReportTab(label: 'Duplication', sections: [
+        ReportSection(
+          title: 'Duplication: $name',
+          description: 'Copies of each sequence across every read. Most '
+              'reads of a diverse library appear once.',
+          child: DuplicationChart(sample: sample),
+        ),
+      ]),
+      ReportTab(label: 'Adapters', sections: [
+        ReportSection(
+          title: 'Adapter content: $name',
+          description: 'Reads with an adapter starting at or before each '
+              'position. Rising lines suggest the reads need trimming.',
+          child: ReadLineChart(
+            xLabel: 'Position (bp)',
+            yLabel: 'Reads (%)',
+            minY: 0,
+            lines: [
+              for (int i = 0; i < sample.adapters.length; i++)
+                ChartLine(
+                  points: ChartPoints(
+                    name: sample.adapters[i].name,
+                    x: sample.positions.start,
+                    y: sample.adapters[i].cumulativePct,
+                  ),
+                  color: ChartPalette.seriesAt(i),
+                ),
+            ],
+          ),
+        ),
+      ]),
+      ReportTab(label: 'Overrepresented', sections: [
+        ReportSection(
+          title: 'Overrepresented sequences: $name',
+          description: 'Read starts above 0.1% of all reads. Reads longer '
+              'than 75 bp are compared by their first 50 bp.',
+          child: OverrepresentedTable(sequences: sample.overrepresented),
+        ),
+      ]),
+    ];
+  }
+
+  /// Opens the sample at [index].
+  void _select(int index) {
+    if (index == _index) return;
+    setState(() => _index = index);
   }
 
   void _setSamples() {
     _samples = samplesWithReads(widget.report);
-    _focused = 0;
+    // Opens the first sample of the list, in its current order.
+    final ReadSampleListSettings list = ref.read(readSampleListProvider);
+    final List<int> view = readSampleView(
+      _samples,
+      sort: list.sort,
+      ascending: list.ascending,
+    );
+    _index = view.isEmpty ? 0 : view.first;
     _compared = {
       for (int i = 0; i < _samples.length && i < _defaultComparedSamples; i++)
         i,
@@ -285,18 +396,93 @@ class _ReadReportContentState extends State<ReadReportContent> {
         ),
     ];
   }
+
+  // Narrow screens show the sample list as a sheet that closes on a pick.
+  Future<void> _showSampleSheet() {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => FractionallySizedBox(
+        heightFactor: 0.8,
+        child: ReadSampleRail(
+          samples: _samples,
+          index: _index,
+          onSelected: (index) {
+            Navigator.of(context).pop();
+            _select(index);
+          },
+        ),
+      ),
+    );
+  }
 }
 
-/// A tab of the report.
+/// Panel above the tabs with the sample switcher and the list toggle,
+/// styled like the alignment viewer's file switcher.
+class ReadReportHeader extends StatelessWidget {
+  const ReadReportHeader({
+    super.key,
+    required this.switcher,
+    required this.isListShown,
+    required this.onToggleList,
+  });
+
+  final Widget switcher;
+  final bool isListShown;
+  final VoidCallback onToggleList;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+        height: SeguiControlSize.touchTarget,
+        decoration: getContainerDecoration(context),
+        // With the compact buttons' own padding, content sits
+        // SeguiSpacing.lg from the border.
+        padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xs),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(child: switcher),
+            const SizedBox(
+              height: SeguiControlSize.iconMedium,
+              child: VerticalDivider(width: SeguiSpacing.sm),
+            ),
+            IconButton(
+              tooltip: isListShown ? 'Hide sample list' : 'Show sample list',
+              visualDensity: VisualDensity.compact,
+              isSelected: isListShown,
+              icon: const Icon(Icons.list_rounded),
+              selectedIcon: const Icon(Icons.playlist_play_rounded),
+              onPressed: onToggleList,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A tab of the report, made of one or more sections.
 class ReportTab {
-  const ReportTab({
-    required this.label,
+  const ReportTab({required this.label, required this.sections});
+
+  final String label;
+  final List<ReportSection> sections;
+}
+
+/// A titled chart or table in a report tab.
+class ReportSection {
+  const ReportSection({
+    required this.title,
     required this.child,
     this.description,
     this.header,
   });
 
-  final String label;
+  final String title;
   final Widget child;
   final String? description;
 
@@ -311,61 +497,41 @@ class ReportPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme text = Theme.of(context).textTheme;
-    return SingleChildScrollView(
+    return ListView(
       padding: const EdgeInsets.all(SeguiSpacing.xl),
-      child: Container(
-        padding: const EdgeInsets.all(SeguiSpacing.xl),
-        decoration: getContainerDecoration(context),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(tab.label, style: text.titleMedium),
-            if (tab.description != null) ...[
-              const SizedBox(height: SeguiSpacing.xs),
-              Text(tab.description!, style: text.bodySmall),
-            ],
-            if (tab.header != null) ...[
-              const SizedBox(height: SeguiSpacing.md),
-              tab.header!,
-            ],
-            const SizedBox(height: SeguiSpacing.lg),
-            tab.child,
-          ],
-        ),
-      ),
+      children: [
+        for (final (int i, ReportSection section) in tab.sections.indexed) ...[
+          if (i > 0) const Divider(height: SeguiSpacing.xxxl * 2),
+          ReportSectionView(section: section),
+        ],
+      ],
     );
   }
 }
 
-/// Picks the sample shown on single-sample charts.
-class SampleSelector extends StatelessWidget {
-  const SampleSelector({
-    super.key,
-    required this.samples,
-    required this.focused,
-    required this.onChanged,
-  });
+class ReportSectionView extends StatelessWidget {
+  const ReportSectionView({super.key, required this.section});
 
-  final List<ReadSampleData> samples;
-  final int focused;
-  final ValueChanged<int> onChanged;
+  final ReportSection section;
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<int>(
-      label: const Text('Sample'),
-      initialSelection: focused,
-      // A new focus from the overview table replaces the shown selection.
-      key: ValueKey(focused),
-      width: SeguiContentWidth.card,
-      dropdownMenuEntries: [
-        for (int i = 0; i < samples.length; i++)
-          DropdownMenuEntry(value: i, label: samples[i].sample),
+    final TextTheme text = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(section.title, style: text.titleMedium),
+        if (section.description != null) ...[
+          const SizedBox(height: SeguiSpacing.xs),
+          Text(section.description!, style: text.bodySmall),
+        ],
+        if (section.header != null) ...[
+          const SizedBox(height: SeguiSpacing.md),
+          section.header!,
+        ],
+        const SizedBox(height: SeguiSpacing.lg),
+        section.child,
       ],
-      onSelected: (value) {
-        if (value != null) onChanged(value);
-      },
     );
   }
 }
@@ -400,186 +566,6 @@ class SampleCompareChips extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-/// Per-sample statistics with quality checks. Tapping a row shows that
-/// sample on the other tabs.
-class ReadOverview extends StatefulWidget {
-  const ReadOverview({
-    super.key,
-    required this.samples,
-    required this.focused,
-    required this.onFocus,
-  });
-
-  final List<ReadSampleData> samples;
-  final int focused;
-  final ValueChanged<int> onFocus;
-
-  @override
-  State<ReadOverview> createState() => _ReadOverviewState();
-}
-
-class _ReadOverviewState extends State<ReadOverview> {
-  int? _sortColumn;
-  bool _ascending = true;
-
-  @override
-  Widget build(BuildContext context) {
-    final List<_OverviewColumn> columns = _columns;
-    final List<int> order = [for (int i = 0; i < widget.samples.length; i++) i];
-    if (_sortColumn != null) {
-      final _OverviewColumn column = columns[_sortColumn!];
-      order.sort((a, b) {
-        final int result = column
-            .sortValue(widget.samples[a])
-            .compareTo(column.sortValue(widget.samples[b]));
-        return _ascending ? result : -result;
-      });
-    }
-    final ReadSampleData focused = widget.samples[widget.focused];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            sortColumnIndex: _sortColumn,
-            sortAscending: _ascending,
-            showCheckboxColumn: false,
-            columns: [
-              for (int i = 0; i < columns.length; i++)
-                DataColumn(
-                  label: Text(columns[i].label),
-                  numeric: columns[i].numeric,
-                  onSort: (index, ascending) => setState(() {
-                    _sortColumn = index;
-                    _ascending = ascending;
-                  }),
-                ),
-            ],
-            rows: [
-              for (final int i in order)
-                DataRow(
-                  selected: i == widget.focused,
-                  onSelectChanged: (_) => widget.onFocus(i),
-                  cells: [
-                    for (final _OverviewColumn column in columns)
-                      DataCell(
-                        column.showsStatus
-                            ? QcStatusChip(
-                                status: overallStatus(
-                                  readQcChecks(widget.samples[i]),
-                                ),
-                              )
-                            : Text(column.text(widget.samples[i])),
-                      ),
-                  ],
-                ),
-            ],
-          ),
-        ),
-        const SizedBox(height: SeguiSpacing.xl),
-        Text(
-          'Checks for ${focused.sample}',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: SeguiSpacing.md),
-        Wrap(
-          spacing: SeguiSpacing.sm,
-          runSpacing: SeguiSpacing.sm,
-          children: [
-            for (final ReadQcCheck check in readQcChecks(focused))
-              QcStatusChip(
-                status: check.status,
-                label: '${check.name}: ${check.value}',
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  List<_OverviewColumn> get _columns => [
-        _OverviewColumn(
-          label: 'Sample',
-          numeric: false,
-          sortValue: (s) => s.sample,
-          text: (s) => s.sample,
-        ),
-        _OverviewColumn(
-          label: 'Status',
-          numeric: false,
-          sortValue: (s) => overallStatus(readQcChecks(s)).index,
-          text: (s) => overallStatus(readQcChecks(s)).label,
-          showsStatus: true,
-        ),
-        _numeric('Reads', (m) => m.readCount, _countFormat.format),
-        _numeric('Bases', (m) => m.baseCount, _countFormat.format),
-        _numeric('Mean length', (m) => m.meanReadLength, _decimal),
-        _numeric('N50', (m) => m.n50ReadLength, _countFormat.format),
-        _numeric('GC (%)', (m) => 100 * m.gcContent, _decimal),
-        _numeric('Q30 (%)', (m) => m.q30Pct, _decimal),
-        _numeric('Mean Q', (m) => m.meanQscore, _decimal),
-        _numeric('Duplication (%)', (m) => m.duplicatePct ?? 0, _decimal),
-        _numeric('Adapters (%)', (m) => m.adapterReadsPct ?? 0, _decimal),
-      ];
-
-  _OverviewColumn _numeric(
-    String label,
-    double Function(ReadMetricsData metrics) value,
-    String Function(double value) format,
-  ) {
-    return _OverviewColumn(
-      label: label,
-      numeric: true,
-      sortValue: (s) => value(s.metrics),
-      text: (s) => format(value(s.metrics)),
-    );
-  }
-
-  static String _decimal(double value) => value.toStringAsFixed(1);
-}
-
-class _OverviewColumn {
-  const _OverviewColumn({
-    required this.label,
-    required this.numeric,
-    required this.sortValue,
-    required this.text,
-    this.showsStatus = false,
-  });
-
-  final String label;
-  final bool numeric;
-  final Comparable Function(ReadSampleData sample) sortValue;
-  final String Function(ReadSampleData sample) text;
-
-  /// Whether cells show the sample status as a chip instead of [text].
-  final bool showsStatus;
-}
-
-class QcStatusChip extends StatelessWidget {
-  const QcStatusChip({super.key, required this.status, this.label});
-
-  final ReadQcStatus status;
-
-  /// Text in the chip. The status name by default.
-  final String? label;
-
-  @override
-  Widget build(BuildContext context) {
-    final Color color = switch (status) {
-      ReadQcStatus.pass => ChartPalette.pass,
-      ReadQcStatus.warn => ChartPalette.warn,
-      ReadQcStatus.fail => ChartPalette.fail,
-    };
-    return Chip(
-      avatar: CircleAvatar(backgroundColor: color),
-      label: Text(label ?? status.label),
-      visualDensity: VisualDensity.compact,
     );
   }
 }
