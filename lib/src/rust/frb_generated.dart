@@ -226,7 +226,8 @@ abstract class RustLibApi extends BaseApi {
       {required RawReadServices that,
       required String mode,
       String? prefix,
-      String? phred});
+      String? phred,
+      int? dupSketchSize});
 
   Future<ReadReportData> crateApiReadsReadReportServicesLoad(
       {required ReadReportServices that});
@@ -1442,7 +1443,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       {required RawReadServices that,
       required String mode,
       String? prefix,
-      String? phred}) {
+      String? phred,
+      int? dupSketchSize}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -1450,6 +1452,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(mode, serializer);
         sse_encode_opt_String(prefix, serializer);
         sse_encode_opt_String(phred, serializer);
+        sse_encode_opt_box_autoadd_u_32(dupSketchSize, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 43, port: port_);
       },
@@ -1458,7 +1461,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiReadsRawReadServicesSummarizeConstMeta,
-      argValues: [that, mode, prefix, phred],
+      argValues: [that, mode, prefix, phred, dupSketchSize],
       apiImpl: this,
     ));
   }
@@ -1466,7 +1469,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiReadsRawReadServicesSummarizeConstMeta =>
       const TaskConstMeta(
         debugName: "raw_read_services_summarize",
-        argNames: ["that", "mode", "prefix", "phred"],
+        argNames: ["that", "mode", "prefix", "phred", "dupSketchSize"],
       );
 
   @override
@@ -2857,13 +2860,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   OverrepresentedData dco_decode_overrepresented_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return OverrepresentedData(
       sequence: dco_decode_String(arr[0]),
       count: dco_decode_f_64(arr[1]),
       percent: dco_decode_f_64(arr[2]),
-      source: dco_decode_String(arr[3]),
+      maxErrorPct: dco_decode_f_64(arr[3]),
+      source: dco_decode_String(arr[4]),
     );
   }
 
@@ -2900,14 +2904,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ReadDuplicationData dco_decode_read_duplication_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return ReadDuplicationData(
-      sampledReads: dco_decode_f_64(arr[0]),
-      duplicatePct: dco_decode_f_64(arr[1]),
-      labels: dco_decode_list_String(arr[2]),
-      distinctPct: dco_decode_list_prim_f_64_strict(arr[3]),
-      readsPct: dco_decode_list_prim_f_64_strict(arr[4]),
+      reads: dco_decode_f_64(arr[0]),
+      distinctSequences: dco_decode_f_64(arr[1]),
+      duplicatePct: dco_decode_f_64(arr[2]),
+      sketchSize: dco_decode_f_64(arr[3]),
+      exact: dco_decode_bool(arr[4]),
+      labels: dco_decode_list_String(arr[5]),
+      distinctPct: dco_decode_list_prim_f_64_strict(arr[6]),
+      readsPct: dco_decode_list_prim_f_64_strict(arr[7]),
     );
   }
 
@@ -4195,11 +4202,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_sequence = sse_decode_String(deserializer);
     var var_count = sse_decode_f_64(deserializer);
     var var_percent = sse_decode_f_64(deserializer);
+    var var_maxErrorPct = sse_decode_f_64(deserializer);
     var var_source = sse_decode_String(deserializer);
     return OverrepresentedData(
         sequence: var_sequence,
         count: var_count,
         percent: var_percent,
+        maxErrorPct: var_maxErrorPct,
         source: var_source);
   }
 
@@ -4236,14 +4245,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ReadDuplicationData sse_decode_read_duplication_data(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_sampledReads = sse_decode_f_64(deserializer);
+    var var_reads = sse_decode_f_64(deserializer);
+    var var_distinctSequences = sse_decode_f_64(deserializer);
     var var_duplicatePct = sse_decode_f_64(deserializer);
+    var var_sketchSize = sse_decode_f_64(deserializer);
+    var var_exact = sse_decode_bool(deserializer);
     var var_labels = sse_decode_list_String(deserializer);
     var var_distinctPct = sse_decode_list_prim_f_64_strict(deserializer);
     var var_readsPct = sse_decode_list_prim_f_64_strict(deserializer);
     return ReadDuplicationData(
-        sampledReads: var_sampledReads,
+        reads: var_reads,
+        distinctSequences: var_distinctSequences,
         duplicatePct: var_duplicatePct,
+        sketchSize: var_sketchSize,
+        exact: var_exact,
         labels: var_labels,
         distinctPct: var_distinctPct,
         readsPct: var_readsPct);
@@ -5472,6 +5487,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.sequence, serializer);
     sse_encode_f_64(self.count, serializer);
     sse_encode_f_64(self.percent, serializer);
+    sse_encode_f_64(self.maxErrorPct, serializer);
     sse_encode_String(self.source, serializer);
   }
 
@@ -5500,8 +5516,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_read_duplication_data(
       ReadDuplicationData self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_f_64(self.sampledReads, serializer);
+    sse_encode_f_64(self.reads, serializer);
+    sse_encode_f_64(self.distinctSequences, serializer);
     sse_encode_f_64(self.duplicatePct, serializer);
+    sse_encode_f_64(self.sketchSize, serializer);
+    sse_encode_bool(self.exact, serializer);
     sse_encode_list_String(self.labels, serializer);
     sse_encode_list_prim_f_64_strict(self.distinctPct, serializer);
     sse_encode_list_prim_f_64_strict(self.readsPct, serializer);

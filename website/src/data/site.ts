@@ -60,7 +60,7 @@ export const categories = [
     label: "Genomics",
     description: "Raw reads and assemblies",
     icon: genomics,
-    docs: "/docs/gui-usage/genomic/",
+    docs: "/docs/gui-usage/read-summary/",
   },
 ] as const;
 
@@ -197,14 +197,14 @@ export const tools: {
     title: "Summarize genomic reads",
     description: "FASTQ quality: read counts, length, GC content, and Q-scores.",
     icon: readSummary,
-    docs: "/docs/gui-usage/genomic/",
+    docs: "/docs/gui-usage/read-summary/",
   },
   {
     category: "genomics",
     title: "Summarize genomic contigs",
     description: "Contig counts, N50, length, and GC content for assemblies.",
     icon: contigSummary,
-    docs: "/docs/gui-usage/genomic/",
+    docs: "/docs/gui-usage/contig-summary/",
   },
   {
     category: "genomics",

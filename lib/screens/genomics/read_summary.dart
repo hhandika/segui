@@ -39,8 +39,18 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   String mode = sequenceReadSummaryMode[0];
   String phred = sequenceReadPhredOffset[0];
 
+  /// Distinct sequences kept to estimate duplication. Empty uses SEGUL's
+  /// default.
+  final TextEditingController _dupSketchSize = TextEditingController();
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _dupSketchSize.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +100,17 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
               });
             },
           ),
+          if (mode == 'Complete')
+            SharedTextField(
+              controller: _dupSketchSize,
+              label: 'Duplication sketch size',
+              hint: 'Default 100000',
+              helper: 'Distinct sequences kept to estimate duplication from '
+                  'every read. Larger is more accurate and uses more memory. '
+                  '0 counts every sequence exactly.',
+              keyboardType: TextInputType.number,
+              onChanged: (_) => setState(() {}),
+            ),
           // Minimal mode only counts reads, so it reads no quality scores.
           if (mode != 'Minimal')
             SharedDropdownField(
@@ -148,7 +169,8 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   }
 
   bool get _isValid {
-    return _ctr.isValid;
+    return _ctr.isValid &&
+        (mode != 'Complete' || isValidOptionalCount(_dupSketchSize.text));
   }
 
   /// Settings of this run, listed in the workbench.
@@ -157,6 +179,8 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         RunParameter('Output prefix', _ctr.prefixController.text),
         RunParameter('Summary mode', mode),
         if (mode != 'Minimal') RunParameter('Quality score offset', phred),
+        if (mode == 'Complete')
+          RunParameter('Duplication sketch size', _dupSketchSize.text.trim()),
       ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -189,6 +213,9 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         prefix: _ctr.prefixController.text,
         mode: mode,
         phred: phred,
+        dupSketchSize: mode == 'Complete'
+            ? int.tryParse(_dupSketchSize.text.trim())
+            : null,
       ).run();
       _setSuccess(output.reportPath);
     } catch (e) {

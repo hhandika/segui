@@ -95,12 +95,15 @@ use segul_core::stats::fastq::FastqAnalyzer;
 
 // Arguments: path, quality offset, complete statistics, threads for BGZF decoding.
 let report = FastqAnalyzer::new(Path::new("sample_R1.fastq.gz"), PhredOffset::Auto, true, 4)
+    // Distinct sequences kept to estimate duplication. 0 counts all.
+    .with_dup_sketch_size(1_000_000)
     .analyze()
     .expect("Failed to summarize reads");
 let m = &report.metrics;
 println!("{} reads, N50 {} bp, {:.1}% Q30", m.read_count, m.n50_read_length, m.q30_pct);
 if let Some(dup) = &report.duplication {
-    println!("{:.1}% duplicate reads", dup.duplicate_pct);
+    let method = if dup.exact { "exact" } else { "estimated" };
+    println!("{:.1}% duplicate reads ({})", dup.duplicate_pct, method);
 }
 ```
 

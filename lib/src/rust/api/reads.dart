@@ -39,19 +39,29 @@ class AdapterContentData {
 class OverrepresentedData {
   final String sequence;
   final double count;
+
+  /// Share of all reads, in percent.
   final double percent;
+
+  /// Largest amount `percent` can be short by.
+  final double maxErrorPct;
   final String source;
 
   const OverrepresentedData({
     required this.sequence,
     required this.count,
     required this.percent,
+    required this.maxErrorPct,
     required this.source,
   });
 
   @override
   int get hashCode =>
-      sequence.hashCode ^ count.hashCode ^ percent.hashCode ^ source.hashCode;
+      sequence.hashCode ^
+      count.hashCode ^
+      percent.hashCode ^
+      maxErrorPct.hashCode ^
+      source.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -61,6 +71,7 @@ class OverrepresentedData {
           sequence == other.sequence &&
           count == other.count &&
           percent == other.percent &&
+          maxErrorPct == other.maxErrorPct &&
           source == other.source;
 }
 
@@ -80,10 +91,19 @@ class RawReadServices {
       RustLib.instance.api.crateApiReadsRawReadServicesNew();
 
   /// Summarize reads. `phred` is "auto", "33", or "64", and defaults to "auto".
+  /// `dup_sketch_size` is the number of distinct sequences kept to estimate
+  /// duplication in Complete mode, zero to count all, or SEGUL's default.
   Future<ReadSummaryOutput> summarize(
-          {required String mode, String? prefix, String? phred}) =>
+          {required String mode,
+          String? prefix,
+          String? phred,
+          int? dupSketchSize}) =>
       RustLib.instance.api.crateApiReadsRawReadServicesSummarize(
-          that: this, mode: mode, prefix: prefix, phred: phred);
+          that: this,
+          mode: mode,
+          prefix: prefix,
+          phred: phred,
+          dupSketchSize: dupSketchSize);
 
   @override
   int get hashCode => files.hashCode ^ fileFmt.hashCode ^ outputDir.hashCode;
@@ -99,15 +119,26 @@ class RawReadServices {
 }
 
 class ReadDuplicationData {
-  final double sampledReads;
+  /// Reads counted, which is every read with bases.
+  final double reads;
+
+  /// Distinct sequences, estimated unless `exact`.
+  final double distinctSequences;
   final double duplicatePct;
+
+  /// Distinct sequences kept, or zero when all were kept.
+  final double sketchSize;
+  final bool exact;
   final List<String> labels;
   final Float64List distinctPct;
   final Float64List readsPct;
 
   const ReadDuplicationData({
-    required this.sampledReads,
+    required this.reads,
+    required this.distinctSequences,
     required this.duplicatePct,
+    required this.sketchSize,
+    required this.exact,
     required this.labels,
     required this.distinctPct,
     required this.readsPct,
@@ -115,8 +146,11 @@ class ReadDuplicationData {
 
   @override
   int get hashCode =>
-      sampledReads.hashCode ^
+      reads.hashCode ^
+      distinctSequences.hashCode ^
       duplicatePct.hashCode ^
+      sketchSize.hashCode ^
+      exact.hashCode ^
       labels.hashCode ^
       distinctPct.hashCode ^
       readsPct.hashCode;
@@ -126,8 +160,11 @@ class ReadDuplicationData {
       identical(this, other) ||
       other is ReadDuplicationData &&
           runtimeType == other.runtimeType &&
-          sampledReads == other.sampledReads &&
+          reads == other.reads &&
+          distinctSequences == other.distinctSequences &&
           duplicatePct == other.duplicatePct &&
+          sketchSize == other.sketchSize &&
+          exact == other.exact &&
           labels == other.labels &&
           distinctPct == other.distinctPct &&
           readsPct == other.readsPct;

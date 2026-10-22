@@ -1,5 +1,5 @@
 ---
-title: Genomic Summary
+title: Genomic Read Summary
 sidebar:
   order: 8
 ---
@@ -8,23 +8,17 @@ sidebar:
    large="gui/genomic-read-large.webp"
    largeAlt="SEGUI Summarize genomic reads page on a desktop with the tool form and file panel"
    small="gui/genomic-read-small.webp"
-   smallAlt="SEGUI Summarize genomic reads page on a phone with the tool form"
-   large2="gui/genomic-contig-large.webp"
-   large2Alt="SEGUI Summarize genomic contigs page on a desktop with the tool form and file panel"
-   small2="gui/genomic-contig-small.webp"
-   small2Alt="SEGUI Summarize genomic contigs page on a phone with the tool form" %}
-{% pin id="A" label="Genomics tab" large=[5, 18.1] small=[37.3, 94.8] large2=[5, 18.1] small2=[37.3, 94.8] /%}
-{% pin id="B" label="Tool switcher" large=[48.0, 13.5] small=[73.8, 11.8] large2=[49.7, 13.5] small2=[78.4, 11.8] /%}
-{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] large2=[24.6, 34.6] small2=[14.0, 34.4] /%}
-{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] large2=[66, 94.5] small2=[88, 84.8] /%}
-{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] large2=[85.8, 11.8] small2=[91.5, 11.8] /%}
+   smallAlt="SEGUI Summarize genomic reads page on a phone with the tool form" %}
+{% pin id="A" label="Genomics tab" large=[5, 18.1] small=[37.3, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[48.0, 13.5] small=[73.8, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
 {% /screenshots %}
 
-This feature provides summary statistics for sequence reads and contiguous sequences (contigs).
+Summarize raw sequence reads in FASTQ format, plain or compressed, from read counts and base quality to duplication and adapter content. For assembled contigs, see [Genomic Contig Summary](/docs/gui-usage/contig-summary/).
 
-## Sequence Read Summary Statistics
-
-### Steps for Sequence Read Summary Statistics
+## Steps
 
 1. Select `Genomics` in the navigation bar {% ref id="A" /%}.
 2. Open `Summarize genomic reads` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
@@ -35,7 +29,7 @@ This feature provides summary statistics for sequence reads and contiguous seque
 7. In Complete mode, the `Workbench` tab of the file panel shows a `Report` card when the task finishes. Select `View report` to open the read report. You can also open `read-report.json` from the `Output` tab later.
 8. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
 
-### Summary Mode
+## Summary Mode
 
 The app supports the following summary modes:
 
@@ -43,7 +37,7 @@ The app supports the following summary modes:
 - **Default**: generate essential statistics (see below)
 - **Complete**: generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content for each file.
 
-### Essential statistics for raw reads
+## Essential statistics for raw reads
 
 - Number of reads
 - Number of bases
@@ -63,7 +57,7 @@ The app supports the following summary modes:
 - Q20 and Q30 bases
 - Mean quality per read, and reads with mean quality below 20
 
-### Read report
+## Read report
 
 The read report shows the Complete mode statistics as interactive charts. Choose the sample at the top, and switch between tabs:
 
@@ -72,38 +66,8 @@ The read report shows the Complete mode statistics as interactive charts. Choose
 - **Per-read quality**, **Read length**, and **N content**: compare several samples. Toggle samples with the chips above the chart.
 - **GC content**: reads by GC content with the theoretical distribution.
 - **Base composition**, **Duplication**, and **Adapters**: one sample at a time.
-- **Overrepresented**: sequences above 0.1% of the sampled reads, with a button to copy each one.
+- **Overrepresented**: sequences above 0.1% of all reads, with a button to copy each one.
+
+In Complete mode, `Duplication sketch size` sets how many distinct sequences are kept to estimate duplication across every read. Leave it empty for the default of 100,000. Larger values are more accurate and use more memory, and `0` counts every sequence exactly.
 
 Hover over or touch a chart to see its values. Zoom along the horizontal axis with the mouse wheel or a pinch, and drag or scroll with a trackpad to pan.
-
-## Contig Summary Statistics
-
-### Steps for Contig Summary Statistics
-
-1. Select `Genomics` in the navigation bar {% ref id="A" /%}.
-2. Open `Summarize genomic contigs` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
-3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
-4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
-5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
-6. Select the run button {% ref id="D" /%}, labeled `Summarize`, to start the task.
-7. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
-
-### Available statistics for contiguous sequences
-
-- Contig count
-- Base count
-- Nucleotide
-- GC content
-- AT content
-- Minimum contig length
-- Maximum contig length
-- Mean contig length
-- Median contig length
-- N50
-- N75
-- N90
-- Contig 750 bp
-- Contig 1000 bp
-- Contig 1500 bp
-- Cumulative length
-- A, C, G, T, N counts

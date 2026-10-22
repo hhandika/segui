@@ -40,18 +40,18 @@ export const featureGuides = {
   "align-summary": { gui: gui("align-summary"), cli: cli("align-summary"), python: python("align_summary") },
   "genomic-summary": {
     gui: [
-      { label: "reads", href: "/docs/gui-usage/genomic/#sequence-read-summary-statistics" },
-      { label: "contigs", href: "/docs/gui-usage/genomic/#contig-summary-statistics" },
+      { label: "reads", href: "/docs/gui-usage/read-summary/" },
+      { label: "contigs", href: "/docs/gui-usage/contig-summary/" },
     ],
     cli: [
-      { label: "reads", href: "/docs/cli-usage/genomic-summary/#raw-reads" },
-      { label: "contigs", href: "/docs/cli-usage/genomic-summary/#contiguous-sequences" },
+      { label: "reads", href: "/docs/cli-usage/read-summary/" },
+      { label: "contigs", href: "/docs/cli-usage/contig-summary/" },
     ],
     python: [
-      { label: "reads", href: "/docs/api-usage/python/genomic_summary/#genomic-fastq-read-summary" },
+      { label: "reads", href: "/docs/api-usage/python/read_summary/" },
       {
         label: "contigs",
-        href: "/docs/api-usage/python/genomic_summary/#genomic-contiguous-sequence-summary",
+        href: "/docs/api-usage/python/contig_summary/",
       },
     ],
   },

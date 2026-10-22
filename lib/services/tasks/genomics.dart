@@ -44,6 +44,7 @@ class ReadSummaryRunner {
     required this.prefix,
     required this.mode,
     this.phred = 'Auto',
+    this.dupSketchSize,
   });
 
   final List<SegulInputFile> inputFiles;
@@ -54,6 +55,10 @@ class ReadSummaryRunner {
 
   /// Quality score offset: Auto, 33, or 64.
   final String phred;
+
+  /// Distinct sequences kept to estimate duplication, zero for all, or
+  /// null for SEGUL's default.
+  final int? dupSketchSize;
 
   /// Runs the summary and returns the files it wrote.
   Future<ReadSummaryOutput> run() async {
@@ -70,6 +75,7 @@ class ReadSummaryRunner {
       mode: mode,
       prefix: prefix.isEmpty ? null : prefix,
       phred: phred.toLowerCase(),
+      dupSketchSize: dupSketchSize,
     );
   }
 }

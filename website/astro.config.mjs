@@ -20,6 +20,10 @@ export default defineConfig({
     "/docs/category/advanced-guides": "/docs/advance-guides/architecture/",
     "/docs/category/tutorials": "/docs/tutorials/tutorial-1/",
     "/docs/cli-usage/genomic-convert": "/docs/cli-usage/maf-convert/",
+    // Genomic summary pages split into reads and contigs.
+    "/docs/cli-usage/genomic-summary": "/docs/cli-usage/read-summary/",
+    "/docs/gui-usage/genomic": "/docs/gui-usage/read-summary/",
+    "/docs/api-usage/python/genomic_summary": "/docs/api-usage/python/read_summary/",
     // CLI installation methods now share one page.
     "/docs/installation/install_binary": "/docs/installation/install_cli/#pre-compiled-binary",
     "/docs/installation/install_conda": "/docs/installation/install_cli/#conda",

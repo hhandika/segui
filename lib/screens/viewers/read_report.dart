@@ -222,7 +222,8 @@ class _ReadReportContentState extends State<ReadReportContent> {
       ),
       ReportTab(
         label: 'Overrepresented',
-        description: 'Sequences above 0.1% of the sampled reads.',
+        description: 'Read starts above 0.1% of all reads. Reads longer '
+            'than 75 bp are compared by their first 50 bp.',
         child: OverrepresentedTable(sequences: sample.overrepresented),
       ),
     ];
@@ -635,13 +636,17 @@ class DuplicationChart extends StatelessWidget {
             'duplication.',
       );
     }
+    final String method = duplication.exact
+        ? 'counted exactly'
+        : 'estimated from ${_countFormat.format(duplication.sketchSize)} '
+            'sampled sequences';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '${formatPercent(duplication.duplicatePct)} of '
-          '${_countFormat.format(duplication.sampledReads)} sampled reads '
-          'repeat an earlier read.',
+          '${_countFormat.format(duplication.reads)} reads repeat another '
+          'read, $method.',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: SeguiSpacing.md),
@@ -693,7 +698,12 @@ class OverrepresentedTable extends StatelessWidget {
               cells: [
                 DataCell(SelectableText(seq.sequence)),
                 DataCell(Text(_countFormat.format(seq.count))),
-                DataCell(Text(seq.percent.toStringAsFixed(2))),
+                DataCell(Text(
+                  seq.maxErrorPct > 0
+                      ? '${seq.percent.toStringAsFixed(2)} '
+                          '(+${seq.maxErrorPct.toStringAsFixed(3)})'
+                      : seq.percent.toStringAsFixed(2),
+                )),
                 DataCell(Text(seq.source)),
                 DataCell(CopySequenceButton(sequence: seq.sequence)),
               ],

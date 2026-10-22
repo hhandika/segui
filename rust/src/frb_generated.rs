@@ -1659,12 +1659,17 @@ fn wire__crate__api__reads__raw_read_services_summarize_impl(
             let api_mode = <String>::sse_decode(&mut deserializer);
             let api_prefix = <Option<String>>::sse_decode(&mut deserializer);
             let api_phred = <Option<String>>::sse_decode(&mut deserializer);
+            let api_dup_sketch_size = <Option<u32>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
                         let output_ok = crate::api::reads::RawReadServices::summarize(
-                            &api_that, api_mode, api_prefix, api_phred,
+                            &api_that,
+                            api_mode,
+                            api_prefix,
+                            api_phred,
+                            api_dup_sketch_size,
                         )?;
                         std::result::Result::Ok(output_ok)
                     })(),
@@ -3274,11 +3279,13 @@ impl SseDecode for crate::api::reads::OverrepresentedData {
         let mut var_sequence = <String>::sse_decode(deserializer);
         let mut var_count = <f64>::sse_decode(deserializer);
         let mut var_percent = <f64>::sse_decode(deserializer);
+        let mut var_maxErrorPct = <f64>::sse_decode(deserializer);
         let mut var_source = <String>::sse_decode(deserializer);
         return crate::api::reads::OverrepresentedData {
             sequence: var_sequence,
             count: var_count,
             percent: var_percent,
+            max_error_pct: var_maxErrorPct,
             source: var_source,
         };
     }
@@ -3321,14 +3328,20 @@ impl SseDecode for crate::api::reads::RawReadServices {
 impl SseDecode for crate::api::reads::ReadDuplicationData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_sampledReads = <f64>::sse_decode(deserializer);
+        let mut var_reads = <f64>::sse_decode(deserializer);
+        let mut var_distinctSequences = <f64>::sse_decode(deserializer);
         let mut var_duplicatePct = <f64>::sse_decode(deserializer);
+        let mut var_sketchSize = <f64>::sse_decode(deserializer);
+        let mut var_exact = <bool>::sse_decode(deserializer);
         let mut var_labels = <Vec<String>>::sse_decode(deserializer);
         let mut var_distinctPct = <Vec<f64>>::sse_decode(deserializer);
         let mut var_readsPct = <Vec<f64>>::sse_decode(deserializer);
         return crate::api::reads::ReadDuplicationData {
-            sampled_reads: var_sampledReads,
+            reads: var_reads,
+            distinct_sequences: var_distinctSequences,
             duplicate_pct: var_duplicatePct,
+            sketch_size: var_sketchSize,
+            exact: var_exact,
             labels: var_labels,
             distinct_pct: var_distinctPct,
             reads_pct: var_readsPct,
@@ -4837,6 +4850,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::reads::OverrepresentedData {
             self.sequence.into_into_dart().into_dart(),
             self.count.into_into_dart().into_dart(),
             self.percent.into_into_dart().into_dart(),
+            self.max_error_pct.into_into_dart().into_dart(),
             self.source.into_into_dart().into_dart(),
         ]
         .into_dart()
@@ -4904,8 +4918,11 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::RawReadServices>
 impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadDuplicationData {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.sampled_reads.into_into_dart().into_dart(),
+            self.reads.into_into_dart().into_dart(),
+            self.distinct_sequences.into_into_dart().into_dart(),
             self.duplicate_pct.into_into_dart().into_dart(),
+            self.sketch_size.into_into_dart().into_dart(),
+            self.exact.into_into_dart().into_dart(),
             self.labels.into_into_dart().into_dart(),
             self.distinct_pct.into_into_dart().into_dart(),
             self.reads_pct.into_into_dart().into_dart(),
@@ -6050,6 +6067,7 @@ impl SseEncode for crate::api::reads::OverrepresentedData {
         <String>::sse_encode(self.sequence, serializer);
         <f64>::sse_encode(self.count, serializer);
         <f64>::sse_encode(self.percent, serializer);
+        <f64>::sse_encode(self.max_error_pct, serializer);
         <String>::sse_encode(self.source, serializer);
     }
 }
@@ -6078,8 +6096,11 @@ impl SseEncode for crate::api::reads::RawReadServices {
 impl SseEncode for crate::api::reads::ReadDuplicationData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <f64>::sse_encode(self.sampled_reads, serializer);
+        <f64>::sse_encode(self.reads, serializer);
+        <f64>::sse_encode(self.distinct_sequences, serializer);
         <f64>::sse_encode(self.duplicate_pct, serializer);
+        <f64>::sse_encode(self.sketch_size, serializer);
+        <bool>::sse_encode(self.exact, serializer);
         <Vec<String>>::sse_encode(self.labels, serializer);
         <Vec<f64>>::sse_encode(self.distinct_pct, serializer);
         <Vec<f64>>::sse_encode(self.reads_pct, serializer);

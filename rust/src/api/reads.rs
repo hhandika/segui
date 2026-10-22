@@ -6,6 +6,7 @@ use segul::helper::logger::ReadLogger;
 use segul::helper::types::{PhredOffset, SeqReadFmt, SummaryMode};
 use segul::helper::utils;
 use segul::stats::fastq::report::{PositionSummary, ReadReport, SampleReadReport};
+use segul::stats::fastq::DEFAULT_DUP_SKETCH_SIZE;
 
 pub struct RawReadServices {
     pub files: Vec<String>,
@@ -32,11 +33,14 @@ impl RawReadServices {
     }
 
     /// Summarize reads. `phred` is "auto", "33", or "64", and defaults to "auto".
+    /// `dup_sketch_size` is the number of distinct sequences kept to estimate
+    /// duplication in Complete mode, zero to count all, or SEGUL's default.
     pub fn summarize(
         &self,
         mode: String,
         prefix: Option<String>,
         phred: Option<String>,
+        dup_sketch_size: Option<u32>,
     ) -> anyhow::Result<ReadSummaryOutput> {
         let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
@@ -53,6 +57,7 @@ impl RawReadServices {
             prefix.as_deref(),
         )
         .with_phred(phred)
+        .with_dup_sketch_size(dup_sketch_size.map_or(DEFAULT_DUP_SKETCH_SIZE, |size| size as usize))
         .try_summarize()?;
         let duration = time.elapsed();
         utils::print_execution_time(duration);
@@ -177,8 +182,14 @@ pub struct ReadPositionData {
 }
 
 pub struct ReadDuplicationData {
-    pub sampled_reads: f64,
+    /// Reads counted, which is every read with bases.
+    pub reads: f64,
+    /// Distinct sequences, estimated unless `exact`.
+    pub distinct_sequences: f64,
     pub duplicate_pct: f64,
+    /// Distinct sequences kept, or zero when all were kept.
+    pub sketch_size: f64,
+    pub exact: bool,
     pub labels: Vec<String>,
     pub distinct_pct: Vec<f64>,
     pub reads_pct: Vec<f64>,
@@ -187,7 +198,10 @@ pub struct ReadDuplicationData {
 pub struct OverrepresentedData {
     pub sequence: String,
     pub count: f64,
+    /// Share of all reads, in percent.
     pub percent: f64,
+    /// Largest amount `percent` can be short by.
+    pub max_error_pct: f64,
     pub source: String,
 }
 
@@ -243,8 +257,11 @@ impl From<&SampleReadReport> for ReadSampleData {
             gc_theoretical: report.gc_theoretical.clone(),
             positions: ReadPositionData::from(report),
             duplication: report.duplication.as_ref().map(|d| ReadDuplicationData {
-                sampled_reads: d.sampled_reads as f64,
+                reads: d.reads as f64,
+                distinct_sequences: d.distinct_sequences,
                 duplicate_pct: d.duplicate_pct,
+                sketch_size: d.sketch_size as f64,
+                exact: d.exact,
                 labels: d.levels.iter().map(|l| l.label.clone()).collect(),
                 distinct_pct: d.levels.iter().map(|l| l.distinct_pct).collect(),
                 reads_pct: d.levels.iter().map(|l| l.reads_pct).collect(),
@@ -256,6 +273,7 @@ impl From<&SampleReadReport> for ReadSampleData {
                     sequence: o.sequence.clone(),
                     count: o.count as f64,
                     percent: o.percent,
+                    max_error_pct: o.max_error_pct,
                     source: o.source.clone(),
                 })
                 .collect(),
@@ -275,9 +293,8 @@ impl From<&SampleReadReport> for ReadSampleData {
 impl From<&SampleReadReport> for ReadPositionData {
     fn from(report: &SampleReadReport) -> Self {
         let positions = &report.positions;
-        let column = |f: &dyn Fn(&PositionSummary) -> f64| {
-            positions.iter().map(f).collect::<Vec<f64>>()
-        };
+        let column =
+            |f: &dyn Fn(&PositionSummary) -> f64| positions.iter().map(f).collect::<Vec<f64>>();
         let share = |count: u64, total: u64| {
             if total == 0 {
                 0.0

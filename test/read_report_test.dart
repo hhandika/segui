@@ -74,8 +74,11 @@ ReadSampleData _sample(String name, ReadMetricsData metrics) {
       nPct: _values([0, 0, 0, 0]),
     ),
     duplication: ReadDuplicationData(
-      sampledReads: metrics.readCount,
+      reads: metrics.readCount,
+      distinctSequences: metrics.readCount * 0.9,
       duplicatePct: metrics.duplicatePct ?? 0,
+      sketchSize: 100000,
+      exact: true,
       labels: const ['1', '2'],
       distinctPct: _values([90, 10]),
       readsPct: _values([80, 20]),
@@ -85,6 +88,7 @@ ReadSampleData _sample(String name, ReadMetricsData metrics) {
         sequence: 'AGATCGGAAGAG',
         count: 5,
         percent: 5,
+        maxErrorPct: 0,
         source: 'Illumina Universal',
       ),
     ],
@@ -165,6 +169,12 @@ void main() {
     await tester.tap(find.text('Per-base quality'));
     await tester.pumpAndSettle();
     expect(find.text('Quality score'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Duplication'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Duplication'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('counted exactly'), findsOneWidget);
 
     // The last tab starts outside the scrollable tab bar.
     await tester.ensureVisible(find.text('Overrepresented'));

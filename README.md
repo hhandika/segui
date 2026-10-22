@@ -74,7 +74,8 @@ App improvements:
 | Alignment summary statistics   | [CLI](https://www.segul.app/docs/cli-usage/align-summary/) / [GUI](https://www.segul.app/docs/gui-usage/align-summary/)           |
 | Alignment trimming             | [CLI](https://www.segul.app/docs/cli-usage/align-trim/) / [GUI](https://www.segul.app/docs/gui-usage/align-trim/)                 |
 | Alignment unaligning           | [CLI](https://www.segul.app/docs/cli-usage/align-unalign/) / [GUI](https://www.segul.app/docs/gui-usage/align-unalign/)           |
-| Genomic summary statistics     | [CLI](https://www.segul.app/docs/cli-usage/genomic-summary/) / [GUI](https://www.segul.app/docs/gui-usage/genomic/)               |
+| Genomic read summary           | [CLI](https://www.segul.app/docs/cli-usage/read-summary/) / [GUI](https://www.segul.app/docs/gui-usage/read-summary/)             |
+| Genomic contig summary         | [CLI](https://www.segul.app/docs/cli-usage/contig-summary/) / [GUI](https://www.segul.app/docs/gui-usage/contig-summary/)         |
 | MAF conversion                 | [CLI](https://www.segul.app/docs/cli-usage/maf-convert/) / [GUI](https://www.segul.app/docs/gui-usage/maf-convert/)               |
 | MAF summary statistics         | [CLI](https://www.segul.app/docs/cli-usage/maf-summary/) / [GUI](https://www.segul.app/docs/gui-usage/maf-summary/)               |
 | Sequence addition              | [CLI](https://www.segul.app/docs/cli-usage/sequence-add/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-add/)             |

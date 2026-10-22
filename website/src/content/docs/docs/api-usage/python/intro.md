@@ -84,8 +84,8 @@ python concat_alignments.py
 | `segul align trim` | [`AlignmentTrimming`](/docs/api-usage/python/align_trim/) *(upcoming)* |
 | `segul align unalign` | [`AlignmentUnalignment`](/docs/api-usage/python/align_unalign/) *(upcoming)* |
 | `segul partition` | [`PartitionConversion`](/docs/api-usage/python/align_partition/) |
-| `segul read summary` | [`ReadSummary`](/docs/api-usage/python/genomic_summary/) |
-| `segul contig summary` | [`ContigSummary`](/docs/api-usage/python/genomic_summary/) |
+| `segul read summary` | [`ReadSummary`](/docs/api-usage/python/read_summary/) |
+| `segul contig summary` | [`ContigSummary`](/docs/api-usage/python/contig_summary/) |
 | `segul maf convert` | [`MafConversion`](/docs/api-usage/python/maf/) *(upcoming)* |
 | `segul maf summary` | [`MafSummary`](/docs/api-usage/python/maf/) *(upcoming)* |
 | `segul sequence add` | [`SequenceAddition`](/docs/api-usage/python/sequence_addition/) *(upcoming)* |
