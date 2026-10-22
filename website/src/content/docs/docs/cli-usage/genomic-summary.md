@@ -10,8 +10,10 @@ Since version 0.19.0, `segul` can calculate summary statistics for raw reads and
 
 Supported file formats:
 
-- Gunzip Compressed FASTQ (.fq.gz/.fastq.gz)
+- Gunzip Compressed FASTQ (.fq.gz/.fastq.gz), including BGZF
 - Standard FASTQ (.fq/.fastq)
+
+SEGUL detects the compression from the file content. Each file is read once and summarized on all CPU cores, and BGZF files are also decompressed in parallel.
 
 Example
 
@@ -43,7 +45,7 @@ SEGUL provides three modes to calculate summary statistics for raw reads:
 
 - **Minimal**: read count only
 - **Default**: generate essential statistics (see below)
-- **Complete**: generate all the essential statistics plus summary statistics per position in each read of each FASTQ file.
+- **Complete**: generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content (see below).
 
 Use the `--mode` option to choose `minimal`, `default`, or `complete`:
 
@@ -67,6 +69,27 @@ Essential statistics for raw reads:
 - Mean base quality
 - Min base quality
 - Max base quality
+- Median, standard deviation, and N50 of read length
+- Bases with quality 20 or higher (Q20) and 30 or higher (Q30)
+- Mean quality per read, and reads with mean quality below 20
+- Quality score offset (Phred+33 or Phred+64)
+
+Complete mode adds:
+
+- Quality quartiles, 10th and 90th percentiles, and base composition, including N, at each read position (`read-pos-summary.zip`)
+- Read length, mean read quality, and GC content distributions, with the theoretical GC distribution (`read-dist-summary.zip`)
+- Duplication levels estimated from the first 200,000 reads of each file
+- Overrepresented sequences, above 0.1% of the sampled reads, with the adapter they match
+- Adapter content by position for Illumina Universal, Nextera, Illumina Small RNA, poly-A, and poly-G
+- All of the above in `read-report.json`, which SEGUI opens as an interactive report
+
+SEGUL detects the quality score offset from the first reads. Use `--phred 33` or `--phred 64` to set it.
+
+Add `--plot` to also write charts to `<OUTPUT>/plots`. Complete mode adds charts of quality by position (`pos-qscore-box_<sample>`), read length (`length-dist`), mean read quality (`read-qscore-dist`), GC content (`gc-dist_<sample>`), N content (`pos-n-content`), adapter content (`adapter-content_<sample>`), and duplication (`duplication_<sample>`):
+
+```bash
+segul read summary -d /raw_read_dir --mode complete --plot
+```
 
 ### All options
 
@@ -76,6 +99,7 @@ Essential statistics for raw reads:
 | `-i`, `--input`        | FASTQ files. Allows wildcards                                  |
 | `-f`, `--input-format` | Input format: `auto` (default), `fastq`, or `gzip`             |
 | `--mode`               | Summary mode: `default` (default), `minimal`, or `complete`    |
+| `--phred`              | Quality score offset: `auto` (default), `33`, or `64`          |
 | `-o`, `--output`       | Output directory. Default: `Read-Summary`                      |
 | `--prefix`             | Prefix of the output files                                     |
 | `--force`              | Overwrite an existing output directory                         |

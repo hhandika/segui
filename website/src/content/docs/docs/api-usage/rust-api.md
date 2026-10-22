@@ -85,6 +85,27 @@ let report = MafConverter::new(&files, Path::new("loci"), &OutputFmt::Fasta)
 println!("Wrote {} loci", report.loci_written);
 ```
 
+Compute complete statistics for one FASTQ file without writing any file. Plain, gzip, and BGZF files are detected from their content:
+
+```rust
+use std::path::Path;
+
+use segul_core::helper::types::PhredOffset;
+use segul_core::stats::fastq::FastqAnalyzer;
+
+// Arguments: path, quality offset, complete statistics, threads for BGZF decoding.
+let report = FastqAnalyzer::new(Path::new("sample_R1.fastq.gz"), PhredOffset::Auto, true, 4)
+    .analyze()
+    .expect("Failed to summarize reads");
+let m = &report.metrics;
+println!("{} reads, N50 {} bp, {:.1}% Q30", m.read_count, m.n50_read_length, m.q30_pct);
+if let Some(dup) = &report.duplication {
+    println!("{:.1}% duplicate reads", dup.duplicate_pct);
+}
+```
+
+To summarize many files and write the CSV, archive, and `read-report.json` outputs, use `GenomicReadSummary` with `SummaryMode::Complete` and call `try_summarize`. Read a report back with `segul_core::stats::fastq::report::ReadReport::from_path`.
+
 ### Migrating from SEGUL v0.23 and earlier
 
 Replace `segul` with `segul-core` in your `Cargo.toml` file and `segul::` with `segul_core::` in your imports. The `segul` crate v0.24 still re-exports the library modules, so existing code keeps compiling, but these re-exports will be removed in a future release.

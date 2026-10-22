@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/io/inspector_view.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
+import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/services/workbench.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -29,6 +33,10 @@ class WorkbenchView extends ConsumerWidget {
       children: [
         const WorkbenchSectionTitle(title: 'Summary'),
         const FileSummaryTiles(),
+        if (run?.report != null) ...[
+          const SizedBox(height: SeguiSpacing.md),
+          RunReportCard(report: run!.report!),
+        ],
         if (run != null && run.parameters.isNotEmpty) ...[
           const SizedBox(height: SeguiSpacing.md),
           RunParametersCard(run: run),
@@ -116,6 +124,57 @@ class NextStepsHint extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Report written by the last run, with a button that opens it.
+class RunReportCard extends StatelessWidget {
+  const RunReportCard({super.key, required this.report});
+
+  final File report;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return WorkbenchCard(
+      isHighlighted: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const PanelCardHeader(icon: Icons.insights_outlined, title: 'Report'),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Interactive charts of the run',
+                      style: textTheme.bodyMedium,
+                    ),
+                    Text(
+                      p.basename(report.path),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: SeguiSpacing.md),
+              FilledButton.tonalIcon(
+                onPressed: () => openFileView(context, report),
+                icon: const Icon(Icons.insights_outlined),
+                label: const Text('View report'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

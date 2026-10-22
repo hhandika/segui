@@ -177,3 +177,27 @@ abstract final class SeguiAlignmentLayout {
   /// the gull.
   static const double fileSwitcherMin = 320;
 }
+
+abstract final class SeguiChartLayout {
+  /// Height of a chart in the read report.
+  static const double height = 360;
+
+  /// Space for the tick labels left of and below the plot area.
+  static const double leftAxis = 44;
+  static const double bottomAxis = 32;
+
+  /// Space for an axis name.
+  static const double axisName = 24;
+
+  /// Largest zoom on the horizontal axis.
+  static const double maxZoom = 20;
+
+  /// Widest tooltip text before it wraps.
+  static const double tooltipWidth = 220;
+
+  /// Width of a bar in bar charts.
+  static const double barWidth = 10;
+
+  /// Dash and gap lengths of dashed lines.
+  static const List<int> dash = [6, 4];
+}

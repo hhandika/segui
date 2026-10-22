@@ -40,7 +40,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1177013659;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 405196763;
 
 // Section: executor
 
@@ -1658,14 +1658,82 @@ fn wire__crate__api__reads__raw_read_services_summarize_impl(
             let api_that = <crate::api::reads::RawReadServices>::sse_decode(&mut deserializer);
             let api_mode = <String>::sse_decode(&mut deserializer);
             let api_prefix = <Option<String>>::sse_decode(&mut deserializer);
+            let api_phred = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::reads::RawReadServices::summarize(
+                            &api_that, api_mode, api_prefix, api_phred,
+                        )?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__reads__read_report_services_load_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "read_report_services_load",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <crate::api::reads::ReadReportServices>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::reads::ReadReportServices::load(&api_that)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__reads__read_report_services_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "read_report_services_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Ok::<_, ()>({
-                        crate::api::reads::RawReadServices::summarize(
-                            &api_that, api_mode, api_prefix,
-                        );
-                    })?;
+                    let output_ok = Ok::<_, ()>(crate::api::reads::ReadReportServices::new())?;
                     std::result::Result::Ok(output_ok)
                 })())
             }
@@ -2520,6 +2588,20 @@ impl SseDecode for String {
     }
 }
 
+impl SseDecode for crate::api::reads::AdapterContentData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_sequence = <String>::sse_decode(deserializer);
+        let mut var_cumulativePct = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::reads::AdapterContentData {
+            name: var_name,
+            sequence: var_sequence,
+            cumulative_pct: var_cumulativePct,
+        };
+    }
+}
+
 impl SseDecode for crate::api::alignment_view::AlignmentChunkStat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2929,6 +3011,20 @@ impl SseDecode for Vec<String> {
     }
 }
 
+impl SseDecode for Vec<crate::api::reads::AdapterContentData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::AdapterContentData>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::alignment_view::AlignmentChunkStat> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2967,6 +3063,32 @@ impl SseDecode for Vec<Option<i64>> {
     }
 }
 
+impl SseDecode for Vec<crate::api::reads::OverrepresentedData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::OverrepresentedData>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<f64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<f64>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2986,6 +3108,20 @@ impl SseDecode for Vec<u8> {
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
             ans_.push(<u8>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::reads::ReadSampleData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::ReadSampleData>::sse_decode(
+                deserializer,
+            ));
         }
         return ans_;
     }
@@ -3086,6 +3222,19 @@ impl SseDecode for Option<i64> {
     }
 }
 
+impl SseDecode for Option<crate::api::reads::ReadDuplicationData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::reads::ReadDuplicationData>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3119,6 +3268,22 @@ impl SseDecode for Option<Vec<String>> {
     }
 }
 
+impl SseDecode for crate::api::reads::OverrepresentedData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_sequence = <String>::sse_decode(deserializer);
+        let mut var_count = <f64>::sse_decode(deserializer);
+        let mut var_percent = <f64>::sse_decode(deserializer);
+        let mut var_source = <String>::sse_decode(deserializer);
+        return crate::api::reads::OverrepresentedData {
+            sequence: var_sequence,
+            count: var_count,
+            percent: var_percent,
+            source: var_source,
+        };
+    }
+}
+
 impl SseDecode for crate::api::sequence::PartitionServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -3149,6 +3314,177 @@ impl SseDecode for crate::api::reads::RawReadServices {
             files: var_files,
             file_fmt: var_fileFmt,
             output_dir: var_outputDir,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadDuplicationData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_sampledReads = <f64>::sse_decode(deserializer);
+        let mut var_duplicatePct = <f64>::sse_decode(deserializer);
+        let mut var_labels = <Vec<String>>::sse_decode(deserializer);
+        let mut var_distinctPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_readsPct = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::reads::ReadDuplicationData {
+            sampled_reads: var_sampledReads,
+            duplicate_pct: var_duplicatePct,
+            labels: var_labels,
+            distinct_pct: var_distinctPct,
+            reads_pct: var_readsPct,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadMetricsData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_readCount = <f64>::sse_decode(deserializer);
+        let mut var_baseCount = <f64>::sse_decode(deserializer);
+        let mut var_minReadLength = <f64>::sse_decode(deserializer);
+        let mut var_maxReadLength = <f64>::sse_decode(deserializer);
+        let mut var_meanReadLength = <f64>::sse_decode(deserializer);
+        let mut var_medianReadLength = <f64>::sse_decode(deserializer);
+        let mut var_stdevReadLength = <f64>::sse_decode(deserializer);
+        let mut var_n50ReadLength = <f64>::sse_decode(deserializer);
+        let mut var_gcContent = <f64>::sse_decode(deserializer);
+        let mut var_nContent = <f64>::sse_decode(deserializer);
+        let mut var_meanQscore = <f64>::sse_decode(deserializer);
+        let mut var_q20Pct = <f64>::sse_decode(deserializer);
+        let mut var_q30Pct = <f64>::sse_decode(deserializer);
+        let mut var_meanReadQscore = <f64>::sse_decode(deserializer);
+        let mut var_lowQualityReads = <f64>::sse_decode(deserializer);
+        let mut var_phredOffset = <u32>::sse_decode(deserializer);
+        let mut var_duplicatePct = <Option<f64>>::sse_decode(deserializer);
+        let mut var_adapterReadsPct = <Option<f64>>::sse_decode(deserializer);
+        let mut var_polyGReadsPct = <Option<f64>>::sse_decode(deserializer);
+        let mut var_overrepresentedCount = <Option<f64>>::sse_decode(deserializer);
+        return crate::api::reads::ReadMetricsData {
+            read_count: var_readCount,
+            base_count: var_baseCount,
+            min_read_length: var_minReadLength,
+            max_read_length: var_maxReadLength,
+            mean_read_length: var_meanReadLength,
+            median_read_length: var_medianReadLength,
+            stdev_read_length: var_stdevReadLength,
+            n50_read_length: var_n50ReadLength,
+            gc_content: var_gcContent,
+            n_content: var_nContent,
+            mean_qscore: var_meanQscore,
+            q20_pct: var_q20Pct,
+            q30_pct: var_q30Pct,
+            mean_read_qscore: var_meanReadQscore,
+            low_quality_reads: var_lowQualityReads,
+            phred_offset: var_phredOffset,
+            duplicate_pct: var_duplicatePct,
+            adapter_reads_pct: var_adapterReadsPct,
+            poly_g_reads_pct: var_polyGReadsPct,
+            overrepresented_count: var_overrepresentedCount,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadPositionData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_start = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_end = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_meanQscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_p10Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_q1Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_medianQscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_q3Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_p90Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_aPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_cPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_gPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_tPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_nPct = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::reads::ReadPositionData {
+            start: var_start,
+            end: var_end,
+            mean_qscore: var_meanQscore,
+            p10_qscore: var_p10Qscore,
+            q1_qscore: var_q1Qscore,
+            median_qscore: var_medianQscore,
+            q3_qscore: var_q3Qscore,
+            p90_qscore: var_p90Qscore,
+            a_pct: var_aPct,
+            c_pct: var_cPct,
+            g_pct: var_gPct,
+            t_pct: var_tPct,
+            n_pct: var_nPct,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadReportData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_samples = <Vec<crate::api::reads::ReadSampleData>>::sse_decode(deserializer);
+        return crate::api::reads::ReadReportData {
+            samples: var_samples,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadReportServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_path = <String>::sse_decode(deserializer);
+        return crate::api::reads::ReadReportServices { path: var_path };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadSampleData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_sample = <String>::sse_decode(deserializer);
+        let mut var_fileName = <String>::sse_decode(deserializer);
+        let mut var_filePath = <String>::sse_decode(deserializer);
+        let mut var_metrics = <crate::api::reads::ReadMetricsData>::sse_decode(deserializer);
+        let mut var_lengthValues = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_lengthCounts = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_readQualityCounts = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_gcCounts = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_gcTheoretical = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_positions = <crate::api::reads::ReadPositionData>::sse_decode(deserializer);
+        let mut var_duplication =
+            <Option<crate::api::reads::ReadDuplicationData>>::sse_decode(deserializer);
+        let mut var_overrepresented =
+            <Vec<crate::api::reads::OverrepresentedData>>::sse_decode(deserializer);
+        let mut var_adapters =
+            <Vec<crate::api::reads::AdapterContentData>>::sse_decode(deserializer);
+        return crate::api::reads::ReadSampleData {
+            sample: var_sample,
+            file_name: var_fileName,
+            file_path: var_filePath,
+            metrics: var_metrics,
+            length_values: var_lengthValues,
+            length_counts: var_lengthCounts,
+            read_quality_counts: var_readQualityCounts,
+            gc_counts: var_gcCounts,
+            gc_theoretical: var_gcTheoretical,
+            positions: var_positions,
+            duplication: var_duplication,
+            overrepresented: var_overrepresented,
+            adapters: var_adapters,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadSummaryOutput {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_summaryPath = <String>::sse_decode(deserializer);
+        let mut var_positionsPath = <Option<String>>::sse_decode(deserializer);
+        let mut var_distributionsPath = <Option<String>>::sse_decode(deserializer);
+        let mut var_reportPath = <Option<String>>::sse_decode(deserializer);
+        return crate::api::reads::ReadSummaryOutput {
+            summary_path: var_summaryPath,
+            positions_path: var_positionsPath,
+            distributions_path: var_distributionsPath,
+            report_path: var_reportPath,
         };
     }
 }
@@ -3733,13 +4069,25 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+        44 => wire__crate__api__reads__read_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        45 => {
+        45 => wire__crate__api__reads__read_report_services_new_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        46 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        47 => {
             wire__crate__api__sequence__sequence_addition_services_add_sequence_to_single_file_impl(
                 port,
                 ptr,
@@ -3747,121 +4095,121 @@ fn pde_ffi_dispatcher_primary_impl(
                 data_len,
             )
         }
-        46 => wire__crate__api__sequence__sequence_addition_services_new_impl(
+        48 => wire__crate__api__sequence__sequence_addition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        47 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
+        49 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
+        50 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__sequence__sequence_extraction_extract_impl(
+        51 => wire__crate__api__sequence__sequence_extraction_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__sequence__sequence_extraction_new_impl(
+        52 => wire__crate__api__sequence__sequence_extraction_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        51 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
+        53 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        52 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
+        54 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => {
+        55 => {
             wire__crate__api__sequence__sequence_removal_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        54 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
+        56 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => wire__crate__api__sequence__sequence_renaming_new_impl(
+        57 => wire__crate__api__sequence__sequence_renaming_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
+        58 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
+        59 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        58 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
+        60 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        59 => {
+        61 => {
             wire__crate__api__sequence__show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len)
         }
-        60 => wire__crate__api__sequence__split_alignment_services_new_impl(
+        62 => wire__crate__api__sequence__split_alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        61 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
+        63 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        62 => wire__crate__api__sequence__translation_services_new_impl(
+        64 => wire__crate__api__sequence__translation_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        63 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
+        65 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        64 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
+        66 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        65 => wire__crate__api__sequence__unalignment_services_new_impl(
+        67 => wire__crate__api__sequence__unalignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        66 => wire__crate__api__sequence__unalignment_services_unalign_impl(
+        68 => wire__crate__api__sequence__unalignment_services_unalign_impl(
             port,
             ptr,
             rust_vec_len,
@@ -3914,6 +4262,28 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<AlignmentHandle>> for Alignmen
     }
 }
 
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::AdapterContentData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.name.into_into_dart().into_dart(),
+            self.sequence.into_into_dart().into_dart(),
+            self.cumulative_pct.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::AdapterContentData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::AdapterContentData>
+    for crate::api::reads::AdapterContentData
+{
+    fn into_into_dart(self) -> crate::api::reads::AdapterContentData {
+        self
+    }
+}
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::alignment_view::AlignmentChunkStat {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
@@ -4461,6 +4831,29 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::maf::MafSummaryServices>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::OverrepresentedData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.sequence.into_into_dart().into_dart(),
+            self.count.into_into_dart().into_dart(),
+            self.percent.into_into_dart().into_dart(),
+            self.source.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::OverrepresentedData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::OverrepresentedData>
+    for crate::api::reads::OverrepresentedData
+{
+    fn into_into_dart(self) -> crate::api::reads::OverrepresentedData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::sequence::PartitionServices {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -4504,6 +4897,190 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::RawReadServices>
     for crate::api::reads::RawReadServices
 {
     fn into_into_dart(self) -> crate::api::reads::RawReadServices {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadDuplicationData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.sampled_reads.into_into_dart().into_dart(),
+            self.duplicate_pct.into_into_dart().into_dart(),
+            self.labels.into_into_dart().into_dart(),
+            self.distinct_pct.into_into_dart().into_dart(),
+            self.reads_pct.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadDuplicationData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadDuplicationData>
+    for crate::api::reads::ReadDuplicationData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadDuplicationData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadMetricsData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.read_count.into_into_dart().into_dart(),
+            self.base_count.into_into_dart().into_dart(),
+            self.min_read_length.into_into_dart().into_dart(),
+            self.max_read_length.into_into_dart().into_dart(),
+            self.mean_read_length.into_into_dart().into_dart(),
+            self.median_read_length.into_into_dart().into_dart(),
+            self.stdev_read_length.into_into_dart().into_dart(),
+            self.n50_read_length.into_into_dart().into_dart(),
+            self.gc_content.into_into_dart().into_dart(),
+            self.n_content.into_into_dart().into_dart(),
+            self.mean_qscore.into_into_dart().into_dart(),
+            self.q20_pct.into_into_dart().into_dart(),
+            self.q30_pct.into_into_dart().into_dart(),
+            self.mean_read_qscore.into_into_dart().into_dart(),
+            self.low_quality_reads.into_into_dart().into_dart(),
+            self.phred_offset.into_into_dart().into_dart(),
+            self.duplicate_pct.into_into_dart().into_dart(),
+            self.adapter_reads_pct.into_into_dart().into_dart(),
+            self.poly_g_reads_pct.into_into_dart().into_dart(),
+            self.overrepresented_count.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadMetricsData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadMetricsData>
+    for crate::api::reads::ReadMetricsData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadMetricsData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadPositionData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.start.into_into_dart().into_dart(),
+            self.end.into_into_dart().into_dart(),
+            self.mean_qscore.into_into_dart().into_dart(),
+            self.p10_qscore.into_into_dart().into_dart(),
+            self.q1_qscore.into_into_dart().into_dart(),
+            self.median_qscore.into_into_dart().into_dart(),
+            self.q3_qscore.into_into_dart().into_dart(),
+            self.p90_qscore.into_into_dart().into_dart(),
+            self.a_pct.into_into_dart().into_dart(),
+            self.c_pct.into_into_dart().into_dart(),
+            self.g_pct.into_into_dart().into_dart(),
+            self.t_pct.into_into_dart().into_dart(),
+            self.n_pct.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadPositionData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadPositionData>
+    for crate::api::reads::ReadPositionData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadPositionData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadReportData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.samples.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadReportData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadReportData>
+    for crate::api::reads::ReadReportData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadReportData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadReportServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.path.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadReportServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadReportServices>
+    for crate::api::reads::ReadReportServices
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadReportServices {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadSampleData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.sample.into_into_dart().into_dart(),
+            self.file_name.into_into_dart().into_dart(),
+            self.file_path.into_into_dart().into_dart(),
+            self.metrics.into_into_dart().into_dart(),
+            self.length_values.into_into_dart().into_dart(),
+            self.length_counts.into_into_dart().into_dart(),
+            self.read_quality_counts.into_into_dart().into_dart(),
+            self.gc_counts.into_into_dart().into_dart(),
+            self.gc_theoretical.into_into_dart().into_dart(),
+            self.positions.into_into_dart().into_dart(),
+            self.duplication.into_into_dart().into_dart(),
+            self.overrepresented.into_into_dart().into_dart(),
+            self.adapters.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadSampleData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadSampleData>
+    for crate::api::reads::ReadSampleData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadSampleData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadSummaryOutput {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.summary_path.into_into_dart().into_dart(),
+            self.positions_path.into_into_dart().into_dart(),
+            self.distributions_path.into_into_dart().into_dart(),
+            self.report_path.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadSummaryOutput
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadSummaryOutput>
+    for crate::api::reads::ReadSummaryOutput
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadSummaryOutput {
         self
     }
 }
@@ -4939,6 +5516,15 @@ impl SseEncode for String {
     }
 }
 
+impl SseEncode for crate::api::reads::AdapterContentData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.sequence, serializer);
+        <Vec<f64>>::sse_encode(self.cumulative_pct, serializer);
+    }
+}
+
 impl SseEncode for crate::api::alignment_view::AlignmentChunkStat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5259,6 +5845,16 @@ impl SseEncode for Vec<String> {
     }
 }
 
+impl SseEncode for Vec<crate::api::reads::AdapterContentData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::AdapterContentData>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::alignment_view::AlignmentChunkStat> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5289,6 +5885,26 @@ impl SseEncode for Vec<Option<i64>> {
     }
 }
 
+impl SseEncode for Vec<crate::api::reads::OverrepresentedData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::OverrepresentedData>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<f64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <f64>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5305,6 +5921,16 @@ impl SseEncode for Vec<u8> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <u8>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::reads::ReadSampleData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::ReadSampleData>::sse_encode(item, serializer);
         }
     }
 }
@@ -5378,6 +6004,16 @@ impl SseEncode for Option<i64> {
     }
 }
 
+impl SseEncode for Option<crate::api::reads::ReadDuplicationData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::reads::ReadDuplicationData>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<u32> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5408,6 +6044,16 @@ impl SseEncode for Option<Vec<String>> {
     }
 }
 
+impl SseEncode for crate::api::reads::OverrepresentedData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.sequence, serializer);
+        <f64>::sse_encode(self.count, serializer);
+        <f64>::sse_encode(self.percent, serializer);
+        <String>::sse_encode(self.source, serializer);
+    }
+}
+
 impl SseEncode for crate::api::sequence::PartitionServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -5426,6 +6072,105 @@ impl SseEncode for crate::api::reads::RawReadServices {
         <Vec<String>>::sse_encode(self.files, serializer);
         <String>::sse_encode(self.file_fmt, serializer);
         <String>::sse_encode(self.output_dir, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadDuplicationData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.sampled_reads, serializer);
+        <f64>::sse_encode(self.duplicate_pct, serializer);
+        <Vec<String>>::sse_encode(self.labels, serializer);
+        <Vec<f64>>::sse_encode(self.distinct_pct, serializer);
+        <Vec<f64>>::sse_encode(self.reads_pct, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadMetricsData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.read_count, serializer);
+        <f64>::sse_encode(self.base_count, serializer);
+        <f64>::sse_encode(self.min_read_length, serializer);
+        <f64>::sse_encode(self.max_read_length, serializer);
+        <f64>::sse_encode(self.mean_read_length, serializer);
+        <f64>::sse_encode(self.median_read_length, serializer);
+        <f64>::sse_encode(self.stdev_read_length, serializer);
+        <f64>::sse_encode(self.n50_read_length, serializer);
+        <f64>::sse_encode(self.gc_content, serializer);
+        <f64>::sse_encode(self.n_content, serializer);
+        <f64>::sse_encode(self.mean_qscore, serializer);
+        <f64>::sse_encode(self.q20_pct, serializer);
+        <f64>::sse_encode(self.q30_pct, serializer);
+        <f64>::sse_encode(self.mean_read_qscore, serializer);
+        <f64>::sse_encode(self.low_quality_reads, serializer);
+        <u32>::sse_encode(self.phred_offset, serializer);
+        <Option<f64>>::sse_encode(self.duplicate_pct, serializer);
+        <Option<f64>>::sse_encode(self.adapter_reads_pct, serializer);
+        <Option<f64>>::sse_encode(self.poly_g_reads_pct, serializer);
+        <Option<f64>>::sse_encode(self.overrepresented_count, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadPositionData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<f64>>::sse_encode(self.start, serializer);
+        <Vec<f64>>::sse_encode(self.end, serializer);
+        <Vec<f64>>::sse_encode(self.mean_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.p10_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.q1_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.median_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.q3_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.p90_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.a_pct, serializer);
+        <Vec<f64>>::sse_encode(self.c_pct, serializer);
+        <Vec<f64>>::sse_encode(self.g_pct, serializer);
+        <Vec<f64>>::sse_encode(self.t_pct, serializer);
+        <Vec<f64>>::sse_encode(self.n_pct, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadReportData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<crate::api::reads::ReadSampleData>>::sse_encode(self.samples, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadReportServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.path, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadSampleData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.sample, serializer);
+        <String>::sse_encode(self.file_name, serializer);
+        <String>::sse_encode(self.file_path, serializer);
+        <crate::api::reads::ReadMetricsData>::sse_encode(self.metrics, serializer);
+        <Vec<f64>>::sse_encode(self.length_values, serializer);
+        <Vec<f64>>::sse_encode(self.length_counts, serializer);
+        <Vec<f64>>::sse_encode(self.read_quality_counts, serializer);
+        <Vec<f64>>::sse_encode(self.gc_counts, serializer);
+        <Vec<f64>>::sse_encode(self.gc_theoretical, serializer);
+        <crate::api::reads::ReadPositionData>::sse_encode(self.positions, serializer);
+        <Option<crate::api::reads::ReadDuplicationData>>::sse_encode(self.duplication, serializer);
+        <Vec<crate::api::reads::OverrepresentedData>>::sse_encode(self.overrepresented, serializer);
+        <Vec<crate::api::reads::AdapterContentData>>::sse_encode(self.adapters, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadSummaryOutput {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.summary_path, serializer);
+        <Option<String>>::sse_encode(self.positions_path, serializer);
+        <Option<String>>::sse_encode(self.distributions_path, serializer);
+        <Option<String>>::sse_encode(self.report_path, serializer);
     }
 }
 

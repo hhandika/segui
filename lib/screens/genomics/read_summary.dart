@@ -13,6 +13,7 @@ import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/workbench.dart';
+import 'package:segui/src/rust/api/reads.dart';
 
 const SupportedTask task = SupportedTask.genomicRawReadSummary;
 
@@ -36,6 +37,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String mode = sequenceReadSummaryMode[0];
+  String phred = sequenceReadPhredOffset[0];
 
   @override
   bool get wantKeepAlive => true;
@@ -88,6 +90,20 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
               });
             },
           ),
+          // Minimal mode only counts reads, so it reads no quality scores.
+          if (mode != 'Minimal')
+            SharedDropdownField(
+              value: phred,
+              label: 'Quality score offset',
+              items: sequenceReadPhredOffset,
+              onChanged: (String? value) {
+                setState(() {
+                  if (value != null) {
+                    phred = value;
+                  }
+                });
+              },
+            ),
         ]),
       ],
       action: ref.watch(fileInputProvider).when(
@@ -140,6 +156,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         RunParameter('Input format', _ctr.inputFormatController ?? ''),
         RunParameter('Output prefix', _ctr.prefixController.text),
         RunParameter('Summary mode', mode),
+        if (mode != 'Minimal') RunParameter('Quality score offset', phred),
       ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -165,14 +182,15 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
       List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
       _setRunning();
-      await ReadSummaryRunner(
+      final ReadSummaryOutput output = await ReadSummaryRunner(
         inputFiles: inputFiles,
         inputFmt: _ctr.inputFormatController!,
         outputDir: outputDir,
         prefix: _ctr.prefixController.text,
         mode: mode,
+        phred: phred,
       ).run();
-      _setSuccess(outputDir);
+      _setSuccess(output.reportPath);
     } catch (e) {
       _showError(e.toString());
     }
@@ -211,8 +229,13 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     });
   }
 
-  void _setSuccess(Directory directory) {
-    ref.read(lastRunProvider.notifier).record(_parameters);
+  /// [reportPath] is the read report, written in Complete mode, which the
+  /// workbench offers to open.
+  void _setSuccess(String? reportPath) {
+    ref.read(lastRunProvider.notifier).record(
+          _parameters,
+          report: reportPath == null ? null : File(reportPath),
+        );
     // We recurse to include read summary files when user running
     // complete read summary task.
     ref.read(fileOutputProvider.notifier).refresh();

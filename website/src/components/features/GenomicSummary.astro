@@ -8,7 +8,7 @@ const lanes = [
     input: "sample.fq.gz",
     inputSub: "FASTQ reads",
     output: "Read summary",
-    stats: ["Read count and lengths", "GC and AT content, base counts", "Base quality (min, mean, max)"],
+    stats: ["Read count, length, and N50", "GC content, base quality, Q20 and Q30", "Duplication and adapters (complete)"],
     note: "Modes: minimal · default · complete",
   },
   {
@@ -25,8 +25,8 @@ const lanes = [
   id="genomic-summary"
   viewBox="0 0 660 230"
   title="Genomic summaries"
-  desc="FASTQ read files, plain or gzip-compressed, produce a read summary table with read counts and lengths, GC and AT content, and base quality. FASTA contig files produce a contig summary table with contig counts and lengths, N50, N75, N90, and GC content."
-  caption="Both summaries accept many files at once and write one CSV table."
+  desc="FASTQ read files, plain, gzip, or BGZF-compressed, produce a read summary table with read counts, lengths, and N50, GC content, base quality, and Q20 and Q30 bases. Complete mode adds per-position quality, duplication, overrepresented sequences, and adapter content. FASTA contig files produce a contig summary table with contig counts and lengths, N50, N75, N90, and GC content."
+  caption="Both summaries accept many files at once and write a CSV table. The complete read summary also writes a report that SEGUI shows as interactive charts."
 >
   {
     lanes.map((lane, i) => {

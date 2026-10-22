@@ -118,6 +118,10 @@ void main() {
     );
     expect(await contentKindOf(write('run.log', 'ok')), FileContentKind.text);
     expect(
+      await contentKindOf(write('qc_read-report.json', '{"samples":[]}')),
+      FileContentKind.readReport,
+    );
+    expect(
       await contentKindOf(write('reads.fq', '@r\nA\n+\nI\n')),
       FileContentKind.other,
     );

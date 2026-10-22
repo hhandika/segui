@@ -109,6 +109,8 @@ SEGUL detects the input format from the file extension, so most commands need no
 | `read`                   | `auto` (default), `fastq`, `gzip`          |
 | `contig`                 | `auto` (default), `fasta`, `gzip`          |
 
+`read` commands detect gzip and BGZF compression from the file content, so the input format only decides which files `-d` finds.
+
 `maf` commands read `.maf` and `.maf.gz` files and take no input format.
 
 :::note

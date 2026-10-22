@@ -133,7 +133,7 @@ Removes the gaps from every aligned sequence, so you can align the sequences aga
 
 ### Sequence Read and Contig Summary
 
-Both tasks compute summary statistics for genomic files: raw reads in FASTQ format and assembled contigs in FASTA format.
+Both tasks compute summary statistics for genomic files: raw reads in FASTQ format and assembled contigs in FASTA format. The read summary uses every CPU core, even for a single large file. Its complete mode reports quality by read position, read length, quality, and GC distributions, duplication, overrepresented sequences, and adapter content, which SEGUI shows as an interactive report.
 
 {% guides feature="genomic-summary" /%}
 

@@ -55,6 +55,19 @@ def summarize_reads():
     summary.from_files(input_path)
 ```
 
+In `complete` mode, the output directory also has per-position statistics (`read-pos-summary.zip`), read distributions (`read-dist-summary.zip`), and all statistics as JSON (`read-report.json`), which you can load with Python's `json` module:
+
+```python
+import json
+
+with open('tests/output/read_summary_read-report.json') as f:
+    report = json.load(f)
+
+for sample in report['samples']:
+    metrics = sample['metrics']
+    print(sample['sample'], metrics['read_count'], metrics['q30_pct'], metrics['duplicate_pct_est'])
+```
+
 ## Genomic Contiguous Sequence Summary
 
 Install PySEGUL using pip if you haven't done it yet

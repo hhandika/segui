@@ -55,6 +55,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  AdapterContentData dco_decode_adapter_content_data(dynamic raw);
+
+  @protected
   AlignmentChunkStat dco_decode_alignment_chunk_stat(dynamic raw);
 
   @protected
@@ -129,6 +132,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw);
+
+  @protected
+  ReadDuplicationData dco_decode_box_autoadd_read_duplication_data(dynamic raw);
+
+  @protected
+  ReadReportServices dco_decode_box_autoadd_read_report_services(dynamic raw);
 
   @protected
   SequenceAdditionServices dco_decode_box_autoadd_sequence_addition_services(
@@ -226,6 +235,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> dco_decode_list_String(dynamic raw);
 
   @protected
+  List<AdapterContentData> dco_decode_list_adapter_content_data(dynamic raw);
+
+  @protected
   List<AlignmentChunkStat> dco_decode_list_alignment_chunk_stat(dynamic raw);
 
   @protected
@@ -235,6 +247,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<PlatformInt64?> dco_decode_list_opt_box_autoadd_i_64(dynamic raw);
 
   @protected
+  List<OverrepresentedData> dco_decode_list_overrepresented_data(dynamic raw);
+
+  @protected
+  Float64List dco_decode_list_prim_f_64_strict(dynamic raw);
+
+  @protected
   List<int> dco_decode_list_prim_u_32_loose(dynamic raw);
 
   @protected
@@ -242,6 +260,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<ReadSampleData> dco_decode_list_read_sample_data(dynamic raw);
 
   @protected
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
@@ -262,6 +283,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
 
   @protected
+  ReadDuplicationData? dco_decode_opt_box_autoadd_read_duplication_data(
+      dynamic raw);
+
+  @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
 
   @protected
@@ -271,10 +296,34 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String>? dco_decode_opt_list_String(dynamic raw);
 
   @protected
+  OverrepresentedData dco_decode_overrepresented_data(dynamic raw);
+
+  @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
 
   @protected
   RawReadServices dco_decode_raw_read_services(dynamic raw);
+
+  @protected
+  ReadDuplicationData dco_decode_read_duplication_data(dynamic raw);
+
+  @protected
+  ReadMetricsData dco_decode_read_metrics_data(dynamic raw);
+
+  @protected
+  ReadPositionData dco_decode_read_position_data(dynamic raw);
+
+  @protected
+  ReadReportData dco_decode_read_report_data(dynamic raw);
+
+  @protected
+  ReadReportServices dco_decode_read_report_services(dynamic raw);
+
+  @protected
+  ReadSampleData dco_decode_read_sample_data(dynamic raw);
+
+  @protected
+  ReadSummaryOutput dco_decode_read_summary_output(dynamic raw);
 
   @protected
   (String, String) dco_decode_record_string_string(dynamic raw);
@@ -358,6 +407,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
+
+  @protected
+  AdapterContentData sse_decode_adapter_content_data(
+      SseDeserializer deserializer);
 
   @protected
   AlignmentChunkStat sse_decode_alignment_chunk_stat(
@@ -447,6 +500,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   RawReadServices sse_decode_box_autoadd_raw_read_services(
+      SseDeserializer deserializer);
+
+  @protected
+  ReadDuplicationData sse_decode_box_autoadd_read_duplication_data(
+      SseDeserializer deserializer);
+
+  @protected
+  ReadReportServices sse_decode_box_autoadd_read_report_services(
       SseDeserializer deserializer);
 
   @protected
@@ -556,6 +617,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
+  List<AdapterContentData> sse_decode_list_adapter_content_data(
+      SseDeserializer deserializer);
+
+  @protected
   List<AlignmentChunkStat> sse_decode_list_alignment_chunk_stat(
       SseDeserializer deserializer);
 
@@ -568,6 +633,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<OverrepresentedData> sse_decode_list_overrepresented_data(
+      SseDeserializer deserializer);
+
+  @protected
+  Float64List sse_decode_list_prim_f_64_strict(SseDeserializer deserializer);
+
+  @protected
   List<int> sse_decode_list_prim_u_32_loose(SseDeserializer deserializer);
 
   @protected
@@ -575,6 +647,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<ReadSampleData> sse_decode_list_read_sample_data(
+      SseDeserializer deserializer);
 
   @protected
   List<(String, String)> sse_decode_list_record_string_string(
@@ -598,6 +674,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
+  ReadDuplicationData? sse_decode_opt_box_autoadd_read_duplication_data(
+      SseDeserializer deserializer);
+
+  @protected
   int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
@@ -607,10 +687,38 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
 
   @protected
+  OverrepresentedData sse_decode_overrepresented_data(
+      SseDeserializer deserializer);
+
+  @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
 
   @protected
   RawReadServices sse_decode_raw_read_services(SseDeserializer deserializer);
+
+  @protected
+  ReadDuplicationData sse_decode_read_duplication_data(
+      SseDeserializer deserializer);
+
+  @protected
+  ReadMetricsData sse_decode_read_metrics_data(SseDeserializer deserializer);
+
+  @protected
+  ReadPositionData sse_decode_read_position_data(SseDeserializer deserializer);
+
+  @protected
+  ReadReportData sse_decode_read_report_data(SseDeserializer deserializer);
+
+  @protected
+  ReadReportServices sse_decode_read_report_services(
+      SseDeserializer deserializer);
+
+  @protected
+  ReadSampleData sse_decode_read_sample_data(SseDeserializer deserializer);
+
+  @protected
+  ReadSummaryOutput sse_decode_read_summary_output(
+      SseDeserializer deserializer);
 
   @protected
   (String, String) sse_decode_record_string_string(
@@ -708,6 +816,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_adapter_content_data(
+      AdapterContentData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_alignment_chunk_stat(
       AlignmentChunkStat self, SseSerializer serializer);
 
@@ -800,6 +912,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_raw_read_services(
       RawReadServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_read_duplication_data(
+      ReadDuplicationData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_read_report_services(
+      ReadReportServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_sequence_addition_services(
@@ -913,6 +1033,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_adapter_content_data(
+      List<AdapterContentData> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_alignment_chunk_stat(
       List<AlignmentChunkStat> self, SseSerializer serializer);
 
@@ -925,6 +1049,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<PlatformInt64?> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_overrepresented_data(
+      List<OverrepresentedData> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_prim_f_64_strict(
+      Float64List self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_32_loose(
       List<int> self, SseSerializer serializer);
 
@@ -935,6 +1067,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_read_sample_data(
+      List<ReadSampleData> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_record_string_string(
@@ -959,6 +1095,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PlatformInt64? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_read_duplication_data(
+      ReadDuplicationData? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
 
   @protected
@@ -968,12 +1108,44 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_overrepresented_data(
+      OverrepresentedData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_partition_services(
       PartitionServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_raw_read_services(
       RawReadServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_duplication_data(
+      ReadDuplicationData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_metrics_data(
+      ReadMetricsData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_position_data(
+      ReadPositionData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_report_data(
+      ReadReportData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_report_services(
+      ReadReportServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_sample_data(
+      ReadSampleData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_summary_output(
+      ReadSummaryOutput self, SseSerializer serializer);
 
   @protected
   void sse_encode_record_string_string(

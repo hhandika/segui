@@ -43,6 +43,7 @@ class ReadSummaryRunner {
     required this.outputDir,
     required this.prefix,
     required this.mode,
+    this.phred = 'Auto',
   });
 
   final List<SegulInputFile> inputFiles;
@@ -51,17 +52,25 @@ class ReadSummaryRunner {
   final String prefix;
   final String mode;
 
-  Future<void> run() async {
+  /// Quality score offset: Auto, 33, or 64.
+  final String phred;
+
+  /// Runs the summary and returns the files it wrote.
+  Future<ReadSummaryOutput> run() async {
     List<String> finalInputFiles =
         IOServices().convertPathsToString(inputFiles, SegulType.genomicReads);
     if (finalInputFiles.isEmpty) {
       throw 'No input files';
     }
-    await RawReadServices(
+    return await RawReadServices(
       files: finalInputFiles,
       fileFmt: inputFmt,
       outputDir: outputDir.path,
-    ).summarize(mode: mode, prefix: prefix.isEmpty ? null : prefix);
+    ).summarize(
+      mode: mode,
+      prefix: prefix.isEmpty ? null : prefix,
+      phred: phred.toLowerCase(),
+    );
   }
 }
 

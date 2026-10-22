@@ -156,10 +156,14 @@ class RunParameter {
 
 /// Tool and settings of the last successful run on the current tool page.
 class ToolRun {
-  const ToolRun({required this.tool, required this.parameters});
+  const ToolRun({required this.tool, required this.parameters, this.report});
 
   final HomeTool tool;
   final List<RunParameter> parameters;
+
+  /// Report written by the run that opens in its own viewer, such as the
+  /// read report of a complete read summary.
+  final File? report;
 }
 
 final lastRunProvider = NotifierProvider<LastRun, ToolRun?>(LastRun.new);
@@ -173,9 +177,9 @@ class LastRun extends Notifier<ToolRun?> {
     return null;
   }
 
-  /// Records a successful run of the current tool with its [parameters].
-  /// Empty values are left out.
-  void record(List<RunParameter> parameters) {
+  /// Records a successful run of the current tool with its [parameters]
+  /// and the [report] it wrote, if any. Empty values are left out.
+  void record(List<RunParameter> parameters, {File? report}) {
     final HomeTool? tool = ref.read(currentToolProvider);
     if (tool == null) {
       return;
@@ -186,6 +190,7 @@ class LastRun extends Notifier<ToolRun?> {
         for (final parameter in parameters)
           if (parameter.value.trim().isNotEmpty) parameter,
       ],
+      report: report,
     );
   }
 }

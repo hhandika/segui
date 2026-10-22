@@ -16,6 +16,7 @@ import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/workbench.dart';
+import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -163,6 +164,11 @@ void main() {
       final ToolRun run = container.read(lastRunProvider)!;
       expect(run.tool, filterTool);
       expect(run.parameters.map((e) => e.label), ['Filter by']);
+      expect(run.report, isNull);
+
+      final File report = File(p.join(dir.path, 'read-report.json'));
+      container.read(lastRunProvider.notifier).record(const [], report: report);
+      expect(container.read(lastRunProvider)!.report?.path, report.path);
       expect(container.read(workbenchSuggestionsProvider), isNotNull);
 
       await container.read(fileInputProvider.notifier).clearAll();
@@ -245,6 +251,8 @@ void main() {
 
     expect(find.byType(NextStepsHint), findsNothing);
     expect(find.byType(RunParametersCard), findsOneWidget);
+    // Filtering writes no report.
+    expect(find.byType(RunReportCard), findsNothing);
     expect(find.text('Minimum length'), findsOneWidget);
     // The tool and output folder read as card content, not captions.
     final Finder parameters = find.byType(RunParametersCard);
@@ -279,5 +287,27 @@ void main() {
     );
     // The new tool has not run yet.
     expect(find.byType(NextStepsHint), findsOneWidget);
+  });
+
+  testWidgets('Report card names the report and opens it', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: SeguiTheme.lightTheme(),
+      home: Scaffold(
+        // As narrow as the side panel.
+        body: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+            width: SeguiContentWidth.panel,
+            child: RunReportCard(
+              report: File(p.join('out', 'a_long_prefix_read-report.json')),
+            ),
+          ),
+        ),
+      ),
+    ));
+    expect(find.text('Report'), findsOneWidget);
+    expect(find.text('a_long_prefix_read-report.json'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'View report'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

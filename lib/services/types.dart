@@ -32,6 +32,13 @@ const List<String> sequenceReadSummaryMode = [
   'Complete',
 ];
 
+/// Quality score offsets for raw reads. Auto detects it from the reads.
+const List<String> sequenceReadPhredOffset = [
+  'Auto',
+  '33',
+  '64',
+];
+
 enum AlignmentOperationType {
   concatenation,
   conversion,

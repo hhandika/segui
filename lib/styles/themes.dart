@@ -146,3 +146,32 @@ class ResiduePalette {
     );
   }
 }
+
+/// Chart colors. Series use the Okabe-Ito palette, which stays distinct
+/// with color vision deficiency; quality zones reuse its green, orange, and
+/// vermilion.
+class ChartPalette {
+  static const List<Color> series = [
+    Color(0xFF0072B2),
+    Color(0xFFE69F00),
+    Color(0xFF009E73),
+    Color(0xFFCC79A7),
+    Color(0xFF56B4E9),
+    Color(0xFFD55E00),
+    Color(0xFFF0E442),
+    Color(0xFF999999),
+  ];
+
+  static const Color pass = Color(0xFF009E73);
+  static const Color warn = Color(0xFFE69F00);
+  static const Color fail = Color(0xFFD55E00);
+
+  /// Opacity of quality zones behind a chart.
+  static const double zoneAlpha = 0.12;
+
+  /// Opacity of the inner and outer quality ranges.
+  static const double innerBandAlpha = 0.45;
+  static const double outerBandAlpha = 0.2;
+
+  static Color seriesAt(int index) => series[index % series.length];
+}
