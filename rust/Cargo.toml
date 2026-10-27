@@ -7,12 +7,23 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
+anyhow = "1"
 chrono = "0.4.*"
+flate2 = "1"
 flutter_rust_bridge = "=2.13.0"
 log = "0.*"
+memchr = "2"
+memmap2 = "0.7"
+rayon = "1"
 log4rs = "1.2.*"
 polars = { version = "0.37.0", features = ["lazy", "csv"] }
+tar = "0.4"
+zip = { version = "0.6", default-features = false, features = ["deflate"] }
 segul = { git = "https://github.com/hhandika/segul.git", branch = "dev" }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
+# Local segul checkout for development. Remove before committing.
+# [patch."https://github.com/hhandika/segul.git"]
+# segul = { path = "../../../Rust/segul" }

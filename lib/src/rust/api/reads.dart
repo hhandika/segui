@@ -6,7 +6,74 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `find_input_files`, `match_input_fmt`, `match_mode`
+// These functions are ignored because they are not marked as `pub`: `find_input_files`, `match_input_fmt`, `match_mode`, `match_phred`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`, `from`
+
+class AdapterContentData {
+  final String name;
+  final String sequence;
+
+  /// Share of reads with the adapter at or before each position, in percent.
+  final Float64List cumulativePct;
+
+  const AdapterContentData({
+    required this.name,
+    required this.sequence,
+    required this.cumulativePct,
+  });
+
+  @override
+  int get hashCode =>
+      name.hashCode ^ sequence.hashCode ^ cumulativePct.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AdapterContentData &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          sequence == other.sequence &&
+          cumulativePct == other.cumulativePct;
+}
+
+class OverrepresentedData {
+  final String sequence;
+  final double count;
+
+  /// Share of all reads, in percent.
+  final double percent;
+
+  /// Largest amount `percent` can be short by.
+  final double maxErrorPct;
+  final String source;
+
+  const OverrepresentedData({
+    required this.sequence,
+    required this.count,
+    required this.percent,
+    required this.maxErrorPct,
+    required this.source,
+  });
+
+  @override
+  int get hashCode =>
+      sequence.hashCode ^
+      count.hashCode ^
+      percent.hashCode ^
+      maxErrorPct.hashCode ^
+      source.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OverrepresentedData &&
+          runtimeType == other.runtimeType &&
+          sequence == other.sequence &&
+          count == other.count &&
+          percent == other.percent &&
+          maxErrorPct == other.maxErrorPct &&
+          source == other.source;
+}
 
 class RawReadServices {
   final List<String> files;
@@ -23,9 +90,20 @@ class RawReadServices {
   static Future<RawReadServices> newInstance() =>
       RustLib.instance.api.crateApiReadsRawReadServicesNew();
 
-  Future<void> summarize({required String mode, String? prefix}) =>
+  /// Summarize reads. `phred` is "auto", "33", or "64", and defaults to "auto".
+  /// `dup_sketch_size` is the number of distinct sequences kept to estimate
+  /// duplication in Complete mode, zero to count all, or SEGUL's default.
+  Future<ReadSummaryOutput> summarize(
+          {required String mode,
+          String? prefix,
+          String? phred,
+          int? dupSketchSize}) =>
       RustLib.instance.api.crateApiReadsRawReadServicesSummarize(
-          that: this, mode: mode, prefix: prefix);
+          that: this,
+          mode: mode,
+          prefix: prefix,
+          phred: phred,
+          dupSketchSize: dupSketchSize);
 
   @override
   int get hashCode => files.hashCode ^ fileFmt.hashCode ^ outputDir.hashCode;
@@ -38,4 +116,373 @@ class RawReadServices {
           files == other.files &&
           fileFmt == other.fileFmt &&
           outputDir == other.outputDir;
+}
+
+class ReadDuplicationData {
+  /// Reads counted, which is every read with bases.
+  final double reads;
+
+  /// Distinct sequences, estimated unless `exact`.
+  final double distinctSequences;
+  final double duplicatePct;
+
+  /// Distinct sequences kept, or zero when all were kept.
+  final double sketchSize;
+  final bool exact;
+  final List<String> labels;
+  final Float64List distinctPct;
+  final Float64List readsPct;
+
+  const ReadDuplicationData({
+    required this.reads,
+    required this.distinctSequences,
+    required this.duplicatePct,
+    required this.sketchSize,
+    required this.exact,
+    required this.labels,
+    required this.distinctPct,
+    required this.readsPct,
+  });
+
+  @override
+  int get hashCode =>
+      reads.hashCode ^
+      distinctSequences.hashCode ^
+      duplicatePct.hashCode ^
+      sketchSize.hashCode ^
+      exact.hashCode ^
+      labels.hashCode ^
+      distinctPct.hashCode ^
+      readsPct.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadDuplicationData &&
+          runtimeType == other.runtimeType &&
+          reads == other.reads &&
+          distinctSequences == other.distinctSequences &&
+          duplicatePct == other.duplicatePct &&
+          sketchSize == other.sketchSize &&
+          exact == other.exact &&
+          labels == other.labels &&
+          distinctPct == other.distinctPct &&
+          readsPct == other.readsPct;
+}
+
+class ReadMetricsData {
+  final double readCount;
+  final double baseCount;
+  final double minReadLength;
+  final double maxReadLength;
+  final double meanReadLength;
+  final double medianReadLength;
+  final double stdevReadLength;
+  final double n50ReadLength;
+  final double gcContent;
+  final double nContent;
+  final double meanQscore;
+  final double q20Pct;
+  final double q30Pct;
+  final double meanReadQscore;
+  final double lowQualityReads;
+  final int phredOffset;
+  final double? duplicatePct;
+  final double? adapterReadsPct;
+  final double? polyGReadsPct;
+  final double? overrepresentedCount;
+
+  const ReadMetricsData({
+    required this.readCount,
+    required this.baseCount,
+    required this.minReadLength,
+    required this.maxReadLength,
+    required this.meanReadLength,
+    required this.medianReadLength,
+    required this.stdevReadLength,
+    required this.n50ReadLength,
+    required this.gcContent,
+    required this.nContent,
+    required this.meanQscore,
+    required this.q20Pct,
+    required this.q30Pct,
+    required this.meanReadQscore,
+    required this.lowQualityReads,
+    required this.phredOffset,
+    this.duplicatePct,
+    this.adapterReadsPct,
+    this.polyGReadsPct,
+    this.overrepresentedCount,
+  });
+
+  @override
+  int get hashCode =>
+      readCount.hashCode ^
+      baseCount.hashCode ^
+      minReadLength.hashCode ^
+      maxReadLength.hashCode ^
+      meanReadLength.hashCode ^
+      medianReadLength.hashCode ^
+      stdevReadLength.hashCode ^
+      n50ReadLength.hashCode ^
+      gcContent.hashCode ^
+      nContent.hashCode ^
+      meanQscore.hashCode ^
+      q20Pct.hashCode ^
+      q30Pct.hashCode ^
+      meanReadQscore.hashCode ^
+      lowQualityReads.hashCode ^
+      phredOffset.hashCode ^
+      duplicatePct.hashCode ^
+      adapterReadsPct.hashCode ^
+      polyGReadsPct.hashCode ^
+      overrepresentedCount.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadMetricsData &&
+          runtimeType == other.runtimeType &&
+          readCount == other.readCount &&
+          baseCount == other.baseCount &&
+          minReadLength == other.minReadLength &&
+          maxReadLength == other.maxReadLength &&
+          meanReadLength == other.meanReadLength &&
+          medianReadLength == other.medianReadLength &&
+          stdevReadLength == other.stdevReadLength &&
+          n50ReadLength == other.n50ReadLength &&
+          gcContent == other.gcContent &&
+          nContent == other.nContent &&
+          meanQscore == other.meanQscore &&
+          q20Pct == other.q20Pct &&
+          q30Pct == other.q30Pct &&
+          meanReadQscore == other.meanReadQscore &&
+          lowQualityReads == other.lowQualityReads &&
+          phredOffset == other.phredOffset &&
+          duplicatePct == other.duplicatePct &&
+          adapterReadsPct == other.adapterReadsPct &&
+          polyGReadsPct == other.polyGReadsPct &&
+          overrepresentedCount == other.overrepresentedCount;
+}
+
+/// Per-position statistics in columns, one value per position or bin.
+class ReadPositionData {
+  final Float64List start;
+  final Float64List end;
+  final Float64List meanQscore;
+  final Float64List p10Qscore;
+  final Float64List q1Qscore;
+  final Float64List medianQscore;
+  final Float64List q3Qscore;
+  final Float64List p90Qscore;
+
+  /// Base shares in percent of all bases at the position.
+  final Float64List aPct;
+  final Float64List cPct;
+  final Float64List gPct;
+  final Float64List tPct;
+  final Float64List nPct;
+
+  const ReadPositionData({
+    required this.start,
+    required this.end,
+    required this.meanQscore,
+    required this.p10Qscore,
+    required this.q1Qscore,
+    required this.medianQscore,
+    required this.q3Qscore,
+    required this.p90Qscore,
+    required this.aPct,
+    required this.cPct,
+    required this.gPct,
+    required this.tPct,
+    required this.nPct,
+  });
+
+  @override
+  int get hashCode =>
+      start.hashCode ^
+      end.hashCode ^
+      meanQscore.hashCode ^
+      p10Qscore.hashCode ^
+      q1Qscore.hashCode ^
+      medianQscore.hashCode ^
+      q3Qscore.hashCode ^
+      p90Qscore.hashCode ^
+      aPct.hashCode ^
+      cPct.hashCode ^
+      gPct.hashCode ^
+      tPct.hashCode ^
+      nPct.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadPositionData &&
+          runtimeType == other.runtimeType &&
+          start == other.start &&
+          end == other.end &&
+          meanQscore == other.meanQscore &&
+          p10Qscore == other.p10Qscore &&
+          q1Qscore == other.q1Qscore &&
+          medianQscore == other.medianQscore &&
+          q3Qscore == other.q3Qscore &&
+          p90Qscore == other.p90Qscore &&
+          aPct == other.aPct &&
+          cPct == other.cPct &&
+          gPct == other.gPct &&
+          tPct == other.tPct &&
+          nPct == other.nPct;
+}
+
+class ReadReportData {
+  final List<ReadSampleData> samples;
+
+  const ReadReportData({
+    required this.samples,
+  });
+
+  @override
+  int get hashCode => samples.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadReportData &&
+          runtimeType == other.runtimeType &&
+          samples == other.samples;
+}
+
+/// Loads `read-report.json` for the interactive read report.
+class ReadReportServices {
+  final String path;
+
+  const ReadReportServices({
+    required this.path,
+  });
+
+  Future<ReadReportData> load() =>
+      RustLib.instance.api.crateApiReadsReadReportServicesLoad(
+        that: this,
+      );
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<ReadReportServices> newInstance() =>
+      RustLib.instance.api.crateApiReadsReadReportServicesNew();
+
+  @override
+  int get hashCode => path.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadReportServices &&
+          runtimeType == other.runtimeType &&
+          path == other.path;
+}
+
+class ReadSampleData {
+  final String sample;
+  final String fileName;
+  final String filePath;
+  final ReadMetricsData metrics;
+  final Float64List lengthValues;
+  final Float64List lengthCounts;
+
+  /// Reads by mean quality. Index is the quality score.
+  final Float64List readQualityCounts;
+
+  /// Reads by GC percentage. Index is the percentage. Reads between two
+  /// percentages count partly toward each.
+  final Float64List gcCounts;
+  final Float64List gcTheoretical;
+  final ReadPositionData positions;
+  final ReadDuplicationData? duplication;
+  final List<OverrepresentedData> overrepresented;
+  final List<AdapterContentData> adapters;
+
+  const ReadSampleData({
+    required this.sample,
+    required this.fileName,
+    required this.filePath,
+    required this.metrics,
+    required this.lengthValues,
+    required this.lengthCounts,
+    required this.readQualityCounts,
+    required this.gcCounts,
+    required this.gcTheoretical,
+    required this.positions,
+    this.duplication,
+    required this.overrepresented,
+    required this.adapters,
+  });
+
+  @override
+  int get hashCode =>
+      sample.hashCode ^
+      fileName.hashCode ^
+      filePath.hashCode ^
+      metrics.hashCode ^
+      lengthValues.hashCode ^
+      lengthCounts.hashCode ^
+      readQualityCounts.hashCode ^
+      gcCounts.hashCode ^
+      gcTheoretical.hashCode ^
+      positions.hashCode ^
+      duplication.hashCode ^
+      overrepresented.hashCode ^
+      adapters.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadSampleData &&
+          runtimeType == other.runtimeType &&
+          sample == other.sample &&
+          fileName == other.fileName &&
+          filePath == other.filePath &&
+          metrics == other.metrics &&
+          lengthValues == other.lengthValues &&
+          lengthCounts == other.lengthCounts &&
+          readQualityCounts == other.readQualityCounts &&
+          gcCounts == other.gcCounts &&
+          gcTheoretical == other.gcTheoretical &&
+          positions == other.positions &&
+          duplication == other.duplication &&
+          overrepresented == other.overrepresented &&
+          adapters == other.adapters;
+}
+
+/// Files written by a read summary.
+class ReadSummaryOutput {
+  final String summaryPath;
+  final String? positionsPath;
+  final String? distributionsPath;
+
+  /// All statistics as JSON, written in Complete mode.
+  final String? reportPath;
+
+  const ReadSummaryOutput({
+    required this.summaryPath,
+    this.positionsPath,
+    this.distributionsPath,
+    this.reportPath,
+  });
+
+  @override
+  int get hashCode =>
+      summaryPath.hashCode ^
+      positionsPath.hashCode ^
+      distributionsPath.hashCode ^
+      reportPath.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadSummaryOutput &&
+          runtimeType == other.runtimeType &&
+          summaryPath == other.summaryPath &&
+          positionsPath == other.positionsPath &&
+          distributionsPath == other.distributionsPath &&
+          reportPath == other.reportPath;
 }

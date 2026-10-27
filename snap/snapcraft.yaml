@@ -34,18 +34,15 @@ apps:
     extensions: [gnome]
 
 parts:
-  rust-lib:
-    plugin: rust
-    build-packages:
-      - musl-tools
-    source: rust/
-    override-build: |
-      rustup target add x86_64-unknown-linux-musl
-      cargo build --release --target x86_64-unknown-linux-musl
   segui:
     source: .
     build-packages:
       - curl
-      - rust-all
     plugin: flutter
     flutter-target: lib/main.dart
+    # The native assets build hook needs rustup to build the Rust crate.
+    override-build: |
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+      export PATH="$HOME/.cargo/bin:$PATH"
+      (cd rust && rustup toolchain install)
+      craftctl default

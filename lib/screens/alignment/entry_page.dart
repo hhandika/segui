@@ -2,11 +2,14 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/alignment/concat.dart';
+import 'package:segui/screens/alignment/distance.dart';
 import 'package:segui/screens/alignment/convert.dart';
 import 'package:segui/screens/alignment/filter.dart';
 import 'package:segui/screens/alignment/partition.dart';
 import 'package:segui/screens/alignment/split.dart';
 import 'package:segui/screens/alignment/summary.dart';
+import 'package:segui/screens/alignment/trim.dart';
+import 'package:segui/screens/alignment/unalign.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
@@ -44,6 +47,12 @@ class AlignmentOptions extends ConsumerWidget {
         return const SplitAlignmentView();
       case AlignmentOperationType.summary:
         return const AlignmentSummaryView();
+      case AlignmentOperationType.distance:
+        return const AlignmentDistanceView();
+      case AlignmentOperationType.trimming:
+        return const AlignmentTrimmingView();
+      case AlignmentOperationType.unalignment:
+        return const UnalignmentView();
     }
   }
 }

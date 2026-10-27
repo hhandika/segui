@@ -1,0 +1,51 @@
+---
+/// How the GUI task groups map to CLI commands.
+import Arrow from "../features/Arrow.astro";
+import Chip from "../features/Chip.astro";
+import Figure from "../features/Figure.astro";
+
+const groups = [
+  { gui: "Alignment", commands: ["segul align", "segul partition"] },
+  { gui: "Sequence", commands: ["segul sequence"] },
+  { gui: "Genomic", commands: ["segul read", "segul contig", "segul maf"] },
+];
+const step = 34;
+const groupGap = 16;
+let cursor = 44;
+const placed = groups.map((group) => {
+  const top = cursor;
+  cursor += group.commands.length * step + groupGap;
+  return { ...group, top, middle: top + (group.commands.length * step) / 2 };
+});
+const height = cursor - groupGap + 8;
+---
+
+<Figure
+  id="command-map"
+  viewBox={`0 0 560 ${height}`}
+  title="GUI task groups and CLI commands"
+  desc="The GUI Alignment group maps to the CLI commands segul align and segul partition, the latter for partition conversion. The Sequence group maps to segul sequence. The Genomic group maps to segul read for FASTQ reads, segul contig for contigs, and segul maf for MAF files. GUI tasks match CLI subcommands."
+  caption="A GUI task is a CLI subcommand, for example Alignment › Concatenation is segul align concat."
+>
+  <text x="90" y="20" text-anchor="middle" class="fx-muted fx-small">GUI task group</text>
+  <text x="420" y="20" text-anchor="middle" class="fx-muted fx-small">CLI command</text>
+  {
+    placed.map((group) => (
+      <g>
+        <rect x="20" y={group.middle - 18} width="140" height="36" rx="10" class="fx-panel-accent" />
+        <text x="90" y={group.middle} text-anchor="middle" dominant-baseline="central" class="fx-title">
+          {group.gui}
+        </text>
+        {group.commands.map((command, c) => {
+          const cy = group.top + c * step + step / 2;
+          return (
+            <g>
+              <Arrow x1={166} y1={group.middle} x2={330} y2={cy} />
+              <Chip x={340} y={cy - 12} text={command} mono />
+            </g>
+          );
+        })}
+      </g>
+    ))
+  }
+</Figure>

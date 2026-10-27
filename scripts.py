@@ -196,7 +196,6 @@ class BuildRust:
         print("Cleaning frb code...")
         try:
             self.remove_old_frb_code()
-            subprocess.run(["rm", "-rf", "rust_builder"])
             subprocess.run(["rm", "-rf", "flutter_rust_bridge.yaml"])
             subprocess.run(["rm", "-rf", "integration_test"])
             print("Frb code cleaned successfully\n")
@@ -312,7 +311,7 @@ class BuildDocs:
     def run(self) -> None:
         """Run the documentation website."""
         print("Building documentation...")
-        command: List[str] = ["yarn", "start"]
+        command: List[str] = ["bun", "run", "dev"]
         try:
             if platform.system() == "Windows":
                 subprocess.run(command, cwd="website", shell=True)
@@ -326,7 +325,7 @@ class BuildDocs:
     def build(self) -> None:
         """Build the documentation website."""
         print("Building documentation...")
-        command: List[str] = ["yarn", "build"]
+        command: List[str] = ["bun", "run", "build"]
         try:
             if platform.system() == "Windows":
                 subprocess.run(command, cwd="website", shell=True)
@@ -340,15 +339,7 @@ class BuildDocs:
     def upgrade(self) -> None:
         """Upgrade the documentation dependencies."""
         print("Upgrading documentation...")
-        command: List[str] = [
-            "yarn",
-            "upgrade",
-            "@docusaurus/core@latest",
-            "@docusaurus/preset-classic@latest",
-            "@docusaurus/module-type-aliases@latest",
-            "@docusaurus/tsconfig@latest",
-            "@docusaurus/types@latest",
-        ]
+        command: List[str] = ["bun", "update"]
         try:
             if platform.system() == "Windows":
                 subprocess.run(command, cwd="website", shell=True)

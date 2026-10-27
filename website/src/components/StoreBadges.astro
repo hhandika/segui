@@ -1,0 +1,25 @@
+---
+import StoreBadge, { type Store } from "./StoreBadge.astro";
+
+/// A wrapping row of store download buttons.
+interface Props {
+  stores: Store[];
+  tone?: "auto" | "brand";
+}
+
+const { stores, tone = "auto" } = Astro.props;
+---
+
+<div class="store-badges not-content">
+  {stores.map((store) => <StoreBadge store={store} tone={tone} />)}
+</div>
+
+<style>
+  .store-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block: 1.25rem;
+  }
+</style>

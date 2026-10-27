@@ -1,0 +1,77 @@
+---
+title: Update SEGUL
+sidebar:
+  order: 4
+---
+
+Update SEGUL to get new features and bug fixes.
+
+## SEGUL GUI
+
+App stores usually update SEGUI automatically. To check by hand, open your system's app store or app management settings. If you installed SEGUI from GitHub, download the new release and replace the old copy.
+
+## SEGUL CLI
+
+Update the CLI the same way you installed it. If you are not sure how, find where `segul` lives:
+
+{% tabs syncKey="shell" %}
+{% tabitem label="macOS and Linux" %}
+
+```bash
+which segul
+```
+
+{% /tabitem %}
+{% tabitem label="Windows" %}
+
+```powershell
+Get-Command segul
+```
+
+PowerShell 7 or newer also supports `which segul`.
+
+{% /tabitem %}
+{% /tabs %}
+
+Then follow the tab that matches the path:
+
+{% tabs syncKey="cli-method" %}
+{% tabitem label="Installer script" %}
+
+Path contains `~/.local/bin`, the installer's default folder. Run the installer again to get the latest release. Add `--dir` if you used a custom folder.
+
+```bash
+curl -fsSL https://segul.app/install.sh | sh
+```
+
+{% /tabitem %}
+{% tabitem label="Cargo" %}
+
+Path contains `.cargo/bin`. Reinstall with Cargo:
+
+```bash
+cargo install segul
+```
+
+{% /tabitem %}
+{% tabitem label="Conda" %}
+
+Path contains `miniforge` or `conda`:
+
+```bash
+conda update segul
+```
+
+Or with mamba:
+
+```bash
+mamba update segul
+```
+
+{% /tabitem %}
+{% tabitem label="Binary" %}
+
+Path is a folder such as `/usr/local/bin`, `~/bin`, or `C:\Tools`. Download the latest [pre-compiled binary](/docs/installation/install_cli/#pre-compiled-binary) and replace the old `segul` file with the new one.
+
+{% /tabitem %}
+{% /tabs %}

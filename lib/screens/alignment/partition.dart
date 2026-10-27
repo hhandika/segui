@@ -13,6 +13,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.partitionConversion;
 
@@ -165,6 +166,17 @@ class PartitionConversionPageState
     return isInputValid && _ctr.isValid;
   }
 
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _partitionFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+        RunParameter(
+          'Check partition for errors',
+          _isUnchecked ? 'Yes' : 'No',
+        ),
+      ];
+
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
       await ref
@@ -252,6 +264,7 @@ class PartitionConversionPageState
   }
 
   void _setSuccess(Directory directory) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

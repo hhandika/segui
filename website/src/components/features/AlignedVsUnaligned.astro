@@ -1,0 +1,26 @@
+---
+import Alignment from "./Alignment.astro";
+import Chip from "./Chip.astro";
+import Figure from "./Figure.astro";
+
+const ids = ["seq1", "seq2", "seq3"];
+const aligned = ["AGTCCCCA--", "AGTCCCCAAT", "AGTC-CCTTA"];
+const unaligned = aligned.map((seq) => seq.replaceAll("-", ""));
+---
+
+<Figure
+  id="aligned-unaligned"
+  viewBox="0 0 640 190"
+  title="Aligned and unaligned sequences"
+  desc="An aligned file has three sequences that are all ten characters long, using gaps to fill the difference. The same sequences unaligned have no gaps and lengths of eight, ten, and nine. Alignment tasks need aligned input; sequence tasks accept both."
+  caption="Alignment tasks need every sequence in a file to have the same length. Sequence tasks accept either kind."
+>
+  <Alignment x={56} y={36} rows={aligned} ids={ids} title="Aligned" />
+  <text x="56" y="120" class="fx-muted">Every row has 10 sites; gaps (–) pad shorter ones.</text>
+  <Chip x={56} y={138} text="✓ Alignment tasks" accent />
+  <Chip x={196} y={138} text="✓ Sequence tasks" accent />
+
+  <Alignment x={384} y={36} rows={unaligned} ids={ids} title="Unaligned" />
+  <text x="384" y="120" class="fx-muted">Rows can differ in length.</text>
+  <Chip x={384} y={138} text="✓ Sequence tasks" accent />
+</Figure>

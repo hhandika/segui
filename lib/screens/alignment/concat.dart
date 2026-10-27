@@ -12,6 +12,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentConcatenation;
 
@@ -78,14 +79,12 @@ class ConcatPageState extends ConsumerState<ConcatPage>
               setState(() {
                 if (value != null) {
                   _ctr.outputFormatController = value;
-                  _ctr.isSuccess = false;
                 }
               });
             },
           ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
+          if (_isShowMore)
+            SwitchForm(
               label: 'Set interleaved format',
               value: isInterleave,
               onPressed: (value) {
@@ -94,7 +93,6 @@ class ConcatPageState extends ConsumerState<ConcatPage>
                 });
               },
             ),
-          ),
           SharedDropdownField(
             value: _partitionFormatController,
             label: 'Partition Format',
@@ -107,9 +105,8 @@ class ConcatPageState extends ConsumerState<ConcatPage>
               });
             },
           ),
-          Visibility(
-            visible: _isShowMore,
-            child: SwitchForm(
+          if (_isShowMore)
+            SwitchForm(
                 label: 'Set codon model partition',
                 value: isCodon,
                 onPressed: (value) {
@@ -117,7 +114,6 @@ class ConcatPageState extends ConsumerState<ConcatPage>
                     isCodon = value;
                   });
                 }),
-          ),
           ShowMoreButton(
             isShowMore: _isShowMore,
             onPressed: () {
@@ -175,6 +171,17 @@ class ConcatPageState extends ConsumerState<ConcatPage>
     bool isOutputFormatValid = _ctr.outputFormatController != null;
     return _ctr.isValid && isOutputFormatValid && isPrefixValid;
   }
+
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Output prefix', _ctr.prefixController.text),
+        RunParameter('Output format', _ctr.outputFormatController ?? ''),
+        RunParameter('Interleaved format', isInterleave ? 'Yes' : 'No'),
+        RunParameter('Partition format', _partitionFormatController),
+        RunParameter('Codon model partition', isCodon ? 'Yes' : 'No'),
+      ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
@@ -260,6 +267,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
   }
 
   Future<void> _setSuccess(Directory directory) async {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

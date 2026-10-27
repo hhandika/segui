@@ -12,6 +12,8 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/workbench.dart';
+import 'package:segui/src/rust/api/reads.dart';
 
 const SupportedTask task = SupportedTask.genomicRawReadSummary;
 
@@ -35,9 +37,20 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String mode = sequenceReadSummaryMode[0];
+  String phred = sequenceReadPhredOffset[0];
+
+  /// Distinct sequences kept to estimate duplication. Empty uses SEGUL's
+  /// default.
+  final TextEditingController _dupSketchSize = TextEditingController();
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _dupSketchSize.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +100,31 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
               });
             },
           ),
+          if (mode == 'Complete')
+            SharedTextField(
+              controller: _dupSketchSize,
+              label: 'Duplication sketch size',
+              hint: 'Default 100000',
+              helper: 'Distinct sequences kept to estimate duplication from '
+                  'every read. Larger is more accurate and uses more memory. '
+                  '0 counts every sequence exactly.',
+              keyboardType: TextInputType.number,
+              onChanged: (_) => setState(() {}),
+            ),
+          // Minimal mode only counts reads, so it reads no quality scores.
+          if (mode != 'Minimal')
+            SharedDropdownField(
+              value: phred,
+              label: 'Quality score offset',
+              items: sequenceReadPhredOffset,
+              onChanged: (String? value) {
+                setState(() {
+                  if (value != null) {
+                    phred = value;
+                  }
+                });
+              },
+            ),
         ]),
       ],
       action: ref.watch(fileInputProvider).when(
@@ -131,8 +169,19 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   }
 
   bool get _isValid {
-    return _ctr.isValid;
+    return _ctr.isValid &&
+        (mode != 'Complete' || isValidOptionalCount(_dupSketchSize.text));
   }
+
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Output prefix', _ctr.prefixController.text),
+        RunParameter('Summary mode', mode),
+        if (mode != 'Minimal') RunParameter('Quality score offset', phred),
+        if (mode == 'Complete')
+          RunParameter('Duplication sketch size', _dupSketchSize.text.trim()),
+      ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
@@ -157,14 +206,18 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
       List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
       _setRunning();
-      await ReadSummaryRunner(
+      final ReadSummaryOutput output = await ReadSummaryRunner(
         inputFiles: inputFiles,
         inputFmt: _ctr.inputFormatController!,
         outputDir: outputDir,
         prefix: _ctr.prefixController.text,
         mode: mode,
+        phred: phred,
+        dupSketchSize: mode == 'Complete'
+            ? int.tryParse(_dupSketchSize.text.trim())
+            : null,
       ).run();
-      _setSuccess(outputDir);
+      _setSuccess(output.reportPath);
     } catch (e) {
       _showError(e.toString());
     }
@@ -203,7 +256,13 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     });
   }
 
-  void _setSuccess(Directory directory) {
+  /// [reportPath] is the read report, written in Complete mode, which the
+  /// workbench offers to open.
+  void _setSuccess(String? reportPath) {
+    ref.read(lastRunProvider.notifier).record(
+          _parameters,
+          report: reportPath == null ? null : File(reportPath),
+        );
     // We recurse to include read summary files when user running
     // complete read summary task.
     ref.read(fileOutputProvider.notifier).refresh();

@@ -1,0 +1,57 @@
+---
+/// CLI and GUI side by side for a whole-genome read summary, a long task
+/// where the shared Rust core does nearly all the work.
+import { bars, datasets } from "./bench";
+
+const results = bars("Read Summary (FASTQ)", datasets.reads, "timeSecs", [
+  "SEGUL CLI",
+  "SEGUL GUI (Linux)",
+]);
+const memory = bars("Read Summary (FASTQ)", datasets.reads, "ramMb", ["SEGUL CLI", "SEGUL GUI (Linux)"]);
+const minutes = (secs: number) => (secs / 60).toFixed(1);
+---
+
+<div class="rs-tiles not-content" role="group" aria-label="Whole-genome read summary on Linux">
+  {
+    results.map((result, i) => (
+      <div class={`rs-tile rs-${result.series}`}>
+        <span class="rs-label">{result.label}</span>
+        <span class="rs-value">{minutes(result.mean)} min</span>
+        <span class="rs-sub">{memory[i].mean.toFixed(0)} MB peak memory</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .rs-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1rem;
+    margin-block: 1.25rem;
+  }
+  .rs-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-left: 4px solid var(--bc-cli);
+    border-radius: 0.75rem;
+    background: var(--sl-color-gray-6);
+  }
+  .rs-gui {
+    border-left-color: var(--bc-gui);
+  }
+  .rs-label,
+  .rs-sub {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+  .rs-value {
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-3xl);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+</style>

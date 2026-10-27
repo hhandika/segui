@@ -1,0 +1,45 @@
+---
+title: Sequence Removal
+sidebar:
+  order: 15
+---
+
+{% screenshots
+   large="gui/sequence-remove-large.webp"
+   largeAlt="SEGUI Remove sequences page on a desktop with the tool form and file panel"
+   small="gui/sequence-remove-small.webp"
+   smallAlt="SEGUI Remove sequences page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[41.2, 13.5] small=[56.4, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
+This feature is the opposite of [sequence extraction](/docs/gui-usage/sequence-extract/) feature. It removes sequences based on a list of IDs or a regular expression. It is faster than sequence extraction if you remove less than a half of the sequences.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Remove sequences` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select the option to remove sequences based on a list of IDs or a regular expression.
+5. Add the list of IDs or regular expression.
+6. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+7. Select the output sequence format.
+8. Select the run button {% ref id="D" /%}, labeled `Remove`, to start the task.
+
+## Removal Options
+
+### Remove by ID
+
+The IDs should be separated by semicolon (`;`). For example, `seq1;seq2;seq3`.
+
+### Remove by Regular Expression
+
+SEGUI uses Rust [regex](https://docs.rs/regex/latest/regex/). The regular expression should be a valid regex pattern. For example, `seq[0-9]+` will remove all sequences with IDs like `seq1`, `seq2`, `seq3`, and so on.

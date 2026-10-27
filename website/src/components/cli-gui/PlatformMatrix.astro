@@ -1,0 +1,129 @@
+---
+/// Which platforms run the CLI and the GUI.
+import Figure from "../features/Figure.astro";
+
+type Support = "yes" | "partial" | "no";
+
+const groups: { name: string; rows: { platform: string; cli: Support; gui: Support; note?: string }[] }[] = [
+  {
+    name: "Desktop",
+    rows: [
+      { platform: "Linux", cli: "yes", gui: "yes", note: "GUI needs GLIBC 2.34+; CLI also on ARM64" },
+      { platform: "macOS", cli: "yes", gui: "yes" },
+      { platform: "Windows", cli: "yes", gui: "yes" },
+      { platform: "WSL", cli: "yes", gui: "no" },
+    ],
+  },
+  {
+    name: "Mobile",
+    rows: [
+      { platform: "iOS", cli: "no", gui: "yes" },
+      { platform: "iPadOS", cli: "no", gui: "yes" },
+      { platform: "Android", cli: "partial", gui: "yes", note: "CLI through Termux" },
+    ],
+  },
+];
+
+const rowHeight = 34;
+const cliX = 200;
+const guiX = 270;
+const groupGap = 18;
+let cursor = 54;
+const placed = groups.map((group) => {
+  const top = cursor;
+  cursor += 28 + group.rows.length * rowHeight + groupGap;
+  return { ...group, top };
+});
+const height = cursor + 20;
+const label = { yes: "supported", partial: "partial support", no: "not supported" };
+const desc = groups
+  .flatMap((group) => group.rows)
+  .map((row) => `${row.platform}: CLI ${label[row.cli]}, GUI ${label[row.gui]}${row.note ? ` (${row.note})` : ""}.`)
+  .join(" ");
+---
+
+<Figure
+  id="platform-matrix"
+  viewBox={`0 0 600 ${height}`}
+  title="Platform support"
+  desc={desc}
+  caption="You can also compile the CLI from source for any platform Rust supports."
+>
+  <text x={cliX} y="24" text-anchor="middle" class="fx-title">CLI</text>
+  <text x={guiX} y="24" text-anchor="middle" class="fx-title">GUI</text>
+  {
+    placed.map((group) => (
+      <g>
+        <text x="16" y={group.top + 8} class="fx-muted fx-small fx-title">
+          {group.name.toUpperCase()}
+        </text>
+        {group.rows.map((row, r) => {
+          const cy = group.top + 28 + r * rowHeight + rowHeight / 2 - 6;
+          return (
+            <g>
+              <rect x="8" y={cy - rowHeight / 2 + 2} width="584" height={rowHeight - 4} rx="8" class="pm-row" />
+              <text x="24" y={cy} dominant-baseline="central">
+                {row.platform}
+              </text>
+              {[
+                [cliX, row.cli],
+                [guiX, row.gui],
+              ].map(([x, support]) => (
+                <g>
+                  <circle cx={x} cy={cy} r="9" class={`pm-${support}`} />
+                  {support === "yes" && (
+                    <path d={`M${Number(x) - 4},${cy} l3,3 l5,-6`} class="pm-tick" />
+                  )}
+                  {support === "partial" && <path d={`M${x},${cy - 9} a9,9 0 0 1 0,18 z`} class="pm-half" />}
+                </g>
+              ))}
+              {row.note && (
+                <text x="310" y={cy} dominant-baseline="central" class="fx-muted fx-small">
+                  {row.note}
+                </text>
+              )}
+            </g>
+          );
+        })}
+      </g>
+    ))
+  }
+  <g transform={`translate(24 ${height - 14})`}>
+    <circle cx="0" cy="-4" r="6" class="pm-yes" />
+    <text x="12" y="-4" dominant-baseline="central" class="fx-muted fx-small">Supported</text>
+    <circle cx="104" cy="-4" r="6" class="pm-partial" />
+    <path d="M104,-10 a6,6 0 0 1 0,12 z" class="pm-half" />
+    <text x="116" y="-4" dominant-baseline="central" class="fx-muted fx-small">Partial</text>
+    <circle cx="180" cy="-4" r="6" class="pm-no" />
+    <text x="192" y="-4" dominant-baseline="central" class="fx-muted fx-small">Not supported</text>
+  </g>
+</Figure>
+
+<style is:global>
+  .fx-figure .pm-row {
+    fill: var(--sl-color-black);
+    opacity: 0.6;
+  }
+  .fx-figure .pm-yes {
+    fill: var(--sl-color-accent);
+  }
+  .fx-figure .pm-tick {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .fx-figure .pm-partial,
+  .fx-figure .pm-no {
+    fill: none;
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1.5;
+  }
+  .fx-figure .pm-partial {
+    stroke: var(--sl-color-accent);
+  }
+  .fx-figure .pm-half {
+    fill: var(--sl-color-accent);
+  }
+</style>

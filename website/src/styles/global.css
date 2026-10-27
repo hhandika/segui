@@ -1,0 +1,103 @@
+@layer base, starlight, theme, components, utilities;
+
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* SEGUI "leaf and pollen" palette, matching `lib/styles/themes.dart`: the app
+   icon's field green (#009245), an olive between the green and the ribbon
+   (#5E7A3A), and the ribbon's pollen gold (#FFD64F). */
+@theme {
+  --color-leaf-50: #effdf4;
+  --color-leaf-100: #d8f8e3;
+  --color-leaf-200: #b3efca;
+  --color-leaf-300: #7ce1a6;
+  --color-leaf-400: #3fc87b;
+  --color-leaf-500: #17ad5c;
+  --color-leaf-600: #009245;
+  --color-leaf-700: #00743a;
+  --color-leaf-800: #005c30;
+  --color-leaf-900: #004b29;
+  --color-leaf-950: #002a16;
+
+  --color-olive-50: #f5f7ef;
+  --color-olive-100: #e8eddb;
+  --color-olive-200: #d1dcb8;
+  --color-olive-300: #b2c48c;
+  --color-olive-400: #93a965;
+  --color-olive-500: #768e48;
+  --color-olive-600: #5e7a3a;
+  --color-olive-700: #475b2e;
+  --color-olive-800: #3a4a28;
+  --color-olive-900: #323f25;
+  --color-olive-950: #182210;
+
+  --color-pollen-50: #fffbeb;
+  --color-pollen-100: #fff4c7;
+  --color-pollen-200: #ffe98a;
+  --color-pollen-300: #ffd64f;
+  --color-pollen-400: #ffc423;
+  --color-pollen-500: #f9a307;
+  --color-pollen-600: #dd7a02;
+  --color-pollen-700: #b75506;
+  --color-pollen-800: #94410c;
+  --color-pollen-900: #7a360d;
+  --color-pollen-950: #461a02;
+
+  /* The teal end of the app icon's ribbon gradient. */
+  --color-ribbon-teal: #3fbf9f;
+}
+
+/* Dark mode colors. */
+:root {
+  --sl-color-accent-low: var(--color-leaf-950);
+  --sl-color-accent: var(--color-leaf-600);
+  --sl-color-accent-high: var(--color-leaf-200);
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #eceef0;
+  --sl-color-gray-2: #c2c6c3;
+  --sl-color-gray-3: #8b918d;
+  --sl-color-gray-4: #555b57;
+  --sl-color-gray-5: #363b38;
+  --sl-color-gray-6: #232825;
+  --sl-color-black: #161a18;
+}
+
+/* Light mode colors. */
+:root[data-theme="light"] {
+  --sl-color-accent-low: var(--color-leaf-100);
+  --sl-color-accent: var(--color-leaf-700);
+  --sl-color-accent-high: var(--color-leaf-900);
+  --sl-color-white: #161a18;
+  --sl-color-gray-1: #232825;
+  --sl-color-gray-2: #363b38;
+  --sl-color-gray-3: #555b57;
+  --sl-color-gray-4: #8b918d;
+  --sl-color-gray-5: #c2c6c3;
+  --sl-color-gray-6: #eceef0;
+  --sl-color-gray-7: #f5f7f5;
+  --sl-color-black: #ffffff;
+}
+
+/* Freeze the page behind the mobile navigation overlay. */
+html.sg-menu-open,
+html.sg-menu-open body {
+  overflow: hidden;
+}
+
+/* Benchmark series on the CLI vs GUI page, checked for color-vision
+   deficiency against each surface. */
+:root {
+  --bc-cli: #17ad5c;
+  --bc-gui: #4a8fe0;
+  --bc-ipad: #cc7a08;
+  --bc-android: #a77ad8;
+  --bc-other: #6b716d;
+}
+:root[data-theme="light"] {
+  --bc-cli: #00843f;
+  --bc-gui: #2565b0;
+  --bc-ipad: #c46a00;
+  --bc-android: #8a4fbf;
+  --bc-other: #9aa09c;
+}

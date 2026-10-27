@@ -6,6 +6,7 @@ import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/screens/shared/tool_search.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class CompactScreenView extends ConsumerWidget {
   const CompactScreenView({super.key});
@@ -16,7 +17,7 @@ class CompactScreenView extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
-          elevation: 0,
+          elevation: SeguiElevation.none,
           backgroundColor:
               ref.watch(tabSelectionProvider) == 0 ? null : mainColor,
           actions: [

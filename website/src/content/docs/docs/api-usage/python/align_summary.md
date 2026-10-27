@@ -1,0 +1,79 @@
+---
+title: Alignment Summary
+sidebar:
+  order: 8
+---
+
+Generate summary statistics for DNA and amino acid alignments.
+
+## Steps
+
+Install PySEGUL using pip if you haven't done it yet
+
+```bash
+pip install pysegul
+```
+
+Create a new Python script, import the library, and write python code.
+
+```python
+import pysegul
+
+def summarize_alignments():
+    input_dir = 'tests/align-data'
+    input_format = 'nexus'
+    datatype = 'dna'
+    # Available values for interval: 1, 2, 5, 10.
+    completeness_interval = 5
+    prefix = 'concatenated'
+    output_dir = 'tests/output'
+    concat = pysegul.AlignmentSummary(
+        input_format,  
+        datatype, 
+        output_dir,
+        completeness_interval,
+        prefix
+        )
+    concat.from_dir(input_dir)
+```
+
+You can also input the alignment paths in a list directly instead of using a directory. Replace the `input_dir` with `input_files` and provide a list of paths. Then, call the `from_files` method instead of `from_dir`.
+
+```python
+import pysegul
+
+def summarize_alignments():
+    input_path = ['tests/align-data/alignment1.nex', 'tests/align-data/alignment2.nex']
+    input_format = 'nexus'
+    datatype = 'dna'
+    completeness_interval = 5
+    prefix = 'concatenated'
+    output_dir = 'tests/output'
+    concat = pysegul.AlignmentSummary(
+        input_format,  
+        datatype, 
+        output_dir,
+        completeness_interval,
+        prefix
+        )
+    concat.from_files(input_path)
+```
+
+## Per-locus summary
+
+:::caution[Upcoming]
+The `per_locus` option is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::
+
+Set `per_locus` to `True` to write a summary for each alignment instead of one summary across all alignments:
+
+```python
+summary = pysegul.AlignmentSummary(
+    'nexus',
+    'dna',
+    'tests/output',
+    5,
+    per_locus=True,
+    )
+summary.from_dir('tests/align-data')
+```

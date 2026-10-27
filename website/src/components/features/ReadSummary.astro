@@ -1,0 +1,21 @@
+---
+import Figure from "./Figure.astro";
+import GenomicLane from "./GenomicLane.astro";
+---
+
+<Figure
+  id="read-summary"
+  viewBox="0 0 660 104"
+  title="Read summary"
+  desc="FASTQ read files, plain, gzip, or BGZF-compressed, produce a read summary table with read counts, lengths, and N50, GC content, base quality, and Q20 and Q30 bases. Complete mode adds per-position quality, duplication across every read, overrepresented sequences, and adapter content."
+  caption="Accepts many files at once and writes one CSV table. Complete mode also writes a report that SEGUI shows as interactive charts."
+>
+  <GenomicLane
+    input="sample.fq.gz"
+    inputSub="FASTQ reads"
+    output="Read summary"
+    outputSub="CSV table"
+    stats={["Read count, length, and N50", "GC content, base quality, Q20 and Q30", "Duplication and adapters (complete)"]}
+    note="Modes: minimal · default · complete"
+  />
+</Figure>

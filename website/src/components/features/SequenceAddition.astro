@@ -1,0 +1,39 @@
+---
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import Figure from "./Figure.astro";
+
+const added = { ids: ["seq4"], rows: ["AGTCCATG"] };
+const existing = { ids: ["seq1", "seq2", "seq3"], rows: ["AGT--CCATG", "AGTCACC-TG", "A-TCA--ATG"] };
+const outIds = [...existing.ids, ...added.ids];
+const outRows = [...existing.rows, ...added.rows].map((row) => row.replaceAll("-", ""));
+
+const cell = 14;
+const pitch = cell + 2;
+const outX = 420;
+const outY = 70;
+---
+
+<Figure
+  id="sequence-addition"
+  viewBox="0 0 640 176"
+  title="Sequence addition"
+  desc={`seq4 from new/locus_1.fas is added to aligned/locus_1.nex because the file names match. The output locus_1.fas is unaligned: ${outRows
+    .map((row, i) => `${outIds[i]} ${row}`)
+    .join(", ")}.`}
+  caption="Sequences go to the destination file with the same name. Use a single destination file to collect every sequence in one place."
+>
+  <Alignment x={60} y={34} rows={added.rows} ids={added.ids} title="new/locus_1.fas" cell={cell} />
+  <Alignment x={60} y={98} rows={existing.rows} ids={existing.ids} title="aligned/locus_1.nex" cell={cell} />
+  <Arrow x1={250} y1={outY + 30} x2={340} y2={outY + 30} label="add" />
+  <text x={outX} y={outY - 10} class="fx-title">locus_1.fas</text>
+  <rect
+    x={outX - 4}
+    y={outY + existing.rows.length * pitch - 3}
+    width={added.rows[0].length * pitch + 4}
+    height={pitch + 4}
+    rx="5"
+    class="fx-panel-accent"
+  />
+  <Alignment x={outX} y={outY} rows={outRows} ids={outIds} cell={cell} />
+</Figure>

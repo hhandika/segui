@@ -7,6 +7,7 @@ import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class SettingButtons extends StatelessWidget {
   const SettingButtons({super.key});
@@ -57,14 +58,7 @@ class AboutMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SecondaryMenuTile(
       text: 'About',
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const AppAbout(),
-          ),
-        );
-      },
+      onTap: () => showAppAbout(context),
     );
   }
 }
@@ -125,10 +119,13 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
       children: [
         NavigationDrawer(
           backgroundColor: getSEGULBackgroundColor(context),
-          tilePadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          tilePadding: const EdgeInsets.symmetric(
+            horizontal: SeguiSpacing.xs,
+            vertical: SeguiSpacing.xxs,
+          ),
           indicatorColor: getIndicatorColor(context),
           indicatorShape: getIndicatorShape(context),
-          elevation: 0,
+          elevation: SeguiElevation.none,
           selectedIndex: _selectedIndex,
           children: const [
             ...settingsDrawerDestinations,
@@ -149,7 +146,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
           child: _selectedIndex == 0
               ? const LogListView()
               : _selectedIndex == 1
-                  ? const DesktopThemeSettingView()
+                  ? const ThemeSettingView()
                   : const DataUsageView(),
         ),
       ],
@@ -181,10 +178,10 @@ class SmallScreenSettings extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(SeguiSpacing.xl),
       child: Center(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: SeguiContentWidth.form),
           height: MediaQuery.of(context).size.height,
           child: ListView(
             children: [
@@ -215,14 +212,7 @@ class SmallScreenSettings extends ConsumerWidget {
                       title: 'About',
                       subtitle: 'View app information',
                       icon: Icons.info_outline,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AppAbout(),
-                          ),
-                        );
-                      },
+                      onTap: () => showAppAbout(context),
                     ),
                   ],
                 ),
@@ -243,7 +233,12 @@ class SettingTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 0, 2),
+        padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.md,
+          SeguiSpacing.md,
+          SeguiSpacing.md,
+          SeguiSpacing.xs,
+        ),
         child: Text(
           title,
           style: Theme.of(context).textTheme.labelLarge,
@@ -264,7 +259,7 @@ class MainSettings extends ConsumerWidget {
         children: [
           SettingTile(
             title: 'Theme',
-            subtitle: 'Change app theme',
+            subtitle: 'Change app theme and motion',
             icon: Icons.color_lens_outlined,
             onTap: () {
               Navigator.push(

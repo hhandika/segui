@@ -1,0 +1,19 @@
+---
+import Default from "@astrojs/starlight/components/Footer.astro";
+---
+
+<Default />
+<p class="copyright">
+  Copyright © {new Date().getFullYear()} H. Handika &amp; J. A. Esselstyn.
+</p>
+
+<style>
+  @layer starlight.core {
+    .copyright {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: var(--sl-text-xs);
+      color: var(--sl-color-gray-3);
+    }
+  }
+</style>

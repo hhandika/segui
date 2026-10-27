@@ -1,0 +1,20 @@
+---
+import Arrow from "./Arrow.astro";
+import FileCard from "./FileCard.astro";
+import Figure from "./Figure.astro";
+---
+
+<Figure
+  id="conversion"
+  viewBox="0 0 540 210"
+  title="Alignment conversion"
+  desc="A batch of FASTA files such as locus_1.fasta is converted to NEXUS as locus_1.nex or to relaxed PHYLIP as locus_1.phy. File names stay the same; only the format and extension change."
+  caption="Converts one file or a whole folder. Output can be NEXUS, relaxed PHYLIP, or FASTA, sequential or interleaved."
+>
+  <FileCard x={30} y={72} w={150} name="locus_1.fasta" sub="FASTA" stack />
+  <Arrow x1={196} y1={104} x2={330} y2={46} />
+  <Arrow x1={196} y1={104} x2={330} y2={160} />
+  <text x="262" y="110" text-anchor="middle" class="fx-muted">convert</text>
+  <FileCard x={350} y={12} w={150} name="locus_1.nex" sub="NEXUS" accent />
+  <FileCard x={350} y={128} w={150} name="locus_1.phy" sub="Relaxed PHYLIP" accent />
+</Figure>

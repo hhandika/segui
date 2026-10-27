@@ -34,23 +34,56 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
     height="80"
   />](https://play.google.com/store/apps/details?id=com.hhandika.segui&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
 
-Learn more about device requirements and GUI app installation in the [documentation](https://www.segul.app/docs/installation/install_gui).
+Learn more about device requirements and GUI app installation in the [documentation](https://www.segul.app/docs/installation/install_gui/).
+
+## Coming Soon: SEGUI with SEGUL v0.24.0
+
+> [!NOTE]
+> This update is not released yet. The current app store versions do not include these features.
+
+The next release updates SEGUI to SEGUL v0.24.0 and redesigns the app.
+
+New tools:
+
+- **Alignment distance**: pairwise genetic distances for each alignment, with optional averages within and between populations or species.
+- **Alignment trimming**: remove sites by the proportion of missing data or by parsimony informative sites.
+- **Alignment unaligning**: remove gaps to produce unaligned sequence files.
+- **MAF conversion and summary**: convert whole-genome Multiple Alignment Format (MAF) blocks to FASTA, NEXUS, or PHYLIP alignments, and summarize MAF files before converting them.
+- **Sequence addition**: add sequences from many source files to matching destination files.
+- **Sequence filtering**: remove individual sequences by length or proportion of gaps (previously CLI only).
+- **Sequence transposition**: turn locus alignments into per-sample sequence files.
+
+App improvements:
+
+- An alignment viewer that handles large alignments, plus a file inspector.
+- A workbench that suggests the next tool to run on a task's output.
+- Multi-file input with a directory tree view.
+- Output export as ZIP or `.tar.gz` archives.
+- A redesigned home screen, tool layout, and icons, with better support for phones and tablets.
 
 ## Quick Links
 
-| Feature                        | Quick Link                                                                                                             |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| Alignment concatenation        | [CLI](https://www.segul.app/docs/cli-usage/concat) / [GUI](https://www.segul.app/docs/gui-usage/align-concat)          |
-| Alignment conversion           | [CLI](https://www.segul.app/docs/cli-usage/convert) / [GUI](https://www.segul.app/docs/gui-usage/align-convert)        |
-| Alignment filtering            | [CLI](https://www.segul.app/docs/cli-usage/filter) / [GUI](https://www.segul.app/docs/gui-usage/align-filter)          |
-| Alignment splitting            | [CLI](https://www.segul.app/docs/cli-usage/split) / [GUI](https://www.segul.app/docs/gui-usage/align-split)            |
-| Alignment partition conversion | [CLI](https://www.segul.app/docs/cli-usage/part) / [GUI](https://www.segul.app/docs/gui-usage/align-partition)         |
-| Alignment summary statistics   | [CLI](https://www.segul.app/docs/cli-usage/summary) / [GUI](https://www.segul.app/docs/gui-usage/align-summary)        |
-| Genomic summary statistics     | [CLI](https://www.segul.app/docs/cli-usage/genomic) / [GUI](https://www.segul.app/docs/gui-usage/genomic)              |
-| Sequence extraction            | [CLI](https://www.segul.app/docs/cli-usage/extract) / [GUI](https://www.segul.app/docs/gui-usage/sequence-extract)     |
-| Sequence filtering             | [CLI](https://www.segul.app/docs/cli-usage/seq_filter) / GUI feature in development                                    |
-| Sequence ID extraction         | [CLI](https://www.segul.app/docs/cli-usage/id) / [GUI](https://www.segul.app/docs/gui-usage/sequence-id)               |
-| Sequence ID mapping            | [CLI](https://www.segul.app/docs/cli-usage/map) / [GUI](https://www.segul.app/docs/gui-usage/sequence-id-map)          |
-| Sequence ID renaming           | [CLI](https://www.segul.app/docs/cli-usage/rename) / [GUI](https://www.segul.app/docs/gui-usage/sequence-rename)       |
-| Sequence removal               | [CLI](https://www.segul.app/docs/cli-usage/remove) / [GUI](https://www.segul.app/docs/gui-usage/sequence-remove)       |
-| Sequence translation           | [CLI](https://www.segul.app/docs/cli-usage/translate) / [GUI](https://www.segul.app/docs/gui-usage/sequence-translate) |
+| Feature                        | Quick Link                                                                                                                        |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| Alignment concatenation        | [CLI](https://www.segul.app/docs/cli-usage/align-concat/) / [GUI](https://www.segul.app/docs/gui-usage/align-concat/)             |
+| Alignment conversion           | [CLI](https://www.segul.app/docs/cli-usage/align-convert/) / [GUI](https://www.segul.app/docs/gui-usage/align-convert/)           |
+| Alignment distance             | [CLI](https://www.segul.app/docs/cli-usage/align-distance/) / [GUI](https://www.segul.app/docs/gui-usage/align-distance/)         |
+| Alignment filtering            | [CLI](https://www.segul.app/docs/cli-usage/align-filter/) / [GUI](https://www.segul.app/docs/gui-usage/align-filter/)             |
+| Alignment splitting            | [CLI](https://www.segul.app/docs/cli-usage/align-split/) / [GUI](https://www.segul.app/docs/gui-usage/align-split/)               |
+| Alignment partition conversion | [CLI](https://www.segul.app/docs/cli-usage/align-partition/) / [GUI](https://www.segul.app/docs/gui-usage/align-partition/)       |
+| Alignment summary statistics   | [CLI](https://www.segul.app/docs/cli-usage/align-summary/) / [GUI](https://www.segul.app/docs/gui-usage/align-summary/)           |
+| Alignment trimming             | [CLI](https://www.segul.app/docs/cli-usage/align-trim/) / [GUI](https://www.segul.app/docs/gui-usage/align-trim/)                 |
+| Alignment unaligning           | [CLI](https://www.segul.app/docs/cli-usage/align-unalign/) / [GUI](https://www.segul.app/docs/gui-usage/align-unalign/)           |
+| Genomic read summary           | [CLI](https://www.segul.app/docs/cli-usage/read-summary/) / [GUI](https://www.segul.app/docs/gui-usage/read-summary/)             |
+| Genomic contig summary         | [CLI](https://www.segul.app/docs/cli-usage/contig-summary/) / [GUI](https://www.segul.app/docs/gui-usage/contig-summary/)         |
+| MAF conversion                 | [CLI](https://www.segul.app/docs/cli-usage/maf-convert/) / [GUI](https://www.segul.app/docs/gui-usage/maf-convert/)               |
+| MAF summary statistics         | [CLI](https://www.segul.app/docs/cli-usage/maf-summary/) / [GUI](https://www.segul.app/docs/gui-usage/maf-summary/)               |
+| Sequence addition              | [CLI](https://www.segul.app/docs/cli-usage/sequence-add/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-add/)             |
+| Sequence extraction            | [CLI](https://www.segul.app/docs/cli-usage/sequence-extract/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-extract/)     |
+| Sequence filtering             | [CLI](https://www.segul.app/docs/cli-usage/sequence-filter/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-filter/)       |
+| Sequence ID extraction         | [CLI](https://www.segul.app/docs/cli-usage/sequence-id/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-id/)               |
+| Sequence ID mapping            | [CLI](https://www.segul.app/docs/cli-usage/sequence-map/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-id-map/)          |
+| Sequence ID renaming           | [CLI](https://www.segul.app/docs/cli-usage/sequence-rename/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-rename/)       |
+| Sequence removal               | [CLI](https://www.segul.app/docs/cli-usage/sequence-remove/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-remove/)       |
+| Sequence translation           | [CLI](https://www.segul.app/docs/cli-usage/sequence-translate/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-translate/) |
+| Sequence transposition         | [CLI](https://www.segul.app/docs/cli-usage/sequence-transpose/) / [GUI](https://www.segul.app/docs/gui-usage/sequence-transpose/) |

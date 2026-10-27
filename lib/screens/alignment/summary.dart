@@ -13,6 +13,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.alignmentSummary;
 
@@ -38,6 +39,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String? _interval;
+  bool _isPerLocus = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -69,9 +71,19 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             label: 'Output Prefix',
             hint: 'Enter output prefix',
           ),
+          SwitchForm(
+            label: 'Summarize each locus separately',
+            value: _isPerLocus,
+            onPressed: (value) {
+              setState(() {
+                _isPerLocus = value;
+              });
+            },
+          ),
           SharedDropdownField(
             value: _interval,
             label: 'Summary Interval',
+            enabled: !_isPerLocus,
             items: summaryInt,
             onChanged: (String? value) {
               setState(() {
@@ -127,9 +139,22 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   bool get _isValid {
-    bool isPrefixValid = _ctr.prefixController.text.isNotEmpty;
+    // Per-locus files are named after each alignment.
+    bool isPrefixValid = _isPerLocus || _ctr.prefixController.text.isNotEmpty;
     return _ctr.isValid && isPrefixValid;
   }
+
+  /// Settings of this run, listed in the workbench.
+  List<RunParameter> get _parameters => [
+        RunParameter('Input format', _ctr.inputFormatController ?? ''),
+        RunParameter('Data type', _ctr.dataTypeController),
+        RunParameter('Output prefix', _ctr.prefixController.text),
+        RunParameter(
+          'Summarize each locus separately',
+          _isPerLocus ? 'Yes' : 'No',
+        ),
+        if (!_isPerLocus) RunParameter('Summary interval', _interval ?? '5'),
+      ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {
@@ -161,6 +186,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         outputDir: outputDir,
         outputPrefix: _ctr.prefixController.text,
         interval: BigInt.parse(_interval ?? '5'),
+        isPerLocus: _isPerLocus,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
@@ -212,6 +238,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     setState(() {
       _ctr.reset();
       _interval = null;
+      _isPerLocus = false;
       _ctr.isSuccess = false;
       ref.invalidate(fileInputProvider);
       ref.invalidate(fileOutputProvider);
@@ -219,6 +246,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   }
 
   void _setSuccess(Directory outputDir) {
+    ref.read(lastRunProvider.notifier).record(_parameters);
     ref.read(fileOutputProvider.notifier).refresh();
     ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, 'Summarization successful! 🎉'));

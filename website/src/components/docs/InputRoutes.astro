@@ -1,0 +1,182 @@
+---
+/// The ways to load input files in the GUI, one card per route, with the
+/// platforms that offer it. Colors follow the active Starlight theme.
+type Platform = "Desktop" | "Android" | "iOS";
+
+interface Route {
+  id: string;
+  name: string;
+  action: string;
+  text: string;
+  platforms: Platform[];
+  /// SVG path data drawn in a 24 x 24 box.
+  icon: string;
+}
+
+const routes: Route[] = [
+  {
+    id: "files",
+    name: "Files",
+    action: "Browse files",
+    text: "Pick files one by one. Best for a few hundred files.",
+    platforms: ["Desktop", "Android", "iOS"],
+    icon: "M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 16h6",
+  },
+  {
+    id: "folder",
+    name: "Folder",
+    action: "Browse folder",
+    text: "Add every matching file in a folder and its subfolders.",
+    platforms: ["Desktop", "Android", "iOS"],
+    icon: "M3 6h6l2 2h10v11H3z M3 10h18",
+  },
+  {
+    id: "archive",
+    name: "Archive",
+    action: "Open archive",
+    text: "Pick one .zip or .tar.gz file. Fastest on phones. Not for raw reads.",
+    platforms: ["Desktop", "Android", "iOS"],
+    icon: "M4 4h16v4H4z M5 8h14v12H5z M10 12h4",
+  },
+  {
+    id: "segui-folder",
+    name: "SEGUI folder",
+    action: "SEGUI folder",
+    text: "Copy data into SEGUI › inputs in the Files app or Finder.",
+    platforms: ["iOS"],
+    icon: "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M10 18h4 M9 7h6v6H9z",
+  },
+  {
+    id: "share",
+    name: "Share",
+    action: "Use shared files",
+    text: "Send files or an archive to SEGUI from another app.",
+    platforms: ["Android", "iOS"],
+    icon: "M12 15V3 M7 8l5-5 5 5 M5 12v8h14v-8",
+  },
+  {
+    id: "drop",
+    name: "Drag and drop",
+    action: "Drop on the input",
+    text: "Drop files or folders from your file manager.",
+    platforms: ["Desktop"],
+    icon: "M9 4v9 M5 10l4 4 4-4 M14 8h6v12H8v-3",
+  },
+];
+
+const allPlatforms: Platform[] = ["Desktop", "Android", "iOS"];
+---
+
+<section class="ir-grid not-content" aria-label="Ways to load input files">
+  {
+    routes.map((route) => (
+      <article class="ir-card" aria-labelledby={`ir-${route.id}`}>
+        <div class="ir-head">
+          <svg
+            class="ir-icon"
+            viewBox="0 0 24 24"
+            width="28"
+            height="28"
+            role="img"
+            aria-label={`${route.name} icon`}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d={route.icon} />
+          </svg>
+          <div>
+            <h3 id={`ir-${route.id}`}>{route.name}</h3>
+            <code>{route.action}</code>
+          </div>
+        </div>
+        <p>{route.text}</p>
+        <ul class="ir-chips" aria-label="Platforms">
+          {allPlatforms.map((platform) => {
+            const on = route.platforms.includes(platform);
+            return (
+              <li class={on ? "ir-on" : "ir-off"}>
+                <span class="sr-only">{on ? "Available on" : "Not on"}</span> {platform}
+              </li>
+            );
+          })}
+        </ul>
+      </article>
+    ))
+  }
+</section>
+
+<style>
+  .ir-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0.75rem;
+    margin-block: 1.5rem;
+  }
+  .ir-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.75rem;
+    background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+  }
+  :global(:root:not([data-theme="light"])) .ir-card {
+    background: var(--sl-color-gray-6);
+  }
+  .ir-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .ir-icon {
+    flex: none;
+    padding: 0.4rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.6rem;
+    background: var(--sl-color-accent-low);
+    fill: none;
+    stroke: var(--sl-color-accent-high);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ir-card h3 {
+    margin: 0;
+    font-size: var(--sl-text-lg);
+    color: var(--sl-color-white);
+  }
+  .ir-card code {
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+  .ir-card p {
+    margin: 0;
+    flex: 1;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+  .ir-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ir-chips li {
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--sl-color-gray-5);
+    font-size: var(--sl-text-xs);
+  }
+  .ir-on {
+    background: var(--sl-color-accent-low);
+    border-color: var(--sl-color-accent) !important;
+    color: var(--sl-color-accent-high);
+  }
+  .ir-off {
+    color: var(--sl-color-gray-4);
+    text-decoration: line-through;
+  }
+</style>

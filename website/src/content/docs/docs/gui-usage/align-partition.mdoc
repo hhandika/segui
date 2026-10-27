@@ -1,0 +1,50 @@
+---
+title: Alignment Partition Conversion
+sidebar:
+  order: 6
+---
+
+{% screenshots
+   large="gui/align-partition-large.webp"
+   largeAlt="SEGUI Convert partition page on a desktop with the tool form and file panel"
+   small="gui/align-partition-small.webp"
+   smallAlt="SEGUI Convert partition page on a phone with the tool form" %}
+{% pin id="A" label="Alignments tab" large=[5, 25.6] small=[62.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[39.2, 13.5] small=[50.3, 11.8] /%}
+{% pin id="C" label="Input files" large=[45.4, 33.3] small=[10.0, 35.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
+Convert partition from one format to another.
+
+## Steps
+
+1. Select `Alignments` in the navigation bar {% ref id="A" /%}.
+2. Open `Convert partition` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select input partition format.
+5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+6. Select output partition format.
+7. Select the run button {% ref id="D" /%}, labeled `Convert`, to start the task.
+
+## Partition Format
+
+The app supports input and output partition formats. The input partition format is the format of the partition file you want to convert. The output partition format is the format of the partition file you want to generate. Partition options include:
+
+- **Charset**: partition embedded in NEXUS sequence files
+- **Nexus**: partition file in NEXUS format
+- **Raxml**: partition file in RAxML format
+
+For DNA sequences, we recommend using the `--datatype dna` option when converting to RAxML partition format. The partition format will include the datatype as below:
+
+```text
+DNA, locus_1 = 1-100
+DNA, locus_2 = 101-150
+DNA, locus_3 = 151-200
+```

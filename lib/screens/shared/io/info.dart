@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/services/io/metadata.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class FileInfoScreen extends StatelessWidget {
   const FileInfoScreen({super.key, required this.file});
@@ -17,16 +18,16 @@ class FileInfoScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           return Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(SeguiSpacing.xl),
               width: isPhoneScreen(context) ? double.infinity : 480,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(height: 4),
+                  const SizedBox(height: SeguiSpacing.xs),
                   PrimaryFileIcon(file: file, iconSize: 40),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: SeguiSpacing.xs),
                   Text(
                     snapshot.data!.name,
                     style: Theme.of(context).textTheme.titleMedium,
@@ -37,7 +38,7 @@ class FileInfoScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: SeguiSpacing.md),
                   const CommonDivider(),
                   Wrap(
                     alignment: WrapAlignment.center,

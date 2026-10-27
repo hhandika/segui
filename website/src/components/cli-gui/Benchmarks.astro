@@ -1,0 +1,70 @@
+---
+/// The benchmark charts on the CLI vs GUI page, all computed from
+/// `src/data/benchmark.csv`.
+import BenchChart from "./BenchChart.astro";
+import { bars, datasets } from "./bench";
+
+interface Props {
+  chart: "concat-time" | "concat-ram" | "tasks";
+}
+
+const concat = "Alignment Concatenation";
+const desktopApps = ["SEGUL CLI", "SEGUL GUI (Linux)", "AMAS", "goalign (single-core)"];
+const segulApps = ["SEGUL CLI", "SEGUL GUI (Linux)", "SEGUL GUI (iPadOS)", "SEGUL GUI (Android)"];
+const tasks = [
+  "Alignment Concatenation",
+  "Alignment Conversion",
+  "Alignment Splitting",
+  "Alignment Summary",
+  "Sequence Removal",
+];
+const datasetPanels = [
+  { title: "DNA · Oliveros et al. 2019 · 4,060 loci, 522.5 Mb", dataset: datasets.dna },
+  { title: "Protein · Shen et al. 2018 · 2,408 loci, 398.8 Mb", dataset: datasets.aa },
+];
+const { chart } = Astro.props;
+---
+
+{
+  chart === "concat-time" && (
+    <BenchChart
+      id="bench-concat-time"
+      title="Concatenation execution time"
+      desc="Mean execution time to concatenate NEXUS alignments."
+      caption="Shorter is faster. Whiskers show one standard deviation over five runs."
+      axis="Execution time (seconds)"
+      unit="s"
+      panels={datasetPanels.map(({ title, dataset }) => ({ title, bars: bars(concat, dataset, "timeSecs") }))}
+    />
+  )
+}
+{
+  chart === "concat-ram" && (
+    <BenchChart
+      id="bench-concat-ram"
+      title="Concatenation peak memory"
+      desc="Mean peak memory to concatenate NEXUS alignments on Linux."
+      caption="Lower uses less memory. Measured on desktop only; CLI numbers exclude the terminal app."
+      axis="Peak memory (MB)"
+      unit="MB"
+      panels={datasetPanels.map(({ title, dataset }) => ({
+        title,
+        bars: bars(concat, dataset, "ramMb", desktopApps),
+      }))}
+    />
+  )
+}
+{
+  chart === "tasks" && (
+    <BenchChart
+      id="bench-tasks"
+      title="SEGUL CLI and GUI across tasks"
+      desc="Mean execution time on the Oliveros et al. 2019 DNA dataset for concatenation, conversion, splitting, summary statistics, and sequence removal, comparing the SEGUL CLI on Linux with the GUI on Linux, iPadOS, and Android. The Linux GUI stays close to the CLI; mobile devices take longer, partly because the app copies input files first."
+      caption="DNA dataset (Oliveros et al. 2019). All tasks share one scale."
+      axis="Execution time (seconds)"
+      unit="s"
+      shared
+      panels={tasks.map((task) => ({ title: task.replace("Alignment ", ""), bars: bars(task, datasets.dna, "timeSecs", segulApps) }))}
+    />
+  )
+}

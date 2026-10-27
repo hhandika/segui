@@ -1,0 +1,54 @@
+---
+/// A document icon with a file name and optional subtitle. `stack` draws
+/// extra sheets behind it to show a batch of files.
+interface Props {
+  x: number;
+  y: number;
+  name: string;
+  sub?: string;
+  w?: number;
+  h?: number;
+  stack?: boolean;
+  accent?: boolean;
+  faded?: boolean;
+}
+
+const {
+  x,
+  y,
+  name,
+  sub,
+  w = 120,
+  h = 64,
+  stack = false,
+  accent = false,
+  faded = false,
+} = Astro.props;
+const fold = 14;
+const sheet = (dx: number) =>
+  `M${x + dx},${y - dx} h${w - fold} l${fold},${fold} v${h - fold} h${-w} Z`;
+const panel = accent ? "fx-panel-accent" : "fx-panel";
+---
+
+<g class={faded ? "fx-faded" : undefined}>
+  {stack && <path d={sheet(8)} class="fx-panel" />}
+  {stack && <path d={sheet(4)} class="fx-panel" />}
+  <path d={sheet(0)} class={panel} />
+  <path d={`M${x + w - fold},${y} v${fold} h${fold}`} class="fx-line" style="stroke-width: 1.5" />
+  <text
+    x={x + w / 2}
+    y={sub ? y + h / 2 - 4 : y + h / 2 + 5}
+    text-anchor="middle"
+    class="fx-mono fx-small"
+    style="font-weight: 700"
+  >
+    {name}
+  </text>
+  {
+    sub && (
+      <text x={x + w / 2} y={y + h / 2 + 16} text-anchor="middle" class="fx-muted fx-small">
+        {sub}
+      </text>
+    )
+  }
+</g>

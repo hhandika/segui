@@ -1,0 +1,59 @@
+---
+title: Alignment Concatenation
+sidebar:
+  order: 3
+---
+
+{% screenshots
+   large="gui/align-concat-large.webp"
+   largeAlt="SEGUI Concatenate alignments page on a desktop with the tool form and file panel"
+   small="gui/align-concat-small.webp"
+   smallAlt="SEGUI Concatenate alignments page on a phone with the tool form" %}
+{% pin id="A" label="Alignments tab" large=[5, 25.6] small=[62.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[46.1, 13.5] small=[68.9, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
+Concatenate multiple alignments into a single alignment with partition output.
+
+## Steps
+
+1. Select `Alignments` in the navigation bar {% ref id="A" /%}.
+2. Open `Concatenate alignments` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
+5. Select input format (optional). See the [supported file extensions](/docs/features/#supported-file-extensions) for the list of supported extensions for alignment files.
+6. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+7. Set the prefix for the output file.
+8. Set the output format.
+9. Set the partition format (optional).
+10. Select the run button {% ref id="D" /%}, labeled `Concatenate`, to start the task.
+11. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
+
+## Prefix
+
+The app will use the prefix to name the output file. In the CLI version, the app has a default prefix. However, for the GUI version, you need to set the prefix manually. The prefix will be used as the output file name for the concatenated alignment and the partition file.
+
+For example, if you set the prefix to `concat`, for nexus output and RAxML partition, the app will create two files: `concat.nex` and `concat_partitions.txt`.
+
+## Output format
+
+The app supports FASTA, NEXUS, and PHYLIP output formats. By default, it writes non-interleaved output. To write interleaved output, select `Advanced options` and turn on `Set interleaved format`.
+
+## Partition format
+
+The app supports Charset, NEXUS, and RAxML. The charset option only works when the output is NEXUS. For codon partitions, select `Advanced options` and turn on `Set codon model partition`.
+
+## Output file
+
+- Concatenated alignment file
+- Partition file (optional)
+
+For charset partition, the partition will be in the same file as the alignment.

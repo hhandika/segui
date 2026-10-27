@@ -1,0 +1,46 @@
+---
+title: Sequence Addition
+sidebar:
+  order: 10
+  badge:
+    text: In development
+    variant: caution
+---
+
+{% screenshots
+   large="gui/sequence-add-large.webp"
+   largeAlt="SEGUI Add sequences page on a desktop with the tool form and file panel"
+   small="gui/sequence-add-small.webp"
+   smallAlt="SEGUI Add sequences page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[37.5, 13.5] small=[46.5, 11.8] /%}
+{% pin id="C" label="Input files" large=[45.9, 36.0] small=[11.8, 35.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
+Add sequences to existing sequence files. Use it to add new samples to a set of loci, or to collect sequences from many files into one file.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Add sequences` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Under `Sequences to add`, add the files {% ref id="C" /%} that contain the new sequences, then select their input format (optional) and data type. Added files appear in the file panel {% ref id="E" /%}.
+4. Under `Destination`, choose how to add the sequences:
+   - Leave `Add all to a single file` off to add sequences to destination files with the same file name. For example, sequences in `new/locus_1.fas` are added to `existing/locus_1.nex`.
+   - Turn `Add all to a single file` on to add every sequence to one destination file. Turn on `Add source file name to IDs` to keep track of where each sequence came from.
+5. Select the destination files and their format.
+6. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+7. Turn on `Set interleaved format` or `Only write files with added sequences` (optional).
+8. Select the run button {% ref id="D" /%}, labeled `Add`, to start the task.
+
+## Output
+
+The output is unaligned FASTA, even when the inputs are aligned, because the new sequences may not share the alignment of the destination files. We recommend realigning the output, for example with [MAFFT](https://mafft.cbrc.jp/alignment/software/).
+
+By default, the app writes every destination file, including those that did not receive new sequences. Turn on `Only write files with added sequences` to skip them.

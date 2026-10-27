@@ -1,0 +1,30 @@
+---
+/// The four-taxon phylogenetic tree from the SEGUI field sketch, rooted at
+/// (0, 0) and about 140 x 128 units. Branches grow from the root, then the
+/// pollen tips appear one by one.
+interface Props {
+  /// SVG transform placing the tree, such as `translate(140 318)`.
+  transform?: string;
+  line: string;
+  accent: string;
+}
+
+const { transform, line, accent } = Astro.props;
+const branches =
+  "M0,0 V-44 M0,-44 H-40 V-76 M0,-44 H44 V-88 M-40,-76 H-60 V-100 M-40,-76 H-22 V-106 M44,-88 H26 V-114 M44,-88 H64 V-108";
+const tips = [
+  [-60, -106],
+  [-22, -112],
+  [26, -120],
+  [64, -114],
+];
+---
+
+<g transform={transform} class="phylo-tree">
+  <path class="phylo-branches" d={branches} pathLength="1" fill="none" stroke={line} stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+  {
+    tips.map(([x, y], index) => (
+      <circle class="phylo-tip" style={`--i: ${index}`} cx={x} cy={y} r="7" fill={accent} stroke={line} stroke-width="2.5" />
+    ))
+  }
+</g>

@@ -1,0 +1,38 @@
+---
+import Arrow from "./Arrow.astro";
+import Figure from "./Figure.astro";
+import ListCard from "./ListCard.astro";
+---
+
+<Figure
+  id="partition-conversion"
+  viewBox="0 0 640 170"
+  title="Partition conversion"
+  desc="A RAxML partition listing DNA, locus_1 = 1-100, locus_2 = 101-150, and locus_3 = 151-200 converts to and from a NEXUS sets block with the same charsets."
+  caption="Converts single or multiple partition files, and extracts partitions embedded in NEXUS alignments."
+>
+  <ListCard
+    x={0}
+    y={4}
+    w={250}
+    title="RAxML"
+    lines={["DNA, locus_1 = 1-100", "DNA, locus_2 = 101-150", "DNA, locus_3 = 151-200"]}
+    lineHeight={18}
+  />
+  <Arrow x1={266} y1={60} x2={350} y2={60} />
+  <Arrow x1={350} y1={84} x2={266} y2={84} />
+  <ListCard
+    x={366}
+    y={4}
+    w={274}
+    title="NEXUS"
+    lines={[
+      "begin sets;",
+      "  charset locus_1 = 1-100;",
+      "  charset locus_2 = 101-150;",
+      "  charset locus_3 = 151-200;",
+      "end;",
+    ]}
+    lineHeight={18}
+  />
+</Figure>

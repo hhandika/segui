@@ -1,0 +1,83 @@
+---
+import Arrow from "./Arrow.astro";
+import Figure from "./Figure.astro";
+import ListCard from "./ListCard.astro";
+
+interface Props {
+  /// Draw the presence map instead of the unique ID list.
+  map?: boolean;
+}
+
+const { map = false } = Astro.props;
+const loci = [
+  { name: "locus_1", ids: ["seq1", "seq2", "seq3"] },
+  { name: "locus_2", ids: ["seq2", "seq3"] },
+  { name: "locus_3", ids: ["seq1", "seq3", "seq4"] },
+];
+const unique = [...new Set(loci.flatMap((locus) => locus.ids))].sort();
+const cardWidth = 104;
+const mx = 470;
+const my = 32;
+const cw = 52;
+const ch = 26;
+---
+
+<Figure
+  id={map ? "sequence-id-map" : "sequence-id"}
+  viewBox={map ? "0 0 690 150" : "0 0 600 150"}
+  title={map ? "Sequence ID mapping" : "Sequence ID extraction"}
+  desc={map
+    ? `Three alignments are mapped into a table of samples present in each: ${loci
+        .map((l) => `${l.name} has ${l.ids.join(", ")}`)
+        .join("; ")}. Present samples are TRUE and absent ones FALSE.`
+    : `Three alignments containing ${loci
+        .map((l) => `${l.ids.join(", ")}`)
+        .join("; ")} give one alphabetical list of unique IDs: ${unique.join(", ")}.`}
+  caption={map
+    ? "The map is a CSV table of TRUE and FALSE values, written alongside the unique ID list."
+    : "Use the list to check for typos or inconsistent names before concatenation."}
+>
+  {loci.map((locus, i) => <ListCard x={i * (cardWidth + 12)} y={4} w={cardWidth} title={locus.name} lines={locus.ids} />)}
+  {
+    map ? (
+      <g>
+        <Arrow x1={362} y1={70} x2={404} y2={70} />
+        {unique.map((id, j) => (
+          <text x={mx + j * cw + (cw - 4) / 2} y={my - 10} text-anchor="middle" class="fx-mono fx-small">
+            {id}
+          </text>
+        ))}
+        {loci.map((locus, i) => (
+          <g>
+            <text x={mx - 8} y={my + i * (ch + 4) + ch / 2} text-anchor="end" dominant-baseline="central" class="fx-mono fx-small">
+              {locus.name}
+            </text>
+            {unique.map((id, j) => {
+              const present = locus.ids.includes(id);
+              return (
+                <g>
+                  <rect x={mx + j * cw} y={my + i * (ch + 4)} width={cw - 4} height={ch} rx="4" class={present ? "fx-on" : "fx-gap"} />
+                  <text
+                    x={mx + j * cw + (cw - 4) / 2}
+                    y={my + i * (ch + 4) + ch / 2}
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                    class={present ? "fx-cell-text" : "fx-muted"}
+                    style="font-size: 10px"
+                  >
+                    {present ? "TRUE" : "FALSE"}
+                  </text>
+                </g>
+              );
+            })}
+          </g>
+        ))}
+      </g>
+    ) : (
+      <g>
+        <Arrow x1={362} y1={70} x2={430} y2={70} label="unique" />
+        <ListCard x={446} y={4} w={130} title="ID list" lines={unique} accent />
+      </g>
+    )
+  }
+</Figure>

@@ -1,0 +1,61 @@
+---
+/// A terminal window replaying documented SEGUL CLI commands, each copyable.
+import { cliExamples } from "../../data/site";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "overflow-hidden rounded-2xl border border-leaf-800/80 bg-[#0b120e] font-mono text-[13px] leading-relaxed text-leaf-50 shadow-2xl shadow-black/40",
+    className,
+  ]}
+>
+  <div class="flex items-center gap-1.5 border-b border-leaf-900 px-4 py-2.5">
+    <span class="h-2.5 w-2.5 rounded-full bg-leaf-800"></span>
+    <span class="h-2.5 w-2.5 rounded-full bg-leaf-800"></span>
+    <span class="h-2.5 w-2.5 rounded-full bg-leaf-800"></span>
+    <span class="ml-3 text-xs text-leaf-200/60">~/phylogenomics</span>
+  </div>
+  <div class="space-y-4 p-5">
+    {
+      cliExamples.map((example) => (
+        <div>
+          <p class="text-leaf-300/60"># {example.comment}</p>
+          <div class="flex items-center gap-2">
+            <code class="sg-scroll-x min-w-0 flex-1 whitespace-nowrap">
+              <span class="text-pollen-300 select-none">$ </span>
+              {example.command}
+            </code>
+            <button
+              type="button"
+              class="sg-copy inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-leaf-200/60 transition-colors hover:bg-leaf-900 hover:text-white focus-visible:outline-2 focus-visible:outline-pollen-300"
+              data-copy={example.command}
+              aria-label={`Copy command: ${example.command}`}
+              title="Copy"
+            >
+              <svg data-state="idle" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="12" height="12" rx="2" />
+                <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+              </svg>
+              <svg data-state="done" class="hidden h-4 w-4 text-pollen-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12.5l4.5 4.5L19 7.5" />
+              </svg>
+            </button>
+            <span class="sr-only" aria-live="polite" data-copy-status />
+          </div>
+        </div>
+      ))
+    }
+    <p><span class="text-pollen-300">$</span> <span class="sg-caret"></span></p>
+  </div>
+</div>
+
+<script>
+  import { bindCopyButtons } from "../../scripts/copy";
+  bindCopyButtons();
+</script>

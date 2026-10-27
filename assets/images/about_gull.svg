@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 13 74 84">
+<!-- SEGUI about art: the SEGUL gull from the greeting, waving from a
+     three-row sequence alignment block.
+     Colors are placeholders the app swaps for theme colors:
+     #005224 line, #FFD64F accent, #FFFFFF fill. -->
+<g fill="none" stroke="#005224" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<g stroke-width="2">
+<rect x="36" y="66" width="8" height="8" rx="1.5" fill="#FFD64F"/>
+<rect x="44" y="66" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<rect x="52" y="66" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<rect x="60" y="66" width="8" height="8" rx="1.5" fill="#FFD64F"/>
+<rect x="68" y="66" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<rect x="76" y="66" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<rect x="36" y="76" width="8" height="8" rx="1.5" fill="#FFD64F"/>
+<rect x="44" y="76" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<path d="M54,80 H58"/>
+<rect x="60" y="76" width="8" height="8" rx="1.5" fill="#FFD64F"/>
+<rect x="68" y="76" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<rect x="76" y="76" width="8" height="8" rx="1.5" fill="#FFD64F"/>
+<rect x="36" y="86" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<rect x="44" y="86" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<rect x="52" y="86" width="8" height="8" rx="1.5" fill="#FFD64F"/>
+<rect x="60" y="86" width="8" height="8" rx="1.5" fill="#FFD64F"/>
+<rect x="68" y="86" width="8" height="8" rx="1.5" fill="#FFFFFF"/>
+<path d="M78,90 H82"/>
+</g>
+<g transform="translate(0 2)">
+<path d="M58,59.5 V64 M63,59 V64 M56,64 H60 M61,64 H65" stroke-width="2.5"/>
+<path d="M36,50 C42,46 48,44 56,44 C60,44 63,42 64,38 C65,33 70,31 74,33 C77,35 77,40 75,43 C73,47 72,50 71,54 C69,59 62,61 54,60 C46,59 40,55 36,50 Z" fill="#FFFFFF"/>
+<path d="M76,37.5 L85,39.5 L75.5,42 Z" fill="#FFD64F" stroke-width="2"/>
+<circle cx="71.5" cy="37" r="1.8" fill="#005224" stroke="none"/>
+<path d="M68.5,41.5 Q71,43.5 74,42" stroke-width="1.6"/>
+<g transform="rotate(48 62 50)">
+<path d="M62,49 C56,44.5 46,44 35,47 C41,52.5 52,54.5 62,51.5 Z" fill="#FFFFFF"/>
+<path d="M35,47 C38.5,46 42,45.5 45,45.6 L41.5,51 C39,50.2 36.8,48.8 35,47 Z" fill="#005224" stroke-width="2"/>
+</g>
+<path d="M40,21 Q37,25 39,30 M34,18 Q30,25 33,32" stroke-width="2"/>
+</g>
+<path d="M88,22 L89,25 L92,26 L89,27 L88,30 L87,27 L84,26 L87,25 Z" fill="#FFD64F" stroke-width="1.5"/>
+</g>
+</svg>

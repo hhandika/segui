@@ -1,0 +1,62 @@
+---
+/// Cycles light, dark, and system themes. Stores the choice under the same key
+/// as the Starlight docs so both halves of the site agree.
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="inline-flex h-9 w-9 items-center justify-center rounded-full text-leaf-900 transition-colors hover:bg-leaf-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-leaf-500 dark:text-leaf-100 dark:hover:bg-leaf-900"
+  aria-label="Theme: system"
+  title="Theme: system"
+>
+  <svg data-icon="light" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+  </svg>
+  <svg data-icon="dark" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+  </svg>
+  <svg data-icon="auto" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+    <path d="M8 20h8M12 16v4"></path>
+  </svg>
+</button>
+
+<script>
+  const KEY = "starlight-theme";
+  const order = ["auto", "light", "dark"] as const;
+  type Choice = (typeof order)[number];
+
+  const button = document.getElementById("theme-toggle");
+
+  const read = (): Choice => {
+    const stored = localStorage.getItem(KEY);
+    return stored === "light" || stored === "dark" ? stored : "auto";
+  };
+
+  const apply = (choice: Choice) => {
+    const light = window.matchMedia("(prefers-color-scheme: light)").matches;
+    const resolved = choice === "auto" ? (light ? "light" : "dark") : choice;
+    document.documentElement.dataset.theme = resolved;
+    if (choice === "auto") localStorage.removeItem(KEY);
+    else localStorage.setItem(KEY, choice);
+    button?.querySelectorAll<SVGElement>("[data-icon]").forEach((icon) => {
+      icon.classList.toggle("hidden", icon.dataset.icon !== choice);
+    });
+    const label = `Theme: ${choice === "auto" ? "system" : choice}`;
+    button?.setAttribute("aria-label", label);
+    button?.setAttribute("title", label);
+  };
+
+  apply(read());
+
+  button?.addEventListener("click", () => {
+    const next = order[(order.indexOf(read()) + 1) % order.length];
+    apply(next);
+  });
+
+  window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
+    if (read() === "auto") apply("auto");
+  });
+</script>

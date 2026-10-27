@@ -1,0 +1,36 @@
+---
+/// The SEGUI greeting gull on its post (`assets/images/greeting/`), with a
+/// flapping wing.
+interface Props {
+  class?: string;
+  /// Draw the morning sun and horizon behind the gull.
+  scene?: boolean;
+}
+
+const { class: className, scene = false } = Astro.props;
+---
+
+<svg class:list={["sg-sketch", className]} viewBox="0 0 96 96" aria-hidden="true">
+  <g fill="none" stroke="var(--sk-line)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    {
+      scene && (
+        <>
+          <circle cx="24" cy="70" r="10" fill="var(--sk-accent)" />
+          <path d="M9.5,66.1 L4.7,64.8 M14.4,58.5 L11.1,54.7 M24,55 L24,50 M33.6,58.5 L36.9,54.7 M38.5,66.1 L43.3,64.8" />
+          <path d="M4,70 H92" />
+          <path d="M10,80 q4,-3 8,0 q4,3 8,0 M30,88 q4,-3 8,0 q4,3 8,0 M72,82 q4,-3 8,0 q4,3 8,0" stroke-width="2.5" />
+          <path d="M52,22 H76 C79,22 80,17 76,16 C75,11 68,10 66,14 C64,11 57,12 57,17 C53,17 52,20 52,22 Z" fill="var(--sk-fill)" stroke-width="2.5" />
+        </>
+      )
+    }
+    <path d="M60,64 V92 M54,64 H68" stroke-width="3"></path>
+    <path d="M58,59.5 V64 M63,59 V64 M56,64 H60 M61,64 H65" stroke-width="2.5"></path>
+    <path d="M36,50 C42,46 48,44 56,44 C60,44 63,42 64,38 C65,33 70,31 74,33 C77,35 77,40 75,43 C73,47 72,50 71,54 C69,59 62,61 54,60 C46,59 40,55 36,50 Z" fill="var(--sk-fill)"></path>
+    <path d="M76,37.5 L85,39.5 L75.5,42 Z" fill="var(--sk-accent)" stroke-width="2"></path>
+    <circle cx="71.5" cy="37" r="1.8" fill="var(--sk-line)" stroke="none"></circle>
+    <g class="sg-gull-wing">
+      <path d="M62,49 C56,44.5 46,44 35,47 C41,52.5 52,54.5 62,51.5 Z" fill="var(--sk-fill)"></path>
+      <path d="M35,47 C38.5,46 42,45.5 45,45.6 L41.5,51 C39,50.2 36.8,48.8 35,47 Z" fill="var(--sk-line)" stroke-width="2"></path>
+    </g>
+  </g>
+</svg>

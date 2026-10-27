@@ -1,11 +1,14 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/navigation.dart';
+import 'package:segui/screens/sequence/add.dart';
 import 'package:segui/screens/sequence/extract.dart';
+import 'package:segui/screens/sequence/filter.dart';
 import 'package:segui/screens/sequence/remove.dart';
 import 'package:segui/screens/sequence/rename.dart';
 import 'package:segui/screens/sequence/sequence_id.dart';
 import 'package:segui/screens/sequence/translate.dart';
+import 'package:segui/screens/sequence/transpose.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/services/types.dart';
 
@@ -40,6 +43,12 @@ class SequenceOptions extends StatelessWidget {
         return const IDExtractionView();
       case SequenceOperationType.translation:
         return const TranslateView();
+      case SequenceOperationType.addition:
+        return const SequenceAdditionView();
+      case SequenceOperationType.filtering:
+        return const SequenceFilteringView();
+      case SequenceOperationType.transposition:
+        return const SequenceTranspositionView();
     }
   }
 }

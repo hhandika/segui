@@ -1,0 +1,41 @@
+---
+/// A shell command with a prompt and a copy button. Renders on a dark surface.
+interface Props {
+  command: string;
+  class?: string;
+}
+
+const { command, class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "sg-command group flex items-center gap-2 rounded-xl bg-[#0b120e] py-1.5 pr-1.5 pl-4 font-mono text-sm text-leaf-50",
+    className,
+  ]}
+>
+  <code class="sg-scroll-x min-w-0 flex-1 py-1 whitespace-nowrap">
+    <span class="text-pollen-300 select-none">$ </span>{command}
+  </code>
+  <button
+    type="button"
+    class="sg-copy inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-leaf-200/70 transition-colors hover:bg-leaf-900 hover:text-white focus-visible:outline-2 focus-visible:outline-pollen-300"
+    data-copy={command}
+    aria-label={`Copy command: ${command}`}
+    title="Copy"
+  >
+    <svg data-state="idle" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+      <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path>
+    </svg>
+    <svg data-state="done" class="hidden h-4 w-4 text-pollen-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12.5l4.5 4.5L19 7.5"></path>
+    </svg>
+  </button>
+  <span class="sr-only" aria-live="polite" data-copy-status></span>
+</div>
+
+<script>
+  import { bindCopyButtons } from "../scripts/copy";
+  bindCopyButtons();
+</script>

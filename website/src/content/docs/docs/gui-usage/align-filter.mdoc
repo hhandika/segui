@@ -1,0 +1,73 @@
+---
+title: Alignment Filtering
+sidebar:
+  order: 5
+---
+
+{% screenshots
+   large="gui/align-filter-large.webp"
+   largeAlt="SEGUI Filter alignments page on a desktop with the tool form and file panel"
+   small="gui/align-filter-small.webp"
+   smallAlt="SEGUI Filter alignments page on a phone with the tool form" %}
+{% pin id="A" label="Alignments tab" large=[5, 25.6] small=[62.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[39.0, 13.5] small=[49.3, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
+Filtering alignments based on the length (sites), taxa completeness, parsimony informative sites, percent of parsimony informative sites, or missing data.
+
+## Steps
+
+1. Select `Alignments` in the navigation bar {% ref id="A" /%}.
+2. Open `Filter alignments` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
+5. Select input format (optional). See the [supported file extensions](/docs/features/#supported-file-extensions) for the list of supported extensions for alignment files.
+6. Add filtering parameters.
+7. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+8. Set to concatenate the output (optional).
+9. Select the run button {% ref id="D" /%}, labeled `Filter`, to start the task.
+10. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
+
+## Parameters
+
+The app allows you to filter alignments based on the following parameters:
+
+### Minimal length
+
+The app will filter out sequences that are shorter than the minimum alignment length (number of sites). The input is a positive integer, such as 100 for 100 sites.
+
+### Maximal length
+
+The app will filter out alignments that are longer than the maximum alignment length (number of sites). The input is a positive integer, such as 5000 for 5,000 sites.
+
+### Minimal taxa
+
+This filter is based on the taxon completeness. The app will filter out alignments that have fewer taxa than the minimum number of taxa. For example, given a collection of alignments with 100 taxa with 90 percent completeness, segul will filter alignments with at least containing 90 taxa. The input is a decimal number between 0 and 1, such as 0.9 for 90 percent completeness.
+
+### Parsimony informative sites
+
+The app will filter out alignments that have fewer parsimony informative sites than the minimum number of parsimony informative sites. The input is a positive integer, such as 100 for 100 parsimony informative sites.
+
+### Maximal parsimony informative sites
+
+The app will filter out alignments that have more parsimony informative sites than the value. The input is a positive integer, such as 500.
+
+### Percent of parsimony informative sites
+
+The value is counted based on to highest number of parsimony informative sites across all input alignments. The app will filter out alignments that have fewer parsimony informative sites than the minimum percent of parsimony informative sites. The input is a decimal number between 0 and 1, such as 0.1 for 10 percent of parsimony informative sites.
+
+### Maximal missing data
+
+The app will filter out alignments whose proportion of missing data (`-` or `?`) is greater than the value. The input is a decimal number between 0 and 1, such as 0.3 for 30 percent missing data.
+
+## Concatenating the output
+
+To concatenate the output, turn on `Concatenate output`. It shows the parameters to concatenate the output. It similar to the [alignment concatenation](/docs/gui-usage/align-concat/) parameters. The app will concatenate the output based on the parameters you set. The app will also create a partition file.

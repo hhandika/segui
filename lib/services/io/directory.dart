@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
@@ -22,6 +23,14 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceRenaming: 'segui-sequence-renaming',
   SupportedTask.sequenceUniqueId: 'segui-sequence-unique-id',
   SupportedTask.sequenceTranslation: 'segui-sequence-translation',
+  SupportedTask.alignmentDistance: 'segui-alignment-distance',
+  SupportedTask.alignmentTrimming: 'segui-alignment-trimming',
+  SupportedTask.alignmentUnalignment: 'segui-alignment-unalignment',
+  SupportedTask.genomicMafConversion: 'segui-genomic-maf-conversion',
+  SupportedTask.genomicMafSummary: 'segui-genomic-maf-summary',
+  SupportedTask.sequenceAddition: 'segui-sequence-addition',
+  SupportedTask.sequenceFiltering: 'segui-sequence-filtering',
+  SupportedTask.sequenceTransposition: 'segui-sequence-transposition',
 };
 
 class DirectorySelectionServices {
@@ -34,6 +43,18 @@ class DirectorySelectionServices {
     if (result != null) {
       ref.read(fileOutputProvider.notifier).add(result);
     }
+  }
+
+  /// Use the first directory in [paths] as the output directory.
+  /// Returns false when no path is a directory.
+  bool addDroppedOutputDir(List<String> paths) {
+    for (final String path in paths) {
+      if (FileSystemEntity.isDirectorySync(path)) {
+        ref.read(fileOutputProvider.notifier).add(Directory(path));
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<Directory?> selectDirectoryAdaptive() async {
@@ -77,31 +98,53 @@ class DirectoryCrawler extends FileUtils {
         dir.listSync(recursive: true).whereType<File>().toList();
     // Filter files by matching type.
     for (var file in foundFiles) {
-      if (type.extensions!.contains(file.fileExtension)) {
+      if (matchesTypeGroup(file, type)) {
         inputFiles.add(file);
       }
     }
     return inputFiles;
   }
 
-  List<({File file, bool isNew})> findNewFiles(
-      List<({File file, bool isNew})> oldFiles, bool isRecursive) {
-    const bool isNew = true;
-    List<({File file, bool isNew})> destination = [];
-    List<File> origin = oldFiles.map((e) => e.file).toList();
-
-    List<({File file, bool isNew})> allFiles =
-        _findAllFilesInDir(dir, isRecursive, isNew);
-    for (var file in allFiles) {
-      if (!origin.any((p) => p.path == file.file.path)) {
-        if (kDebugMode) {
-          print('Found file: ${file.file.path}');
-        }
-        destination.add(file);
+  /// Files in [dir] and in its subfolders one level down, such as the
+  /// `per_locus` folder SEGUL writes. Hidden folders are skipped.
+  List<File> crawlOutput() {
+    final List<File> files = [];
+    for (final entity in dir.listSync(followLinks: false)) {
+      if (entity is File) {
+        files.add(entity);
+      } else if (entity is Directory &&
+          !p.basename(entity.path).startsWith('.')) {
+        files.addAll(entity.listSync(followLinks: false).whereType<File>());
       }
     }
-    destination.addAll(oldFiles);
-    return destination;
+    return files;
+  }
+
+  /// Output files from [crawlOutput]. A file is new when it was new in
+  /// [oldFiles], or when it appeared or changed after [since], so files a
+  /// run overwrites count as new too.
+  List<({File file, bool isNew})> findNewFiles(
+    List<({File file, bool isNew})> oldFiles, {
+    required DateTime since,
+  }) {
+    final Map<String, bool> wasNew = {
+      for (final file in oldFiles) file.file.path: file.isNew,
+    };
+    return [
+      for (final File file in crawlOutput())
+        (
+          file: file,
+          isNew: (wasNew[file.path] ?? true) || _isModifiedAfter(file, since),
+        ),
+    ];
+  }
+
+  bool _isModifiedAfter(File file, DateTime time) {
+    try {
+      return file.lastModifiedSync().isAfter(time);
+    } on FileSystemException {
+      return false;
+    }
   }
 
   List<({File file, bool isNew})> _findAllFilesInDir(

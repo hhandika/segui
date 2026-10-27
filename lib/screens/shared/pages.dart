@@ -7,6 +7,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 /// Tool page that pairs the tool form with tool switching and file lists.
 ///
@@ -41,7 +42,7 @@ class SharedOperationPage extends StatelessWidget {
       }
       final bool showToolList = width >= toolListPageWidth;
       return Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(SeguiSpacing.md),
         // Outlined like the home screen; the clip keeps the side panels
         // inside the rounded border.
         child: OutlinedPanel(
@@ -121,35 +122,36 @@ class _IOListContainerState extends State<IOListContainer> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 8),
-        RichText(
-          text: TextSpan(
-            children: [
-              WidgetSpan(
-                child: Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+        const SizedBox(height: SeguiSpacing.md),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(
+                widget.title,
+                style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
               ),
-              WidgetSpan(
-                child: IconButton(
-                  icon: Icon(
-                    size: 18,
-                    Icons.info_outline,
-                    color: Theme.of(context).disabledColor,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isShowingInfo = !isShowingInfo;
-                    });
-                  },
-                ),
+            ),
+            IconButton(
+              tooltip: isShowingInfo ? 'Hide info' : 'Show info',
+              visualDensity: VisualDensity.compact,
+              icon: Icon(
+                size: SeguiControlSize.iconSmall,
+                Icons.info_outline,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-            ],
-          ),
+              onPressed: () {
+                setState(() {
+                  isShowingInfo = !isShowingInfo;
+                });
+              },
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: SeguiSpacing.xs),
         isShowingInfo
             ? SharedInfoForm(
                 description: widget.infoText,
@@ -193,7 +195,7 @@ class EmptyScreen extends StatelessWidget {
       children: [
         const SadGull(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xxl),
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleMedium,
@@ -201,7 +203,7 @@ class EmptyScreen extends StatelessWidget {
           ),
         ),
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xxl),
             child: Text(
               description,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -232,7 +234,7 @@ class SadGull extends StatelessWidget {
             fill: colors.surfaceContainerLowest,
           ),
         ),
-        height: 96,
+        height: SeguiControlSize.illustrationLarge,
       ),
     );
   }

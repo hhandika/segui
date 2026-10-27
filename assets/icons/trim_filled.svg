@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+     fill="currentColor" stroke="currentColor" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round" fill-rule="evenodd">
+  <path d="M 10.5,10.5 H 13.5 V 13.5 H 10.5 Z" />
+  <path data-role="detail" fill="none" d="M 7,3 V 17 H 21" />
+  <path data-role="detail" fill="none" d="M 3,7 H 17 V 21" />
+</svg>

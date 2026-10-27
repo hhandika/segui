@@ -1,0 +1,153 @@
+---
+/// Responsive frame for a feature diagram. Children are SVG elements drawn
+/// in the `viewBox` coordinate space. Colors come from the `fx-*` classes
+/// below, which follow the active Starlight theme.
+interface Props {
+  /// Unique slug used for the accessible title and description ids.
+  id: string;
+  viewBox: string;
+  /// Short accessible name for the diagram.
+  title: string;
+  /// Plain-text description of what the diagram shows, for screen readers.
+  desc: string;
+  caption?: string;
+}
+
+const { id, viewBox, title, desc, caption } = Astro.props;
+const width = Number(viewBox.split(/\s+/)[2]);
+// Keep labels readable on phones; narrower screens scroll the figure.
+const minWidth = Math.min(width, 480);
+---
+
+<figure class="fx-figure">
+  <svg
+    viewBox={viewBox}
+    style={`max-width: ${width}px; min-width: ${minWidth}px`}
+    role="img"
+    aria-labelledby={`${id}-title ${id}-desc`}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title id={`${id}-title`}>{title}</title>
+    <desc id={`${id}-desc`}>{desc}</desc>
+    <slot />
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style is:global>
+  .fx-figure {
+    margin-block: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.75rem;
+    background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+    overflow-x: auto;
+  }
+  :root:not([data-theme="light"]) .fx-figure {
+    background: var(--sl-color-gray-6);
+  }
+  .fx-figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+  .fx-figure figcaption {
+    margin-top: 0.75rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    text-align: center;
+  }
+
+  /* Text. */
+  .fx-figure text {
+    font-family: var(--sl-font);
+    font-size: 14px;
+    fill: var(--sl-color-white);
+  }
+  .fx-figure .fx-mono {
+    font-family: var(--sl-font-mono);
+  }
+  .fx-figure .fx-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .fx-figure .fx-muted {
+    fill: var(--sl-color-gray-3);
+    font-size: 13px;
+  }
+  .fx-figure .fx-small {
+    font-size: 12px;
+  }
+  .fx-figure .fx-accent-text {
+    fill: var(--sl-color-accent);
+    font-weight: 700;
+  }
+  .fx-figure .fx-danger-text {
+    fill: #d9534f;
+    font-weight: 700;
+  }
+
+  /* Surfaces and lines. */
+  .fx-figure .fx-panel {
+    fill: var(--sl-color-black);
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+  .fx-figure .fx-panel-accent {
+    fill: var(--sl-color-accent-low);
+    stroke: var(--sl-color-accent);
+    stroke-width: 1.5;
+  }
+  .fx-figure .fx-line {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .fx-figure .fx-line-accent {
+    fill: none;
+    stroke: var(--sl-color-accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .fx-figure .fx-dashed {
+    stroke-dasharray: 5 4;
+  }
+  .fx-figure .fx-head {
+    fill: var(--sl-color-gray-3);
+  }
+  .fx-figure .fx-faded {
+    opacity: 0.35;
+  }
+
+  /* Sequence cells: nucleotides, amino acids, loci, and gaps. */
+  .fx-figure .fx-A { fill: #00843f; }
+  .fx-figure .fx-C { fill: #2565b0; }
+  .fx-figure .fx-G { fill: #ffc423; }
+  .fx-figure .fx-T { fill: #c0392b; }
+  .fx-figure .fx-N { fill: #6b7280; }
+  .fx-figure .fx-aa { fill: #5e7a3a; }
+  .fx-figure .fx-l1 { fill: #009245; }
+  .fx-figure .fx-l2 { fill: #ffd64f; }
+  .fx-figure .fx-l3 { fill: #1f7f6b; }
+  .fx-figure .fx-on { fill: var(--sl-color-accent); }
+  .fx-figure .fx-gap {
+    fill: none;
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1;
+  }
+  .fx-figure .fx-cell-text {
+    fill: #ffffff;
+    font-family: var(--sl-font-mono);
+    font-weight: 700;
+  }
+  .fx-figure .fx-cell-text.fx-dark {
+    fill: #3a2a00;
+  }
+  .fx-figure .fx-cell-text.fx-gap-text {
+    fill: var(--sl-color-gray-3);
+    font-weight: 400;
+  }
+</style>

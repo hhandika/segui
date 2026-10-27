@@ -1,0 +1,129 @@
+---
+/// The four steps of a GUI run, each with a small sketch of the screen.
+import Figure from "../features/Figure.astro";
+
+const steps = [
+  { title: "Pick a tool", lines: ["Choose a task group,", "then a tool"] },
+  { title: "Add input", lines: ["Add files, or a folder", "on desktop"] },
+  { title: "Set options", lines: ["Output folder and", "task parameters"] },
+  { title: "Run and view", lines: ["Open results in the", "viewer, or share"] },
+];
+const width = 150;
+const gap = 20;
+const sketchY = 58;
+---
+
+<Figure
+  id="gui-steps"
+  viewBox="0 0 664 218"
+  title="Running a task in the GUI"
+  desc="Step 1: pick a tool by choosing a task group in the navigation bar, then a tool. Step 2: add input files, or a folder on desktop. Step 3: set the output folder and any task parameters. Step 4: run the task, then open results in the built-in viewer or share them."
+  caption="Removing an input file only takes it off the list. It stays on disk."
+>
+  {
+    steps.map((step, i) => {
+      const x = 2 + i * (width + gap);
+      return (
+        <g>
+          <rect x={x} y="2" width={width} height="212" rx="12" class="fx-panel" />
+          <circle cx={x + 24} cy="28" r="13" class="fx-on" />
+          <text x={x + 24} y="28" text-anchor="middle" dominant-baseline="central" class="gs-number">
+            {i + 1}
+          </text>
+          <text x={x + 46} y="28" dominant-baseline="central" class="fx-title fx-small">
+            {step.title}
+          </text>
+          <rect x={x + 14} y={sketchY} width={width - 28} height="96" rx="8" class="gs-screen" />
+          {i === 0 && (
+            <g>
+              <rect x={x + 14} y={sketchY} width="30" height="96" rx="8" class="gs-rail" />
+              {[0, 1, 2].map((n) => (
+                <rect x={x + 21} y={sketchY + 12 + n * 28} width="16" height="16" rx="5" class={n === 0 ? "fx-on" : "gs-block"} />
+              ))}
+              {[0, 1, 2].map((n) => (
+                <rect x={x + 54} y={sketchY + 14 + n * 26} width={n === 1 ? 60 : 72} height="16" rx="5" class={n === 0 ? "fx-panel-accent" : "gs-block"} />
+              ))}
+            </g>
+          )}
+          {i === 1 &&
+            [0, 1, 2].map((n) => (
+              <g>
+                <rect x={x + 26} y={sketchY + 12 + n * 26} width="14" height="18" rx="2" class="gs-file" />
+                <text x={x + 48} y={sketchY + 21 + n * 26} dominant-baseline="central" class="fx-mono fx-small">
+                  {`locus_${n + 1}.nex`}
+                </text>
+              </g>
+            ))}
+          {i === 2 && (
+            <g>
+              <path d={`M${x + 26},${sketchY + 16} h14 l4,5 h20 v16 h-38 z`} class="gs-folder" />
+              <rect x={x + 72} y={sketchY + 21} width="50" height="10" rx="5" class="gs-block" />
+              {[0, 1].map((n) => (
+                <g>
+                  <rect x={x + 26} y={sketchY + 52 + n * 22} width="26" height="14" rx="7" class={n === 0 ? "fx-on" : "gs-block"} />
+                  <circle cx={x + (n === 0 ? 45 : 33)} cy={sketchY + 59 + n * 22} r="5" class="gs-knob" />
+                  <rect x={x + 60} y={sketchY + 54 + n * 22} width="58" height="10" rx="5" class="gs-block" />
+                </g>
+              ))}
+            </g>
+          )}
+          {i === 3 && (
+            <g>
+              {[0, 1, 2, 3].map((r) =>
+                [0, 1, 2].map((c) => (
+                  <rect
+                    x={x + 24 + c * 34}
+                    y={sketchY + 10 + r * 14}
+                    width="30"
+                    height="10"
+                    rx="2"
+                    class={r === 0 ? "fx-panel-accent" : "gs-block"}
+                  />
+                )),
+              )}
+              <rect x={x + 62} y={sketchY + 68} width="60" height="20" rx="10" class="fx-on" />
+              <text x={x + 92} y={sketchY + 78} text-anchor="middle" dominant-baseline="central" class="gs-number" style="font-size: 12px">
+                Run
+              </text>
+            </g>
+          )}
+          {step.lines.map((line, l) => (
+            <text x={x + 14} y={180 + l * 18} class="fx-small">
+              {line}
+            </text>
+          ))}
+        </g>
+      );
+    })
+  }
+</Figure>
+
+<style is:global>
+  .fx-figure .gs-number {
+    fill: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .fx-figure .gs-screen {
+    fill: var(--sl-color-gray-6);
+    stroke: var(--sl-color-gray-5);
+    stroke-width: 1.5;
+  }
+  .fx-figure .gs-rail {
+    fill: var(--sl-color-gray-5);
+    opacity: 0.6;
+  }
+  .fx-figure .gs-block,
+  .fx-figure .gs-knob {
+    fill: var(--sl-color-gray-4);
+  }
+  .fx-figure .gs-knob {
+    fill: #ffffff;
+  }
+  .fx-figure .gs-file,
+  .fx-figure .gs-folder {
+    fill: var(--sl-color-accent-low);
+    stroke: var(--sl-color-accent);
+    stroke-width: 1.5;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+title: Sequence Extraction
+sidebar:
+  order: 14
+---
+
+{% screenshots
+   large="gui/sequence-extract-large.webp"
+   largeAlt="SEGUI Extract sequences page on a desktop with the tool form and file panel"
+   small="gui/sequence-extract-small.webp"
+   smallAlt="SEGUI Extract sequences page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[40.6, 13.5] small=[54.1, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.6] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
+Extract sequences from alignment files based on sequence IDs or regular expression.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Extract sequences` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
+5. Select input format (optional). See the [supported file extensions](/docs/features/#supported-file-extensions) for the list of supported extensions for alignment files.
+6. Add extraction parameters.
+7. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+8. Select the run button {% ref id="D" /%}, labeled `Extract`, to start the task.
+9. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
+
+## Parameters
+
+The app allows you to extract sequences based on the following parameters:
+
+### Input ID in a file
+
+The app allows you to input a file containing sequence IDs to extract. The app will use the file to match the sequence ID. The file should be in plain text format. Each line should contain one sequence ID.
+
+```plaintext
+seq1
+seq2
+seq3
+```
+
+### Input semi-colon separated IDs
+
+The app will use the sequence IDs to match the sequence ID.
+
+```plaintext
+seq1;seq2;seq3
+```
+
+### Write regular expression
+
+The regular expression will be used to match the sequence ID. The syntax for the regular expression follows the [Rust regex syntax](https://docs.rs/regex/1.6.1/regex/#syntax). You can use [regex101](https://regex101.com/) to test your regular expression.
+
+Example:
+
+- `^seq[0-9]+` will match all sequence ID that starts with `seq` followed by one or more numbers.
+- `^seq[0-9]{2}` will match all sequence ID that starts with `seq` followed by exactly two numbers.
+- `^rattus` will match all sequence ID that starts with `rattus`.
+
+## Output file
+
+All matched sequences will be extracted from each input file. The app will create a new file for each input file. For example, if theSet the format in output section to determine the output format.

@@ -1,6 +1,3 @@
-// ignore: unused_import
-import 'dart:ffi';
-
 import 'package:file_selector/file_selector.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +6,15 @@ import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/styles/design_tokens.dart';
+
+/// Tells the enclosing tool form that the user changed a field.
+///
+/// Fields that are not [FormField]s dispatch this from their change handler.
+/// [FormField]s, such as dropdowns, are tracked by the enclosing [Form].
+class FormEditedNotification extends Notification {
+  const FormEditedNotification();
+}
 
 class SharedSequenceInputForm extends ConsumerStatefulWidget {
   const SharedSequenceInputForm({
@@ -52,16 +58,15 @@ class SharedSequenceInputFormState
           value: widget.ctr.inputFormatController,
           label: 'Format',
           items: inputFormat,
+          helper: widget.ctr.inputFormatController == 'Auto'
+              ? 'Detects the format from each file extension.'
+              : null,
           onChanged: (String? value) {
             setState(() {
               widget.ctr.inputFormatController = value;
             });
           },
         ),
-        Visibility(
-            visible: widget.ctr.inputFormatController == 'Auto',
-            child: Text('Auto-detect format based on file extension.',
-                style: Theme.of(context).textTheme.labelSmall)),
         SharedDropdownField(
           value: widget.ctr.dataTypeController,
           label: 'Data Type',
@@ -90,12 +95,17 @@ class CardTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 24, 0, 10),
+      padding: const EdgeInsets.fromLTRB(
+        SeguiSpacing.xs,
+        SeguiFormLayout.sectionTitleTop,
+        0,
+        SeguiFormLayout.sectionTitleBottom,
+      ),
       child: Row(
         children: [
           if (step != null) ...[
             StepBadge(step: step!),
-            const SizedBox(width: 12),
+            const SizedBox(width: SeguiSpacing.lg),
           ],
           Flexible(
             child: Text(
@@ -120,8 +130,8 @@ class StepBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Container(
-      width: 28,
-      height: 28,
+      width: SeguiControlSize.badge,
+      height: SeguiControlSize.badge,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: colors.primary,
@@ -139,6 +149,11 @@ class StepBadge extends StatelessWidget {
 }
 
 /// Card that groups the fields of one tool form section.
+///
+/// Spaces its [children] [SeguiFormLayout.fieldGap] apart, so fields carry
+/// no vertical padding of their own. Leave hidden fields out of [children]
+/// with collection `if` rather than [Visibility], which would still take a
+/// gap.
 class FormCard extends StatelessWidget {
   const FormCard({super.key, required this.children});
 
@@ -146,10 +161,40 @@ class FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return FormFieldTheme(
+      child: Container(
+        padding: const EdgeInsets.all(SeguiFormLayout.cardPadding),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(SeguiFormLayout.cardRadius),
+          color: colors.surfaceContainerLowest,
+          border: Border.all(color: colors.outlineVariant),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          spacing: SeguiFormLayout.fieldGap,
+          children: children,
+        ),
+      ),
+    );
+  }
+}
+
+/// Gives text fields in [child] the rounded, filled look of tool form
+/// fields, so fields outside a [FormCard] match those inside one.
+class FormFieldTheme extends StatelessWidget {
+  const FormFieldTheme({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
     final OutlineInputBorder border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(SeguiFormLayout.fieldRadius),
       borderSide: BorderSide(color: colors.outlineVariant),
     );
     return Theme(
@@ -158,26 +203,17 @@ class FormCard extends StatelessWidget {
           border: border,
           enabledBorder: border,
           focusedBorder: border.copyWith(
-            borderSide: BorderSide(color: colors.primary, width: 2),
+            borderSide: BorderSide(
+              color: colors.primary,
+              width: SeguiStroke.regular,
+            ),
           ),
           filled: true,
           fillColor: colors.surfaceContainerLowest,
+          helperMaxLines: 3,
         ),
       ),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: colors.surfaceContainerLowest,
-          border: Border.all(color: colors.outlineVariant),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: children,
-        ),
-      ),
+      child: child,
     );
   }
 }
@@ -194,10 +230,15 @@ class CommonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: const EdgeInsets.fromLTRB(
+        SeguiSpacing.xl,
+        SeguiSpacing.md,
+        SeguiSpacing.xl,
+        SeguiSpacing.xl,
+      ),
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(SeguiRadius.lg),
         color: Color.lerp(
             backgroundColor, Theme.of(context).colorScheme.surface, 0.9),
       ),
@@ -212,31 +253,45 @@ class SharedTextField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.controller,
+    this.helper,
+    this.keyboardType,
+    this.onChanged,
   });
 
   final String label;
+
+  /// Example value shown inside the empty field.
   final String hint;
+
+  /// Explanation shown below the field at all times.
+  final String? helper;
   final TextEditingController controller;
+  final TextInputType? keyboardType;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          suffix: controller.text.isNotEmpty
-              ? IconButton(
-                  tooltip: 'Clear',
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    controller.clear();
-                  },
-                )
-              : null,
-        ),
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      onChanged: (String value) {
+        const FormEditedNotification().dispatch(context);
+        onChanged?.call(value);
+      },
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        helperText: helper,
+        suffix: controller.text.isNotEmpty
+            ? IconButton(
+                tooltip: 'Clear',
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  controller.clear();
+                  const FormEditedNotification().dispatch(context);
+                },
+              )
+            : null,
       ),
     );
   }
@@ -251,6 +306,7 @@ class SharedDropdownField extends StatelessWidget {
     required this.label,
     required this.items,
     required this.onChanged,
+    this.helper,
     this.enabled = true,
   });
 
@@ -261,42 +317,86 @@ class SharedDropdownField extends StatelessWidget {
   final String label;
   final List<String> items;
   final void Function(String?) onChanged;
+
+  /// Explanation shown below the field.
+  final String? helper;
   final bool enabled;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: _isSegmented
-          ? SegmentedField(
-              value: value,
-              label: label,
-              items: items,
-              onChanged: enabled ? onChanged : null,
-            )
-          : DropdownButtonFormField<String?>(
-              isExpanded: true,
-              initialValue: value,
-              decoration: InputDecoration(
-                labelText: label,
-              ),
-              items: items
-                  .map((item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item,
-                          overflow: TextOverflow.clip,
-                        ),
-                      ))
-                  .toList(),
-              onChanged: enabled ? onChanged : null,
+    return _isSegmented
+        ? SegmentedField(
+            value: value,
+            label: label,
+            items: items,
+            helper: helper,
+            onChanged: enabled ? onChanged : null,
+          )
+        : DropdownButtonFormField<String?>(
+            isExpanded: true,
+            initialValue: value,
+            decoration: InputDecoration(
+              labelText: label,
+              helperText: helper,
             ),
-    );
+            items: items
+                .map((item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(
+                        item,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ))
+                .toList(),
+            onChanged: enabled ? onChanged : null,
+          );
   }
 
   bool get _isSegmented {
     return items.length <= maxSegments &&
         items.every((item) => item.length <= maxSegmentLabelLength);
+  }
+}
+
+/// Dropdown whose [items] map each option value to its display label.
+class SharedMapDropdownField extends StatelessWidget {
+  const SharedMapDropdownField({
+    super.key,
+    required this.value,
+    required this.label,
+    required this.items,
+    required this.onChanged,
+    this.helper,
+  });
+
+  final String? value;
+  final String label;
+  final Map<String, String> items;
+  final void Function(String?) onChanged;
+
+  /// Explanation shown below the field.
+  final String? helper;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      isExpanded: true,
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: label,
+        helperText: helper,
+      ),
+      items: items.entries
+          .map((entry) => DropdownMenuItem<String>(
+                value: entry.key,
+                child: Text(
+                  entry.value,
+                  overflow: TextOverflow.clip,
+                ),
+              ))
+          .toList(),
+      onChanged: onChanged,
+    );
   }
 }
 
@@ -307,6 +407,7 @@ class SegmentedField extends StatelessWidget {
     required this.label,
     required this.items,
     required this.onChanged,
+    this.helper,
   });
 
   final String? value;
@@ -314,8 +415,18 @@ class SegmentedField extends StatelessWidget {
   final List<String> items;
   final void Function(String?)? onChanged;
 
+  /// Explanation shown below the buttons.
+  final String? helper;
+
   @override
   Widget build(BuildContext context) {
+    return FieldWithHelper(
+      helper: helper,
+      child: _buildField(context),
+    );
+  }
+
+  Widget _buildField(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -325,7 +436,7 @@ class SegmentedField extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: SeguiSpacing.md),
         SizedBox(
           width: double.infinity,
           child: SegmentedButton<String>(
@@ -342,6 +453,7 @@ class SegmentedField extends StatelessWidget {
                 ? null
                 : (selection) {
                     if (selection.isNotEmpty) {
+                      const FormEditedNotification().dispatch(context);
                       onChanged!(selection.first);
                     }
                   },
@@ -373,24 +485,89 @@ class SwitchForm extends StatelessWidget {
     required this.label,
     required this.value,
     required this.onPressed,
+    this.helper,
   });
 
   final String label;
   final bool value;
   final void Function(bool) onPressed;
 
+  /// Explanation shown below the label.
+  final String? helper;
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(child: Text(label)),
-        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: SeguiFormLayout.helperGap,
+            children: [
+              Text(label),
+              if (helper != null) FieldHelperText(text: helper!),
+            ],
+          ),
+        ),
+        const SizedBox(width: SeguiSpacing.lg),
         Switch(
           value: value,
-          onChanged: onPressed,
+          onChanged: (bool value) {
+            const FormEditedNotification().dispatch(context);
+            onPressed(value);
+          },
         ),
       ],
+    );
+  }
+}
+
+/// Shows [helper] directly below [child], the field it explains.
+///
+/// For fields without a built-in helper, such as file pickers. Text fields
+/// and dropdowns take a `helper` of their own.
+class FieldWithHelper extends StatelessWidget {
+  const FieldWithHelper({
+    super.key,
+    required this.helper,
+    required this.child,
+  });
+
+  final String? helper;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (helper == null) {
+      return child;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: SeguiFormLayout.helperGap,
+      children: [
+        child,
+        FieldHelperText(text: helper!),
+      ],
+    );
+  }
+}
+
+/// Supporting text for a form field, styled like [InputDecoration]'s
+/// helper text.
+class FieldHelperText extends StatelessWidget {
+  const FieldHelperText({super.key, required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Text(
+      text,
+      style: theme.textTheme.bodySmall?.copyWith(
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }

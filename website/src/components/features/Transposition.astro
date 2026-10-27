@@ -1,0 +1,67 @@
+---
+import Alignment from "./Alignment.astro";
+import Arrow from "./Arrow.astro";
+import Figure from "./Figure.astro";
+
+const loci = [
+  { name: "locus_1", tone: "l1", ids: ["seq1", "seq2", "seq3"], rows: ["AGTCCCCA--", "AGTCCCCAAT", "AGTC-CCTTA"] },
+  { name: "locus_2", tone: "l2", ids: ["seq1", "seq3"], rows: ["GGCTAA-T", "GG-TAACT"] },
+];
+const samples = [...new Set(loci.flatMap((locus) => locus.ids))].sort().map((id) => {
+  const parts = loci
+    .filter((locus) => locus.ids.includes(id))
+    .map((locus) => ({
+      name: locus.name,
+      tone: locus.tone,
+      seq: locus.rows[locus.ids.indexOf(id)].replaceAll("-", ""),
+    }));
+  return { id, parts };
+});
+
+const pitch = 18;
+const cardX = 340;
+const cardW = 290;
+let cursor = 4;
+const cards = samples.map((sample) => {
+  const height = 34 + sample.parts.length * pitch + 6;
+  const card = { ...sample, y: cursor, height };
+  cursor += height + 10;
+  return card;
+});
+const viewHeight = cursor;
+---
+
+<Figure
+  id="sequence-transpose"
+  viewBox={`0 0 640 ${viewHeight}`}
+  title="Sequence transposition"
+  desc={`Two loci become one file per sample. ${cards
+    .map((card) => `${card.id} gets ${card.parts.map((p) => p.name).join(" and ")}`)
+    .join("; ")}. Gaps and missing data are removed.`}
+  caption="Each output sequence is named after its locus. Samples missing from a locus simply have no sequence for it."
+>
+  {
+    loci.map((locus, i) => (
+      <Alignment x={60} y={36 + i * 96} rows={locus.rows} ids={locus.ids} title={locus.name} tone={locus.tone} cell={16} />
+    ))
+  }
+  <Arrow x1={256} y1={viewHeight / 2} x2={326} y2={viewHeight / 2} label="transpose" />
+  {
+    cards.map((card) => (
+      <g>
+        <rect x={cardX} y={card.y} width={cardW} height={card.height} rx="8" class="fx-panel-accent" />
+        <text x={cardX + 12} y={card.y + 22} class="fx-title fx-small fx-mono">
+          {card.id}
+        </text>
+        <Alignment
+          x={cardX + 80}
+          y={card.y + 32}
+          rows={card.parts.map((p) => p.seq)}
+          ids={card.parts.map((p) => p.name)}
+          rowTones={card.parts.map((p) => p.tone)}
+          cell={16}
+        />
+      </g>
+    ))
+  }
+</Figure>

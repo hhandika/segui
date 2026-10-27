@@ -1,0 +1,29 @@
+---
+import Arrow from "./Arrow.astro";
+import FileCard from "./FileCard.astro";
+import Figure from "./Figure.astro";
+
+const outputs = [
+  { name: "Alignment summary", sub: "Whole dataset · TXT" },
+  { name: "Locus summary", sub: "One row per alignment · CSV" },
+  { name: "Taxon summary", sub: "One row per sample · CSV" },
+];
+---
+
+<Figure
+  id="alignment-summary"
+  viewBox="0 0 560 220"
+  title="Alignment summary"
+  desc="A folder of alignments produces three outputs: an alignment summary text file for the whole dataset, a locus summary CSV with one row per alignment, and a taxon summary CSV with one row per sample."
+  caption="Statistics differ for DNA and amino acid alignments; DNA is the default."
+>
+  <FileCard x={20} y={80} w={140} name="alignments" sub="DNA or amino acid" stack />
+  {
+    outputs.map((output, i) => (
+      <g>
+        <Arrow x1={176} y1={112} x2={322} y2={36 + i * 74} />
+        <FileCard x={340} y={6 + i * 74} w={210} h={60} name={output.name} sub={output.sub} accent />
+      </g>
+    ))
+  }
+</Figure>

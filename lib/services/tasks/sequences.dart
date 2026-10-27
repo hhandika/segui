@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
+import 'package:segui/services/tasks/alignment.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 
 class SequenceIdExtractionRunner {
@@ -50,6 +52,7 @@ class SequenceTranslationRunner {
     required this.outputFmt,
     required this.tableIndex,
     required this.readingFrame,
+    this.isAutoFrame = false,
   });
 
   final List<SegulInputFile> inputFiles;
@@ -60,11 +63,14 @@ class SequenceTranslationRunner {
   final int tableIndex;
   final String readingFrame;
 
+  /// Detect the reading frame of each file instead of using [readingFrame].
+  final bool isAutoFrame;
+
   Future<void> run() async {
-    String table = '${tableIndex + 1}';
+    String table = translationTableMap[tableIndex]!;
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
-    await TranslationServices(
+    final services = TranslationServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFmt,
       datatype: datatype,
@@ -72,7 +78,12 @@ class SequenceTranslationRunner {
       outputFmt: outputFmt,
       table: table,
       readingFrame: BigInt.parse(readingFrame),
-    ).translateSequence();
+    );
+    if (isAutoFrame) {
+      await services.translateSequenceAutoFrame();
+    } else {
+      await services.translateSequence();
+    }
   }
 }
 
@@ -290,5 +301,173 @@ class SequenceRenamingRunner {
           isRegexMatchAll,
         );
     }
+  }
+}
+
+class SequenceAdditionRunner {
+  const SequenceAdditionRunner({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.destinationFmt,
+    required this.outputDir,
+    required this.isInterleave,
+    required this.isAddedOnly,
+    required this.isSingleDestination,
+    required this.isFilenameIncluded,
+  });
+
+  /// Source sequences and destination files, told apart by [SegulType].
+  final List<SegulInputFile> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final String destinationFmt;
+  final Directory outputDir;
+  final bool isInterleave;
+
+  /// Only write destination files that receive new sequences.
+  final bool isAddedOnly;
+
+  /// Add every sequence to one destination file.
+  final bool isSingleDestination;
+
+  /// Add the source file name to each sequence ID.
+  /// Only used with [isSingleDestination].
+  final bool isFilenameIncluded;
+
+  Future<void> run() async {
+    final io = IOServices();
+    List<String> sources =
+        io.convertPathsToString(inputFiles, SegulType.standardSequence);
+    List<String> destinations =
+        io.convertPathsToString(inputFiles, SegulType.destinationSequence);
+    if (sources.isEmpty) {
+      throw 'No input files';
+    }
+    if (destinations.isEmpty) {
+      throw 'No destination files';
+    }
+    if (isSingleDestination && destinations.length > 1) {
+      throw 'Select only one destination file.';
+    }
+    final services = SequenceAdditionServices(
+      inputFiles: sources,
+      inputFmt: inputFmt,
+      datatype: datatype,
+      destinationFiles: destinations,
+      destinationFmt: destinationFmt,
+      outputDir: outputDir.path,
+      outputFmt: getOutputFmt('FASTA', isInterleave),
+      isAddedOnly: isAddedOnly,
+    );
+    if (isSingleDestination) {
+      await services.addSequenceToSingleFile(
+        includeFilename: isFilenameIncluded,
+      );
+    } else {
+      await services.addSequence();
+    }
+  }
+}
+
+enum SequenceFilteringOptions { minimalLength, maximalLength, maximalGap }
+
+const Map<SequenceFilteringOptions, String> sequenceFilteringOptions = {
+  SequenceFilteringOptions.minimalLength: 'Minimal sequence length',
+  SequenceFilteringOptions.maximalLength: 'Maximal sequence length',
+  SequenceFilteringOptions.maximalGap: 'Maximal proportion of gaps',
+};
+
+/// Whether [value] is a valid parameter for the sequence filtering [option].
+bool isValidSequenceFilteringValue(
+    SequenceFilteringOptions option, String value) {
+  switch (option) {
+    case SequenceFilteringOptions.minimalLength:
+    case SequenceFilteringOptions.maximalLength:
+      return isValidCount(value);
+    case SequenceFilteringOptions.maximalGap:
+      return isValidProportion(value);
+  }
+}
+
+class SequenceFilteringRunner {
+  const SequenceFilteringRunner({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.outputFormat,
+    required this.isInterleave,
+    required this.option,
+    required this.paramValue,
+  });
+
+  final List<SegulInputFile> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final Directory outputDir;
+  final String outputFormat;
+  final bool isInterleave;
+  final SequenceFilteringOptions option;
+  final String paramValue;
+
+  Future<void> run() async {
+    List<String> finalInputFiles = IOServices()
+        .convertPathsToString(inputFiles, SegulType.standardSequence);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
+    await SequenceFilteringServices(
+      inputFiles: finalInputFiles,
+      inputFmt: inputFmt,
+      datatype: datatype,
+      outputDir: outputDir.path,
+      outputFmt: getOutputFmt(outputFormat, isInterleave),
+      params: _matchParams(),
+    ).filterSequence();
+  }
+
+  SequenceFilteringParams _matchParams() {
+    switch (option) {
+      case SequenceFilteringOptions.minimalLength:
+        return SequenceFilteringParams.minLength(
+            BigInt.parse(paramValue.trim()));
+      case SequenceFilteringOptions.maximalLength:
+        return SequenceFilteringParams.maxLength(
+            BigInt.parse(paramValue.trim()));
+      case SequenceFilteringOptions.maximalGap:
+        return SequenceFilteringParams.maxGap(double.parse(paramValue));
+    }
+  }
+}
+
+class SequenceTranspositionRunner {
+  const SequenceTranspositionRunner({
+    required this.inputFiles,
+    required this.inputFmt,
+    required this.datatype,
+    required this.outputDir,
+    required this.isInterleave,
+  });
+
+  final List<SegulInputFile> inputFiles;
+  final String inputFmt;
+  final String datatype;
+  final Directory outputDir;
+  final bool isInterleave;
+
+  Future<void> run() async {
+    List<String> finalInputFiles = IOServices()
+        .convertPathsToString(inputFiles, SegulType.standardSequence);
+    if (finalInputFiles.isEmpty) {
+      throw 'No input files';
+    }
+    await SequenceTransposeServices(
+      inputFiles: finalInputFiles,
+      inputFmt: inputFmt,
+      datatype: datatype,
+      outputDir: outputDir.path,
+      outputFmt: getOutputFmt('FASTA', isInterleave),
+    ).transpose();
   }
 }

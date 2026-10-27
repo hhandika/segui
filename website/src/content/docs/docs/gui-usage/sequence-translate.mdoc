@@ -1,0 +1,68 @@
+---
+title: Sequence Translation
+sidebar:
+  order: 16
+---
+
+{% screenshots
+   large="gui/sequence-translate-large.webp"
+   largeAlt="SEGUI Translate sequences page on a desktop with the tool form and file panel"
+   small="gui/sequence-translate-small.webp"
+   smallAlt="SEGUI Translate sequences page on a phone with the tool form" %}
+{% pin id="A" label="Sequences tab" large=[5, 33.1] small=[87.0, 94.8] /%}
+{% pin id="B" label="Tool switcher" large=[42.6, 13.5] small=[59.4, 11.8] /%}
+{% pin id="C" label="Input files" large=[24.6, 34.9] small=[14.0, 34.4] /%}
+{% pin id="D" label="Run button" large=[66, 94.5] small=[88, 84.8] /%}
+{% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
+{% /screenshots %}
+
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
+Translate DNA sequences to amino acid sequences.
+
+## Steps
+
+1. Select `Sequences` in the navigation bar {% ref id="A" /%}.
+2. Open `Translate sequences` from the tool list on wide windows, or select the tool name {% ref id="B" /%} at the top of the page to switch tools.
+3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+5. Select the output sequence format. Turn on `Set interleaved format` to write interleaved output (optional).
+6. Select the translation table. The default is the standard genetic code.
+7. Select the reading frame. The default is the first reading frame. Turn on `Detect reading frame automatically` to let the app choose the frame for each file instead.
+8. Select the run button {% ref id="D" /%}, labeled `Translate`, to start the task.
+
+## Output
+
+The app will generate a file containing the translated sequences. The default name is the input file.
+
+## Supported translation Table
+
+The app supports the following [translation tables](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi):
+
+| Table No | Genetic Code                                                                                 |
+| -------- | -------------------------------------------------------------------------------------------- |
+| 1        | The Standard Code                                                                            |
+| 2        | The Vertebrate Mitochondrial Code                                                            |
+| 3        | The Yeast Mitochondrial Code                                                                 |
+| 4        | The Mold, Protozoan, and Coelenterate Mitochondrial Code and the Mycoplasma/Spiroplasma Code |
+| 5        | The Invertebrate Mitochondrial Code                                                          |
+| 6        | The Ciliate, Dasycladacean and Hexamita Nuclear Code                                         |
+| 9        | The Echinoderm and Flatworm Mitochondrial Code                                               |
+| 10       | The Euplotid Nuclear Code                                                                    |
+| 11       | The Bacterial, Archaeal and Plant Plastid Code                                               |
+| 12       | The Alternative Yeast Nuclear Code                                                           |
+| 13       | The Ascidian Mitochondrial Code                                                              |
+| 14       | The Alternative Flatworm Mitochondrial Code                                                  |
+| 16       | Chlorophycean Mitochondrial Code                                                             |
+| 21       | Trematode Mitochondrial Code                                                                 |
+| 22       | Scenedesmus obliquus Mitochondrial Code                                                      |
+| 23       | Thraustochytrium Mitochondrial Code                                                          |
+| 24       | Rhabdopleuridae Mitochondrial Code                                                           |
+| 25       | Candidate Division SR1 and Gracilibacteria Code                                              |
+| 26       | Pachysolen tannophilus Nuclear Code                                                          |
+| 29       | Mesodinium Nuclear Code                                                                      |
+| 30       | Peritrich Nuclear Code                                                                       |
+| 33       | Cephalodiscidae Mitochondrial UAA-Tyr Code                                                   |

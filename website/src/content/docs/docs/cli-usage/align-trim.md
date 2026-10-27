@@ -1,0 +1,120 @@
+---
+title: Alignment Trimming
+sidebar:
+  order: 9
+---
+
+Trim alignments based on the proportion of missing data or the number of parsimony informative sites. This feature will filter sites based on the specified parameters.
+
+:::note
+This feature is available in SEGUL v0.23.0 and later versions. To check your SEGUL version, run in your terminal:
+
+```bash
+segul --version
+# Compatible version example:
+# segul 0.23.0
+```
+
+Check the [Installation Guide](/docs/installation/update/#segul-cli) to update SEGUL to the latest version.
+:::
+
+## Quick example
+
+Assume we have an alignment file in FASTA format as follows:
+
+```plaintext
+>seq1
+ATGCAT--A
+>seq2
+ATGCATA--
+>seq3
+ATGCAA-A-
+>seq4
+ATGCATA--
+```
+
+If we set the proportion of missing data to 0.5. It will generate an output without the last two sites using the following command:
+
+```bash
+segul align trim --dir alignments/ --missing-data 0.5
+```
+
+The output as follows. Note that the last two sites were removed because they had more than 50% missing data.
+
+```plaintext
+>seq1
+ATGCAT-
+>seq2
+ATGCATA
+>seq3
+ATGCAA-
+>seq4
+ATGCATA
+```
+
+## Detailed usage
+
+### Filtering based on the proportion of missing data
+
+To trim alignments, use the `align trim` command with the following options:
+
+```bash
+segul align trim --dir <alignment-dir> --missing-data <value>
+```
+
+For example:
+
+```bash
+segul align trim --dir alignments/ --missing-data 0.5
+```
+
+### Filtering based on parsimony informative sites
+
+To trim based on the minimum threshold of parsimony informative sites, use the `--pinf` option:
+
+```bash
+segul align trim --dir <alignment-dir> --pinf <value>
+```
+
+For example, this command will retain sites with at least 50 parsimony informative sites:
+
+```bash
+segul align trim --dir alignments/ --pinf 50
+```
+
+### Amino acid alignment trimming
+
+If the input is amino acid sequences, you need to use the `--datatype aa` option. For example:
+
+```bash
+segul align trim --dir alignments/ --missing-data 0.5 --datatype aa
+```
+
+### Specifying the output directory and format
+
+By default, the output directory is `Align-Trim`. You can change the output directory name using the `--output` or `-o` option. For example, to name the output directory `align-trim`, use the command below:
+
+```bash
+segul align trim --dir alignments/ --output align-trim
+```
+
+To specify the output format, use the `--output-format` or `-F` option. The default output format is NEXUS. For example, to change the output format to FASTA, use the command below:
+
+```bash
+segul align trim --dir alignments/ --output-format fasta
+```
+
+## All options
+
+| Option                  | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `-d`, `--dir`           | Directory with alignments                                                           |
+| `-i`, `--input`         | Alignment files. Allows wildcards                                                   |
+| `-f`, `--input-format`  | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`                       |
+| `--datatype`            | Data type: `dna` (default), `aa`, or `ignore`                                       |
+| `--missing-data`        | Remove sites with a higher proportion of missing data                               |
+| `--pinf`                | Parsimony informative site threshold for keeping sites                              |
+| `-F`, `--output-format` | Output format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
+| `-o`, `--output`        | Output directory. Default: `Align-Trim`                                             |
+| `--force`               | Overwrite an existing output directory                                              |
+| `--log`                 | Log file path. Default: `segul.log`                                                 |

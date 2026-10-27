@@ -104,3 +104,43 @@ legs = 0
 antennae = 0
 wings = 0
 
+
+[add]
+legs = 0
+antennae = 0
+wings = 0
+
+[distance]
+legs = 0
+antennae = 0
+wings = 0
+
+[maf_convert]
+legs = 0
+antennae = 0
+wings = 0
+
+[sequence_filter]
+legs = 0
+antennae = 0
+wings = 0
+
+[transpose]
+legs = 0
+antennae = 0
+wings = 0
+
+[trim]
+legs = 0
+antennae = 0
+wings = 0
+
+[unalign]
+legs = 0
+antennae = 0
+wings = 0
+
+[maf_summary]
+legs = 0
+antennae = 0
+wings = 0

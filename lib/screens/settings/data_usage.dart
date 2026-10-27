@@ -6,6 +6,7 @@ import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/output.dart';
 import 'package:segui/styles/decoration.dart';
+import 'package:segui/styles/design_tokens.dart';
 
 class DataUsageScreen extends ConsumerStatefulWidget {
   const DataUsageScreen({super.key});
@@ -36,17 +37,27 @@ class DataUsageView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      padding: const EdgeInsets.fromLTRB(
+        SeguiSpacing.xl,
+        SeguiSpacing.xl,
+        SeguiSpacing.xl,
+        SeguiSpacing.xxxl,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           const AppDataStats(),
-          const SizedBox(height: 8),
+          const SizedBox(height: SeguiSpacing.md),
           Expanded(
             child: OutlinedPanel(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: const EdgeInsets.fromLTRB(
+                SeguiSpacing.xl,
+                0,
+                SeguiSpacing.xl,
+                SeguiSpacing.xl,
+              ),
               child: ref.watch(fileOutputProvider).when(
                     data: (outputFile) {
                       final files = outputFile.files;
@@ -126,7 +137,7 @@ class FileCountTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 200,
+      width: SeguiContentWidth.statTile,
       child: ListTile(
         leading: Icon(
           Icons.file_copy_outlined,
@@ -150,7 +161,7 @@ class FileSizeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: 200,
+        width: SeguiContentWidth.statTile,
         child: ListTile(
           leading: Icon(
             Icons.data_usage_outlined,
@@ -176,7 +187,7 @@ class ClearAppDataButtonState extends ConsumerState<ClearAppDataButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: SeguiSpacing.md),
         child: TextButton(
             onPressed: () {
               // Show dialog to confirm the action
