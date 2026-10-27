@@ -16,6 +16,11 @@ sidebar:
 {% pin id="E" label="File panel" large=[85.8, 11.8] small=[91.5, 11.8] /%}
 {% /screenshots %}
 
+{% aside type="note" title="New interface coming soon" %}
+This page shows the new SEGUI interface, which is in development. The current release
+(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+{% /aside %}
+
 Summarize raw sequence reads in FASTQ format, plain or compressed, from read counts and base quality to duplication and adapter content. For assembled contigs, see [Genomic Contig Summary](/docs/gui-usage/contig-summary/).
 
 ## Steps
@@ -58,6 +63,8 @@ The app supports the following summary modes:
 - Mean quality per read, and reads with mean quality below 20
 
 ## Read report
+
+{% badge text="In development" variant="caution" /%}
 
 The read report shows the Complete mode statistics as interactive charts, one sample at a time, much like the alignment viewer shows one file at a time.
 
