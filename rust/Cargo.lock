@@ -262,16 +262,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bstr"
-version = "1.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6bb31b46c14244e20ee9984b11bf5c992b91fb6939fea616e3512c8baecdbe5f"
-dependencies = [
- "memchr",
- "serde_core",
-]
-
-[[package]]
 name = "build-target"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1405,17 +1395,19 @@ version = "0.118.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fbc48a82baed442e5cb56837d5d6896d825a60612460562fb6e3e0229e375b3"
 dependencies = [
- "noodles-fastq",
+ "noodles-bgzf",
 ]
 
 [[package]]
-name = "noodles-fastq"
-version = "0.24.0"
+name = "noodles-bgzf"
+version = "0.52.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b749d3b5ce244ad38790b0d1193f199244bada983fd5316fb1d3bcda162b3e97"
+checksum = "950a8570bb43a68697bb34ba39a44f1171faacceb852104d4a35701b86d7ef29"
 dependencies = [
- "bstr",
- "memchr",
+ "bytes",
+ "crossbeam-channel",
+ "rayon",
+ "zlib-rs",
 ]
 
 [[package]]
@@ -2227,7 +2219,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "segul"
 version = "0.24.0"
-source = "git+https://github.com/hhandika/segul.git?branch=dev#909fce1d399b2fc12f100c6078d22593a868eff7"
+source = "git+https://github.com/hhandika/segul.git?branch=summary#0663e33fd76a5a444238aa60136d5b94878aa9a8"
 dependencies = [
  "clap",
  "colored",
@@ -2240,7 +2232,7 @@ dependencies = [
 [[package]]
 name = "segul-core"
 version = "0.24.0"
-source = "git+https://github.com/hhandika/segul.git?branch=dev#909fce1d399b2fc12f100c6078d22593a868eff7"
+source = "git+https://github.com/hhandika/segul.git?branch=summary#0663e33fd76a5a444238aa60136d5b94878aa9a8"
 dependencies = [
  "ahash",
  "alphanumeric-sort",
@@ -2258,6 +2250,7 @@ dependencies = [
  "lazy_static",
  "log",
  "log4rs",
+ "memchr",
  "nom",
  "noodles",
  "num-format",
@@ -2269,6 +2262,7 @@ dependencies = [
  "serde_json",
  "usvg",
  "walkdir",
+ "xxhash-rust",
  "zip 9.1.3",
 ]
 
