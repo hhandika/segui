@@ -319,6 +319,26 @@ export const workflows = [
   { title: "Reformat for another program", steps: ["Convert", "Partition"] },
 ];
 
+/// Latest release news on the landing page. Benchmarks are mean concatenation
+/// times in seconds, from `bench/results/latest.json` in the SEGUL repository.
+export const latestRelease = {
+  version: "v0.24.0",
+  previousVersion: "v0.23.2",
+  summary:
+    "A faster CLI and new features. The GUI update will come later, with a redesigned interface.",
+  href: "/docs/intro/#whats-new-in-v0240",
+  highlights: [
+    { title: "Genetic distances", href: "/docs/cli-usage/align-distance/" },
+    { title: "MAF summary and conversion", href: "/docs/cli-usage/maf-summary/" },
+    { title: "One-line CLI install", href: "/docs/installation/install_cli/#installer-script" },
+  ],
+  benchmarks: [
+    { dataset: "DNA · Oliveros et al. 2019 · 4,060 loci, 522.5 Mbases", before: 2.68, after: 0.63 },
+    { dataset: "Protein · Shen et al. 2018 · 2,408 loci, 398.8 Mbases", before: 4.14, after: 0.5 },
+  ],
+  benchmarkNote: "Alignment concatenation. Mean of five runs on Linux with an AMD Ryzen 9 5900X.",
+};
+
 export const citation = {
   text: "Handika, H., and J. A. Esselstyn. 2024. SEGUL: Ultrafast, memory-efficient and mobile-friendly software for manipulating and summarizing phylogenomic datasets. Molecular Ecology Resources, 24(7).",
   doi: "https://doi.org/10.1111/1755-0998.13964",

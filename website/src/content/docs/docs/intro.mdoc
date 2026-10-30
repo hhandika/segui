@@ -25,6 +25,41 @@ mamba install segul
 See [installing with conda](/docs/installation/install_cli/#conda).
 {% /aside %}
 
+## What's new in v0.24.0
+
+This release updates the SEGUL CLI and Rust library.
+
+{% aside %}
+The GUI update will come later, with a redesigned interface.
+{% /aside %}
+
+- **One-line install:** set up the CLI on Linux and macOS with the
+  [installer script](/docs/installation/install_cli/#installer-script).
+- **Genetic distances:** [`segul align distance`](/docs/cli-usage/align-distance/) computes
+  pairwise p, JC69, K2P, TN93, and Poisson distances for each locus, with within- and between-group
+  means.
+- **MAF tools:** [`segul maf summary`](/docs/cli-usage/maf-summary/) reports per-file and
+  per-species statistics. [`segul maf convert`](/docs/cli-usage/maf-convert/) now clips and merges
+  blocks by BED locus, filters blocks, and reads `.maf.gz` and `.bed.gz` files directly.
+- **Transpose:** [`segul sequence transpose`](/docs/cli-usage/sequence-transpose/) turns locus
+  alignments into one file of loci per sample.
+- **Performance:** alignment conversion is about 5× faster, `segul contig summary` is 5–10× faster,
+  `segul align concat` is about 3× faster or more, and NEXUS parsing uses about a third of the
+  memory.
+- **Rust library:** the library moved to the new
+  [`segul-core`](/docs/api-usage/rust-api/) crate, with Cargo features for each data type. Replace
+  `segul::` with `segul_core::` in your imports.
+- **Bug fix:** `segul align concat` output now keeps the same taxon order between runs.
+
+{% aside type="caution" %}
+This release changes the MAF commands. `segul maf maf` is now `segul maf convert`, `--bed <FILE>`
+replaces `--reference <FILE> --from-bed`, and `-F/--output-format` replaces `-t`. Sample names now
+drop the assembly suffix, so use `--full-source-name` to keep full names.
+{% /aside %}
+
+See the [full release notes](https://github.com/hhandika/segul/blob/main/CHANGELOG.md#v0240) for
+all changes.
+
 ## Platform support
 
 {% platformmatrix /%}
