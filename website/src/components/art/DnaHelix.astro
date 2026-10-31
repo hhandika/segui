@@ -1,6 +1,12 @@
 ---
-/// The DNA helix from the SEGUI field sketch, 30 x 160 units, standing on its
-/// base at (0, 0). Its strands draw upward, then the base pairs fade in.
+/// The DNA helix from the SEGUI field sketch, about 21 x 160 units, standing on
+/// its base at (0, 0). Its strands draw upward, then the base pairs fade in.
+///
+/// The two backbones sit 135 degrees apart around the helix axis rather than
+/// opposite each other, as in B-DNA. A flat side view hides that offset, so
+/// each strand is split into the half facing the viewer and a dimmer half
+/// behind the axis; the front halves then show the narrow (minor) and wide
+/// (major) grooves alternating up a right-handed helix.
 interface Props {
   /// SVG transform placing the helix, such as `translate(300 314)`.
   transform?: string;
@@ -9,19 +15,80 @@ interface Props {
 }
 
 const { transform, line, accent } = Astro.props;
-const strand =
-  "M0,0 C13,-10 13,-30 0,-40 C-13,-50 -13,-70 0,-80 C13,-90 13,-110 0,-120 C-13,-130 -13,-150 0,-160";
-const mirrored =
-  "M0,0 C-13,-10 -13,-30 0,-40 C13,-50 13,-70 0,-80 C-13,-90 -13,-110 0,-120 C13,-130 13,-150 0,-160";
-const rungs = [-20, -60, -100, -140];
+
+const height = 160;
+const radius = 10.5;
+const pitch = 80;
+const strandOffset = (135 * Math.PI) / 180;
+const step = 5;
+const omega = (2 * Math.PI) / pitch;
+
+/// Angle around the axis at height `t`. Starts at a quarter turn so both
+/// strands cross at the base.
+const angleAt = (t: number) => omega * t + Math.PI / 2;
+const fmt = (n: number) => +n.toFixed(2);
+
+/// Traces one backbone as cubic Bezier segments fitted to its projected sine,
+/// split into front (facing the viewer) and back subpaths.
+const strandPaths = (phase: number) => {
+  const x = (t: number) => radius * Math.sin(angleAt(t) + phase);
+  const slope = (t: number) => radius * omega * Math.cos(angleAt(t) + phase);
+  const isFront = (t: number) => Math.cos(angleAt(t) + phase) > 0;
+
+  // Break at every point where the strand passes behind the axis, so each
+  // segment lies wholly in front or behind.
+  const breaks = new Set<number>();
+  for (let t = 0; t <= height; t += step) breaks.add(t);
+  for (let k = -2; k < 2 * (height / pitch) + 2; k++) {
+    const t = (k * Math.PI - Math.PI / 2 - phase) / omega;
+    if (t > 0 && t < height) breaks.add(t);
+  }
+  const ts = [...breaks].sort((a, b) => a - b);
+
+  const paths = { front: "", back: "" };
+  let previous: "front" | "back" | undefined;
+  for (let i = 0; i < ts.length - 1; i++) {
+    const [t0, t1] = [ts[i], ts[i + 1]];
+    const h = t1 - t0;
+    const side = isFront((t0 + t1) / 2) ? "front" : "back";
+    if (side !== previous) paths[side] += ` M${fmt(x(t0))},${fmt(-t0)}`;
+    const c1 = [x(t0) + (slope(t0) * h) / 3, -t0 - h / 3];
+    const c2 = [x(t1) - (slope(t1) * h) / 3, -t1 + h / 3];
+    paths[side] += ` C${[...c1, ...c2, x(t1), -t1].map(fmt).join(",")}`;
+    previous = side;
+  }
+  return paths;
+};
+
+const strand = strandPaths(strandOffset / 2);
+const partner = strandPaths(-strandOffset / 2);
+
+// Base pairs span the gap between the strands, three per lobe. Lobes are
+// centered between crossings, every half pitch.
+const rungs = [20, 60, 100, 140].flatMap((center, lobe) =>
+  [-8, 0, 8].map((shift) => {
+    const t = center + shift;
+    const theta = angleAt(t);
+    return {
+      lobe,
+      y: -t,
+      x1: fmt(radius * Math.sin(theta + strandOffset / 2)),
+      x2: fmt(radius * Math.sin(theta - strandOffset / 2)),
+    };
+  }),
+);
 ---
 
 <g transform={transform} class="dna-helix" fill="none" stroke-linecap="round">
+  <g opacity="0.45">
+    <path class="dna-strand" d={strand.back} pathLength="1" stroke={line} stroke-width="2.6"></path>
+    <path class="dna-strand dna-strand-late" d={partner.back} pathLength="1" stroke={accent} stroke-width="2.6"></path>
+  </g>
   {
-    rungs.map((y, index) => (
-      <line class="dna-rung" style={`--i: ${index}`} x1="-9.1" y1={y} x2="9.1" y2={y} stroke={accent} stroke-width="2.1" />
+    rungs.map(({ lobe, y, x1, x2 }) => (
+      <line class="dna-rung" style={`--i: ${lobe}`} x1={x1} y1={y} x2={x2} y2={y} stroke={accent} stroke-width="2.1" />
     ))
   }
-  <path class="dna-strand" d={strand} pathLength="1" stroke={line} stroke-width="3"></path>
-  <path class="dna-strand dna-strand-late" d={mirrored} pathLength="1" stroke={accent} stroke-width="3"></path>
+  <path class="dna-strand" d={strand.front} pathLength="1" stroke={line} stroke-width="3"></path>
+  <path class="dna-strand dna-strand-late" d={partner.front} pathLength="1" stroke={accent} stroke-width="3"></path>
 </g>
