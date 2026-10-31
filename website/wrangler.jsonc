@@ -3,7 +3,7 @@
   "name": "segui",
   "compatibility_date": "2026-10-01",
   // Set explicitly so deploys don't warn about the defaults. Preview URLs
-  // give each non-production branch build its own link.
+  // give each non-production branch build its own link, allowing for easy testing and review.
   "workers_dev": true,
   "preview_urls": true,
   "build": { "command": "bun run build" },
