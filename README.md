@@ -34,7 +34,7 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
     height="80"
   />](https://play.google.com/store/apps/details?id=com.hhandika.segui&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
 
-Learn more about device requirements and GUI app installation in the [documentation](https://www.segul.app/docs/installation/install_gui/).
+Learn more about device requirements and GUI app installation in the [documentation](https://segul.app/docs/installation/install_gui/).
 
 ## Coming Soon: SEGUI with SEGUL v0.24.0
 
