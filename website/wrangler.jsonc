@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "segul-website",
+  "name": "segui",
   "compatibility_date": "2026-10-01",
   // Set explicitly so deploys don't warn about the defaults. Preview URLs
   // give each non-production branch build its own link.
@@ -9,6 +9,6 @@
   "build": { "command": "bun run build" },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
+    "not_found_handling": "404-page",
+  },
 }
