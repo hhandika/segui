@@ -1,11 +1,10 @@
 ---
 import { Image } from "astro:assets";
 import logo from "../assets/logo.svg";
-import { docsPath, githubUrl, navItems } from "../data/site";
+import { githubUrl, navItems } from "../data/site";
 
 const links = [
   ...navItems,
-  { path: docsPath, label: "Docs" },
   { path: "/docs/support/", label: "Support" },
   { path: "/docs/privacy/", label: "Privacy" },
   { path: "/docs/terms/", label: "Terms" },

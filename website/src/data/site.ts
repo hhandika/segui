@@ -25,13 +25,14 @@ import genomics from "../assets/icons/genomics_outlined.svg";
 import alignments from "../assets/icons/alignments_outlined.svg";
 import sequences from "../assets/icons/sequences_outlined.svg";
 
+export const docsPath = "/docs/intro/";
+
 export const navItems = [
   { path: "/", label: "Home" },
   { path: "/get-started", label: "Get Started" },
+  { path: docsPath, label: "Docs" },
   { path: "/about", label: "About" },
 ];
-
-export const docsPath = "/docs/intro/";
 export const githubUrl = "https://github.com/hhandika/segul";
 
 export const tagline = "An ultrafast and mobile-friendly phylogenomic toolkit";
