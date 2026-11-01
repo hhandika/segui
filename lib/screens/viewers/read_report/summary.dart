@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
@@ -21,8 +23,8 @@ enum SummaryView {
   final IconData icon;
 }
 
-/// Every sample at a glance: one metric as bars, or all metrics as a
-/// table, followed by the checks of the open sample. Samples follow the
+/// Every sample at a glance: one metric as bars, or all
+/// metrics as a table, followed by the checks of the open sample. Samples follow the
 /// order of the sample list, and picking one opens it. The controls and
 /// the checks stay in place while the samples scroll between them.
 class ReadSummaryPanel extends StatefulWidget {
@@ -80,20 +82,21 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
             alignment: Alignment.topCenter,
             child: ChartPlaceholder(message: 'No samples match the filter.'),
           )
-        : _mode == SummaryView.bars
-            ? SampleMetricBars(
+        : switch (_mode) {
+            SummaryView.bars => SampleMetricBars(
                 samples: widget.samples,
                 view: widget.view,
                 index: widget.index,
                 metric: metric,
                 onSelected: widget.onSelected,
-              )
-            : ReadOverviewTable(
+              ),
+            SummaryView.table => ReadOverviewTable(
                 samples: widget.samples,
                 view: widget.view,
                 index: widget.index,
                 onSelected: widget.onSelected,
-              );
+              ),
+          };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: fills ? MainAxisSize.max : MainAxisSize.min,
@@ -349,7 +352,9 @@ class SampleMetricBar extends StatelessWidget {
 }
 
 /// Every metric of every sample, sortable by column and shown a page at a
-/// time. Tapping a row opens the sample.
+/// time. A bar behind each number shows where it sits between the lowest
+/// and highest value of its column among the listed samples, colored by
+/// status in columns with a quality check. Tapping a row opens the sample.
 class ReadOverviewTable extends StatelessWidget {
   const ReadOverviewTable({
     super.key,
@@ -366,67 +371,188 @@ class ReadOverviewTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PagedTable<int>(
-      rows: view,
-      selected: index,
-      onTap: onSelected,
-      columns: [
-        PagedTableColumn(
-          label: 'Sample',
-          width: 200,
-          sortValue: (i) => samples[i].sample,
-          cell: (i) => Text(
-            samples[i].sample,
-            overflow: TextOverflow.ellipsis,
+    final Color neutral = Theme.of(context).colorScheme.primary;
+    PagedTableColumn<int> numeric(
+      String label,
+      double width,
+      ReadMetric metric,
+      String Function(double value) format,
+    ) {
+      return _numeric(label, width, metric, format, neutral);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _DataBarLegend(neutral: neutral),
+        const SizedBox(height: SeguiSpacing.sm),
+        Expanded(
+          child: PagedTable<int>(
+            rows: view,
+            selected: index,
+            onTap: onSelected,
+            columns: [
+              PagedTableColumn(
+                label: 'Sample',
+                width: 200,
+                sortValue: (i) => samples[i].sample,
+                cell: (i) => Text(
+                  samples[i].sample,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              PagedTableColumn(
+                label: 'Status',
+                width: 140,
+                sortValue: (i) => overallStatus(readQcChecks(samples[i])).index,
+                cell: (i) => QcStatusChip(
+                  status: overallStatus(readQcChecks(samples[i])),
+                ),
+              ),
+              numeric('Reads', 130, ReadMetric.reads, _countFormat.format),
+              numeric('Bases', 160, ReadMetric.bases, _countFormat.format),
+              numeric('Mean length', 140, ReadMetric.meanLength, _decimal),
+              numeric('N50', 100, ReadMetric.n50, _countFormat.format),
+              numeric('GC (%)', 110, ReadMetric.gc, _decimal),
+              numeric('Q30 (%)', 110, ReadMetric.q30, _decimal),
+              numeric('Mean Q', 110, ReadMetric.meanQuality, _decimal),
+              numeric(
+                'Duplication (%)',
+                160,
+                ReadMetric.duplication,
+                _decimal,
+              ),
+              numeric('Adapters (%)', 140, ReadMetric.adapters, _decimal),
+            ],
           ),
-        ),
-        PagedTableColumn(
-          label: 'Status',
-          width: 140,
-          sortValue: (i) => overallStatus(readQcChecks(samples[i])).index,
-          cell: (i) => QcStatusChip(
-            status: overallStatus(readQcChecks(samples[i])),
-          ),
-        ),
-        _numeric('Reads', 130, (m) => m.readCount, _countFormat.format),
-        _numeric('Bases', 160, (m) => m.baseCount, _countFormat.format),
-        _numeric('Mean length', 140, (m) => m.meanReadLength, _decimal),
-        _numeric('N50', 100, (m) => m.n50ReadLength, _countFormat.format),
-        _numeric('GC (%)', 110, (m) => 100 * m.gcContent, _decimal),
-        _numeric('Q30 (%)', 110, (m) => m.q30Pct, _decimal),
-        _numeric('Mean Q', 110, (m) => m.meanQscore, _decimal),
-        _numeric(
-          'Duplication (%)',
-          160,
-          (m) => m.duplicatePct ?? 0,
-          _decimal,
-        ),
-        _numeric(
-          'Adapters (%)',
-          140,
-          (m) => m.adapterReadsPct ?? 0,
-          _decimal,
         ),
       ],
     );
   }
 
+  /// A column of [metric] with a data bar behind each value. Samples
+  /// without the metric show a dash and no bar.
   PagedTableColumn<int> _numeric(
     String label,
     double width,
-    double Function(ReadMetricsData metrics) value,
+    ReadMetric metric,
     String Function(double value) format,
+    Color neutral,
   ) {
+    final List<double> listed = [
+      for (final int i in view)
+        if (metric.valueOf(samples[i].metrics) case final double value) value,
+    ];
+    final double low = listed.fold(double.infinity, math.min);
+    final double high = listed.fold(double.negativeInfinity, math.max);
+    final ReadQcRule? rule = metric.rule;
     return PagedTableColumn(
       label: label,
       width: width,
       numeric: true,
-      sortValue: (i) => value(samples[i].metrics),
-      cell: (i) => Text(format(value(samples[i].metrics))),
+      sortValue: (i) =>
+          metric.valueOf(samples[i].metrics) ?? double.negativeInfinity,
+      cell: (i) {
+        final double? value = metric.valueOf(samples[i].metrics);
+        if (value == null) return const Text('-');
+        final Text text = Text(format(value), maxLines: 1, softWrap: false);
+        // Bars say nothing when every listed sample has the same value.
+        if (high <= low) return text;
+        return DataBarCell(
+          fraction: (value - low) / (high - low),
+          color: rule == null ? neutral : statusColor(rule.statusOf(value)),
+          child: text,
+        );
+      },
     );
   }
 
   static String _decimal(double value) => value.toStringAsFixed(1);
+}
+
+/// A number over a bar whose length is [fraction] of the cell. The
+/// shortest bars keep a stub, so the lowest value still shows a bar.
+class DataBarCell extends StatelessWidget {
+  const DataBarCell({
+    super.key,
+    required this.fraction,
+    required this.color,
+    required this.child,
+  });
+
+  final double fraction;
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final double min = SeguiTableLayout.dataBarMinFraction;
+    return SizedBox.expand(
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: min + (1 - min) * fraction.clamp(0, 1),
+              heightFactor: SeguiTableLayout.dataBarHeight,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: SeguiTableLayout.dataBarAlpha),
+                  borderRadius: BorderRadius.circular(SeguiRadius.xs),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            // Long counts shrink rather than wrap.
+            child: FittedBox(fit: BoxFit.scaleDown, child: child),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// What the bar colors of the overview table mean.
+class _DataBarLegend extends StatelessWidget {
+  const _DataBarLegend({required this.neutral});
+
+  final Color neutral;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle? style = Theme.of(context).textTheme.bodySmall;
+    Widget swatch(Color color, String label) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: SeguiControlSize.iconSmall,
+              height: SeguiControlSize.indicator,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: SeguiTableLayout.dataBarAlpha),
+                borderRadius: BorderRadius.circular(SeguiRadius.xs),
+              ),
+            ),
+            const SizedBox(width: SeguiSpacing.xs),
+            Text(label, style: style),
+          ],
+        );
+    return Wrap(
+      spacing: SeguiSpacing.lg,
+      runSpacing: SeguiSpacing.xs,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          'Bars run from the lowest to the highest value in each column.',
+          style: style,
+        ),
+        for (final ReadQcStatus status in ReadQcStatus.values)
+          swatch(statusColor(status), status.label),
+        swatch(neutral, 'No check'),
+      ],
+    );
+  }
 }
 
 class QcStatusChip extends StatelessWidget {

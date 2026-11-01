@@ -234,6 +234,12 @@ abstract final class SeguiTableLayout {
   /// Rows per page a paged table offers, the first being the default.
   static const List<int> pageSizes = [50, 100, 250, 500];
 
+  /// In-cell data bars: their height as a share of the row, opacity, and
+  /// the shortest bar as a share of the cell.
+  static const double dataBarHeight = 0.6;
+  static const double dataBarAlpha = 0.3;
+  static const double dataBarMinFraction = 0.06;
+
   /// Shortest a report tab gets before its controls stop staying in place
   /// and the whole tab scrolls instead.
   static const double stickyMinHeight = 560;

@@ -119,6 +119,77 @@ ReadQcStatus statusAbove(double value,
   return ReadQcStatus.pass;
 }
 
+/// Thresholds of the Q30 bases check.
+const ReadQcRule q30Rule = ReadQcRule(
+  description: 'Share of bases with a quality score of 30 or more, '
+      'a 1 in 1,000 chance of a wrong base call.',
+  warn: 80,
+  fail: 70,
+  higherIsBetter: true,
+  unit: '%',
+);
+
+/// Thresholds of the mean quality check.
+const ReadQcRule meanQualityRule = ReadQcRule(
+  description: 'Mean quality score of every base, following the '
+      'FastQC quality zones.',
+  warn: 28,
+  fail: 20,
+  higherIsBetter: true,
+);
+
+/// Thresholds of the N content check.
+const ReadQcRule nContentRule = ReadQcRule(
+  description: 'Share of bases called as N, where the sequencer '
+      'could not tell the base.',
+  warn: 5,
+  fail: 20,
+  higherIsBetter: false,
+  unit: '%',
+);
+
+/// Thresholds of the duplication check.
+const ReadQcRule duplicationRule = ReadQcRule(
+  description: 'Share of reads that repeat another read. High '
+      'duplication can mean low library complexity or PCR '
+      'over-amplification.',
+  warn: 20,
+  fail: 50,
+  higherIsBetter: false,
+  unit: '%',
+);
+
+/// Thresholds of the adapters check.
+const ReadQcRule adaptersRule = ReadQcRule(
+  description: 'Share of reads with a known adapter sequence. '
+      'High values suggest the reads need trimming.',
+  warn: 5,
+  fail: 10,
+  higherIsBetter: false,
+  unit: '%',
+);
+
+/// Thresholds of the poly-G check.
+const ReadQcRule polyGRule = ReadQcRule(
+  description: 'Share of reads ending in a run of G, which '
+      'two-color sequencers call when the signal is lost.',
+  warn: 5,
+  fail: 10,
+  higherIsBetter: false,
+  unit: '%',
+);
+
+/// Thresholds of the overrepresented check.
+const ReadQcRule overrepresentedRule = ReadQcRule(
+  description: 'Share of reads from the most common read start. '
+      'Overrepresented sequences can be adapters, primers, or '
+      'contamination.',
+  warn: 0.1,
+  fail: 1,
+  higherIsBetter: false,
+  unit: '%',
+);
+
 /// Quality checks for [sample]. Checks that need Complete mode statistics
 /// are left out when those statistics are missing.
 List<ReadQcCheck> readQcChecks(ReadSampleData sample) {
@@ -130,97 +201,47 @@ List<ReadQcCheck> readQcChecks(ReadSampleData sample) {
       name: 'Q30 bases',
       measured: m.q30Pct,
       value: formatPercent(m.q30Pct),
-      rule: const ReadQcRule(
-        description: 'Share of bases with a quality score of 30 or more, '
-            'a 1 in 1,000 chance of a wrong base call.',
-        warn: 80,
-        fail: 70,
-        higherIsBetter: true,
-        unit: '%',
-      ),
+      rule: q30Rule,
     ),
     ReadQcCheck.of(
       name: 'Mean quality',
       measured: m.meanQscore,
       value: m.meanQscore.toStringAsFixed(1),
-      rule: const ReadQcRule(
-        description: 'Mean quality score of every base, following the '
-            'FastQC quality zones.',
-        warn: 28,
-        fail: 20,
-        higherIsBetter: true,
-      ),
+      rule: meanQualityRule,
     ),
     ReadQcCheck.of(
       name: 'N content',
       measured: 100 * m.nContent,
       value: formatPercent(100 * m.nContent),
-      rule: const ReadQcRule(
-        description: 'Share of bases called as N, where the sequencer '
-            'could not tell the base.',
-        warn: 5,
-        fail: 20,
-        higherIsBetter: false,
-        unit: '%',
-      ),
+      rule: nContentRule,
     ),
     if (m.duplicatePct != null)
       ReadQcCheck.of(
         name: 'Duplication',
         measured: m.duplicatePct!,
         value: formatPercent(m.duplicatePct!),
-        rule: const ReadQcRule(
-          description: 'Share of reads that repeat another read. High '
-              'duplication can mean low library complexity or PCR '
-              'over-amplification.',
-          warn: 20,
-          fail: 50,
-          higherIsBetter: false,
-          unit: '%',
-        ),
+        rule: duplicationRule,
       ),
     if (m.adapterReadsPct != null)
       ReadQcCheck.of(
         name: 'Adapters',
         measured: m.adapterReadsPct!,
         value: formatPercent(m.adapterReadsPct!),
-        rule: const ReadQcRule(
-          description: 'Share of reads with a known adapter sequence. '
-              'High values suggest the reads need trimming.',
-          warn: 5,
-          fail: 10,
-          higherIsBetter: false,
-          unit: '%',
-        ),
+        rule: adaptersRule,
       ),
     if (m.polyGReadsPct != null)
       ReadQcCheck.of(
         name: 'Poly-G',
         measured: m.polyGReadsPct!,
         value: formatPercent(m.polyGReadsPct!),
-        rule: const ReadQcRule(
-          description: 'Share of reads ending in a run of G, which '
-              'two-color sequencers call when the signal is lost.',
-          warn: 5,
-          fail: 10,
-          higherIsBetter: false,
-          unit: '%',
-        ),
+        rule: polyGRule,
       ),
     if (m.overrepresentedCount != null)
       ReadQcCheck.of(
         name: 'Overrepresented',
         measured: topOverrepresented,
         value: formatPercent(topOverrepresented),
-        rule: const ReadQcRule(
-          description: 'Share of reads from the most common read start. '
-              'Overrepresented sequences can be adapters, primers, or '
-              'contamination.',
-          warn: 0.1,
-          fail: 1,
-          higherIsBetter: false,
-          unit: '%',
-        ),
+        rule: overrepresentedRule,
       ),
   ];
 }
@@ -291,6 +312,18 @@ enum ReadMetric {
       ReadMetric.gc => 100 * metrics.gcContent,
       ReadMetric.duplication => metrics.duplicatePct,
       ReadMetric.adapters => metrics.adapterReadsPct,
+    };
+  }
+
+  /// Thresholds of the quality check on this metric, or null when no
+  /// check covers it.
+  ReadQcRule? get rule {
+    return switch (this) {
+      ReadMetric.q30 => q30Rule,
+      ReadMetric.meanQuality => meanQualityRule,
+      ReadMetric.duplication => duplicationRule,
+      ReadMetric.adapters => adaptersRule,
+      _ => null,
     };
   }
 

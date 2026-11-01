@@ -297,6 +297,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PagedTable<int>), findsOneWidget);
     expect(find.text('Mean length'), findsOneWidget);
+    // Bars span each column, colored by status where a check applies.
+    final List<DataBarCell> bars =
+        tester.widgetList<DataBarCell>(find.byType(DataBarCell)).toList();
+    expect(bars.where((bar) => bar.color == ChartPalette.fail), isNotEmpty);
+    expect(bars.map((bar) => bar.fraction), containsAll([0.0, 1.0]));
     // Three rows fit on one page, so there is no pager.
     expect(find.byTooltip('Next page'), findsNothing);
     await tester.tap(find.text('gamma').last);
