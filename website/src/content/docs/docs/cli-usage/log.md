@@ -1,7 +1,7 @@
 ---
 title: Log File
 sidebar:
-  order: 21
+  order: 22
 ---
 
 Except for the spinning emoji and the program progress messages, all the terminal output is written in the log file and saved in the current working directory. The log file also includes the time and the log status.
