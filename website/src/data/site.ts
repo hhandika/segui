@@ -344,3 +344,10 @@ export const citation = {
   text: "Handika, H., and J. A. Esselstyn. 2024. SEGUL: Ultrafast, memory-efficient and mobile-friendly software for manipulating and summarizing phylogenomic datasets. Molecular Ecology Resources, 24(7).",
   doi: "https://doi.org/10.1111/1755-0998.13964",
 };
+
+/// Funder disclaimer shown in the site and docs footers.
+export const funderDisclaimer =
+  "This material is based upon work supported by the National Science Foundation under " +
+  "grant numbers: DEB-1754393 and DEB-2244754. Any opinions, findings, and conclusions or " +
+  "recommendations expressed in this material are those of the authors and do not " +
+  "necessarily reflect the views of the National Science Foundation.";

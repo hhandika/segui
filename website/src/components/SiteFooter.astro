@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import logo from "../assets/logo.svg";
-import { githubUrl, navItems } from "../data/site";
+import { funderDisclaimer, githubUrl, navItems } from "../data/site";
 
 const links = [
   ...navItems,
@@ -35,7 +35,9 @@ const links = [
     </nav>
   </div>
   <p class="mx-auto mt-6 max-w-6xl text-xs text-leaf-800/70 dark:text-leaf-200/60">
-    © {new Date().getFullYear()} H. Handika &amp; J. A. Esselstyn. Funded in part by the
-    National Science Foundation.
+    © {new Date().getFullYear()} H. Handika &amp; J. A. Esselstyn.
+  </p>
+  <p class="mx-auto mt-2 max-w-6xl text-xs text-leaf-800/70 dark:text-leaf-200/60">
+    {funderDisclaimer}
   </p>
 </footer>
