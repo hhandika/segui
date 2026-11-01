@@ -120,6 +120,34 @@ void main() {
       expect(statusBelow(10, warn: 5, fail: 10), ReadQcStatus.fail);
     });
 
+    test('Rules describe the range of each status', () {
+      const ReadQcRule higher = ReadQcRule(
+        description: '',
+        warn: 80,
+        fail: 70,
+        higherIsBetter: true,
+        unit: '%',
+      );
+      expect(higher.ranges, [
+        (ReadQcStatus.pass, '80% or higher'),
+        (ReadQcStatus.warn, '70% to below 80%'),
+        (ReadQcStatus.fail, 'Below 70%'),
+      ]);
+      const ReadQcRule lower = ReadQcRule(
+        description: '',
+        warn: 0.1,
+        fail: 1,
+        higherIsBetter: false,
+        unit: '%',
+      );
+      expect(lower.ranges.first, (ReadQcStatus.pass, 'Below 0.1%'));
+      expect(lower.statusOf(1), ReadQcStatus.fail);
+      final ReadQcCheck q30 = readQcChecks(_sample('a', _metrics(q30Pct: 75)))
+          .firstWhere((c) => c.name == 'Q30 bases');
+      expect(q30.status, ReadQcStatus.warn);
+      expect(q30.status, q30.rule.statusOf(75));
+    });
+
     test('Complete mode adds checks', () {
       final List<ReadQcCheck> complete = readQcChecks(_sample('a', _metrics()));
       final List<ReadQcCheck> defaults = readQcChecks(
@@ -239,6 +267,16 @@ void main() {
     expect(find.text('Checks for alpha'), findsOneWidget);
     expect(find.text('1 of 3'), findsWidgets);
 
+    // A check opens the ranges of each status in a dialog.
+    await tester.tap(find.text('Q30 bases: 92.0%'));
+    await tester.pumpAndSettle();
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text('80% or higher'), findsOneWidget);
+    expect(find.text('alpha: 92.0% (pass)'), findsOneWidget);
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+    expect(find.byType(Dialog), findsNothing);
+
     // A bar opens its sample.
     await tester.tap(find.widgetWithText(SampleMetricBar, 'beta'));
     await tester.pumpAndSettle();
@@ -339,6 +377,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ReadSampleRail), findsNothing);
     expect(find.text('Checks for beta'), findsOneWidget);
+
+    // Phones show check ranges in a bottom sheet.
+    final Finder panelScroll = find.descendant(
+      of: find.byType(ReportPanel),
+      matching: find.byType(Scrollable),
+    );
+    await tester.drag(panelScroll.first, const Offset(0, -800));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mean quality: 35.0'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(find.text('Below 20'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

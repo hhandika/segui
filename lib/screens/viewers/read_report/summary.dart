@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
@@ -146,6 +147,12 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
               QcStatusChip(
                 status: check.status,
                 label: '${check.name}: ${check.value}',
+                tooltip: 'Show ${check.name.toLowerCase()} ranges',
+                onPressed: () => showQcCheckRanges(
+                  context,
+                  check: check,
+                  sample: open.sample,
+                ),
               ),
           ],
         ),
@@ -423,19 +430,130 @@ class ReadOverviewTable extends StatelessWidget {
 }
 
 class QcStatusChip extends StatelessWidget {
-  const QcStatusChip({super.key, required this.status, this.label});
+  const QcStatusChip({
+    super.key,
+    required this.status,
+    this.label,
+    this.tooltip,
+    this.onPressed,
+  });
 
   final ReadQcStatus status;
 
   /// Text in the chip. The status name by default.
   final String? label;
+  final String? tooltip;
+
+  /// Called on a tap. Without it, the chip only shows the status.
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      avatar: CircleAvatar(backgroundColor: statusColor(status)),
-      label: Text(label ?? status.label),
+    final Widget avatar = CircleAvatar(backgroundColor: statusColor(status));
+    final Widget text = Text(label ?? status.label);
+    if (onPressed == null) {
+      return Chip(
+        avatar: avatar,
+        label: text,
+        visualDensity: VisualDensity.compact,
+      );
+    }
+    return ActionChip(
+      avatar: avatar,
+      label: text,
+      tooltip: tooltip,
       visualDensity: VisualDensity.compact,
+      onPressed: onPressed,
+    );
+  }
+}
+
+/// Shows what [check] measures and the values that pass, warn, or fail,
+/// as a dialog or, on phones, a bottom sheet.
+Future<void> showQcCheckRanges(
+  BuildContext context, {
+  required ReadQcCheck check,
+  required String sample,
+}) {
+  return showResponsiveSheet<void>(
+    context: context,
+    builder: (context) => SheetContent(
+      title: check.name,
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
+        ),
+      ],
+      child: QcCheckRanges(check: check, sample: sample),
+    ),
+  );
+}
+
+/// The description of a check, the sample's value, and the range of each
+/// status with the sample's status highlighted.
+class QcCheckRanges extends StatelessWidget {
+  const QcCheckRanges({super.key, required this.check, required this.sample});
+
+  final ReadQcCheck check;
+  final String sample;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colors = theme.colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(check.rule.description, style: theme.textTheme.bodyMedium),
+        const SizedBox(height: SeguiSpacing.lg),
+        Text(
+          '$sample: ${check.value} (${check.status.label.toLowerCase()})',
+          style: theme.textTheme.titleSmall,
+        ),
+        const SizedBox(height: SeguiSpacing.md),
+        for (final (ReadQcStatus status, String range) in check.rule.ranges)
+          Semantics(
+            selected: status == check.status,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: SeguiSpacing.xs),
+              padding: const EdgeInsets.symmetric(
+                horizontal: SeguiSpacing.lg,
+                vertical: SeguiSpacing.md,
+              ),
+              decoration: BoxDecoration(
+                color: status == check.status
+                    ? colors.secondaryContainer
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(SeguiRadius.sm),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: SeguiControlSize.indicator / 2,
+                    backgroundColor: statusColor(status),
+                  ),
+                  const SizedBox(width: SeguiSpacing.md),
+                  SizedBox(
+                    width: SeguiControlSize.illustration,
+                    child:
+                        Text(status.label, style: theme.textTheme.labelLarge),
+                  ),
+                  Expanded(
+                    child: Text(range, style: theme.textTheme.bodyMedium),
+                  ),
+                  if (status == check.status)
+                    Icon(
+                      Icons.check_rounded,
+                      size: SeguiControlSize.iconSmall,
+                      color: colors.onSecondaryContainer,
+                    ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

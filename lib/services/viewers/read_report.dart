@@ -36,13 +36,71 @@ class ReadQcCheck {
     required this.name,
     required this.value,
     required this.status,
+    required this.rule,
   });
+
+  ReadQcCheck.of({
+    required this.name,
+    required double measured,
+    required this.value,
+    required this.rule,
+  }) : status = rule.statusOf(measured);
 
   final String name;
 
   /// Value shown with the check, such as "92.4%".
   final String value;
   final ReadQcStatus status;
+
+  /// Thresholds that set [status].
+  final ReadQcRule rule;
+}
+
+/// Thresholds of a quality check and what it measures.
+class ReadQcRule {
+  const ReadQcRule({
+    required this.description,
+    required this.warn,
+    required this.fail,
+    required this.higherIsBetter,
+    this.unit = '',
+  });
+
+  final String description;
+  final double warn;
+  final double fail;
+  final bool higherIsBetter;
+
+  /// Suffix of values, such as "%".
+  final String unit;
+
+  ReadQcStatus statusOf(double value) => higherIsBetter
+      ? statusAbove(value, warn: warn, fail: fail)
+      : statusBelow(value, warn: warn, fail: fail);
+
+  /// The range of values for each status, from pass to fail.
+  List<(ReadQcStatus, String)> get ranges {
+    final String w = _format(warn);
+    final String f = _format(fail);
+    return higherIsBetter
+        ? [
+            (ReadQcStatus.pass, '$w or higher'),
+            (ReadQcStatus.warn, '$f to below $w'),
+            (ReadQcStatus.fail, 'Below $f'),
+          ]
+        : [
+            (ReadQcStatus.pass, 'Below $w'),
+            (ReadQcStatus.warn, '$w to below $f'),
+            (ReadQcStatus.fail, '$f or higher'),
+          ];
+  }
+
+  String _format(double value) {
+    final String number = value == value.roundToDouble()
+        ? value.toInt().toString()
+        : value.toString();
+    return '$number$unit';
+  }
 }
 
 /// Status for a value where lower is better.
@@ -68,44 +126,101 @@ List<ReadQcCheck> readQcChecks(ReadSampleData sample) {
   final double topOverrepresented =
       sample.overrepresented.isEmpty ? 0 : sample.overrepresented.first.percent;
   return [
-    ReadQcCheck(
+    ReadQcCheck.of(
       name: 'Q30 bases',
+      measured: m.q30Pct,
       value: formatPercent(m.q30Pct),
-      status: statusAbove(m.q30Pct, warn: 80, fail: 70),
+      rule: const ReadQcRule(
+        description: 'Share of bases with a quality score of 30 or more, '
+            'a 1 in 1,000 chance of a wrong base call.',
+        warn: 80,
+        fail: 70,
+        higherIsBetter: true,
+        unit: '%',
+      ),
     ),
-    ReadQcCheck(
+    ReadQcCheck.of(
       name: 'Mean quality',
+      measured: m.meanQscore,
       value: m.meanQscore.toStringAsFixed(1),
-      status: statusAbove(m.meanQscore, warn: 28, fail: 20),
+      rule: const ReadQcRule(
+        description: 'Mean quality score of every base, following the '
+            'FastQC quality zones.',
+        warn: 28,
+        fail: 20,
+        higherIsBetter: true,
+      ),
     ),
-    ReadQcCheck(
+    ReadQcCheck.of(
       name: 'N content',
+      measured: 100 * m.nContent,
       value: formatPercent(100 * m.nContent),
-      status: statusBelow(100 * m.nContent, warn: 5, fail: 20),
+      rule: const ReadQcRule(
+        description: 'Share of bases called as N, where the sequencer '
+            'could not tell the base.',
+        warn: 5,
+        fail: 20,
+        higherIsBetter: false,
+        unit: '%',
+      ),
     ),
     if (m.duplicatePct != null)
-      ReadQcCheck(
+      ReadQcCheck.of(
         name: 'Duplication',
+        measured: m.duplicatePct!,
         value: formatPercent(m.duplicatePct!),
-        status: statusBelow(m.duplicatePct!, warn: 20, fail: 50),
+        rule: const ReadQcRule(
+          description: 'Share of reads that repeat another read. High '
+              'duplication can mean low library complexity or PCR '
+              'over-amplification.',
+          warn: 20,
+          fail: 50,
+          higherIsBetter: false,
+          unit: '%',
+        ),
       ),
     if (m.adapterReadsPct != null)
-      ReadQcCheck(
+      ReadQcCheck.of(
         name: 'Adapters',
+        measured: m.adapterReadsPct!,
         value: formatPercent(m.adapterReadsPct!),
-        status: statusBelow(m.adapterReadsPct!, warn: 5, fail: 10),
+        rule: const ReadQcRule(
+          description: 'Share of reads with a known adapter sequence. '
+              'High values suggest the reads need trimming.',
+          warn: 5,
+          fail: 10,
+          higherIsBetter: false,
+          unit: '%',
+        ),
       ),
     if (m.polyGReadsPct != null)
-      ReadQcCheck(
+      ReadQcCheck.of(
         name: 'Poly-G',
+        measured: m.polyGReadsPct!,
         value: formatPercent(m.polyGReadsPct!),
-        status: statusBelow(m.polyGReadsPct!, warn: 5, fail: 10),
+        rule: const ReadQcRule(
+          description: 'Share of reads ending in a run of G, which '
+              'two-color sequencers call when the signal is lost.',
+          warn: 5,
+          fail: 10,
+          higherIsBetter: false,
+          unit: '%',
+        ),
       ),
     if (m.overrepresentedCount != null)
-      ReadQcCheck(
+      ReadQcCheck.of(
         name: 'Overrepresented',
+        measured: topOverrepresented,
         value: formatPercent(topOverrepresented),
-        status: statusBelow(topOverrepresented, warn: 0.1, fail: 1),
+        rule: const ReadQcRule(
+          description: 'Share of reads from the most common read start. '
+              'Overrepresented sequences can be adapters, primers, or '
+              'contamination.',
+          warn: 0.1,
+          fail: 1,
+          higherIsBetter: false,
+          unit: '%',
+        ),
       ),
   ];
 }
