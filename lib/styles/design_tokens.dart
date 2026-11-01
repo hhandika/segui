@@ -247,9 +247,8 @@ abstract final class SeguiTableLayout {
   static const double maxResizedColumn = 640;
   static const double resizeHandle = 12;
 
-  /// In-cell data bars: their height as a share of the row, opacity, and
-  /// the shortest bar as a share of the cell.
-  static const double dataBarHeight = 0.6;
+  /// In-cell data bars: their opacity and the shortest bar as a share of
+  /// the cell. Bars are as tall as the number over them.
   static const double dataBarAlpha = 0.3;
   static const double dataBarMinFraction = 0.06;
 

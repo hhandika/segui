@@ -397,7 +397,11 @@ class ReadBarChart extends StatelessWidget {
                           toY: s.values[i],
                           color: s.color,
                           width: barWidth,
-                          borderRadius: BorderRadius.zero,
+                          // Rounded tops like the metric and table bars;
+                          // the base stays flat on the axis.
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(SeguiRadius.xs),
+                          ),
                           // Outlined so pale fills reach 3:1 on the surface.
                           borderSide: BorderSide(
                             color: palette.lineFor(s.color),

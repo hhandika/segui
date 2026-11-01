@@ -309,6 +309,7 @@ class _ReadSampleRailState extends ConsumerState<ReadSampleRail> {
                       child: LinearProgressIndicator(
                         value: sample.metrics.readCount / most,
                         minHeight: SeguiStroke.regular,
+                        borderRadius: BorderRadius.circular(SeguiRadius.xs),
                         color: theme.colorScheme.primary,
                         backgroundColor:
                             theme.colorScheme.surfaceContainerHighest,

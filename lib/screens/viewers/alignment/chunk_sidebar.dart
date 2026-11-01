@@ -113,15 +113,14 @@ class _ChunkTile extends ConsumerWidget {
                     style: detail,
                   ),
                   const SizedBox(height: SeguiSpacing.xs),
-                  ClipRRect(
+                  // Rounds the value end as well as the track.
+                  LinearProgressIndicator(
+                    value: stat?.variableFraction ?? 0,
+                    minHeight: SeguiStroke.thick,
                     borderRadius: BorderRadius.circular(SeguiRadius.xs),
-                    child: LinearProgressIndicator(
-                      value: stat?.variableFraction ?? 0,
-                      minHeight: SeguiStroke.thick,
-                      color: colors.tertiary,
-                      backgroundColor: colors.surfaceContainerHighest,
-                      semanticsLabel: 'Chunk ${index + 1} variable sites',
-                    ),
+                    color: colors.tertiary,
+                    backgroundColor: colors.surfaceContainerHighest,
+                    semanticsLabel: 'Chunk ${index + 1} variable sites',
                   ),
                 ],
               ),

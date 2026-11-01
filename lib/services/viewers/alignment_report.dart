@@ -139,3 +139,13 @@ double medianOf(List<double> values) {
       ? sorted[mid]
       : (sorted[mid - 1] + sorted[mid]) / 2;
 }
+
+/// Chart label of an alignment character, naming gaps (`-`) and missing
+/// data (`?`).
+String characterLabel(String character) {
+  return switch (character) {
+    '-' => '- (gap)',
+    '?' => '? (missing)',
+    _ => character,
+  };
+}

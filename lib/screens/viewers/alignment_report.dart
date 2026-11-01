@@ -213,7 +213,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
                 label: name,
                 value: _count(sites.sites),
                 detail:
-                    '${_count(sites.loci)} loci${name == 'Conserved' ? ' fully conserved' : ''} · '
+                    '${_count(sites.loci)} loci${name == 'Conserved' ? ' fully conserved' : ''}\n'
                     '${_count(sites.min)}-${_count(sites.max)} per locus',
               ),
           ],
@@ -271,7 +271,9 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
           xLabel: 'Character',
           barWidth: SeguiChartLayout.wideBarWidth,
           yLabel: 'Count',
-          categories: report.charNames,
+          categories: [
+            for (final String c in report.charNames) characterLabel(c)
+          ],
           series: [
             BarSeries(
               name: 'Characters',
@@ -412,10 +414,20 @@ class StatTile extends StatelessWidget {
   final String value;
   final String? detail;
 
+  /// Lines kept for [detail], so every tile has the same height.
+  static const int detailLines = 2;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
+    final TextStyle labelStyle = theme.textTheme.labelMedium!.copyWith(
+      color: colors.onSurfaceVariant,
+    );
+    final TextStyle valueStyle = theme.textTheme.headlineSmall!;
+    final TextStyle detailStyle = theme.textTheme.bodySmall!.copyWith(
+      color: colors.onSurfaceVariant,
+    );
     return Container(
       width: SeguiContentWidth.statTile,
       padding: const EdgeInsets.all(SeguiSpacing.lg),
@@ -426,21 +438,35 @@ class StatTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // One line each, so labels and values keep tiles the same height.
           Text(
             label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: colors.onSurfaceVariant,
-            ),
+            style: labelStyle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: SeguiSpacing.xs),
-          Text(value, style: theme.textTheme.headlineSmall),
-          if (detail != null)
-            Text(
-              detail!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colors.onSurfaceVariant,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(value, style: valueStyle, maxLines: 1),
+          ),
+          Stack(
+            children: [
+              // Blank lines hold the detail's room, so tiles with and
+              // without a detail have the same height.
+              ExcludeSemantics(
+                child: Text('\n' * (detailLines - 1), style: detailStyle),
               ),
-            ),
+              if (detail != null)
+                Text(
+                  detail!,
+                  style: detailStyle,
+                  maxLines: detailLines,
+                  overflow: TextOverflow.ellipsis,
+                ),
+            ],
+          ),
         ],
       ),
     );

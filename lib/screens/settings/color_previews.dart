@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
@@ -91,7 +92,7 @@ class GradientBar extends StatelessWidget {
   }
 }
 
-/// Three numbers over data bars, like the report tables.
+/// Three numbers over data bars, drawn with the report tables' cell.
 class MiniDataTable extends StatelessWidget {
   const MiniDataTable({super.key, required this.barColor});
 
@@ -111,32 +112,13 @@ class MiniDataTable extends StatelessWidget {
                 children: [
                   Expanded(child: Text(_sampleNames[i], style: style)),
                   Expanded(
-                    child: Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: FractionallySizedBox(
-                            widthFactor: _sampleValues[i],
-                            heightFactor: SeguiTableLayout.dataBarHeight,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: barColor.withValues(
-                                  alpha: SeguiTableLayout.dataBarAlpha,
-                                ),
-                                borderRadius:
-                                    BorderRadius.circular(SeguiRadius.xs),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            (_sampleValues[i] * 100).toStringAsFixed(1),
-                            style: style,
-                          ),
-                        ),
-                      ],
+                    child: DataBarCell(
+                      fraction: _sampleValues[i],
+                      color: barColor,
+                      child: Text(
+                        (_sampleValues[i] * 100).toStringAsFixed(1),
+                        style: style,
+                      ),
                     ),
                   ),
                 ],
@@ -283,9 +265,14 @@ class _MiniChartPainter extends CustomPainter {
         barWidth - SeguiSpacing.xs,
         height,
       );
-      canvas.drawRect(bar, Paint()..color = fills[i]);
-      canvas.drawRect(
+      final RRect rounded = RRect.fromRectAndCorners(
         bar,
+        topLeft: const Radius.circular(SeguiRadius.xs),
+        topRight: const Radius.circular(SeguiRadius.xs),
+      );
+      canvas.drawRRect(rounded, Paint()..color = fills[i]);
+      canvas.drawRRect(
+        rounded,
         Paint()
           ..color = lines[i]
           ..style = PaintingStyle.stroke

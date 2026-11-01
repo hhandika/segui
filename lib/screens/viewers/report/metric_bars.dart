@@ -188,10 +188,15 @@ class MetricBar extends StatelessWidget {
                           widthFactor:
                               largest > 0 ? (value / largest).clamp(0, 1) : 0,
                           heightFactor: 1,
-                          child: ColoredBox(
-                            color: isOpen
-                                ? colors.primary
-                                : colors.primary.withValues(alpha: 0.4),
+                          // Rounded at its value end too, like chart bars.
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: isOpen
+                                  ? colors.primary
+                                  : colors.primary.withValues(alpha: 0.4),
+                              borderRadius:
+                                  BorderRadius.circular(SeguiRadius.xs),
+                            ),
                           ),
                         ),
                       ),

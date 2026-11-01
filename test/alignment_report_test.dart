@@ -98,6 +98,12 @@ Future<void> _pumpReport(WidgetTester tester, AlignReportData report) {
 }
 
 void main() {
+  test('Gaps and missing data are labeled', () {
+    expect(characterLabel('-'), '- (gap)');
+    expect(characterLabel('?'), '? (missing)');
+    expect(characterLabel('A'), 'A');
+  });
+
   group('Alignment report data', () {
     test('Reports are found by name', () {
       expect(isAlignmentReport(File('out/alignment-report.json')), isTrue);
@@ -151,6 +157,12 @@ void main() {
     expect(find.text('Dataset'), findsOneWidget);
     expect(find.text('42.0%'), findsOneWidget);
     expect(find.widgetWithText(StatTile, 'Loci'), findsOneWidget);
+    // Dataset and site type tiles share one height, with or without detail.
+    final Set<double> heights = {
+      for (final Element tile in find.byType(StatTile).evaluate())
+        tile.size!.height,
+    };
+    expect(heights, hasLength(1));
 
     // Loci as bars, then as a table, and selecting one shows its values.
     await tester.tap(find.text('Loci').first);

@@ -1,8 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/styles/design_tokens.dart';
 
-/// A number over a bar whose length is [fraction] of the cell. The
-/// shortest bars keep a stub, so the lowest value still shows a bar.
+/// A number over a bar whose length is [fraction] of the cell and whose
+/// height is the number's. The shortest bars keep a stub, so the lowest
+/// value still shows a bar.
 class DataBarCell extends StatelessWidget {
   const DataBarCell({
     super.key,
@@ -18,24 +19,30 @@ class DataBarCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double min = SeguiTableLayout.dataBarMinFraction;
-    return SizedBox.expand(
+    // The number sets the height, and the bar fills exactly that height.
+    return Align(
       child: Stack(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: FractionallySizedBox(
-              widthFactor: min + (1 - min) * fraction.clamp(0, 1),
-              heightFactor: SeguiTableLayout.dataBarHeight,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: SeguiTableLayout.dataBarAlpha),
-                  borderRadius: BorderRadius.circular(SeguiRadius.xs),
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: FractionallySizedBox(
+                widthFactor: min + (1 - min) * fraction.clamp(0, 1),
+                heightFactor: 1,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: color.withValues(
+                      alpha: SeguiTableLayout.dataBarAlpha,
+                    ),
+                    borderRadius: BorderRadius.circular(SeguiRadius.xs),
+                  ),
                 ),
               ),
             ),
           ),
           Align(
             alignment: Alignment.centerRight,
+            heightFactor: 1,
             // Long counts shrink rather than wrap.
             child: FittedBox(fit: BoxFit.scaleDown, child: child),
           ),
