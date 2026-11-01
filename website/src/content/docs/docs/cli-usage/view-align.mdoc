@@ -7,9 +7,9 @@ sidebar:
     variant: caution
 ---
 
-:::caution[In development]
+{% aside type="caution" title="In development" %}
 This feature is not yet in a SEGUL release. It will be available in the next SEGUL release. To use it now, build SEGUL from [source](/docs/installation/install_cli/#source-code). Commands and key bindings may change before the release.
-:::
+{% /aside %}
 
 View alignments in an interactive viewer right in your terminal. It works like the SEGUI alignment viewer (in development). It is handy for checking alignments on a remote server or in a terminal session where a GUI is not available.
 
@@ -21,9 +21,9 @@ segul view align --input alignment.fasta
 
 It is designed to be fast and can handle large alignments efficiently.
 
-:::tip[Input formats]
+{% aside type="tip" title="Input formats" %}
 For the best efficiency, use FASTA format.
-:::
+{% /aside %}
 
 ## Layout
 
@@ -129,16 +129,16 @@ The key bindings follow Visual Studio Code. Press `F1` or `?` in the viewer to s
 
 You can also use the mouse. Scroll to move through taxa, hold `Shift` while scrolling to move through sites, and hold `Ctrl` while scrolling to zoom. Click a residue to move the cursor, click a taxon name to select it (`Shift`-click to select a range), and drag the line next to the names to resize them.
 
-:::tip[macOS terminal settings]
-
+{% aside type="tip" title="macOS terminal settings" %}
 - **Option keys**: if `Option+←` types a character or does nothing, let Option act as a modifier. In Terminal, open **Settings → Profiles → Keyboard** and turn on **Use Option as Meta key**. In iTerm2, open **Settings → Profiles → Keys** and set **Left Option key** to **Esc+**.
 - **fn keys**: Terminal scrolls its own window with `fn+↑`, `fn+↓`, `fn+←`, and `fn+→`. Add `Shift` (for example `Shift+fn+↑`) to send them to the viewer, or use `Option+↑` and `Option+↓` to page.
 - **Function keys**: on Mac keyboards, `F1` to `F4` need `fn` unless the function keys are set as standard function keys. The viewer offers `?`, `Ctrl+K` `C`, and `Ctrl+K` `L` instead.
-  :::
 
-:::note
+{% /aside %}
+
+{% aside type="note" %}
 Some terminals use `Ctrl+=` or `Alt` shortcuts for their own features. If a shortcut does not work, use the alternative in the table, such as `+` and `-` for zoom or `Ctrl+K` `C` for colors.
-:::
+{% /aside %}
 
 ## All options
 

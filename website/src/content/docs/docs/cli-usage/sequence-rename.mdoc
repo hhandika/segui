@@ -13,7 +13,7 @@ The table must contain two columns with a header for each column. Both the heade
 | Genus_species1_random | Genus_species1_voucherID |
 | Genus_species2_random | Genus_species2_voucherID |
 
-:::tip
+{% aside type="tip" %}
 If you need to rename a lot of sequence IDs, you can simplify the process by [generating the unique IDs first](/docs/cli-usage/sequence-id/). Then, copy the IDs you want to rename in the `csv` or `tsv` input. Use the `--replace-id` option to input this file. SEGUL will infer the file format based on its extension. The full command is structured as below:
 
 ```bash
@@ -26,7 +26,7 @@ For example:
 segul sequence rename -d alignments/ -f nexus --replace-id new_names.csv
 ```
 
-:::
+{% /aside %}
 
 You can use `--dry-run` option to check if the input names are parsed correctly:
 

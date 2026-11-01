@@ -78,11 +78,11 @@ bun run preview
 
 ## Project structure
 
-- `src/content/docs/docs/`: documentation pages. The folder structure maps to the URL, for example `src/content/docs/docs/cli-usage/align-concat.md` is served at `/docs/cli-usage/align-concat/`.
+- `src/content/docs/docs/`: documentation pages. The folder structure maps to the URL, for example `src/content/docs/docs/cli-usage/align-concat.mdoc` is served at `/docs/cli-usage/align-concat/`.
 - `src/pages/`: the landing (`index.astro`), get started, and about pages, styled with Tailwind. `src/layouts/Layout.astro` and `src/components/Navbar.astro` frame them.
 - `src/data/site.ts`: shared content for those pages, such as the tool list and citation.
 - `src/components/`: Astro components used by pages.
 - `src/assets/` and `public/`: images and static files.
 - `astro.config.mjs`: site configuration, including the sidebar and redirects.
 
-Each page needs a `title` in its frontmatter. Use `sidebar.order` to order pages within a sidebar group, and use Starlight [asides](https://starlight.astro.build/guides/authoring-content/#asides) (`:::note`, `:::tip`, `:::caution`, and `:::danger`) for callouts.
+Each page needs a `title` in its frontmatter. Use `sidebar.order` to order pages within a sidebar group, and use Starlight [asides](https://starlight.astro.build/guides/authoring-content/#asides) for callouts. In Markdoc (`.mdoc`) pages, write them as `{% aside type="note" %}` ... `{% /aside %}` with `type` set to `note`, `tip`, `caution`, or `danger` and an optional `title`. Plain Markdown (`.md`) pages use `:::note` ... `:::`.

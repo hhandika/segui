@@ -6,7 +6,7 @@ sidebar:
 
 Multiple Alignment Format (MAF) stores whole-genome alignments as blocks. Each block aligns a stretch of a reference genome to the matching sequence in other genomes, with details such as the source, position, strand, and score of each sequence. Most phylogenetic software does not read MAF. SEGUL converts MAF blocks to FASTA, NEXUS, or PHYLIP alignments, either one alignment per block or one alignment per locus defined in a BED file.
 
-:::note
+{% aside type="note" %}
 This page describes SEGUL v0.24.0 and later. In earlier versions, the command was `segul maf maf` and it required `--reference` and `--from-bed`. See [Migrating from v0.23](#migrating-from-v023). To check your SEGUL version, run in your terminal:
 
 ```bash
@@ -16,7 +16,7 @@ segul --version
 ```
 
 Check the [Installation Guide](/docs/installation/update/#segul-cli) to update SEGUL to the latest version.
-:::
+{% /aside %}
 
 ## Quick example
 

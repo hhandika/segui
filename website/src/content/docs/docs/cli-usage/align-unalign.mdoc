@@ -8,7 +8,7 @@ Unalign alignments to produce unaligned sequence files.
 
 Under the hood, SEGUL will read the alignment files and remove all gap characters to produce unaligned sequences. SEGUL can do it for thousands of files in a single command.
 
-:::note
+{% aside type="note" %}
 This feature is available in SEGUL v0.23.0 and later versions. To check your SEGUL version, run in your terminal:
 
 ```bash
@@ -18,7 +18,7 @@ segul --version
 ```
 
 Check the [Installation Guide](/docs/installation/update/#segul-cli) to update SEGUL to the latest version.
-:::
+{% /aside %}
 
 Assume we have an alignment file in FASTA format as follows:
 
@@ -78,9 +78,9 @@ By default, the output directory will be named `Align-Unalign` in the current wo
 segul align unalign --dir <alignment-dir> --output unalign-output
 ```
 
-:::note
+{% aside type="note" %}
 Due to the nature of unaligning, the output format will always be in FASTA format. Use `--output-format fasta` for sequential FASTA instead of the default interleaved FASTA.
-:::
+{% /aside %}
 
 ### More ways to specify input files
 

@@ -15,7 +15,7 @@ Available filtering methods (required SEGUL v0.23.0 and later):
 5. Minimum taxon counts
 6. Taxon ID
 
-:::note
+{% aside type="note" %}
 For versions prior to v0.23.0, SEGUL only support these filtering methods:
 
 - Minimal alignment length
@@ -24,11 +24,11 @@ For versions prior to v0.23.0, SEGUL only support these filtering methods:
 - Proportion of missing data
 
 To update SEGUL to the latest version, follow the [Installation Guide](/docs/installation/update/#segul-cli).
-:::
+{% /aside %}
 
-:::tip
+{% aside type="tip" %}
 This page is quite long due to the detailed explanations and examples for each filtering method. You can use the table of contents on the right side (desktop) or the dropdown menu at the top (mobile) of the page to navigate to specific sections.
-:::
+{% /aside %}
 
 ## Quick example
 
@@ -84,13 +84,13 @@ To check the available filtering options and other command arguments, use the `-
 segul align filter --help
 ```
 
-:::note
+{% aside type="note" %}
 SEGUL will never overwrite your original datasets. When filtering alignments, it will copy the alignments that match the filtering parameters to its output directory. You can also concatenate the resulting alignments instead. This is particularly useful for quickly estimating a species tree based on the filtered alignments.
-:::
+{% /aside %}
 
-:::tip
+{% aside type="tip" %}
 We recommend starting with [the sequence filtering method](/docs/cli-usage/sequence-filter/) before using the alignment filtering method. This step will help clean your alignments from problematic sequences, which could result in alignments containing low sample coverage. You can then use the alignment filtering method with the `--percent` option ([see below](#filtering-based-on-data-matrix-completeness)) to filter out those alignments.
-:::
+{% /aside %}
 
 ## Detailed usage
 
@@ -121,7 +121,7 @@ To filter alignments based on the maximum length, use the `--max-len` option. Fo
 segul align filter --dir alignments/ --input-format nexus --max-len 800
 ```
 
-:::note
+{% aside type="note" %}
 
 For versions prior to v0.23.0, Use the following command:
 
@@ -129,7 +129,7 @@ For versions prior to v0.23.0, Use the following command:
 segul align filter --dir alignments/ --len 500
 ```
 
-:::
+{% /aside %}
 
 ### Filtering based on data matrix completeness
 
@@ -167,7 +167,7 @@ For example, in the command below, we will filter alignments in the `alignments`
 segul align filter --dir alignments/ --input-format nexus --min-pinf 50
 ```
 
-:::note
+{% aside type="note" %}
 
 For versions prior to v0.23.0, use the following command:
 
@@ -175,13 +175,13 @@ For versions prior to v0.23.0, use the following command:
 segul align filter --dir alignments/ --input-format nexus --pinf 50
 ```
 
-:::
+{% /aside %}
 
 #### Maximum informative sites
 
-:::note
+{% aside type="note" %}
 Supported in SEGUL v0.23.0 and later versions.
-:::
+{% /aside %}
 
 To filter alignments based on the maximum number of informative sites, use the `--max-pinf` option. For example:
 
@@ -223,9 +223,9 @@ To filter alignments based on the minimum number of taxa present in each alignme
 segul align filter --dir alignments/ --min-ntax 100
 ```
 
-:::note
+{% aside type="note" %}
 Available in SEGUL v0.23.0 and later versions.
-:::
+{% /aside %}
 
 ### Filtering based on taxon ID
 
@@ -243,9 +243,9 @@ You can use the following command to filter alignments in the `alignments/` dire
 segul align filter --dir alignments/ --taxon-id path/to/taxon_ids.txt
 ```
 
-:::note
+{% aside type="note" %}
 Available in SEGUL v0.23.0 and later versions.
-:::
+{% /aside %}
 
 ### Specifying output directories
 
@@ -269,7 +269,7 @@ For example, in the command below, we will filter based on alignments with a len
 segul align filter --dir alignments/ --input-format nexus --min-len 500 --concat --partition-format raxml -o concat_alignment
 ```
 
-:::note
+{% aside type="note" %}
 
 For versions prior to v0.23.0, use `--part` to specify the partition format:
 
@@ -277,7 +277,7 @@ For versions prior to v0.23.0, use `--part` to specify the partition format:
 segul align filter --dir alignments/ --input-format nexus --len 500 --concat --part raxml -output concat_alignment
 ```
 
-:::
+{% /aside %}
 
 ### Other input options
 

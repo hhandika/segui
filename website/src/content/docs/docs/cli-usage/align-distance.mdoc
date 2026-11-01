@@ -6,7 +6,7 @@ sidebar:
 
 Compute pairwise genetic distances between samples for each alignment. SEGUL writes a distance matrix for every locus and a summary table across all loci, so you can compare thousands of loci in a single command. SEGUL can also average the distances within and between populations or species, and write all distances as long tables.
 
-:::note
+{% aside type="note" %}
 This feature is available in SEGUL v0.24.0 and later versions. To check your SEGUL version, run in your terminal:
 
 ```bash
@@ -16,7 +16,7 @@ segul --version
 ```
 
 Check the [Installation Guide](/docs/installation/update/#segul-cli) to update SEGUL to the latest version.
-:::
+{% /aside %}
 
 ## Quick example
 
@@ -88,9 +88,9 @@ If the input is amino acid sequences, use the `--datatype aa` option. For exampl
 segul align distance --dir alignments/ --datatype aa --model poisson
 ```
 
-:::note
+{% aside type="note" %}
 The `--datatype ignore` option is not supported for this feature. SEGUL needs to know the data type to choose the valid characters and models.
-:::
+{% /aside %}
 
 ### Missing data and ambiguous characters
 
