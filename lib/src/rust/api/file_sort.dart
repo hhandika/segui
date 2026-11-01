@@ -4,7 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `compare_digits`, `compare_natural`, `compare`, `digits_end`, `file_name`
@@ -12,7 +11,9 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 class FileListServices {
   final List<String> paths;
 
-  const FileListServices.raw({required this.paths});
+  const FileListServices.raw({
+    required this.paths,
+  });
 
   factory FileListServices({required List<String> paths}) =>
       RustLib.instance.api.crateApiFileSortFileListServicesNew(paths: paths);
@@ -21,20 +22,18 @@ class FileListServices {
   /// digit runs as numbers, so `uce-2` comes before `uce-10`, and letters
   /// ignoring case. `sizes` lines up with the paths and is only read when
   /// sorting by size; files without a size go last either way.
-  Uint32List order({
-    required FileSortKey key,
-    required bool ascending,
-    required List<PlatformInt64?> sizes,
-  }) => RustLib.instance.api.crateApiFileSortFileListServicesOrder(
-    that: this,
-    key: key,
-    ascending: ascending,
-    sizes: sizes,
-  );
+  Uint32List order(
+          {required FileSortKey key,
+          required bool ascending,
+          required List<PlatformInt64?> sizes}) =>
+      RustLib.instance.api.crateApiFileSortFileListServicesOrder(
+          that: this, key: key, ascending: ascending, sizes: sizes);
 
   /// Size in bytes of each path, or none when it cannot be read.
   Future<List<PlatformInt64?>> sizes() =>
-      RustLib.instance.api.crateApiFileSortFileListServicesSizes(that: this);
+      RustLib.instance.api.crateApiFileSortFileListServicesSizes(
+        that: this,
+      );
 
   @override
   int get hashCode => paths.hashCode;
@@ -57,4 +56,5 @@ enum FileSortKey {
 
   /// File size, then name. Files without a size go last.
   size,
+  ;
 }

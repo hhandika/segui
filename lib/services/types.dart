@@ -39,6 +39,17 @@ const List<String> sequenceReadPhredOffset = [
   '64',
 ];
 
+/// Preset numbers of distinct sequences kept to estimate read duplication.
+/// The first matches SEGUL's default.
+const Map<String, int> sequenceReadDupSketchSizes = {
+  '100k': 100000,
+  '500k': 500000,
+  '1M': 1000000,
+};
+
+/// Option to enter a duplication sketch size not in the presets.
+const String customDupSketchSize = 'Custom';
+
 enum AlignmentOperationType {
   concatenation,
   conversion,

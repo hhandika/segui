@@ -4,7 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `to_u32`
@@ -14,11 +13,8 @@ abstract class AlignmentHandle implements RustOpaqueInterface {
   /// Gap and variable-site shares of up to `count` chunks of `chunk_size`
   /// sites, from chunk `first`. Only the sites of those chunks are read;
   /// their counts are kept, so later calls and other chunk sizes reuse them.
-  Future<List<AlignmentChunkStat>> chunkStats({
-    required int chunkSize,
-    required int first,
-    required int count,
-  });
+  Future<List<AlignmentChunkStat>> chunkStats(
+      {required int chunkSize, required int first, required int count});
 
   /// Rows in FASTA format, in alignment order.
   Future<String> fasta({required List<int> rows});
@@ -35,12 +31,11 @@ abstract class AlignmentHandle implements RustOpaqueInterface {
 
   /// Residues of `row_count` rows from `row_start`, `site_count` sites each
   /// from `site_start`, row after row. Cells past a row's end are zero.
-  Future<Uint8List> tile({
-    required int rowStart,
-    required int rowCount,
-    required int siteStart,
-    required int siteCount,
-  });
+  Future<Uint8List> tile(
+      {required int rowStart,
+      required int rowCount,
+      required int siteStart,
+      required int siteCount});
 
   /// One-based position of `site` in `row` without gaps, or none on a gap.
   int? ungappedPosition({required int row, required int site});

@@ -4,7 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `common_parent`, `entries`, `extract_tar_gz`, `extract_zip`, `target_path`, `write_entry`, `write_tar_gz`, `write_zip`
@@ -14,14 +13,18 @@ class ArchiveServices {
   final String outputPath;
   final List<String> inputFiles;
 
-  const ArchiveServices({required this.outputPath, required this.inputFiles});
+  const ArchiveServices({
+    required this.outputPath,
+    required this.inputFiles,
+  });
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<ArchiveServices> newInstance() =>
       RustLib.instance.api.crateApiArchiveArchiveServicesNew();
 
-  Future<void> zip() =>
-      RustLib.instance.api.crateApiArchiveArchiveServicesZip(that: this);
+  Future<void> zip() => RustLib.instance.api.crateApiArchiveArchiveServicesZip(
+        that: this,
+      );
 
   @override
   int get hashCode => outputPath.hashCode ^ inputFiles.hashCode;
@@ -42,6 +45,7 @@ enum ExportFormat {
 
   /// A gzip-compressed tar archive.
   tarGz,
+  ;
 }
 
 /// Bundles files into one archive. Entries keep their paths relative to
@@ -59,7 +63,9 @@ class ExportServices {
   });
 
   Future<void> write() =>
-      RustLib.instance.api.crateApiArchiveExportServicesWrite(that: this);
+      RustLib.instance.api.crateApiArchiveExportServicesWrite(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -82,11 +88,16 @@ class ExtractServices {
   final String inputPath;
   final String outputDir;
 
-  const ExtractServices({required this.inputPath, required this.outputDir});
+  const ExtractServices({
+    required this.inputPath,
+    required this.outputDir,
+  });
 
   /// Extracts the archive and returns the number of files written.
   Future<int> extract() =>
-      RustLib.instance.api.crateApiArchiveExtractServicesExtract(that: this);
+      RustLib.instance.api.crateApiArchiveExtractServicesExtract(
+        that: this,
+      );
 
   @override
   int get hashCode => inputPath.hashCode ^ outputDir.hashCode;

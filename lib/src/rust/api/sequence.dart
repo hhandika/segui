@@ -4,7 +4,6 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'sequence.freezed.dart';
@@ -41,14 +40,18 @@ class AlignmentDistanceServices {
   });
 
   Future<void> computeDistance() => RustLib.instance.api
-      .crateApiSequenceAlignmentDistanceServicesComputeDistance(that: this);
+          .crateApiSequenceAlignmentDistanceServicesComputeDistance(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<AlignmentDistanceServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceAlignmentDistanceServicesNew();
 
   Future<DistanceGroupPreview> previewGroups() => RustLib.instance.api
-      .crateApiSequenceAlignmentDistanceServicesPreviewGroups(that: this);
+          .crateApiSequenceAlignmentDistanceServicesPreviewGroups(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -93,38 +96,29 @@ class AlignmentServices {
     required this.outputDir,
   });
 
-  Future<void> concatAlignment({
-    required String prefix,
-    required String outFmtStr,
-    required String partitionFmt,
-  }) => RustLib.instance.api.crateApiSequenceAlignmentServicesConcatAlignment(
-    that: this,
-    prefix: prefix,
-    outFmtStr: outFmtStr,
-    partitionFmt: partitionFmt,
-  );
+  Future<void> concatAlignment(
+          {required String prefix,
+          required String outFmtStr,
+          required String partitionFmt}) =>
+      RustLib.instance.api.crateApiSequenceAlignmentServicesConcatAlignment(
+          that: this,
+          prefix: prefix,
+          outFmtStr: outFmtStr,
+          partitionFmt: partitionFmt);
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<AlignmentServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceAlignmentServicesNew();
 
-  Future<void> summarizeAlignment({
-    required String outputPrefix,
-    required BigInt interval,
-  }) =>
+  Future<void> summarizeAlignment(
+          {required String outputPrefix, required BigInt interval}) =>
       RustLib.instance.api.crateApiSequenceAlignmentServicesSummarizeAlignment(
-        that: this,
-        outputPrefix: outputPrefix,
-        interval: interval,
-      );
+          that: this, outputPrefix: outputPrefix, interval: interval);
 
-  Future<void> summarizeAlignmentPerLocus({String? outputPrefix}) => RustLib
-      .instance
-      .api
-      .crateApiSequenceAlignmentServicesSummarizeAlignmentPerLocus(
-        that: this,
-        outputPrefix: outputPrefix,
-      );
+  Future<void> summarizeAlignmentPerLocus({String? outputPrefix}) =>
+      RustLib.instance.api
+          .crateApiSequenceAlignmentServicesSummarizeAlignmentPerLocus(
+              that: this, outputPrefix: outputPrefix);
 
   @override
   int get hashCode =>
@@ -165,8 +159,10 @@ class AlignmentTrimmingServices {
   static Future<AlignmentTrimmingServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceAlignmentTrimmingServicesNew();
 
-  Future<void> trim() => RustLib.instance.api
-      .crateApiSequenceAlignmentTrimmingServicesTrim(that: this);
+  Future<void> trim() =>
+      RustLib.instance.api.crateApiSequenceAlignmentTrimmingServicesTrim(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -194,7 +190,10 @@ class DistanceGroupCount {
   final String name;
   final BigInt count;
 
-  const DistanceGroupCount({required this.name, required this.count});
+  const DistanceGroupCount({
+    required this.name,
+    required this.count,
+  });
 
   @override
   int get hashCode => name.hashCode ^ count.hashCode;
@@ -251,10 +250,12 @@ sealed class DistanceGroupingParams with _$DistanceGroupingParams {
     required String delimiter,
     required BigInt fields,
   }) = DistanceGroupingParams_Delimiter;
-  const factory DistanceGroupingParams.regex(String field0) =
-      DistanceGroupingParams_Regex;
-  const factory DistanceGroupingParams.mapFile(String field0) =
-      DistanceGroupingParams_MapFile;
+  const factory DistanceGroupingParams.regex(
+    String field0,
+  ) = DistanceGroupingParams_Regex;
+  const factory DistanceGroupingParams.mapFile(
+    String field0,
+  ) = DistanceGroupingParams_MapFile;
   const factory DistanceGroupingParams.auto() = DistanceGroupingParams_Auto;
   const factory DistanceGroupingParams.none() = DistanceGroupingParams_None;
 }
@@ -263,20 +264,30 @@ sealed class DistanceGroupingParams with _$DistanceGroupingParams {
 sealed class FilteringParams with _$FilteringParams {
   const FilteringParams._();
 
-  const factory FilteringParams.minTax(double field0) = FilteringParams_MinTax;
-  const factory FilteringParams.alnLen(BigInt field0) = FilteringParams_AlnLen;
-  const factory FilteringParams.maxAlnLen(BigInt field0) =
-      FilteringParams_MaxAlnLen;
-  const factory FilteringParams.parsInf(BigInt field0) =
-      FilteringParams_ParsInf;
-  const factory FilteringParams.maxParsInf(BigInt field0) =
-      FilteringParams_MaxParsInf;
-  const factory FilteringParams.percInf(double field0) =
-      FilteringParams_PercInf;
-  const factory FilteringParams.missingData(double field0) =
-      FilteringParams_MissingData;
-  const factory FilteringParams.taxonAll(List<String> field0) =
-      FilteringParams_TaxonAll;
+  const factory FilteringParams.minTax(
+    double field0,
+  ) = FilteringParams_MinTax;
+  const factory FilteringParams.alnLen(
+    BigInt field0,
+  ) = FilteringParams_AlnLen;
+  const factory FilteringParams.maxAlnLen(
+    BigInt field0,
+  ) = FilteringParams_MaxAlnLen;
+  const factory FilteringParams.parsInf(
+    BigInt field0,
+  ) = FilteringParams_ParsInf;
+  const factory FilteringParams.maxParsInf(
+    BigInt field0,
+  ) = FilteringParams_MaxParsInf;
+  const factory FilteringParams.percInf(
+    double field0,
+  ) = FilteringParams_PercInf;
+  const factory FilteringParams.missingData(
+    double field0,
+  ) = FilteringParams_MissingData;
+  const factory FilteringParams.taxonAll(
+    List<String> field0,
+  ) = FilteringParams_TaxonAll;
   const factory FilteringParams.none() = FilteringParams_None;
 }
 
@@ -304,7 +315,9 @@ class FilteringServices {
   });
 
   Future<void> filter() =>
-      RustLib.instance.api.crateApiSequenceFilteringServicesFilter(that: this);
+      RustLib.instance.api.crateApiSequenceFilteringServicesFilter(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<FilteringServices> newInstance() =>
@@ -355,8 +368,10 @@ class IDExtractionServices {
     required this.isMap,
   });
 
-  Future<void> extractId() => RustLib.instance.api
-      .crateApiSequenceIdExtractionServicesExtractId(that: this);
+  Future<void> extractId() =>
+      RustLib.instance.api.crateApiSequenceIdExtractionServicesExtractId(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<IDExtractionServices> newInstance() =>
@@ -401,8 +416,10 @@ class PartitionServices {
     required this.isUncheck,
   });
 
-  Future<void> convertPartition() => RustLib.instance.api
-      .crateApiSequencePartitionServicesConvertPartition(that: this);
+  Future<void> convertPartition() =>
+      RustLib.instance.api.crateApiSequencePartitionServicesConvertPartition(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<PartitionServices> newInstance() =>
@@ -451,15 +468,15 @@ class SequenceAdditionServices {
     required this.isAddedOnly,
   });
 
-  Future<void> addSequence() => RustLib.instance.api
-      .crateApiSequenceSequenceAdditionServicesAddSequence(that: this);
+  Future<void> addSequence() =>
+      RustLib.instance.api.crateApiSequenceSequenceAdditionServicesAddSequence(
+        that: this,
+      );
 
   Future<void> addSequenceToSingleFile({required bool includeFilename}) =>
       RustLib.instance.api
           .crateApiSequenceSequenceAdditionServicesAddSequenceToSingleFile(
-            that: this,
-            includeFilename: includeFilename,
-          );
+              that: this, includeFilename: includeFilename);
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<SequenceAdditionServices> newInstance() =>
@@ -509,7 +526,9 @@ class SequenceConversionServices {
   });
 
   Future<void> convertSequence() => RustLib.instance.api
-      .crateApiSequenceSequenceConversionServicesConvertSequence(that: this);
+          .crateApiSequenceSequenceConversionServicesConvertSequence(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<SequenceConversionServices> newInstance() =>
@@ -554,8 +573,10 @@ class SequenceExtraction {
     required this.params,
   });
 
-  Future<void> extract() => RustLib.instance.api
-      .crateApiSequenceSequenceExtractionExtract(that: this);
+  Future<void> extract() =>
+      RustLib.instance.api.crateApiSequenceSequenceExtractionExtract(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<SequenceExtraction> newInstance() =>
@@ -587,12 +608,15 @@ class SequenceExtraction {
 sealed class SequenceExtractionParams with _$SequenceExtractionParams {
   const SequenceExtractionParams._();
 
-  const factory SequenceExtractionParams.id(List<String> field0) =
-      SequenceExtractionParams_Id;
-  const factory SequenceExtractionParams.file(String field0) =
-      SequenceExtractionParams_File;
-  const factory SequenceExtractionParams.regex(String field0) =
-      SequenceExtractionParams_Regex;
+  const factory SequenceExtractionParams.id(
+    List<String> field0,
+  ) = SequenceExtractionParams_Id;
+  const factory SequenceExtractionParams.file(
+    String field0,
+  ) = SequenceExtractionParams_File;
+  const factory SequenceExtractionParams.regex(
+    String field0,
+  ) = SequenceExtractionParams_Regex;
   const factory SequenceExtractionParams.none() = SequenceExtractionParams_None;
 }
 
@@ -600,12 +624,15 @@ sealed class SequenceExtractionParams with _$SequenceExtractionParams {
 sealed class SequenceFilteringParams with _$SequenceFilteringParams {
   const SequenceFilteringParams._();
 
-  const factory SequenceFilteringParams.minLength(BigInt field0) =
-      SequenceFilteringParams_MinLength;
-  const factory SequenceFilteringParams.maxLength(BigInt field0) =
-      SequenceFilteringParams_MaxLength;
-  const factory SequenceFilteringParams.maxGap(double field0) =
-      SequenceFilteringParams_MaxGap;
+  const factory SequenceFilteringParams.minLength(
+    BigInt field0,
+  ) = SequenceFilteringParams_MinLength;
+  const factory SequenceFilteringParams.maxLength(
+    BigInt field0,
+  ) = SequenceFilteringParams_MaxLength;
+  const factory SequenceFilteringParams.maxGap(
+    double field0,
+  ) = SequenceFilteringParams_MaxGap;
   const factory SequenceFilteringParams.none() = SequenceFilteringParams_None;
 }
 
@@ -627,7 +654,9 @@ class SequenceFilteringServices {
   });
 
   Future<void> filterSequence() => RustLib.instance.api
-      .crateApiSequenceSequenceFilteringServicesFilterSequence(that: this);
+          .crateApiSequenceSequenceFilteringServicesFilterSequence(
+        that: this,
+      );
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<SequenceFilteringServices> newInstance() =>
@@ -678,8 +707,10 @@ class SequenceRemoval {
   static Future<SequenceRemoval> newInstance() =>
       RustLib.instance.api.crateApiSequenceSequenceRemovalNew();
 
-  Future<void> removeSequence() => RustLib.instance.api
-      .crateApiSequenceSequenceRemovalRemoveSequence(that: this);
+  Future<void> removeSequence() =>
+      RustLib.instance.api.crateApiSequenceSequenceRemovalRemoveSequence(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -726,8 +757,10 @@ class SequenceRenaming {
   static Future<SequenceRenaming> newInstance() =>
       RustLib.instance.api.crateApiSequenceSequenceRenamingNew();
 
-  Future<void> renameSequence() => RustLib.instance.api
-      .crateApiSequenceSequenceRenamingRenameSequence(that: this);
+  Future<void> renameSequence() =>
+      RustLib.instance.api.crateApiSequenceSequenceRenamingRenameSequence(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -755,12 +788,16 @@ class SequenceRenaming {
 sealed class SequenceRenamingParams with _$SequenceRenamingParams {
   const SequenceRenamingParams._();
 
-  const factory SequenceRenamingParams.renameId(String field0) =
-      SequenceRenamingParams_RenameId;
-  const factory SequenceRenamingParams.removeStr(String field0) =
-      SequenceRenamingParams_RemoveStr;
-  const factory SequenceRenamingParams.removeRegex(String field0, bool field1) =
-      SequenceRenamingParams_RemoveRegex;
+  const factory SequenceRenamingParams.renameId(
+    String field0,
+  ) = SequenceRenamingParams_RenameId;
+  const factory SequenceRenamingParams.removeStr(
+    String field0,
+  ) = SequenceRenamingParams_RemoveStr;
+  const factory SequenceRenamingParams.removeRegex(
+    String field0,
+    bool field1,
+  ) = SequenceRenamingParams_RemoveRegex;
   const factory SequenceRenamingParams.replaceStr(
     String field0,
     String field1,
@@ -792,8 +829,10 @@ class SequenceTransposeServices {
   static Future<SequenceTransposeServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceSequenceTransposeServicesNew();
 
-  Future<void> transpose() => RustLib.instance.api
-      .crateApiSequenceSequenceTransposeServicesTranspose(that: this);
+  Future<void> transpose() =>
+      RustLib.instance.api.crateApiSequenceSequenceTransposeServicesTranspose(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -842,8 +881,10 @@ class SplitAlignmentServices {
   static Future<SplitAlignmentServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceSplitAlignmentServicesNew();
 
-  Future<void> splitAlignment() => RustLib.instance.api
-      .crateApiSequenceSplitAlignmentServicesSplitAlignment(that: this);
+  Future<void> splitAlignment() =>
+      RustLib.instance.api.crateApiSequenceSplitAlignmentServicesSplitAlignment(
+        that: this,
+      );
 
   @override
   int get hashCode =>
@@ -896,11 +937,13 @@ class TranslationServices {
   static Future<TranslationServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceTranslationServicesNew();
 
-  Future<void> translateSequence() => RustLib.instance.api
-      .crateApiSequenceTranslationServicesTranslateSequence(that: this);
+  Future<void> translateSequence() =>
+      RustLib.instance.api.crateApiSequenceTranslationServicesTranslateSequence(
+        that: this,
+      );
 
   Future<void> translateSequenceAutoFrame() => RustLib.instance.api
-      .crateApiSequenceTranslationServicesTranslateSequenceAutoFrame(
+          .crateApiSequenceTranslationServicesTranslateSequenceAutoFrame(
         that: this,
       );
 
@@ -932,9 +975,12 @@ class TranslationServices {
 sealed class TrimmingParams with _$TrimmingParams {
   const TrimmingParams._();
 
-  const factory TrimmingParams.missingData(double field0) =
-      TrimmingParams_MissingData;
-  const factory TrimmingParams.parsInf(BigInt field0) = TrimmingParams_ParsInf;
+  const factory TrimmingParams.missingData(
+    double field0,
+  ) = TrimmingParams_MissingData;
+  const factory TrimmingParams.parsInf(
+    BigInt field0,
+  ) = TrimmingParams_ParsInf;
   const factory TrimmingParams.none() = TrimmingParams_None;
 }
 
@@ -957,8 +1003,10 @@ class UnalignmentServices {
   static Future<UnalignmentServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceUnalignmentServicesNew();
 
-  Future<void> unalign() => RustLib.instance.api
-      .crateApiSequenceUnalignmentServicesUnalign(that: this);
+  Future<void> unalign() =>
+      RustLib.instance.api.crateApiSequenceUnalignmentServicesUnalign(
+        that: this,
+      );
 
   @override
   int get hashCode =>
