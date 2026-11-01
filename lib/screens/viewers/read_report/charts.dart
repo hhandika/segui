@@ -97,51 +97,55 @@ class ReadLineChart extends StatelessWidget {
       children: [
         SizedBox(
           height: SeguiChartLayout.height,
-          child: LineChart(
-            LineChartData(
-              minY: minY,
-              maxY: maxY,
-              lineBarsData: [
-                for (final ChartLine line in drawn) _barData(line),
-              ],
-              betweenBarsData: [
-                for (final ChartBand band in bands)
-                  BetweenBarsData(
-                    fromIndex: band.from,
-                    toIndex: band.to,
-                    color: band.color,
-                  ),
-              ],
-              rangeAnnotations: RangeAnnotations(
-                horizontalRangeAnnotations: [
-                  for (final ChartZone zone in zones)
-                    HorizontalRangeAnnotation(
-                      y1: zone.from,
-                      y2: zone.to,
-                      color: zone.color,
+          child: ZoomResetFrame(
+            builder: (controller) => LineChart(
+              LineChartData(
+                minY: minY,
+                maxY: maxY,
+                lineBarsData: [
+                  for (final ChartLine line in drawn) _barData(line),
+                ],
+                betweenBarsData: [
+                  for (final ChartBand band in bands)
+                    BetweenBarsData(
+                      fromIndex: band.from,
+                      toIndex: band.to,
+                      color: band.color,
                     ),
                 ],
-              ),
-              titlesData: chartTitles(context, xLabel: xLabel, yLabel: yLabel),
-              gridData: chartGrid(colors),
-              borderData: chartBorder(colors),
-              clipData: const FlClipData.all(),
-              lineTouchData: LineTouchData(
-                touchTooltipData: LineTouchTooltipData(
-                  getTooltipColor: (_) => colors.inverseSurface,
-                  maxContentWidth: SeguiChartLayout.tooltipWidth,
-                  fitInsideHorizontally: true,
-                  fitInsideVertically: true,
-                  getTooltipItems: (spots) => [
-                    for (final LineBarSpot spot in spots)
-                      _tooltipItem(drawn, spot, tooltipStyle),
+                rangeAnnotations: RangeAnnotations(
+                  horizontalRangeAnnotations: [
+                    for (final ChartZone zone in zones)
+                      HorizontalRangeAnnotation(
+                        y1: zone.from,
+                        y2: zone.to,
+                        color: zone.color,
+                      ),
                   ],
                 ),
+                titlesData:
+                    chartTitles(context, xLabel: xLabel, yLabel: yLabel),
+                gridData: chartGrid(colors),
+                borderData: chartBorder(colors),
+                clipData: const FlClipData.all(),
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipColor: (_) => colors.inverseSurface,
+                    maxContentWidth: SeguiChartLayout.tooltipWidth,
+                    fitInsideHorizontally: true,
+                    fitInsideVertically: true,
+                    getTooltipItems: (spots) => [
+                      for (final LineBarSpot spot in spots)
+                        _tooltipItem(drawn, spot, tooltipStyle),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            transformationConfig: const FlTransformationConfig(
-              scaleAxis: FlScaleAxis.horizontal,
-              maxScale: SeguiChartLayout.maxZoom,
+              transformationConfig: FlTransformationConfig(
+                scaleAxis: FlScaleAxis.horizontal,
+                maxScale: SeguiChartLayout.maxZoom,
+                transformationController: controller,
+              ),
             ),
           ),
         ),
@@ -185,6 +189,53 @@ class ReadLineChart extends StatelessWidget {
             : null;
     if (text == null) return null;
     return LineTooltipItem(text, style, textAlign: TextAlign.start);
+  }
+}
+
+/// A zoomable chart with a button that resets the zoom and centers the
+/// chart again. The button shows only while the chart is zoomed or
+/// panned.
+class ZoomResetFrame extends StatefulWidget {
+  const ZoomResetFrame({super.key, required this.builder});
+
+  /// Builds the chart with the controller of its zoom and pan.
+  final Widget Function(TransformationController controller) builder;
+
+  @override
+  State<ZoomResetFrame> createState() => _ZoomResetFrameState();
+}
+
+class _ZoomResetFrameState extends State<ZoomResetFrame> {
+  final TransformationController _controller = TransformationController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(child: widget.builder(_controller)),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: ValueListenableBuilder<Matrix4>(
+            valueListenable: _controller,
+            builder: (context, matrix, _) => matrix.isIdentity()
+                ? const SizedBox.shrink()
+                : IconButton.filledTonal(
+                    tooltip: 'Reset zoom',
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.center_focus_strong_outlined),
+                    onPressed: () => _controller.value = Matrix4.identity(),
+                  ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

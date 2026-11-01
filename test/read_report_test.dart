@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -276,6 +278,17 @@ void main() {
     await tester.tap(find.text('Quality'));
     await tester.pumpAndSettle();
     expect(find.text('Per-base quality: alpha'), findsOneWidget);
+    // Zooming a chart shows a button that resets it.
+    expect(find.byTooltip('Reset zoom'), findsNothing);
+    final TestPointer mouse = TestPointer(1, PointerDeviceKind.mouse);
+    final Offset chart = tester.getCenter(find.byType(LineChart).first);
+    await tester.sendEventToBinding(mouse.hover(chart));
+    await tester.sendEventToBinding(mouse.scroll(const Offset(0, -200)));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Reset zoom'), findsOneWidget);
+    await tester.tap(find.byTooltip('Reset zoom'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Reset zoom'), findsNothing);
     // A few samples compare with chips.
     expect(find.widgetWithText(FilterChip, 'beta'), findsOneWidget);
     expect(find.byType(SampleCompareMenu), findsNothing);
