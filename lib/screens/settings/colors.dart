@@ -1,14 +1,27 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/settings/color_previews.dart';
-import 'package:segui/screens/shared/common.dart';
-import 'package:segui/screens/shared/equal_height_grid.dart';
+import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/side_panel.dart';
 import 'package:segui/services/colors.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
+
+/// The groups of color settings, one per page of the editor.
+enum ColorCategory {
+  charts('Charts', Icons.bar_chart_outlined),
+  heatmaps('Heatmaps', Icons.grid_view_outlined),
+  tables('Tables', Icons.table_rows_outlined),
+  alignments('Alignments', Icons.view_column_outlined);
+
+  const ColorCategory(this.label, this.icon);
+
+  final String label;
+  final IconData icon;
+}
 
 class ColorSettings extends StatelessWidget {
   const ColorSettings({super.key});
@@ -26,8 +39,9 @@ class ColorSettings extends StatelessWidget {
   }
 }
 
-/// Chart, heatmap, table, and residue colors, chosen from preview cards,
-/// with a live preview of the choices.
+/// Color settings as an editor: a category rail, the options of the chosen
+/// category, and a large preview of them. Narrow screens show the
+/// categories as chips, with the preview above the options.
 class ColorSettingView extends ConsumerStatefulWidget {
   const ColorSettingView({super.key});
 
@@ -36,6 +50,8 @@ class ColorSettingView extends ConsumerStatefulWidget {
 }
 
 class _ColorSettingViewState extends ConsumerState<ColorSettingView> {
+  ColorCategory _category = ColorCategory.charts;
+
   /// Color vision deficiency simulated in the preview, or null for none.
   String? _cvd;
 
@@ -44,33 +60,48 @@ class _ColorSettingViewState extends ConsumerState<ColorSettingView> {
     final ThemeData theme = Theme.of(context);
     final ColorChoices choices =
         ref.watch(colorChoicesProvider(theme.brightness));
-    final Widget options = ColorChoiceList(choices: choices);
-    final Widget preview = ColorPreviewPanel(
-      cvdKinds: choices.cvdKinds,
+    final Widget options = ColorOptionList(
+      category: _category,
+      choices: choices,
+    );
+    final Widget preview = ColorPreview(
+      category: _category,
+      choices: choices,
       cvd: _cvd,
       onCvdChanged: (cvd) => setState(() => _cvd = cvd),
     );
     return LayoutBuilder(builder: (context, constraints) {
-      final bool isWide = constraints.maxWidth >=
-          SeguiContentWidth.form + SeguiColorSettingsLayout.previewWidth;
-      if (isWide) {
+      final double content =
+          constraints.maxWidth - SeguiColorSettingsLayout.railWidth;
+      if (content >=
+          SeguiColorSettingsLayout.optionsWidth +
+              SeguiColorSettingsLayout.previewWidth) {
+        // The option list takes a share of the space, so swatches and
+        // gradients grow on wide screens.
+        final double optionsWidth =
+            (content * SeguiColorSettingsLayout.optionsShare).clamp(
+          SeguiColorSettingsLayout.optionsWidth,
+          SeguiColorSettingsLayout.optionsMaxWidth,
+        );
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
+            ColorCategoryRail(
+              selected: _category,
+              onSelected: (c) => setState(() => _category = c),
+            ),
+            SizedBox(
+              width: optionsWidth,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(SeguiSpacing.xl),
+                padding: const EdgeInsets.symmetric(
+                  vertical: SeguiSpacing.xl,
+                ),
                 child: options,
               ),
             ),
-            SizedBox(
-              width: SeguiColorSettingsLayout.previewWidth,
+            Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(
-                  top: SeguiSpacing.xl,
-                  right: SeguiSpacing.xl,
-                  bottom: SeguiSpacing.xl,
-                ),
+                padding: const EdgeInsets.all(SeguiSpacing.xl),
                 child: preview,
               ),
             ),
@@ -82,9 +113,14 @@ class _ColorSettingViewState extends ConsumerState<ColorSettingView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            options,
-            const SizedBox(height: SeguiSpacing.xxl),
+            ColorCategoryChips(
+              selected: _category,
+              onSelected: (c) => setState(() => _category = c),
+            ),
+            const SizedBox(height: SeguiSpacing.lg),
             preview,
+            const SizedBox(height: SeguiSpacing.lg),
+            options,
           ],
         ),
       );
@@ -92,209 +128,174 @@ class _ColorSettingViewState extends ConsumerState<ColorSettingView> {
   }
 }
 
-/// One section of preview cards per color setting.
-class ColorChoiceList extends ConsumerWidget {
-  const ColorChoiceList({super.key, required this.choices});
+/// The inner rail of the Colors page, styled like the tool list.
+class ColorCategoryRail extends StatelessWidget {
+  const ColorCategoryRail({
+    super.key,
+    required this.selected,
+    required this.onSelected,
+  });
 
+  final ColorCategory selected;
+  final ValueChanged<ColorCategory> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SidePanel(
+      width: SeguiColorSettingsLayout.railWidth,
+      children: [
+        for (final ColorCategory category in ColorCategory.values)
+          SidePanelTile(
+            icon: category.icon,
+            title: category.label,
+            isSelected: category == selected,
+            onTap: () => onSelected(category),
+          ),
+      ],
+    );
+  }
+}
+
+/// Categories as chips, for narrow screens.
+class ColorCategoryChips extends StatelessWidget {
+  const ColorCategoryChips({
+    super.key,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final ColorCategory selected;
+  final ValueChanged<ColorCategory> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: SeguiSpacing.md,
+      runSpacing: SeguiSpacing.xs,
+      children: [
+        for (final ColorCategory category in ColorCategory.values)
+          ChoiceChip(
+            avatar: Icon(category.icon),
+            label: Text(category.label),
+            selected: category == selected,
+            showCheckmark: false,
+            onSelected: (_) => onSelected(category),
+          ),
+      ],
+    );
+  }
+}
+
+/// The options of one category, each with a small sample of its colors.
+class ColorOptionList extends ConsumerWidget {
+  const ColorOptionList({
+    super.key,
+    required this.category,
+    required this.choices,
+  });
+
+  final ColorCategory category;
   final ColorChoices choices;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = Theme.of(context);
-    final String palette = ref.watch(chartPaletteProvider);
-    final String colormap = ref.watch(heatmapColormapProvider);
-    final TableBarColor tableBar = ref.watch(tableBarColorProvider);
-    final String scheme = ref.watch(residueSchemeProvider);
-    final AlignmentColorMode mode = ref.watch(alignmentColorModeProvider);
-    final SeguiColors colors = SeguiColors.fromTheme(theme);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Data colors', style: theme.textTheme.headlineSmall),
-        const SizedBox(height: SeguiSpacing.xs),
-        Text(
-          'Colors for charts, tables, and alignments.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const ColorSectionTitle(title: 'Chart palette'),
-        ColorChoiceGrid(
-          children: [
-            for (final PaletteChoice choice in choices.palettes)
-              ColorChoiceCard(
-                label: choice.label,
-                semanticsLabel: '${choice.label} palette, '
-                    '${_safety(choice)}',
-                isSelected: choice.name == palette,
-                onSelected: () =>
-                    ref.read(chartPaletteProvider.notifier).set(choice.name),
-                badges: [
-                  ColorChoiceBadge(
-                    icon: choice.isColorblindSafe
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    label: _safety(choice),
-                  ),
-                ],
-                child: PaletteSwatch(fills: choice.fills, lines: choice.lines),
-              ),
-          ],
-        ),
-        if (choices.colormaps.isNotEmpty) ...[
-          const ColorSectionTitle(title: 'Heatmap colormap'),
-          ColorChoiceGrid(
-            children: [
-              for (final ColormapChoice choice in choices.colormaps)
-                ColorChoiceCard(
-                  label: choice.label,
-                  semanticsLabel: '${choice.label} colormap, '
-                      '${choice.isDiverging ? 'diverging' : 'sequential'}',
-                  isSelected: choice.name == colormap,
-                  onSelected: () => ref
-                      .read(heatmapColormapProvider.notifier)
-                      .set(choice.name),
-                  badges: [
-                    ColorChoiceBadge(
-                      icon: choice.isDiverging
-                          ? Icons.compare_arrows
-                          : Icons.trending_up,
-                      label: choice.isDiverging ? 'Diverging' : 'Sequential',
-                    ),
-                  ],
-                  child: GradientBar(stops: choice.stops),
-                ),
-            ],
-          ),
+    final List<Widget> tiles = switch (category) {
+      ColorCategory.charts => [
+          for (final PaletteChoice choice in choices.palettes)
+            ColorOptionTile(
+              label: choice.label,
+              semanticsLabel: '${choice.label}, ${paletteSafety(choice)}',
+              isSelected: choice.name == ref.watch(chartPaletteProvider),
+              onSelected: () =>
+                  ref.read(chartPaletteProvider.notifier).set(choice.name),
+              sample: PaletteSwatch(fills: choice.fills, lines: choice.lines),
+            ),
         ],
-        const ColorSectionTitle(title: 'Table data bars'),
-        ColorChoiceGrid(
-          children: [
-            for (final TableBarColor choice in TableBarColor.values)
-              ColorChoiceCard(
-                label: choice.label,
-                semanticsLabel: 'Table bars in ${choice.label.toLowerCase()}',
-                isSelected: choice == tableBar,
-                onSelected: () =>
-                    ref.read(tableBarColorProvider.notifier).set(choice),
-                child: MiniDataTable(
-                  barColor: choice == TableBarColor.palette
-                      ? colors.seriesAt(0)
+      ColorCategory.heatmaps => [
+          for (final ColormapChoice choice in choices.colormaps)
+            ColorOptionTile(
+              label: choice.label,
+              semanticsLabel: choice.label,
+              isSelected: choice.name == ref.watch(heatmapColormapProvider),
+              onSelected: () =>
+                  ref.read(heatmapColormapProvider.notifier).set(choice.name),
+              sample: GradientBar(stops: choice.stops),
+            ),
+        ],
+      ColorCategory.tables => [
+          for (final TableBarColor choice in TableBarColor.values)
+            ColorOptionTile(
+              label: choice.label,
+              semanticsLabel: choice.label,
+              isSelected: choice == ref.watch(tableBarColorProvider),
+              onSelected: () =>
+                  ref.read(tableBarColorProvider.notifier).set(choice),
+              sample: GradientBar(
+                stops: [
+                  choice == TableBarColor.palette
+                      ? SeguiColors.fromTheme(theme).seriesAt(0)
                       : theme.colorScheme.primary,
-                ),
+                ],
               ),
-          ],
-        ),
-        const ColorSectionTitle(title: 'Alignment residues'),
-        ColorChoiceGrid(
-          children: [
-            for (final ResidueChoice choice in choices.residueSchemes)
-              ColorChoiceCard(
-                label: choice.label,
-                semanticsLabel: '${choice.label} residue colors',
-                isSelected: choice.name == scheme,
-                onSelected: () =>
-                    ref.read(residueSchemeProvider.notifier).set(choice.name),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MiniAlignment(
-                      palette: choice.nucleotide,
-                      rows: sampleDna,
-                      mode: mode,
-                    ),
-                    const SizedBox(height: SeguiSpacing.sm),
-                    MiniAlignment(
-                      palette: choice.aminoAcid,
-                      rows: sampleProtein,
-                      mode: mode,
-                    ),
-                  ],
-                ),
+            ),
+        ],
+      ColorCategory.alignments => [
+          for (final ResidueChoice choice in choices.residueSchemes)
+            ColorOptionTile(
+              label: choice.label,
+              semanticsLabel: choice.label,
+              isSelected: choice.name == ref.watch(residueSchemeProvider),
+              onSelected: () =>
+                  ref.read(residueSchemeProvider.notifier).set(choice.name),
+              sample: MiniAlignment(
+                palette: choice.nucleotide,
+                rows: sampleDna.sublist(0, 1),
               ),
-          ],
-        ),
-        const SizedBox(height: SeguiSpacing.lg),
-        Text('Color mode', style: theme.textTheme.titleSmall),
-        const SizedBox(height: SeguiSpacing.sm),
-        SegmentedButton<AlignmentColorMode>(
-          segments: [
-            for (final AlignmentColorMode m in AlignmentColorMode.values)
-              ButtonSegment(value: m, label: Text(m.label)),
-          ],
-          selected: {mode},
-          onSelectionChanged: (selected) =>
-              ref.read(alignmentColorModeProvider.notifier).set(selected.first),
-        ),
-      ],
-    );
-  }
-
-  static String _safety(PaletteChoice choice) {
-    if (choice.isColorblindSafe) return 'Colorblind safe';
-    if (choice.colorblindSafe == 0) return 'Not colorblind safe';
-    return 'Colorblind safe up to ${choice.colorblindSafe}';
-  }
-}
-
-class ColorSectionTitle extends StatelessWidget {
-  const ColorSectionTitle({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+            ),
+        ],
+    };
     return Padding(
-      padding: const EdgeInsets.only(
-        top: SeguiSpacing.xxl,
-        bottom: SeguiSpacing.md,
+      padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final Widget tile in tiles)
+            Padding(
+              padding: const EdgeInsets.only(bottom: SeguiSpacing.sm),
+              child: tile,
+            ),
+        ],
       ),
-      child: Text(title, style: theme.textTheme.titleMedium),
     );
   }
 }
 
-/// Choice cards in as many columns as fit.
-class ColorChoiceGrid extends StatelessWidget {
-  const ColorChoiceGrid({super.key, required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return EqualHeightGrid(
-        columns: gridColumnCount(
-          constraints.maxWidth,
-          minItemWidth: SeguiColorSettingsLayout.choiceWidth,
-          maxColumns: 3,
-        ),
-        children: children,
-      );
-    });
-  }
+/// How many colors of a palette stay distinct with color vision
+/// deficiencies, in a few words.
+String paletteSafety(PaletteChoice choice) {
+  if (choice.isColorblindSafe) return 'Colorblind safe';
+  if (choice.colorblindSafe == 0) return 'Not colorblind safe';
+  return 'Colorblind safe up to ${choice.colorblindSafe}';
 }
 
-/// A selectable color option with its preview. Selection shows as a check
-/// and a thicker outline, not by color alone.
-class ColorChoiceCard extends StatelessWidget {
-  const ColorChoiceCard({
+/// A selectable option with a sample of its colors. Selection shows as a
+/// check and a thicker outline, not by color alone.
+class ColorOptionTile extends StatelessWidget {
+  const ColorOptionTile({
     super.key,
     required this.label,
     required this.semanticsLabel,
     required this.isSelected,
     required this.onSelected,
-    required this.child,
-    this.badges = const [],
+    required this.sample,
   });
 
   final String label;
   final String semanticsLabel;
   final bool isSelected;
   final VoidCallback onSelected;
-  final Widget child;
-  final List<Widget> badges;
+  final Widget sample;
 
   @override
   Widget build(BuildContext context) {
@@ -313,7 +314,7 @@ class ColorChoiceCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         color: isSelected ? colors.secondaryContainer : colors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(SeguiRadius.lg),
+          borderRadius: BorderRadius.circular(SeguiRadius.md),
           side: BorderSide(
             color: isSelected ? colors.primary : colors.outlineVariant,
             width: isSelected ? SeguiStroke.regular : SeguiStroke.thin,
@@ -322,12 +323,10 @@ class ColorChoiceCard extends StatelessWidget {
         child: InkWell(
           onTap: onSelected,
           child: Padding(
-            padding: const EdgeInsets.all(SeguiSpacing.lg),
+            padding: const EdgeInsets.all(SeguiSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                child,
-                const SizedBox(height: SeguiSpacing.md),
                 Row(
                   children: [
                     Expanded(
@@ -336,6 +335,7 @@ class ColorChoiceCard extends StatelessWidget {
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: textColor,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     if (isSelected)
@@ -346,14 +346,8 @@ class ColorChoiceCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                if (badges.isNotEmpty) ...[
-                  const SizedBox(height: SeguiSpacing.xs),
-                  Wrap(
-                    spacing: SeguiSpacing.md,
-                    runSpacing: SeguiSpacing.xxs,
-                    children: badges,
-                  ),
-                ],
+                const SizedBox(height: SeguiSpacing.sm),
+                sample,
               ],
             ),
           ),
@@ -363,39 +357,19 @@ class ColorChoiceCard extends StatelessWidget {
   }
 }
 
-class ColorChoiceBadge extends StatelessWidget {
-  const ColorChoiceBadge({super.key, required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final Color color = theme.colorScheme.onSurfaceVariant;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: SeguiControlSize.iconSmall, color: color),
-        const SizedBox(width: SeguiSpacing.xxs),
-        Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
-      ],
-    );
-  }
-}
-
-/// A chart, heatmap, table, and alignment drawn with the chosen colors,
-/// optionally as seen with a color vision deficiency, and the weakest
-/// contrast among them.
-class ColorPreviewPanel extends ConsumerWidget {
-  const ColorPreviewPanel({
+/// A large preview of the chosen category in the current colors, as seen
+/// with typical vision or a color vision deficiency.
+class ColorPreview extends ConsumerWidget {
+  const ColorPreview({
     super.key,
-    required this.cvdKinds,
+    required this.category,
+    required this.choices,
     required this.cvd,
     required this.onCvdChanged,
   });
 
-  final List<(String, String)> cvdKinds;
+  final ColorCategory category;
+  final ColorChoices choices;
   final String? cvd;
   final ValueChanged<String?> onCvdChanged;
 
@@ -404,73 +378,104 @@ class ColorPreviewPanel extends ConsumerWidget {
     final ThemeData theme = Theme.of(context);
     final ColorLibraryServices library = ref.watch(colorLibraryProvider);
     final AlignmentColorMode mode = ref.watch(alignmentColorModeProvider);
+    final String paletteName = ref.watch(chartPaletteProvider);
     final SeguiColors chosen = SeguiColors.fromTheme(theme);
     final SeguiColors colors =
         cvd == null ? chosen : library.simulateAll(chosen, cvd!);
     final ContrastSummary? contrast = _summarize(library, colors, theme);
-    return OutlinedPanel(
+    final PaletteChoice? palette =
+        choices.palettes.where((p) => p.name == paletteName).firstOrNull;
+    final List<Widget> badges = [
+      if (category == ColorCategory.charts && palette != null)
+        ColorPreviewBadge(
+          icon: palette.isColorblindSafe
+              ? Icons.visibility_outlined
+              : Icons.visibility_off_outlined,
+          label: paletteSafety(palette),
+        ),
+      if (contrast != null && category == ColorCategory.charts)
+        ContrastBadge(
+          label: 'Lines',
+          ratio: contrast.lines,
+          minimum: nonTextContrast,
+        ),
+      if (contrast != null && category == ColorCategory.tables)
+        ContrastBadge(
+          label: 'Text',
+          ratio: contrast.table,
+          minimum: textContrast,
+        ),
+      if (contrast != null && category == ColorCategory.alignments)
+        ContrastBadge(
+          label: 'Text',
+          ratio: contrast.residues,
+          minimum: textContrast,
+        ),
+    ];
+    // Same card as the tool forms.
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(SeguiFormLayout.cardRadius),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(SeguiSpacing.lg),
+        padding: const EdgeInsets.all(SeguiFormLayout.cardPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Preview', style: theme.textTheme.titleMedium),
-            const SizedBox(height: SeguiSpacing.md),
-            if (cvdKinds.isNotEmpty) ...[
-              DropdownMenu<String?>(
-                initialSelection: cvd,
-                expandedInsets: EdgeInsets.zero,
-                label: const Text('Color vision'),
-                onSelected: onCvdChanged,
-                dropdownMenuEntries: [
-                  const DropdownMenuEntry(value: null, label: 'Typical vision'),
-                  for (final (String name, String label) in cvdKinds)
-                    DropdownMenuEntry(value: name, label: label),
-                ],
-              ),
-              const SizedBox(height: SeguiSpacing.lg),
-            ],
-            Text('Charts', style: theme.textTheme.labelMedium),
-            const SizedBox(height: SeguiSpacing.xs),
-            MiniChart(colors: colors),
-            const SizedBox(height: SeguiSpacing.lg),
-            Text('Heatmap', style: theme.textTheme.labelMedium),
-            const SizedBox(height: SeguiSpacing.xs),
-            MiniHeatmap(colors: colors),
-            const SizedBox(height: SeguiSpacing.lg),
-            Text('Table', style: theme.textTheme.labelMedium),
-            MiniDataTable(barColor: colors.dataBar(theme.colorScheme)),
-            const SizedBox(height: SeguiSpacing.lg),
-            Text('Alignment', style: theme.textTheme.labelMedium),
-            const SizedBox(height: SeguiSpacing.xs),
-            MiniAlignment(
-              palette: colors.nucleotide,
-              rows: sampleDna,
-              mode: mode,
+            Row(
+              children: [
+                Expanded(
+                  child: Text('Preview', style: theme.textTheme.titleMedium),
+                ),
+                if (choices.cvdKinds.isNotEmpty)
+                  // Rounded and filled like the tool form fields.
+                  FormFieldTheme(
+                    child: DropdownMenu<String?>(
+                      initialSelection: cvd,
+                      label: const Text('Color vision'),
+                      onSelected: onCvdChanged,
+                      menuStyle: MenuStyle(
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              SeguiFormLayout.fieldRadius,
+                            ),
+                          ),
+                        ),
+                      ),
+                      dropdownMenuEntries: [
+                        const DropdownMenuEntry(
+                          value: null,
+                          label: 'Typical vision',
+                        ),
+                        for (final (String name, String label)
+                            in choices.cvdKinds)
+                          DropdownMenuEntry(value: name, label: label),
+                      ],
+                    ),
+                  ),
+              ],
             ),
-            const SizedBox(height: SeguiSpacing.xs),
-            MiniAlignment(
-              palette: colors.aminoAcid,
-              rows: sampleProtein,
-              mode: mode,
-            ),
-            if (contrast != null) ...[
+            const SizedBox(height: SeguiSpacing.xl),
+            switch (category) {
+              ColorCategory.charts => MiniChart(colors: colors, series: 6),
+              ColorCategory.heatmaps => HeatmapPreview(colors: colors),
+              ColorCategory.tables => MiniDataTable(
+                  barColor: colors.dataBar(theme.colorScheme),
+                ),
+              ColorCategory.alignments => AlignmentPreview(
+                  colors: colors,
+                  mode: mode,
+                ),
+            },
+            if (badges.isNotEmpty) ...[
               const SizedBox(height: SeguiSpacing.lg),
               Wrap(
                 spacing: SeguiSpacing.md,
                 runSpacing: SeguiSpacing.xs,
-                children: [
-                  ContrastBadge(
-                    label: 'Text',
-                    ratio: contrast.text,
-                    minimum: textContrast,
-                  ),
-                  ContrastBadge(
-                    label: 'Lines',
-                    ratio: contrast.lines,
-                    minimum: nonTextContrast,
-                  ),
-                ],
+                children: badges,
               ),
             ],
           ],
@@ -490,5 +495,89 @@ class ColorPreviewPanel extends ConsumerWidget {
     } catch (_) {
       return null;
     }
+  }
+}
+
+/// A heatmap with its low-to-high legend.
+class HeatmapPreview extends StatelessWidget {
+  const HeatmapPreview({super.key, required this.colors});
+
+  final SeguiColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle? style = Theme.of(context).textTheme.bodySmall;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        MiniHeatmap(colors: colors, rows: 10, columns: 24),
+        const SizedBox(height: SeguiSpacing.md),
+        GradientBar(stops: colors.heatmap),
+        const SizedBox(height: SeguiSpacing.xxs),
+        Row(
+          children: [
+            Text('Low', style: style),
+            const Spacer(),
+            Text('High', style: style),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// DNA and amino acid samples with the color mode switch.
+class AlignmentPreview extends ConsumerWidget {
+  const AlignmentPreview({super.key, required this.colors, required this.mode});
+
+  final SeguiColors colors;
+  final AlignmentColorMode mode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MiniAlignment(
+          palette: colors.nucleotide,
+          rows: sampleDna,
+          mode: mode,
+          cellSize: SeguiColorSettingsLayout.previewResidueCell,
+        ),
+        const SizedBox(height: SeguiSpacing.lg),
+        MiniAlignment(
+          palette: colors.aminoAcid,
+          rows: sampleProtein,
+          mode: mode,
+          cellSize: SeguiColorSettingsLayout.previewResidueCell,
+        ),
+        const SizedBox(height: SeguiSpacing.xl),
+        SegmentedButton<AlignmentColorMode>(
+          segments: [
+            for (final AlignmentColorMode m in AlignmentColorMode.values)
+              ButtonSegment(value: m, label: Text(m.label)),
+          ],
+          selected: {mode},
+          onSelectionChanged: (selected) =>
+              ref.read(alignmentColorModeProvider.notifier).set(selected.first),
+        ),
+      ],
+    );
+  }
+}
+
+class ColorPreviewBadge extends StatelessWidget {
+  const ColorPreviewBadge({super.key, required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      avatar: Icon(icon),
+      label: Text(label),
+      visualDensity: VisualDensity.compact,
+    );
   }
 }

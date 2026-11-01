@@ -102,7 +102,9 @@ class FileIconTile extends StatelessWidget {
       height: SeguiControlSize.avatar,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        // Same as the tool and settings icon tiles, so the tile shows on
+        // white cards and tinted panels alike.
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(SeguiRadius.md),
       ),
       child: icon,

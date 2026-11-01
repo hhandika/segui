@@ -50,10 +50,12 @@ class SecondaryMenuTile extends StatelessWidget {
   const SecondaryMenuTile({
     super.key,
     required this.text,
+    required this.icon,
     required this.onTap,
   });
 
   final String text;
+  final IconData icon;
   final VoidCallback onTap;
 
   @override
@@ -64,6 +66,7 @@ class SecondaryMenuTile extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(SeguiRadius.sm),
         ),
+        leading: Icon(icon),
         title: Text(text, style: Theme.of(context).textTheme.labelLarge),
         onTap: onTap,
       ),

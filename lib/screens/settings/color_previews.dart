@@ -137,21 +137,26 @@ class MiniAlignment extends StatelessWidget {
     required this.palette,
     required this.rows,
     this.mode = AlignmentColorMode.base,
+    this.cellSize = SeguiColorSettingsLayout.residueCell,
   });
 
   final ResiduePalette palette;
   final List<String> rows;
   final AlignmentColorMode mode;
 
+  /// Side of a residue cell. Rows shrink to fit narrow screens.
+  final double cellSize;
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final ResiduePalette shown =
         mode == AlignmentColorMode.mono ? ResiduePalette.mono(colors) : palette;
-    final TextStyle style = Theme.of(context).textTheme.labelSmall!.copyWith(
-          fontFamily: 'monospace',
-          height: 1,
-        );
+    final TextTheme text = Theme.of(context).textTheme;
+    final TextStyle style = (cellSize > SeguiColorSettingsLayout.residueCell
+            ? text.labelLarge!
+            : text.labelSmall!)
+        .copyWith(fontFamily: 'monospace', height: 1);
     return ExcludeSemantics(
       child: FittedBox(
         alignment: Alignment.centerLeft,
@@ -172,6 +177,7 @@ class MiniAlignment extends StatelessWidget {
                           rows[r][s] == rows[0][s],
                       palette: shown,
                       style: style,
+                      size: cellSize,
                     ),
                 ],
               ),
@@ -188,19 +194,21 @@ class _ResidueCell extends StatelessWidget {
     required this.isIdentity,
     required this.palette,
     required this.style,
+    required this.size,
   });
 
   final int code;
   final bool isIdentity;
   final ResiduePalette palette;
   final TextStyle style;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return Container(
-      width: SeguiColorSettingsLayout.residueCell,
-      height: SeguiColorSettingsLayout.residueCell,
+      width: size,
+      height: size,
       alignment: Alignment.center,
       color: isIdentity ? colors.surfaceContainer : palette.colorOf(code),
       child: Text(
@@ -215,21 +223,30 @@ class _ResidueCell extends StatelessWidget {
 
 /// A sample line and bar chart in the palette's colors.
 class MiniChart extends StatelessWidget {
-  const MiniChart({super.key, required this.colors});
+  const MiniChart({
+    super.key,
+    required this.colors,
+    this.series = 4,
+    this.height = SeguiColorSettingsLayout.chartHeight,
+  });
 
   final SeguiColors colors;
+
+  /// Bars and lines drawn, one per palette color.
+  final int series;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return ExcludeSemantics(
       child: SizedBox(
-        height: SeguiColorSettingsLayout.chartHeight,
+        height: height,
         child: CustomPaint(
           size: Size.infinite,
           painter: _MiniChartPainter(
-            fills: [for (int i = 0; i < 4; i++) colors.seriesAt(i)],
-            lines: [for (int i = 0; i < 4; i++) colors.lineAt(i)],
+            fills: [for (int i = 0; i < series; i++) colors.seriesAt(i)],
+            lines: [for (int i = 0; i < series; i++) colors.lineAt(i)],
             axis: scheme.outline,
           ),
         ),
@@ -258,7 +275,7 @@ class _MiniChartPainter extends CustomPainter {
     // Bars on the left half, each fill outlined in its line color.
     final double barWidth = (half - SeguiSpacing.xl) / fills.length;
     for (int i = 0; i < fills.length; i++) {
-      final double height = size.height * (0.9 - 0.18 * i);
+      final double height = size.height * (0.92 - 0.7 * i / fills.length);
       final Rect bar = Rect.fromLTWH(
         i * barWidth + SeguiSpacing.xs,
         size.height - height,
@@ -285,7 +302,10 @@ class _MiniChartPainter extends CustomPainter {
       for (int x = 0; x <= 12; x++) {
         final double t = x / 12;
         final double y = size.height *
-            (0.5 + 0.3 * math.sin(t * math.pi * 2 + i) * (1 - 0.15 * i));
+            (0.5 +
+                0.35 *
+                    math.sin(t * math.pi * 2 + i) *
+                    (1 - 0.6 * i / lines.length));
         final Offset point = Offset(
           half + SeguiSpacing.md + t * (half - SeguiSpacing.xl),
           y,
@@ -319,18 +339,25 @@ class _MiniChartPainter extends CustomPainter {
 
 /// A small heatmap of the colormap, as in the sample spread charts.
 class MiniHeatmap extends StatelessWidget {
-  const MiniHeatmap({super.key, required this.colors});
+  const MiniHeatmap({
+    super.key,
+    required this.colors,
+    this.rows = 4,
+    this.columns = 16,
+    this.height = SeguiColorSettingsLayout.heatmapHeight,
+  });
 
   final SeguiColors colors;
+  final int rows;
+  final int columns;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     final Color primary = Theme.of(context).colorScheme.primary;
-    const int columns = 16;
-    const int rows = 4;
     return ExcludeSemantics(
       child: SizedBox(
-        height: SeguiColorSettingsLayout.heatmapHeight,
+        height: height,
         child: Column(
           children: [
             for (int r = 0; r < rows; r++)

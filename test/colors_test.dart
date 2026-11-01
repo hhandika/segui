@@ -68,7 +68,7 @@ class FakeColorLibrary extends ColorLibraryServices {
 
   @override
   ContrastSummary summarize(SeguiColors colors, ColorScheme scheme) {
-    return const ContrastSummary(text: 6.3, lines: 3.1);
+    return const ContrastSummary(lines: 3.1, table: 6.3, residues: 5.4);
   }
 }
 
@@ -171,7 +171,7 @@ void main() {
     );
   });
 
-  testWidgets('Color settings pick from previews and show contrast',
+  testWidgets('Color editor switches categories and saves choices',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -199,20 +199,56 @@ void main() {
       ),
     );
 
+    // Charts open first, with their options and line contrast.
     expect(find.text('Okabe-Ito'), findsOneWidget);
-    expect(find.text('Not colorblind safe'), findsOneWidget);
-    expect(find.text('Viridis'), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp('Text contrast 6.3')), findsOneWidget);
+    expect(find.text('Viridis'), findsNothing);
+    expect(find.bySemanticsLabel(RegExp('Lines contrast 3.1')), findsOneWidget);
 
     await tester.tap(find.text('ColorBrewer Set1'));
     await tester.pumpAndSettle();
     expect(container.read(chartPaletteProvider), 'set1');
+    expect(find.text('Not colorblind safe'), findsOneWidget);
     final BuildContext context = tester.element(find.byType(ColorSettingView));
     expect(SeguiColors.of(context).seriesAt(1), const Color(0xFFFFFF33));
     expect(SeguiColors.of(context).lineAt(1), const Color(0xFF8A8A1B));
 
+    await tester.tap(find.text('Heatmaps'));
+    await tester.pumpAndSettle();
+    expect(find.text('Viridis'), findsOneWidget);
+
+    await tester.tap(find.text('Tables'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp('Text contrast 6.3')), findsOneWidget);
+
+    await tester.tap(find.text('Alignments'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp('Text contrast 5.4')), findsOneWidget);
     await tester.tap(find.text('Mono'));
     await tester.pumpAndSettle();
     expect(container.read(alignmentColorModeProvider), AlignmentColorMode.mono);
+  });
+
+  testWidgets('Phones show categories as chips above the preview',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          settingProvider.overrideWithValue(prefs),
+          colorLibraryProvider.overrideWithValue(const FakeColorLibrary()),
+        ],
+        child: const MaterialApp(home: ColorSettings()),
+      ),
+    );
+    expect(find.byType(ChoiceChip), findsNWidgets(4));
+    for (final ColorCategory category in ColorCategory.values) {
+      await tester.tap(find.text(category.label));
+      await tester.pumpAndSettle();
+    }
+    expect(find.text('Diff to first'), findsOneWidget);
   });
 }

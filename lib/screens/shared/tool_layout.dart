@@ -10,6 +10,7 @@ import 'package:segui/screens/shared/illustrations.dart';
 import 'package:segui/screens/shared/io/input_view.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/screens/shared/io/workbench_view.dart';
+import 'package:segui/screens/shared/side_panel.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/tasks/progress.dart';
@@ -62,53 +63,15 @@ class ToolListPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
     final List<HomeTool> tools = filterHomeTools(category, '');
-    return Container(
+    return SidePanel(
       width: toolListWidth,
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
-        border: Border(right: BorderSide(color: colors.outlineVariant)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(SeguiSpacing.xxl,
-                SeguiSpacing.xxl, SeguiSpacing.xxl, SeguiSpacing.xs),
-            child: Text(
-              category.label,
-              style: textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-                SeguiSpacing.xxl, 0, SeguiSpacing.xxl, SeguiSpacing.lg),
-            child: Text(
-              '${tools.length} tools',
-              style: textTheme.bodyMedium?.copyWith(
-                color: colors.onSurfaceVariant,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(SeguiSpacing.lg,
-                  SeguiSpacing.xs, SeguiSpacing.lg, SeguiSpacing.xl),
-              children: [
-                for (final tool in tools)
-                  ToolListTile(
-                    tool: tool,
-                    isSelected: tool == selected,
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      title: category.label,
+      subtitle: '${tools.length} tools',
+      children: [
+        for (final tool in tools)
+          ToolListTile(tool: tool, isSelected: tool == selected),
+      ],
     );
   }
 }
@@ -130,62 +93,19 @@ class ToolListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
     return ToolDescriptionTooltip(
       tool: tool,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
-        child: Material(
-          color:
-              isSelected ? colors.surfaceContainerLowest : Colors.transparent,
-          elevation: isSelected ? 1 : 0,
-          shadowColor: colors.shadow.withAlpha(60),
-          borderRadius: BorderRadius.circular(SeguiRadius.md),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () {
-              if (!isSelected) {
-                ref.read(homeToolNavigatorProvider).open(tool);
-              }
-              onOpened?.call();
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: SeguiSpacing.lg, vertical: SeguiSpacing.md),
-              child: Row(
-                children: [
-                  ToolIconTile(tool: tool, isSelected: isSelected),
-                  const SizedBox(width: SeguiSpacing.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tool.title,
-                          style: textTheme.titleSmall?.copyWith(
-                            fontWeight:
-                                isSelected ? FontWeight.w700 : FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          tool.description,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colors.onSurfaceVariant,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+      child: SidePanelTile(
+        icon: tool.icon,
+        title: tool.title,
+        subtitle: tool.description,
+        isSelected: isSelected,
+        onTap: () {
+          if (!isSelected) {
+            ref.read(homeToolNavigatorProvider).open(tool);
+          }
+          onOpened?.call();
+        },
       ),
     );
   }
@@ -228,23 +148,7 @@ class ToolIconTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: isSelected
-            ? colors.primaryContainer
-            : colors.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(size * 0.28),
-      ),
-      alignment: Alignment.center,
-      child: Icon(
-        tool.icon,
-        size: size * 0.55,
-        color: isSelected ? colors.onPrimaryContainer : colors.onSurfaceVariant,
-      ),
-    );
+    return IconTile(icon: tool.icon, isSelected: isSelected, size: size);
   }
 }
 

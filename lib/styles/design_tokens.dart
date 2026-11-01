@@ -261,26 +261,33 @@ abstract final class SeguiTableLayout {
 }
 
 abstract final class SeguiColorSettingsLayout {
-  /// Width of the live preview beside the choices on wide screens.
+  /// Width of the category rail.
+  static const double railWidth = 200;
+
+  /// The option list takes this share of the space beside the rail,
+  /// between its narrowest and widest size.
+  static const double optionsShare = 0.4;
+  static const double optionsWidth = 280;
+  static const double optionsMaxWidth = 520;
+
+  /// Narrowest preview beside the option list before the page stacks.
   static const double previewWidth = 360;
 
-  /// Narrowest a choice card gets before the grid drops a column.
-  static const double choiceWidth = 200;
-
   /// Palette swatches: the fill height and the line drawn under it.
-  static const double swatchHeight = 24;
+  static const double swatchHeight = 16;
   static const double swatchLine = 4;
 
   /// Height of a colormap gradient bar.
   static const double gradientHeight = 16;
 
-  /// Side of a residue cell in the small alignment previews.
-  static const double residueCell = 18;
+  /// Side of a residue cell in option rows and in the preview.
+  static const double residueCell = 14;
+  static const double previewResidueCell = 28;
 
-  /// Heights of the sample chart and heatmap in the live preview.
-  static const double chartHeight = 120;
-  static const double heatmapHeight = 64;
+  /// Heights of the chart and heatmap in the preview.
+  static const double chartHeight = 240;
+  static const double heatmapHeight = 200;
 
-  /// Row height of the small data bar table.
-  static const double tableRow = 28;
+  /// Row height of the data bar table.
+  static const double tableRow = 36;
 }

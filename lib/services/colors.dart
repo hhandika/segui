@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/src/rust/api/colors.dart' as lib;
@@ -195,8 +197,7 @@ class ColorLibraryServices {
       colors.dataBar(scheme).withValues(alpha: SeguiTableLayout.dataBarAlpha),
       surface,
     );
-    final List<double> text = [
-      contrastRatio(scheme.onSurface, bar),
+    final List<double> residues = [
       for (final ResiduePalette p in [colors.nucleotide, colors.aminoAcid])
         for (final Color cell in {...p.colors.values, p.fallback, p.gap})
           contrastRatio(p.onResidue, cell),
@@ -205,8 +206,9 @@ class ColorLibraryServices {
       for (final Color line in colors.seriesLines) contrastRatio(line, surface),
     ];
     return ContrastSummary(
-      text: text.reduce((a, b) => a < b ? a : b),
-      lines: lines.reduce((a, b) => a < b ? a : b),
+      lines: lines.reduce(math.min),
+      table: contrastRatio(scheme.onSurface, bar),
+      residues: residues.reduce(math.min),
     );
   }
 
@@ -392,11 +394,18 @@ class ColorChoices {
 /// The weakest contrast among the colors a preview draws.
 @immutable
 class ContrastSummary {
-  const ContrastSummary({required this.text, required this.lines});
-
-  /// Weakest text: residue letters and numbers over table bars.
-  final double text;
+  const ContrastSummary({
+    required this.lines,
+    required this.table,
+    required this.residues,
+  });
 
   /// Weakest series line against the surface.
   final double lines;
+
+  /// Numbers over table data bars.
+  final double table;
+
+  /// Weakest residue letter on its cell.
+  final double residues;
 }
