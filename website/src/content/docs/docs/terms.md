@@ -4,15 +4,13 @@ sidebar:
   order: 11
 ---
 
-_Last updated: October 31, 2026_
-
 ## Introduction
 
 These Terms and Conditions govern your use of SEGUL: the SEGUI app for desktop and mobile, the SEGUL command-line tool, the SEGUL libraries (`segul-core` and `pysegul`), and our website, [segul.app](https://segul.app). By downloading or using them, you agree to these Terms and Conditions.
 
 ## Changes to These Terms and Conditions
 
-We may change these Terms and Conditions at any time by posting the new version on this page and updating the date at the top. Your continued use of SEGUL after a change means you accept the new Terms and Conditions.
+We may change these Terms and Conditions at any time by posting the new version on this page. Your continued use of SEGUL after a change means you accept the new Terms and Conditions.
 
 ## Using SEGUL
 

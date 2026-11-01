@@ -4,8 +4,6 @@ sidebar:
   order: 12
 ---
 
-_Last updated: October 31, 2026_
-
 ## Introduction
 
 This Privacy Policy describes how SEGUL (“we”, “us”, or “our”) handles information when you use the SEGUI app, the SEGUL command-line tool, the SEGUL libraries (`segul-core` and `pysegul`), or visit our website, [segul.app](https://segul.app).
@@ -46,7 +44,7 @@ Because we do not collect personal information, we do not knowingly collect pers
 
 ## Changes to This Privacy Policy
 
-We may update this Privacy Policy from time to time. We will post the new Privacy Policy on this page and update the date at the top.
+We may update this Privacy Policy from time to time. We will post the new Privacy Policy on this page.
 
 ## Contact Us
 
