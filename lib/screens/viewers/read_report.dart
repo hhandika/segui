@@ -261,11 +261,11 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
             lines: [
               ChartLine(
                 points: indexedPoints('Observed', sample.gcCounts),
-                color: ChartPalette.seriesAt(0),
+                color: SeguiColors.of(context).seriesAt(0),
               ),
               ChartLine(
                 points: indexedPoints('Theoretical', sample.gcTheoretical),
-                color: ChartPalette.seriesAt(1),
+                color: SeguiColors.of(context).seriesAt(1),
                 dashed: true,
               ),
             ],
@@ -329,7 +329,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
                     x: sample.positions.start,
                     y: sample.adapters[i].cumulativePct,
                   ),
-                  color: ChartPalette.seriesAt(i),
+                  color: SeguiColors.of(context).seriesAt(i),
                 ),
             ],
           ),
@@ -441,7 +441,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
       for (final ReadSampleData sample in samples)
         ChartLine(
           points: points(sample),
-          color: ChartPalette.seriesAt(_samples.indexOf(sample)),
+          color: SeguiColors.of(context).seriesAt(_samples.indexOf(sample)),
         ),
     ];
   }
@@ -557,7 +557,8 @@ class SampleCompareChips extends StatelessWidget {
           FilterChip(
             label: Text(samples[i].sample),
             selected: selected.contains(i),
-            avatar: CircleAvatar(backgroundColor: ChartPalette.seriesAt(i)),
+            avatar: CircleAvatar(
+                backgroundColor: SeguiColors.of(context).seriesAt(i)),
             showCheckmark: false,
             onSelected: (on) => onChanged(_toggled(selected, i, on)),
           ),
@@ -618,7 +619,7 @@ class SampleCompareMenu extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: SeguiControlSize.indicator / 2,
-                  backgroundColor: ChartPalette.seriesAt(i),
+                  backgroundColor: SeguiColors.of(context).seriesAt(i),
                 ),
                 const SizedBox(width: SeguiSpacing.md),
                 Text(samples[i].sample),
@@ -648,10 +649,7 @@ class BaseCompositionChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    // Darker residue colors read better as lines on a light background.
-    final ResiduePalette palette = ResiduePalette.nucleotide(
-      theme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
-    );
+    final ResiduePalette palette = SeguiColors.fromTheme(theme).nucleotideLines;
     final List<(String, List<double>)> bases = [
       ('A', positions.aPct),
       ('C', positions.cPct),
@@ -712,12 +710,12 @@ class DuplicationChart extends StatelessWidget {
             BarSeries(
               name: 'Distinct sequences',
               values: duplication.distinctPct,
-              color: ChartPalette.seriesAt(0),
+              color: SeguiColors.of(context).seriesAt(0),
             ),
             BarSeries(
               name: 'Reads',
               values: duplication.readsPct,
-              color: ChartPalette.seriesAt(1),
+              color: SeguiColors.of(context).seriesAt(1),
             ),
           ],
         ),

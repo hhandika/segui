@@ -103,7 +103,8 @@ class ReadLineChart extends StatelessWidget {
                 minY: minY,
                 maxY: maxY,
                 lineBarsData: [
-                  for (final ChartLine line in drawn) _barData(line),
+                  for (final ChartLine line in drawn)
+                    _barData(line, SeguiColors.of(context)),
                 ],
                 betweenBarsData: [
                   for (final ChartBand band in bands)
@@ -161,14 +162,15 @@ class ReadLineChart extends StatelessWidget {
     );
   }
 
-  LineChartBarData _barData(ChartLine line) {
+  /// Lines use the palette's line colors, which reach 3:1 on the surface.
+  LineChartBarData _barData(ChartLine line, SeguiColors palette) {
     final ChartPoints points = line.points;
     return LineChartBarData(
       spots: [
         for (int i = 0; i < points.x.length; i++)
           FlSpot(points.x[i], points.y[i]),
       ],
-      color: line.visible ? line.color : Colors.transparent,
+      color: line.visible ? palette.lineFor(line.color) : Colors.transparent,
       barWidth: line.visible ? line.width : SeguiStroke.none,
       dashArray: line.dashed ? SeguiChartLayout.dash : null,
       // A few points are easier to see as dots.
@@ -258,6 +260,7 @@ class PositionQualityChart extends StatelessWidget {
         ) +
         1;
     final Color band = colors.primary;
+    final SeguiColors palette = SeguiColors.of(context);
     return ReadLineChart(
       xLabel: 'Position (bp)',
       yLabel: 'Quality score',
@@ -305,17 +308,17 @@ class PositionQualityChart extends StatelessWidget {
         ChartZone(
           from: 0,
           to: _poorQuality,
-          color: ChartPalette.fail.withValues(alpha: ChartPalette.zoneAlpha),
+          color: palette.fail.withValues(alpha: ChartPalette.zoneAlpha),
         ),
         ChartZone(
           from: _poorQuality,
           to: _goodQuality,
-          color: ChartPalette.warn.withValues(alpha: ChartPalette.zoneAlpha),
+          color: palette.warn.withValues(alpha: ChartPalette.zoneAlpha),
         ),
         ChartZone(
           from: _goodQuality,
           to: top,
-          color: ChartPalette.pass.withValues(alpha: ChartPalette.zoneAlpha),
+          color: palette.pass.withValues(alpha: ChartPalette.zoneAlpha),
         ),
       ],
       // One tooltip per position, shown on the median line.
@@ -370,6 +373,7 @@ class ReadBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
+    final SeguiColors palette = SeguiColors.fromTheme(theme);
     final TextStyle tooltipStyle = theme.textTheme.bodySmall!.copyWith(
       color: colors.onInverseSurface,
     );
@@ -394,6 +398,11 @@ class ReadBarChart extends StatelessWidget {
                           color: s.color,
                           width: barWidth,
                           borderRadius: BorderRadius.zero,
+                          // Outlined so pale fills reach 3:1 on the surface.
+                          borderSide: BorderSide(
+                            color: palette.lineFor(s.color),
+                            width: SeguiStroke.thin,
+                          ),
                         ),
                     ],
                   ),

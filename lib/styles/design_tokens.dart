@@ -260,3 +260,28 @@ abstract final class SeguiTableLayout {
   /// Height of a table or list inside a tab that scrolls as a whole.
   static const double scrollingHeight = 480;
 }
+
+abstract final class SeguiColorSettingsLayout {
+  /// Width of the live preview beside the choices on wide screens.
+  static const double previewWidth = 360;
+
+  /// Narrowest a choice card gets before the grid drops a column.
+  static const double choiceWidth = 200;
+
+  /// Palette swatches: the fill height and the line drawn under it.
+  static const double swatchHeight = 24;
+  static const double swatchLine = 4;
+
+  /// Height of a colormap gradient bar.
+  static const double gradientHeight = 16;
+
+  /// Side of a residue cell in the small alignment previews.
+  static const double residueCell = 18;
+
+  /// Heights of the sample chart and heatmap in the live preview.
+  static const double chartHeight = 120;
+  static const double heatmapHeight = 64;
+
+  /// Row height of the small data bar table.
+  static const double tableRow = 28;
+}

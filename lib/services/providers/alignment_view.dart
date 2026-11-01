@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/services/viewers/alignment_files.dart';
 import 'package:segui/src/rust/api/alignment_view.dart';
@@ -126,8 +127,11 @@ final alignmentViewSettingsProvider = NotifierProvider.autoDispose<
     AlignmentViewSettings>(AlignmentViewSettingsNotifier.new);
 
 class AlignmentViewSettingsNotifier extends Notifier<AlignmentViewSettings> {
+  /// Opens with the saved color mode; the other settings start fresh.
   @override
-  AlignmentViewSettings build() => const AlignmentViewSettings();
+  AlignmentViewSettings build() {
+    return AlignmentViewSettings(colorMode: _savedColorMode());
+  }
 
   void setCellSize(double size) {
     state = state.copyWith(
@@ -144,6 +148,20 @@ class AlignmentViewSettingsNotifier extends Notifier<AlignmentViewSettings> {
 
   void setColorMode(AlignmentColorMode mode) {
     state = state.copyWith(colorMode: mode);
+    try {
+      ref.read(alignmentColorModeProvider.notifier).set(mode);
+    } catch (_) {
+      // No saved preferences, as in widget tests.
+    }
+  }
+
+  AlignmentColorMode _savedColorMode() {
+    try {
+      return ref.read(alignmentColorModeProvider);
+    } catch (_) {
+      // No saved preferences, as in widget tests.
+      return AlignmentColorMode.base;
+    }
   }
 
   void toggleLetters() {

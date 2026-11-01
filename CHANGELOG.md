@@ -19,6 +19,8 @@
 - Updated SEGUL and other dependencies, with native assets builds and Windows arm64 downloads.
 - New documentation website with visual guides for each feature.
 - Tables from CSV files sort by any column and show a page at a time with the header in place, and columns of numbers show a bar behind each value.
+- New **Settings › Colors** page to choose the chart palette (Okabe-Ito, Paul Tol, or ColorBrewer), the heatmap colormap (viridis family or ColorBrewer), the color of table data bars, and the alignment residue colors, each shown as a preview. A live preview shows a chart, heatmap, table, and alignment in the chosen colors, as seen with typical vision or a color vision deficiency, with their weakest contrast.
+- Colors come from the SEGUL color library, so charts match SEGUL plots. Chart lines and bar outlines reach 3:1 contrast and text reaches 4.5:1 (WCAG 2.2 AA). Read report heatmaps use the chosen colormap instead of shades of green, and the alignment viewer remembers its color mode.
 
 ### Bug Fixes
 

@@ -19,21 +19,25 @@ class SeguiTheme {
 
   static final ColorScheme darkColorScheme = _colorScheme(Brightness.dark);
 
-  static ThemeData lightTheme() {
+  /// [colors] are the chart, table, and residue colors from the SEGUL
+  /// color library, chosen in settings.
+  static ThemeData lightTheme({SeguiColors? colors}) {
     return ThemeData(
       colorScheme: lightColorScheme,
       useMaterial3: true,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       drawerTheme: _drawerTheme,
+      extensions: [if (colors != null) colors],
     );
   }
 
-  static ThemeData darkTheme() {
+  static ThemeData darkTheme({SeguiColors? colors}) {
     return ThemeData(
       colorScheme: darkColorScheme,
       useMaterial3: true,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       drawerTheme: _drawerTheme,
+      extensions: [if (colors != null) colors],
     );
   }
 
@@ -55,6 +59,11 @@ class SeguiTheme {
 }
 
 /// Residue colors for the alignment viewer, keyed by upper-case ASCII code.
+///
+/// The app reads them from the SEGUL color library
+/// (`segul_core::color::residue`) through [SeguiColors]. The
+/// [ResiduePalette.nucleotide] and [ResiduePalette.aminoAcid] values mirror
+/// its Clustal scheme for tests and the first frame, before Rust loads.
 class ResiduePalette {
   const ResiduePalette({
     required this.colors,
@@ -81,6 +90,26 @@ class ResiduePalette {
 
   static const int _gapCode = 0x2D; // -
   static const int _missingCode = 0x3F; // ?
+
+  /// Residue colors sent by the SEGUL color library.
+  factory ResiduePalette.fromLibrary({
+    required List<String> groupCodes,
+    required List<int> groupColors,
+    required int fallback,
+    required int gap,
+    required int onResidue,
+  }) {
+    return ResiduePalette(
+      colors: {
+        for (int i = 0; i < groupCodes.length; i++)
+          for (final int code in groupCodes[i].codeUnits)
+            code: Color(groupColors[i]),
+      },
+      fallback: Color(fallback),
+      gap: Color(gap),
+      onResidue: Color(onResidue),
+    );
+  }
 
   /// A green, C blue, G amber, and T or U red.
   factory ResiduePalette.nucleotide(Brightness brightness) {
@@ -147,9 +176,13 @@ class ResiduePalette {
   }
 }
 
-/// Chart colors. Series use the Okabe-Ito palette, which stays distinct
-/// with color vision deficiency; quality zones reuse its green, orange, and
-/// vermilion.
+/// Default chart colors and opacities. Series use the Okabe-Ito palette,
+/// which stays distinct with color vision deficiency; quality zones reuse
+/// its green, orange, and vermilion.
+///
+/// The colors mirror the SEGUL color library defaults for tests and the
+/// first frame. Widgets read the colors chosen in settings from
+/// [SeguiColors.of].
 class ChartPalette {
   static const List<Color> series = [
     Color(0xFF0072B2),
@@ -179,6 +212,145 @@ class ChartPalette {
   /// Opacity of the inner and outer quality ranges.
   static const double innerBandAlpha = 0.45;
   static const double outerBandAlpha = 0.2;
+}
 
-  static Color seriesAt(int index) => series[index % series.length];
+/// Chart, table, and residue colors from the SEGUL color library
+/// (`segul_core::color`), as chosen in settings. Every SEGUI chart, table,
+/// and alignment viewer reads its colors here, so they match SEGUL plots.
+///
+/// Fills are the published palette colors. Lines, points, and outlines use
+/// [lineFor], which is the fill darkened or lightened in SEGUL until it
+/// reaches 3:1 against the surface (WCAG 2.2 SC 1.4.11).
+@immutable
+class SeguiColors extends ThemeExtension<SeguiColors> {
+  const SeguiColors({
+    required this.series,
+    required this.seriesLines,
+    required this.heatmap,
+    required this.pass,
+    required this.warn,
+    required this.fail,
+    required this.open,
+    required this.outlier,
+    required this.statusLines,
+    required this.nucleotide,
+    required this.aminoAcid,
+    required this.nucleotideLines,
+    this.tableBar,
+  });
+
+  /// Defaults matching SEGUL, for tests and the first frame.
+  factory SeguiColors.fallback(Brightness brightness) {
+    return SeguiColors(
+      series: ChartPalette.series,
+      seriesLines: ChartPalette.series,
+      heatmap: const [],
+      pass: ChartPalette.pass,
+      warn: ChartPalette.warn,
+      fail: ChartPalette.fail,
+      open: ChartPalette.open,
+      outlier: ChartPalette.outlier,
+      statusLines: const {},
+      nucleotide: ResiduePalette.nucleotide(brightness),
+      aminoAcid: ResiduePalette.aminoAcid(brightness),
+      // The other theme's cells are deep on light surfaces and pale on dark.
+      nucleotideLines: ResiduePalette.nucleotide(
+        brightness == Brightness.light ? Brightness.dark : Brightness.light,
+      ),
+    );
+  }
+
+  /// Series fills, in palette order.
+  final List<Color> series;
+
+  /// [series] adjusted to reach 3:1 against the surface.
+  final List<Color> seriesLines;
+
+  /// Evenly spaced heatmap colormap stops, low to high. Empty before the
+  /// library loads, when heatmaps use the primary color.
+  final List<Color> heatmap;
+
+  final Color pass;
+  final Color warn;
+  final Color fail;
+  final Color open;
+  final Color outlier;
+
+  /// Status colors adjusted to reach 3:1 against the surface.
+  final Map<Color, Color> statusLines;
+
+  final ResiduePalette nucleotide;
+  final ResiduePalette aminoAcid;
+
+  /// Nucleotide colors for lines on the surface, such as base composition
+  /// along reads. They reach 3:1 against the surface.
+  final ResiduePalette nucleotideLines;
+
+  /// Table data bar color, or null for the theme's primary color.
+  final Color? tableBar;
+
+  /// The colors of the current theme, or the defaults when none are set.
+  static SeguiColors of(BuildContext context) => fromTheme(Theme.of(context));
+
+  static SeguiColors fromTheme(ThemeData theme) {
+    return theme.extension<SeguiColors>() ??
+        SeguiColors.fallback(theme.colorScheme.brightness);
+  }
+
+  Color seriesAt(int index) => series[index % series.length];
+
+  Color lineAt(int index) => seriesLines[index % seriesLines.length];
+
+  /// Line color for a series or status fill; other colors are returned as is.
+  Color lineFor(Color fill) {
+    final int i = series.indexOf(fill);
+    if (i >= 0 && i < seriesLines.length) return seriesLines[i];
+    return statusLines[fill] ?? fill;
+  }
+
+  ResiduePalette residues({required bool isDna}) =>
+      isDna ? nucleotide : aminoAcid;
+
+  Color dataBar(ColorScheme colors) => tableBar ?? colors.primary;
+
+  /// Heatmap color at [t] in 0 to 1, or null before the library loads.
+  Color? heatmapAt(double t) {
+    if (heatmap.isEmpty) return null;
+    final double clamped = t.isFinite ? t.clamp(0.0, 1.0) : 0.0;
+    final double position = clamped * (heatmap.length - 1);
+    final int low = position.floor();
+    final int high = position.ceil();
+    return Color.lerp(heatmap[low], heatmap[high], position - low);
+  }
+
+  @override
+  SeguiColors copyWith({
+    List<Color>? series,
+    List<Color>? seriesLines,
+    List<Color>? heatmap,
+    Color? tableBar,
+  }) {
+    return SeguiColors(
+      series: series ?? this.series,
+      seriesLines: seriesLines ?? this.seriesLines,
+      heatmap: heatmap ?? this.heatmap,
+      pass: pass,
+      warn: warn,
+      fail: fail,
+      open: open,
+      outlier: outlier,
+      statusLines: statusLines,
+      nucleotide: nucleotide,
+      aminoAcid: aminoAcid,
+      nucleotideLines: nucleotideLines,
+      tableBar: tableBar ?? this.tableBar,
+    );
+  }
+
+  /// Palettes are discrete, so a theme change swaps them halfway.
+  @override
+  SeguiColors lerp(SeguiColors? other, double t) {
+    if (other == null) return this;
+    return t < 0.5 ? this : other;
+  }
 }

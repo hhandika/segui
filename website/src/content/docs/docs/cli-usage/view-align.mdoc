@@ -77,6 +77,14 @@ The residue colors are made for dark terminals. If your terminal has a light bac
 segul view align --input alignment.fasta --theme light
 ```
 
+For colors that stay distinct with color vision deficiencies, use `--residue-colors colorblind-safe`. It uses Okabe-Ito hues for DNA and Paul Tol hues for amino acids:
+
+```bash
+segul view align --input alignment.fasta --residue-colors colorblind-safe
+```
+
+Residue letters reach at least 4.5:1 contrast on every cell, including selected ones, in both themes. SEGUI uses the same colors and offers the same choice under **Settings › Colors**.
+
 Terminals that support 24-bit color show the exact SEGUI colors. Other terminals show the nearest of 256 colors. Most modern terminals support 24-bit color and report it with the `COLORTERM` environment variable.
 
 Press `F2` to cycle the color modes:
@@ -157,4 +165,5 @@ Some terminals use `Ctrl+=` or `Alt` shortcuts for their own features. If a shor
 | `-f`, `--input-format` | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`          |
 | `--datatype`           | Data type: `ignore` (default, detects DNA or amino acids), `dna`, `aa` |
 | `--theme`              | Colors for a `dark` (default) or `light` terminal                      |
+| `--residue-colors`     | `clustal` (default) or `colorblind-safe` residue colors                |
 | `--chunk`              | Sites per chunk: `250`, `500`, `1000` (default), or `2000`             |

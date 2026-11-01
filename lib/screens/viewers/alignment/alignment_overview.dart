@@ -49,16 +49,16 @@ class AlignmentOverview extends StatefulWidget {
 
 class _AlignmentOverviewState extends State<AlignmentOverview> {
   ui.Image? _image;
-  Brightness? _brightness;
+  SeguiColors? _colors;
   // Bumped per build, so a slower earlier sample is dropped.
   int _generation = 0;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final Brightness brightness = Theme.of(context).colorScheme.brightness;
-    if (brightness != _brightness) {
-      _brightness = brightness;
+    final SeguiColors colors = SeguiColors.of(context);
+    if (!identical(colors, _colors)) {
+      _colors = colors;
       _buildImage();
     }
   }
@@ -133,9 +133,7 @@ class _AlignmentOverviewState extends State<AlignmentOverview> {
     final int width =
         data.length < _maxImageWidth ? data.length : _maxImageWidth;
     final int height = rows < _maxImageHeight ? rows : _maxImageHeight;
-    final ResiduePalette palette = data.isDna
-        ? ResiduePalette.nucleotide(_brightness!)
-        : ResiduePalette.aminoAcid(_brightness!);
+    final ResiduePalette palette = _colors!.residues(isDna: data.isDna);
     final List<int> sampled = [
       for (int y = 0; y < height; y++) order[y * rows ~/ height],
     ];
@@ -274,10 +272,8 @@ class AlignmentLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final Brightness brightness = theme.colorScheme.brightness;
-    final ResiduePalette palette = isDna
-        ? ResiduePalette.nucleotide(brightness)
-        : ResiduePalette.aminoAcid(brightness);
+    final ResiduePalette palette =
+        SeguiColors.fromTheme(theme).residues(isDna: isDna);
     final List<(String, int)> entries = isDna
         ? const [('A', 0x41), ('C', 0x43), ('G', 0x47), ('T', 0x54)]
         : const [

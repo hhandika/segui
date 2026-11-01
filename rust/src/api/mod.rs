@@ -5,6 +5,7 @@
 pub mod alignment_report;
 pub mod alignment_view;
 pub mod archive;
+pub mod colors;
 pub mod common;
 pub mod contig;
 pub mod csv;

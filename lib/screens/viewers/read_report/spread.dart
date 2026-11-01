@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/services/viewers/read_report.dart';
@@ -114,6 +115,7 @@ class SampleSpreadChart extends StatelessWidget {
     SampleMatrix matrix,
   ) {
     final Color band = Theme.of(context).colorScheme.primary;
+    final SeguiColors palette = SeguiColors.of(context);
     final SampleSpread spread = SampleSpread.of(matrix);
     final int openRow = view.indexOf(index);
     final List<int> outliers =
@@ -134,11 +136,10 @@ class SampleSpreadChart extends StatelessWidget {
       for (final int row in outliers)
         ChartLine(
           points: rows[row],
-          color: ChartPalette.outlier,
+          color: palette.outlier,
           width: SeguiStroke.thin,
         ),
-      if (openRow >= 0)
-        ChartLine(points: rows[openRow], color: ChartPalette.open),
+      if (openRow >= 0) ChartLine(points: rows[openRow], color: palette.open),
     ];
     return ReadLineChart(
       xLabel: xLabel,
@@ -167,11 +168,11 @@ class SampleSpreadChart extends StatelessWidget {
           '10th-90th percentile',
           band.withValues(alpha: ChartPalette.outerBandAlpha)
         ),
-        if (openRow >= 0) (rows[openRow].name, ChartPalette.open),
+        if (openRow >= 0) (rows[openRow].name, palette.open),
         if (outliers.isNotEmpty)
           (
             'Outliers: ${outliers.map((row) => rows[row].name).join(', ')}',
-            ChartPalette.outlier
+            palette.outlier
           ),
       ],
       tooltipText: (line, i) {
@@ -225,6 +226,7 @@ class _SampleHeatmapState extends State<SampleHeatmap> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
+    final SeguiColors palette = SeguiColors.fromTheme(theme);
     final TextStyle labelStyle = theme.textTheme.labelSmall!.copyWith(
       color: colors.onSurfaceVariant,
     );
@@ -280,11 +282,12 @@ class _SampleHeatmapState extends State<SampleHeatmap> {
                       geometry: geometry,
                       maxValue: maxValue,
                       cellColor: colors.primary,
-                      openColor: ChartPalette.open,
+                      colormap: palette.heatmap,
+                      openColor: palette.lineFor(palette.open),
                       labelStyle: labelStyle,
+                      // Bold rather than colored, so the name keeps 4.5:1.
                       openLabelStyle: labelStyle.copyWith(
-                        color: ChartPalette.open,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -299,6 +302,8 @@ class _SampleHeatmapState extends State<SampleHeatmap> {
           valueLabel: widget.valueLabel,
           maxValue: maxValue,
           color: colors.primary,
+          colormap: palette.heatmap,
+          openColor: palette.lineFor(palette.open),
           openName: widget.openRow >= 0 ? widget.names[widget.openRow] : null,
         ),
       ],
@@ -361,6 +366,7 @@ class _HeatmapPainter extends CustomPainter {
     required this.geometry,
     required this.maxValue,
     required this.cellColor,
+    required this.colormap,
     required this.openColor,
     required this.labelStyle,
     required this.openLabelStyle,
@@ -372,6 +378,10 @@ class _HeatmapPainter extends CustomPainter {
   final _HeatmapGeometry geometry;
   final double maxValue;
   final Color cellColor;
+
+  /// Colormap stops from the SEGUL color library, low to high. When empty,
+  /// cells shade [cellColor] by opacity instead.
+  final List<Color> colormap;
   final Color openColor;
   final TextStyle labelStyle;
   final TextStyle openLabelStyle;
@@ -392,10 +402,7 @@ class _HeatmapPainter extends CustomPainter {
         // Blank cells tell "none" apart from the faintest shade.
         if (value == null || value <= 0) continue;
         final double share = maxValue > 0 ? value / maxValue : 0;
-        paint.color = cellColor.withValues(
-          alpha: SeguiChartLayout.heatmapMinAlpha +
-              (1 - SeguiChartLayout.heatmapMinAlpha) * share.clamp(0, 1),
-        );
+        paint.color = _shade(share.clamp(0, 1));
         canvas.drawRect(
           Rect.fromLTWH(left + column * cell, row * rowHeight, cell, rowHeight),
           paint,
@@ -486,7 +493,22 @@ class _HeatmapPainter extends CustomPainter {
         old.openRow != openRow ||
         old.geometry.rowHeight != geometry.rowHeight ||
         old.cellColor != cellColor ||
+        !listEquals(old.colormap, colormap) ||
+        old.openColor != openColor ||
         old.labelStyle != labelStyle;
+  }
+
+  Color _shade(double share) {
+    if (colormap.isEmpty) {
+      return cellColor.withValues(
+        alpha: SeguiChartLayout.heatmapMinAlpha +
+            (1 - SeguiChartLayout.heatmapMinAlpha) * share,
+      );
+    }
+    final double position = share * (colormap.length - 1);
+    final int low = position.floor();
+    return Color.lerp(
+        colormap[low], colormap[position.ceil()], position - low)!;
   }
 }
 
@@ -497,12 +519,16 @@ class _HeatmapLegend extends StatelessWidget {
     required this.valueLabel,
     required this.maxValue,
     required this.color,
+    required this.colormap,
+    required this.openColor,
     required this.openName,
   });
 
   final String valueLabel;
   final double maxValue;
   final Color color;
+  final List<Color> colormap;
+  final Color openColor;
   final String? openName;
 
   @override
@@ -524,10 +550,14 @@ class _HeatmapLegend extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(SeguiRadius.xs),
                 gradient: LinearGradient(
-                  colors: [
-                    color.withValues(alpha: SeguiChartLayout.heatmapMinAlpha),
-                    color,
-                  ],
+                  colors: colormap.isNotEmpty
+                      ? colormap
+                      : [
+                          color.withValues(
+                            alpha: SeguiChartLayout.heatmapMinAlpha,
+                          ),
+                          color,
+                        ],
                 ),
               ),
             ),
@@ -544,7 +574,7 @@ class _HeatmapLegend extends StatelessWidget {
                 height: SeguiControlSize.indicator,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: ChartPalette.open,
+                    color: openColor,
                     width: SeguiStroke.regular,
                   ),
                 ),

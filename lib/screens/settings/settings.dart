@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/settings/about.dart';
+import 'package:segui/screens/settings/colors.dart';
 import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
@@ -135,7 +136,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
             setState(() {
               // Add data usage to file output provider
               // When user selects data usage
-              if (value == 2) {
+              if (value == 3) {
                 ref.read(fileOutputProvider.notifier).addFromAppDir();
               }
               _selectedIndex = value;
@@ -143,11 +144,12 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
           },
         ),
         Expanded(
-          child: _selectedIndex == 0
-              ? const LogListView()
-              : _selectedIndex == 1
-                  ? const ThemeSettingView()
-                  : const DataUsageView(),
+          child: switch (_selectedIndex) {
+            0 => const LogListView(),
+            1 => const ThemeSettingView(),
+            2 => const ColorSettingView(),
+            _ => const DataUsageView(),
+          },
         ),
       ],
     );
@@ -162,8 +164,13 @@ const List<NavigationDrawerDestination> settingsDrawerDestinations = [
   ),
   NavigationDrawerDestination(
     label: Text('Theme'),
-    icon: Icon(Icons.color_lens_outlined),
-    selectedIcon: Icon(Icons.color_lens_rounded),
+    icon: Icon(Icons.brightness_6_outlined),
+    selectedIcon: Icon(Icons.brightness_6_rounded),
+  ),
+  NavigationDrawerDestination(
+    label: Text('Colors'),
+    icon: Icon(Icons.palette_outlined),
+    selectedIcon: Icon(Icons.palette_rounded),
   ),
   NavigationDrawerDestination(
     label: Text('Data Usage'),
@@ -260,12 +267,26 @@ class MainSettings extends ConsumerWidget {
           SettingTile(
             title: 'Theme',
             subtitle: 'Change app theme and motion',
-            icon: Icons.color_lens_outlined,
+            icon: Icons.brightness_6_outlined,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const ThemeSettings(),
+                ),
+              );
+            },
+          ),
+          const CommonDivider(),
+          SettingTile(
+            title: 'Colors',
+            subtitle: 'Chart, table, and alignment colors',
+            icon: Icons.palette_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ColorSettings(),
                 ),
               );
             },

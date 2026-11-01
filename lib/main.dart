@@ -55,8 +55,12 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'SEGUL',
       debugShowCheckedModeBanner: false,
-      theme: SeguiTheme.lightTheme(),
-      darkTheme: SeguiTheme.darkTheme(),
+      theme: SeguiTheme.lightTheme(
+        colors: ref.watch(seguiColorsProvider(Brightness.light)),
+      ),
+      darkTheme: SeguiTheme.darkTheme(
+        colors: ref.watch(seguiColorsProvider(Brightness.dark)),
+      ),
       themeMode: ref.watch(themeSettingProvider).when(
             data: (settings) => settings,
             loading: () => ThemeMode.system,

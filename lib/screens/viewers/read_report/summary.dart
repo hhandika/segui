@@ -12,6 +12,7 @@ import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/styles/themes.dart';
 
 final NumberFormat _countFormat = NumberFormat('#,##0');
 
@@ -194,14 +195,15 @@ class ReadOverviewTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color neutral = Theme.of(context).colorScheme.primary;
+    final SeguiColors colors = SeguiColors.of(context);
+    final Color neutral = colors.dataBar(Theme.of(context).colorScheme);
     PagedTableColumn<int> numeric(
       String label,
       double width,
       ReadMetric metric,
       String Function(double value) format,
     ) {
-      return _numeric(label, width, metric, format, neutral);
+      return _numeric(label, width, metric, format, neutral, colors);
     }
 
     return Column(
@@ -210,7 +212,7 @@ class ReadOverviewTable extends StatelessWidget {
         DataBarLegend(
           swatches: [
             for (final ReadQcStatus status in ReadQcStatus.values)
-              (statusColor(status), status.label),
+              (statusColor(status, colors), status.label),
             (neutral, 'No check'),
           ],
         ),
@@ -268,6 +270,7 @@ class ReadOverviewTable extends StatelessWidget {
     ReadMetric metric,
     String Function(double value) format,
     Color neutral,
+    SeguiColors colors,
   ) {
     final List<double> listed = [
       for (final int i in view)
@@ -290,7 +293,9 @@ class ReadOverviewTable extends StatelessWidget {
         if (high <= low) return text;
         return DataBarCell(
           fraction: (value - low) / (high - low),
-          color: rule == null ? neutral : statusColor(rule.statusOf(value)),
+          color: rule == null
+              ? neutral
+              : statusColor(rule.statusOf(value), colors),
           child: text,
         );
       },
@@ -320,7 +325,8 @@ class QcStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget avatar = CircleAvatar(backgroundColor: statusColor(status));
+    final Widget avatar = CircleAvatar(
+        backgroundColor: statusColor(status, SeguiColors.of(context)));
     final Widget text = Text(label ?? status.label);
     if (onPressed == null) {
       return Chip(
@@ -403,7 +409,8 @@ class QcCheckRanges extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: SeguiControlSize.indicator / 2,
-                    backgroundColor: statusColor(status),
+                    backgroundColor:
+                        statusColor(status, SeguiColors.of(context)),
                   ),
                   const SizedBox(width: SeguiSpacing.md),
                   SizedBox(

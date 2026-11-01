@@ -197,9 +197,7 @@ class _GridStyle {
     final ColorScheme colors = theme.colorScheme;
     final ResiduePalette palette = switch (mode) {
       AlignmentColorMode.mono => ResiduePalette.mono(colors),
-      _ => isDna
-          ? ResiduePalette.nucleotide(colors.brightness)
-          : ResiduePalette.aminoAcid(colors.brightness),
+      _ => SeguiColors.fromTheme(theme).residues(isDna: isDna),
     };
     return _GridStyle(
       palette: palette,

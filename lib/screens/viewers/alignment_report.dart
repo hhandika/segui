@@ -229,7 +229,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
                 for (final (_, SiteTypeData sites) in siteTypes)
                   100 * sites.propSites,
               ],
-              color: ChartPalette.seriesAt(0),
+              color: SeguiColors.of(context).seriesAt(0),
             ),
             BarSeries(
               name: 'Loci (%)',
@@ -237,7 +237,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
                 for (final (_, SiteTypeData sites) in siteTypes)
                   100 * sites.propLoci,
               ],
-              color: ChartPalette.seriesAt(1),
+              color: SeguiColors.of(context).seriesAt(1),
             ),
           ],
         ),
@@ -258,7 +258,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
             BarSeries(
               name: 'Loci',
               values: report.completenessLoci,
-              color: ChartPalette.seriesAt(0),
+              color: SeguiColors.of(context).seriesAt(0),
             ),
           ],
         ),
@@ -276,7 +276,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
             BarSeries(
               name: 'Characters',
               values: report.charCounts,
-              color: ChartPalette.seriesAt(0),
+              color: SeguiColors.of(context).seriesAt(0),
             ),
           ],
         ),
@@ -313,7 +313,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
             BarSeries(
               name: unit[0].toUpperCase() + unit.substring(1),
               values: bins.counts,
-              color: ChartPalette.seriesAt(0),
+              color: SeguiColors.of(context).seriesAt(0),
             ),
           ],
         ),

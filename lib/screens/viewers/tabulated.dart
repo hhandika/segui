@@ -11,6 +11,7 @@ import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/viewers/csv.dart';
 import 'package:segui/services/viewers/natural_sort.dart';
+import 'package:segui/styles/themes.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -135,7 +136,8 @@ class CsvTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<dynamic> header = content.first;
     final List<List<dynamic>> records = content.sublist(1);
-    final Color neutral = Theme.of(context).colorScheme.primary;
+    final Color neutral =
+        SeguiColors.of(context).dataBar(Theme.of(context).colorScheme);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

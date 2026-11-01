@@ -6,6 +6,7 @@ import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
 import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/styles/themes.dart';
 
 /// How a report item panel shows its loci or taxa.
 enum ItemView {
@@ -181,7 +182,8 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
   }
 
   Widget _table(BuildContext context, List<int> view) {
-    final Color neutral = Theme.of(context).colorScheme.primary;
+    final Color neutral =
+        SeguiColors.of(context).dataBar(Theme.of(context).colorScheme);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
