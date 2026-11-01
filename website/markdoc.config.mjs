@@ -198,6 +198,11 @@ export default defineMarkdocConfig({
       render: component("./src/components/features/Unalignment.astro"),
       selfClosing: true,
     },
+    // SEGUL ecosystem diagram for the "App Design and Architecture" page.
+    ecosystem: {
+      render: component("./src/components/diagram/SegulEcosystem.astro"),
+      selfClosing: true,
+    },
     commandmap: {
       render: component("./src/components/cli-gui/CommandMap.astro"),
       selfClosing: true,

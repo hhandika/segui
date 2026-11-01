@@ -1,0 +1,34 @@
+---
+title: App Design and Architecture
+description: Learn how we design SEGUL app.
+sidebar:
+  order: 1
+---
+
+SEGUL is available as a GUI, CLI, and a library. All three versions share the same core functionalities. The SEGUL core library is written in Rust, a systems programming language that is known for its speed, memory safety, and parallelism. The GUI layer uses [Flutter](https://flutter.dev/) and is written in Dart. The CLI is wrapped around the Rust library and is written in Rust.
+
+## SEGUL ecosystem
+
+{% ecosystem /%}
+
+Every app and package calls the same `segul-core` library. Each one adds only a thin Rust layer that turns its own inputs into library calls:
+
+- **SEGUI** wraps the library in Rust functions that [Flutter Rust Bridge (FRB)](https://cjycode.com/flutter_rust_bridge/) exposes to Dart.
+- **SEGUL CLI** parses command-line arguments with [clap](https://docs.rs/clap) and passes them to the library.
+- **pysegul** exposes the library to Python with [PyO3](https://pyo3.rs/) and is built with [maturin](https://www.maturin.rs/). See [Python](/docs/api-usage/python/intro/).
+- **rsegul** is an example of calling the library from R with [rextendr](https://extendr.github.io/rextendr/). See [R](/docs/api-usage/r-api/).
+
+Because the analyses live in one place, a task gives the same output whichever interface runs it. Rust developers can also use `segul-core` directly. See [Rust](/docs/api-usage/rust-api/).
+
+## Repository structure
+
+We use a multi-repository structure to separate the GUI from the SEGUL core library. The CLI and the core library share one repository as a Cargo workspace:
+
+- [SEGUL GUI](https://github.com/hhandika/segui)
+- [SEGUL CLI and core library](https://github.com/hhandika/segul)
+- [pysegul](https://github.com/hhandika/pysegul)
+- [rsegul](https://github.com/hhandika/rsegul)
+
+{% aside type="note" %}
+If we were to redesign the repository structure, we would adopt a monorepo approach where the library, CLI, and GUI are all contained within a single repository. The library and CLI already share a Rust workspace. The Rust bridge for the GUI could be managed as a separate package. This approach has been implemented in our [NAHPU](https://github.com/hhandika/nahpu) app, which serves as a digital field catalog for natural history collections.
+{% /aside %}

@@ -1,0 +1,152 @@
+---
+// SEGUL ecosystem: the apps and packages built on the segul-core library.
+import LayeredDiagram from "./LayeredDiagram.astro";
+import type { Layout, LegendItem, NodeDef } from "./diagram";
+
+const nodes: NodeDef[] = [
+  { id: "gui", tone: "app", title: "SEGUI", sub: "GUI · desktop and mobile" },
+  { id: "cli", tone: "app", title: "SEGUL CLI", sub: "Terminal app" },
+  { id: "python", tone: "app", title: "pysegul", sub: "Python package" },
+  { id: "r", tone: "app", title: "rsegul", sub: "R example package" },
+  {
+    id: "frb",
+    tone: "rust",
+    badge: "FRB",
+    title: "Rust wrappers",
+    path: "segui · rust/src/api/",
+    sub: "Bridged to Dart",
+  },
+  {
+    id: "clap",
+    tone: "rust",
+    badge: "clap",
+    title: "CLI parsers",
+    path: "segul · src/cli/",
+    sub: "Args to library calls",
+  },
+  {
+    id: "pyo3",
+    tone: "rust",
+    badge: "PyO3",
+    title: "Python bindings",
+    path: "pysegul · src/",
+    sub: "Built with maturin",
+  },
+  {
+    id: "extendr",
+    tone: "rust",
+    badge: "extendr",
+    title: "R bindings",
+    path: "rsegul · src/rust/",
+    sub: "Built with rextendr",
+  },
+  {
+    id: "core",
+    tone: "rust",
+    badge: "Rust",
+    title: "segul-core",
+    path: "crates/segul-core · crates.io · docs.rs",
+    sub: "All analyses, readers, and writers. Parallel with rayon",
+    chips: ["align", "sequence", "partition", "read", "contig", "maf", "plot", "parser", "writer", "stats"],
+  },
+  {
+    id: "files",
+    tone: "data",
+    badge: "Disk",
+    title: "Your files",
+    path: "FASTA · NEXUS · PHYLIP · FASTQ · MAF · BED",
+    sub: "Read and written locally, never uploaded",
+  },
+];
+
+const legend: LegendItem[] = [
+  { tone: "app", label: "Apps and packages" },
+  { tone: "rust", label: "Rust" },
+  { tone: "data", label: "Local files" },
+];
+
+// Four columns of 205 with 20 gaps across the 880-wide content area.
+const cols = [40, 265, 490, 715];
+const mid = cols.map((x) => x + 102);
+const wide: Layout = {
+  name: "wide",
+  width: 960,
+  height: 436,
+  badges: true,
+  chipCharW: 6.4,
+  boxes: {
+    gui: { x: cols[0], y: 16, w: 205, h: 60 },
+    cli: { x: cols[1], y: 16, w: 205, h: 60 },
+    python: { x: cols[2], y: 16, w: 205, h: 60 },
+    r: { x: cols[3], y: 16, w: 205, h: 60 },
+    frb: { x: cols[0], y: 116, w: 205, h: 66 },
+    clap: { x: cols[1], y: 116, w: 205, h: 66 },
+    pyo3: { x: cols[2], y: 116, w: 205, h: 66 },
+    extendr: { x: cols[3], y: 116, w: 205, h: 66 },
+    core: { x: 40, y: 222, w: 880, h: 98 },
+    files: { x: 40, y: 352, w: 520, h: 66 },
+  },
+  edges: [
+    { x1: mid[0], y1: 76, x2: mid[0], y2: 116, label: "Dart FFI" },
+    { x1: mid[1], y1: 76, x2: mid[1], y2: 116, label: "run commands" },
+    { x1: mid[2], y1: 76, x2: mid[2], y2: 116, label: "import pysegul" },
+    { x1: mid[3], y1: 76, x2: mid[3], y2: 116, label: "R calls" },
+    ...mid.map((x) => ({ x1: x, y1: 182, x2: x, y2: 222 })),
+    { x1: 300, y1: 320, x2: 300, y2: 352, label: "read & write by path" },
+  ],
+  legend: { x: 600, y: 370, vertical: true },
+};
+
+// Narrow: each app sits beside its binding, and the bindings join one trunk
+// on the right that leads down to segul-core.
+const rows = [12, 90, 168, 246];
+const trunk = 342;
+const narrow: Layout = {
+  name: "narrow",
+  width: 360,
+  height: 604,
+  badges: false,
+  chipCharW: 6,
+  boxes: {
+    gui: { x: 12, y: rows[0], w: 128, h: 66, text: { sub: "Desktop, mobile" } },
+    cli: { x: 12, y: rows[1], w: 128, h: 66, text: { sub: "Terminal" } },
+    python: { x: 12, y: rows[2], w: 128, h: 66, text: { sub: "Python" } },
+    r: { x: 12, y: rows[3], w: 128, h: 66, text: { sub: "R example" } },
+    frb: { x: 156, y: rows[0], w: 172, h: 66, text: { path: "segui/rust/src/api/" } },
+    clap: { x: 156, y: rows[1], w: 172, h: 66, text: { path: "segul/src/cli/" } },
+    pyo3: { x: 156, y: rows[2], w: 172, h: 66, text: { path: "pysegul/src/" } },
+    extendr: { x: 156, y: rows[3], w: 172, h: 66, text: { path: "rsegul/src/rust/" } },
+    core: {
+      x: 12,
+      y: 344,
+      w: 336,
+      h: 124,
+      text: { path: "crates/segul-core", sub: "Analyses, readers, and writers" },
+    },
+    files: {
+      x: 12,
+      y: 500,
+      w: 336,
+      h: 66,
+      text: { path: "FASTA · NEXUS · PHYLIP · FASTQ · MAF", sub: "Read and written locally" },
+    },
+  },
+  edges: [
+    ...rows.map((y) => ({ x1: 140, y1: y + 33, x2: 156, y2: y + 33 })),
+    ...rows.map((y) => ({ x1: 328, y1: y + 33, x2: trunk, y2: y + 33, arrow: false })),
+    { x1: trunk, y1: rows[0] + 33, x2: trunk, y2: 320, arrow: false },
+    { x1: trunk, y1: 320, x2: trunk, y2: 344 },
+    { x1: 92, y1: 468, x2: 92, y2: 500 },
+  ],
+  legend: { x: 20, y: 592, vertical: false },
+};
+---
+
+<LayeredDiagram
+  nodes={nodes}
+  wide={wide}
+  narrow={narrow}
+  legend={legend}
+  label="SEGUL ecosystem: the SEGUI GUI, the SEGUL CLI, pysegul, and rsegul each reach the segul-core Rust library through a thin binding layer, and segul-core reads and writes local files"
+  caption="The SEGUL ecosystem. Every app and package calls the same segul-core library through a thin Rust layer, so a task gives the same result in the GUI, the CLI, Python, or R."
+/>
