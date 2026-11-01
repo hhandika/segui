@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
-import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
+import 'package:segui/screens/viewers/report/data_bar.dart';
+import 'package:segui/screens/viewers/report/metric_bars.dart';
+import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -83,11 +85,18 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
             child: ChartPlaceholder(message: 'No samples match the filter.'),
           )
         : switch (_mode) {
-            SummaryView.bars => SampleMetricBars(
-                samples: widget.samples,
+            SummaryView.bars => MetricBars(
                 view: widget.view,
-                index: widget.index,
-                metric: metric,
+                open: widget.index,
+                name: (i) => widget.samples[i].sample,
+                value: (i) => metric.valueOf(widget.samples[i].metrics) ?? 0,
+                label: metric.label,
+                format: metric.format,
+                exact: switch (metric) {
+                  ReadMetric.reads || ReadMetric.bases => _countFormat.format,
+                  _ => metric.format,
+                },
+                leading: (i) => SampleStatusDot(sample: widget.samples[i]),
                 onSelected: widget.onSelected,
               ),
             SummaryView.table => ReadOverviewTable(
@@ -164,193 +173,6 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
   }
 }
 
-/// One horizontal bar per sample for [metric], scaled to the largest
-/// value. The open sample is highlighted and kept in view, and a tap opens
-/// another. Bars build only while visible, so long lists stay fast.
-class SampleMetricBars extends StatefulWidget {
-  const SampleMetricBars({
-    super.key,
-    required this.samples,
-    required this.view,
-    required this.index,
-    required this.metric,
-    required this.onSelected,
-  });
-
-  final List<ReadSampleData> samples;
-  final List<int> view;
-  final int index;
-  final ReadMetric metric;
-  final ValueChanged<int> onSelected;
-
-  @override
-  State<SampleMetricBars> createState() => _SampleMetricBarsState();
-}
-
-class _SampleMetricBarsState extends State<SampleMetricBars> {
-  static const double _rowExtent =
-      SeguiChartLayout.barRow + 2 * SeguiSpacing.xxs;
-
-  final ScrollController _controller = ScrollController();
-
-  @override
-  void didUpdateWidget(covariant SampleMetricBars oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.index != widget.index) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _showOpen());
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final List<int> view = widget.view;
-    final double largest = view
-        .map((i) => widget.metric.valueOf(widget.samples[i].metrics) ?? 0)
-        .fold(0, (a, b) => a > b ? a : b);
-    return Scrollbar(
-      controller: _controller,
-      child: ListView.builder(
-        controller: _controller,
-        padding: const EdgeInsets.only(
-          right: SeguiControlSize.scrollbarGutter,
-        ),
-        itemExtent: _rowExtent,
-        itemCount: view.length,
-        itemBuilder: (context, position) {
-          final int i = view[position];
-          return SampleMetricBar(
-            sample: widget.samples[i],
-            value: widget.metric.valueOf(widget.samples[i].metrics) ?? 0,
-            largest: largest,
-            metric: widget.metric,
-            isOpen: i == widget.index,
-            onTap: () => widget.onSelected(i),
-          );
-        },
-      ),
-    );
-  }
-
-  /// Scrolls the open sample into view.
-  void _showOpen() {
-    final int position = widget.view.indexOf(widget.index);
-    if (position < 0 || !_controller.hasClients) return;
-    final ScrollPosition scroll = _controller.position;
-    final double offset = position * _rowExtent;
-    if (offset < scroll.pixels ||
-        offset + _rowExtent > scroll.pixels + scroll.viewportDimension) {
-      _controller.jumpTo(offset.clamp(0, scroll.maxScrollExtent));
-    }
-  }
-}
-
-class SampleMetricBar extends StatelessWidget {
-  const SampleMetricBar({
-    super.key,
-    required this.sample,
-    required this.value,
-    required this.largest,
-    required this.metric,
-    required this.isOpen,
-    required this.onTap,
-  });
-
-  final ReadSampleData sample;
-  final double value;
-  final double largest;
-  final ReadMetric metric;
-  final bool isOpen;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme colors = theme.colorScheme;
-    final TextStyle? name = theme.textTheme.bodySmall?.copyWith(
-      color: isOpen ? colors.primary : null,
-      fontWeight: isOpen ? FontWeight.w600 : null,
-    );
-    return Semantics(
-      selected: isOpen,
-      button: true,
-      label: '${sample.sample}, ${metric.label} ${metric.format(value)}',
-      excludeSemantics: true,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(SeguiRadius.xs),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: SeguiSpacing.xs,
-            vertical: SeguiSpacing.xxs,
-          ),
-          child: SizedBox(
-            height: SeguiChartLayout.barRow,
-            child: Row(
-              children: [
-                SampleStatusDot(sample: sample),
-                const SizedBox(width: SeguiSpacing.sm),
-                SizedBox(
-                  width: SeguiChartLayout.barLabel,
-                  child: Text(
-                    sample.sample,
-                    style: name,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: SeguiSpacing.md),
-                Expanded(
-                  child: Tooltip(
-                    message: '${metric.label}: ${_exact(value)}',
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(SeguiRadius.xs),
-                      child: Container(
-                        height: SeguiChartLayout.barThickness,
-                        color: colors.surfaceContainerHighest,
-                        alignment: Alignment.centerLeft,
-                        child: FractionallySizedBox(
-                          widthFactor:
-                              largest > 0 ? (value / largest).clamp(0, 1) : 0,
-                          heightFactor: 1,
-                          child: ColoredBox(
-                            color: isOpen
-                                ? colors.primary
-                                : colors.primary.withValues(alpha: 0.4),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: SeguiChartLayout.barValue,
-                  child: Text(
-                    metric.format(value),
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.labelMedium,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _exact(double value) {
-    return switch (metric) {
-      ReadMetric.reads || ReadMetric.bases => _countFormat.format(value),
-      _ => metric.format(value),
-    };
-  }
-}
-
 /// Every metric of every sample, sortable by column and shown a page at a
 /// time. A bar behind each number shows where it sits between the lowest
 /// and highest value of its column among the listed samples, colored by
@@ -384,7 +206,13 @@ class ReadOverviewTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _DataBarLegend(neutral: neutral),
+        DataBarLegend(
+          swatches: [
+            for (final ReadQcStatus status in ReadQcStatus.values)
+              (statusColor(status), status.label),
+            (neutral, 'No check'),
+          ],
+        ),
         const SizedBox(height: SeguiSpacing.sm),
         Expanded(
           child: PagedTable<int>(
@@ -468,91 +296,6 @@ class ReadOverviewTable extends StatelessWidget {
   }
 
   static String _decimal(double value) => value.toStringAsFixed(1);
-}
-
-/// A number over a bar whose length is [fraction] of the cell. The
-/// shortest bars keep a stub, so the lowest value still shows a bar.
-class DataBarCell extends StatelessWidget {
-  const DataBarCell({
-    super.key,
-    required this.fraction,
-    required this.color,
-    required this.child,
-  });
-
-  final double fraction;
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final double min = SeguiTableLayout.dataBarMinFraction;
-    return SizedBox.expand(
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: FractionallySizedBox(
-              widthFactor: min + (1 - min) * fraction.clamp(0, 1),
-              heightFactor: SeguiTableLayout.dataBarHeight,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: SeguiTableLayout.dataBarAlpha),
-                  borderRadius: BorderRadius.circular(SeguiRadius.xs),
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            // Long counts shrink rather than wrap.
-            child: FittedBox(fit: BoxFit.scaleDown, child: child),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// What the bar colors of the overview table mean.
-class _DataBarLegend extends StatelessWidget {
-  const _DataBarLegend({required this.neutral});
-
-  final Color neutral;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextStyle? style = Theme.of(context).textTheme.bodySmall;
-    Widget swatch(Color color, String label) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: SeguiControlSize.iconSmall,
-              height: SeguiControlSize.indicator,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: SeguiTableLayout.dataBarAlpha),
-                borderRadius: BorderRadius.circular(SeguiRadius.xs),
-              ),
-            ),
-            const SizedBox(width: SeguiSpacing.xs),
-            Text(label, style: style),
-          ],
-        );
-    return Wrap(
-      spacing: SeguiSpacing.lg,
-      runSpacing: SeguiSpacing.xs,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        Text(
-          'Bars run from the lowest to the highest value in each column.',
-          style: style,
-        ),
-        for (final ReadQcStatus status in ReadQcStatus.values)
-          swatch(statusColor(status), status.label),
-        swatch(neutral, 'No check'),
-      ],
-    );
-  }
 }
 
 class QcStatusChip extends StatelessWidget {

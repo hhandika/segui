@@ -122,6 +122,12 @@ void main() {
       FileContentKind.readReport,
     );
     expect(
+      await contentKindOf(
+        write('aln_alignment-report.json', '{"summary":{"loci":3}}'),
+      ),
+      FileContentKind.alignmentReport,
+    );
+    expect(
       await contentKindOf(write('reads.fq', '@r\nA\n+\nI\n')),
       FileContentKind.other,
     );

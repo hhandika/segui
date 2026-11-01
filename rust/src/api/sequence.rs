@@ -311,7 +311,9 @@ impl AlignmentServices {
         utils::print_execution_time(duration);
     }
 
-    pub fn summarize_alignment(&self, output_prefix: String, interval: usize) {
+    /// Returns the path of the JSON report, which the app opens as the
+    /// interactive alignment report.
+    pub fn summarize_alignment(&self, output_prefix: String, interval: usize) -> String {
         let time = Instant::now();
         let output_path = PathBuf::from(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
@@ -320,9 +322,10 @@ impl AlignmentServices {
         let task = "Alignment Summary";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let mut summary = AlignmentSummary::new(&input_fmt, &output_path, interval, &datatype);
-        summary.summarize_all(&mut input_files, Some(output_prefix).as_deref());
+        let outputs = summary.summarize_all(&mut input_files, Some(output_prefix).as_deref());
         let duration = time.elapsed();
         utils::print_execution_time(duration);
+        outputs.report.display().to_string()
     }
 
     // Write a summary file for each locus instead of a combined summary.

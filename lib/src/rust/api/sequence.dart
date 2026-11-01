@@ -110,7 +110,9 @@ class AlignmentServices {
   static Future<AlignmentServices> newInstance() =>
       RustLib.instance.api.crateApiSequenceAlignmentServicesNew();
 
-  Future<void> summarizeAlignment(
+  /// Returns the path of the JSON report, which the app opens as the
+  /// interactive alignment report.
+  Future<String> summarizeAlignment(
           {required String outputPrefix, required BigInt interval}) =>
       RustLib.instance.api.crateApiSequenceAlignmentServicesSummarizeAlignment(
           that: this, outputPrefix: outputPrefix, interval: interval);

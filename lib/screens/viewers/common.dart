@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/alignment/alignment_view.dart';
+import 'package:segui/screens/viewers/alignment_report.dart';
 import 'package:segui/screens/viewers/read_report.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/screens/viewers/text.dart';
@@ -38,6 +39,8 @@ class FileView extends StatelessWidget {
         return TabulatedFileView(file: file);
       case FileContentKind.readReport:
         return ReadReportView(file: file);
+      case FileContentKind.alignmentReport:
+        return AlignmentReportView(file: file);
       case FileContentKind.other:
         return UnknownFileView(file: file);
     }

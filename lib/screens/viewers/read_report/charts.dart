@@ -354,12 +354,17 @@ class ReadBarChart extends StatelessWidget {
     required this.series,
     required this.xLabel,
     required this.yLabel,
+    this.barWidth = SeguiChartLayout.barWidth,
   });
 
   final List<String> categories;
   final List<BarSeries> series;
   final String xLabel;
   final String yLabel;
+
+  /// Width of each bar. Single series, such as histograms, read better
+  /// with wider bars.
+  final double barWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -387,7 +392,7 @@ class ReadBarChart extends StatelessWidget {
                         BarChartRodData(
                           toY: s.values[i],
                           color: s.color,
-                          width: SeguiChartLayout.barWidth,
+                          width: barWidth,
                           borderRadius: BorderRadius.zero,
                         ),
                     ],

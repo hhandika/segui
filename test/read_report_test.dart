@@ -8,10 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report.dart';
-import 'package:segui/screens/viewers/read_report/paged_table.dart';
+import 'package:segui/screens/viewers/report/data_bar.dart';
+import 'package:segui/screens/viewers/report/metric_bars.dart';
+import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/screens/viewers/read_report/spread.dart';
-import 'package:segui/screens/viewers/read_report/summary.dart';
+import 'package:segui/screens/viewers/report/layout.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -263,7 +265,7 @@ void main() {
     await tester.pumpAndSettle();
     // The rail lists every sample and the summary has one bar each.
     expect(find.byType(ReadSampleTile), findsNWidgets(3));
-    expect(find.byType(SampleMetricBar), findsNWidgets(3));
+    expect(find.byType(MetricBar), findsNWidgets(3));
     expect(find.text('Checks for alpha'), findsOneWidget);
     expect(find.text('1 of 3'), findsWidgets);
 
@@ -278,7 +280,7 @@ void main() {
     expect(find.byType(Dialog), findsNothing);
 
     // A bar opens its sample.
-    await tester.tap(find.widgetWithText(SampleMetricBar, 'beta'));
+    await tester.tap(find.widgetWithText(MetricBar, 'beta'));
     await tester.pumpAndSettle();
     expect(find.text('Checks for beta'), findsOneWidget);
 

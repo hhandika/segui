@@ -10,10 +10,11 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
-import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/screens/viewers/read_report/spread.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
+import 'package:segui/screens/viewers/report/layout.dart';
+import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -509,112 +510,6 @@ class ReadReportHeader extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// A tab of the report, made of one or more sections.
-class ReportTab {
-  const ReportTab({required this.label, required this.sections});
-
-  final String label;
-  final List<ReportSection> sections;
-}
-
-/// A titled chart or table in a report tab.
-class ReportSection {
-  const ReportSection({
-    required this.title,
-    required this.child,
-    this.description,
-    this.header,
-    this.fill = false,
-  });
-
-  final String title;
-  final Widget child;
-  final String? description;
-
-  /// Controls shown above the chart, such as sample toggles.
-  final Widget? header;
-
-  /// Whether [child] fills the rest of the tab and scrolls on its own,
-  /// keeping the title and controls in place. Only for a tab's sole
-  /// section. In a tab too small for that, the child gets an unbounded
-  /// height and sizes itself.
-  final bool fill;
-}
-
-class ReportPanel extends StatelessWidget {
-  const ReportPanel({super.key, required this.tab});
-
-  final ReportTab tab;
-
-  @override
-  Widget build(BuildContext context) {
-    if (tab.sections case [final ReportSection section] when section.fill) {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          final bool isSticky =
-              constraints.maxHeight >= SeguiTableLayout.stickyMinHeight &&
-                  !isPhoneScreen(context);
-          if (isSticky) {
-            return Padding(
-              padding: const EdgeInsets.all(SeguiSpacing.xl),
-              child: ReportSectionView(section: section, isSticky: true),
-            );
-          }
-          // Too small to keep the controls in place, so the whole tab
-          // scrolls and the section sizes its own list.
-          return ListView(
-            padding: const EdgeInsets.all(SeguiSpacing.xl),
-            children: [ReportSectionView(section: section)],
-          );
-        },
-      );
-    }
-    return ListView(
-      padding: const EdgeInsets.all(SeguiSpacing.xl),
-      children: [
-        for (final (int i, ReportSection section) in tab.sections.indexed) ...[
-          if (i > 0) const Divider(height: SeguiSpacing.xxxl * 2),
-          ReportSectionView(section: section),
-        ],
-      ],
-    );
-  }
-}
-
-class ReportSectionView extends StatelessWidget {
-  const ReportSectionView({
-    super.key,
-    required this.section,
-    this.isSticky = false,
-  });
-
-  final ReportSection section;
-
-  /// Whether the section fills its tab, so its child takes the space left.
-  final bool isSticky;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme text = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(section.title, style: text.titleMedium),
-        if (section.description != null) ...[
-          const SizedBox(height: SeguiSpacing.xs),
-          Text(section.description!, style: text.bodySmall),
-        ],
-        if (section.header != null) ...[
-          const SizedBox(height: SeguiSpacing.md),
-          section.header!,
-        ],
-        const SizedBox(height: SeguiSpacing.lg),
-        if (isSticky) Expanded(child: section.child) else section.child,
-      ],
     );
   }
 }

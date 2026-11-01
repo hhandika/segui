@@ -195,8 +195,10 @@ abstract final class SeguiChartLayout {
   /// Widest tooltip text before it wraps.
   static const double tooltipWidth = 220;
 
-  /// Width of a bar in bar charts.
+  /// Width of a bar in bar charts, and in charts of one series such as
+  /// histograms.
   static const double barWidth = 10;
+  static const double wideBarWidth = 28;
 
   /// Row of a horizontal sample bar: its height, the sample name column,
   /// the bar's thickness, and the value column.
@@ -233,6 +235,12 @@ abstract final class SeguiTableLayout {
 
   /// Rows per page a paged table offers, the first being the default.
   static const List<int> pageSizes = [50, 100, 250, 500];
+
+  /// Width of a character when sizing a column from its text, and the
+  /// narrowest and widest a sized column gets.
+  static const double charWidth = 8;
+  static const double minColumn = 80;
+  static const double maxColumn = 320;
 
   /// In-cell data bars: their height as a share of the row, opacity, and
   /// the shortest bar as a share of the cell.

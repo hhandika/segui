@@ -300,13 +300,14 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
     );
   }
 
+  // A new order starts at its first page, even when the selected row
+  // moves to another.
   void _sortBy(int column) {
     setState(() {
       _ascending = _sortColumn == column ? !_ascending : true;
       _sortColumn = column;
       _sort();
       _page = 0;
-      _showSelected();
     });
     _scrollToTop();
   }

@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/alignment_report.dart';
 import 'api/alignment_view.dart';
 import 'api/archive.dart';
 import 'api/common.dart';
@@ -81,6 +82,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AdapterContentData dco_decode_adapter_content_data(dynamic raw);
 
   @protected
+  AlignLociData dco_decode_align_loci_data(dynamic raw);
+
+  @protected
+  AlignOverviewData dco_decode_align_overview_data(dynamic raw);
+
+  @protected
+  AlignReportData dco_decode_align_report_data(dynamic raw);
+
+  @protected
+  AlignReportServices dco_decode_align_report_services(dynamic raw);
+
+  @protected
+  AlignTaxaData dco_decode_align_taxa_data(dynamic raw);
+
+  @protected
   AlignmentChunkStat dco_decode_alignment_chunk_stat(dynamic raw);
 
   @protected
@@ -100,6 +116,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  AlignReportServices dco_decode_box_autoadd_align_report_services(dynamic raw);
 
   @protected
   AlignmentDistanceServices dco_decode_box_autoadd_alignment_distance_services(
@@ -319,6 +338,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String>? dco_decode_opt_list_String(dynamic raw);
 
   @protected
+  Float64List? dco_decode_opt_list_prim_f_64_strict(dynamic raw);
+
+  @protected
   OverrepresentedData dco_decode_overrepresented_data(dynamic raw);
 
   @protected
@@ -381,6 +403,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SequenceTransposeServices dco_decode_sequence_transpose_services(dynamic raw);
+
+  @protected
+  SiteTypeData dco_decode_site_type_data(dynamic raw);
 
   @protected
   SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw);
@@ -458,6 +483,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  AlignLociData sse_decode_align_loci_data(SseDeserializer deserializer);
+
+  @protected
+  AlignOverviewData sse_decode_align_overview_data(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignReportData sse_decode_align_report_data(SseDeserializer deserializer);
+
+  @protected
+  AlignReportServices sse_decode_align_report_services(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignTaxaData sse_decode_align_taxa_data(SseDeserializer deserializer);
+
+  @protected
   AlignmentChunkStat sse_decode_alignment_chunk_stat(
       SseDeserializer deserializer);
 
@@ -480,6 +522,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  AlignReportServices sse_decode_box_autoadd_align_report_services(
+      SseDeserializer deserializer);
 
   @protected
   AlignmentDistanceServices sse_decode_box_autoadd_alignment_distance_services(
@@ -732,6 +778,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
 
   @protected
+  Float64List? sse_decode_opt_list_prim_f_64_strict(
+      SseDeserializer deserializer);
+
+  @protected
   OverrepresentedData sse_decode_overrepresented_data(
       SseDeserializer deserializer);
 
@@ -806,6 +856,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   SequenceTransposeServices sse_decode_sequence_transpose_services(
       SseDeserializer deserializer);
+
+  @protected
+  SiteTypeData sse_decode_site_type_data(SseDeserializer deserializer);
 
   @protected
   SplitAlignmentServices sse_decode_split_alignment_services(
@@ -887,6 +940,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AdapterContentData self, SseSerializer serializer);
 
   @protected
+  void sse_encode_align_loci_data(AlignLociData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_overview_data(
+      AlignOverviewData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_report_data(
+      AlignReportData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_report_services(
+      AlignReportServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_taxa_data(AlignTaxaData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_alignment_chunk_stat(
       AlignmentChunkStat self, SseSerializer serializer);
 
@@ -912,6 +983,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_align_report_services(
+      AlignReportServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_alignment_distance_services(
@@ -1175,6 +1250,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_list_prim_f_64_strict(
+      Float64List? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_overrepresented_data(
       OverrepresentedData self, SseSerializer serializer);
 
@@ -1257,6 +1336,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_sequence_transpose_services(
       SequenceTransposeServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_site_type_data(SiteTypeData self, SseSerializer serializer);
 
   @protected
   void sse_encode_split_alignment_services(
