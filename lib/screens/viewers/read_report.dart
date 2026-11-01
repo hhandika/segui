@@ -12,6 +12,7 @@ import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
+import 'package:segui/screens/viewers/read_report/spread.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
@@ -80,6 +81,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
   /// The open sample, as a position in [_samples].
   int _index = 0;
   late Set<int> _compared;
+  SpreadView _spreadView = SpreadView.band;
 
   @override
   void initState() {
@@ -214,15 +216,6 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
   List<ReportTab> _tabs(List<int> view) {
     final ReadSampleData sample = _samples[_index];
     final String name = sample.sample;
-    final List<ReadSampleData> compared = [
-      for (int i = 0; i < _samples.length; i++)
-        if (_compared.contains(i)) _samples[i],
-    ];
-    final SampleCompareChips chips = SampleCompareChips(
-      samples: _samples,
-      selected: _compared,
-      onChanged: (selected) => setState(() => _compared = selected),
-    );
     return [
       ReportTab(label: 'Summary', sections: [
         ReportSection(
@@ -245,18 +238,14 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
               'middle half of bases and the 10th to 90th percentile shaded.',
           child: PositionQualityChart(positions: sample.positions),
         ),
-        ReportSection(
+        _comparison(
+          view,
           title: 'Per-read quality',
           description: 'Reads by their mean quality score.',
-          header: chips,
-          child: ReadLineChart(
-            xLabel: 'Mean quality score',
-            yLabel: 'Reads',
-            lines: _overlay(
-              compared,
-              (s) => indexedPoints(s.sample, s.readQualityCounts),
-            ),
-          ),
+          xLabel: 'Mean quality score',
+          countLabel: 'Reads',
+          points: (s) => indexedPoints(s.sample, s.readQualityCounts),
+          isCount: true,
         ),
       ]),
       ReportTab(label: 'Composition', sections: [
@@ -287,40 +276,31 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
               'be flat after the first few bases of most libraries.',
           child: BaseCompositionChart(positions: sample.positions),
         ),
-        ReportSection(
+        _comparison(
+          view,
           title: 'N content',
-          header: chips,
-          child: ReadLineChart(
-            xLabel: 'Position (bp)',
-            yLabel: 'N (%)',
-            minY: 0,
-            lines: _overlay(
-              compared,
-              (s) => ChartPoints(
-                name: s.sample,
-                x: s.positions.start,
-                y: s.positions.nPct,
-              ),
-            ),
+          xLabel: 'Position (bp)',
+          countLabel: 'N (%)',
+          points: (s) => ChartPoints(
+            name: s.sample,
+            x: s.positions.start,
+            y: s.positions.nPct,
           ),
+          isCount: false,
         ),
       ]),
       ReportTab(label: 'Length', sections: [
-        ReportSection(
+        _comparison(
+          view,
           title: 'Read length',
-          header: chips,
-          child: ReadLineChart(
-            xLabel: 'Read length (bp)',
-            yLabel: 'Reads',
-            lines: _overlay(
-              compared,
-              (s) => ChartPoints(
-                name: s.sample,
-                x: s.lengthValues,
-                y: s.lengthCounts,
-              ),
-            ),
+          xLabel: 'Read length (bp)',
+          countLabel: 'Reads',
+          points: (s) => ChartPoints(
+            name: s.sample,
+            x: s.lengthValues,
+            y: s.lengthCounts,
           ),
+          isCount: true,
         ),
       ]),
       ReportTab(label: 'Duplication', sections: [
@@ -364,6 +344,70 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
         ),
       ]),
     ];
+  }
+
+  /// A chart comparing samples: chosen samples as lines in small reports,
+  /// and every listed sample as a band or heatmap in larger ones.
+  /// [isCount] charts compare shares of reads, since depths differ, and
+  /// count x values a sample lacks as zero.
+  ReportSection _comparison(
+    List<int> view, {
+    required String title,
+    required String xLabel,
+    required String countLabel,
+    required ChartPoints Function(ReadSampleData sample) points,
+    required bool isCount,
+    String? description,
+  }) {
+    if (_samples.length <= maxOverlaidSamples) {
+      return ReportSection(
+        title: title,
+        description: description,
+        header: SampleCompareChips(
+          samples: _samples,
+          selected: _compared,
+          onChanged: (selected) => setState(() => _compared = selected),
+        ),
+        child: ReadLineChart(
+          xLabel: xLabel,
+          yLabel: countLabel,
+          minY: isCount ? null : 0,
+          lines: _overlay([
+            for (int i = 0; i < _samples.length; i++)
+              if (_compared.contains(i)) _samples[i],
+          ], points),
+        ),
+      );
+    }
+    final String summary = _spreadView == SpreadView.band
+        ? 'Every listed sample as percentiles, with '
+            '${_samples[_index].sample} and outlying samples drawn on top.'
+        : 'Every listed sample as a row, in the order of the sample list. '
+            'Select a row to open the sample.';
+    return ReportSection(
+      title: title,
+      description: [
+        if (description != null) description,
+        if (isCount) 'Shares of each sample\'s reads.',
+        summary,
+      ].join(' '),
+      header: SpreadViewToggle(
+        view: _spreadView,
+        onChanged: (view) => setState(() => _spreadView = view),
+      ),
+      child: SampleSpreadChart(
+        samples: _samples,
+        view: view,
+        index: _index,
+        points: isCount ? (s) => sharePoints(points(s)) : points,
+        missingIsZero: isCount,
+        xLabel: xLabel,
+        yLabel: isCount ? '$countLabel (%)' : countLabel,
+        minY: 0,
+        mode: _spreadView,
+        onSelected: _select,
+      ),
+    );
   }
 
   /// Opens the sample at [index].

@@ -166,6 +166,13 @@ class ChartPalette {
   static const Color warn = Color(0xFFE69F00);
   static const Color fail = Color(0xFFD55E00);
 
+  /// The open sample on charts that summarize many samples, apart from
+  /// the quality colors.
+  static const Color open = Color(0xFFCC79A7);
+
+  /// Samples far from the rest on a band chart.
+  static const Color outlier = Color(0xFF999999);
+
   /// Opacity of quality zones behind a chart.
   static const double zoneAlpha = 0.12;
 

@@ -210,6 +210,15 @@ abstract final class SeguiChartLayout {
   static const double compareMenuShare = 0.5;
   static const double compareMenuMax = 420;
 
+  /// Rows of a sample heatmap: the tallest and shortest a row gets, and
+  /// the shortest that still fits a sample name beside it.
+  static const double heatmapRowMax = 16;
+  static const double heatmapRowMin = 2;
+  static const double heatmapLabelRow = 12;
+
+  /// Faintest shade of a heatmap cell, so small values stay visible.
+  static const double heatmapMinAlpha = 0.04;
+
   /// Dash and gap lengths of dashed lines.
   static const List<int> dash = [6, 4];
 }

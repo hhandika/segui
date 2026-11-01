@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report.dart';
 import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
+import 'package:segui/screens/viewers/read_report/spread.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
@@ -386,11 +387,55 @@ void main() {
     expect(find.text('Samples'), findsOneWidget);
     expect(find.text('Checks for s000'), findsOneWidget);
 
-    // Many samples compare from a checkbox menu that stays open.
+    // Many samples are summarized rather than drawn one line each.
+    await tester.tap(find.text('Quality'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SampleCompareMenu), findsNothing);
+    expect(find.byType(SpreadViewToggle), findsOneWidget);
+    expect(find.text('Median of 120 samples'), findsOneWidget);
+
+    // The heatmap opens the sample of a row.
+    await tester.tap(find.text('Heatmap'));
+    await tester.pumpAndSettle();
+    final Finder heatmap = find.byType(SampleHeatmap);
+    expect(heatmap, findsOneWidget);
+    final Finder cells = find.descendant(
+      of: heatmap,
+      matching: find.byType(CustomPaint),
+    );
+    final Offset topLeft = tester.getTopLeft(cells.first);
+    // 120 rows share the chart height, 3 px each.
+    await tester.tapAt(topLeft + const Offset(200, 50 * 3 + 1));
+    await tester.pumpAndSettle();
+    expect(find.text('51 of 120'), findsWidgets);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Mid-size reports compare from a menu', (tester) async {
+    tester.view.physicalSize = const Size(1600, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final ReadReportData report = ReadReportData(samples: [
+      for (int i = 0; i < maxOverlaidSamples; i++)
+        _sample('s${i.toString().padLeft(3, '0')}', _metrics()),
+    ]);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          readReportLoaderProvider.overrideWithValue((_) async => report),
+        ],
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: const Scaffold(body: ReadReportBody(path: 'read-report.json')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Quality'));
     await tester.pumpAndSettle();
     expect(find.byType(FilterChip), findsNothing);
-    await tester.tap(find.text('Compared: 8 of 120 samples'));
+    expect(find.byType(SpreadViewToggle), findsNothing);
+    await tester.tap(find.text('Compared: 8 of 10 samples'));
     await tester.pumpAndSettle();
     final Finder menuList = find.ancestor(
       of: find.text('Select all'),
@@ -399,13 +444,67 @@ void main() {
     expect(tester.getSize(menuList.first).height, lessThanOrEqualTo(420));
     await tester.tap(find.widgetWithText(CheckboxMenuButton, 's000'));
     await tester.pumpAndSettle();
-    expect(find.text('Compared: 7 of 120 samples'), findsOneWidget);
+    expect(find.text('Compared: 7 of 10 samples'), findsOneWidget);
     await tester.tap(find.text('Select all'));
     await tester.pumpAndSettle();
-    expect(find.text('Compared: 120 of 120 samples'), findsOneWidget);
+    expect(find.text('Compared: 10 of 10 samples'), findsOneWidget);
     await tester.tap(find.text('Clear'));
     await tester.pumpAndSettle();
-    expect(find.text('Compared: 0 of 120 samples'), findsOneWidget);
+    expect(find.text('Compared: 0 of 10 samples'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  group('Sample spread', () {
+    test('Counts become shares of reads', () {
+      final ChartPoints shares = sharePoints(
+        const ChartPoints(name: 'a', x: [0, 1], y: [1, 3]),
+      );
+      expect(shares.y, [25, 75]);
+    });
+
+    test('Samples align on every x value', () {
+      const List<ChartPoints> rows = [
+        ChartPoints(name: 'a', x: [1, 2], y: [10, 20]),
+        ChartPoints(name: 'b', x: [2, 3], y: [5, 7]),
+      ];
+      final SampleMatrix zeros = SampleMatrix.of(rows, missingIsZero: true);
+      expect(zeros.x, [1, 2, 3]);
+      expect(zeros.values, [
+        [10, 20, 0],
+        [0, 5, 7],
+      ]);
+      expect(zeros.maxValue, 20);
+      final SampleMatrix gaps = SampleMatrix.of(rows, missingIsZero: false);
+      expect(gaps.values[0], [10, 20, null]);
+    });
+
+    test('Percentiles and outliers follow the samples', () {
+      final List<ChartPoints> rows = [
+        for (int i = 0; i < 10; i++)
+          ChartPoints(name: 's$i', x: const [0, 1], y: [i.toDouble(), 5]),
+        const ChartPoints(name: 'odd', x: [0, 1], y: [60, 90]),
+      ];
+      final SampleSpread spread = SampleSpread.of(
+        SampleMatrix.of(rows, missingIsZero: false),
+      );
+      expect(spread.x, [0, 1]);
+      expect(spread.median, [5, 5]);
+      expect(spread.q1[0], 2.5);
+      expect(spread.q3[0], 7.5);
+      expect(spread.outliers, [10]);
+    });
+
+    test('Empty columns are left out', () {
+      final SampleSpread spread = SampleSpread.of(const SampleMatrix(
+        x: [0, 1],
+        values: [
+          [1, null],
+          [3, null],
+        ],
+      ));
+      expect(spread.x, [0]);
+      expect(spread.median, [2]);
+      expect(spread.outliers, isEmpty);
+    });
   });
 }

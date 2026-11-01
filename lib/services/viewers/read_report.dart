@@ -283,3 +283,166 @@ int stepThrough(List<int> view, int index, int delta) {
   if (position < 0) return delta > 0 ? view.first : view.last;
   return view[(position + delta) % view.length];
 }
+
+/// Reports with more samples than this summarize them on comparison charts
+/// instead of drawing one line per sample.
+const int maxOverlaidSamples = 10;
+
+/// Most outlier samples drawn on a band chart, before it gets crowded.
+const int maxSpreadOutliers = 8;
+
+/// Points as a share of their total, in percent, so samples of different
+/// depths compare.
+ChartPoints sharePoints(ChartPoints counts) {
+  final double total = counts.y.fold(0, (a, b) => a + b);
+  return ChartPoints(
+    name: counts.name,
+    x: counts.x,
+    y: [for (final double y in counts.y) total > 0 ? 100 * y / total : 0],
+  );
+}
+
+/// Values of many samples on a shared x grid: one row per sample, one
+/// column per x value. Cells without a value are null.
+class SampleMatrix {
+  const SampleMatrix({required this.x, required this.values});
+
+  /// Every x value of any sample, ascending.
+  final List<double> x;
+  final List<List<double?>> values;
+
+  /// Aligns [samples] on the x values of all of them. With [missingIsZero],
+  /// x values a sample lacks count as zero, as in histograms; otherwise
+  /// they stay empty, as past the end of shorter reads.
+  factory SampleMatrix.of(
+    List<ChartPoints> samples, {
+    required bool missingIsZero,
+  }) {
+    final List<double> x = {
+      for (final ChartPoints s in samples) ...s.x,
+    }.toList()
+      ..sort();
+    final Map<double, int> column = {
+      for (int i = 0; i < x.length; i++) x[i]: i,
+    };
+    final List<List<double?>> values = [
+      for (final ChartPoints s in samples)
+        () {
+          final List<double?> row =
+              List<double?>.filled(x.length, missingIsZero ? 0 : null);
+          for (int i = 0; i < s.x.length; i++) {
+            row[column[s.x[i]]!] = s.y[i];
+          }
+          return row;
+        }(),
+    ];
+    return SampleMatrix(x: x, values: values);
+  }
+
+  /// Largest value of any cell, or zero.
+  double get maxValue {
+    double largest = 0;
+    for (final List<double?> row in values) {
+      for (final double? v in row) {
+        if (v != null && v > largest) largest = v;
+      }
+    }
+    return largest;
+  }
+}
+
+/// How samples spread at each x: percentiles across samples, and the
+/// samples furthest from the median.
+class SampleSpread {
+  const SampleSpread({
+    required this.x,
+    required this.p10,
+    required this.q1,
+    required this.median,
+    required this.q3,
+    required this.p90,
+    required this.outliers,
+  });
+
+  final List<double> x;
+  final List<double> p10;
+  final List<double> q1;
+  final List<double> median;
+  final List<double> q3;
+  final List<double> p90;
+
+  /// Rows of the matrix that sit far from the median, most distant first.
+  final List<int> outliers;
+
+  /// Percentiles of each column of [matrix]. Outliers are samples whose
+  /// mean distance from the median is above the Tukey fence of all
+  /// samples, at most [maxSpreadOutliers] of them.
+  factory SampleSpread.of(SampleMatrix matrix) {
+    final List<double> x = [];
+    final List<List<double>> rows = [[], [], [], [], []];
+    const List<double> levels = [0.1, 0.25, 0.5, 0.75, 0.9];
+    for (int col = 0; col < matrix.x.length; col++) {
+      final List<double> column = [
+        for (final List<double?> row in matrix.values)
+          if (row[col] != null) row[col]!,
+      ]..sort();
+      if (column.isEmpty) continue;
+      x.add(matrix.x[col]);
+      for (int i = 0; i < levels.length; i++) {
+        rows[i].add(_percentile(column, levels[i]));
+      }
+    }
+    return SampleSpread(
+      x: x,
+      p10: rows[0],
+      q1: rows[1],
+      median: rows[2],
+      q3: rows[3],
+      p90: rows[4],
+      outliers: _outliers(matrix, rows[2]),
+    );
+  }
+
+  static List<int> _outliers(SampleMatrix matrix, List<double> median) {
+    // The median row skips empty columns, so map columns to its entries.
+    final Map<double, double> medianAt = {};
+    int next = 0;
+    for (int col = 0; col < matrix.x.length; col++) {
+      if (matrix.values.any((row) => row[col] != null)) {
+        medianAt[matrix.x[col]] = median[next++];
+      }
+    }
+    final List<double> distance = [
+      for (final List<double?> row in matrix.values)
+        () {
+          double sum = 0;
+          int count = 0;
+          for (int col = 0; col < row.length; col++) {
+            final double? v = row[col];
+            if (v == null) continue;
+            sum += (v - medianAt[matrix.x[col]]!).abs();
+            count++;
+          }
+          return count == 0 ? 0.0 : sum / count;
+        }(),
+    ];
+    if (distance.length < 4) return const [];
+    final List<double> sorted = List<double>.of(distance)..sort();
+    final double q1 = _percentile(sorted, 0.25);
+    final double q3 = _percentile(sorted, 0.75);
+    final double fence = q3 + 1.5 * (q3 - q1);
+    final List<int> outliers = [
+      for (int i = 0; i < distance.length; i++)
+        if (distance[i] > fence) i,
+    ]..sort((a, b) => distance[b].compareTo(distance[a]));
+    return outliers.take(maxSpreadOutliers).toList();
+  }
+}
+
+/// Linear interpolation between the closest ranks of [sorted].
+double _percentile(List<double> sorted, double level) {
+  final double rank = (sorted.length - 1) * level;
+  final int low = rank.floor();
+  final int high = rank.ceil();
+  return sorted[low] + (sorted[high] - sorted[low]) * (rank - low);
+}

@@ -18,6 +18,7 @@ class ChartLine {
     required this.color,
     this.visible = true,
     this.dashed = false,
+    this.width = SeguiStroke.regular,
   });
 
   final ChartPoints points;
@@ -26,6 +27,7 @@ class ChartLine {
   /// Hidden lines still bound bands drawn between lines.
   final bool visible;
   final bool dashed;
+  final double width;
 }
 
 /// Area filled between two lines of a [ReadLineChart], by index.
@@ -61,6 +63,7 @@ class ReadLineChart extends StatelessWidget {
     this.minY,
     this.maxY,
     this.tooltipText,
+    this.legend,
   });
 
   final List<ChartLine> lines;
@@ -73,6 +76,9 @@ class ReadLineChart extends StatelessWidget {
 
   /// Tooltip text. By default each visible line shows its name and value.
   final ChartTooltipText? tooltipText;
+
+  /// Legend entries. By default each visible line, by name.
+  final List<(String, Color)>? legend;
 
   @override
   Widget build(BuildContext context) {
@@ -141,10 +147,11 @@ class ReadLineChart extends StatelessWidget {
         ),
         const SizedBox(height: SeguiSpacing.md),
         ChartLegend(
-          entries: [
-            for (final ChartLine line in drawn)
-              if (line.visible) (line.points.name, line.color),
-          ],
+          entries: legend ??
+              [
+                for (final ChartLine line in drawn)
+                  if (line.visible) (line.points.name, line.color),
+              ],
         ),
       ],
     );
@@ -158,7 +165,7 @@ class ReadLineChart extends StatelessWidget {
           FlSpot(points.x[i], points.y[i]),
       ],
       color: line.visible ? line.color : Colors.transparent,
-      barWidth: line.visible ? SeguiStroke.regular : SeguiStroke.none,
+      barWidth: line.visible ? line.width : SeguiStroke.none,
       dashArray: line.dashed ? SeguiChartLayout.dash : null,
       // A few points are easier to see as dots.
       dotData: FlDotData(show: line.visible && points.x.length <= 3),
