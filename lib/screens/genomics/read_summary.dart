@@ -6,6 +6,8 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/tasks/genomics.dart';
+import 'package:segui/services/tasks/progress.dart';
+import 'package:segui/src/rust/api/progress.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
@@ -233,6 +235,8 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
 
   Future<void> _summarize(
       List<SegulInputFile> inputFiles, Directory outputDir) async {
+    final RunProgressNotifier progress = ref.read(runProgressProvider.notifier);
+    final RunMonitor monitor = progress.start();
     try {
       _setRunning();
       final ReadSummaryOutput output = await ReadSummaryRunner(
@@ -243,10 +247,13 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         mode: mode,
         phred: phred,
         dupSketchSize: mode == 'Complete' ? _dupSketchSizeValue : null,
+        monitor: monitor,
       ).run();
       _setSuccess(output.reportPath);
     } catch (e) {
-      _showError(e.toString());
+      _showError(monitor.isCancelled() ? runCancelledMessage : e.toString());
+    } finally {
+      progress.finish();
     }
   }
 

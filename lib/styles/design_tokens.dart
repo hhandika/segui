@@ -205,6 +205,30 @@ abstract final class SeguiChartLayout {
   static const double barThickness = 14;
   static const double barValue = 64;
 
+  /// Tallest the menu of compared samples gets, as a share of the screen
+  /// height and in pixels, before it scrolls.
+  static const double compareMenuShare = 0.5;
+  static const double compareMenuMax = 420;
+
   /// Dash and gap lengths of dashed lines.
   static const List<int> dash = [6, 4];
+}
+
+abstract final class SeguiTableLayout {
+  /// Heights of the column header and of a row in paged tables.
+  static const double heading = 48;
+  static const double row = 48;
+
+  /// Space between a cell's content and the cell edges.
+  static const double cellPadding = SeguiSpacing.lg;
+
+  /// Rows per page a paged table offers, the first being the default.
+  static const List<int> pageSizes = [50, 100, 250, 500];
+
+  /// Shortest a report tab gets before its controls stop staying in place
+  /// and the whole tab scrolls instead.
+  static const double stickyMinHeight = 560;
+
+  /// Height of a table or list inside a tab that scrolls as a whole.
+  static const double scrollingHeight = 480;
 }

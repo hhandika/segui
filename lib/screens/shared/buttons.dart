@@ -6,6 +6,7 @@ import 'package:segui/styles/design_tokens.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/io/export.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/tasks/progress.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/info.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
@@ -59,13 +60,30 @@ class ExecutionButton extends ConsumerWidget {
         ],
       );
     }
-    return Tooltip(
+    final Widget runButton = Tooltip(
       message: _tooltip,
       child: PrimaryButton(
         label: _label,
         onPressed: isRunning ? null : _runCallback(ref, scope),
         isRunning: isRunning,
       ),
+    );
+    final RunProgress? progress = ref.watch(currentRunProgressProvider);
+    if (!isRunning || progress == null) {
+      return runButton;
+    }
+    return Wrap(
+      spacing: SeguiSpacing.lg,
+      runSpacing: SeguiSpacing.md,
+      alignment: WrapAlignment.end,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        CancelRunButton(
+          isCancelling: progress.isCancelling,
+          onPressed: () => ref.read(runProgressProvider.notifier).cancel(),
+        ),
+        runButton,
+      ],
     );
   }
 
@@ -95,6 +113,30 @@ class ExecutionButton extends ConsumerWidget {
       ref.read(fileOutputProvider.notifier).markRunStart();
       execute();
     };
+  }
+}
+
+/// Stops a tracked run, including files already being read.
+class CancelRunButton extends StatelessWidget {
+  const CancelRunButton({
+    super.key,
+    required this.isCancelling,
+    required this.onPressed,
+  });
+
+  final bool isCancelling;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: 'Stop the run now, including files being read.',
+      child: OutlinedButton.icon(
+        icon: const Icon(Icons.stop_rounded),
+        onPressed: isCancelling ? null : onPressed,
+        label: Text(isCancelling ? 'Cancelling…' : 'Cancel'),
+      ),
+    );
   }
 }
 

@@ -287,6 +287,9 @@ class _ReadSampleRailState extends ConsumerState<ReadSampleRail> {
         const SizedBox(height: SeguiSpacing.xs),
         Expanded(
           child: ListView.builder(
+            padding: const EdgeInsets.only(
+              right: SeguiControlSize.scrollbarGutter,
+            ),
             itemCount: view.length,
             itemBuilder: (context, i) {
               final ReadSampleData sample = widget.samples[view[i]];

@@ -15,6 +15,7 @@ import 'package:segui/services/tasks/genomics.dart';
 import 'package:segui/services/tasks/sequences.dart';
 import 'package:segui/src/rust/api/common.dart';
 import 'package:segui/src/rust/api/csv.dart';
+import 'package:segui/src/rust/api/progress.dart';
 import 'package:segui/src/rust/api/sequence.dart';
 import 'package:segui/src/rust/frb_generated.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -270,6 +271,42 @@ void main() {
           await outputNames(output),
           unorderedEquals(
               ['maf_summary_per_file.csv', 'maf_summary_per_species.csv']));
+    });
+
+    test('MAF summary reports file progress', () async {
+      final maf = await writeMaf();
+      final monitor = RunMonitor();
+      final Future<List<TaskProgress>> stream = monitor.subscribe().toList();
+      await MafSummaryRunner(
+        inputFiles: [
+          SegulInputFile(file: maf, type: SegulType.multipleAlignment),
+        ],
+        outputDir: Directory(p.join(directory.path, 'maf-progress')),
+        monitor: monitor,
+      ).run();
+      monitor.close();
+      final List<TaskProgress> updates = await stream;
+      expect(updates.map((u) => u.total), contains(1));
+      expect(updates.map((u) => u.done), contains(1));
+      expect(updates.last.stage, 'Writing summary');
+    });
+
+    test('A cancelled run stops before reading files', () async {
+      final maf = await writeMaf();
+      final output = Directory(p.join(directory.path, 'maf-cancelled'));
+      final monitor = RunMonitor()..cancel();
+      await expectLater(
+        MafSummaryRunner(
+          inputFiles: [
+            SegulInputFile(file: maf, type: SegulType.multipleAlignment),
+          ],
+          outputDir: output,
+          monitor: monitor,
+        ).run(),
+        throwsA(anything),
+      );
+      expect(monitor.isCancelled(), isTrue);
+      expect(output.existsSync(), isFalse);
     });
 
     test('A non-MAF file is rejected with a clear error', () async {

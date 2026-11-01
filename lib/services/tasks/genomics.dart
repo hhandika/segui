@@ -6,6 +6,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/src/rust/api/contig.dart';
 import 'package:segui/src/rust/api/maf.dart';
+import 'package:segui/src/rust/api/progress.dart';
 import 'package:segui/src/rust/api/reads.dart';
 
 class ContigSummaryRunner {
@@ -14,12 +15,16 @@ class ContigSummaryRunner {
     required this.inputFmt,
     required this.outputDir,
     required this.prefix,
+    this.monitor,
   });
 
   final List<SegulInputFile> inputFiles;
   final String inputFmt;
   final String prefix;
   final Directory outputDir;
+
+  /// Reports file progress and cancels the run. Null runs untracked.
+  final RunMonitor? monitor;
 
   Future<void> run() async {
     List<String> finalInputFiles =
@@ -32,7 +37,10 @@ class ContigSummaryRunner {
       files: finalInputFiles,
       fileFmt: inputFmt,
       outputDir: outputDir.path,
-    ).summarize(prefix: prefix.isEmpty ? null : prefix);
+    ).summarize(
+      prefix: prefix.isEmpty ? null : prefix,
+      monitor: monitor ?? RunMonitor(),
+    );
   }
 }
 
@@ -45,6 +53,7 @@ class ReadSummaryRunner {
     required this.mode,
     this.phred = 'Auto',
     this.dupSketchSize,
+    this.monitor,
   });
 
   final List<SegulInputFile> inputFiles;
@@ -59,6 +68,9 @@ class ReadSummaryRunner {
   /// Distinct sequences kept to estimate duplication, zero for all, or
   /// null for SEGUL's default.
   final int? dupSketchSize;
+
+  /// Reports file progress and cancels the run. Null runs untracked.
+  final RunMonitor? monitor;
 
   /// Runs the summary and returns the files it wrote.
   Future<ReadSummaryOutput> run() async {
@@ -76,6 +88,7 @@ class ReadSummaryRunner {
       prefix: prefix.isEmpty ? null : prefix,
       phred: phred.toLowerCase(),
       dupSketchSize: dupSketchSize,
+      monitor: monitor ?? RunMonitor(),
     );
   }
 }
@@ -140,6 +153,7 @@ class MafConversionRunner {
     this.minSpecies = '',
     this.minScore = '',
     this.species = '',
+    this.monitor,
   });
 
   /// MAF files, plus an optional BED file of loci.
@@ -166,6 +180,9 @@ class MafConversionRunner {
   /// Comma-separated species to write. Empty writes every species.
   final String species;
 
+  /// Reports file progress and cancels the run. Null runs untracked.
+  final RunMonitor? monitor;
+
   Future<void> run() async {
     final List<String> mafFiles = _mafPaths(inputFiles);
     final List<String> bedFiles =
@@ -189,7 +206,7 @@ class MafConversionRunner {
       minSpecies: _optionalCount(minSpecies),
       minScore: double.tryParse(minScore.trim()),
       species: parseSpeciesList(species),
-    ).convert();
+    ).convert(monitor: monitor ?? RunMonitor());
   }
 }
 
@@ -200,12 +217,16 @@ class MafSummaryRunner {
     this.prefix = '',
     this.refSpecies = '',
     this.species = '',
+    this.monitor,
   });
 
   final List<SegulInputFile> inputFiles;
   final Directory outputDir;
   final String prefix;
   final String refSpecies;
+
+  /// Reports file progress and cancels the run. Null runs untracked.
+  final RunMonitor? monitor;
 
   /// Comma-separated species to report. Empty reports every species.
   final String species;
@@ -217,6 +238,6 @@ class MafSummaryRunner {
       prefix: _optionalText(prefix),
       refSpecies: _optionalText(refSpecies),
       species: parseSpeciesList(species),
-    ).summarize();
+    ).summarize(monitor: monitor ?? RunMonitor());
   }
 }

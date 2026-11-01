@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report.dart';
+import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
 import 'package:segui/services/providers/read_report.dart';
@@ -253,7 +254,16 @@ void main() {
     // The table lists the same samples.
     await tester.tap(find.text('Table'));
     await tester.pumpAndSettle();
-    expect(find.byType(DataTable), findsOneWidget);
+    expect(find.byType(PagedTable<int>), findsOneWidget);
+    expect(find.text('Mean length'), findsOneWidget);
+    // Three rows fit on one page, so there is no pager.
+    expect(find.byTooltip('Next page'), findsNothing);
+    await tester.tap(find.text('gamma').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Checks for gamma'), findsOneWidget);
+    await tester.tap(find.text('alpha').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Checks for alpha'), findsOneWidget);
 
     // The rail filter narrows the list.
     await tester.enterText(find.byType(TextField).first, 'gam');
@@ -265,6 +275,9 @@ void main() {
     await tester.tap(find.text('Quality'));
     await tester.pumpAndSettle();
     expect(find.text('Per-base quality: alpha'), findsOneWidget);
+    // A few samples compare with chips.
+    expect(find.widgetWithText(FilterChip, 'beta'), findsOneWidget);
+    expect(find.byType(SampleCompareMenu), findsNothing);
 
     await tester.tap(find.text('Duplication'));
     await tester.pumpAndSettle();
@@ -312,6 +325,87 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ReadSampleRail), findsNothing);
     expect(find.text('Checks for beta'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('The table pages through many samples',
+      variant: TargetPlatformVariant.only(TargetPlatform.linux),
+      (tester) async {
+    tester.view.physicalSize = const Size(1600, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final ReadReportData report = ReadReportData(samples: [
+      for (int i = 0; i < 120; i++)
+        _sample('s${i.toString().padLeft(3, '0')}', _metrics()),
+    ]);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          readReportLoaderProvider.overrideWithValue((_) async => report),
+        ],
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: const Scaffold(body: ReadReportBody(path: 'read-report.json')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Table'));
+    await tester.pumpAndSettle();
+    expect(find.text('1–50 of 120'), findsOneWidget);
+    expect(find.text('Checks for s000'), findsOneWidget);
+    // One scrollbar for rows and one for columns, even on desktop, where
+    // scroll views add their own.
+    expect(
+      find.descendant(
+        of: find.byType(PagedTable<int>),
+        matching: find.byType(Scrollbar),
+      ),
+      findsNWidgets(2),
+    );
+
+    await tester.tap(find.byTooltip('Next page'));
+    await tester.pumpAndSettle();
+    expect(find.text('51–100 of 120'), findsOneWidget);
+    await tester.tap(find.byTooltip('Last page'));
+    await tester.pumpAndSettle();
+    expect(find.text('101–120 of 120'), findsOneWidget);
+
+    // Opening a sample from the switcher turns to its page.
+    await tester.tap(find.byTooltip(RegExp('^Previous sample \\(')).first);
+    await tester.pumpAndSettle();
+    expect(find.text('Checks for s119'), findsOneWidget);
+    expect(find.text('101–120 of 120'), findsOneWidget);
+    await tester.tap(find.byTooltip(RegExp('^Next sample \\(')).first);
+    await tester.pumpAndSettle();
+    expect(find.text('1–50 of 120'), findsOneWidget);
+
+    // The tab keeps its title and the checks while the rows scroll.
+    await tester.drag(find.byType(PagedTable<int>), const Offset(0, -2000));
+    await tester.pumpAndSettle();
+    expect(find.text('Samples'), findsOneWidget);
+    expect(find.text('Checks for s000'), findsOneWidget);
+
+    // Many samples compare from a checkbox menu that stays open.
+    await tester.tap(find.text('Quality'));
+    await tester.pumpAndSettle();
+    expect(find.byType(FilterChip), findsNothing);
+    await tester.tap(find.text('Compared: 8 of 120 samples'));
+    await tester.pumpAndSettle();
+    final Finder menuList = find.ancestor(
+      of: find.text('Select all'),
+      matching: find.byType(Scrollable),
+    );
+    expect(tester.getSize(menuList.first).height, lessThanOrEqualTo(420));
+    await tester.tap(find.widgetWithText(CheckboxMenuButton, 's000'));
+    await tester.pumpAndSettle();
+    expect(find.text('Compared: 7 of 120 samples'), findsOneWidget);
+    await tester.tap(find.text('Select all'));
+    await tester.pumpAndSettle();
+    expect(find.text('Compared: 120 of 120 samples'), findsOneWidget);
+    await tester.tap(find.text('Clear'));
+    await tester.pumpAndSettle();
+    expect(find.text('Compared: 0 of 120 samples'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

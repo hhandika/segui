@@ -23,5 +23,5 @@ segul = { git = "https://github.com/hhandika/segul.git", branch = "summary" }
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
 
 # Local segul checkout for development. Remove before committing.
-# [patch."https://github.com/hhandika/segul.git"]
-# segul = { path = "../../../Rust/segul" }
+[patch."https://github.com/hhandika/segul.git"]
+segul = { path = "../../../Rust/segul" }

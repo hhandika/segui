@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/screens/shared/io/workbench_view.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/tasks/progress.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -688,7 +691,7 @@ class ToolRunBar extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const RunSummary(),
+                    const RunStatus(),
                     if (action != null) ...[
                       const SizedBox(height: SeguiSpacing.md),
                       Align(alignment: Alignment.centerRight, child: action),
@@ -698,7 +701,7 @@ class ToolRunBar extends StatelessWidget {
               }
               return Row(
                 children: [
-                  const Expanded(child: RunSummary()),
+                  const Expanded(child: RunStatus()),
                   const SizedBox(width: SeguiSpacing.lg),
                   if (action != null) action!,
                 ],
@@ -708,6 +711,103 @@ class ToolRunBar extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// File progress while a tracked task runs, otherwise the run summary.
+class RunStatus extends ConsumerWidget {
+  const RunStatus({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final RunProgress? progress = ref.watch(currentRunProgressProvider);
+    if (progress == null) {
+      return const RunSummary();
+    }
+    return TaskProgressBar(progress: progress);
+  }
+}
+
+/// Bar that fills as files finish, with the file count, the current file,
+/// and the elapsed time.
+class TaskProgressBar extends StatefulWidget {
+  const TaskProgressBar({super.key, required this.progress});
+
+  final RunProgress progress;
+
+  @override
+  State<TaskProgressBar> createState() => _TaskProgressBarState();
+}
+
+class _TaskProgressBarState extends State<TaskProgressBar> {
+  late final Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Redraw the elapsed time even when no file finishes for a while.
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final RunProgress progress = widget.progress;
+    final String elapsed =
+        formatElapsed(DateTime.now().difference(progress.startedAt));
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          _title(progress),
+          style: textTheme.titleSmall,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: SeguiSpacing.xs),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(SeguiRadius.full),
+          child: LinearProgressIndicator(value: progress.fraction),
+        ),
+        const SizedBox(height: SeguiSpacing.xs),
+        Text(
+          [
+            if (_detail(progress) case final String detail) detail,
+            elapsed,
+          ].join(' · '),
+          style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  String _title(RunProgress progress) {
+    if (progress.isCancelling) {
+      return 'Cancelling';
+    }
+    if (progress.total == 0) {
+      return 'Starting';
+    }
+    final String files = progress.total == 1 ? 'file' : 'files';
+    return '${progress.done} of ${progress.total} $files';
+  }
+
+  String? _detail(RunProgress progress) {
+    return progress.stage ?? progress.currentFile;
   }
 }
 

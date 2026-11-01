@@ -7,6 +7,8 @@ use segul::core::maf::BlockFilter;
 use segul::helper::types::OutputFmt;
 use segul::helper::utils;
 
+use crate::api::progress::RunMonitor;
+
 pub struct MafConversionServices {
     pub input_files: Vec<String>,
     // BED file of loci. Without it, blocks are grouped by `group_by`.
@@ -47,7 +49,8 @@ impl MafConversionServices {
         }
     }
 
-    pub fn convert(&self) -> anyhow::Result<()> {
+    /// Convert MAF files. `monitor` reports progress and can cancel the run.
+    pub fn convert(&self, monitor: &RunMonitor) -> anyhow::Result<()> {
         let time = Instant::now();
         let input_files: Vec<PathBuf> = self.input_files.iter().map(PathBuf::from).collect();
         let output_path = Path::new(&self.output_dir);
@@ -74,7 +77,8 @@ impl MafConversionServices {
             .with_clip(self.clip)
             .with_strand_aware(self.strand_aware)
             .with_ref_species(self.ref_species.clone())
-            .with_filter(filter);
+            .with_filter(filter)
+            .with_progress(monitor);
         if let Some(bed) = &self.bed_file {
             converter = converter.with_bed(Path::new(bed));
         }
@@ -113,7 +117,8 @@ impl MafSummaryServices {
         }
     }
 
-    pub fn summarize(&self) -> anyhow::Result<()> {
+    /// Summarize MAF files. `monitor` reports progress and can cancel the run.
+    pub fn summarize(&self, monitor: &RunMonitor) -> anyhow::Result<()> {
         let time = Instant::now();
         let input_files: Vec<PathBuf> = self.input_files.iter().map(PathBuf::from).collect();
         log::info!(
@@ -130,6 +135,7 @@ impl MafSummaryServices {
         )
         .with_ref_species(self.ref_species.clone())
         .with_species(species_list(&self.species))
+        .with_progress(monitor)
         .summarize()?;
         utils::print_execution_time(time.elapsed());
         Ok(())
@@ -186,7 +192,7 @@ mod test {
     #[test]
     fn test_convert_maf_without_bed() {
         let output = output_dir("maf-blocks");
-        services(&output).convert().unwrap();
+        services(&output).convert(&RunMonitor::new()).unwrap();
         assert_eq!(file_names(&output).len(), 3);
         fs::remove_dir_all(&output).unwrap();
     }
@@ -197,7 +203,7 @@ mod test {
         let mut services = services(&output);
         let bed = fixtures().join("simple_regions.bed");
         services.bed_file = Some(bed.to_string_lossy().into_owned());
-        services.convert().unwrap();
+        services.convert(&RunMonitor::new()).unwrap();
         assert_eq!(
             file_names(&output),
             [
@@ -218,7 +224,7 @@ mod test {
         let mut services = services(&output);
         let bed = fixtures().join("simple.bed");
         services.bed_file = Some(bed.to_string_lossy().into_owned());
-        services.convert().unwrap();
+        services.convert(&RunMonitor::new()).unwrap();
         assert_eq!(file_names(&output), ["maf_convert.csv"]);
         fs::remove_dir_all(&output).unwrap();
     }
@@ -233,10 +239,10 @@ mod test {
                 .to_string_lossy()
                 .into_owned(),
         );
-        assert!(services.convert().is_err());
+        assert!(services.convert(&RunMonitor::new()).is_err());
         services.bed_file = None;
         services.output_fmt = String::from("csv");
-        assert!(services.convert().is_err());
+        assert!(services.convert(&RunMonitor::new()).is_err());
     }
 
     #[test]
@@ -246,7 +252,7 @@ mod test {
         let input = fixtures().join("simple.maf");
         services.input_files = vec![input.to_string_lossy().into_owned()];
         services.output_dir = output.to_string_lossy().into_owned();
-        services.summarize().unwrap();
+        services.summarize(&RunMonitor::new()).unwrap();
         let per_species = fs::read_to_string(output.join("maf_summary_per_species.csv")).unwrap();
         assert!(per_species.starts_with("path,name,blocks_present"));
         assert!(output.join("maf_summary_per_file.csv").is_file());

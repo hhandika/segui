@@ -5,6 +5,7 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'progress.dart';
 
 // These functions are ignored because they are not marked as `pub`: `match_output_fmt`, `species_list`
 
@@ -37,10 +38,9 @@ class MafConversionServices {
     required this.species,
   });
 
-  Future<void> convert() =>
-      RustLib.instance.api.crateApiMafMafConversionServicesConvert(
-        that: this,
-      );
+  /// Convert MAF files. `monitor` reports progress and can cancel the run.
+  Future<void> convert({required RunMonitor monitor}) => RustLib.instance.api
+      .crateApiMafMafConversionServicesConvert(that: this, monitor: monitor);
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<MafConversionServices> newInstance() =>
@@ -99,10 +99,9 @@ class MafSummaryServices {
   static Future<MafSummaryServices> newInstance() =>
       RustLib.instance.api.crateApiMafMafSummaryServicesNew();
 
-  Future<void> summarize() =>
-      RustLib.instance.api.crateApiMafMafSummaryServicesSummarize(
-        that: this,
-      );
+  /// Summarize MAF files. `monitor` reports progress and can cancel the run.
+  Future<void> summarize({required RunMonitor monitor}) => RustLib.instance.api
+      .crateApiMafMafSummaryServicesSummarize(that: this, monitor: monitor);
 
   @override
   int get hashCode =>

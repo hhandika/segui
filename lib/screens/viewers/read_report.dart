@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
+import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
 import 'package:segui/services/providers/read_report.dart';
@@ -227,6 +229,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           title: 'Samples',
           description: 'Every sample in the order of the sample list. '
               'Select one to open it.',
+          fill: true,
           child: ReadSummaryPanel(
             samples: _samples,
             view: view,
@@ -356,6 +359,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           title: 'Overrepresented sequences: $name',
           description: 'Read starts above 0.1% of all reads. Reads longer '
               'than 75 bp are compared by their first 50 bp.',
+          fill: true,
           child: OverrepresentedTable(sequences: sample.overrepresented),
         ),
       ]),
@@ -480,6 +484,7 @@ class ReportSection {
     required this.child,
     this.description,
     this.header,
+    this.fill = false,
   });
 
   final String title;
@@ -488,6 +493,12 @@ class ReportSection {
 
   /// Controls shown above the chart, such as sample toggles.
   final Widget? header;
+
+  /// Whether [child] fills the rest of the tab and scrolls on its own,
+  /// keeping the title and controls in place. Only for a tab's sole
+  /// section. In a tab too small for that, the child gets an unbounded
+  /// height and sizes itself.
+  final bool fill;
 }
 
 class ReportPanel extends StatelessWidget {
@@ -497,6 +508,27 @@ class ReportPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (tab.sections case [final ReportSection section] when section.fill) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isSticky =
+              constraints.maxHeight >= SeguiTableLayout.stickyMinHeight &&
+                  !isPhoneScreen(context);
+          if (isSticky) {
+            return Padding(
+              padding: const EdgeInsets.all(SeguiSpacing.xl),
+              child: ReportSectionView(section: section, isSticky: true),
+            );
+          }
+          // Too small to keep the controls in place, so the whole tab
+          // scrolls and the section sizes its own list.
+          return ListView(
+            padding: const EdgeInsets.all(SeguiSpacing.xl),
+            children: [ReportSectionView(section: section)],
+          );
+        },
+      );
+    }
     return ListView(
       padding: const EdgeInsets.all(SeguiSpacing.xl),
       children: [
@@ -510,9 +542,16 @@ class ReportPanel extends StatelessWidget {
 }
 
 class ReportSectionView extends StatelessWidget {
-  const ReportSectionView({super.key, required this.section});
+  const ReportSectionView({
+    super.key,
+    required this.section,
+    this.isSticky = false,
+  });
 
   final ReportSection section;
+
+  /// Whether the section fills its tab, so its child takes the space left.
+  final bool isSticky;
 
   @override
   Widget build(BuildContext context) {
@@ -530,13 +569,23 @@ class ReportSectionView extends StatelessWidget {
           section.header!,
         ],
         const SizedBox(height: SeguiSpacing.lg),
-        section.child,
+        if (isSticky) Expanded(child: section.child) else section.child,
       ],
     );
   }
 }
 
-/// Toggles the samples compared on a chart.
+/// Most samples shown as chips. More samples go in a checkbox menu, where
+/// a long list is easier to pick from.
+const int _maxCompareChips = 3;
+
+/// [selected] with sample [i] turned [on] or off.
+Set<int> _toggled(Set<int> selected, int i, bool on) {
+  return on ? {...selected, i} : ({...selected}..remove(i));
+}
+
+/// Toggles the samples compared on a chart: chips for a few samples, a
+/// checkbox menu for more.
 class SampleCompareChips extends StatelessWidget {
   const SampleCompareChips({
     super.key,
@@ -551,6 +600,16 @@ class SampleCompareChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (samples.length > _maxCompareChips) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: SampleCompareMenu(
+          samples: samples,
+          selected: selected,
+          onChanged: onChanged,
+        ),
+      );
+    }
     return Wrap(
       spacing: SeguiSpacing.sm,
       runSpacing: SeguiSpacing.xs,
@@ -561,11 +620,81 @@ class SampleCompareChips extends StatelessWidget {
             selected: selected.contains(i),
             avatar: CircleAvatar(backgroundColor: ChartPalette.seriesAt(i)),
             showCheckmark: false,
-            onSelected: (on) => onChanged(
-              on ? {...selected, i} : ({...selected}..remove(i)),
+            onSelected: (on) => onChanged(_toggled(selected, i, on)),
+          ),
+      ],
+    );
+  }
+}
+
+/// A button that opens a checkbox list of every sample. The menu stays
+/// open while samples are toggled.
+class SampleCompareMenu extends StatelessWidget {
+  const SampleCompareMenu({
+    super.key,
+    required this.samples,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final List<ReadSampleData> samples;
+  final Set<int> selected;
+  final ValueChanged<Set<int>> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isAllSelected = selected.length == samples.length;
+    final double maxHeight = min(
+      MediaQuery.sizeOf(context).height * SeguiChartLayout.compareMenuShare,
+      SeguiChartLayout.compareMenuMax,
+    );
+    return MenuAnchor(
+      // Long sample lists scroll inside the menu.
+      style: MenuStyle(
+        maximumSize: WidgetStatePropertyAll(Size(double.infinity, maxHeight)),
+      ),
+      menuChildren: [
+        MenuItemButton(
+          closeOnActivate: false,
+          leadingIcon: const Icon(Icons.select_all_rounded),
+          onPressed: isAllSelected
+              ? null
+              : () => onChanged({for (int i = 0; i < samples.length; i++) i}),
+          child: const Text('Select all'),
+        ),
+        MenuItemButton(
+          closeOnActivate: false,
+          leadingIcon: const Icon(Icons.deselect_rounded),
+          onPressed: selected.isEmpty ? null : () => onChanged({}),
+          child: const Text('Clear'),
+        ),
+        const Divider(height: SeguiStroke.thin),
+        for (int i = 0; i < samples.length; i++)
+          CheckboxMenuButton(
+            closeOnActivate: false,
+            value: selected.contains(i),
+            onChanged: (on) => onChanged(_toggled(selected, i, on ?? false)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: SeguiControlSize.indicator / 2,
+                  backgroundColor: ChartPalette.seriesAt(i),
+                ),
+                const SizedBox(width: SeguiSpacing.md),
+                Text(samples[i].sample),
+              ],
             ),
           ),
       ],
+      builder: (context, controller, _) => OutlinedButton.icon(
+        onPressed: controller.isOpen ? controller.close : controller.open,
+        icon: const Icon(Icons.arrow_drop_down_rounded),
+        iconAlignment: IconAlignment.end,
+        label: Text(
+          'Compared: ${selected.length} of ${samples.length} samples',
+        ),
+      ),
     );
   }
 }
@@ -666,36 +795,51 @@ class OverrepresentedTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (sequences.isEmpty) {
-      return const ChartPlaceholder(message: 'No overrepresented sequences.');
+      return const Align(
+        alignment: Alignment.topCenter,
+        child: ChartPlaceholder(message: 'No overrepresented sequences.'),
+      );
     }
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('Sequence')),
-          DataColumn(label: Text('Count'), numeric: true),
-          DataColumn(label: Text('Reads (%)'), numeric: true),
-          DataColumn(label: Text('Possible source')),
-          DataColumn(label: Text('')),
-        ],
-        rows: [
-          for (final OverrepresentedData seq in sequences)
-            DataRow(
-              cells: [
-                DataCell(SelectableText(seq.sequence)),
-                DataCell(Text(_countFormat.format(seq.count))),
-                DataCell(Text(
-                  seq.maxErrorPct > 0
-                      ? '${seq.percent.toStringAsFixed(2)} '
-                          '(+${seq.maxErrorPct.toStringAsFixed(3)})'
-                      : seq.percent.toStringAsFixed(2),
-                )),
-                DataCell(Text(seq.source)),
-                DataCell(CopySequenceButton(sequence: seq.sequence)),
-              ],
-            ),
-        ],
-      ),
+    return PagedTable<OverrepresentedData>(
+      rows: sequences,
+      columns: [
+        PagedTableColumn(
+          label: 'Sequence',
+          width: 460,
+          sortValue: (seq) => seq.sequence,
+          cell: (seq) => SelectableText(seq.sequence, maxLines: 1),
+        ),
+        PagedTableColumn(
+          label: 'Count',
+          width: 120,
+          numeric: true,
+          sortValue: (seq) => seq.count,
+          cell: (seq) => Text(_countFormat.format(seq.count)),
+        ),
+        PagedTableColumn(
+          label: 'Reads (%)',
+          width: 160,
+          numeric: true,
+          sortValue: (seq) => seq.percent,
+          cell: (seq) => Text(
+            seq.maxErrorPct > 0
+                ? '${seq.percent.toStringAsFixed(2)} '
+                    '(+${seq.maxErrorPct.toStringAsFixed(3)})'
+                : seq.percent.toStringAsFixed(2),
+          ),
+        ),
+        PagedTableColumn(
+          label: 'Possible source',
+          width: 280,
+          sortValue: (seq) => seq.source,
+          cell: (seq) => Text(seq.source, overflow: TextOverflow.ellipsis),
+        ),
+        PagedTableColumn(
+          label: '',
+          width: 72,
+          cell: (seq) => CopySequenceButton(sequence: seq.sequence),
+        ),
+      ],
     );
   }
 }

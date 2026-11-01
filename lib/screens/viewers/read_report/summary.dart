@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
+import 'package:segui/screens/viewers/read_report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -21,7 +22,8 @@ enum SummaryView {
 
 /// Every sample at a glance: one metric as bars, or all metrics as a
 /// table, followed by the checks of the open sample. Samples follow the
-/// order of the sample list, and picking one opens it.
+/// order of the sample list, and picking one opens it. The controls and
+/// the checks stay in place while the samples scroll between them.
 class ReadSummaryPanel extends StatefulWidget {
   const ReadSummaryPanel({
     super.key,
@@ -52,8 +54,48 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
     final ReadMetric metric =
         metrics.contains(_metric) ? _metric : metrics.first;
     final ReadSampleData open = widget.samples[widget.index];
+    return LayoutBuilder(
+      builder: (context, constraints) => _content(
+        context,
+        metrics: metrics,
+        metric: metric,
+        open: open,
+        fills: constraints.hasBoundedHeight,
+      ),
+    );
+  }
+
+  /// The controls, samples, and checks. When the panel [fills] its space,
+  /// the samples take what the controls and checks leave.
+  Widget _content(
+    BuildContext context, {
+    required List<ReadMetric> metrics,
+    required ReadMetric metric,
+    required ReadSampleData open,
+    required bool fills,
+  }) {
+    final Widget samples = widget.view.isEmpty
+        ? const Align(
+            alignment: Alignment.topCenter,
+            child: ChartPlaceholder(message: 'No samples match the filter.'),
+          )
+        : _mode == SummaryView.bars
+            ? SampleMetricBars(
+                samples: widget.samples,
+                view: widget.view,
+                index: widget.index,
+                metric: metric,
+                onSelected: widget.onSelected,
+              )
+            : ReadOverviewTable(
+                samples: widget.samples,
+                view: widget.view,
+                index: widget.index,
+                onSelected: widget.onSelected,
+              );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: fills ? MainAxisSize.max : MainAxisSize.min,
       children: [
         Wrap(
           spacing: SeguiSpacing.md,
@@ -86,24 +128,11 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
           ],
         ),
         const SizedBox(height: SeguiSpacing.lg),
-        if (widget.view.isEmpty)
-          const ChartPlaceholder(message: 'No samples match the filter.')
-        else if (_mode == SummaryView.bars)
-          SampleMetricBars(
-            samples: widget.samples,
-            view: widget.view,
-            index: widget.index,
-            metric: metric,
-            onSelected: widget.onSelected,
-          )
+        if (fills)
+          Expanded(child: samples)
         else
-          ReadOverviewTable(
-            samples: widget.samples,
-            view: widget.view,
-            index: widget.index,
-            onSelected: widget.onSelected,
-          ),
-        const SizedBox(height: SeguiSpacing.xl),
+          SizedBox(height: SeguiTableLayout.scrollingHeight, child: samples),
+        const Divider(height: SeguiSpacing.xl),
         Text(
           'Checks for ${open.sample}',
           style: Theme.of(context).textTheme.titleSmall,
@@ -126,8 +155,9 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
 }
 
 /// One horizontal bar per sample for [metric], scaled to the largest
-/// value. The open sample is highlighted, and a tap opens another.
-class SampleMetricBars extends StatelessWidget {
+/// value. The open sample is highlighted and kept in view, and a tap opens
+/// another. Bars build only while visible, so long lists stay fast.
+class SampleMetricBars extends StatefulWidget {
   const SampleMetricBars({
     super.key,
     required this.samples,
@@ -144,24 +174,69 @@ class SampleMetricBars extends StatelessWidget {
   final ValueChanged<int> onSelected;
 
   @override
+  State<SampleMetricBars> createState() => _SampleMetricBarsState();
+}
+
+class _SampleMetricBarsState extends State<SampleMetricBars> {
+  static const double _rowExtent =
+      SeguiChartLayout.barRow + 2 * SeguiSpacing.xxs;
+
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void didUpdateWidget(covariant SampleMetricBars oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.index != widget.index) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _showOpen());
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final List<int> view = widget.view;
     final double largest = view
-        .map((i) => metric.valueOf(samples[i].metrics) ?? 0)
+        .map((i) => widget.metric.valueOf(widget.samples[i].metrics) ?? 0)
         .fold(0, (a, b) => a > b ? a : b);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final int i in view)
-          SampleMetricBar(
-            sample: samples[i],
-            value: metric.valueOf(samples[i].metrics) ?? 0,
+    return Scrollbar(
+      controller: _controller,
+      child: ListView.builder(
+        controller: _controller,
+        padding: const EdgeInsets.only(
+          right: SeguiControlSize.scrollbarGutter,
+        ),
+        itemExtent: _rowExtent,
+        itemCount: view.length,
+        itemBuilder: (context, position) {
+          final int i = view[position];
+          return SampleMetricBar(
+            sample: widget.samples[i],
+            value: widget.metric.valueOf(widget.samples[i].metrics) ?? 0,
             largest: largest,
-            metric: metric,
-            isOpen: i == index,
-            onTap: () => onSelected(i),
-          ),
-      ],
+            metric: widget.metric,
+            isOpen: i == widget.index,
+            onTap: () => widget.onSelected(i),
+          );
+        },
+      ),
     );
+  }
+
+  /// Scrolls the open sample into view.
+  void _showOpen() {
+    final int position = widget.view.indexOf(widget.index);
+    if (position < 0 || !_controller.hasClients) return;
+    final ScrollPosition scroll = _controller.position;
+    final double offset = position * _rowExtent;
+    if (offset < scroll.pixels ||
+        offset + _rowExtent > scroll.pixels + scroll.viewportDimension) {
+      _controller.jumpTo(offset.clamp(0, scroll.maxScrollExtent));
+    }
   }
 }
 
@@ -266,9 +341,9 @@ class SampleMetricBar extends StatelessWidget {
   }
 }
 
-/// Every metric of every sample, sortable by column. Tapping a row opens
-/// the sample.
-class ReadOverviewTable extends StatefulWidget {
+/// Every metric of every sample, sortable by column and shown a page at a
+/// time. Tapping a row opens the sample.
+class ReadOverviewTable extends StatelessWidget {
   const ReadOverviewTable({
     super.key,
     required this.samples,
@@ -283,123 +358,68 @@ class ReadOverviewTable extends StatefulWidget {
   final ValueChanged<int> onSelected;
 
   @override
-  State<ReadOverviewTable> createState() => _ReadOverviewTableState();
-}
-
-class _ReadOverviewTableState extends State<ReadOverviewTable> {
-  int? _sortColumn;
-  bool _ascending = true;
-
-  @override
   Widget build(BuildContext context) {
-    final List<_OverviewColumn> columns = _columns;
-    final List<int> order = List<int>.of(widget.view);
-    if (_sortColumn != null) {
-      final _OverviewColumn column = columns[_sortColumn!];
-      order.sort((a, b) {
-        final int result = column
-            .sortValue(widget.samples[a])
-            .compareTo(column.sortValue(widget.samples[b]));
-        return _ascending ? result : -result;
-      });
-    }
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        sortColumnIndex: _sortColumn,
-        sortAscending: _ascending,
-        showCheckboxColumn: false,
-        columns: [
-          for (int i = 0; i < columns.length; i++)
-            DataColumn(
-              label: Text(columns[i].label),
-              numeric: columns[i].numeric,
-              onSort: (index, ascending) => setState(() {
-                _sortColumn = index;
-                _ascending = ascending;
-              }),
-            ),
-        ],
-        rows: [
-          for (final int i in order)
-            DataRow(
-              selected: i == widget.index,
-              onSelectChanged: (_) => widget.onSelected(i),
-              cells: [
-                for (final _OverviewColumn column in columns)
-                  DataCell(
-                    column.showsStatus
-                        ? QcStatusChip(
-                            status: overallStatus(
-                              readQcChecks(widget.samples[i]),
-                            ),
-                          )
-                        : Text(column.text(widget.samples[i])),
-                  ),
-              ],
-            ),
-        ],
-      ),
+    return PagedTable<int>(
+      rows: view,
+      selected: index,
+      onTap: onSelected,
+      columns: [
+        PagedTableColumn(
+          label: 'Sample',
+          width: 200,
+          sortValue: (i) => samples[i].sample,
+          cell: (i) => Text(
+            samples[i].sample,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        PagedTableColumn(
+          label: 'Status',
+          width: 140,
+          sortValue: (i) => overallStatus(readQcChecks(samples[i])).index,
+          cell: (i) => QcStatusChip(
+            status: overallStatus(readQcChecks(samples[i])),
+          ),
+        ),
+        _numeric('Reads', 130, (m) => m.readCount, _countFormat.format),
+        _numeric('Bases', 160, (m) => m.baseCount, _countFormat.format),
+        _numeric('Mean length', 140, (m) => m.meanReadLength, _decimal),
+        _numeric('N50', 100, (m) => m.n50ReadLength, _countFormat.format),
+        _numeric('GC (%)', 110, (m) => 100 * m.gcContent, _decimal),
+        _numeric('Q30 (%)', 110, (m) => m.q30Pct, _decimal),
+        _numeric('Mean Q', 110, (m) => m.meanQscore, _decimal),
+        _numeric(
+          'Duplication (%)',
+          160,
+          (m) => m.duplicatePct ?? 0,
+          _decimal,
+        ),
+        _numeric(
+          'Adapters (%)',
+          140,
+          (m) => m.adapterReadsPct ?? 0,
+          _decimal,
+        ),
+      ],
     );
   }
 
-  List<_OverviewColumn> get _columns => [
-        _OverviewColumn(
-          label: 'Sample',
-          numeric: false,
-          sortValue: (s) => s.sample,
-          text: (s) => s.sample,
-        ),
-        _OverviewColumn(
-          label: 'Status',
-          numeric: false,
-          sortValue: (s) => overallStatus(readQcChecks(s)).index,
-          text: (s) => overallStatus(readQcChecks(s)).label,
-          showsStatus: true,
-        ),
-        _numeric('Reads', (m) => m.readCount, _countFormat.format),
-        _numeric('Bases', (m) => m.baseCount, _countFormat.format),
-        _numeric('Mean length', (m) => m.meanReadLength, _decimal),
-        _numeric('N50', (m) => m.n50ReadLength, _countFormat.format),
-        _numeric('GC (%)', (m) => 100 * m.gcContent, _decimal),
-        _numeric('Q30 (%)', (m) => m.q30Pct, _decimal),
-        _numeric('Mean Q', (m) => m.meanQscore, _decimal),
-        _numeric('Duplication (%)', (m) => m.duplicatePct ?? 0, _decimal),
-        _numeric('Adapters (%)', (m) => m.adapterReadsPct ?? 0, _decimal),
-      ];
-
-  _OverviewColumn _numeric(
+  PagedTableColumn<int> _numeric(
     String label,
+    double width,
     double Function(ReadMetricsData metrics) value,
     String Function(double value) format,
   ) {
-    return _OverviewColumn(
+    return PagedTableColumn(
       label: label,
+      width: width,
       numeric: true,
-      sortValue: (s) => value(s.metrics),
-      text: (s) => format(value(s.metrics)),
+      sortValue: (i) => value(samples[i].metrics),
+      cell: (i) => Text(format(value(samples[i].metrics))),
     );
   }
 
   static String _decimal(double value) => value.toStringAsFixed(1);
-}
-
-class _OverviewColumn {
-  const _OverviewColumn({
-    required this.label,
-    required this.numeric,
-    required this.sortValue,
-    required this.text,
-    this.showsStatus = false,
-  });
-
-  final String label;
-  final bool numeric;
-  final Comparable Function(ReadSampleData sample) sortValue;
-  final String Function(ReadSampleData sample) text;
-
-  /// Whether cells show the sample status as a chip instead of [text].
-  final bool showsStatus;
 }
 
 class QcStatusChip extends StatelessWidget {
