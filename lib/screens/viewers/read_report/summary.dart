@@ -8,6 +8,7 @@ import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
+import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -223,7 +224,8 @@ class ReadOverviewTable extends StatelessWidget {
               PagedTableColumn(
                 label: 'Sample',
                 width: 200,
-                sortValue: (i) => samples[i].sample,
+                sortValue: (i) => NaturalText(samples[i].sample),
+                resizable: true,
                 cell: (i) => Text(
                   samples[i].sample,
                   overflow: TextOverflow.ellipsis,

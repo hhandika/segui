@@ -14,17 +14,25 @@ class PagedTableColumn<T> {
     required this.cell,
     this.numeric = false,
     this.sortValue,
+    this.resizable = false,
   });
 
   final String label;
+
+  /// Starting width. A [resizable] column can be dragged wider or narrower.
   final double width;
   final Widget Function(T row) cell;
 
   /// Whether cells align to the end, like numbers.
   final bool numeric;
 
-  /// Value the column sorts by. Columns without one do not sort.
+  /// Value the column sorts by. Columns without one do not sort. Wrap
+  /// names in `NaturalText` so `locus_2` sorts before `locus_10`.
   final Comparable Function(T row)? sortValue;
+
+  /// Whether a handle at the column's right edge resizes it, such as for
+  /// long sample or locus names. A double tap on the handle resets it.
+  final bool resizable;
 }
 
 /// A table that shows one page of rows at a time, so large reports stay
@@ -58,6 +66,9 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
   int _pageSize = SeguiTableLayout.pageSizes.first;
   late List<T> _order;
 
+  /// Widths set by dragging, by column position.
+  final Map<int, double> _widths = {};
+
   @override
   void initState() {
     super.initState();
@@ -88,10 +99,9 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
   Widget build(BuildContext context) {
     final int start = _page * _pageSize;
     final int end = (start + _pageSize).clamp(0, _order.length);
-    final double tableWidth = widget.columns.fold(
-      0,
-      (width, column) => width + column.width,
-    );
+    final double tableWidth = [
+      for (int i = 0; i < widget.columns.length; i++) _widthOf(i),
+    ].fold(0, (a, b) => a + b);
     final bool hasPager = _order.length > SeguiTableLayout.pageSizes.first;
     final Widget table = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -185,11 +195,22 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
               in widget.columns.indexed)
             _HeaderCell(
               label: column.label,
-              width: column.width,
+              width: _widthOf(i),
               numeric: column.numeric,
               style: theme.textTheme.titleSmall,
               sortedAscending: _sortColumn == i ? _ascending : null,
               onSort: column.sortValue == null ? null : () => _sortBy(i),
+              onResize: column.resizable
+                  ? (delta) => setState(() {
+                        _widths[i] = (_widthOf(i) + delta).clamp(
+                          SeguiTableLayout.minColumn,
+                          SeguiTableLayout.maxResizedColumn,
+                        );
+                      })
+                  : null,
+              onResetWidth: column.resizable
+                  ? () => setState(() => _widths.remove(i))
+                  : null,
             ),
         ],
       ),
@@ -216,9 +237,10 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
             ),
             child: Row(
               children: [
-                for (final PagedTableColumn<T> column in widget.columns)
+                for (final (int i, PagedTableColumn<T> column)
+                    in widget.columns.indexed)
                   Container(
-                    width: column.width,
+                    width: _widthOf(i),
                     padding: const EdgeInsets.symmetric(
                       horizontal: SeguiTableLayout.cellPadding,
                     ),
@@ -302,6 +324,9 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
 
   // A new order starts at its first page, even when the selected row
   // moves to another.
+  double _widthOf(int column) =>
+      _widths[column] ?? widget.columns[column].width;
+
   void _sortBy(int column) {
     setState(() {
       _ascending = _sortColumn == column ? !_ascending : true;
@@ -360,6 +385,8 @@ class _HeaderCell extends StatelessWidget {
     required this.style,
     required this.sortedAscending,
     required this.onSort,
+    required this.onResize,
+    required this.onResetWidth,
   });
 
   final String label;
@@ -370,6 +397,11 @@ class _HeaderCell extends StatelessWidget {
   /// Sort direction when the table sorts by this column, otherwise null.
   final bool? sortedAscending;
   final VoidCallback? onSort;
+
+  /// Called with the drag distance on the resize handle. Columns without
+  /// it have no handle.
+  final ValueChanged<double>? onResize;
+  final VoidCallback? onResetWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -383,22 +415,78 @@ class _HeaderCell extends StatelessWidget {
     final Widget text = Flexible(
       child: Text(label, style: style, overflow: TextOverflow.ellipsis),
     );
+    final Widget cell = InkWell(
+      onTap: onSort,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: SeguiTableLayout.cellPadding,
+        ),
+        child: Row(
+          mainAxisAlignment:
+              numeric ? MainAxisAlignment.end : MainAxisAlignment.start,
+          children: [
+            if (numeric && onSort != null) arrow,
+            text,
+            if (!numeric && onSort != null) arrow,
+          ],
+        ),
+      ),
+    );
+    final ValueChanged<double>? resize = onResize;
     return SizedBox(
       width: width,
-      child: InkWell(
-        onTap: onSort,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: SeguiTableLayout.cellPadding,
-          ),
-          child: Row(
-            mainAxisAlignment:
-                numeric ? MainAxisAlignment.end : MainAxisAlignment.start,
-            children: [
-              if (numeric && onSort != null) arrow,
-              text,
-              if (!numeric && onSort != null) arrow,
-            ],
+      child: resize == null
+          ? cell
+          : Stack(
+              children: [
+                Positioned.fill(child: cell),
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  width: SeguiTableLayout.resizeHandle,
+                  child: _ResizeHandle(
+                    label: label,
+                    onResize: resize,
+                    onReset: onResetWidth,
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+/// A grip at a column's right edge. Dragging it resizes the column, and a
+/// double tap resets the width.
+class _ResizeHandle extends StatelessWidget {
+  const _ResizeHandle({
+    required this.label,
+    required this.onResize,
+    required this.onReset,
+  });
+
+  final String label;
+  final ValueChanged<double> onResize;
+  final VoidCallback? onReset;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = Theme.of(context).colorScheme.outlineVariant;
+    return Semantics(
+      label: 'Resize $label column',
+      child: MouseRegion(
+        cursor: SystemMouseCursors.resizeColumn,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onHorizontalDragUpdate: (details) => onResize(details.delta.dx),
+          onDoubleTap: onReset,
+          child: Center(
+            child: Container(
+              width: SeguiStroke.regular,
+              height: SeguiTableLayout.heading / 2,
+              color: color,
+            ),
           ),
         ),
       ),

@@ -242,6 +242,11 @@ abstract final class SeguiTableLayout {
   static const double minColumn = 80;
   static const double maxColumn = 320;
 
+  /// Widest a column gets when dragged, and the grab area of its resize
+  /// handle.
+  static const double maxResizedColumn = 640;
+  static const double resizeHandle = 12;
+
   /// In-cell data bars: their height as a share of the row, opacity, and
   /// the shortest bar as a share of the cell.
   static const double dataBarHeight = 0.6;

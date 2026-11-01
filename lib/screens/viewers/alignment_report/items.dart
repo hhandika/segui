@@ -4,6 +4,7 @@ import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
+import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 /// How a report item panel shows its loci or taxa.
@@ -195,7 +196,8 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
               PagedTableColumn(
                 label: widget.nameLabel,
                 width: 220,
-                sortValue: (i) => widget.names[i],
+                sortValue: (i) => NaturalText(widget.names[i]),
+                resizable: true,
                 cell: (i) => Text(
                   widget.names[i],
                   overflow: TextOverflow.ellipsis,

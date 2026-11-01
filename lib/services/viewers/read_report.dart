@@ -1,7 +1,11 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
+import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/src/rust/api/reads.dart';
+
+// Kept here too for code that sorts samples.
+export 'package:segui/services/viewers/natural_sort.dart' show compareNatural;
 
 /// File name suffix of the read report written by a complete read summary.
 const String readReportSuffix = 'read-report.json';
@@ -404,23 +408,6 @@ List<int> readSampleView(
     return ascending ? ordered : -ordered;
   });
   return view;
-}
-
-/// Compares strings with runs of digits as numbers, ignoring case.
-int compareNatural(String a, String b) {
-  final RegExp chunks = RegExp(r'\d+|\D+');
-  final List<String> left =
-      chunks.allMatches(a.toLowerCase()).map((m) => m[0]!).toList();
-  final List<String> right =
-      chunks.allMatches(b.toLowerCase()).map((m) => m[0]!).toList();
-  for (int i = 0; i < left.length && i < right.length; i++) {
-    final int? x = int.tryParse(left[i]);
-    final int? y = int.tryParse(right[i]);
-    final int result =
-        x != null && y != null ? x.compareTo(y) : left[i].compareTo(right[i]);
-    if (result != 0) return result;
-  }
-  return left.length.compareTo(right.length);
 }
 
 /// Position [delta] steps from [index] through [view], wrapping at both

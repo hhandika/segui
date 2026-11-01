@@ -10,6 +10,7 @@ import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/viewers/csv.dart';
+import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -177,7 +178,8 @@ class CsvTable extends StatelessWidget {
       return PagedTableColumn(
         label: label,
         width: width,
-        sortValue: (row) => cellAt(row)?.toString() ?? '',
+        sortValue: (row) => NaturalText(cellAt(row)?.toString() ?? ''),
+        resizable: true,
         cell: (row) => Text(
           _format(cellAt(row)),
           maxLines: 1,

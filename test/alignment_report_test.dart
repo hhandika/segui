@@ -12,6 +12,7 @@ import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/services/providers/alignment_report.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
+import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/src/rust/api/alignment_report.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -219,6 +220,56 @@ void main() {
   });
 
   group('CSV table', () {
+    test('Names sort naturally', () {
+      final List<NaturalText> names = [
+        const NaturalText('gene_10'),
+        const NaturalText('Gene_2'),
+        const NaturalText('gene_1'),
+      ]..sort();
+      expect(names.map((n) => n.text), ['gene_1', 'Gene_2', 'gene_10']);
+    });
+
+    testWidgets('Name columns sort naturally and resize', (tester) async {
+      tester.view.physicalSize = const Size(1200, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: const Scaffold(
+            body: CsvTable(
+              content: [
+                ['locus', 'sites'],
+                ['gene_10', 20],
+                ['gene_2', 1500],
+                ['gene_1', 7],
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('locus'));
+      await tester.pumpAndSettle();
+      double top(String text) => tester.getTopLeft(find.text(text)).dy;
+      expect(top('gene_1'), lessThan(top('gene_2')));
+      expect(top('gene_2'), lessThan(top('gene_10')));
+
+      // Dragging the handle widens the column, and a double tap resets it.
+      final Finder handle = find.bySemanticsLabel('Resize locus column');
+      final double before = tester.getTopLeft(find.text('sites')).dx;
+      await tester.drag(handle, const Offset(120, 0));
+      await tester.pumpAndSettle();
+      final double after = tester.getTopLeft(find.text('sites')).dx;
+      expect(after, closeTo(before + 120, 20));
+      await tester.tap(handle);
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.tap(handle);
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('sites')).dx, closeTo(before, 1));
+      expect(tester.takeException(), isNull);
+    });
+
     test('Numeric columns hold only numbers', () {
       final CsvColumnStats numbers = CsvColumnStats.of([3, null, 1.5, '']);
       expect(numbers.isNumeric, isTrue);
