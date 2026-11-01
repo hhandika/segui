@@ -201,7 +201,6 @@ void main() {
 
     expect(find.text('Okabe-Ito'), findsOneWidget);
     expect(find.text('Not colorblind safe'), findsOneWidget);
-    expect(find.text('1 adjusted for lines'), findsOneWidget);
     expect(find.text('Viridis'), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp('Text contrast 6.3')), findsOneWidget);
 

@@ -389,10 +389,7 @@ class ContrastBadge extends StatelessWidget {
       excludeSemantics: true,
       child: Chip(
         avatar: Icon(passes ? Icons.check_circle_outline : Icons.error_outline),
-        label: Text(
-          '$label ${ratio.toStringAsFixed(1)}:1 '
-          '${passes ? '✓' : '✗'} (min ${minimum.toStringAsFixed(1)})',
-        ),
+        label: Text('$label ${ratio.toStringAsFixed(1)}:1'),
         visualDensity: VisualDensity.compact,
       ),
     );

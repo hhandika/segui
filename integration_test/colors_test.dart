@@ -68,7 +68,8 @@ void main() {
       expect(choices.palettes.length, 7);
       expect(choices.colormaps.length, 12);
       expect(choices.residueSchemes.length, 2);
-      expect(choices.palettes.first.fills.first, const Color(0xFF0072B2));
+      expect(choices.palettes.first.name, defaultChartPalette);
+      expect(choices.palettes.first.fills.first, const Color(0xFF1B9E77));
       expect(find.text('ColorBrewer Dark2'), findsOneWidget);
       expect(find.text('Viridis'), findsOneWidget);
 
@@ -83,13 +84,13 @@ void main() {
 
       await _capture(boundary, 'colors-${brightness.name}');
 
-      await tester.tap(find.text('ColorBrewer Dark2'));
+      await tester.tap(find.text('Okabe-Ito'));
       await tester.pumpAndSettle();
-      expect(prefs.getString('chartPalette'), 'dark2');
+      expect(prefs.getString('chartPalette'), 'okabe-ito');
       expect(
         SeguiColors.of(tester.element(find.byType(ColorSettingView)))
             .seriesAt(0),
-        choices.palettes.firstWhere((c) => c.name == 'dark2').fills.first,
+        const Color(0xFF0072B2),
       );
     });
   }

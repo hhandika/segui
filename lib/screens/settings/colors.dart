@@ -113,19 +113,12 @@ class ColorChoiceList extends ConsumerWidget {
         Text('Data colors', style: theme.textTheme.headlineSmall),
         const SizedBox(height: SeguiSpacing.xs),
         Text(
-          'Colors for charts, heatmaps, tables, and the alignment viewer. '
-          'They come from the SEGUL color library, so SEGUL plots match. '
-          'Lines are darkened or lightened where needed to reach 3:1 '
-          'contrast, and text reaches 4.5:1 (WCAG 2.2 AA).',
+          'Colors for charts, tables, and alignments.',
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-        const ColorSectionTitle(
-          title: 'Chart palette',
-          subtitle: 'Colors of series in bar and line charts. The strip '
-              'under each color is its line color.',
-        ),
+        const ColorSectionTitle(title: 'Chart palette'),
         ColorChoiceGrid(
           children: [
             for (final PaletteChoice choice in choices.palettes)
@@ -143,21 +136,13 @@ class ColorChoiceList extends ConsumerWidget {
                         : Icons.visibility_off_outlined,
                     label: _safety(choice),
                   ),
-                  if (choice.adjusted.isNotEmpty)
-                    ColorChoiceBadge(
-                      icon: Icons.contrast,
-                      label: '${choice.adjusted.length} adjusted for lines',
-                    ),
                 ],
                 child: PaletteSwatch(fills: choice.fills, lines: choice.lines),
               ),
           ],
         ),
         if (choices.colormaps.isNotEmpty) ...[
-          const ColorSectionTitle(
-            title: 'Heatmap colormap',
-            subtitle: 'Shades of heatmap cells, from low to high values.',
-          ),
+          const ColorSectionTitle(title: 'Heatmap colormap'),
           ColorChoiceGrid(
             children: [
               for (final ColormapChoice choice in choices.colormaps)
@@ -182,10 +167,7 @@ class ColorChoiceList extends ConsumerWidget {
             ],
           ),
         ],
-        const ColorSectionTitle(
-          title: 'Table data bars',
-          subtitle: 'Bars behind numbers in report tables.',
-        ),
+        const ColorSectionTitle(title: 'Table data bars'),
         ColorChoiceGrid(
           children: [
             for (final TableBarColor choice in TableBarColor.values)
@@ -203,11 +185,7 @@ class ColorChoiceList extends ConsumerWidget {
               ),
           ],
         ),
-        const ColorSectionTitle(
-          title: 'Alignment residues',
-          subtitle: 'Residue colors in the alignment viewer, for DNA and '
-              'amino acids.',
-        ),
+        const ColorSectionTitle(title: 'Alignment residues'),
         ColorChoiceGrid(
           children: [
             for (final ResidueChoice choice in choices.residueSchemes)
@@ -255,19 +233,14 @@ class ColorChoiceList extends ConsumerWidget {
   static String _safety(PaletteChoice choice) {
     if (choice.isColorblindSafe) return 'Colorblind safe';
     if (choice.colorblindSafe == 0) return 'Not colorblind safe';
-    return 'Colorblind safe for ${choice.colorblindSafe} colors';
+    return 'Colorblind safe up to ${choice.colorblindSafe}';
   }
 }
 
 class ColorSectionTitle extends StatelessWidget {
-  const ColorSectionTitle({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
+  const ColorSectionTitle({super.key, required this.title});
 
   final String title;
-  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -277,19 +250,7 @@ class ColorSectionTitle extends StatelessWidget {
         top: SeguiSpacing.xxl,
         bottom: SeguiSpacing.md,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: theme.textTheme.titleMedium),
-          const SizedBox(height: SeguiSpacing.xxs),
-          Text(
-            subtitle,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
+      child: Text(title, style: theme.textTheme.titleMedium),
     );
   }
 }
@@ -456,8 +417,6 @@ class ColorPreviewPanel extends ConsumerWidget {
             Text('Preview', style: theme.textTheme.titleMedium),
             const SizedBox(height: SeguiSpacing.md),
             if (cvdKinds.isNotEmpty) ...[
-              Text('Seen with', style: theme.textTheme.labelMedium),
-              const SizedBox(height: SeguiSpacing.xs),
               DropdownMenu<String?>(
                 initialSelection: cvd,
                 expandedInsets: EdgeInsets.zero,

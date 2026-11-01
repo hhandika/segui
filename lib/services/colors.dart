@@ -5,7 +5,7 @@ import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
 /// Default SEGUL color names, used before settings are saved.
-const String defaultChartPalette = 'okabe-ito';
+const String defaultChartPalette = 'dark2';
 const String defaultHeatmapColormap = 'viridis';
 const String defaultResidueScheme = 'clustal';
 
@@ -312,12 +312,6 @@ class PaletteChoice {
   final List<Color> lines;
 
   bool get isColorblindSafe => colorblindSafe >= fills.length;
-
-  /// Indexes of fills darkened or lightened for lines.
-  List<int> get adjusted => [
-        for (int i = 0; i < fills.length; i++)
-          if (fills[i] != lines[i]) i,
-      ];
 }
 
 /// A heatmap colormap with its stops.
@@ -368,8 +362,8 @@ class ColorChoices {
       palettes: const [
         PaletteChoice(
           name: defaultChartPalette,
-          label: 'Okabe-Ito',
-          colorblindSafe: 8,
+          label: 'ColorBrewer Dark2',
+          colorblindSafe: 3,
           fills: ChartPalette.series,
           lines: ChartPalette.series,
         ),

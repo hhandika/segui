@@ -176,23 +176,23 @@ class ResiduePalette {
   }
 }
 
-/// Default chart colors and opacities. Series use the Okabe-Ito palette,
-/// which stays distinct with color vision deficiency; quality zones reuse
-/// its green, orange, and vermilion.
+/// Default chart colors and opacities. Series use ColorBrewer Dark2;
+/// quality zones use Okabe-Ito green, orange, and vermilion, which stay
+/// distinct with color vision deficiency.
 ///
 /// The colors mirror the SEGUL color library defaults for tests and the
 /// first frame. Widgets read the colors chosen in settings from
 /// [SeguiColors.of].
 class ChartPalette {
   static const List<Color> series = [
-    Color(0xFF0072B2),
-    Color(0xFFE69F00),
-    Color(0xFF009E73),
-    Color(0xFFCC79A7),
-    Color(0xFF56B4E9),
-    Color(0xFFD55E00),
-    Color(0xFFF0E442),
-    Color(0xFF999999),
+    Color(0xFF1B9E77),
+    Color(0xFFD95F02),
+    Color(0xFF7570B3),
+    Color(0xFFE7298A),
+    Color(0xFF66A61E),
+    Color(0xFFE6AB02),
+    Color(0xFFA6761D),
+    Color(0xFF666666),
   ];
 
   static const Color pass = Color(0xFF009E73);

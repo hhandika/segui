@@ -4,7 +4,7 @@
 //!
 //! Colors cross the bridge as `0xAARRGGBB` integers, the layout of Flutter's
 //! `Color`. Palette, colormap, and scheme names are the SEGUL names, such as
-//! `okabe-ito` or `viridis`.
+//! `dark2` (the default palette) or `viridis`.
 use anyhow::anyhow;
 use flutter_rust_bridge::frb;
 use segul_core::color::residue::{ResiduePalette, ResidueScheme};
