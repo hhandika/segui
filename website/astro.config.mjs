@@ -83,15 +83,15 @@ export default defineConfig({
           items: [{ autogenerate: { directory: "docs/cli-usage" } }],
         },
         {
+          label: "Python Usages",
+          collapsed: true,
+          items: [{ autogenerate: { directory: "docs/api-usage/python" } }],
+        },
+        {
           label: "API Usages",
           collapsed: true,
           items: [
             "docs/api-usage",
-            {
-              label: "Python",
-              collapsed: true,
-              items: [{ autogenerate: { directory: "docs/api-usage/python" } }],
-            },
             "docs/api-usage/rust-api",
             "docs/api-usage/r-api",
           ],
