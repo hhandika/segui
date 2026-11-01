@@ -4,6 +4,13 @@ sidebar:
   order: 8
 ---
 
+{% commandanatomy
+   command="align"
+   subcommand="summary"
+   input="--dir alignments/"
+   option="--datatype aa"
+   optionSub="optional" /%}
+
 SEGUL generates different summary statistics for DNA and amino acid sequences. By default, the data type is set to the DNA sequence. In general, the command is as follows:
 
 ```bash

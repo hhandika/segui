@@ -4,6 +4,13 @@ sidebar:
   order: 18
 ---
 
+{% commandanatomy
+   command="sequence"
+   subcommand="rename"
+   input="--dir alignments/"
+   option="--replace-id names.csv"
+   optionSub="new names" /%}
+
 SEGUL provides an easy way to rename sequence IDs across all your alignments. To use this function, SEGUL requires a list of the original IDs and the names it needs to change. The input IDs can be written in a tabulated format as a comma-delimited file (`.csv`) or a tab-delimited file (`.tsv`).
 
 The table must contain two columns with a header for each column. Both the header names and the IDs should contain no space. The name of the header does not matter. You'll be able to name it whichever makes sense for you. It is only there for record keeping. The order of the columns, however, is essential. The first column should be the original IDs, and the second should be the new ones. For example:

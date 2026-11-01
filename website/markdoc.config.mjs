@@ -239,9 +239,20 @@ export default defineMarkdocConfig({
       render: component("./src/components/quick-start/CliDownloads.astro"),
       selfClosing: true,
     },
+    // Parts of a command. Without attributes it shows the `align concat`
+    // example; CLI usage pages pass their own task.
     commandanatomy: {
       render: component("./src/components/quick-start/CommandAnatomy.astro"),
       selfClosing: true,
+      attributes: {
+        command: { type: String },
+        subcommand: { type: String },
+        input: { type: String },
+        inputSub: { type: String },
+        option: { type: String },
+        optionSub: { type: String },
+        caption: { type: String },
+      },
     },
     guisteps: {
       render: component("./src/components/quick-start/GuiSteps.astro"),

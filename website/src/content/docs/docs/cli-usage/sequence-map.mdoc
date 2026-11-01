@@ -4,6 +4,13 @@ sidebar:
   order: 16
 ---
 
+{% commandanatomy
+   command="sequence"
+   subcommand="id"
+   input="--dir alignments/"
+   option="--map"
+   optionSub="ID map" /%}
+
 To map the distribution of your samples across your dataset, you only need to pass `--map` flag in the finding unique IDs command:
 
 ```bash

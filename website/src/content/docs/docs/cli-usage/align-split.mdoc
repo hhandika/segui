@@ -4,6 +4,14 @@ sidebar:
   order: 7
 ---
 
+{% commandanatomy
+   command="align"
+   subcommand="split"
+   input="--input concat.nex"
+   inputSub="one alignment"
+   option="--input-partition parts.nex"
+   optionSub="partition file" /%}
+
 SEGUL alignment splitting splits a concatenated alignment into multiple alignments based on an input partition.
 
 To split an alignment, you need two input files: the concatenated alignment and the partition file. If you skip inputting the partition file, the app will assume it is embedded in the alignment file.

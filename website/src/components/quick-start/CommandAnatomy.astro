@@ -1,14 +1,38 @@
 ---
 /// The parts of a `segul` command, spread apart so each one can be
-/// underlined and labeled.
+/// underlined and labeled. Without props it shows the `align concat`
+/// example; CLI usage pages pass their own task.
 import Figure from "../features/Figure.astro";
+
+interface Props {
+  command?: string;
+  subcommand?: string;
+  input?: string;
+  inputSub?: string;
+  option?: string;
+  optionSub?: string;
+  caption?: string;
+}
+
+const isDefault = Astro.props.command === undefined;
+const {
+  command = "align",
+  subcommand = "concat",
+  input = "--dir alignments/",
+  inputSub = "folder or files",
+  option = "--output aln-concat",
+  optionSub = "optional",
+  caption = isDefault
+    ? "Without --output, SEGUL writes to a default folder named after the task, such as Align-Concat."
+    : undefined,
+} = Astro.props;
 
 const parts = [
   { text: "segul", label: "Program" },
-  { text: "align", label: "Command", sub: "task group" },
-  { text: "concat", label: "Subcommand", sub: "task" },
-  { text: "--dir alignments/", label: "Input", sub: "folder or files" },
-  { text: "--output aln-concat", label: "Options", sub: "optional" },
+  { text: command, label: "Command", sub: "task group" },
+  { text: subcommand, label: "Subcommand", sub: "task" },
+  { text: input, label: "Input", sub: inputSub },
+  { text: option, label: "Options", sub: optionSub },
 ];
 const charWidth = 10.2;
 const startX = 24;
@@ -19,20 +43,21 @@ const slotGap = 14;
 let cursor = startX;
 const placed = parts.map((part) => {
   const w = part.text.length * charWidth;
-  const slot = Math.max(w, part.label.length * labelCharWidth);
+  const slot = Math.max(w, part.label.length * labelCharWidth, (part.sub?.length ?? 0) * 6.6);
   const x = cursor + (slot - w) / 2;
   cursor += slot + slotGap;
   return { ...part, x, w };
 });
 const width = Math.ceil(cursor - slotGap + startX);
+const full = parts.map((part) => part.text).join(" ");
 ---
 
 <Figure
-  id="command-anatomy"
+  id={`command-anatomy-${command}-${subcommand}`}
   viewBox={`0 0 ${width} 140`}
   title="Parts of a SEGUL command"
-  desc="The command segul align concat --dir alignments/ --output aln-concat has five parts: the program segul, the command align for the task group, the subcommand concat for the task, the input option --dir alignments/, and the optional --output option."
-  caption="Without --output, SEGUL writes to a default folder named after the task, such as Align-Concat."
+  desc={`The command ${full} has five parts: the program segul, the command ${command} for the task group, the subcommand ${subcommand} for the task, the input ${input} (${inputSub}), and the option ${option} (${optionSub}).`}
+  caption={caption}
 >
   <rect x="2" y="18" width={width - 4} height="56" rx="10" class="fx-panel" />
   {

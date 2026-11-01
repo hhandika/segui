@@ -4,6 +4,13 @@ sidebar:
   order: 9
 ---
 
+{% commandanatomy
+   command="align"
+   subcommand="trim"
+   input="--dir alignments/"
+   option="--missing-data 0.5"
+   optionSub="trimming threshold" /%}
+
 Trim alignments based on the proportion of missing data or the number of parsimony informative sites. This feature will filter sites based on the specified parameters.
 
 {% aside type="note" %}

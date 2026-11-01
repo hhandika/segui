@@ -7,6 +7,14 @@ sidebar:
     variant: caution
 ---
 
+{% commandanatomy
+   command="view"
+   subcommand="align"
+   input="--input alignment.fasta"
+   inputSub="file"
+   option="--datatype aa"
+   optionSub="optional" /%}
+
 {% aside type="caution" title="In development" %}
 This feature is not yet in a SEGUL release. It will be available in the next SEGUL release. To use it now, build SEGUL from [source](/docs/installation/install_cli/#source-code). Commands and key bindings may change before the release.
 {% /aside %}

@@ -4,6 +4,14 @@ sidebar:
   order: 12
 ---
 
+{% commandanatomy
+   command="sequence"
+   subcommand="add"
+   input="--dir source/"
+   inputSub="sequences to add"
+   option="--to-dir destination/"
+   optionSub="destination" /%}
+
 Add sequences to existing sequence files/alignments. Allow adding sequences from multiple sources to multiple destinations. The file formats for the source and destinations can be different, but SEGUL requires matching file names for both to add the sequences. If the destination files are aligned, all the output sequences will be unaligned. We recommend using [MAFFT](https://mafft.cbrc.jp/alignment/software/) to align the resulting sequence files.
 
 {% aside type="note" %}

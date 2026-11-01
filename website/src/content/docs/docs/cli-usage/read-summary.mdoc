@@ -4,6 +4,13 @@ sidebar:
   order: 11
 ---
 
+{% commandanatomy
+   command="read"
+   subcommand="summary"
+   input="--dir raw_reads/"
+   option="--output read_summary"
+   optionSub="optional" /%}
+
 `segul read summary` calculates summary statistics for raw sequence reads in FASTQ format. For assembled contigs, see [Genomic Contig Summary](/docs/cli-usage/contig-summary/).
 
 ## Input formats

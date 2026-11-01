@@ -4,6 +4,13 @@ sidebar:
   order: 4.5
 ---
 
+{% commandanatomy
+   command="align"
+   subcommand="distance"
+   input="--dir alignments/"
+   option="--model k2p"
+   optionSub="optional" /%}
+
 Compute pairwise genetic distances between samples for each alignment. SEGUL writes a distance matrix for every locus and a summary table across all loci, so you can compare thousands of loci in a single command. SEGUL can also average the distances within and between populations or species, and write all distances as long tables.
 
 {% aside type="note" %}

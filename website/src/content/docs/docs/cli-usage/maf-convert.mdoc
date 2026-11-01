@@ -4,6 +4,13 @@ sidebar:
   order: 10.5
 ---
 
+{% commandanatomy
+   command="maf"
+   subcommand="convert"
+   input="--input genome.maf"
+   option="--bed loci.bed"
+   optionSub="optional" /%}
+
 Multiple Alignment Format (MAF) stores whole-genome alignments as blocks. Each block aligns a stretch of a reference genome to the matching sequence in other genomes, with details such as the source, position, strand, and score of each sequence. Most phylogenetic software does not read MAF. SEGUL converts MAF blocks to FASTA, NEXUS, or PHYLIP alignments, either one alignment per block or one alignment per locus defined in a BED file.
 
 {% aside type="note" %}

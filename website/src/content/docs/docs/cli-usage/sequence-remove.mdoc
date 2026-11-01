@@ -4,6 +4,13 @@ sidebar:
   order: 17
 ---
 
+{% commandanatomy
+   command="sequence"
+   subcommand="remove"
+   input="--dir alignments/"
+   option="--re=\"^Mus\""
+   optionSub="IDs to remove" /%}
+
 Based on a list of IDs, you can remove sequences in a collection of alignments. This feature is the opposite of the `segul sequence extract` feature. Removing less than half of the sequences is faster than `segul sequence extract`.
 
 ## Remove sequences based on a list of IDs

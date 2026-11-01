@@ -4,6 +4,13 @@ sidebar:
   order: 13
 ---
 
+{% commandanatomy
+   command="sequence"
+   subcommand="extract"
+   input="--dir alignments/"
+   option="--re=\"^Mus\""
+   optionSub="IDs to keep" /%}
+
 SEGUL can extract sequences based on the sequence ID in a collection of alignments. You can input the sequence ID in three ways:
 
 1. Using the standard input (stdin) via terminal

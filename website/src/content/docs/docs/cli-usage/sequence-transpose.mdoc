@@ -4,6 +4,13 @@ sidebar:
   order: 20
 ---
 
+{% commandanatomy
+   command="sequence"
+   subcommand="transpose"
+   input="--dir alignments/"
+   option="--datatype aa"
+   optionSub="optional" /%}
+
 Transpose locus alignments into per-sample sequence files. Locus alignments store one locus per file with a sequence for each sample. Transposing creates one file for each sample with a sequence for each locus. This is useful for creating sample-level reference sequences, for example, to map reads from each sample back to its own loci.
 
 {% aside type="note" %}

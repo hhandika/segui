@@ -4,6 +4,13 @@ sidebar:
   order: 10
 ---
 
+{% commandanatomy
+   command="align"
+   subcommand="unalign"
+   input="--dir alignments/"
+   option="--output unaligned"
+   optionSub="optional" /%}
+
 Unalign alignments to produce unaligned sequence files.
 
 Under the hood, SEGUL will read the alignment files and remove all gap characters to produce unaligned sequences. SEGUL can do it for thousands of files in a single command.

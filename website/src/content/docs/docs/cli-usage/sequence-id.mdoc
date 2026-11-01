@@ -4,6 +4,13 @@ sidebar:
   order: 15
 ---
 
+{% commandanatomy
+   command="sequence"
+   subcommand="id"
+   input="--dir alignments/"
+   option="--prefix my_ids"
+   optionSub="optional" /%}
+
 Often, we need to know what the taxa in our dataset are. The most straightforward command would be:
 
 ```bash

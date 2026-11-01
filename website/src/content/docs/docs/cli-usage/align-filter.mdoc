@@ -4,6 +4,13 @@ sidebar:
   order: 5
 ---
 
+{% commandanatomy
+   command="align"
+   subcommand="filter"
+   input="--dir alignments/"
+   option="--min-len 500"
+   optionSub="filtering method" /%}
+
 In a typical phylogenomic workflow, you may want to filter problematic alignments before running a phylogenetic analysis. This feature provides multiple ways to filter alignments.
 
 Available filtering methods (required SEGUL v0.23.0 and later):

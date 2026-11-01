@@ -4,6 +4,13 @@ sidebar:
   order: 11.1
 ---
 
+{% commandanatomy
+   command="contig"
+   subcommand="summary"
+   input="--input contigs.fa"
+   option="--prefix my_contigs"
+   optionSub="optional" /%}
+
 `segul contig summary` calculates summary statistics for assembled contigs in FASTA format. For raw reads, see [Genomic Read Summary](/docs/cli-usage/read-summary/).
 
 ## Input formats

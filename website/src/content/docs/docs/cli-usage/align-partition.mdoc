@@ -4,6 +4,14 @@ sidebar:
   order: 6
 ---
 
+{% commandanatomy
+   command="partition"
+   subcommand="convert"
+   input="--input concat.nex"
+   inputSub="file"
+   option="--output-partition raxml"
+   optionSub="output format" /%}
+
 SEGUL CLI can convert single and multiple partition files. It can also extract partitions embedded in NEXUS sequence files.
 
 ```bash

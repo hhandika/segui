@@ -4,6 +4,13 @@ sidebar:
   order: 10.6
 ---
 
+{% commandanatomy
+   command="maf"
+   subcommand="summary"
+   input="--dir maf/"
+   option="--prefix primates"
+   optionSub="optional" /%}
+
 Summarize Multiple Alignment Format (MAF) files: the number of blocks, the alignment length, how much of the reference genome each species covers, and the proportion of gaps. Use it to check whole-genome alignments before [converting them](/docs/cli-usage/maf-convert/).
 
 {% aside type="note" %}
