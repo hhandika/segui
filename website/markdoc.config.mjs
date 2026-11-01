@@ -65,6 +65,16 @@ export default defineMarkdocConfig({
         id: { type: String, required: true, matches: /^[A-Z]$/ },
       },
     },
+    // A terminal capture on a CLI usage page, from `src/assets/screenshots/cli/`.
+    terminalshot: {
+      render: component("./src/components/docs/TerminalScreenshot.astro"),
+      selfClosing: true,
+      attributes: {
+        src: { type: String, required: true },
+        alt: { type: String, required: true },
+        caption: { type: String },
+      },
+    },
     // A fixed-width image, such as a store QR code.
     sizedimage: {
       render: component("./src/components/docs/SizedImage.astro"),

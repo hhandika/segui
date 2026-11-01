@@ -29,6 +29,11 @@ segul view align --input alignment.fasta
 
 It is designed to be fast and can handle large alignments efficiently.
 
+{% terminalshot
+   src="cli/view-align.webp"
+   alt="SEGUL alignment viewer showing 24 taxa of a concatenated DNA alignment with colored residues"
+   caption="A concatenated alignment of 300 loci, 24 taxa, and 257,844 sites." /%}
+
 {% aside type="tip" title="Input formats" %}
 For the best efficiency, use FASTA format.
 {% /aside %}
@@ -101,7 +106,12 @@ The viewer splits the alignment into chunks of 1,000 sites by default. Use `--ch
 segul view align --input alignment.fasta --chunk 500
 ```
 
-Use `[` and `]` to move between chunks. Press `Ctrl+K` then `P` to show one chunk at a time.
+Use `[` and `]` to move between chunks. Press `Ctrl+K` then `P` to show one chunk at a time. Press `Ctrl+B` to list the chunks with their share of gaps and variable sites.
+
+{% terminalshot
+   src="cli/view-align-chunks.webp"
+   alt="SEGUL alignment viewer with the chunk sidebar open on the left"
+   caption="The chunk sidebar." /%}
 
 ### Selecting and copying sequences
 
@@ -167,3 +177,4 @@ Some terminals use `Ctrl+=` or `Alt` shortcuts for their own features. If a shor
 | `--theme`              | Colors for a `dark` (default) or `light` terminal                      |
 | `--residue-colors`     | `clustal` (default) or `colorblind-safe` residue colors                |
 | `--chunk`              | Sites per chunk: `250`, `500`, `1000` (default), or `2000`             |
+| `--log`                | Log file path. Default: `segul.log`                                    |
