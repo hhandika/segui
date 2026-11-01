@@ -12,10 +12,13 @@ import 'api/file_sort.dart';
 import 'api/maf.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
+
 import 'frb_generated.dart';
+
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
@@ -27,29 +30,32 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   CrossPlatformFinalizerArg
-      get rust_arc_decrement_strong_count_AlignmentHandlePtr => wire
-          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr;
+  get rust_arc_decrement_strong_count_AlignmentHandlePtr => wire
+      ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr;
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
   AlignmentHandle
-      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          dynamic raw);
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    dynamic raw,
+  );
 
   @protected
   AlignmentHandle
-      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          dynamic raw);
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    dynamic raw,
+  );
 
   @protected
   Map<String, String> dco_decode_Map_String_String_None(dynamic raw);
 
   @protected
   AlignmentHandle
-      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          dynamic raw);
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    dynamic raw,
+  );
 
   @protected
   String dco_decode_String(dynamic raw);
@@ -80,14 +86,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentDistanceServices dco_decode_box_autoadd_alignment_distance_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw);
 
   @protected
   AlignmentTrimmingServices dco_decode_box_autoadd_alignment_trimming_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   ArchiveServices dco_decode_box_autoadd_archive_services(dynamic raw);
@@ -118,11 +126,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   IDExtractionServices dco_decode_box_autoadd_id_extraction_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   MafConversionServices dco_decode_box_autoadd_maf_conversion_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   MafSummaryServices dco_decode_box_autoadd_maf_summary_services(dynamic raw);
@@ -141,18 +151,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SequenceAdditionServices dco_decode_box_autoadd_sequence_addition_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   SequenceConversionServices
-      dco_decode_box_autoadd_sequence_conversion_services(dynamic raw);
+  dco_decode_box_autoadd_sequence_conversion_services(dynamic raw);
 
   @protected
   SequenceExtraction dco_decode_box_autoadd_sequence_extraction(dynamic raw);
 
   @protected
   SequenceFilteringServices dco_decode_box_autoadd_sequence_filtering_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   SequenceRemoval dco_decode_box_autoadd_sequence_removal(dynamic raw);
@@ -162,11 +174,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SequenceTransposeServices dco_decode_box_autoadd_sequence_transpose_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   SplitAlignmentServices dco_decode_box_autoadd_split_alignment_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   TranslationServices dco_decode_box_autoadd_translation_services(dynamic raw);
@@ -284,7 +298,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadDuplicationData? dco_decode_opt_box_autoadd_read_duplication_data(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
@@ -333,7 +348,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SequenceConversionServices dco_decode_sequence_conversion_services(
-      dynamic raw);
+    dynamic raw,
+  );
 
   @protected
   SequenceExtraction dco_decode_sequence_extraction(dynamic raw);
@@ -388,37 +404,44 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentHandle
-      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          SseDeserializer deserializer);
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    SseDeserializer deserializer,
+  );
 
   @protected
   AlignmentHandle
-      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          SseDeserializer deserializer);
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    SseDeserializer deserializer,
+  );
 
   @protected
   Map<String, String> sse_decode_Map_String_String_None(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   AlignmentHandle
-      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          SseDeserializer deserializer);
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    SseDeserializer deserializer,
+  );
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
   AdapterContentData sse_decode_adapter_content_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   AlignmentChunkStat sse_decode_alignment_chunk_stat(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   AlignmentDistanceServices sse_decode_alignment_distance_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   AlignmentServices sse_decode_alignment_services(SseDeserializer deserializer);
@@ -428,7 +451,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentTrimmingServices sse_decode_alignment_trimming_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ArchiveServices sse_decode_archive_services(SseDeserializer deserializer);
@@ -438,121 +462,148 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentDistanceServices sse_decode_box_autoadd_alignment_distance_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   AlignmentServices sse_decode_box_autoadd_alignment_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   AlignmentTrimmingServices sse_decode_box_autoadd_alignment_trimming_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ArchiveServices sse_decode_box_autoadd_archive_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ContigServices sse_decode_box_autoadd_contig_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   CsvSummaryServices sse_decode_box_autoadd_csv_summary_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ExportServices sse_decode_box_autoadd_export_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ExtractServices sse_decode_box_autoadd_extract_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   double sse_decode_box_autoadd_f_64(SseDeserializer deserializer);
 
   @protected
   FileListServices sse_decode_box_autoadd_file_list_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   FilteringServices sse_decode_box_autoadd_filtering_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
   IDExtractionServices sse_decode_box_autoadd_id_extraction_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   MafConversionServices sse_decode_box_autoadd_maf_conversion_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   MafSummaryServices sse_decode_box_autoadd_maf_summary_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   PartitionServices sse_decode_box_autoadd_partition_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   RawReadServices sse_decode_box_autoadd_raw_read_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ReadDuplicationData sse_decode_box_autoadd_read_duplication_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ReadReportServices sse_decode_box_autoadd_read_report_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceAdditionServices sse_decode_box_autoadd_sequence_addition_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceConversionServices
-      sse_decode_box_autoadd_sequence_conversion_services(
-          SseDeserializer deserializer);
+  sse_decode_box_autoadd_sequence_conversion_services(
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceExtraction sse_decode_box_autoadd_sequence_extraction(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceFilteringServices sse_decode_box_autoadd_sequence_filtering_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceRemoval sse_decode_box_autoadd_sequence_removal(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceRenaming sse_decode_box_autoadd_sequence_renaming(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceTransposeServices sse_decode_box_autoadd_sequence_transpose_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SplitAlignmentServices sse_decode_box_autoadd_split_alignment_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   TranslationServices sse_decode_box_autoadd_translation_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
   UnalignmentServices sse_decode_box_autoadd_unalignment_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
@@ -565,19 +616,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CsvSummaryServices sse_decode_csv_summary_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   DistanceGroupCount sse_decode_distance_group_count(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   DistanceGroupPreview sse_decode_distance_group_preview(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   DistanceGroupingParams sse_decode_distance_grouping_params(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ExportFormat sse_decode_export_format(SseDeserializer deserializer);
@@ -611,30 +666,36 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   IDExtractionServices sse_decode_id_extraction_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<String> sse_decode_list_String(SseDeserializer deserializer);
 
   @protected
   List<AdapterContentData> sse_decode_list_adapter_content_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<AlignmentChunkStat> sse_decode_list_alignment_chunk_stat(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<DistanceGroupCount> sse_decode_list_distance_group_count(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<PlatformInt64?> sse_decode_list_opt_box_autoadd_i_64(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<OverrepresentedData> sse_decode_list_overrepresented_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   Float64List sse_decode_list_prim_f_64_strict(SseDeserializer deserializer);
@@ -650,19 +711,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<ReadSampleData> sse_decode_list_read_sample_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   List<(String, String)> sse_decode_list_record_string_string(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   MafConversionServices sse_decode_maf_conversion_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   MafSummaryServices sse_decode_maf_summary_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
@@ -675,7 +740,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadDuplicationData? sse_decode_opt_box_autoadd_read_duplication_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
@@ -688,7 +754,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   OverrepresentedData sse_decode_overrepresented_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
@@ -698,7 +765,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadDuplicationData sse_decode_read_duplication_data(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ReadMetricsData sse_decode_read_metrics_data(SseDeserializer deserializer);
@@ -711,42 +779,51 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadReportServices sse_decode_read_report_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   ReadSampleData sse_decode_read_sample_data(SseDeserializer deserializer);
 
   @protected
   ReadSummaryOutput sse_decode_read_summary_output(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   (String, String) sse_decode_record_string_string(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceAdditionServices sse_decode_sequence_addition_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceConversionServices sse_decode_sequence_conversion_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceExtraction sse_decode_sequence_extraction(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceExtractionParams sse_decode_sequence_extraction_params(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceFilteringParams sse_decode_sequence_filtering_params(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceFilteringServices sse_decode_sequence_filtering_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceRemoval sse_decode_sequence_removal(SseDeserializer deserializer);
@@ -756,19 +833,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SequenceRenamingParams sse_decode_sequence_renaming_params(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SequenceTransposeServices sse_decode_sequence_transpose_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   SplitAlignmentServices sse_decode_split_alignment_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   TranslationServices sse_decode_translation_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   TrimmingParams sse_decode_trimming_params(SseDeserializer deserializer);
@@ -781,7 +862,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   UnalignmentServices sse_decode_unalignment_services(
-      SseDeserializer deserializer);
+    SseDeserializer deserializer,
+  );
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
@@ -791,233 +873,333 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_AnyhowException(
-      AnyhowException self, SseSerializer serializer);
+    AnyhowException self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          AlignmentHandle self, SseSerializer serializer);
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    AlignmentHandle self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          AlignmentHandle self, SseSerializer serializer);
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    AlignmentHandle self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_Map_String_String_None(
-      Map<String, String> self, SseSerializer serializer);
+    Map<String, String> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void
-      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-          AlignmentHandle self, SseSerializer serializer);
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+    AlignmentHandle self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
   void sse_encode_adapter_content_data(
-      AdapterContentData self, SseSerializer serializer);
+    AdapterContentData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_alignment_chunk_stat(
-      AlignmentChunkStat self, SseSerializer serializer);
+    AlignmentChunkStat self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_alignment_distance_services(
-      AlignmentDistanceServices self, SseSerializer serializer);
+    AlignmentDistanceServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_alignment_services(
-      AlignmentServices self, SseSerializer serializer);
+    AlignmentServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_alignment_summary(
-      AlignmentSummary self, SseSerializer serializer);
+    AlignmentSummary self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_alignment_trimming_services(
-      AlignmentTrimmingServices self, SseSerializer serializer);
+    AlignmentTrimmingServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_archive_services(
-      ArchiveServices self, SseSerializer serializer);
+    ArchiveServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_alignment_distance_services(
-      AlignmentDistanceServices self, SseSerializer serializer);
+    AlignmentDistanceServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_alignment_services(
-      AlignmentServices self, SseSerializer serializer);
+    AlignmentServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_alignment_trimming_services(
-      AlignmentTrimmingServices self, SseSerializer serializer);
+    AlignmentTrimmingServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_archive_services(
-      ArchiveServices self, SseSerializer serializer);
+    ArchiveServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_contig_services(
-      ContigServices self, SseSerializer serializer);
+    ContigServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_csv_summary_services(
-      CsvSummaryServices self, SseSerializer serializer);
+    CsvSummaryServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_export_services(
-      ExportServices self, SseSerializer serializer);
+    ExportServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_extract_services(
-      ExtractServices self, SseSerializer serializer);
+    ExtractServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_f_64(double self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_file_list_services(
-      FileListServices self, SseSerializer serializer);
+    FileListServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_filtering_services(
-      FilteringServices self, SseSerializer serializer);
+    FilteringServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_i_64(
-      PlatformInt64 self, SseSerializer serializer);
+    PlatformInt64 self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_id_extraction_services(
-      IDExtractionServices self, SseSerializer serializer);
+    IDExtractionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_maf_conversion_services(
-      MafConversionServices self, SseSerializer serializer);
+    MafConversionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_maf_summary_services(
-      MafSummaryServices self, SseSerializer serializer);
+    MafSummaryServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_partition_services(
-      PartitionServices self, SseSerializer serializer);
+    PartitionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_raw_read_services(
-      RawReadServices self, SseSerializer serializer);
+    RawReadServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_read_duplication_data(
-      ReadDuplicationData self, SseSerializer serializer);
+    ReadDuplicationData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_read_report_services(
-      ReadReportServices self, SseSerializer serializer);
+    ReadReportServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_sequence_addition_services(
-      SequenceAdditionServices self, SseSerializer serializer);
+    SequenceAdditionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_sequence_conversion_services(
-      SequenceConversionServices self, SseSerializer serializer);
+    SequenceConversionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_sequence_extraction(
-      SequenceExtraction self, SseSerializer serializer);
+    SequenceExtraction self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_sequence_filtering_services(
-      SequenceFilteringServices self, SseSerializer serializer);
+    SequenceFilteringServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_sequence_removal(
-      SequenceRemoval self, SseSerializer serializer);
+    SequenceRemoval self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_sequence_renaming(
-      SequenceRenaming self, SseSerializer serializer);
+    SequenceRenaming self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_sequence_transpose_services(
-      SequenceTransposeServices self, SseSerializer serializer);
+    SequenceTransposeServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_split_alignment_services(
-      SplitAlignmentServices self, SseSerializer serializer);
+    SplitAlignmentServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_translation_services(
-      TranslationServices self, SseSerializer serializer);
+    TranslationServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_unalignment_services(
-      UnalignmentServices self, SseSerializer serializer);
+    UnalignmentServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_contig_services(
-      ContigServices self, SseSerializer serializer);
+    ContigServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_csv_segul_type(CsvSegulType self, SseSerializer serializer);
 
   @protected
   void sse_encode_csv_summary_services(
-      CsvSummaryServices self, SseSerializer serializer);
+    CsvSummaryServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_distance_group_count(
-      DistanceGroupCount self, SseSerializer serializer);
+    DistanceGroupCount self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_distance_group_preview(
-      DistanceGroupPreview self, SseSerializer serializer);
+    DistanceGroupPreview self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_distance_grouping_params(
-      DistanceGroupingParams self, SseSerializer serializer);
+    DistanceGroupingParams self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_export_format(ExportFormat self, SseSerializer serializer);
 
   @protected
   void sse_encode_export_services(
-      ExportServices self, SseSerializer serializer);
+    ExportServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_extract_services(
-      ExtractServices self, SseSerializer serializer);
+    ExtractServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
 
   @protected
   void sse_encode_file_list_services(
-      FileListServices self, SseSerializer serializer);
+    FileListServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_file_sort_key(FileSortKey self, SseSerializer serializer);
 
   @protected
   void sse_encode_filtering_params(
-      FilteringParams self, SseSerializer serializer);
+    FilteringParams self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_filtering_services(
-      FilteringServices self, SseSerializer serializer);
+    FilteringServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -1027,62 +1209,90 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_id_extraction_services(
-      IDExtractionServices self, SseSerializer serializer);
+    IDExtractionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_String(List<String> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_adapter_content_data(
-      List<AdapterContentData> self, SseSerializer serializer);
+    List<AdapterContentData> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_alignment_chunk_stat(
-      List<AlignmentChunkStat> self, SseSerializer serializer);
+    List<AlignmentChunkStat> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_distance_group_count(
-      List<DistanceGroupCount> self, SseSerializer serializer);
+    List<DistanceGroupCount> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_opt_box_autoadd_i_64(
-      List<PlatformInt64?> self, SseSerializer serializer);
+    List<PlatformInt64?> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_overrepresented_data(
-      List<OverrepresentedData> self, SseSerializer serializer);
+    List<OverrepresentedData> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_f_64_strict(
-      Float64List self, SseSerializer serializer);
+    Float64List self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_32_loose(
-      List<int> self, SseSerializer serializer);
+    List<int> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_32_strict(
-      Uint32List self, SseSerializer serializer);
+    Uint32List self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_prim_u_8_strict(
-      Uint8List self, SseSerializer serializer);
+    Uint8List self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_read_sample_data(
-      List<ReadSampleData> self, SseSerializer serializer);
+    List<ReadSampleData> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_list_record_string_string(
-      List<(String, String)> self, SseSerializer serializer);
+    List<(String, String)> self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_maf_conversion_services(
-      MafConversionServices self, SseSerializer serializer);
+    MafConversionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_maf_summary_services(
-      MafSummaryServices self, SseSerializer serializer);
+    MafSummaryServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
@@ -1092,11 +1302,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_box_autoadd_i_64(
-      PlatformInt64? self, SseSerializer serializer);
+    PlatformInt64? self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_opt_box_autoadd_read_duplication_data(
-      ReadDuplicationData? self, SseSerializer serializer);
+    ReadDuplicationData? self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
@@ -1109,99 +1323,147 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_overrepresented_data(
-      OverrepresentedData self, SseSerializer serializer);
+    OverrepresentedData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_partition_services(
-      PartitionServices self, SseSerializer serializer);
+    PartitionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_raw_read_services(
-      RawReadServices self, SseSerializer serializer);
+    RawReadServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_read_duplication_data(
-      ReadDuplicationData self, SseSerializer serializer);
+    ReadDuplicationData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_read_metrics_data(
-      ReadMetricsData self, SseSerializer serializer);
+    ReadMetricsData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_read_position_data(
-      ReadPositionData self, SseSerializer serializer);
+    ReadPositionData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_read_report_data(
-      ReadReportData self, SseSerializer serializer);
+    ReadReportData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_read_report_services(
-      ReadReportServices self, SseSerializer serializer);
+    ReadReportServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_read_sample_data(
-      ReadSampleData self, SseSerializer serializer);
+    ReadSampleData self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_read_summary_output(
-      ReadSummaryOutput self, SseSerializer serializer);
+    ReadSummaryOutput self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_record_string_string(
-      (String, String) self, SseSerializer serializer);
+    (String, String) self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_addition_services(
-      SequenceAdditionServices self, SseSerializer serializer);
+    SequenceAdditionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_conversion_services(
-      SequenceConversionServices self, SseSerializer serializer);
+    SequenceConversionServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_extraction(
-      SequenceExtraction self, SseSerializer serializer);
+    SequenceExtraction self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_extraction_params(
-      SequenceExtractionParams self, SseSerializer serializer);
+    SequenceExtractionParams self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_filtering_params(
-      SequenceFilteringParams self, SseSerializer serializer);
+    SequenceFilteringParams self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_filtering_services(
-      SequenceFilteringServices self, SseSerializer serializer);
+    SequenceFilteringServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_removal(
-      SequenceRemoval self, SseSerializer serializer);
+    SequenceRemoval self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_renaming(
-      SequenceRenaming self, SseSerializer serializer);
+    SequenceRenaming self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_renaming_params(
-      SequenceRenamingParams self, SseSerializer serializer);
+    SequenceRenamingParams self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_sequence_transpose_services(
-      SequenceTransposeServices self, SseSerializer serializer);
+    SequenceTransposeServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_split_alignment_services(
-      SplitAlignmentServices self, SseSerializer serializer);
+    SplitAlignmentServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_translation_services(
-      TranslationServices self, SseSerializer serializer);
+    TranslationServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_trimming_params(
-      TrimmingParams self, SseSerializer serializer);
+    TrimmingParams self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
@@ -1211,7 +1473,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unalignment_services(
-      UnalignmentServices self, SseSerializer serializer);
+    UnalignmentServices self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
@@ -1228,14 +1492,14 @@ class RustLibWire implements BaseWire {
 
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-      _lookup;
+  _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
   RustLibWire(ffi.DynamicLibrary dynamicLibrary)
-      : _lookup = dynamicLibrary.lookup;
+    : _lookup = dynamicLibrary.lookup;
 
   void
-      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+  rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
     ffi.Pointer<ffi.Void> ptr,
   ) {
     return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
@@ -1245,13 +1509,14 @@ class RustLibWire implements BaseWire {
 
   late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle');
+        'frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle',
+      );
   late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle =
       _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void
-      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+  rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
     ffi.Pointer<ffi.Void> ptr,
   ) {
     return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
@@ -1261,7 +1526,8 @@ class RustLibWire implements BaseWire {
 
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
-          'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle');
+        'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle',
+      );
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();

@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `find_input_files`, `match_input_fmt`, `match_mode`, `match_phred`
@@ -93,17 +94,18 @@ class RawReadServices {
   /// Summarize reads. `phred` is "auto", "33", or "64", and defaults to "auto".
   /// `dup_sketch_size` is the number of distinct sequences kept to estimate
   /// duplication in Complete mode, zero to count all, or SEGUL's default.
-  Future<ReadSummaryOutput> summarize(
-          {required String mode,
-          String? prefix,
-          String? phred,
-          int? dupSketchSize}) =>
-      RustLib.instance.api.crateApiReadsRawReadServicesSummarize(
-          that: this,
-          mode: mode,
-          prefix: prefix,
-          phred: phred,
-          dupSketchSize: dupSketchSize);
+  Future<ReadSummaryOutput> summarize({
+    required String mode,
+    String? prefix,
+    String? phred,
+    int? dupSketchSize,
+  }) => RustLib.instance.api.crateApiReadsRawReadServicesSummarize(
+    that: this,
+    mode: mode,
+    prefix: prefix,
+    phred: phred,
+    dupSketchSize: dupSketchSize,
+  );
 
   @override
   int get hashCode => files.hashCode ^ fileFmt.hashCode ^ outputDir.hashCode;
@@ -338,9 +340,7 @@ class ReadPositionData {
 class ReadReportData {
   final List<ReadSampleData> samples;
 
-  const ReadReportData({
-    required this.samples,
-  });
+  const ReadReportData({required this.samples});
 
   @override
   int get hashCode => samples.hashCode;
@@ -357,14 +357,10 @@ class ReadReportData {
 class ReadReportServices {
   final String path;
 
-  const ReadReportServices({
-    required this.path,
-  });
+  const ReadReportServices({required this.path});
 
   Future<ReadReportData> load() =>
-      RustLib.instance.api.crateApiReadsReadReportServicesLoad(
-        that: this,
-      );
+      RustLib.instance.api.crateApiReadsReadReportServicesLoad(that: this);
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<ReadReportServices> newInstance() =>

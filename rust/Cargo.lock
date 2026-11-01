@@ -2143,8 +2143,6 @@ dependencies = [
  "flutter_rust_bridge",
  "log",
  "log4rs",
- "memchr",
- "memmap2",
  "polars",
  "rayon",
  "segul",
