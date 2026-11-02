@@ -1,13 +1,19 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report.dart';
+import 'package:segui/screens/viewers/report/data_bar.dart';
+import 'package:segui/screens/viewers/report/metric_bars.dart';
+import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
-import 'package:segui/screens/viewers/read_report/summary.dart';
+import 'package:segui/screens/viewers/read_report/spread.dart';
+import 'package:segui/screens/viewers/report/layout.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -114,6 +120,34 @@ void main() {
       expect(statusBelow(4, warn: 5, fail: 10), ReadQcStatus.pass);
       expect(statusBelow(5, warn: 5, fail: 10), ReadQcStatus.warn);
       expect(statusBelow(10, warn: 5, fail: 10), ReadQcStatus.fail);
+    });
+
+    test('Rules describe the range of each status', () {
+      const ReadQcRule higher = ReadQcRule(
+        description: '',
+        warn: 80,
+        fail: 70,
+        higherIsBetter: true,
+        unit: '%',
+      );
+      expect(higher.ranges, [
+        (ReadQcStatus.pass, '80% or higher'),
+        (ReadQcStatus.warn, '70% to below 80%'),
+        (ReadQcStatus.fail, 'Below 70%'),
+      ]);
+      const ReadQcRule lower = ReadQcRule(
+        description: '',
+        warn: 0.1,
+        fail: 1,
+        higherIsBetter: false,
+        unit: '%',
+      );
+      expect(lower.ranges.first, (ReadQcStatus.pass, 'Below 0.1%'));
+      expect(lower.statusOf(1), ReadQcStatus.fail);
+      final ReadQcCheck q30 = readQcChecks(_sample('a', _metrics(q30Pct: 75)))
+          .firstWhere((c) => c.name == 'Q30 bases');
+      expect(q30.status, ReadQcStatus.warn);
+      expect(q30.status, q30.rule.statusOf(75));
     });
 
     test('Complete mode adds checks', () {
@@ -231,12 +265,22 @@ void main() {
     await tester.pumpAndSettle();
     // The rail lists every sample and the summary has one bar each.
     expect(find.byType(ReadSampleTile), findsNWidgets(3));
-    expect(find.byType(SampleMetricBar), findsNWidgets(3));
+    expect(find.byType(MetricBar), findsNWidgets(3));
     expect(find.text('Checks for alpha'), findsOneWidget);
     expect(find.text('1 of 3'), findsWidgets);
 
+    // A check opens the ranges of each status in a dialog.
+    await tester.tap(find.text('Q30 bases: 92.0%'));
+    await tester.pumpAndSettle();
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text('80% or higher'), findsOneWidget);
+    expect(find.text('alpha: 92.0% (pass)'), findsOneWidget);
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+    expect(find.byType(Dialog), findsNothing);
+
     // A bar opens its sample.
-    await tester.tap(find.widgetWithText(SampleMetricBar, 'beta'));
+    await tester.tap(find.widgetWithText(MetricBar, 'beta'));
     await tester.pumpAndSettle();
     expect(find.text('Checks for beta'), findsOneWidget);
 
@@ -253,7 +297,21 @@ void main() {
     // The table lists the same samples.
     await tester.tap(find.text('Table'));
     await tester.pumpAndSettle();
-    expect(find.byType(DataTable), findsOneWidget);
+    expect(find.byType(PagedTable<int>), findsOneWidget);
+    expect(find.text('Mean length'), findsOneWidget);
+    // Bars span each column, colored by status where a check applies.
+    final List<DataBarCell> bars =
+        tester.widgetList<DataBarCell>(find.byType(DataBarCell)).toList();
+    expect(bars.where((bar) => bar.color == ChartPalette.fail), isNotEmpty);
+    expect(bars.map((bar) => bar.fraction), containsAll([0.0, 1.0]));
+    // Three rows fit on one page, so there is no pager.
+    expect(find.byTooltip('Next page'), findsNothing);
+    await tester.tap(find.text('gamma').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Checks for gamma'), findsOneWidget);
+    await tester.tap(find.text('alpha').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Checks for alpha'), findsOneWidget);
 
     // The rail filter narrows the list.
     await tester.enterText(find.byType(TextField).first, 'gam');
@@ -265,6 +323,20 @@ void main() {
     await tester.tap(find.text('Quality'));
     await tester.pumpAndSettle();
     expect(find.text('Per-base quality: alpha'), findsOneWidget);
+    // Zooming a chart shows a button that resets it.
+    expect(find.byTooltip('Reset zoom'), findsNothing);
+    final TestPointer mouse = TestPointer(1, PointerDeviceKind.mouse);
+    final Offset chart = tester.getCenter(find.byType(LineChart).first);
+    await tester.sendEventToBinding(mouse.hover(chart));
+    await tester.sendEventToBinding(mouse.scroll(const Offset(0, -200)));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Reset zoom'), findsOneWidget);
+    await tester.tap(find.byTooltip('Reset zoom'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Reset zoom'), findsNothing);
+    // A few samples compare with chips.
+    expect(find.widgetWithText(FilterChip, 'beta'), findsOneWidget);
+    expect(find.byType(SampleCompareMenu), findsNothing);
 
     await tester.tap(find.text('Duplication'));
     await tester.pumpAndSettle();
@@ -312,6 +384,197 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(ReadSampleRail), findsNothing);
     expect(find.text('Checks for beta'), findsOneWidget);
+
+    // Phones show check ranges in a bottom sheet.
+    final Finder panelScroll = find.descendant(
+      of: find.byType(ReportPanel),
+      matching: find.byType(Scrollable),
+    );
+    await tester.drag(panelScroll.first, const Offset(0, -800));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mean quality: 35.0'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(find.text('Below 20'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('The table pages through many samples',
+      variant: TargetPlatformVariant.only(TargetPlatform.linux),
+      (tester) async {
+    tester.view.physicalSize = const Size(1600, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final ReadReportData report = ReadReportData(samples: [
+      for (int i = 0; i < 120; i++)
+        _sample('s${i.toString().padLeft(3, '0')}', _metrics()),
+    ]);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          readReportLoaderProvider.overrideWithValue((_) async => report),
+        ],
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: const Scaffold(body: ReadReportBody(path: 'read-report.json')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Table'));
+    await tester.pumpAndSettle();
+    expect(find.text('1–50 of 120'), findsOneWidget);
+    expect(find.text('Checks for s000'), findsOneWidget);
+    // One scrollbar for rows and one for columns, even on desktop, where
+    // scroll views add their own.
+    expect(
+      find.descendant(
+        of: find.byType(PagedTable<int>),
+        matching: find.byType(Scrollbar),
+      ),
+      findsNWidgets(2),
+    );
+
+    await tester.tap(find.byTooltip('Next page'));
+    await tester.pumpAndSettle();
+    expect(find.text('51–100 of 120'), findsOneWidget);
+    await tester.tap(find.byTooltip('Last page'));
+    await tester.pumpAndSettle();
+    expect(find.text('101–120 of 120'), findsOneWidget);
+
+    // Opening a sample from the switcher turns to its page.
+    await tester.tap(find.byTooltip(RegExp('^Previous sample \\(')).first);
+    await tester.pumpAndSettle();
+    expect(find.text('Checks for s119'), findsOneWidget);
+    expect(find.text('101–120 of 120'), findsOneWidget);
+    await tester.tap(find.byTooltip(RegExp('^Next sample \\(')).first);
+    await tester.pumpAndSettle();
+    expect(find.text('1–50 of 120'), findsOneWidget);
+
+    // The tab keeps its title and the checks while the rows scroll.
+    await tester.drag(find.byType(PagedTable<int>), const Offset(0, -2000));
+    await tester.pumpAndSettle();
+    expect(find.text('Samples'), findsOneWidget);
+    expect(find.text('Checks for s000'), findsOneWidget);
+
+    // Many samples are summarized rather than drawn one line each.
+    await tester.tap(find.text('Quality'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SampleCompareMenu), findsNothing);
+    expect(find.byType(SpreadViewToggle), findsOneWidget);
+    expect(find.text('Median of 120 samples'), findsOneWidget);
+
+    // The heatmap opens the sample of a row.
+    await tester.tap(find.text('Heatmap'));
+    await tester.pumpAndSettle();
+    final Finder heatmap = find.byType(SampleHeatmap);
+    expect(heatmap, findsOneWidget);
+    final Finder cells = find.descendant(
+      of: heatmap,
+      matching: find.byType(CustomPaint),
+    );
+    final Offset topLeft = tester.getTopLeft(cells.first);
+    // 120 rows share the chart height, 3 px each.
+    await tester.tapAt(topLeft + const Offset(200, 50 * 3 + 1));
+    await tester.pumpAndSettle();
+    expect(find.text('51 of 120'), findsWidgets);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Mid-size reports compare from a menu', (tester) async {
+    tester.view.physicalSize = const Size(1600, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final ReadReportData report = ReadReportData(samples: [
+      for (int i = 0; i < maxOverlaidSamples; i++)
+        _sample('s${i.toString().padLeft(3, '0')}', _metrics()),
+    ]);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          readReportLoaderProvider.overrideWithValue((_) async => report),
+        ],
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: const Scaffold(body: ReadReportBody(path: 'read-report.json')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Quality'));
+    await tester.pumpAndSettle();
+    expect(find.byType(FilterChip), findsNothing);
+    expect(find.byType(SpreadViewToggle), findsNothing);
+    await tester.tap(find.text('Compared: 8 of 10 samples'));
+    await tester.pumpAndSettle();
+    final Finder menuList = find.ancestor(
+      of: find.text('Select all'),
+      matching: find.byType(Scrollable),
+    );
+    expect(tester.getSize(menuList.first).height, lessThanOrEqualTo(420));
+    await tester.tap(find.widgetWithText(CheckboxMenuButton, 's000'));
+    await tester.pumpAndSettle();
+    expect(find.text('Compared: 7 of 10 samples'), findsOneWidget);
+    await tester.tap(find.text('Select all'));
+    await tester.pumpAndSettle();
+    expect(find.text('Compared: 10 of 10 samples'), findsOneWidget);
+    await tester.tap(find.text('Clear'));
+    await tester.pumpAndSettle();
+    expect(find.text('Compared: 0 of 10 samples'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  group('Sample spread', () {
+    test('Counts become shares of reads', () {
+      final ChartPoints shares = sharePoints(
+        const ChartPoints(name: 'a', x: [0, 1], y: [1, 3]),
+      );
+      expect(shares.y, [25, 75]);
+    });
+
+    test('Samples align on every x value', () {
+      const List<ChartPoints> rows = [
+        ChartPoints(name: 'a', x: [1, 2], y: [10, 20]),
+        ChartPoints(name: 'b', x: [2, 3], y: [5, 7]),
+      ];
+      final SampleMatrix zeros = SampleMatrix.of(rows, missingIsZero: true);
+      expect(zeros.x, [1, 2, 3]);
+      expect(zeros.values, [
+        [10, 20, 0],
+        [0, 5, 7],
+      ]);
+      expect(zeros.maxValue, 20);
+      final SampleMatrix gaps = SampleMatrix.of(rows, missingIsZero: false);
+      expect(gaps.values[0], [10, 20, null]);
+    });
+
+    test('Percentiles and outliers follow the samples', () {
+      final List<ChartPoints> rows = [
+        for (int i = 0; i < 10; i++)
+          ChartPoints(name: 's$i', x: const [0, 1], y: [i.toDouble(), 5]),
+        const ChartPoints(name: 'odd', x: [0, 1], y: [60, 90]),
+      ];
+      final SampleSpread spread = SampleSpread.of(
+        SampleMatrix.of(rows, missingIsZero: false),
+      );
+      expect(spread.x, [0, 1]);
+      expect(spread.median, [5, 5]);
+      expect(spread.q1[0], 2.5);
+      expect(spread.q3[0], 7.5);
+      expect(spread.outliers, [10]);
+    });
+
+    test('Empty columns are left out', () {
+      final SampleSpread spread = SampleSpread.of(const SampleMatrix(
+        x: [0, 1],
+        values: [
+          [1, null],
+          [3, null],
+        ],
+      ));
+      expect(spread.x, [0]);
+      expect(spread.median, [2]);
+      expect(spread.outliers, isEmpty);
+    });
   });
 }

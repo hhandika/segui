@@ -5,6 +5,7 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'progress.dart';
 
 // These functions are ignored because they are not marked as `pub`: `find_input_files`, `match_input_fmt`
 
@@ -23,8 +24,10 @@ class ContigServices {
   static Future<ContigServices> newInstance() =>
       RustLib.instance.api.crateApiContigContigServicesNew();
 
-  Future<void> summarize({String? prefix}) => RustLib.instance.api
-      .crateApiContigContigServicesSummarize(that: this, prefix: prefix);
+  /// Summarize contigs. `monitor` reports progress and can cancel the run.
+  Future<void> summarize({String? prefix, required RunMonitor monitor}) =>
+      RustLib.instance.api.crateApiContigContigServicesSummarize(
+          that: this, prefix: prefix, monitor: monitor);
 
   @override
   int get hashCode => files.hashCode ^ fileFmt.hashCode ^ outputDir.hashCode;

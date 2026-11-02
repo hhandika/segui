@@ -13,6 +13,8 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/tasks/genomics.dart';
+import 'package:segui/services/tasks/progress.dart';
+import 'package:segui/src/rust/api/progress.dart';
 import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.genomicMafSummary;
@@ -166,6 +168,8 @@ class MafSummaryPageState extends ConsumerState<MafSummaryPage>
 
   Future<void> _run(
       List<SegulInputFile> inputFiles, Directory outputDir) async {
+    final RunProgressNotifier progress = ref.read(runProgressProvider.notifier);
+    final RunMonitor monitor = progress.start();
     try {
       _setRunning();
       await MafSummaryRunner(
@@ -174,10 +178,13 @@ class MafSummaryPageState extends ConsumerState<MafSummaryPage>
         prefix: _ctr.prefixController.text,
         refSpecies: _refSpecies.text,
         species: _species.text,
+        monitor: monitor,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
-      _showError(e.toString());
+      _showError(monitor.isCancelled() ? runCancelledMessage : e.toString());
+    } finally {
+      progress.finish();
     }
   }
 

@@ -179,7 +179,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
       List<SegulInputFile> inputFiles, Directory outputDir) async {
     try {
       _setRunning();
-      await AlignmentSummaryRunner(
+      final String? report = await AlignmentSummaryRunner(
         inputFiles: inputFiles,
         inputFmt: _ctr.inputFormatController!,
         datatype: _ctr.dataTypeController,
@@ -188,7 +188,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         interval: BigInt.parse(_interval ?? '5'),
         isPerLocus: _isPerLocus,
       ).run();
-      _setSuccess(outputDir);
+      _setSuccess(report);
     } catch (e) {
       _showError(e.toString());
     }
@@ -245,8 +245,13 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
     });
   }
 
-  void _setSuccess(Directory outputDir) {
-    ref.read(lastRunProvider.notifier).record(_parameters);
+  /// [reportPath] is the alignment report, which the workbench offers to
+  /// open. Per-locus summaries write none.
+  void _setSuccess(String? reportPath) {
+    ref.read(lastRunProvider.notifier).record(
+          _parameters,
+          report: reportPath == null ? null : File(reportPath),
+        );
     ref.read(fileOutputProvider.notifier).refresh();
     ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(context, 'Summarization successful! 🎉'));

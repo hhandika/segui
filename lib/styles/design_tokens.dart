@@ -195,8 +195,10 @@ abstract final class SeguiChartLayout {
   /// Widest tooltip text before it wraps.
   static const double tooltipWidth = 220;
 
-  /// Width of a bar in bar charts.
+  /// Width of a bar in bar charts, and in charts of one series such as
+  /// histograms.
   static const double barWidth = 10;
+  static const double wideBarWidth = 28;
 
   /// Row of a horizontal sample bar: its height, the sample name column,
   /// the bar's thickness, and the value column.
@@ -205,6 +207,87 @@ abstract final class SeguiChartLayout {
   static const double barThickness = 14;
   static const double barValue = 64;
 
+  /// Tallest the menu of compared samples gets, as a share of the screen
+  /// height and in pixels, before it scrolls.
+  static const double compareMenuShare = 0.5;
+  static const double compareMenuMax = 420;
+
+  /// Rows of a sample heatmap: the tallest and shortest a row gets, and
+  /// the shortest that still fits a sample name beside it.
+  static const double heatmapRowMax = 16;
+  static const double heatmapRowMin = 2;
+  static const double heatmapLabelRow = 12;
+
+  /// Faintest shade of a heatmap cell, so small values stay visible.
+  static const double heatmapMinAlpha = 0.04;
+
   /// Dash and gap lengths of dashed lines.
   static const List<int> dash = [6, 4];
+}
+
+abstract final class SeguiTableLayout {
+  /// Heights of the column header and of a row in paged tables.
+  static const double heading = 48;
+  static const double row = 48;
+
+  /// Space between a cell's content and the cell edges.
+  static const double cellPadding = SeguiSpacing.lg;
+
+  /// Rows per page a paged table offers, the first being the default.
+  static const List<int> pageSizes = [50, 100, 250, 500];
+
+  /// Width of a character when sizing a column from its text, and the
+  /// narrowest and widest a sized column gets.
+  static const double charWidth = 8;
+  static const double minColumn = 80;
+  static const double maxColumn = 320;
+
+  /// Widest a column gets when dragged, and the grab area of its resize
+  /// handle.
+  static const double maxResizedColumn = 640;
+  static const double resizeHandle = 12;
+
+  /// In-cell data bars: their opacity and the shortest bar as a share of
+  /// the cell. Bars are as tall as the number over them.
+  static const double dataBarAlpha = 0.3;
+  static const double dataBarMinFraction = 0.06;
+
+  /// Shortest a report tab gets before its controls stop staying in place
+  /// and the whole tab scrolls instead.
+  static const double stickyMinHeight = 560;
+
+  /// Height of a table or list inside a tab that scrolls as a whole.
+  static const double scrollingHeight = 480;
+}
+
+abstract final class SeguiColorSettingsLayout {
+  /// Width of the category rail.
+  static const double railWidth = 200;
+
+  /// The option list takes this share of the space beside the rail,
+  /// between its narrowest and widest size.
+  static const double optionsShare = 0.4;
+  static const double optionsWidth = 280;
+  static const double optionsMaxWidth = 520;
+
+  /// Narrowest preview beside the option list before the page stacks.
+  static const double previewWidth = 360;
+
+  /// Palette swatches: the fill height and the line drawn under it.
+  static const double swatchHeight = 16;
+  static const double swatchLine = 4;
+
+  /// Height of a colormap gradient bar.
+  static const double gradientHeight = 16;
+
+  /// Side of a residue cell in option rows and in the preview.
+  static const double residueCell = 14;
+  static const double previewResidueCell = 28;
+
+  /// Heights of the chart and heatmap in the preview.
+  static const double chartHeight = 240;
+  static const double heatmapHeight = 200;
+
+  /// Row height of the data bar table.
+  static const double tableRow = 36;
 }

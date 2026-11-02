@@ -11,12 +11,16 @@
 - Export output as `.zip` or `.tar.gz` archives.
 - Alignment viewer for large alignments, with file switching, color modes, zoom, an overview strip, and sequence selection.
 - Interactive read report for the Complete read summary, with per-sample charts and adjustable duplication counts.
+- Interactive alignment summary report, opened from the workbench after a run: an overview of the dataset with site types, matrix completeness, and character counts, every locus and taxon as bars or a sortable table, and distributions across loci.
 - More genetic distance options.
 
 ### Improvements
 
 - Updated SEGUL and other dependencies, with native assets builds and Windows arm64 downloads.
 - New documentation website with visual guides for each feature.
+- Tables from CSV files sort by any column and show a page at a time with the header in place, and columns of numbers show a bar behind each value.
+- New **Settings › Colors** page to choose chart, heatmap, table, and alignment colors, with a live preview. Charts default to ColorBrewer Dark2.
+- Chart lines and text meet WCAG 2.2 AA contrast, read report heatmaps use the chosen colormap, and the alignment viewer remembers its color mode.
 
 ### Bug Fixes
 

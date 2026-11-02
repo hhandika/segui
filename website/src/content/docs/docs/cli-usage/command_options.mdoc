@@ -33,6 +33,7 @@ SEGUL groups its tasks by the kind of input they take. Each command has its own 
 | `maf`       | Multiple alignment format  | [`convert`](/docs/cli-usage/maf-convert/), [`summary`](/docs/cli-usage/maf-summary/) |
 | `read`      | FASTQ reads                | [`summary`](/docs/cli-usage/read-summary/) |
 | `contig`    | Contigs                    | [`summary`](/docs/cli-usage/contig-summary/) |
+| `view`      | Alignments                 | [`align`](/docs/cli-usage/view-align/) (unreleased) |
 
 ## 3. Get help
 
@@ -59,8 +60,8 @@ Use `-h` and `-V` as short forms of `--help` and `--version`. The options on the
 | `-F`, `--output-format`| Output sequence format                                         | Tasks that write sequences |
 | `--prefix`             | Prefix of the output files                                     | Tasks that write a single file or summary |
 | `--force`              | Overwrite an existing output directory without asking          | All          |
-| `--log`                | Log file path. Default: `segul.log`                            | All          |
 | `-h`, `--help`         | Print help                                                     | All          |
+| `--log`                | Log file path. Default: `segul.log`                            | All          |
 
 ### Input
 
@@ -113,7 +114,7 @@ SEGUL detects the input format from the file extension, so most commands need no
 
 `maf` commands read `.maf` and `.maf.gz` files and take no input format.
 
-:::note
+{% aside type="note" %}
 SEGUL reads relaxed PHYLIP, where names and sequences are separated by spaces and names can be any length. Strict PHYLIP, with blocks of ten characters separated by spaces, is not supported:
 
 ```plaintext
@@ -123,7 +124,7 @@ Seq2    ATCGATCGATATCGATCGAT
 Seq3    ATCGATCGATATCGATCGAT
 ```
 
-:::
+{% /aside %}
 
 ### Data types
 

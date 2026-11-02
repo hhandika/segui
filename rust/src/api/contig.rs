@@ -6,6 +6,8 @@ use segul::helper::logger::ContigLogger;
 use segul::helper::types::ContigFmt;
 use segul::helper::utils;
 
+use crate::api::progress::RunMonitor;
+
 pub struct ContigServices {
     pub files: Vec<String>,
     pub file_fmt: String,
@@ -21,7 +23,8 @@ impl ContigServices {
         }
     }
 
-    pub fn summarize(&self, prefix: Option<String>) {
+    /// Summarize contigs. `monitor` reports progress and can cancel the run.
+    pub fn summarize(&self, prefix: Option<String>, monitor: &RunMonitor) -> anyhow::Result<()> {
         let time = Instant::now();
         let input_fmt = self.match_input_fmt();
         let files = self.find_input_files();
@@ -29,10 +32,12 @@ impl ContigServices {
         let task = "Contig Summary";
         ContigLogger::new(None, &input_fmt, files.len()).log(task);
 
-        let summary = ContigSummaryHandler::new(&files, &input_fmt, output_path, prefix.as_deref());
-        summary.summarize();
+        ContigSummaryHandler::new(&files, &input_fmt, output_path, prefix.as_deref())
+            .with_progress(monitor)
+            .try_summarize()?;
         let duration = time.elapsed();
         utils::print_execution_time(duration);
+        Ok(())
     }
 
     fn match_input_fmt(&self) -> ContigFmt {

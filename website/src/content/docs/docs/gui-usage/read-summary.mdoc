@@ -62,25 +62,36 @@ The app supports the following summary modes:
 - Q20 and Q30 bases
 - Mean quality per read, and reads with mean quality below 20
 
+In Complete mode, `Duplication sketch size` sets how many distinct sequences are kept to estimate duplication across every read. Leave it empty for the default of 100,000. Larger values are more accurate and use more memory, and `0` counts every sequence exactly.
+
 ## Read report
 
 {% badge text="In development" variant="caution" /%}
 
-The read report shows the Complete mode statistics as interactive charts, one sample at a time, much like the alignment viewer shows one file at a time.
+The read report shows the Complete mode statistics as interactive charts, one sample at a time, much like the alignment viewer shows one file at a time. It works like the other [summary reports](/docs/gui-usage/intro/#summary-reports).
 
 - **Switch samples**: step through samples with the arrows above the tabs, or with `Alt` + `↑` / `↓` (`Option` on macOS). Select the sample name to search for one.
-- **Sample list**: the list beside the report shows each sample's status, reads, and Q30 bases. Filter it by name, and sort it by name, status, reads, or Q30 bases. The arrows and the summary follow its order. Hide it with the list button next to the sample name. On phones, the same button opens the list as a sheet.
+- **Sample list**: the list beside the report shows each sample's status, reads, and Q30 bases. Filter it by name, and sort it by name, status, reads, or Q30 bases. The arrows, the bars, and the table follow its order. Hide it with the list button next to the sample name. On phones, the same button opens the list as a sheet.
 
 The tabs are:
 
-- **Summary**: every sample at once. `Bars` plots one statistic per sample, such as reads, Q30 bases, GC content, duplication, or adapters; select a bar to open that sample. `Table` lists every statistic, sortable by column. Below are the pass, warn, or fail checks of the open sample.
+- **Summary**: every sample at once. The view controls stay at the top and the checks of the open sample stay at the bottom, while the samples scroll between them.
+  - `Bars` plots one statistic per sample, such as reads, Q30 bases, GC content, duplication, or adapters. Select a bar to open that sample.
+  - `Table` lists every statistic, sortable by column, 50 samples to a page. A bar behind each number shows where it sits between the lowest and highest sample. In columns with a quality check, such as Q30 bases, mean quality, duplication, and adapters, the bars are colored pass, warn, or fail, so failing samples stand out. Select a row to open that sample.
+  - The checks below show pass, warn, or fail for the open sample. Select a check to see what it measures and the values that pass, warn, or fail, with the sample's own range highlighted. It opens as a dialog, or as a sheet on phones.
 - **Quality**: per-base quality of the open sample over the good, reasonable, and poor quality zones, and per-read quality of several samples.
 - **Composition**: GC content with the theoretical distribution and base composition of the open sample, and N content of several samples.
 - **Length**: read length of several samples.
-- **Duplication**, **Adapters**, and **Overrepresented**: the open sample. Each overrepresented sequence has a button to copy it.
+- **Duplication**, **Adapters**, and **Overrepresented**: the open sample. Overrepresented sequences are listed in a sortable table, and each has a button to copy it.
 
-Charts of several samples have chips above them to choose which samples to compare.
+### Comparing samples
 
-In Complete mode, `Duplication sketch size` sets how many distinct sequences are kept to estimate duplication across every read. Leave it empty for the default of 100,000. Larger values are more accurate and use more memory, and `0` counts every sequence exactly.
+The per-read quality, N content, and read length charts compare samples. How they do it depends on the number of samples:
 
-Hover over or touch a chart to see its values. Zoom along the horizontal axis with the mouse wheel or a pinch, and drag or scroll with a trackpad to pan.
+- **Up to 3 samples**: each sample is a line. Select the chips above the chart to show or hide samples.
+- **4 to 10 samples**: choose the samples from the `Compared` menu above the chart, with `Select all` and `Clear`. The menu stays open while you choose, and scrolls when the list is long.
+- **More than 10 samples**: lines would crowd the chart, so every sample listed in the sample list is summarized instead. Per-read quality and read length compare each sample's share of reads, since samples have different depths. Choose a view above the chart:
+  - `Band`: the median of all samples as a line, with shaded bands for the middle half and the 10th to 90th percentile. The open sample is drawn on top, and samples far from the rest are drawn as thin gray lines and named in the legend.
+  - `Heatmap`: one row per sample in the order of the sample list, shaded by value, with the open sample outlined. Point at a cell to see its value, and select a row to open the sample.
+
+Hover over or touch a chart to see its values. Zoom along the horizontal axis with the mouse wheel or a pinch, and drag or scroll with a trackpad to pan. Select the reset button at the top right of a zoomed chart to show the whole chart again.

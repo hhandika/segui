@@ -3,13 +3,16 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/alignment_report.dart';
 import 'api/alignment_view.dart';
 import 'api/archive.dart';
+import 'api/colors.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/csv.dart';
 import 'api/file_sort.dart';
 import 'api/maf.dart';
+import 'api/progress.dart';
 import 'api/reads.dart';
 import 'api/sequence.dart';
 import 'dart:async';
@@ -30,6 +33,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       get rust_arc_decrement_strong_count_AlignmentHandlePtr => wire
           ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr;
 
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_RunMonitorPtr =>
+      wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitorPtr;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
@@ -39,8 +45,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  RunMonitor
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          dynamic raw);
+
+  @protected
   AlignmentHandle
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          dynamic raw);
+
+  @protected
+  RunMonitor
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
           dynamic raw);
 
   @protected
@@ -52,10 +68,34 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  RunMonitor
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          dynamic raw);
+
+  @protected
+  RustStreamSink<TaskProgress> dco_decode_StreamSink_task_progress_Sse(
+      dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
   AdapterContentData dco_decode_adapter_content_data(dynamic raw);
+
+  @protected
+  AlignLociData dco_decode_align_loci_data(dynamic raw);
+
+  @protected
+  AlignOverviewData dco_decode_align_overview_data(dynamic raw);
+
+  @protected
+  AlignReportData dco_decode_align_report_data(dynamic raw);
+
+  @protected
+  AlignReportServices dco_decode_align_report_services(dynamic raw);
+
+  @protected
+  AlignTaxaData dco_decode_align_taxa_data(dynamic raw);
 
   @protected
   AlignmentChunkStat dco_decode_alignment_chunk_stat(dynamic raw);
@@ -77,6 +117,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool dco_decode_bool(dynamic raw);
+
+  @protected
+  AlignReportServices dco_decode_box_autoadd_align_report_services(dynamic raw);
 
   @protected
   AlignmentDistanceServices dco_decode_box_autoadd_alignment_distance_services(
@@ -181,6 +224,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt dco_decode_box_autoadd_usize(dynamic raw);
 
   @protected
+  ColorOption dco_decode_color_option(dynamic raw);
+
+  @protected
+  ColormapOption dco_decode_colormap_option(dynamic raw);
+
+  @protected
   ContigServices dco_decode_contig_services(dynamic raw);
 
   @protected
@@ -241,6 +290,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<AlignmentChunkStat> dco_decode_list_alignment_chunk_stat(dynamic raw);
 
   @protected
+  List<ColorOption> dco_decode_list_color_option(dynamic raw);
+
+  @protected
+  List<ColormapOption> dco_decode_list_colormap_option(dynamic raw);
+
+  @protected
   List<DistanceGroupCount> dco_decode_list_distance_group_count(dynamic raw);
 
   @protected
@@ -248,6 +303,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<OverrepresentedData> dco_decode_list_overrepresented_data(dynamic raw);
+
+  @protected
+  List<PaletteOption> dco_decode_list_palette_option(dynamic raw);
 
   @protected
   Float64List dco_decode_list_prim_f_64_strict(dynamic raw);
@@ -296,7 +354,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String>? dco_decode_opt_list_String(dynamic raw);
 
   @protected
+  Float64List? dco_decode_opt_list_prim_f_64_strict(dynamic raw);
+
+  @protected
   OverrepresentedData dco_decode_overrepresented_data(dynamic raw);
+
+  @protected
+  PaletteColors dco_decode_palette_colors(dynamic raw);
+
+  @protected
+  PaletteOption dco_decode_palette_option(dynamic raw);
 
   @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
@@ -327,6 +394,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   (String, String) dco_decode_record_string_string(dynamic raw);
+
+  @protected
+  ResidueColors dco_decode_residue_colors(dynamic raw);
 
   @protected
   SequenceAdditionServices dco_decode_sequence_addition_services(dynamic raw);
@@ -360,7 +430,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SequenceTransposeServices dco_decode_sequence_transpose_services(dynamic raw);
 
   @protected
+  SiteTypeData dco_decode_site_type_data(dynamic raw);
+
+  @protected
   SplitAlignmentServices dco_decode_split_alignment_services(dynamic raw);
+
+  @protected
+  StatusColorsData dco_decode_status_colors_data(dynamic raw);
+
+  @protected
+  TaskProgress dco_decode_task_progress(dynamic raw);
 
   @protected
   TranslationServices dco_decode_translation_services(dynamic raw);
@@ -392,8 +471,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  RunMonitor
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          SseDeserializer deserializer);
+
+  @protected
   AlignmentHandle
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          SseDeserializer deserializer);
+
+  @protected
+  RunMonitor
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
           SseDeserializer deserializer);
 
   @protected
@@ -406,11 +495,37 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  RunMonitor
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<TaskProgress> sse_decode_StreamSink_task_progress_Sse(
+      SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
   AdapterContentData sse_decode_adapter_content_data(
       SseDeserializer deserializer);
+
+  @protected
+  AlignLociData sse_decode_align_loci_data(SseDeserializer deserializer);
+
+  @protected
+  AlignOverviewData sse_decode_align_overview_data(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignReportData sse_decode_align_report_data(SseDeserializer deserializer);
+
+  @protected
+  AlignReportServices sse_decode_align_report_services(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignTaxaData sse_decode_align_taxa_data(SseDeserializer deserializer);
 
   @protected
   AlignmentChunkStat sse_decode_alignment_chunk_stat(
@@ -435,6 +550,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  AlignReportServices sse_decode_box_autoadd_align_report_services(
+      SseDeserializer deserializer);
 
   @protected
   AlignmentDistanceServices sse_decode_box_autoadd_alignment_distance_services(
@@ -558,6 +677,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
+  ColorOption sse_decode_color_option(SseDeserializer deserializer);
+
+  @protected
+  ColormapOption sse_decode_colormap_option(SseDeserializer deserializer);
+
+  @protected
   ContigServices sse_decode_contig_services(SseDeserializer deserializer);
 
   @protected
@@ -625,6 +750,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<ColorOption> sse_decode_list_color_option(SseDeserializer deserializer);
+
+  @protected
+  List<ColormapOption> sse_decode_list_colormap_option(
+      SseDeserializer deserializer);
+
+  @protected
   List<DistanceGroupCount> sse_decode_list_distance_group_count(
       SseDeserializer deserializer);
 
@@ -634,6 +766,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<OverrepresentedData> sse_decode_list_overrepresented_data(
+      SseDeserializer deserializer);
+
+  @protected
+  List<PaletteOption> sse_decode_list_palette_option(
       SseDeserializer deserializer);
 
   @protected
@@ -687,8 +823,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<String>? sse_decode_opt_list_String(SseDeserializer deserializer);
 
   @protected
+  Float64List? sse_decode_opt_list_prim_f_64_strict(
+      SseDeserializer deserializer);
+
+  @protected
   OverrepresentedData sse_decode_overrepresented_data(
       SseDeserializer deserializer);
+
+  @protected
+  PaletteColors sse_decode_palette_colors(SseDeserializer deserializer);
+
+  @protected
+  PaletteOption sse_decode_palette_option(SseDeserializer deserializer);
 
   @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
@@ -723,6 +869,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   (String, String) sse_decode_record_string_string(
       SseDeserializer deserializer);
+
+  @protected
+  ResidueColors sse_decode_residue_colors(SseDeserializer deserializer);
 
   @protected
   SequenceAdditionServices sse_decode_sequence_addition_services(
@@ -763,8 +912,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  SiteTypeData sse_decode_site_type_data(SseDeserializer deserializer);
+
+  @protected
   SplitAlignmentServices sse_decode_split_alignment_services(
       SseDeserializer deserializer);
+
+  @protected
+  StatusColorsData sse_decode_status_colors_data(SseDeserializer deserializer);
+
+  @protected
+  TaskProgress sse_decode_task_progress(SseDeserializer deserializer);
 
   @protected
   TranslationServices sse_decode_translation_services(
@@ -800,8 +958,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          RunMonitor self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
           AlignmentHandle self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          RunMonitor self, SseSerializer serializer);
 
   @protected
   void sse_encode_Map_String_String_None(
@@ -813,11 +981,38 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           AlignmentHandle self, SseSerializer serializer);
 
   @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          RunMonitor self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_StreamSink_task_progress_Sse(
+      RustStreamSink<TaskProgress> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
   void sse_encode_adapter_content_data(
       AdapterContentData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_loci_data(AlignLociData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_overview_data(
+      AlignOverviewData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_report_data(
+      AlignReportData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_report_services(
+      AlignReportServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_align_taxa_data(AlignTaxaData self, SseSerializer serializer);
 
   @protected
   void sse_encode_alignment_chunk_stat(
@@ -845,6 +1040,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_align_report_services(
+      AlignReportServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_alignment_distance_services(
@@ -968,6 +1167,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer);
 
   @protected
+  void sse_encode_color_option(ColorOption self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_colormap_option(
+      ColormapOption self, SseSerializer serializer);
+
+  @protected
   void sse_encode_contig_services(
       ContigServices self, SseSerializer serializer);
 
@@ -1041,6 +1247,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<AlignmentChunkStat> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_color_option(
+      List<ColorOption> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_colormap_option(
+      List<ColormapOption> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_distance_group_count(
       List<DistanceGroupCount> self, SseSerializer serializer);
 
@@ -1051,6 +1265,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_overrepresented_data(
       List<OverrepresentedData> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_palette_option(
+      List<PaletteOption> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_f_64_strict(
@@ -1108,8 +1326,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_list_String(List<String>? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_list_prim_f_64_strict(
+      Float64List? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_overrepresented_data(
       OverrepresentedData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_palette_colors(PaletteColors self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_palette_option(PaletteOption self, SseSerializer serializer);
 
   @protected
   void sse_encode_partition_services(
@@ -1152,6 +1380,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (String, String) self, SseSerializer serializer);
 
   @protected
+  void sse_encode_residue_colors(ResidueColors self, SseSerializer serializer);
+
+  @protected
   void sse_encode_sequence_addition_services(
       SequenceAdditionServices self, SseSerializer serializer);
 
@@ -1192,8 +1423,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SequenceTransposeServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_site_type_data(SiteTypeData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_split_alignment_services(
       SplitAlignmentServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_status_colors_data(
+      StatusColorsData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_task_progress(TaskProgress self, SseSerializer serializer);
 
   @protected
   void sse_encode_translation_services(
@@ -1264,5 +1505,37 @@ class RustLibWire implements BaseWire {
           'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle');
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitorPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitorPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitorPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitorPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 }

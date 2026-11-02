@@ -6,6 +6,8 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/tasks/genomics.dart';
+import 'package:segui/services/tasks/progress.dart';
+import 'package:segui/src/rust/api/progress.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
@@ -39,16 +41,19 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   String mode = sequenceReadSummaryMode[0];
   String phred = sequenceReadPhredOffset[0];
 
-  /// Distinct sequences kept to estimate duplication. Empty uses SEGUL's
-  /// default.
-  final TextEditingController _dupSketchSize = TextEditingController();
+  /// Distinct sequences kept to estimate duplication: a preset from
+  /// [sequenceReadDupSketchSizes] or [customDupSketchSize].
+  String dupSketchSize = sequenceReadDupSketchSizes.keys.first;
+
+  /// Size entered when [dupSketchSize] is [customDupSketchSize].
+  final TextEditingController _customDupSketchSize = TextEditingController();
 
   @override
   bool get wantKeepAlive => true;
 
   @override
   void dispose() {
-    _dupSketchSize.dispose();
+    _customDupSketchSize.dispose();
     super.dispose();
   }
 
@@ -101,13 +106,29 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
             },
           ),
           if (mode == 'Complete')
-            SharedTextField(
-              controller: _dupSketchSize,
+            SharedDropdownField(
+              value: dupSketchSize,
               label: 'Duplication sketch size',
-              hint: 'Default 100000',
+              items: [
+                ...sequenceReadDupSketchSizes.keys,
+                customDupSketchSize,
+              ],
               helper: 'Distinct sequences kept to estimate duplication from '
-                  'every read. Larger is more accurate and uses more memory. '
-                  '0 counts every sequence exactly.',
+                  'every read. Larger is more accurate and uses more memory.',
+              onChanged: (String? value) {
+                setState(() {
+                  if (value != null) {
+                    dupSketchSize = value;
+                  }
+                });
+              },
+            ),
+          if (mode == 'Complete' && dupSketchSize == customDupSketchSize)
+            SharedTextField(
+              controller: _customDupSketchSize,
+              label: 'Custom sketch size',
+              hint: '2000000',
+              helper: '0 counts every sequence exactly.',
               keyboardType: TextInputType.number,
               onChanged: (_) => setState(() {}),
             ),
@@ -169,8 +190,17 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   }
 
   bool get _isValid {
-    return _ctr.isValid &&
-        (mode != 'Complete' || isValidOptionalCount(_dupSketchSize.text));
+    return _ctr.isValid && (mode != 'Complete' || _dupSketchSizeValue != null);
+  }
+
+  /// The chosen duplication sketch size, or null if the custom size is empty
+  /// or not a whole number.
+  int? get _dupSketchSizeValue {
+    if (dupSketchSize != customDupSketchSize) {
+      return sequenceReadDupSketchSizes[dupSketchSize];
+    }
+    final int? size = int.tryParse(_customDupSketchSize.text.trim());
+    return size != null && size >= 0 ? size : null;
   }
 
   /// Settings of this run, listed in the workbench.
@@ -180,7 +210,8 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         RunParameter('Summary mode', mode),
         if (mode != 'Minimal') RunParameter('Quality score offset', phred),
         if (mode == 'Complete')
-          RunParameter('Duplication sketch size', _dupSketchSize.text.trim()),
+          RunParameter(
+              'Duplication sketch size', '${_dupSketchSizeValue ?? ''}'),
       ];
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
@@ -204,6 +235,8 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
 
   Future<void> _summarize(
       List<SegulInputFile> inputFiles, Directory outputDir) async {
+    final RunProgressNotifier progress = ref.read(runProgressProvider.notifier);
+    final RunMonitor monitor = progress.start();
     try {
       _setRunning();
       final ReadSummaryOutput output = await ReadSummaryRunner(
@@ -213,13 +246,14 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         prefix: _ctr.prefixController.text,
         mode: mode,
         phred: phred,
-        dupSketchSize: mode == 'Complete'
-            ? int.tryParse(_dupSketchSize.text.trim())
-            : null,
+        dupSketchSize: mode == 'Complete' ? _dupSketchSizeValue : null,
+        monitor: monitor,
       ).run();
       _setSuccess(output.reportPath);
     } catch (e) {
-      _showError(e.toString());
+      _showError(monitor.isCancelled() ? runCancelledMessage : e.toString());
+    } finally {
+      progress.finish();
     }
   }
 

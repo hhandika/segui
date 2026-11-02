@@ -7,6 +7,8 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
 import 'package:segui/services/tasks/genomics.dart';
+import 'package:segui/services/tasks/progress.dart';
+import 'package:segui/src/rust/api/progress.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
@@ -159,6 +161,8 @@ class ContigPageState extends ConsumerState<ContigPage>
     List<SegulInputFile> inputFiles,
     Directory outputDir,
   ) async {
+    final RunProgressNotifier progress = ref.read(runProgressProvider.notifier);
+    final RunMonitor monitor = progress.start();
     try {
       _setRunning();
       await ContigSummaryRunner(
@@ -166,11 +170,14 @@ class ContigPageState extends ConsumerState<ContigPage>
         inputFmt: _ctr.inputFormatController!,
         outputDir: outputDir,
         prefix: _ctr.prefixController.text,
+        monitor: monitor,
       ).run();
 
       _setSuccess(outputDir);
     } catch (e) {
-      _showError(e.toString());
+      _showError(monitor.isCancelled() ? runCancelledMessage : e.toString());
+    } finally {
+      progress.finish();
     }
   }
 

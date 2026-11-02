@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/settings/about.dart';
+import 'package:segui/screens/settings/colors.dart';
 import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
@@ -37,6 +38,7 @@ class SettingMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SecondaryMenuTile(
       text: 'Settings',
+      icon: Icons.settings_outlined,
       onTap: () {
         Navigator.push(
           context,
@@ -58,6 +60,7 @@ class AboutMenuTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SecondaryMenuTile(
       text: 'About',
+      icon: Icons.info_outline,
       onTap: () => showAppAbout(context),
     );
   }
@@ -101,6 +104,22 @@ class _SettingMenuState extends State<SettingMenu> {
   }
 }
 
+/// Pages of the large-screen settings, listed in the side panel.
+enum SettingsPage {
+  logs('Logs', Icons.list_alt_outlined, Icons.list_alt_rounded),
+  theme('Theme', Icons.brightness_6_outlined, Icons.brightness_6_rounded),
+  colors('Colors', Icons.palette_outlined, Icons.palette_rounded),
+  dataUsage('Data usage', Icons.data_usage_outlined, Icons.data_usage_rounded);
+
+  const SettingsPage(this.label, this.icon, this.selectedIcon);
+
+  final String label;
+  final IconData icon;
+  final IconData selectedIcon;
+}
+
+/// Settings laid out like the home screen: the pages in a drawer on the
+/// page background, and the open page in an outlined container.
 class LargeScreenSettings extends ConsumerStatefulWidget {
   const LargeScreenSettings({super.key});
 
@@ -109,68 +128,59 @@ class LargeScreenSettings extends ConsumerStatefulWidget {
 }
 
 class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
-  int _selectedIndex = 0;
+  SettingsPage _page = SettingsPage.logs;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Styled like the home screen's navigation drawer.
         NavigationDrawer(
-          backgroundColor: getSEGULBackgroundColor(context),
           tilePadding: const EdgeInsets.symmetric(
             horizontal: SeguiSpacing.xs,
             vertical: SeguiSpacing.xxs,
           ),
+          elevation: SeguiElevation.none,
+          backgroundColor: getSEGULBackgroundColor(context),
           indicatorColor: getIndicatorColor(context),
           indicatorShape: getIndicatorShape(context),
-          elevation: SeguiElevation.none,
-          selectedIndex: _selectedIndex,
-          children: const [
-            ...settingsDrawerDestinations,
-            DrawerDivider(),
+          selectedIndex: _page.index,
+          onDestinationSelected: (i) => _open(SettingsPage.values[i]),
+          children: [
+            for (final SettingsPage page in SettingsPage.values)
+              NavigationDrawerDestination(
+                label: Text(page.label),
+                icon: Icon(page.icon),
+                selectedIcon: Icon(page.selectedIcon),
+              ),
           ],
-          onDestinationSelected: (value) {
-            setState(() {
-              // Add data usage to file output provider
-              // When user selects data usage
-              if (value == 2) {
-                ref.read(fileOutputProvider.notifier).addFromAppDir();
-              }
-              _selectedIndex = value;
-            });
-          },
         ),
         Expanded(
-          child: _selectedIndex == 0
-              ? const LogListView()
-              : _selectedIndex == 1
-                  ? const ThemeSettingView()
-                  : const DataUsageView(),
+          child: Padding(
+            padding: const EdgeInsets.all(SeguiSpacing.md),
+            child: OutlinedPanel(
+              child: switch (_page) {
+                SettingsPage.logs => const LogListView(),
+                SettingsPage.theme => const ThemeSettingView(),
+                SettingsPage.colors => const ColorSettingView(),
+                SettingsPage.dataUsage => const DataUsageView(),
+              },
+            ),
+          ),
         ),
       ],
     );
   }
-}
 
-const List<NavigationDrawerDestination> settingsDrawerDestinations = [
-  NavigationDrawerDestination(
-    label: Text('Logs'),
-    icon: Icon(Icons.list_alt_outlined),
-    selectedIcon: Icon(Icons.list_alt_rounded),
-  ),
-  NavigationDrawerDestination(
-    label: Text('Theme'),
-    icon: Icon(Icons.color_lens_outlined),
-    selectedIcon: Icon(Icons.color_lens_rounded),
-  ),
-  NavigationDrawerDestination(
-    label: Text('Data Usage'),
-    icon: Icon(Icons.data_usage_outlined),
-    selectedIcon: Icon(Icons.data_usage_rounded),
-  ),
-];
+  void _open(SettingsPage page) {
+    // Data usage lists the files in the app folder.
+    if (page == SettingsPage.dataUsage) {
+      ref.read(fileOutputProvider.notifier).addFromAppDir();
+    }
+    setState(() => _page = page);
+  }
+}
 
 class SmallScreenSettings extends ConsumerWidget {
   const SmallScreenSettings({super.key});
@@ -260,12 +270,26 @@ class MainSettings extends ConsumerWidget {
           SettingTile(
             title: 'Theme',
             subtitle: 'Change app theme and motion',
-            icon: Icons.color_lens_outlined,
+            icon: Icons.brightness_6_outlined,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const ThemeSettings(),
+                ),
+              );
+            },
+          ),
+          const CommonDivider(),
+          SettingTile(
+            title: 'Colors',
+            subtitle: 'Chart, table, and alignment colors',
+            icon: Icons.palette_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ColorSettings(),
                 ),
               );
             },

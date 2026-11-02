@@ -1,0 +1,143 @@
+---
+title: View Summary Reports
+sidebar:
+  order: 22
+  badge:
+    text: In development
+    variant: caution
+---
+
+{% commandanatomy
+   command="view"
+   subcommand="summary"
+   input="--input alignment-report.json"
+   inputSub="file" /%}
+
+{% aside type="caution" title="In development" %}
+This feature is not yet in a SEGUL release. It will be available in the next SEGUL release. Commands and key bindings may change before the release.
+{% /aside %}
+
+Explore a summary report in your terminal, as tables or plots. It shows the same report SEGUI opens after a summary, so you can check results on a remote server or in a terminal session where a GUI is not available.
+
+The viewer opens two reports:
+
+- `alignment-report.json`, written by [`segul align summary`](/docs/cli-usage/align-summary/).
+- `read-report.json`, written by [`segul read summary --mode complete`](/docs/cli-usage/read-summary/).
+
+SEGUL tells them apart from their content, so a report with an output prefix, such as `uce_alignment-report.json`, opens the same way:
+
+```bash
+segul view summary --input Align-Summary/alignment-report.json
+```
+
+```bash
+segul view summary -i Read-Summary/read-report.json
+```
+
+Other files stop with a message that names the file.
+
+{% terminalshot
+   src="cli/view-summary-table.webp"
+   alt="SEGUL summary viewer showing a table of 300 loci sorted by number of sites"
+   caption="The Loci table of an alignment report, sorted by sites." /%}
+
+## Layout
+
+From top to bottom, the viewer shows:
+
+1. **Toolbar**: the file name, the kind of report, and its main counts, such as `120 taxa · 4,060 loci · DNA`.
+2. **Sections**: `Overview`, then one section for each kind of item. An alignment report has `Loci` and `Taxa`; a read report has `Samples`. Each section shows how many items it holds. On the right, `Table │ Plot` marks the current view, and the plot shows whether it draws bars or a histogram.
+3. **Section content**: the overview, or the items of a section as a table or a plot.
+4. **Status bar**: the selected item, the chosen column and its value, and the item's position, such as `uce-12 · Sites: 412 · 12 of 4,060`.
+
+The viewer opens on the first table of items, the part most often wanted.
+
+## Overview
+
+The overview lists the totals of the report on the left, with bar charts on the right. Press `1` to open it, and `Tab` to go on to the tables.
+
+{% terminalshot
+   src="cli/view-summary-overview.webp"
+   alt="SEGUL summary viewer overview with alignment totals, a matrix completeness chart, and a character count chart"
+   caption="Overview of an alignment report." /%}
+
+- **Alignment report**: the data type, taxa, loci, sites, characters, missing data, and GC and AT content, with the range and mean of locus length and taxa per locus. Conserved, variable, and parsimony informative sites show their count and share of all sites, with the loci that are fully conserved or have any variable or informative site. The charts show matrix completeness, as the loci with at least each share of taxa, and the count of each character.
+- **Read report**: the samples, reads, bases, mean read length, and Q30 bases across every sample, with a chart of reads by mean quality score across all samples.
+
+## Tables and plots
+
+Every section of items, such as `Loci`, `Taxa`, or `Samples`, can be shown as a table or a plot. Press `v` (or `F2`) to switch between them. Both follow the chosen column, so you can read the numbers in the table, then switch to the plot to see how they spread.
+
+### Read a table
+
+The table has one row per item and one column per statistic.
+
+1. Press `Tab`, or the section number, such as `2` for `Loci`, to open a section.
+2. Press `←` or `→` to choose a column. Its header is highlighted. Columns that do not fit the terminal scroll into view as you move to them, and the title says how many are hidden.
+3. Press `↑` or `↓` to select an item. The status bar shows its name, the chosen column and its value, and its position.
+4. Press `s` to sort by the chosen column, highest first. Press it again to sort lowest first, and once more to return to the report order. An arrow next to the column name shows the order.
+
+The selected item stays selected when you sort, so the table may scroll to keep it in view. Press `Home` to go back to the first item. Items without a value, such as duplication from a Default mode run, go last.
+
+### Plot a column
+
+Press `v` in a table to plot the chosen column. The plot draws one bar per item, in the same order as the table, with the minimum, median, and maximum in the title. Sort the table first to rank the items, as in this plot of the loci with the most sites:
+
+{% terminalshot
+   src="cli/view-summary-plot.webp"
+   alt="SEGUL summary viewer bar plot of sites per locus, sorted from the longest locus"
+   caption="Sites per locus as bars, sorted highest first." /%}
+
+Press `←` or `→` to plot another column, and `↑` or `↓` to move the selection. Press `v` again to return to the table.
+
+### Show a histogram
+
+Press `h` in the plot to count the items in ranges of the chosen column instead. Each bar shows how many items fall in its range. The range of the selected item is highlighted, and a note below the chart names it. Press `h` again to return to the bars.
+
+{% terminalshot
+   src="cli/view-summary-histogram.webp"
+   alt="SEGUL summary viewer histogram of locus lengths in ranges of 50 sites"
+   caption="Histogram of sites per locus." /%}
+
+The plot remembers the choice, so other columns also open as a histogram until you press `h` again.
+
+### Columns
+
+Alignment reports have these columns:
+
+- **Loci**: taxa, sites, conserved, variable, and parsimony informative sites, missing data (%), and GC content (%) for DNA.
+- **Taxa**: loci the taxon appears in, characters, missing characters, missing data (%), and GC content (%) for DNA.
+
+{% terminalshot
+   src="cli/view-summary-reads.webp"
+   alt="SEGUL summary viewer table of six FASTQ samples with reads, bases, GC content, and quality"
+   caption="The Samples table of a read report." /%}
+
+Read reports list each sample's reads, bases, mean read length, N50, GC content, N content, Q20 and Q30 bases, mean quality, and reads with mean quality below 20. Duplication, adapters, and poly-G appear when the report has them.
+
+## Key bindings
+
+Press `F1` or `?` in the viewer to see them.
+
+| Keys                     | Action                                                      |
+| ------------------------ | ----------------------------------------------------------- |
+| `Tab` / `Shift+Tab`      | Next / previous section                                     |
+| `1` to `9`               | Go to a section                                             |
+| `v` or `F2`              | Switch between table and plot                               |
+| `h`                      | Switch the plot between bars and a histogram                |
+| `←` / `→`                | Choose a column                                             |
+| `s`                      | Sort by the column: highest first, lowest first, report order |
+| `↑` / `↓`                | Move the selection                                          |
+| `PgUp` / `PgDn`          | Move a page (`fn+↑` / `fn+↓` on macOS)                      |
+| `Home` / `End`           | First / last item (`fn+←` / `fn+→` on macOS)                |
+| Mouse wheel              | Scroll                                                      |
+| `F1` or `?`              | Show the key bindings                                       |
+| `q`, `Esc`, or `Ctrl+C`  | Quit                                                        |
+
+## All options
+
+| Option          | Description                                                                                  |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| `-i`, `--input` | `alignment-report.json` from `segul align summary` or `read-report.json` from `segul read summary --mode complete` |
+| `--theme`       | Colors for a `dark` (default) or `light` terminal                                            |
+| `--log`         | Log file path. Default: `segul.log`                                                          |

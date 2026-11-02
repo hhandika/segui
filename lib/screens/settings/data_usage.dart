@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/settings/settings_layout.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/io/output_view.dart';
 import 'package:segui/services/io/io.dart';
-import 'package:segui/services/io/output.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -37,142 +39,47 @@ class DataUsageView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        SeguiSpacing.xl,
-        SeguiSpacing.xl,
-        SeguiSpacing.xl,
-        SeguiSpacing.xxxl,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const AppDataStats(),
-          const SizedBox(height: SeguiSpacing.md),
-          Expanded(
-            child: OutlinedPanel(
-              padding: const EdgeInsets.fromLTRB(
-                SeguiSpacing.xl,
-                0,
-                SeguiSpacing.xl,
-                SeguiSpacing.xl,
-              ),
-              child: ref.watch(fileOutputProvider).when(
-                    data: (outputFile) {
-                      final files = outputFile.files;
-                      return files.isEmpty
-                          ? const Center(
-                              child: Text('No data found'),
-                            )
-                          : ListView.builder(
-                              itemCount: files.length,
-                              itemBuilder: (context, index) {
-                                final file = files[index];
-                                return OutputFileTiles(
-                                  isOldFile: true,
-                                  file: file.file,
-                                );
-                              });
-                    },
-                    loading: () => const CircularProgressIndicator(),
-                    error: (error, stackTrace) => Text(
-                      'Error: $error',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
+      padding: const EdgeInsets.all(SeguiSpacing.xxl),
+      child: ref.watch(fileOutputProvider).when(
+            data: (outputFile) {
+              final stats = DataUsageServices().calculateUsage(outputFile);
+              // Newest first.
+              final List<File> files = [
+                for (final output in outputFile.files) output.file,
+              ]..sort(
+                  (a, b) =>
+                      b.lastModifiedSync().compareTo(a.lastModifiedSync()),
+                );
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SettingsPageHeader(
+                    title: 'Data usage',
+                    detail: '${stats.count} · ${stats.size}',
+                    actions: const [ClearAppDataButton()],
                   ),
+                  const SizedBox(height: SeguiSpacing.xl),
+                  Expanded(
+                    child: files.isEmpty
+                        ? const Center(child: Text('No data found'))
+                        : SettingsListCard(
+                            itemCount: files.length,
+                            itemBuilder: (context, index) => OutputFileTiles(
+                              isOldFile: true,
+                              file: files[index],
+                            ),
+                          ),
+                  ),
+                ],
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stackTrace) => Text(
+              'Error: $error',
+              style: Theme.of(context).textTheme.labelLarge,
             ),
           ),
-          const Center(
-            child: ClearAppDataButton(),
-          ),
-        ],
-      ),
     );
-  }
-}
-
-class AppDataStats extends ConsumerWidget {
-  const AppDataStats({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final bool isSmallScreen = isPhoneScreen(context);
-    return ref.watch(fileOutputProvider).when(
-          data: (outputFile) {
-            return isSmallScreen
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _getStats(outputFile),
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: _getStats(outputFile),
-                  );
-          },
-          loading: () => const CircularProgressIndicator(),
-          error: (error, stackTrace) => Text(
-            'Error: $error',
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-        );
-  }
-
-  List<Widget> _getStats(SegulOutputFile outputFile) {
-    final stats = DataUsageServices().calculateUsage(outputFile);
-    return [
-      FileCountTile(count: stats.count),
-      FileSizeTile(totalSize: stats.size),
-    ];
-  }
-}
-
-class FileCountTile extends StatelessWidget {
-  const FileCountTile({super.key, required this.count});
-
-  final String count;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: SeguiContentWidth.statTile,
-      child: ListTile(
-        leading: Icon(
-          Icons.file_copy_outlined,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        title: Text(
-          'File count',
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-        subtitle: Text(count),
-      ),
-    );
-  }
-}
-
-class FileSizeTile extends StatelessWidget {
-  const FileSizeTile({super.key, required this.totalSize});
-
-  final String totalSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: SeguiContentWidth.statTile,
-        child: ListTile(
-          leading: Icon(
-            Icons.data_usage_outlined,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          title: Text(
-            'Total size',
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-          subtitle: Text(totalSize),
-        ));
   }
 }
 
@@ -186,48 +93,43 @@ class ClearAppDataButton extends ConsumerStatefulWidget {
 class ClearAppDataButtonState extends ConsumerState<ClearAppDataButton> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(top: SeguiSpacing.md),
-        child: TextButton(
-            onPressed: () {
-              // Show dialog to confirm the action
-              showResponsiveSheet(
-                context: context,
-                builder: (context) {
-                  return SheetContent(
-                    title: 'Clear all data',
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Cancel')),
-                      TextButton.icon(
-                          style: TextButton.styleFrom(
-                            foregroundColor:
-                                Theme.of(context).colorScheme.error,
-                          ),
-                          onPressed: () async {
-                            await ref
-                                .read(fileOutputProvider.notifier)
-                                .clearAll();
-                            ref.invalidate(fileOutputProvider);
-                            ref
-                                .read(fileOutputProvider.notifier)
-                                .addFromAppDir();
-                            _popDialog();
-                          },
-                          icon: const Icon(Icons.delete_forever_outlined),
-                          label: const Text('Clear all data'))
-                    ],
-                    child: const Text(
-                      'Delete all data except the latest log file.',
+    return TextButton.icon(
+      onPressed: () {
+        // Show dialog to confirm the action
+        showResponsiveSheet(
+          context: context,
+          builder: (context) {
+            return SheetContent(
+              title: 'Clear all data',
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel')),
+                TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
                     ),
-                  );
-                },
-              );
-            },
-            child: const Text('Clear app data')));
+                    onPressed: () async {
+                      await ref.read(fileOutputProvider.notifier).clearAll();
+                      ref.invalidate(fileOutputProvider);
+                      ref.read(fileOutputProvider.notifier).addFromAppDir();
+                      _popDialog();
+                    },
+                    icon: const Icon(Icons.delete_forever_outlined),
+                    label: const Text('Clear all data'))
+              ],
+              child: const Text(
+                'Delete all data except the latest log file.',
+              ),
+            );
+          },
+        );
+      },
+      icon: const Icon(Icons.delete_outline),
+      label: const Text('Clear app data'),
+    );
   }
 
   void _popDialog() {

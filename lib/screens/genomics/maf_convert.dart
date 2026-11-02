@@ -14,6 +14,8 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/services/tasks/genomics.dart';
+import 'package:segui/services/tasks/progress.dart';
+import 'package:segui/src/rust/api/progress.dart';
 import 'package:segui/services/workbench.dart';
 
 const SupportedTask task = SupportedTask.genomicMafConversion;
@@ -292,6 +294,8 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
 
   Future<void> _run(
       List<SegulInputFile> inputFiles, Directory outputDir) async {
+    final RunProgressNotifier progress = ref.read(runProgressProvider.notifier);
+    final RunMonitor monitor = progress.start();
     try {
       _setRunning();
       await MafConversionRunner(
@@ -307,10 +311,13 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
         minSpecies: _minSpecies.text,
         minScore: _minScore.text,
         species: _species.text,
+        monitor: monitor,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
-      _showError(e.toString());
+      _showError(monitor.isCancelled() ? runCancelledMessage : e.toString());
+    } finally {
+      progress.finish();
     }
   }
 

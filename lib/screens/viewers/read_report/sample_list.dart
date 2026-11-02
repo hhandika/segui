@@ -26,7 +26,7 @@ class SampleStatusDot extends StatelessWidget {
         width: SeguiControlSize.indicator,
         height: SeguiControlSize.indicator,
         decoration: BoxDecoration(
-          color: statusColor(status),
+          color: statusColor(status, SeguiColors.of(context)),
           shape: BoxShape.circle,
         ),
       ),
@@ -34,11 +34,11 @@ class SampleStatusDot extends StatelessWidget {
   }
 }
 
-Color statusColor(ReadQcStatus status) {
+Color statusColor(ReadQcStatus status, SeguiColors colors) {
   return switch (status) {
-    ReadQcStatus.pass => ChartPalette.pass,
-    ReadQcStatus.warn => ChartPalette.warn,
-    ReadQcStatus.fail => ChartPalette.fail,
+    ReadQcStatus.pass => colors.pass,
+    ReadQcStatus.warn => colors.warn,
+    ReadQcStatus.fail => colors.fail,
   };
 }
 
@@ -287,6 +287,9 @@ class _ReadSampleRailState extends ConsumerState<ReadSampleRail> {
         const SizedBox(height: SeguiSpacing.xs),
         Expanded(
           child: ListView.builder(
+            padding: const EdgeInsets.only(
+              right: SeguiControlSize.scrollbarGutter,
+            ),
             itemCount: view.length,
             itemBuilder: (context, i) {
               final ReadSampleData sample = widget.samples[view[i]];
@@ -306,6 +309,7 @@ class _ReadSampleRailState extends ConsumerState<ReadSampleRail> {
                       child: LinearProgressIndicator(
                         value: sample.metrics.readCount / most,
                         minHeight: SeguiStroke.regular,
+                        borderRadius: BorderRadius.circular(SeguiRadius.xs),
                         color: theme.colorScheme.primary,
                         backgroundColor:
                             theme.colorScheme.surfaceContainerHighest,

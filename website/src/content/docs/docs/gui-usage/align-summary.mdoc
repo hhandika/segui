@@ -32,14 +32,36 @@ Summary statistics for many alignments.
 5. Add prefix for the output files.
 6. Turn on `Summarize each locus separately` to write a summary file for each alignment instead (optional).
 7. Select the run button {% ref id="D" /%}, labeled `Summarize`, to start the task.
+8. When the task finishes, the `Workbench` tab of the file panel {% ref id="E" /%} shows a `Report` card. Select `View report` to open the [alignment report](#alignment-report). You can also open `alignment-report.json` from the `Output` tab later.
+9. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
 
 ## Output
 
-The app have three output files:
+The app writes four output files:
 
 1. **Alignment summary**: A summary of the input alignments written to a text file (default name: `alignment_summary.txt`).
 2. **Locus summary**: A summary of each alignment/locus written to a csv file (default name: `locus_summary.csv`).
 3. **Taxon summary**: A summary of each taxon written to a csv file (default name: `taxon_summary.csv`).
+4. **Alignment report** {% badge text="In development" variant="caution" /%}: every statistic in one file (default name: `alignment-report.json`), which opens as the interactive [alignment report](#alignment-report).
+
+The CSV files open in the [table viewer](/docs/gui-usage/intro/#table-viewer), where you can sort and page through them.
+
+## Alignment report
+
+{% badge text="In development" variant="caution" /%}
+
+The alignment report shows the summary as charts and tables. It works like the other [summary reports](/docs/gui-usage/intro/#summary-reports). The tabs are:
+
+- **Overview**: the dataset at a glance.
+  - `Dataset`: taxa, loci, sites, missing data, and GC content for DNA, with the mean and range of locus length and taxa per locus.
+  - `Site types`: conserved, variable, and parsimony informative sites, with their count, range per locus, and share of all sites. The chart compares each type's share of sites with its share of loci: loci that are fully conserved, or have any variable or informative site.
+  - `Matrix completeness`: the loci that include at least each share of the taxa, from 100% down by the summary interval.
+  - `Characters`: the count of each character across all alignments, including gaps (`-`) and missing data (`?`).
+- **Loci**: every alignment. `Bars` plots one statistic per locus: taxa, sites, conserved, variable, or informative sites, missing data, or GC content. Turn on `Highest first` to order the bars by that statistic, so the longest or gappiest loci come first. `Table` lists every statistic, sortable by column. Type in `Filter by name` to narrow both views. Select a bar or a row to open a locus; its values stay below the list.
+- **Taxa**: every taxon across the alignments, the same way: the loci it appears in, its characters and missing characters, missing data, and GC content. Use it to find taxa missing from many loci.
+- **Distributions**: histograms across loci of locus length, taxa per locus, and parsimony informative sites, and of missing data per locus and per taxon. Each gives the median. Hover over or touch a bar to see its range and count.
+
+Per-locus summaries write no report. Open their CSV files in the table viewer instead.
 
 ## Per-locus summary
 
@@ -47,4 +69,4 @@ With `Summarize each locus separately` on, the app writes a taxon summary for ea
 
 ## Prefix
 
-The prefix is the name of the output files.  For example, if the prefix is `output`, the app will generate `output_locus_summary.csv`, `output_taxon_summary.csv`, and so on.
+The prefix is the name of the output files. For example, if the prefix is `output`, the app will generate `output_locus_summary.csv`, `output_taxon_summary.csv`, `output_alignment_summary.txt`, and `output_alignment-report.json`.

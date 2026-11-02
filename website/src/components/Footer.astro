@@ -1,16 +1,24 @@
 ---
 import Default from "@astrojs/starlight/components/Footer.astro";
+import { funderDisclaimer } from "../data/site";
 ---
 
 <Default />
 <p class="copyright">
   Copyright © {new Date().getFullYear()} H. Handika &amp; J. A. Esselstyn.
 </p>
+<p class="disclaimer">{funderDisclaimer}</p>
 
 <style>
   @layer starlight.core {
     .copyright {
       margin-top: 2rem;
+      text-align: center;
+      font-size: var(--sl-text-xs);
+      color: var(--sl-color-gray-3);
+    }
+    .disclaimer {
+      margin-top: 0.5rem;
       text-align: center;
       font-size: var(--sl-text-xs);
       color: var(--sl-color-gray-3);

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,10 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
+import 'package:segui/screens/viewers/read_report/spread.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
+import 'package:segui/screens/viewers/report/layout.dart';
+import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -78,6 +82,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
   /// The open sample, as a position in [_samples].
   int _index = 0;
   late Set<int> _compared;
+  SpreadView _spreadView = SpreadView.band;
 
   @override
   void initState() {
@@ -212,21 +217,13 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
   List<ReportTab> _tabs(List<int> view) {
     final ReadSampleData sample = _samples[_index];
     final String name = sample.sample;
-    final List<ReadSampleData> compared = [
-      for (int i = 0; i < _samples.length; i++)
-        if (_compared.contains(i)) _samples[i],
-    ];
-    final SampleCompareChips chips = SampleCompareChips(
-      samples: _samples,
-      selected: _compared,
-      onChanged: (selected) => setState(() => _compared = selected),
-    );
     return [
       ReportTab(label: 'Summary', sections: [
         ReportSection(
           title: 'Samples',
           description: 'Every sample in the order of the sample list. '
               'Select one to open it.',
+          fill: true,
           child: ReadSummaryPanel(
             samples: _samples,
             view: view,
@@ -242,18 +239,14 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
               'middle half of bases and the 10th to 90th percentile shaded.',
           child: PositionQualityChart(positions: sample.positions),
         ),
-        ReportSection(
+        _comparison(
+          view,
           title: 'Per-read quality',
           description: 'Reads by their mean quality score.',
-          header: chips,
-          child: ReadLineChart(
-            xLabel: 'Mean quality score',
-            yLabel: 'Reads',
-            lines: _overlay(
-              compared,
-              (s) => indexedPoints(s.sample, s.readQualityCounts),
-            ),
-          ),
+          xLabel: 'Mean quality score',
+          countLabel: 'Reads',
+          points: (s) => indexedPoints(s.sample, s.readQualityCounts),
+          isCount: true,
         ),
       ]),
       ReportTab(label: 'Composition', sections: [
@@ -268,11 +261,11 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
             lines: [
               ChartLine(
                 points: indexedPoints('Observed', sample.gcCounts),
-                color: ChartPalette.seriesAt(0),
+                color: SeguiColors.of(context).seriesAt(0),
               ),
               ChartLine(
                 points: indexedPoints('Theoretical', sample.gcTheoretical),
-                color: ChartPalette.seriesAt(1),
+                color: SeguiColors.of(context).seriesAt(1),
                 dashed: true,
               ),
             ],
@@ -284,40 +277,31 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
               'be flat after the first few bases of most libraries.',
           child: BaseCompositionChart(positions: sample.positions),
         ),
-        ReportSection(
+        _comparison(
+          view,
           title: 'N content',
-          header: chips,
-          child: ReadLineChart(
-            xLabel: 'Position (bp)',
-            yLabel: 'N (%)',
-            minY: 0,
-            lines: _overlay(
-              compared,
-              (s) => ChartPoints(
-                name: s.sample,
-                x: s.positions.start,
-                y: s.positions.nPct,
-              ),
-            ),
+          xLabel: 'Position (bp)',
+          countLabel: 'N (%)',
+          points: (s) => ChartPoints(
+            name: s.sample,
+            x: s.positions.start,
+            y: s.positions.nPct,
           ),
+          isCount: false,
         ),
       ]),
       ReportTab(label: 'Length', sections: [
-        ReportSection(
+        _comparison(
+          view,
           title: 'Read length',
-          header: chips,
-          child: ReadLineChart(
-            xLabel: 'Read length (bp)',
-            yLabel: 'Reads',
-            lines: _overlay(
-              compared,
-              (s) => ChartPoints(
-                name: s.sample,
-                x: s.lengthValues,
-                y: s.lengthCounts,
-              ),
-            ),
+          xLabel: 'Read length (bp)',
+          countLabel: 'Reads',
+          points: (s) => ChartPoints(
+            name: s.sample,
+            x: s.lengthValues,
+            y: s.lengthCounts,
           ),
+          isCount: true,
         ),
       ]),
       ReportTab(label: 'Duplication', sections: [
@@ -345,7 +329,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
                     x: sample.positions.start,
                     y: sample.adapters[i].cumulativePct,
                   ),
-                  color: ChartPalette.seriesAt(i),
+                  color: SeguiColors.of(context).seriesAt(i),
                 ),
             ],
           ),
@@ -356,10 +340,75 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           title: 'Overrepresented sequences: $name',
           description: 'Read starts above 0.1% of all reads. Reads longer '
               'than 75 bp are compared by their first 50 bp.',
+          fill: true,
           child: OverrepresentedTable(sequences: sample.overrepresented),
         ),
       ]),
     ];
+  }
+
+  /// A chart comparing samples: chosen samples as lines in small reports,
+  /// and every listed sample as a band or heatmap in larger ones.
+  /// [isCount] charts compare shares of reads, since depths differ, and
+  /// count x values a sample lacks as zero.
+  ReportSection _comparison(
+    List<int> view, {
+    required String title,
+    required String xLabel,
+    required String countLabel,
+    required ChartPoints Function(ReadSampleData sample) points,
+    required bool isCount,
+    String? description,
+  }) {
+    if (_samples.length <= maxOverlaidSamples) {
+      return ReportSection(
+        title: title,
+        description: description,
+        header: SampleCompareChips(
+          samples: _samples,
+          selected: _compared,
+          onChanged: (selected) => setState(() => _compared = selected),
+        ),
+        child: ReadLineChart(
+          xLabel: xLabel,
+          yLabel: countLabel,
+          minY: isCount ? null : 0,
+          lines: _overlay([
+            for (int i = 0; i < _samples.length; i++)
+              if (_compared.contains(i)) _samples[i],
+          ], points),
+        ),
+      );
+    }
+    final String summary = _spreadView == SpreadView.band
+        ? 'Every listed sample as percentiles, with '
+            '${_samples[_index].sample} and outlying samples drawn on top.'
+        : 'Every listed sample as a row, in the order of the sample list. '
+            'Select a row to open the sample.';
+    return ReportSection(
+      title: title,
+      description: [
+        if (description != null) description,
+        if (isCount) 'Shares of each sample\'s reads.',
+        summary,
+      ].join(' '),
+      header: SpreadViewToggle(
+        view: _spreadView,
+        onChanged: (view) => setState(() => _spreadView = view),
+      ),
+      child: SampleSpreadChart(
+        samples: _samples,
+        view: view,
+        index: _index,
+        points: isCount ? (s) => sharePoints(points(s)) : points,
+        missingIsZero: isCount,
+        xLabel: xLabel,
+        yLabel: isCount ? '$countLabel (%)' : countLabel,
+        minY: 0,
+        mode: _spreadView,
+        onSelected: _select,
+      ),
+    );
   }
 
   /// Opens the sample at [index].
@@ -392,7 +441,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
       for (final ReadSampleData sample in samples)
         ChartLine(
           points: points(sample),
-          color: ChartPalette.seriesAt(_samples.indexOf(sample)),
+          color: SeguiColors.of(context).seriesAt(_samples.indexOf(sample)),
         ),
     ];
   }
@@ -465,78 +514,17 @@ class ReadReportHeader extends StatelessWidget {
   }
 }
 
-/// A tab of the report, made of one or more sections.
-class ReportTab {
-  const ReportTab({required this.label, required this.sections});
+/// Most samples shown as chips. More samples go in a checkbox menu, where
+/// a long list is easier to pick from.
+const int _maxCompareChips = 3;
 
-  final String label;
-  final List<ReportSection> sections;
+/// [selected] with sample [i] turned [on] or off.
+Set<int> _toggled(Set<int> selected, int i, bool on) {
+  return on ? {...selected, i} : ({...selected}..remove(i));
 }
 
-/// A titled chart or table in a report tab.
-class ReportSection {
-  const ReportSection({
-    required this.title,
-    required this.child,
-    this.description,
-    this.header,
-  });
-
-  final String title;
-  final Widget child;
-  final String? description;
-
-  /// Controls shown above the chart, such as sample toggles.
-  final Widget? header;
-}
-
-class ReportPanel extends StatelessWidget {
-  const ReportPanel({super.key, required this.tab});
-
-  final ReportTab tab;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(SeguiSpacing.xl),
-      children: [
-        for (final (int i, ReportSection section) in tab.sections.indexed) ...[
-          if (i > 0) const Divider(height: SeguiSpacing.xxxl * 2),
-          ReportSectionView(section: section),
-        ],
-      ],
-    );
-  }
-}
-
-class ReportSectionView extends StatelessWidget {
-  const ReportSectionView({super.key, required this.section});
-
-  final ReportSection section;
-
-  @override
-  Widget build(BuildContext context) {
-    final TextTheme text = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(section.title, style: text.titleMedium),
-        if (section.description != null) ...[
-          const SizedBox(height: SeguiSpacing.xs),
-          Text(section.description!, style: text.bodySmall),
-        ],
-        if (section.header != null) ...[
-          const SizedBox(height: SeguiSpacing.md),
-          section.header!,
-        ],
-        const SizedBox(height: SeguiSpacing.lg),
-        section.child,
-      ],
-    );
-  }
-}
-
-/// Toggles the samples compared on a chart.
+/// Toggles the samples compared on a chart: chips for a few samples, a
+/// checkbox menu for more.
 class SampleCompareChips extends StatelessWidget {
   const SampleCompareChips({
     super.key,
@@ -551,6 +539,16 @@ class SampleCompareChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (samples.length > _maxCompareChips) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: SampleCompareMenu(
+          samples: samples,
+          selected: selected,
+          onChanged: onChanged,
+        ),
+      );
+    }
     return Wrap(
       spacing: SeguiSpacing.sm,
       runSpacing: SeguiSpacing.xs,
@@ -559,13 +557,84 @@ class SampleCompareChips extends StatelessWidget {
           FilterChip(
             label: Text(samples[i].sample),
             selected: selected.contains(i),
-            avatar: CircleAvatar(backgroundColor: ChartPalette.seriesAt(i)),
+            avatar: CircleAvatar(
+                backgroundColor: SeguiColors.of(context).seriesAt(i)),
             showCheckmark: false,
-            onSelected: (on) => onChanged(
-              on ? {...selected, i} : ({...selected}..remove(i)),
+            onSelected: (on) => onChanged(_toggled(selected, i, on)),
+          ),
+      ],
+    );
+  }
+}
+
+/// A button that opens a checkbox list of every sample. The menu stays
+/// open while samples are toggled.
+class SampleCompareMenu extends StatelessWidget {
+  const SampleCompareMenu({
+    super.key,
+    required this.samples,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final List<ReadSampleData> samples;
+  final Set<int> selected;
+  final ValueChanged<Set<int>> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isAllSelected = selected.length == samples.length;
+    final double maxHeight = min(
+      MediaQuery.sizeOf(context).height * SeguiChartLayout.compareMenuShare,
+      SeguiChartLayout.compareMenuMax,
+    );
+    return MenuAnchor(
+      // Long sample lists scroll inside the menu.
+      style: MenuStyle(
+        maximumSize: WidgetStatePropertyAll(Size(double.infinity, maxHeight)),
+      ),
+      menuChildren: [
+        MenuItemButton(
+          closeOnActivate: false,
+          leadingIcon: const Icon(Icons.select_all_rounded),
+          onPressed: isAllSelected
+              ? null
+              : () => onChanged({for (int i = 0; i < samples.length; i++) i}),
+          child: const Text('Select all'),
+        ),
+        MenuItemButton(
+          closeOnActivate: false,
+          leadingIcon: const Icon(Icons.deselect_rounded),
+          onPressed: selected.isEmpty ? null : () => onChanged({}),
+          child: const Text('Clear'),
+        ),
+        const Divider(height: SeguiStroke.thin),
+        for (int i = 0; i < samples.length; i++)
+          CheckboxMenuButton(
+            closeOnActivate: false,
+            value: selected.contains(i),
+            onChanged: (on) => onChanged(_toggled(selected, i, on ?? false)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: SeguiControlSize.indicator / 2,
+                  backgroundColor: SeguiColors.of(context).seriesAt(i),
+                ),
+                const SizedBox(width: SeguiSpacing.md),
+                Text(samples[i].sample),
+              ],
             ),
           ),
       ],
+      builder: (context, controller, _) => OutlinedButton.icon(
+        onPressed: controller.isOpen ? controller.close : controller.open,
+        icon: const Icon(Icons.arrow_drop_down_rounded),
+        iconAlignment: IconAlignment.end,
+        label: Text(
+          'Compared: ${selected.length} of ${samples.length} samples',
+        ),
+      ),
     );
   }
 }
@@ -580,10 +649,7 @@ class BaseCompositionChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    // Darker residue colors read better as lines on a light background.
-    final ResiduePalette palette = ResiduePalette.nucleotide(
-      theme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
-    );
+    final ResiduePalette palette = SeguiColors.fromTheme(theme).nucleotideLines;
     final List<(String, List<double>)> bases = [
       ('A', positions.aPct),
       ('C', positions.cPct),
@@ -644,12 +710,12 @@ class DuplicationChart extends StatelessWidget {
             BarSeries(
               name: 'Distinct sequences',
               values: duplication.distinctPct,
-              color: ChartPalette.seriesAt(0),
+              color: SeguiColors.of(context).seriesAt(0),
             ),
             BarSeries(
               name: 'Reads',
               values: duplication.readsPct,
-              color: ChartPalette.seriesAt(1),
+              color: SeguiColors.of(context).seriesAt(1),
             ),
           ],
         ),
@@ -666,36 +732,51 @@ class OverrepresentedTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (sequences.isEmpty) {
-      return const ChartPlaceholder(message: 'No overrepresented sequences.');
+      return const Align(
+        alignment: Alignment.topCenter,
+        child: ChartPlaceholder(message: 'No overrepresented sequences.'),
+      );
     }
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('Sequence')),
-          DataColumn(label: Text('Count'), numeric: true),
-          DataColumn(label: Text('Reads (%)'), numeric: true),
-          DataColumn(label: Text('Possible source')),
-          DataColumn(label: Text('')),
-        ],
-        rows: [
-          for (final OverrepresentedData seq in sequences)
-            DataRow(
-              cells: [
-                DataCell(SelectableText(seq.sequence)),
-                DataCell(Text(_countFormat.format(seq.count))),
-                DataCell(Text(
-                  seq.maxErrorPct > 0
-                      ? '${seq.percent.toStringAsFixed(2)} '
-                          '(+${seq.maxErrorPct.toStringAsFixed(3)})'
-                      : seq.percent.toStringAsFixed(2),
-                )),
-                DataCell(Text(seq.source)),
-                DataCell(CopySequenceButton(sequence: seq.sequence)),
-              ],
-            ),
-        ],
-      ),
+    return PagedTable<OverrepresentedData>(
+      rows: sequences,
+      columns: [
+        PagedTableColumn(
+          label: 'Sequence',
+          width: 460,
+          sortValue: (seq) => seq.sequence,
+          cell: (seq) => SelectableText(seq.sequence, maxLines: 1),
+        ),
+        PagedTableColumn(
+          label: 'Count',
+          width: 120,
+          numeric: true,
+          sortValue: (seq) => seq.count,
+          cell: (seq) => Text(_countFormat.format(seq.count)),
+        ),
+        PagedTableColumn(
+          label: 'Reads (%)',
+          width: 160,
+          numeric: true,
+          sortValue: (seq) => seq.percent,
+          cell: (seq) => Text(
+            seq.maxErrorPct > 0
+                ? '${seq.percent.toStringAsFixed(2)} '
+                    '(+${seq.maxErrorPct.toStringAsFixed(3)})'
+                : seq.percent.toStringAsFixed(2),
+          ),
+        ),
+        PagedTableColumn(
+          label: 'Possible source',
+          width: 280,
+          sortValue: (seq) => seq.source,
+          cell: (seq) => Text(seq.source, overflow: TextOverflow.ellipsis),
+        ),
+        PagedTableColumn(
+          label: '',
+          width: 72,
+          cell: (seq) => CopySequenceButton(sequence: seq.sequence),
+        ),
+      ],
     );
   }
 }

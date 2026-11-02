@@ -5,6 +5,7 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'progress.dart';
 
 // These functions are ignored because they are not marked as `pub`: `find_input_files`, `match_input_fmt`, `match_mode`, `match_phred`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`, `from`
@@ -93,17 +94,20 @@ class RawReadServices {
   /// Summarize reads. `phred` is "auto", "33", or "64", and defaults to "auto".
   /// `dup_sketch_size` is the number of distinct sequences kept to estimate
   /// duplication in Complete mode, zero to count all, or SEGUL's default.
+  /// `monitor` reports progress and can cancel the run.
   Future<ReadSummaryOutput> summarize(
           {required String mode,
           String? prefix,
           String? phred,
-          int? dupSketchSize}) =>
+          int? dupSketchSize,
+          required RunMonitor monitor}) =>
       RustLib.instance.api.crateApiReadsRawReadServicesSummarize(
           that: this,
           mode: mode,
           prefix: prefix,
           phred: phred,
-          dupSketchSize: dupSketchSize);
+          dupSketchSize: dupSketchSize,
+          monitor: monitor);
 
   @override
   int get hashCode => files.hashCode ^ fileFmt.hashCode ^ outputDir.hashCode;

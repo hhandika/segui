@@ -18,6 +18,7 @@ class ChartLine {
     required this.color,
     this.visible = true,
     this.dashed = false,
+    this.width = SeguiStroke.regular,
   });
 
   final ChartPoints points;
@@ -26,6 +27,7 @@ class ChartLine {
   /// Hidden lines still bound bands drawn between lines.
   final bool visible;
   final bool dashed;
+  final double width;
 }
 
 /// Area filled between two lines of a [ReadLineChart], by index.
@@ -61,6 +63,7 @@ class ReadLineChart extends StatelessWidget {
     this.minY,
     this.maxY,
     this.tooltipText,
+    this.legend,
   });
 
   final List<ChartLine> lines;
@@ -73,6 +76,9 @@ class ReadLineChart extends StatelessWidget {
 
   /// Tooltip text. By default each visible line shows its name and value.
   final ChartTooltipText? tooltipText;
+
+  /// Legend entries. By default each visible line, by name.
+  final List<(String, Color)>? legend;
 
   @override
   Widget build(BuildContext context) {
@@ -91,74 +97,81 @@ class ReadLineChart extends StatelessWidget {
       children: [
         SizedBox(
           height: SeguiChartLayout.height,
-          child: LineChart(
-            LineChartData(
-              minY: minY,
-              maxY: maxY,
-              lineBarsData: [
-                for (final ChartLine line in drawn) _barData(line),
-              ],
-              betweenBarsData: [
-                for (final ChartBand band in bands)
-                  BetweenBarsData(
-                    fromIndex: band.from,
-                    toIndex: band.to,
-                    color: band.color,
-                  ),
-              ],
-              rangeAnnotations: RangeAnnotations(
-                horizontalRangeAnnotations: [
-                  for (final ChartZone zone in zones)
-                    HorizontalRangeAnnotation(
-                      y1: zone.from,
-                      y2: zone.to,
-                      color: zone.color,
+          child: ZoomResetFrame(
+            builder: (controller) => LineChart(
+              LineChartData(
+                minY: minY,
+                maxY: maxY,
+                lineBarsData: [
+                  for (final ChartLine line in drawn)
+                    _barData(line, SeguiColors.of(context)),
+                ],
+                betweenBarsData: [
+                  for (final ChartBand band in bands)
+                    BetweenBarsData(
+                      fromIndex: band.from,
+                      toIndex: band.to,
+                      color: band.color,
                     ),
                 ],
-              ),
-              titlesData: chartTitles(context, xLabel: xLabel, yLabel: yLabel),
-              gridData: chartGrid(colors),
-              borderData: chartBorder(colors),
-              clipData: const FlClipData.all(),
-              lineTouchData: LineTouchData(
-                touchTooltipData: LineTouchTooltipData(
-                  getTooltipColor: (_) => colors.inverseSurface,
-                  maxContentWidth: SeguiChartLayout.tooltipWidth,
-                  fitInsideHorizontally: true,
-                  fitInsideVertically: true,
-                  getTooltipItems: (spots) => [
-                    for (final LineBarSpot spot in spots)
-                      _tooltipItem(drawn, spot, tooltipStyle),
+                rangeAnnotations: RangeAnnotations(
+                  horizontalRangeAnnotations: [
+                    for (final ChartZone zone in zones)
+                      HorizontalRangeAnnotation(
+                        y1: zone.from,
+                        y2: zone.to,
+                        color: zone.color,
+                      ),
                   ],
                 ),
+                titlesData:
+                    chartTitles(context, xLabel: xLabel, yLabel: yLabel),
+                gridData: chartGrid(colors),
+                borderData: chartBorder(colors),
+                clipData: const FlClipData.all(),
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipColor: (_) => colors.inverseSurface,
+                    maxContentWidth: SeguiChartLayout.tooltipWidth,
+                    fitInsideHorizontally: true,
+                    fitInsideVertically: true,
+                    getTooltipItems: (spots) => [
+                      for (final LineBarSpot spot in spots)
+                        _tooltipItem(drawn, spot, tooltipStyle),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            transformationConfig: const FlTransformationConfig(
-              scaleAxis: FlScaleAxis.horizontal,
-              maxScale: SeguiChartLayout.maxZoom,
+              transformationConfig: FlTransformationConfig(
+                scaleAxis: FlScaleAxis.horizontal,
+                maxScale: SeguiChartLayout.maxZoom,
+                transformationController: controller,
+              ),
             ),
           ),
         ),
         const SizedBox(height: SeguiSpacing.md),
         ChartLegend(
-          entries: [
-            for (final ChartLine line in drawn)
-              if (line.visible) (line.points.name, line.color),
-          ],
+          entries: legend ??
+              [
+                for (final ChartLine line in drawn)
+                  if (line.visible) (line.points.name, line.color),
+              ],
         ),
       ],
     );
   }
 
-  LineChartBarData _barData(ChartLine line) {
+  /// Lines use the palette's line colors, which reach 3:1 on the surface.
+  LineChartBarData _barData(ChartLine line, SeguiColors palette) {
     final ChartPoints points = line.points;
     return LineChartBarData(
       spots: [
         for (int i = 0; i < points.x.length; i++)
           FlSpot(points.x[i], points.y[i]),
       ],
-      color: line.visible ? line.color : Colors.transparent,
-      barWidth: line.visible ? SeguiStroke.regular : SeguiStroke.none,
+      color: line.visible ? palette.lineFor(line.color) : Colors.transparent,
+      barWidth: line.visible ? line.width : SeguiStroke.none,
       dashArray: line.dashed ? SeguiChartLayout.dash : null,
       // A few points are easier to see as dots.
       dotData: FlDotData(show: line.visible && points.x.length <= 3),
@@ -181,6 +194,53 @@ class ReadLineChart extends StatelessWidget {
   }
 }
 
+/// A zoomable chart with a button that resets the zoom and centers the
+/// chart again. The button shows only while the chart is zoomed or
+/// panned.
+class ZoomResetFrame extends StatefulWidget {
+  const ZoomResetFrame({super.key, required this.builder});
+
+  /// Builds the chart with the controller of its zoom and pan.
+  final Widget Function(TransformationController controller) builder;
+
+  @override
+  State<ZoomResetFrame> createState() => _ZoomResetFrameState();
+}
+
+class _ZoomResetFrameState extends State<ZoomResetFrame> {
+  final TransformationController _controller = TransformationController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(child: widget.builder(_controller)),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: ValueListenableBuilder<Matrix4>(
+            valueListenable: _controller,
+            builder: (context, matrix, _) => matrix.isIdentity()
+                ? const SizedBox.shrink()
+                : IconButton.filledTonal(
+                    tooltip: 'Reset zoom',
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.center_focus_strong_outlined),
+                    onPressed: () => _controller.value = Matrix4.identity(),
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// Quality by read position: the median and mean, with the interquartile
 /// range and the 10th to 90th percentile range as bands, over FastQC zones.
 class PositionQualityChart extends StatelessWidget {
@@ -200,6 +260,7 @@ class PositionQualityChart extends StatelessWidget {
         ) +
         1;
     final Color band = colors.primary;
+    final SeguiColors palette = SeguiColors.of(context);
     return ReadLineChart(
       xLabel: 'Position (bp)',
       yLabel: 'Quality score',
@@ -247,17 +308,17 @@ class PositionQualityChart extends StatelessWidget {
         ChartZone(
           from: 0,
           to: _poorQuality,
-          color: ChartPalette.fail.withValues(alpha: ChartPalette.zoneAlpha),
+          color: palette.fail.withValues(alpha: ChartPalette.zoneAlpha),
         ),
         ChartZone(
           from: _poorQuality,
           to: _goodQuality,
-          color: ChartPalette.warn.withValues(alpha: ChartPalette.zoneAlpha),
+          color: palette.warn.withValues(alpha: ChartPalette.zoneAlpha),
         ),
         ChartZone(
           from: _goodQuality,
           to: top,
-          color: ChartPalette.pass.withValues(alpha: ChartPalette.zoneAlpha),
+          color: palette.pass.withValues(alpha: ChartPalette.zoneAlpha),
         ),
       ],
       // One tooltip per position, shown on the median line.
@@ -296,6 +357,7 @@ class ReadBarChart extends StatelessWidget {
     required this.series,
     required this.xLabel,
     required this.yLabel,
+    this.barWidth = SeguiChartLayout.barWidth,
   });
 
   final List<String> categories;
@@ -303,10 +365,15 @@ class ReadBarChart extends StatelessWidget {
   final String xLabel;
   final String yLabel;
 
+  /// Width of each bar. Single series, such as histograms, read better
+  /// with wider bars.
+  final double barWidth;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colors = theme.colorScheme;
+    final SeguiColors palette = SeguiColors.fromTheme(theme);
     final TextStyle tooltipStyle = theme.textTheme.bodySmall!.copyWith(
       color: colors.onInverseSurface,
     );
@@ -329,8 +396,17 @@ class ReadBarChart extends StatelessWidget {
                         BarChartRodData(
                           toY: s.values[i],
                           color: s.color,
-                          width: SeguiChartLayout.barWidth,
-                          borderRadius: BorderRadius.zero,
+                          width: barWidth,
+                          // Rounded tops like the metric and table bars;
+                          // the base stays flat on the axis.
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(SeguiRadius.xs),
+                          ),
+                          // Outlined so pale fills reach 3:1 on the surface.
+                          borderSide: BorderSide(
+                            color: palette.lineFor(s.color),
+                            width: SeguiStroke.thin,
+                          ),
                         ),
                     ],
                   ),

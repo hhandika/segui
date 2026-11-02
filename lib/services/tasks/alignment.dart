@@ -294,7 +294,9 @@ class AlignmentSummaryRunner {
   /// Write one summary file per locus instead of a combined summary.
   final bool isPerLocus;
 
-  Future<void> run() async {
+  /// Returns the alignment report, or null for a per-locus summary, which
+  /// writes none.
+  Future<String?> run() async {
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
     if (finalInputFiles.isEmpty) {
@@ -310,12 +312,12 @@ class AlignmentSummaryRunner {
       await services.summarizeAlignmentPerLocus(
         outputPrefix: outputPrefix.isEmpty ? null : outputPrefix,
       );
-    } else {
-      await services.summarizeAlignment(
-        outputPrefix: outputPrefix,
-        interval: interval,
-      );
+      return null;
     }
+    return services.summarizeAlignment(
+      outputPrefix: outputPrefix,
+      interval: interval,
+    );
   }
 }
 

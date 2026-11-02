@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Feather from "../components/art/Feather.astro";
+import Gull from "../components/art/Gull.astro";
 import StoreBadges from "../components/StoreBadges.astro";
 import CommandLine from "../components/CommandLine.astro";
 import { platforms, workflows } from "../data/site";
@@ -31,7 +31,7 @@ const datasets = [
 
 <Layout title="Get Started | SEGUL" description="Install SEGUL and run your first phylogenomic analysis.">
   <section class="sg-leaf-field relative isolate overflow-hidden px-6 pt-16 pb-20 text-white sm:pt-24">
-    <Feather class="pointer-events-none absolute -right-40 -bottom-16 -z-10 w-[28rem] max-w-none opacity-20 lg:right-[-2rem] lg:top-20 lg:bottom-auto lg:w-[26rem] lg:opacity-90 xl:right-[4%]" />
+    <Gull scene class="pointer-events-none absolute -right-16 -bottom-10 -z-10 w-72 opacity-25 lg:right-[2%] lg:top-1/2 lg:bottom-auto lg:w-80 lg:-translate-y-1/2 lg:opacity-100 xl:right-[6%]" />
     <div class="mx-auto max-w-6xl">
       <p class="text-xs font-semibold uppercase tracking-[0.25em] text-pollen-300">Get started</p>
       <h1 class="mt-4 max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">
@@ -47,7 +47,7 @@ const datasets = [
     <div class="mx-auto max-w-6xl">
       <p class={kicker}>Step 1</p>
       <h2 class={sectionTitle}>Install SEGUL</h2>
-      <div class="mt-10 grid gap-6 lg:grid-cols-3">
+      <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div class={card}>
           <span class="rounded-md bg-pollen-200 px-2 py-0.5 text-xs font-bold tracking-wider text-leaf-950">GUI</span>
           <h3 class="mt-4 text-xl font-semibold text-leaf-950 dark:text-leaf-50">SEGUI app</h3>
@@ -96,7 +96,7 @@ const datasets = [
   </section>
 
   <section class="bg-leaf-50/70 px-6 py-16 dark:bg-leaf-950/40">
-    <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+    <div class="mx-auto grid grid-cols-1 max-w-6xl gap-12 lg:grid-cols-2">
       <div>
         <p class={kicker}>Step 2</p>
         <h2 class={sectionTitle}>Try an example dataset</h2>
@@ -131,7 +131,7 @@ const datasets = [
   </section>
 
   <section class="px-6 py-16">
-    <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.1fr]">
+    <div class="mx-auto grid grid-cols-1 max-w-6xl gap-12 lg:grid-cols-[1fr_1.1fr]">
       <div>
         <p class={kicker}>Platforms</p>
         <h2 class={sectionTitle}>Where SEGUL runs</h2>

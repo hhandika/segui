@@ -99,6 +99,18 @@
   --sk-fill: #111613;
 }
 
+/* On the green field the sketch keeps its light palette in both themes. */
+:root .sg-leaf-field .sg-sketch,
+:root[data-theme="dark"] .sg-leaf-field .sg-sketch {
+  --sk-line: var(--color-leaf-950);
+  --sk-fill: #ffffff;
+}
+
+/* A finer line for the larger hero drawing. */
+.sg-leaf-field .sg-sketch :is(path, circle) {
+  stroke-width: 2;
+}
+
 .sg-gull-wing {
   transform-origin: 62px 50px;
   animation: sg-flap 3.2s ease-in-out infinite;

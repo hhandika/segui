@@ -8,6 +8,8 @@ use segul::helper::utils;
 use segul::stats::fastq::report::{PositionSummary, ReadReport, SampleReadReport};
 use segul::stats::fastq::DEFAULT_DUP_SKETCH_SIZE;
 
+use crate::api::progress::RunMonitor;
+
 pub struct RawReadServices {
     pub files: Vec<String>,
     pub file_fmt: String,
@@ -35,12 +37,14 @@ impl RawReadServices {
     /// Summarize reads. `phred` is "auto", "33", or "64", and defaults to "auto".
     /// `dup_sketch_size` is the number of distinct sequences kept to estimate
     /// duplication in Complete mode, zero to count all, or SEGUL's default.
+    /// `monitor` reports progress and can cancel the run.
     pub fn summarize(
         &self,
         mode: String,
         prefix: Option<String>,
         phred: Option<String>,
         dup_sketch_size: Option<u32>,
+        monitor: &RunMonitor,
     ) -> anyhow::Result<ReadSummaryOutput> {
         let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
@@ -58,6 +62,7 @@ impl RawReadServices {
         )
         .with_phred(phred)
         .with_dup_sketch_size(dup_sketch_size.map_or(DEFAULT_DUP_SKETCH_SIZE, |size| size as usize))
+        .with_progress(monitor)
         .try_summarize()?;
         let duration = time.elapsed();
         utils::print_execution_time(duration);

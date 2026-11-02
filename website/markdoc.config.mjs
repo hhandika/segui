@@ -65,6 +65,16 @@ export default defineMarkdocConfig({
         id: { type: String, required: true, matches: /^[A-Z]$/ },
       },
     },
+    // A terminal capture on a CLI usage page, from `src/assets/screenshots/cli/`.
+    terminalshot: {
+      render: component("./src/components/docs/TerminalScreenshot.astro"),
+      selfClosing: true,
+      attributes: {
+        src: { type: String, required: true },
+        alt: { type: String, required: true },
+        caption: { type: String },
+      },
+    },
     // A fixed-width image, such as a store QR code.
     sizedimage: {
       render: component("./src/components/docs/SizedImage.astro"),
@@ -198,6 +208,11 @@ export default defineMarkdocConfig({
       render: component("./src/components/features/Unalignment.astro"),
       selfClosing: true,
     },
+    // SEGUL ecosystem diagram for the "App Design and Architecture" page.
+    ecosystem: {
+      render: component("./src/components/diagram/SegulEcosystem.astro"),
+      selfClosing: true,
+    },
     commandmap: {
       render: component("./src/components/cli-gui/CommandMap.astro"),
       selfClosing: true,
@@ -234,9 +249,20 @@ export default defineMarkdocConfig({
       render: component("./src/components/quick-start/CliDownloads.astro"),
       selfClosing: true,
     },
+    // Parts of a command. Without attributes it shows the `align concat`
+    // example; CLI usage pages pass their own task.
     commandanatomy: {
       render: component("./src/components/quick-start/CommandAnatomy.astro"),
       selfClosing: true,
+      attributes: {
+        command: { type: String },
+        subcommand: { type: String },
+        input: { type: String },
+        inputSub: { type: String },
+        option: { type: String },
+        optionSub: { type: String },
+        caption: { type: String },
+      },
     },
     guisteps: {
       render: component("./src/components/quick-start/GuiSteps.astro"),

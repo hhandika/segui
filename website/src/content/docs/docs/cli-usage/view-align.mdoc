@@ -1,0 +1,180 @@
+---
+title: View Alignments
+sidebar:
+  order: 21
+  badge:
+    text: In development
+    variant: caution
+---
+
+{% commandanatomy
+   command="view"
+   subcommand="align"
+   input="--input alignment.fasta"
+   inputSub="file"
+   option="--datatype aa"
+   optionSub="optional" /%}
+
+{% aside type="caution" title="In development" %}
+This feature is not yet in a SEGUL release. It will be available in the next SEGUL release. Commands and key bindings may change before the release.
+{% /aside %}
+
+View alignments in an interactive viewer right in your terminal. It works like the SEGUI alignment viewer (in development). It is handy for checking alignments on a remote server or in a terminal session where a GUI is not available.
+
+To view an alignment, use the following command:
+
+```bash
+segul view align --input alignment.fasta
+```
+
+It is designed to be fast and can handle large alignments efficiently.
+
+{% terminalshot
+   src="cli/view-align.webp"
+   alt="SEGUL alignment viewer showing 24 taxa of a concatenated DNA alignment with colored residues"
+   caption="A concatenated alignment of 300 loci, 24 taxa, and 257,844 sites." /%}
+
+{% aside type="tip" title="Input formats" %}
+For the best efficiency, use FASTA format.
+{% /aside %}
+
+## Layout
+
+From top to bottom, the viewer shows:
+
+1. **Toolbar**: the file name, the number of taxa and sites, the data type (DNA or amino acid), whether the sequences are unaligned, the color mode, the zoom level, and the current chunk.
+2. **Overview**: a strip showing the whole alignment, with a line marking the sites in view. Click or drag on it to jump.
+3. **Legend**: the residue colors. DNA shows A, C, G, and T. Amino acids show the Clustal X groups: hydrophobic, positive, negative, polar, aromatic, glycine, proline, and cysteine.
+4. **Taxon names and residue grid**: the names on the left, a ruler with site numbers on top, and the colored residues. Chunk boundaries are marked on the ruler.
+5. **Status bar**: the taxon, site, ungapped position, and residue under the cursor.
+
+Press `Ctrl+B` to show the chunk sidebar. It lists each chunk of sites with its share of gaps and variable sites.
+
+## Detailed usage
+
+### Viewing several alignments
+
+Pass several files, or a directory, to switch between them in the viewer:
+
+```bash
+segul view align --dir alignments/
+```
+
+```bash
+segul view align --input alignments/*.nex
+```
+
+Use `Ctrl+PgDn` and `Ctrl+PgUp` to move to the next or previous file, or `Ctrl+P` to pick a file from a searchable list. Settings such as zoom and color mode carry over when you switch files.
+
+### Data type
+
+SEGUL detects whether the sequences are DNA or amino acids from the residues. This is the default (`--datatype ignore`), unlike other SEGUL commands. To set the data type yourself, use `--datatype dna` or `--datatype aa`:
+
+```bash
+segul view align --input alignment.fasta --datatype aa
+```
+
+### Colors and terminal themes
+
+The residue colors are made for dark terminals. If your terminal has a light background, use `--theme light`:
+
+```bash
+segul view align --input alignment.fasta --theme light
+```
+
+For colors that stay distinct with color vision deficiencies, use `--residue-colors colorblind-safe`. It uses Okabe-Ito hues for DNA and Paul Tol hues for amino acids:
+
+```bash
+segul view align --input alignment.fasta --residue-colors colorblind-safe
+```
+
+Residue letters reach at least 4.5:1 contrast on every cell, including selected ones, in both themes. SEGUI uses the same colors and offers the same choice under **Settings › Colors**.
+
+Terminals that support 24-bit color show the exact SEGUI colors. Other terminals show the nearest of 256 colors. Most modern terminals support 24-bit color and report it with the `COLORTERM` environment variable.
+
+Press `F2` to cycle the color modes:
+
+- **Base**: each residue in its own color.
+- **Mono**: one color for residues and another for gaps.
+- **Diff to first**: residues that match the first sequence are shown as dots, so differences stand out.
+
+### Chunks
+
+The viewer splits the alignment into chunks of 1,000 sites by default. Use `--chunk` to pick 250, 500, 1000, or 2000 sites per chunk:
+
+```bash
+segul view align --input alignment.fasta --chunk 500
+```
+
+Use `[` and `]` to move between chunks. Press `Ctrl+K` then `P` to show one chunk at a time. Press `Ctrl+B` to list the chunks with their share of gaps and variable sites.
+
+{% terminalshot
+   src="cli/view-align-chunks.webp"
+   alt="SEGUL alignment viewer with the chunk sidebar open on the left"
+   caption="The chunk sidebar." /%}
+
+### Selecting and copying sequences
+
+Press `Space` to select the sequence under the cursor, `Shift+↑` or `Shift+↓` to extend the selection, and `Ctrl+A` to select all. Then:
+
+- `Ctrl+C` copies the selected sequences as FASTA to the clipboard. This uses the terminal's clipboard support (OSC 52), which works in most modern terminals, including over SSH.
+- `Ctrl+S` saves them as `<file name>-selected.fas` in the current directory.
+
+With no selection, both act on the sequence under the cursor.
+
+## Key bindings
+
+The key bindings follow Visual Studio Code. Press `F1` or `?` in the viewer to see them.
+
+| Windows and Linux         | macOS                     | Action                                        |
+| ------------------------- | ------------------------- | --------------------------------------------- |
+| `←` `↑` `→` `↓`           | `←` `↑` `→` `↓`           | Move the cursor                               |
+| `Ctrl+←` / `Ctrl+→`       | `Option+←` / `Option+→`   | Jump 10 sites                                 |
+| `Home` / `End`            | `fn+←` / `fn+→`           | First / last site of the sequence             |
+| `Ctrl+Home` / `Ctrl+End`  | `Ctrl+fn+←` / `Ctrl+fn+→` | First / last taxon                            |
+| `PgUp` / `PgDn`           | `Option+↑` / `Option+↓`   | Page through taxa                             |
+| `Alt+PgUp` / `Alt+PgDn`   | `Option+Shift+←` / `→`    | Page through sites                            |
+| `[` / `]`                 | `[` / `]`                 | Previous / next chunk                         |
+| `Ctrl+G`                  | `Ctrl+G`                  | Go to a site (`120`), a taxon, or `taxon:120` |
+| `Ctrl+F`                  | `Ctrl+F`                  | Find a taxon by name                          |
+| `Enter` or `F3`           | `Enter` or `fn+F3`        | Next match (`Shift` for the previous one)     |
+| `+` / `-` / `Ctrl+0`      | `+` / `-` / `Ctrl+0`      | Zoom in / out / reset                         |
+| `F2` or `Ctrl+K` `C`      | `Ctrl+K` `C`              | Cycle color mode                              |
+| `F4` or `Ctrl+K` `L`      | `Ctrl+K` `L`              | Show or hide residue letters                  |
+| `Ctrl+K` `P`              | `Ctrl+K` `P`              | Show one chunk at a time                      |
+| `Ctrl+B`                  | `Ctrl+B`                  | Show or hide the chunk sidebar                |
+| `<` / `>`                 | `<` / `>`                 | Narrow / widen the taxon names                |
+| `Space` / `Shift+↑` `↓`   | `Space` / `Shift+↑` `↓`   | Select a sequence / extend the selection      |
+| `Ctrl+A`                  | `Ctrl+A`                  | Select all sequences                          |
+| `Ctrl+C`                  | `Ctrl+C`                  | Copy selected sequences as FASTA              |
+| `Ctrl+S`                  | `Ctrl+S`                  | Save selected sequences as FASTA              |
+| `Ctrl+PgUp` / `Ctrl+PgDn` | `Ctrl+fn+↑` / `Ctrl+fn+↓` | Previous / next file                          |
+| `Ctrl+P`                  | `Ctrl+P`                  | Pick a file                                   |
+| `F1` or `?`               | `?`                       | Show key bindings                             |
+| `Ctrl+Q` or `Esc`         | `Ctrl+Q` or `Esc`         | Quit (`Esc` first closes any open prompt)     |
+
+You can also use the mouse. Scroll to move through taxa, hold `Shift` while scrolling to move through sites, and hold `Ctrl` while scrolling to zoom. Click a residue to move the cursor, click a taxon name to select it (`Shift`-click to select a range), and drag the line next to the names to resize them.
+
+{% aside type="tip" title="macOS terminal settings" %}
+- **Option keys**: if `Option+←` types a character or does nothing, let Option act as a modifier. In Terminal, open **Settings → Profiles → Keyboard** and turn on **Use Option as Meta key**. In iTerm2, open **Settings → Profiles → Keys** and set **Left Option key** to **Esc+**.
+- **fn keys**: Terminal scrolls its own window with `fn+↑`, `fn+↓`, `fn+←`, and `fn+→`. Add `Shift` (for example `Shift+fn+↑`) to send them to the viewer, or use `Option+↑` and `Option+↓` to page.
+- **Function keys**: on Mac keyboards, `F1` to `F4` need `fn` unless the function keys are set as standard function keys. The viewer offers `?`, `Ctrl+K` `C`, and `Ctrl+K` `L` instead.
+
+{% /aside %}
+
+{% aside type="note" %}
+Some terminals use `Ctrl+=` or `Alt` shortcuts for their own features. If a shortcut does not work, use the alternative in the table, such as `+` and `-` for zoom or `Ctrl+K` `C` for colors.
+{% /aside %}
+
+## All options
+
+| Option                 | Description                                                            |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `-d`, `--dir`          | Directory with alignments                                              |
+| `-i`, `--input`        | Alignment files. Allows wildcards                                      |
+| `-f`, `--input-format` | Input format: `auto` (default), `fasta`, `nexus`, or `phylip`          |
+| `--datatype`           | Data type: `ignore` (default, detects DNA or amino acids), `dna`, `aa` |
+| `--theme`              | Colors for a `dark` (default) or `light` terminal                      |
+| `--residue-colors`     | `clustal` (default) or `colorblind-safe` residue colors                |
+| `--chunk`              | Sites per chunk: `250`, `500`, `1000` (default), or `2000`             |
+| `--log`                | Log file path. Default: `segul.log`                                    |
