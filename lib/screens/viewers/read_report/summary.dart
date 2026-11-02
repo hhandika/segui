@@ -6,6 +6,7 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
+import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/viewers/natural_sort.dart';
@@ -19,7 +20,8 @@ final NumberFormat _countFormat = NumberFormat('#,##0');
 /// How the summary tab shows the samples.
 enum SummaryView {
   bars('Bars', Icons.bar_chart_rounded),
-  table('Table', Icons.table_rows_outlined);
+  table('Table', Icons.table_rows_outlined),
+  heatmap('Heatmap', Icons.grid_on_rounded);
 
   const SummaryView(this.label, this.icon);
 
@@ -28,7 +30,7 @@ enum SummaryView {
 }
 
 /// Every sample at a glance: one metric as bars, or all
-/// metrics as a table, followed by the checks of the open sample. Samples follow the
+/// metrics as a table or heatmap, followed by the checks of the open sample. Samples follow the
 /// order of the sample list, and picking one opens it. The controls and
 /// the checks stay in place while the samples scroll between them.
 class ReadSummaryPanel extends StatefulWidget {
@@ -101,10 +103,11 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
                 leading: (i) => SampleStatusDot(sample: widget.samples[i]),
                 onSelected: widget.onSelected,
               ),
-            SummaryView.table => ReadOverviewTable(
+            SummaryView.table || SummaryView.heatmap => ReadOverviewTable(
                 samples: widget.samples,
                 view: widget.view,
                 index: widget.index,
+                heatmap: _mode == SummaryView.heatmap,
                 onSelected: widget.onSelected,
               ),
           };
@@ -178,7 +181,8 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
 /// Every metric of every sample, sortable by column and shown a page at a
 /// time. A bar behind each number shows where it sits between the lowest
 /// and highest value of its column among the listed samples, colored by
-/// status in columns with a quality check. Tapping a row opens the sample.
+/// status in columns with a quality check. As a [heatmap], each number is
+/// colored by the colormap instead. Tapping a row opens the sample.
 class ReadOverviewTable extends StatelessWidget {
   const ReadOverviewTable({
     super.key,
@@ -186,12 +190,14 @@ class ReadOverviewTable extends StatelessWidget {
     required this.view,
     required this.index,
     required this.onSelected,
+    this.heatmap = false,
   });
 
   final List<ReadSampleData> samples;
   final List<int> view;
   final int index;
   final ValueChanged<int> onSelected;
+  final bool heatmap;
 
   @override
   Widget build(BuildContext context) {
@@ -209,13 +215,16 @@ class ReadOverviewTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        DataBarLegend(
-          swatches: [
-            for (final ReadQcStatus status in ReadQcStatus.values)
-              (statusColor(status, colors), status.label),
-            (neutral, 'No check'),
-          ],
-        ),
+        if (heatmap)
+          const HeatmapLegend()
+        else
+          DataBarLegend(
+            swatches: [
+              for (final ReadQcStatus status in ReadQcStatus.values)
+                (statusColor(status, colors), status.label),
+              (neutral, 'No check'),
+            ],
+          ),
         const SizedBox(height: SeguiSpacing.sm),
         Expanded(
           child: PagedTable<int>(
@@ -288,6 +297,13 @@ class ReadOverviewTable extends StatelessWidget {
       cell: (i) {
         final double? value = metric.valueOf(samples[i].metrics);
         if (value == null) return const Text('-');
+        if (heatmap) {
+          return HeatmapCell(
+            fraction: high > low ? (value - low) / (high - low) : 0.5,
+            text: format(value),
+            selected: i == index,
+          );
+        }
         final Text text = Text(format(value), maxLines: 1, softWrap: false);
         // Bars say nothing when every listed sample has the same value.
         if (high <= low) return text;

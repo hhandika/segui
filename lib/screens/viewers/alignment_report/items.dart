@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
+import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
@@ -11,7 +12,8 @@ import 'package:segui/styles/themes.dart';
 /// How a report item panel shows its loci or taxa.
 enum ItemView {
   bars('Bars', Icons.bar_chart_rounded),
-  table('Table', Icons.table_rows_outlined);
+  table('Table', Icons.table_rows_outlined),
+  heatmap('Heatmap', Icons.grid_on_rounded);
 
   const ItemView(this.label, this.icon);
 
@@ -20,7 +22,7 @@ enum ItemView {
 }
 
 /// Every locus or taxon of an alignment report: one metric as bars, or
-/// all metrics as a table, with the open item's values below. The
+/// all metrics as a table or heatmap, with the open item's values below. The
 /// controls and the values stay in place while the items scroll between
 /// them. A name filter narrows both views.
 class ReportItemPanel extends StatefulWidget {
@@ -102,7 +104,8 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
                 format: metric.format,
                 onSelected: widget.onSelected,
               ),
-            ItemView.table => _table(context, view),
+            ItemView.table => _table(context, view, heatmap: false),
+            ItemView.heatmap => _table(context, view, heatmap: true),
           };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -181,13 +184,18 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
     );
   }
 
-  Widget _table(BuildContext context, List<int> view) {
+  /// All metrics, with a data bar behind each number, or as a [heatmap].
+  Widget _table(
+    BuildContext context,
+    List<int> view, {
+    required bool heatmap,
+  }) {
     final Color neutral =
         SeguiColors.of(context).dataBar(Theme.of(context).colorScheme);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const DataBarLegend(),
+        if (heatmap) const HeatmapLegend() else const DataBarLegend(),
         const SizedBox(height: SeguiSpacing.sm),
         Expanded(
           child: PagedTable<int>(
@@ -206,7 +214,7 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
                 ),
               ),
               for (final ReportMetric metric in widget.metrics)
-                _numeric(metric, view, neutral),
+                _numeric(metric, view, neutral, heatmap: heatmap),
             ],
           ),
         ),
@@ -214,13 +222,14 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
     );
   }
 
-  /// A column of [metric] with a data bar behind each value, scaled to
-  /// the listed items.
+  /// A column of [metric] with a data bar behind each value, or a
+  /// [heatmap] color, scaled to the listed items.
   PagedTableColumn<int> _numeric(
     ReportMetric metric,
     List<int> view,
-    Color neutral,
-  ) {
+    Color neutral, {
+    required bool heatmap,
+  }) {
     double low = double.infinity;
     double high = double.negativeInfinity;
     for (final int i in view) {
@@ -235,6 +244,13 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
       sortValue: (i) => metric.values[i],
       cell: (i) {
         final double value = metric.values[i];
+        if (heatmap) {
+          return HeatmapCell(
+            fraction: high > low ? (value - low) / (high - low) : 0.5,
+            text: metric.format(value),
+            selected: i == widget.open,
+          );
+        }
         final Text text = Text(
           metric.format(value),
           maxLines: 1,

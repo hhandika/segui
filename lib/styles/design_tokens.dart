@@ -247,6 +247,15 @@ abstract final class SeguiTableLayout {
   static const double maxResizedColumn = 640;
   static const double resizeHandle = 12;
 
+  /// Width of the light line between columns.
+  static const double columnDivider = 0.5;
+
+  /// Heatmap cells: space around each colored cell, inside the row.
+  static const double heatmapInset = SeguiSpacing.xs;
+
+  /// Width of the colormap in a heatmap table's legend.
+  static const double heatmapLegendWidth = 120;
+
   /// In-cell data bars: their opacity and the shortest bar as a share of
   /// the cell. Bars are as tall as the number over them.
   static const double dataBarAlpha = 0.3;

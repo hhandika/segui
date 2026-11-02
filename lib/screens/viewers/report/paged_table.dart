@@ -36,7 +36,7 @@ class PagedTableColumn<T> {
 }
 
 /// A table that shows one page of rows at a time, so large reports stay
-/// fast. The column header and the pager stay in place while the rows
+/// fast. Light lines separate the columns. The column header and the pager stay in place while the rows
 /// scroll. The page follows the [selected] row when it changes. In a
 /// scrolling parent, the table takes a fixed height.
 class PagedTable<T> extends StatefulWidget {
@@ -195,6 +195,7 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
               in widget.columns.indexed)
             _HeaderCell(
               label: column.label,
+              divider: _hasDivider(i),
               width: _widthOf(i),
               numeric: column.numeric,
               style: theme.textTheme.titleSmall,
@@ -244,6 +245,9 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: SeguiTableLayout.cellPadding,
                     ),
+                    decoration: _hasDivider(i)
+                        ? BoxDecoration(border: _columnDivider(colors))
+                        : null,
                     alignment: column.numeric
                         ? Alignment.centerRight
                         : Alignment.centerLeft,
@@ -324,6 +328,8 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
 
   // A new order starts at its first page, even when the selected row
   // moves to another.
+  bool _hasDivider(int column) => column < widget.columns.length - 1;
+
   double _widthOf(int column) =>
       _widths[column] ?? widget.columns[column].width;
 
@@ -377,9 +383,18 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
   }
 }
 
+/// The light line at the right edge of every column but the last.
+Border _columnDivider(ColorScheme colors) => Border(
+      right: BorderSide(
+        color: colors.outlineVariant,
+        width: SeguiTableLayout.columnDivider,
+      ),
+    );
+
 class _HeaderCell extends StatelessWidget {
   const _HeaderCell({
     required this.label,
+    required this.divider,
     required this.width,
     required this.numeric,
     required this.style,
@@ -393,6 +408,9 @@ class _HeaderCell extends StatelessWidget {
   final double width;
   final bool numeric;
   final TextStyle? style;
+
+  /// Whether a line separates this column from the next.
+  final bool divider;
 
   /// Sort direction when the table sorts by this column, otherwise null.
   final bool? sortedAscending;
@@ -433,8 +451,13 @@ class _HeaderCell extends StatelessWidget {
       ),
     );
     final ValueChanged<double>? resize = onResize;
-    return SizedBox(
+    return Container(
       width: width,
+      decoration: divider
+          ? BoxDecoration(
+              border: _columnDivider(Theme.of(context).colorScheme),
+            )
+          : null,
       child: resize == null
           ? cell
           : Stack(
@@ -457,8 +480,8 @@ class _HeaderCell extends StatelessWidget {
   }
 }
 
-/// A grip at a column's right edge. Dragging it resizes the column, and a
-/// double tap resets the width.
+/// A grab area at a column's right edge, beside the column line. Dragging
+/// it resizes the column, and a double tap resets the width.
 class _ResizeHandle extends StatelessWidget {
   const _ResizeHandle({
     required this.label,
@@ -472,7 +495,6 @@ class _ResizeHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = Theme.of(context).colorScheme.outlineVariant;
     return Semantics(
       label: 'Resize $label column',
       child: MouseRegion(
@@ -481,13 +503,7 @@ class _ResizeHandle extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onHorizontalDragUpdate: (details) => onResize(details.delta.dx),
           onDoubleTap: onReset,
-          child: Center(
-            child: Container(
-              width: SeguiStroke.regular,
-              height: SeguiTableLayout.heading / 2,
-              color: color,
-            ),
-          ),
+          child: const SizedBox.expand(),
         ),
       ),
     );

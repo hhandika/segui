@@ -7,6 +7,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/alignment_report.dart';
 import 'package:segui/screens/viewers/alignment_report/items.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
+import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
@@ -176,6 +177,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PagedTable<int>), findsOneWidget);
     expect(find.text('Informative'), findsOneWidget);
+    await tester.tap(find.text('Heatmap'));
+    await tester.pumpAndSettle();
+    expect(find.byType(HeatmapCell), findsWidgets);
+    // Only the open locus is outlined, one cell per metric.
+    final Iterable<HeatmapCell> outlined = tester
+        .widgetList<HeatmapCell>(find.byType(HeatmapCell))
+        .where((cell) => cell.selected);
+    expect(outlined, hasLength(7));
+    expect(find.byType(HeatmapLegend), findsOneWidget);
+    await tester.tap(find.text('Table'));
+    await tester.pumpAndSettle();
 
     // The filter narrows the table.
     await tester.enterText(find.byType(TextField), '001');

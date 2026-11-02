@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
+import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
@@ -312,6 +313,17 @@ void main() {
     await tester.tap(find.text('alpha').last);
     await tester.pumpAndSettle();
     expect(find.text('Checks for alpha'), findsOneWidget);
+
+    // The heatmap colors the same table, scaled per column.
+    await tester.tap(find.text('Heatmap'));
+    await tester.pumpAndSettle();
+    expect(find.byType(DataBarCell), findsNothing);
+    final List<HeatmapCell> cells =
+        tester.widgetList<HeatmapCell>(find.byType(HeatmapCell)).toList();
+    expect(cells.map((cell) => cell.fraction), containsAll([0.0, 1.0]));
+    expect(find.byType(HeatmapLegend), findsOneWidget);
+    await tester.tap(find.text('Bars'));
+    await tester.pumpAndSettle();
 
     // The rail filter narrows the list.
     await tester.enterText(find.byType(TextField).first, 'gam');

@@ -46,7 +46,7 @@ Other files stop with a message that names the file.
 From top to bottom, the viewer shows:
 
 1. **Toolbar**: the file name, the kind of report, and its main counts, such as `120 taxa · 4,060 loci · DNA`.
-2. **Sections**: `Overview`, then one section for each kind of item. An alignment report has `Loci` and `Taxa`; a read report has `Samples`. Each section shows how many items it holds. On the right, `Table │ Plot` marks the current view, and the plot shows whether it draws bars or a histogram.
+2. **Sections**: `Overview`, then one section for each kind of item. An alignment report has `Loci` and `Taxa`; a read report has `Samples`. Each section shows how many items it holds. On the right, `Table │ Plot` marks the current view, and the plot shows whether it draws bars, a histogram, or a heatmap.
 3. **Section content**: the overview, or the items of a section as a table or a plot.
 4. **Status bar**: the selected item, the chosen column and its value, and the item's position, such as `uce-12 · Sites: 412 · 12 of 4,060`.
 
@@ -73,7 +73,7 @@ Every section of items, such as `Loci`, `Taxa`, or `Samples`, can be shown as a 
 The table has one row per item and one column per statistic.
 
 1. Press `Tab`, or the section number, such as `2` for `Loci`, to open a section.
-2. Press `←` or `→` to choose a column. Its header is highlighted. Columns that do not fit the terminal scroll into view as you move to them, and the title says how many are hidden.
+2. Press `←` or `→` to choose a column. Its header is highlighted, and light lines separate the columns. Columns that do not fit the terminal scroll into view as you move to them, and the title says how many are hidden.
 3. Press `↑` or `↓` to select an item. The status bar shows its name, the chosen column and its value, and its position.
 4. Press `s` to sort by the chosen column, highest first. Press it again to sort lowest first, and once more to return to the report order. An arrow next to the column name shows the order.
 
@@ -92,7 +92,7 @@ Press `←` or `→` to plot another column, and `↑` or `↓` to move the sele
 
 ### Show a histogram
 
-Press `h` in the plot to count the items in ranges of the chosen column instead. Each bar shows how many items fall in its range. The range of the selected item is highlighted, and a note below the chart names it. Press `h` again to return to the bars.
+Press `h` in the plot to count the items in ranges of the chosen column instead. Each bar shows how many items fall in its range. The range of the selected item is highlighted, and a note below the chart names it. Press `h` again for a heatmap.
 
 {% terminalshot
    src="cli/view-summary-histogram.webp"
@@ -100,6 +100,10 @@ Press `h` in the plot to count the items in ranges of the chosen column instead.
    caption="Histogram of sites per locus." /%}
 
 The plot remembers the choice, so other columns also open as a histogram until you press `h` again.
+
+### Show a heatmap
+
+Press `h` once more to draw every column as a heatmap, one row per item in the table order. Each column is colored from its lowest to its highest value, and missing values show as `·`. The line below the heatmap shows the colors from low to high and the selected item's value in the chosen column. Choose the colors with `--colormap`. Press `h` again to return to the bars.
 
 ### Columns
 
@@ -124,7 +128,7 @@ Press `F1` or `?` in the viewer to see them.
 | `Tab` / `Shift+Tab`      | Next / previous section                                     |
 | `1` to `9`               | Go to a section                                             |
 | `v` or `F2`              | Switch between table and plot                               |
-| `h`                      | Switch the plot between bars and a histogram                |
+| `h`                      | Cycle the plot: bars, histogram, heatmap                    |
 | `←` / `→`                | Choose a column                                             |
 | `s`                      | Sort by the column: highest first, lowest first, report order |
 | `↑` / `↓`                | Move the selection                                          |
@@ -140,4 +144,5 @@ Press `F1` or `?` in the viewer to see them.
 | --------------- | -------------------------------------------------------------------------------------------- |
 | `-i`, `--input` | `alignment-report.json` from `segul align summary` or `read-report.json` from `segul read summary --mode complete` |
 | `--theme`       | Colors for a `dark` (default) or `light` terminal                                            |
+| `--colormap`    | Heatmap colors: `viridis` (default), `cividis`, `magma`, `inferno`, `plasma`, `blues`, `greens`, `ylgnbu`, `ylorrd`, `rdbu`, `puor`, or `brbg` |
 | `--log`         | Log file path. Default: `segul.log`                                                          |
