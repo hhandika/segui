@@ -157,11 +157,11 @@ On desktop platforms, the application saves the output in the user's chosen dire
 
 The `Workbench` tab in the file panel summarizes the input and output files.
 
-Use the **Inspector** card to check a single file without leaving the tool. Choose `Input` or `Output`, then pick a file from the searchable list. The inspector shows the file's format, content, and size, plus counts that match its content: sequences, sites, and data type for alignments; the number of partitions for partition files; rows and columns for tables; loci and taxa for alignment reports; samples for read reports; and lines for text files. Select `Open` to view the file, or `View all sequences` to open the alignment viewer on every FASTA, NEXUS, and PHYLIP file in the list, so you can step through them without picking each one. Before a run, the inspector lists the input files; after a run, it lists the new output files.
+Use the **Inspector** card to check a single file without leaving the tool. Choose `Input` or `Output`, then pick a file from the searchable list. The inspector shows the file's format, content, and size, plus counts that match its content: sequences, sites, and data type for alignments; the number of partitions for partition files; rows and columns for tables; loci and taxa for alignment reports; loci and samples for distance reports; samples for read reports; and lines for text files. Select `Open` to view the file, or `View all sequences` to open the alignment viewer on every FASTA, NEXUS, and PHYLIP file in the list, so you can step through them without picking each one. Before a run, the inspector lists the input files; after a run, it lists the new output files.
 
 After a run finishes, the workbench also lists:
 
-- **Report**: tools that write an interactive report show this card first: `Summarize alignments` and the Complete mode of `Summarize genomic reads`. Select `View report` to open it. See [summary reports](#summary-reports).
+- **Report**: tools that write an interactive report show this card first: `Summarize alignments`, `Compute genetic distances`, and the Complete mode of `Summarize genomic reads`. Select `View report` to open it. See [summary reports](#summary-reports).
 - **Parameters**: the settings used by the run.
 - **Suggested workflows**: each common workflow from the home screen that includes the tool, with its progress. Select `Continue` to open the next step.
 - **Other compatible tools**: tools that can take the run's data.
@@ -190,7 +190,7 @@ Supported file types:
 - Plain-text files (`.txt`)
 - Comma separated values (`.csv`)
 - Sequence files in FASTA, NEXUS, or PHYLIP format
-- Summary reports: `alignment-report.json` and `read-report.json`
+- Summary reports: `alignment-report.json`, `distance-report.json`, and `read-report.json`
 
 The app can directly view the supported file types. The content will be displayed in a new window. For the desktop version, you can also select open the file in other app. It will open default on default apps for the file type. This method also works for unsupported file types.
 
@@ -214,10 +214,11 @@ Summary tools write a report that SEGUI opens as interactive charts and tables:
 
 - [Alignment report](/docs/gui-usage/align-summary/#alignment-report) from `Summarize alignments`.
 - [Read report](/docs/gui-usage/read-summary/#read-report) from the Complete mode of `Summarize genomic reads`.
+- [Distance report](/docs/gui-usage/align-distance/#distance-report) from `Compute genetic distances`.
 
 Open a report from the `Report` card in the `Workbench` tab after a run, or open its JSON file from the `Output` tab or the inspector later. The other summary tools, such as contig and MAF summaries, write CSV files that open in the [table viewer](#table-viewer).
 
-Both reports work the same way:
+The reports work the same way:
 
 - **Tabs**: each report is split into tabs, such as `Overview`, `Loci`, and `Distributions`. Select a tab to switch.
 - **Bars, Table, and Heatmap**: tabs that list items, such as loci, taxa, or samples, show one statistic per item as `Bars`, or every statistic as a `Table` or a `Heatmap`. Light lines separate the table columns, and the heatmap colors each number from the lowest to the highest value in its column. Choose the statistic with the chips above the bars. Select a bar or a row to open that item.

@@ -19,10 +19,11 @@ This feature is not yet in a SEGUL release. It will be available in the next SEG
 
 Explore a summary report in your terminal, as tables or plots. It shows the same report SEGUI opens after a summary, so you can check results on a remote server or in a terminal session where a GUI is not available.
 
-The viewer opens two reports:
+The viewer opens three reports:
 
 - `alignment-report.json`, written by [`segul align summary`](/docs/cli-usage/align-summary/).
 - `read-report.json`, written by [`segul read summary --mode complete`](/docs/cli-usage/read-summary/).
+- `distance-report.json`, written by [`segul align distance`](/docs/cli-usage/align-distance/).
 
 SEGUL tells them apart from their content, so a report with an output prefix, such as `uce_alignment-report.json`, opens the same way:
 
@@ -46,7 +47,7 @@ Other files stop with a message that names the file.
 From top to bottom, the viewer shows:
 
 1. **Toolbar**: the file name, the kind of report, and its main counts, such as `120 taxa · 4,060 loci · DNA`.
-2. **Sections**: `Overview`, then one section for each kind of item. An alignment report has `Loci` and `Taxa`; a read report has `Samples`. Each section shows how many items it holds. On the right, `Table │ Plot` marks the current view, and the plot shows whether it draws bars, a histogram, or a heatmap.
+2. **Sections**: `Overview`, then one section for each kind of item. An alignment report has `Loci` and `Taxa`; a read report has `Samples`; a distance report has `Loci`, `Samples`, `Groups` with grouping, and the `Matrix` and `Group matrix` sections. Each section shows how many items it holds. On the right, `Table │ Plot` marks the current view, and the plot shows whether it draws bars, a histogram, or a heatmap.
 3. **Section content**: the overview, or the items of a section as a table or a plot.
 4. **Status bar**: the selected item, the chosen column and its value, and the item's position, such as `uce-12 · Sites: 412 · 12 of 4,060`.
 
@@ -63,6 +64,7 @@ The overview lists the totals of the report on the left, with bar charts on the 
 
 - **Alignment report**: the data type, taxa, loci, sites, characters, missing data, and GC and AT content, with the range and mean of locus length and taxa per locus. Conserved, variable, and parsimony informative sites show their count and share of all sites, with the loci that are fully conserved or have any variable or informative site. The charts show matrix completeness, as the loci with at least each share of taxa, and the count of each character.
 - **Read report**: the samples, reads, bases, mean read length, and Q30 bases across every sample, with a chart of reads by mean quality score across all samples.
+- **Distance report**: the data type, model, loci, samples, pairs, undefined pairs, the range, mean, and standard deviation of every pairwise distance, the median of the locus means, and the compared sites per pair, with a histogram of every pairwise distance across loci.
 
 ## Tables and plots
 
@@ -119,6 +121,16 @@ Alignment reports have these columns:
 
 Read reports list each sample's reads, bases, mean read length, N50, GC content, N content, Q20 and Q30 bases, mean quality, and reads with mean quality below 20. Duplication, adapters, and poly-G appear when the report has them.
 
+Distance reports have these columns:
+
+- **Loci**: samples, sites, pairs, undefined pairs, the mean, median, standard deviation, minimum, and maximum distance, and the mean compared sites per pair.
+- **Samples**: loci, pairs, and the mean, standard deviation, minimum, and maximum distance to every other sample. `Nearest` is the distance to the nearest sample. With groups, `Max within` and `Min between` are the highest distance to a sample of the same group and the lowest to another group.
+- **Groups**: samples, pairs within the group, the mean, standard deviation, and maximum distance within the group, and the mean distance to the nearest group.
+
+## Matrices
+
+A distance report also has a `Matrix` section with the mean distance between every pair of samples, and a `Group matrix` section with the mean distance within and between groups. Rows are named, and columns are numbered by row. Press the arrow keys to move between cells; the status bar names the two items and their distance. Cells are colored from the lowest to the highest distance, leaving out each item with itself. Missing values show as `·`.
+
 ## Key bindings
 
 Press `F1` or `?` in the viewer to see them.
@@ -132,6 +144,7 @@ Press `F1` or `?` in the viewer to see them.
 | `←` / `→`                | Choose a column                                             |
 | `s`                      | Sort by the column: highest first, lowest first, report order |
 | `↑` / `↓`                | Move the selection                                          |
+| Arrows in a matrix       | Move between cells                                          |
 | `PgUp` / `PgDn`          | Move a page (`fn+↑` / `fn+↓` on macOS)                      |
 | `Home` / `End`           | First / last item (`fn+←` / `fn+→` on macOS)                |
 | Mouse wheel              | Scroll                                                      |
@@ -142,7 +155,7 @@ Press `F1` or `?` in the viewer to see them.
 
 | Option          | Description                                                                                  |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| `-i`, `--input` | `alignment-report.json` from `segul align summary` or `read-report.json` from `segul read summary --mode complete` |
+| `-i`, `--input` | `alignment-report.json` from `segul align summary`, `read-report.json` from `segul read summary --mode complete`, or `distance-report.json` from `segul align distance` |
 | `--theme`       | Colors for a `dark` (default) or `light` terminal                                            |
 | `--colormap`    | Heatmap colors: `viridis` (default), `cividis`, `magma`, `inferno`, `plasma`, `blues`, `greens`, `ylgnbu`, `ylorrd`, `rdbu`, `puor`, or `brbg` |
 | `--log`         | Log file path. Default: `segul.log`                                                          |

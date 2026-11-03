@@ -67,7 +67,7 @@ class _MetricBarsState extends State<MetricBars> {
   Widget build(BuildContext context) {
     final List<int> view = widget.view;
     final double largest =
-        view.map(widget.value).fold(0, (a, b) => a > b ? a : b);
+        view.map(widget.value).fold(0, (a, b) => b.isFinite && b > a ? b : a);
     return Scrollbar(
       controller: _controller,
       child: ListView.builder(
@@ -185,8 +185,9 @@ class MetricBar extends StatelessWidget {
                         color: colors.surfaceContainerHighest,
                         alignment: Alignment.centerLeft,
                         child: FractionallySizedBox(
-                          widthFactor:
-                              largest > 0 ? (value / largest).clamp(0, 1) : 0,
+                          widthFactor: largest > 0 && value.isFinite
+                              ? (value / largest).clamp(0, 1)
+                              : 0,
                           heightFactor: 1,
                           // Rounded at its value end too, like chart bars.
                           child: DecoratedBox(

@@ -442,13 +442,14 @@ class AlignmentDistanceRunner {
   /// Whether to also write long-format tables of all loci.
   final bool isLongFormat;
 
-  Future<void> run() async {
+  /// Returns the path of the distance report.
+  Future<String> run() async {
     List<String> finalInputFiles = IOServices()
         .convertPathsToString(inputFiles, SegulType.standardSequence);
     if (finalInputFiles.isEmpty) {
       throw 'No input files';
     }
-    await AlignmentDistanceServices(
+    return AlignmentDistanceServices(
       inputFiles: finalInputFiles,
       inputFmt: inputFmt,
       datatype: datatype,

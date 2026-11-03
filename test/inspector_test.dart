@@ -128,6 +128,12 @@ void main() {
       FileContentKind.alignmentReport,
     );
     expect(
+      await contentKindOf(
+        write('k2p_distance-report.json', '{"summary":{"loci":3}}'),
+      ),
+      FileContentKind.distanceReport,
+    );
+    expect(
       await contentKindOf(write('reads.fq', '@r\nA\n+\nI\n')),
       FileContentKind.other,
     );

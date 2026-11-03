@@ -94,7 +94,7 @@ With `Detect from sample names`, click `Detect groups`. The app picks the delimi
 
 ## Output
 
-The output directory contains a `per_locus` folder with one distance matrix per alignment, named after the input file, and a `distance_summary.csv` file with one row per alignment. With a prefix, the files start with the prefix instead of `distance`, such as `<prefix>_summary.csv`. See the [CLI guide](/docs/cli-usage/align-distance/) for the summary columns.
+The output directory contains a `per_locus` folder with one distance matrix per alignment, named after the input file, a `distance_summary.csv` file with one row per alignment, and `distance-report.json`, which opens as the interactive [distance report](#distance-report). With a prefix, the files start with the prefix instead of `distance`, such as `<prefix>_summary.csv` and `<prefix>_distance-report.json`. See the [CLI guide](/docs/cli-usage/align-distance/) for the summary columns.
 
 With groups, the app also writes:
 
@@ -110,3 +110,16 @@ With `Long-format tables` on, the app also writes:
 - `distance_group_long.csv` (with groups only): one row per pair of groups per alignment, with the number of pairs, mean, standard deviation, minimum, and maximum. Rows with `all` as the locus hold the pooled values.
 
 See the [CLI guide](/docs/cli-usage/align-distance/#long-format-tables) for all columns.
+
+## Distance report
+
+{% badge text="In development" variant="caution" /%}
+
+When the run finishes, select `View report` on the `Report` card in the `Workbench` tab. You can also open `distance-report.json` from the `Output` tab later. It works like the other [summary reports](/docs/gui-usage/intro/#summary-reports). The tabs are:
+
+- **Overview**: the model, loci, samples, pairs, the mean and range of every pairwise distance, the median of the locus means, and the compared sites per pair, with a histogram of every pairwise distance across loci.
+- **Loci**: the distances within each alignment, as in `distance_summary.csv`.
+- **Samples**: the distances from each sample to every other sample across loci, and its distance to the nearest sample. With groups, `Max within` and `Min between` show whether a sample is closer to another group than to its own.
+- **Groups** (with groups only): the samples and the distances within each group, and the mean distance to the nearest group.
+- **Matrix**: the mean distance between samples across the loci they share. Choose a sample to list every other sample, nearest first, or select `Heatmap` to see every pair. The heatmap is available up to 100 samples, and the matrix is left out of the report above 1,000 samples.
+- **Group matrix** (with groups only): the mean distance within and between groups, the same way.

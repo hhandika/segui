@@ -66,7 +66,14 @@ class HeatmapCell extends StatelessWidget {
 
 /// The colormap of a table of [HeatmapCell]s, from low to high.
 class HeatmapLegend extends StatelessWidget {
-  const HeatmapLegend({super.key});
+  const HeatmapLegend({
+    super.key,
+    this.text = 'Colors run from the lowest to the highest value in each '
+        'column.',
+  });
+
+  /// How the colors are scaled.
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +83,7 @@ class HeatmapLegend extends StatelessWidget {
       runSpacing: SeguiSpacing.xs,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text(
-          'Colors run from the lowest to the highest value in each column.',
-          style: style,
-        ),
+        Text(text, style: style),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [

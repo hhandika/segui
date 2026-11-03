@@ -27,7 +27,9 @@ class DataBarCell extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: FractionallySizedBox(
-                widthFactor: min + (1 - min) * fraction.clamp(0, 1),
+                // Missing values, sent as NaN, get the shortest bar.
+                widthFactor: min +
+                    (1 - min) * (fraction.isFinite ? fraction.clamp(0, 1) : 0),
                 heightFactor: 1,
                 child: DecoratedBox(
                   decoration: BoxDecoration(

@@ -878,7 +878,9 @@ impl AlignmentDistanceServices {
         }
     }
 
-    pub fn compute_distance(&self) {
+    /// Returns the path of the JSON report, which the app opens as the
+    /// interactive distance report.
+    pub fn compute_distance(&self) -> String {
         let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
@@ -917,9 +919,10 @@ impl AlignmentDistanceServices {
         if let Some(grouping) = grouping {
             handle = handle.with_grouping(grouping);
         }
-        handle.compute(&input_files, self.prefix.as_deref());
+        let outputs = handle.compute(&input_files, self.prefix.as_deref());
         let duration = time.elapsed();
         utils::print_execution_time(duration);
+        outputs.report.display().to_string()
     }
 
     // Assign the samples of the input files to groups without computing distances.
@@ -1421,8 +1424,9 @@ mod test {
         services.output_dir = output.to_string_lossy().into_owned();
         services.model = String::from("k2p");
         services.triangle = String::from("lower");
-        services.compute_distance();
+        let report = services.compute_distance();
         assert!(count_files(&output) >= 2);
+        assert!(Path::new(&report).is_file());
         clean(&output);
     }
 

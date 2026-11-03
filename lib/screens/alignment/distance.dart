@@ -402,7 +402,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
     }
     try {
       _setRunning();
-      await AlignmentDistanceRunner(
+      final String report = await AlignmentDistanceRunner(
         inputFiles: inputFiles,
         inputFmt: _ctr.inputFormatController!,
         datatype: datatype,
@@ -414,7 +414,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
         grouping: _groupingParams,
         isLongFormat: _isLongFormat,
       ).run();
-      _setSuccess(outputDir);
+      _setSuccess(report);
     } catch (e) {
       _showError(e.toString());
     }
@@ -468,8 +468,13 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
     });
   }
 
-  void _setSuccess(Directory outputDir) {
-    ref.read(lastRunProvider.notifier).record(_parameters);
+  /// [reportPath] is the distance report, which the workbench offers to
+  /// open.
+  void _setSuccess(String reportPath) {
+    ref.read(lastRunProvider.notifier).record(
+          _parameters,
+          report: File(reportPath),
+        );
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

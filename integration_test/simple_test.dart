@@ -134,7 +134,7 @@ void main() {
 
     test('Distance writes a matrix per locus and a summary', () async {
       final output = Directory(p.join(directory.path, 'distance'));
-      await AlignmentDistanceRunner(
+      final String report = await AlignmentDistanceRunner(
         inputFiles: alignments,
         inputFmt: 'Auto',
         datatype: 'DNA',
@@ -144,8 +144,15 @@ void main() {
         triangle: 'lower',
         diagonal: 'zero',
       ).run();
-      expect(await outputNames(output),
-          containsAll(['locus_1.csv', 'locus_2.csv', 'distance_summary.csv']));
+      expect(
+          await outputNames(output),
+          containsAll([
+            'locus_1.csv',
+            'locus_2.csv',
+            'distance_summary.csv',
+            'distance-report.json',
+          ]));
+      expect(p.basename(report), 'distance-report.json');
     });
 
     test('An invalid model surfaces as an error', () async {

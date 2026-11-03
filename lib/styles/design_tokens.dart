@@ -256,6 +256,9 @@ abstract final class SeguiTableLayout {
   /// Width of the colormap in a heatmap table's legend.
   static const double heatmapLegendWidth = 120;
 
+  /// Width of a value column in a distance matrix.
+  static const double matrixColumn = 96;
+
   /// In-cell data bars: their opacity and the shortest bar as a share of
   /// the cell. Bars are as tall as the number over them.
   static const double dataBarAlpha = 0.3;

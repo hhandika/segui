@@ -2757,7 +2757,7 @@ dependencies = [
  "polars",
  "rayon",
  "segul",
- "segul-core",
+ "segul-core 0.24.0 (git+https://github.com/hhandika/segul.git?branch=summary)",
  "tar",
  "zip 0.6.6",
 ]
@@ -2838,7 +2838,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "segul"
 version = "0.24.0"
-source = "git+https://github.com/hhandika/segul.git?branch=summary#efb1180a6bbec5aa4e56fe7ffbbf98ab935dfabe"
+source = "git+https://github.com/hhandika/segul.git?branch=dev#a1e40f012a9352e7a26a31bbdaf680467846915e"
 dependencies = [
  "anyhow",
  "clap",
@@ -2848,13 +2848,13 @@ dependencies = [
  "glob",
  "log",
  "ratatui",
- "segul-core",
+ "segul-core 0.24.0 (git+https://github.com/hhandika/segul.git?branch=dev)",
 ]
 
 [[package]]
 name = "segul-core"
 version = "0.24.0"
-source = "git+https://github.com/hhandika/segul.git?branch=summary#efb1180a6bbec5aa4e56fe7ffbbf98ab935dfabe"
+source = "git+https://github.com/hhandika/segul.git?branch=dev#a1e40f012a9352e7a26a31bbdaf680467846915e"
 dependencies = [
  "ahash",
  "alphanumeric-sort",
@@ -2886,6 +2886,37 @@ dependencies = [
  "usvg",
  "walkdir",
  "xxhash-rust",
+ "zip 9.2.1",
+]
+
+[[package]]
+name = "segul-core"
+version = "0.24.0"
+source = "git+https://github.com/hhandika/segul.git?branch=summary#efb1180a6bbec5aa4e56fe7ffbbf98ab935dfabe"
+dependencies = [
+ "ahash",
+ "alphanumeric-sort",
+ "anyhow",
+ "assert_approx_eq",
+ "bytecount",
+ "chrono",
+ "colored",
+ "colorous",
+ "csv",
+ "flate2",
+ "glob",
+ "indexmap 2.14.2",
+ "indicatif",
+ "lazy_static",
+ "log",
+ "log4rs",
+ "nom 8.0.0",
+ "num-format",
+ "rayon",
+ "regex",
+ "serde",
+ "serde_json",
+ "walkdir",
  "zip 9.2.1",
 ]
 

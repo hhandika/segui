@@ -13,6 +13,7 @@
 - Interactive read report for the Complete read summary, with per-sample charts and adjustable duplication counts.
 - Interactive alignment summary report, opened from the workbench after a run: an overview of the dataset with site types, matrix completeness, and character counts, every locus and taxon as bars or a sortable table, and distributions across loci.
 - More genetic distance options.
+- Interactive distance report, opened from the workbench after a genetic distance run: an overview with a histogram of every pairwise distance, every locus, sample, and group as bars or a sortable table, and the sample and group matrices as a heatmap or each sample's nearest samples.
 
 ### Improvements
 

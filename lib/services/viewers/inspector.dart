@@ -8,6 +8,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
 import 'package:segui/services/viewers/csv.dart';
+import 'package:segui/services/viewers/distance_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
 
 /// Bytes read from the start of a NEXUS file to tell its blocks apart.
@@ -30,6 +31,7 @@ enum FileContentKind {
   table('Table'),
   readReport('Read report'),
   alignmentReport('Alignment report'),
+  distanceReport('Distance report'),
   text('Text'),
   other('Other');
 
@@ -90,6 +92,9 @@ Future<FileContentKind> contentKindOf(File file) async {
   }
   if (isAlignmentReport(file)) {
     return FileContentKind.alignmentReport;
+  }
+  if (isDistanceReport(file)) {
+    return FileContentKind.distanceReport;
   }
   if (plainTextExtensions.contains(ext)) {
     if (p.basenameWithoutExtension(file.path).endsWith('_partition')) {
@@ -312,6 +317,22 @@ class FileInspector {
             InspectionDetail(
               'Taxa',
               _countFormat.format(summary['taxa'] as num? ?? 0),
+            ),
+          ],
+        ];
+      case FileContentKind.distanceReport:
+        final Object? report = jsonDecode(await file.readAsString());
+        final Object? summary =
+            report is Map<String, dynamic> ? report['summary'] : null;
+        return [
+          if (summary is Map<String, dynamic>) ...[
+            InspectionDetail(
+              'Loci',
+              _countFormat.format(summary['loci'] as num? ?? 0),
+            ),
+            InspectionDetail(
+              'Samples',
+              _countFormat.format(summary['samples'] as num? ?? 0),
             ),
           ],
         ];

@@ -114,6 +114,7 @@ By default, SEGUL writes the output to `Align-Distance`:
 
 ```plaintext
 Align-Distance/
+├── distance-report.json
 ├── distance_summary.csv
 └── per_locus/
     ├── locus_1.csv
@@ -121,6 +122,17 @@ Align-Distance/
 ```
 
 Each file in `per_locus/` is a square distance matrix named after the input alignment. Samples are listed in the same order as in the alignment.
+
+### Distance report
+
+`distance-report.json` holds every statistic of the run in one file. Open it with [`segul view summary`](/docs/cli-usage/view-summary/) or in SEGUI. With `--prefix`, it is named `<PREFIX>_distance-report.json`. It contains:
+
+- **Summary**: loci, samples, pairs, and undefined pairs, with the range, mean, and standard deviation of every pairwise distance across loci, the median of the locus means, and the mean compared sites per pair.
+- **Histogram**: counts of every pairwise distance across loci, in bins of 0.001 from zero. Distances of 10 or more go in the last bin.
+- **Loci**: the same values as `distance_summary.csv`.
+- **Samples**: for each sample, the loci it appears in and the mean, standard deviation, minimum, and maximum distance to every other sample across loci. Its nearest sample is the one with the lowest mean distance in the sample matrix. With groups, the highest mean distance to a sample of the same group and the lowest to a sample of another group show whether groups overlap.
+- **Sample matrix**: the mean distance between each pair of samples across the loci they share. It is left out above 1,000 samples, along with the nearest sample and the within and between distances.
+- **Groups**: with groups, the samples and the distances within each group, and the pooled distances between every pair of groups.
 
 ### Writing the lower or upper triangle
 
@@ -299,6 +311,7 @@ The output directory then looks like this:
 
 ```plaintext
 Align-Distance/
+├── distance-report.json
 ├── distance_group_long.csv
 ├── distance_group_mean.csv
 ├── distance_group_pairs.csv

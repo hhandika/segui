@@ -41,7 +41,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1522273187;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 442698181;
 
 // Section: executor
 
@@ -740,11 +740,11 @@ fn wire__crate__api__sequence__alignment_distance_services_compute_distance_impl
             deserializer.end();
             move |context| {
                 transform_result_sse::<_, ()>((move || {
-                    let output_ok = Ok::<_, ()>({
+                    let output_ok = Ok::<_, ()>(
                         crate::api::sequence::AlignmentDistanceServices::compute_distance(
                             &api_that,
-                        );
-                    })?;
+                        ),
+                    )?;
                     std::result::Result::Ok(output_ok)
                 })())
             }
@@ -1498,6 +1498,77 @@ fn wire__crate__api__colors__cvd_options_impl(
                 let output_ok = Ok::<_, ()>(crate::api::colors::cvd_options())?;
                 std::result::Result::Ok(output_ok)
             })())
+        },
+    )
+}
+fn wire__crate__api__distance_report__distance_report_services_load_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "distance_report_services_load",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <crate::api::distance_report::DistanceReportServices>::sse_decode(
+                &mut deserializer,
+            );
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok =
+                            crate::api::distance_report::DistanceReportServices::load(&api_that)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__distance_report__distance_report_services_new_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "distance_report_services_new",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok =
+                        Ok::<_, ()>(crate::api::distance_report::DistanceReportServices::new())?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
         },
     )
 }
@@ -3823,6 +3894,176 @@ impl SseDecode for crate::api::sequence::DistanceGroupingParams {
     }
 }
 
+impl SseDecode for crate::api::distance_report::DistanceGroupsData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_names = <Vec<String>>::sse_decode(deserializer);
+        let mut var_samples = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_pairs = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_meanWithin = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_sdWithin = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_maxWithin = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_matrix =
+            <crate::api::distance_report::DistanceMatrixData>::sse_decode(deserializer);
+        return crate::api::distance_report::DistanceGroupsData {
+            names: var_names,
+            samples: var_samples,
+            pairs: var_pairs,
+            mean_within: var_meanWithin,
+            sd_within: var_sdWithin,
+            max_within: var_maxWithin,
+            matrix: var_matrix,
+        };
+    }
+}
+
+impl SseDecode for crate::api::distance_report::DistanceLociData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_names = <Vec<String>>::sse_decode(deserializer);
+        let mut var_paths = <Vec<String>>::sse_decode(deserializer);
+        let mut var_ntax = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_nchar = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_pairs = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_undefinedPairs = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_mean = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_median = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_sd = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_min = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_max = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_meanComparedSites = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::distance_report::DistanceLociData {
+            names: var_names,
+            paths: var_paths,
+            ntax: var_ntax,
+            nchar: var_nchar,
+            pairs: var_pairs,
+            undefined_pairs: var_undefinedPairs,
+            mean: var_mean,
+            median: var_median,
+            sd: var_sd,
+            min: var_min,
+            max: var_max,
+            mean_compared_sites: var_meanComparedSites,
+        };
+    }
+}
+
+impl SseDecode for crate::api::distance_report::DistanceMatrixData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_names = <Vec<String>>::sse_decode(deserializer);
+        let mut var_values = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::distance_report::DistanceMatrixData {
+            names: var_names,
+            values: var_values,
+        };
+    }
+}
+
+impl SseDecode for crate::api::distance_report::DistanceOverviewData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_loci = <f64>::sse_decode(deserializer);
+        let mut var_samples = <f64>::sse_decode(deserializer);
+        let mut var_pairs = <f64>::sse_decode(deserializer);
+        let mut var_undefinedPairs = <f64>::sse_decode(deserializer);
+        let mut var_min = <f64>::sse_decode(deserializer);
+        let mut var_max = <f64>::sse_decode(deserializer);
+        let mut var_mean = <f64>::sse_decode(deserializer);
+        let mut var_sd = <f64>::sse_decode(deserializer);
+        let mut var_medianLocusMean = <f64>::sse_decode(deserializer);
+        let mut var_meanComparedSites = <f64>::sse_decode(deserializer);
+        let mut var_groups = <Option<f64>>::sse_decode(deserializer);
+        let mut var_unassigned = <f64>::sse_decode(deserializer);
+        return crate::api::distance_report::DistanceOverviewData {
+            loci: var_loci,
+            samples: var_samples,
+            pairs: var_pairs,
+            undefined_pairs: var_undefinedPairs,
+            min: var_min,
+            max: var_max,
+            mean: var_mean,
+            sd: var_sd,
+            median_locus_mean: var_medianLocusMean,
+            mean_compared_sites: var_meanComparedSites,
+            groups: var_groups,
+            unassigned: var_unassigned,
+        };
+    }
+}
+
+impl SseDecode for crate::api::distance_report::DistanceReportData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_datatype = <String>::sse_decode(deserializer);
+        let mut var_model = <String>::sse_decode(deserializer);
+        let mut var_summary =
+            <crate::api::distance_report::DistanceOverviewData>::sse_decode(deserializer);
+        let mut var_binWidth = <f64>::sse_decode(deserializer);
+        let mut var_histogram = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_loci =
+            <crate::api::distance_report::DistanceLociData>::sse_decode(deserializer);
+        let mut var_samples =
+            <crate::api::distance_report::DistanceSamplesData>::sse_decode(deserializer);
+        let mut var_matrix =
+            <Option<crate::api::distance_report::DistanceMatrixData>>::sse_decode(deserializer);
+        let mut var_groups =
+            <Option<crate::api::distance_report::DistanceGroupsData>>::sse_decode(deserializer);
+        return crate::api::distance_report::DistanceReportData {
+            datatype: var_datatype,
+            model: var_model,
+            summary: var_summary,
+            bin_width: var_binWidth,
+            histogram: var_histogram,
+            loci: var_loci,
+            samples: var_samples,
+            matrix: var_matrix,
+            groups: var_groups,
+        };
+    }
+}
+
+impl SseDecode for crate::api::distance_report::DistanceReportServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_path = <String>::sse_decode(deserializer);
+        return crate::api::distance_report::DistanceReportServices { path: var_path };
+    }
+}
+
+impl SseDecode for crate::api::distance_report::DistanceSamplesData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_names = <Vec<String>>::sse_decode(deserializer);
+        let mut var_groups = <Vec<String>>::sse_decode(deserializer);
+        let mut var_loci = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_pairs = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_mean = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_sd = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_min = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_max = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_nearest = <Vec<String>>::sse_decode(deserializer);
+        let mut var_nearestDistance = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_maxWithin = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_minBetween = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::distance_report::DistanceSamplesData {
+            names: var_names,
+            groups: var_groups,
+            loci: var_loci,
+            pairs: var_pairs,
+            mean: var_mean,
+            sd: var_sd,
+            min: var_min,
+            max: var_max,
+            nearest: var_nearest,
+            nearest_distance: var_nearestDistance,
+            max_within: var_maxWithin,
+            min_between: var_minBetween,
+        };
+    }
+}
+
 impl SseDecode for crate::api::archive::ExportFormat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4231,6 +4472,32 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::distance_report::DistanceGroupsData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(
+                <crate::api::distance_report::DistanceGroupsData>::sse_decode(deserializer),
+            );
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::distance_report::DistanceMatrixData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(
+                <crate::api::distance_report::DistanceMatrixData>::sse_decode(deserializer),
+            );
         } else {
             return None;
         }
@@ -5185,108 +5452,120 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        38 => {
+        37 => wire__crate__api__distance_report__distance_report_services_load_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        38 => wire__crate__api__distance_report__distance_report_services_new_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        40 => {
             wire__crate__api__archive__export_services_write_impl(port, ptr, rust_vec_len, data_len)
         }
-        39 => wire__crate__api__archive__extract_services_extract_impl(
+        41 => wire__crate__api__archive__extract_services_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        42 => wire__crate__api__file_sort__file_list_services_sizes_impl(
+        44 => wire__crate__api__file_sort__file_list_services_sizes_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        43 => wire__crate__api__sequence__filtering_services_filter_impl(
+        45 => wire__crate__api__sequence__filtering_services_filter_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__sequence__filtering_services_new_impl(
+        46 => wire__crate__api__sequence__filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        45 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
+        47 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        47 => wire__crate__api__sequence__id_extraction_services_new_impl(
+        49 => wire__crate__api__sequence__id_extraction_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
-        49 => wire__crate__api__maf__maf_conversion_services_convert_impl(
+        50 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
+        51 => wire__crate__api__maf__maf_conversion_services_convert_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__maf__maf_conversion_services_new_impl(
+        52 => wire__crate__api__maf__maf_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        51 => {
+        53 => {
             wire__crate__api__maf__maf_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        52 => wire__crate__api__maf__maf_summary_services_summarize_impl(
+        54 => wire__crate__api__maf__maf_summary_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => wire__crate__api__sequence__partition_services_convert_partition_impl(
+        57 => wire__crate__api__sequence__partition_services_convert_partition_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => wire__crate__api__sequence__partition_services_new_impl(
+        58 => wire__crate__api__sequence__partition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => {
+        59 => {
             wire__crate__api__reads__raw_read_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        58 => wire__crate__api__reads__raw_read_services_summarize_impl(
+        60 => wire__crate__api__reads__raw_read_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        59 => wire__crate__api__reads__read_report_services_load_impl(
+        61 => wire__crate__api__reads__read_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        60 => wire__crate__api__reads__read_report_services_new_impl(
+        62 => wire__crate__api__reads__read_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        63 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+        65 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        64 => {
+        66 => {
             wire__crate__api__sequence__sequence_addition_services_add_sequence_to_single_file_impl(
                 port,
                 ptr,
@@ -5294,127 +5573,127 @@ fn pde_ffi_dispatcher_primary_impl(
                 data_len,
             )
         }
-        65 => wire__crate__api__sequence__sequence_addition_services_new_impl(
+        67 => wire__crate__api__sequence__sequence_addition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        66 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
+        68 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        67 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
+        69 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        68 => wire__crate__api__sequence__sequence_extraction_extract_impl(
+        70 => wire__crate__api__sequence__sequence_extraction_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        69 => wire__crate__api__sequence__sequence_extraction_new_impl(
+        71 => wire__crate__api__sequence__sequence_extraction_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        70 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
+        72 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        71 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
+        73 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        72 => {
+        74 => {
             wire__crate__api__sequence__sequence_removal_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        73 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
+        75 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        74 => wire__crate__api__sequence__sequence_renaming_new_impl(
+        76 => wire__crate__api__sequence__sequence_renaming_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        75 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
+        77 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        76 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
+        78 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        77 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
+        79 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        78 => {
+        80 => {
             wire__crate__api__sequence__show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len)
         }
-        80 => wire__crate__api__sequence__split_alignment_services_new_impl(
+        82 => wire__crate__api__sequence__split_alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        81 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
+        83 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        83 => wire__crate__api__progress__task_progress_default_impl(
+        85 => wire__crate__api__progress__task_progress_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        84 => wire__crate__api__sequence__translation_services_new_impl(
+        86 => wire__crate__api__sequence__translation_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        85 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
+        87 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        86 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
+        88 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        87 => wire__crate__api__sequence__unalignment_services_new_impl(
+        89 => wire__crate__api__sequence__unalignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        88 => wire__crate__api__sequence__unalignment_services_unalign_impl(
+        90 => wire__crate__api__sequence__unalignment_services_unalign_impl(
             port,
             ptr,
             rust_vec_len,
@@ -5451,17 +5730,17 @@ fn pde_ffi_dispatcher_sync_impl(
         28 => wire__crate__api__colors__colormap_stops_impl(ptr, rust_vec_len, data_len),
         31 => wire__crate__api__colors__contrast_ratio_impl(ptr, rust_vec_len, data_len),
         36 => wire__crate__api__colors__cvd_options_impl(ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__colors__ensure_contrast_impl(ptr, rust_vec_len, data_len),
-        40 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
-        41 => {
+        39 => wire__crate__api__colors__ensure_contrast_impl(ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
+        43 => {
             wire__crate__api__file_sort__file_list_services_order_impl(ptr, rust_vec_len, data_len)
         }
-        53 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
-        54 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
-        61 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
-        79 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
-        82 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
+        63 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
+        81 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
+        84 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -5984,6 +6263,191 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::DistanceGroupingPar
     for crate::api::sequence::DistanceGroupingParams
 {
     fn into_into_dart(self) -> crate::api::sequence::DistanceGroupingParams {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::distance_report::DistanceGroupsData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.names.into_into_dart().into_dart(),
+            self.samples.into_into_dart().into_dart(),
+            self.pairs.into_into_dart().into_dart(),
+            self.mean_within.into_into_dart().into_dart(),
+            self.sd_within.into_into_dart().into_dart(),
+            self.max_within.into_into_dart().into_dart(),
+            self.matrix.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::distance_report::DistanceGroupsData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::distance_report::DistanceGroupsData>
+    for crate::api::distance_report::DistanceGroupsData
+{
+    fn into_into_dart(self) -> crate::api::distance_report::DistanceGroupsData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::distance_report::DistanceLociData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.names.into_into_dart().into_dart(),
+            self.paths.into_into_dart().into_dart(),
+            self.ntax.into_into_dart().into_dart(),
+            self.nchar.into_into_dart().into_dart(),
+            self.pairs.into_into_dart().into_dart(),
+            self.undefined_pairs.into_into_dart().into_dart(),
+            self.mean.into_into_dart().into_dart(),
+            self.median.into_into_dart().into_dart(),
+            self.sd.into_into_dart().into_dart(),
+            self.min.into_into_dart().into_dart(),
+            self.max.into_into_dart().into_dart(),
+            self.mean_compared_sites.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::distance_report::DistanceLociData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::distance_report::DistanceLociData>
+    for crate::api::distance_report::DistanceLociData
+{
+    fn into_into_dart(self) -> crate::api::distance_report::DistanceLociData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::distance_report::DistanceMatrixData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.names.into_into_dart().into_dart(),
+            self.values.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::distance_report::DistanceMatrixData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::distance_report::DistanceMatrixData>
+    for crate::api::distance_report::DistanceMatrixData
+{
+    fn into_into_dart(self) -> crate::api::distance_report::DistanceMatrixData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::distance_report::DistanceOverviewData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.loci.into_into_dart().into_dart(),
+            self.samples.into_into_dart().into_dart(),
+            self.pairs.into_into_dart().into_dart(),
+            self.undefined_pairs.into_into_dart().into_dart(),
+            self.min.into_into_dart().into_dart(),
+            self.max.into_into_dart().into_dart(),
+            self.mean.into_into_dart().into_dart(),
+            self.sd.into_into_dart().into_dart(),
+            self.median_locus_mean.into_into_dart().into_dart(),
+            self.mean_compared_sites.into_into_dart().into_dart(),
+            self.groups.into_into_dart().into_dart(),
+            self.unassigned.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::distance_report::DistanceOverviewData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::distance_report::DistanceOverviewData>
+    for crate::api::distance_report::DistanceOverviewData
+{
+    fn into_into_dart(self) -> crate::api::distance_report::DistanceOverviewData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::distance_report::DistanceReportData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.datatype.into_into_dart().into_dart(),
+            self.model.into_into_dart().into_dart(),
+            self.summary.into_into_dart().into_dart(),
+            self.bin_width.into_into_dart().into_dart(),
+            self.histogram.into_into_dart().into_dart(),
+            self.loci.into_into_dart().into_dart(),
+            self.samples.into_into_dart().into_dart(),
+            self.matrix.into_into_dart().into_dart(),
+            self.groups.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::distance_report::DistanceReportData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::distance_report::DistanceReportData>
+    for crate::api::distance_report::DistanceReportData
+{
+    fn into_into_dart(self) -> crate::api::distance_report::DistanceReportData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::distance_report::DistanceReportServices {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.path.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::distance_report::DistanceReportServices
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::distance_report::DistanceReportServices>
+    for crate::api::distance_report::DistanceReportServices
+{
+    fn into_into_dart(self) -> crate::api::distance_report::DistanceReportServices {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::distance_report::DistanceSamplesData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.names.into_into_dart().into_dart(),
+            self.groups.into_into_dart().into_dart(),
+            self.loci.into_into_dart().into_dart(),
+            self.pairs.into_into_dart().into_dart(),
+            self.mean.into_into_dart().into_dart(),
+            self.sd.into_into_dart().into_dart(),
+            self.min.into_into_dart().into_dart(),
+            self.max.into_into_dart().into_dart(),
+            self.nearest.into_into_dart().into_dart(),
+            self.nearest_distance.into_into_dart().into_dart(),
+            self.max_within.into_into_dart().into_dart(),
+            self.min_between.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::distance_report::DistanceSamplesData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::distance_report::DistanceSamplesData>
+    for crate::api::distance_report::DistanceSamplesData
+{
+    fn into_into_dart(self) -> crate::api::distance_report::DistanceSamplesData {
         self
     }
 }
@@ -7373,6 +7837,109 @@ impl SseEncode for crate::api::sequence::DistanceGroupingParams {
     }
 }
 
+impl SseEncode for crate::api::distance_report::DistanceGroupsData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<String>>::sse_encode(self.names, serializer);
+        <Vec<f64>>::sse_encode(self.samples, serializer);
+        <Vec<f64>>::sse_encode(self.pairs, serializer);
+        <Vec<f64>>::sse_encode(self.mean_within, serializer);
+        <Vec<f64>>::sse_encode(self.sd_within, serializer);
+        <Vec<f64>>::sse_encode(self.max_within, serializer);
+        <crate::api::distance_report::DistanceMatrixData>::sse_encode(self.matrix, serializer);
+    }
+}
+
+impl SseEncode for crate::api::distance_report::DistanceLociData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<String>>::sse_encode(self.names, serializer);
+        <Vec<String>>::sse_encode(self.paths, serializer);
+        <Vec<f64>>::sse_encode(self.ntax, serializer);
+        <Vec<f64>>::sse_encode(self.nchar, serializer);
+        <Vec<f64>>::sse_encode(self.pairs, serializer);
+        <Vec<f64>>::sse_encode(self.undefined_pairs, serializer);
+        <Vec<f64>>::sse_encode(self.mean, serializer);
+        <Vec<f64>>::sse_encode(self.median, serializer);
+        <Vec<f64>>::sse_encode(self.sd, serializer);
+        <Vec<f64>>::sse_encode(self.min, serializer);
+        <Vec<f64>>::sse_encode(self.max, serializer);
+        <Vec<f64>>::sse_encode(self.mean_compared_sites, serializer);
+    }
+}
+
+impl SseEncode for crate::api::distance_report::DistanceMatrixData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<String>>::sse_encode(self.names, serializer);
+        <Vec<f64>>::sse_encode(self.values, serializer);
+    }
+}
+
+impl SseEncode for crate::api::distance_report::DistanceOverviewData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.loci, serializer);
+        <f64>::sse_encode(self.samples, serializer);
+        <f64>::sse_encode(self.pairs, serializer);
+        <f64>::sse_encode(self.undefined_pairs, serializer);
+        <f64>::sse_encode(self.min, serializer);
+        <f64>::sse_encode(self.max, serializer);
+        <f64>::sse_encode(self.mean, serializer);
+        <f64>::sse_encode(self.sd, serializer);
+        <f64>::sse_encode(self.median_locus_mean, serializer);
+        <f64>::sse_encode(self.mean_compared_sites, serializer);
+        <Option<f64>>::sse_encode(self.groups, serializer);
+        <f64>::sse_encode(self.unassigned, serializer);
+    }
+}
+
+impl SseEncode for crate::api::distance_report::DistanceReportData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.datatype, serializer);
+        <String>::sse_encode(self.model, serializer);
+        <crate::api::distance_report::DistanceOverviewData>::sse_encode(self.summary, serializer);
+        <f64>::sse_encode(self.bin_width, serializer);
+        <Vec<f64>>::sse_encode(self.histogram, serializer);
+        <crate::api::distance_report::DistanceLociData>::sse_encode(self.loci, serializer);
+        <crate::api::distance_report::DistanceSamplesData>::sse_encode(self.samples, serializer);
+        <Option<crate::api::distance_report::DistanceMatrixData>>::sse_encode(
+            self.matrix,
+            serializer,
+        );
+        <Option<crate::api::distance_report::DistanceGroupsData>>::sse_encode(
+            self.groups,
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::distance_report::DistanceReportServices {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.path, serializer);
+    }
+}
+
+impl SseEncode for crate::api::distance_report::DistanceSamplesData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<String>>::sse_encode(self.names, serializer);
+        <Vec<String>>::sse_encode(self.groups, serializer);
+        <Vec<f64>>::sse_encode(self.loci, serializer);
+        <Vec<f64>>::sse_encode(self.pairs, serializer);
+        <Vec<f64>>::sse_encode(self.mean, serializer);
+        <Vec<f64>>::sse_encode(self.sd, serializer);
+        <Vec<f64>>::sse_encode(self.min, serializer);
+        <Vec<f64>>::sse_encode(self.max, serializer);
+        <Vec<String>>::sse_encode(self.nearest, serializer);
+        <Vec<f64>>::sse_encode(self.nearest_distance, serializer);
+        <Vec<f64>>::sse_encode(self.max_within, serializer);
+        <Vec<f64>>::sse_encode(self.min_between, serializer);
+    }
+}
+
 impl SseEncode for crate::api::archive::ExportFormat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -7699,6 +8266,26 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::distance_report::DistanceGroupsData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::distance_report::DistanceGroupsData>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::distance_report::DistanceMatrixData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::distance_report::DistanceMatrixData>::sse_encode(value, serializer);
         }
     }
 }

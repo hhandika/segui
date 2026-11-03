@@ -39,7 +39,9 @@ class AlignmentDistanceServices {
     required this.longFormat,
   });
 
-  Future<void> computeDistance() => RustLib.instance.api
+  /// Returns the path of the JSON report, which the app opens as the
+  /// interactive distance report.
+  Future<String> computeDistance() => RustLib.instance.api
           .crateApiSequenceAlignmentDistanceServicesComputeDistance(
         that: this,
       );

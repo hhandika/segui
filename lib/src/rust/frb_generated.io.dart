@@ -10,6 +10,7 @@ import 'api/colors.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
 import 'api/csv.dart';
+import 'api/distance_report.dart';
 import 'api/file_sort.dart';
 import 'api/maf.dart';
 import 'api/progress.dart';
@@ -142,6 +143,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CsvSummaryServices dco_decode_box_autoadd_csv_summary_services(dynamic raw);
 
   @protected
+  DistanceGroupsData dco_decode_box_autoadd_distance_groups_data(dynamic raw);
+
+  @protected
+  DistanceMatrixData dco_decode_box_autoadd_distance_matrix_data(dynamic raw);
+
+  @protected
+  DistanceReportServices dco_decode_box_autoadd_distance_report_services(
+      dynamic raw);
+
+  @protected
   ExportServices dco_decode_box_autoadd_export_services(dynamic raw);
 
   @protected
@@ -248,6 +259,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   DistanceGroupingParams dco_decode_distance_grouping_params(dynamic raw);
 
   @protected
+  DistanceGroupsData dco_decode_distance_groups_data(dynamic raw);
+
+  @protected
+  DistanceLociData dco_decode_distance_loci_data(dynamic raw);
+
+  @protected
+  DistanceMatrixData dco_decode_distance_matrix_data(dynamic raw);
+
+  @protected
+  DistanceOverviewData dco_decode_distance_overview_data(dynamic raw);
+
+  @protected
+  DistanceReportData dco_decode_distance_report_data(dynamic raw);
+
+  @protected
+  DistanceReportServices dco_decode_distance_report_services(dynamic raw);
+
+  @protected
+  DistanceSamplesData dco_decode_distance_samples_data(dynamic raw);
+
+  @protected
   ExportFormat dco_decode_export_format(dynamic raw);
 
   @protected
@@ -333,6 +365,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  DistanceGroupsData? dco_decode_opt_box_autoadd_distance_groups_data(
+      dynamic raw);
+
+  @protected
+  DistanceMatrixData? dco_decode_opt_box_autoadd_distance_matrix_data(
+      dynamic raw);
 
   @protected
   double? dco_decode_opt_box_autoadd_f_64(dynamic raw);
@@ -580,6 +620,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  DistanceGroupsData sse_decode_box_autoadd_distance_groups_data(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceMatrixData sse_decode_box_autoadd_distance_matrix_data(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceReportServices sse_decode_box_autoadd_distance_report_services(
+      SseDeserializer deserializer);
+
+  @protected
   ExportServices sse_decode_box_autoadd_export_services(
       SseDeserializer deserializer);
 
@@ -705,6 +757,33 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  DistanceGroupsData sse_decode_distance_groups_data(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceLociData sse_decode_distance_loci_data(SseDeserializer deserializer);
+
+  @protected
+  DistanceMatrixData sse_decode_distance_matrix_data(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceOverviewData sse_decode_distance_overview_data(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceReportData sse_decode_distance_report_data(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceReportServices sse_decode_distance_report_services(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceSamplesData sse_decode_distance_samples_data(
+      SseDeserializer deserializer);
+
+  @protected
   ExportFormat sse_decode_export_format(SseDeserializer deserializer);
 
   @protected
@@ -802,6 +881,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  DistanceGroupsData? sse_decode_opt_box_autoadd_distance_groups_data(
+      SseDeserializer deserializer);
+
+  @protected
+  DistanceMatrixData? sse_decode_opt_box_autoadd_distance_matrix_data(
+      SseDeserializer deserializer);
 
   @protected
   double? sse_decode_opt_box_autoadd_f_64(SseDeserializer deserializer);
@@ -1070,6 +1157,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CsvSummaryServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_distance_groups_data(
+      DistanceGroupsData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_distance_matrix_data(
+      DistanceMatrixData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_distance_report_services(
+      DistanceReportServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_export_services(
       ExportServices self, SseSerializer serializer);
 
@@ -1197,6 +1296,34 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       DistanceGroupingParams self, SseSerializer serializer);
 
   @protected
+  void sse_encode_distance_groups_data(
+      DistanceGroupsData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_loci_data(
+      DistanceLociData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_matrix_data(
+      DistanceMatrixData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_overview_data(
+      DistanceOverviewData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_report_data(
+      DistanceReportData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_report_services(
+      DistanceReportServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_distance_samples_data(
+      DistanceSamplesData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_export_format(ExportFormat self, SseSerializer serializer);
 
   @protected
@@ -1304,6 +1431,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_distance_groups_data(
+      DistanceGroupsData? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_distance_matrix_data(
+      DistanceMatrixData? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_f_64(double? self, SseSerializer serializer);
