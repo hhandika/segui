@@ -35,10 +35,10 @@ export const navItems = [
 ];
 export const githubUrl = "https://github.com/hhandika/segul";
 
-export const tagline = "An ultrafast and mobile-friendly phylogenomic toolkit";
+export const tagline = "An ultrafast and mobile-friendly genomic toolkit";
 
 export const summary =
-  "SEGUL prepares phylogenomic datasets: concatenate, convert, filter, split, and " +
+  "SEGUL prepares genomic datasets: concatenate, convert, filter, split, and " +
   "summarize thousands of loci in seconds, on anything from a phone to a computing cluster.";
 
 export const categories = [
