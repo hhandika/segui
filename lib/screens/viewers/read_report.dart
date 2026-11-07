@@ -21,6 +21,7 @@ import 'package:segui/src/rust/api/reads.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 /// Samples compared on one chart by default, before the chart gets crowded.
 const int _defaultComparedSamples = 8;
@@ -37,7 +38,7 @@ class ReadReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(p.basename(file.path)),
+        title: BetaTitle(text: p.basename(file.path), isBeta: true),
         backgroundColor: getSEGULBackgroundColor(context),
         actions: [InfoButton(file: file)],
       ),

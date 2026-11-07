@@ -15,7 +15,9 @@ class LargeScreenView extends ConsumerStatefulWidget {
 }
 
 class LargeScreenViewState extends ConsumerState<LargeScreenView> {
-  bool isUsingNavigationRail = false;
+  /// Navigation picked with the menu button, or null to follow the window
+  /// size: a rail up to large windows, and a drawer on extra-large ones.
+  bool? _isRailChoice;
 
   @override
   void initState() {
@@ -30,6 +32,8 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isRail = screenWidth < expandedScreenSize ||
+        (_isRailChoice ?? screenWidth < extraLargeScreenSize);
     final Color? mainColor = getSEGULBackgroundColor(context);
     return Scaffold(
       appBar: AppBar(
@@ -45,11 +49,11 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
             ? null
             : IconButton(
                 icon: Icon(
-                  isUsingNavigationRail ? Icons.menu_open_outlined : Icons.menu,
+                  isRail ? Icons.menu_open_outlined : Icons.menu,
                 ),
                 onPressed: () {
                   setState(() {
-                    isUsingNavigationRail = !isUsingNavigationRail;
+                    _isRailChoice = !isRail;
                   });
                 },
               ),
@@ -60,9 +64,7 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
         top: false,
         child: Row(
           children: [
-            screenWidth < expandedScreenSize || isUsingNavigationRail
-                ? const MediumScreenRail()
-                : const ExpandedScreenDrawer(),
+            isRail ? const MediumScreenRail() : const ExpandedScreenDrawer(),
             Expanded(
               child: Center(
                 child: pages[ref.watch(tabSelectionProvider)],

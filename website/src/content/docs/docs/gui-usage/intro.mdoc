@@ -22,8 +22,8 @@ sidebar:
 {% /screenshots %}
 
 {% aside type="note" title="New interface coming soon" %}
-This page shows the new SEGUI interface, which is in development. The current release
-(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+This page shows the new SEGUI interface, coming in the next release. The current release
+(v1.1.3) looks different. Features marked **Beta** may still change.
 {% /aside %}
 
 These guidelines apply to every task in the app. For task-specific options, see each task's page.
@@ -157,8 +157,6 @@ On desktop platforms, the application saves the output in the user's chosen dire
 
 ## Workbench and Next Steps
 
-{% badge text="In development" variant="caution" /%}
-
 The `Workbench` tab in the file panel summarizes the input and output files.
 
 Use the **Inspector** card to check a single file without leaving the tool. Choose `Input` or `Output`, then pick a file from the searchable list. The inspector shows the file's format, content, and size, plus counts that match its content: sequences, sites, and data type for alignments; the number of partitions for partition files; rows and columns for tables; loci and taxa for alignment reports; loci and samples for distance reports; samples for read reports; and lines for text files. Select `Open` to view the file, or `View all sequences` to open the alignment viewer on every FASTA, NEXUS, and PHYLIP file in the list, so you can step through them without picking each one. Before a run, the inspector lists the input files; after a run, it lists the new output files.
@@ -173,8 +171,6 @@ After a run finishes, the workbench also lists:
 Opening a next step or compatible tool passes the run's output files to it as input, so you can chain analyses without returning to the home screen. Tools that write only summaries, such as `Summarize alignments`, pass on their input files instead. Choose an output folder for each new step.
 
 ## Exporting Output
-
-{% badge text="In development" variant="caution" /%}
 
 In the `Output` panel, choose `Select`, then pick the files or folders you want. Select `Export` in the toolbar under the file list and choose a format:
 
@@ -200,8 +196,6 @@ The app can directly view the supported file types. The content will be displaye
 
 ### Table viewer
 
-{% badge text="In development" variant="caution" /%}
-
 CSV files, such as the locus, taxon, contig, and MAF summaries, open in a table. Numbers use a thousands separator and up to two decimals (for example, `1,000` and `0.65`).
 
 - **Sort**: select a column heading to sort by it. Select it again to reverse the order. The arrow next to the heading shows the direction. Names sort naturally, so `locus_2` comes before `locus_10`.
@@ -211,8 +205,6 @@ CSV files, such as the locus, taxon, contig, and MAF summaries, open in a table.
 - **Scrolling**: the column headings and the page controls stay in place while the rows scroll. Wide tables scroll sideways, and the row scrollbar stays at the right edge of the table.
 
 ### Summary reports
-
-{% badge text="In development" variant="caution" /%}
 
 Summary tools write a report that SEGUI opens as interactive charts and tables:
 
@@ -232,8 +224,6 @@ The reports work the same way:
 
 
 ### Alignment viewer
-
-{% badge text="In development" variant="caution" /%}
 
 FASTA, NEXUS, and PHYLIP files open in the alignment viewer. NEXUS partition files, which hold only a `sets` block of charsets, open as text instead, and the viewer leaves them out when it switches between files. It draws only the part of the alignment on screen, so alignments of 10,000 sites or more scroll smoothly. Taxon names stay pinned on the left and site numbers on the top.
 

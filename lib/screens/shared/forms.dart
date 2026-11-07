@@ -7,6 +7,7 @@ import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 /// Tells the enclosing tool form that the user changed a field.
 ///
@@ -308,6 +309,7 @@ class SharedDropdownField extends StatelessWidget {
     required this.onChanged,
     this.helper,
     this.enabled = true,
+    this.betaItems = const {},
   });
 
   static const int maxSegments = 4;
@@ -322,6 +324,9 @@ class SharedDropdownField extends StatelessWidget {
   final String? helper;
   final bool enabled;
 
+  /// Options marked with a beta badge.
+  final Set<String> betaItems;
+
   @override
   Widget build(BuildContext context) {
     return _isSegmented
@@ -330,6 +335,7 @@ class SharedDropdownField extends StatelessWidget {
             label: label,
             items: items,
             helper: helper,
+            betaItems: betaItems,
             onChanged: enabled ? onChanged : null,
           )
         : DropdownButtonFormField<String?>(
@@ -342,9 +348,9 @@ class SharedDropdownField extends StatelessWidget {
             items: items
                 .map((item) => DropdownMenuItem<String>(
                       value: item,
-                      child: Text(
-                        item,
-                        overflow: TextOverflow.clip,
+                      child: BetaTitle(
+                        text: item,
+                        isBeta: betaItems.contains(item),
                       ),
                     ))
                 .toList(),
@@ -408,6 +414,7 @@ class SegmentedField extends StatelessWidget {
     required this.items,
     required this.onChanged,
     this.helper,
+    this.betaItems = const {},
   });
 
   final String? value;
@@ -417,6 +424,9 @@ class SegmentedField extends StatelessWidget {
 
   /// Explanation shown below the buttons.
   final String? helper;
+
+  /// Options marked with a beta badge.
+  final Set<String> betaItems;
 
   @override
   Widget build(BuildContext context) {
@@ -445,7 +455,10 @@ class SegmentedField extends StatelessWidget {
             segments: items
                 .map((item) => ButtonSegment<String>(
                       value: item,
-                      label: Text(item, overflow: TextOverflow.ellipsis),
+                      label: BetaTitle(
+                        text: item,
+                        isBeta: betaItems.contains(item),
+                      ),
                     ))
                 .toList(),
             selected: {if (value != null) value!},

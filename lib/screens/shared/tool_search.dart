@@ -4,6 +4,7 @@ import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 const double _searchBarWidth = SeguiContentWidth.searchBar;
 
@@ -94,7 +95,7 @@ class ToolSearchResult extends ConsumerWidget {
       tool: tool,
       child: ListTile(
         leading: ToolIconTile(tool: tool, isSelected: false),
-        title: Text(tool.title),
+        title: BetaTitle(text: tool.title, isBeta: tool.isBeta),
         subtitle: Text(
           '${tool.category.label} · ${tool.description}',
           maxLines: 1,

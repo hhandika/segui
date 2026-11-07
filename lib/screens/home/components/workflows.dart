@@ -5,6 +5,7 @@ import 'package:segui/screens/shared/equal_height_grid.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 /// Width of the tool list beside the workflows on wide screens.
 const double toolIndexWidth = SeguiContentWidth.panel;
@@ -200,7 +201,7 @@ class ToolIndexTile extends ConsumerWidget {
     return ListTile(
       dense: true,
       leading: ToolCategoryIcon(tool: tool, size: SeguiControlSize.badge),
-      title: Text(tool.title, overflow: TextOverflow.ellipsis),
+      title: BetaTitle(text: tool.title, isBeta: tool.isBeta),
       subtitle: Text(tool.category.label),
       onTap: () => ref.read(homeToolNavigatorProvider).open(tool),
     );

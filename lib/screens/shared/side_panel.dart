@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 /// Side list on the left of a page, such as the tool list or the settings
 /// list, with an optional title above its items.
@@ -79,10 +80,14 @@ class SidePanelTile extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     this.subtitle,
+    this.isBeta = false,
   });
 
   final IconData icon;
   final String title;
+
+  /// Whether to mark [title] with a beta badge.
+  final bool isBeta;
   final String? subtitle;
   final bool isSelected;
   final VoidCallback onTap;
@@ -115,14 +120,13 @@ class SidePanelTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
+                        BetaTitle(
+                          text: title,
+                          isBeta: isBeta,
                           style: textTheme.titleSmall?.copyWith(
                             fontWeight:
                                 isSelected ? FontWeight.w700 : FontWeight.w500,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                         if (subtitle != null)
                           Text(

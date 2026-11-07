@@ -12,6 +12,7 @@ import 'package:segui/services/quick_start.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 /// How to run a task, then a guide for every tool with its feature diagram.
 class QuickStartPage extends StatefulWidget {
@@ -439,9 +440,11 @@ class FeatureGuideCard extends ConsumerWidget {
                           tool: tool, size: SeguiControlSize.badge),
                       const SizedBox(width: SeguiSpacing.lg),
                       Expanded(
-                        child: Text(
-                          tool.title,
+                        child: BetaTitle(
+                          text: tool.title,
+                          isBeta: tool.isBeta,
                           style: theme.textTheme.titleSmall,
+                          maxLines: 2,
                         ),
                       ),
                     ],
@@ -525,7 +528,7 @@ class FeatureGuidePage extends StatelessWidget {
     final ColorScheme colors = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
-        title: Text(tool.title),
+        title: BetaTitle(text: tool.title, isBeta: tool.isBeta),
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),

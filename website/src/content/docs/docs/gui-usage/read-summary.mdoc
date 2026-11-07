@@ -17,8 +17,8 @@ sidebar:
 {% /screenshots %}
 
 {% aside type="note" title="New interface coming soon" %}
-This page shows the new SEGUI interface, which is in development. The current release
-(v1.1.3) looks different, and features marked **In development** are not available in it yet.
+This page shows the new SEGUI interface, coming in the next release. The current release
+(v1.1.3) looks different. Features marked **Beta** may still change.
 {% /aside %}
 
 Summarize raw sequence reads in FASTQ format, plain or compressed, from read counts and base quality to duplication and adapter content. For assembled contigs, see [Genomic Contig Summary](/docs/gui-usage/contig-summary/).
@@ -40,7 +40,7 @@ The app supports the following summary modes:
 
 - **Minimal**: read count only
 - **Default**: generate essential statistics (see below)
-- **Complete**: generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content for each file.
+- **Complete** {% badge text="Beta" variant="caution" /%}: generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content for each file.
 
 ## Essential statistics for raw reads
 
@@ -66,7 +66,7 @@ In Complete mode, `Duplication sketch size` sets how many distinct sequences are
 
 ## Read report
 
-{% badge text="In development" variant="caution" /%}
+{% badge text="Beta" variant="caution" /%}
 
 The read report shows the Complete mode statistics as interactive charts, one sample at a time, much like the alignment viewer shows one file at a time. It works like the other [summary reports](/docs/gui-usage/intro/#summary-reports).
 

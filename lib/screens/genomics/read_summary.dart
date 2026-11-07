@@ -97,6 +97,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
             value: mode,
             label: 'Summary Mode',
             items: sequenceReadSummaryMode,
+            betaItems: const {'Complete'},
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {

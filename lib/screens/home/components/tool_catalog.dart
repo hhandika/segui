@@ -6,6 +6,7 @@ import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 /// Every SEGUI tool grouped by category, filtered by [query].
 class ToolCatalog extends StatelessWidget {
@@ -143,11 +144,10 @@ class ToolCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      tool.title,
+                    BetaTitle(
+                      text: tool.title,
+                      isBeta: tool.isBeta,
                       style: textTheme.titleSmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: SeguiSpacing.xxs),
                     ToolDescription(text: tool.description),

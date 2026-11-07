@@ -35,6 +35,7 @@ class HomeTool {
     required this.svgAsset,
     required this.scene,
     required this.diagrams,
+    this.isBeta = false,
   });
 
   final ToolCategory category;
@@ -60,6 +61,9 @@ class HomeTool {
   /// website features page. Exported by
   /// `scripts/illustrations/export_feature_diagrams.py`.
   final List<String> diagrams;
+
+  /// Whether the tool is new and still in beta.
+  final bool isBeta;
 
   String get sceneAsset => 'assets/images/tools/$scene.svg';
 
@@ -135,6 +139,7 @@ const HomeTool mafConversionTool = HomeTool(
   svgAsset: 'assets/icons/maf_convert_outlined.svg',
   scene: 'maf_conversion',
   diagrams: ['maf-conversion'],
+  isBeta: true,
 );
 
 const HomeTool mafSummaryTool = HomeTool(
@@ -151,6 +156,7 @@ const HomeTool mafSummaryTool = HomeTool(
   svgAsset: 'assets/icons/maf_summary_outlined.svg',
   scene: 'maf_summary',
   diagrams: ['maf-summary'],
+  isBeta: true,
 );
 
 const HomeTool concatenationTool = HomeTool(
@@ -255,6 +261,7 @@ const HomeTool distanceTool = HomeTool(
   svgAsset: 'assets/icons/distance_outlined.svg',
   scene: 'distance',
   diagrams: ['distance'],
+  isBeta: true,
 );
 
 const HomeTool trimmingTool = HomeTool(

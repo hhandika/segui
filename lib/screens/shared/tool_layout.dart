@@ -16,6 +16,7 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/tasks/progress.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/screens/shared/badges.dart';
 
 /// Widest the tool form, header, and action bar grow before centering.
 const double maxToolFormWidth = 760;
@@ -98,6 +99,7 @@ class ToolListTile extends ConsumerWidget {
       child: SidePanelTile(
         icon: tool.icon,
         title: tool.title,
+        isBeta: tool.isBeta,
         subtitle: tool.description,
         isSelected: isSelected,
         onTap: () {
@@ -193,7 +195,12 @@ class ToolHeader extends StatelessWidget {
                   Expanded(
                     child: showSwitcher
                         ? ToolSwitcherButton(tool: tool, style: titleStyle)
-                        : Text(tool.title, style: titleStyle),
+                        : BetaTitle(
+                            text: tool.title,
+                            isBeta: tool.isBeta,
+                            style: titleStyle,
+                            maxLines: 2,
+                          ),
                   ),
                   if (isCompact) const FilesButton(),
                 ],
@@ -246,6 +253,10 @@ class ToolSwitcherButton extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                if (tool.isBeta) ...[
+                  const SizedBox(width: SeguiSpacing.sm),
+                  const BetaBadge(),
+                ],
                 const SizedBox(width: SeguiSpacing.xs),
                 const Icon(Icons.expand_more_rounded),
               ],
