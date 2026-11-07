@@ -121,8 +121,12 @@ start.
 ### macOS file access
 
 SEGUI runs in the [App Sandbox](https://developer.apple.com/documentation/security/app_sandbox),
-so macOS may ask for permission the first time you pick files. If access still fails, add SEGUI
-under **System Settings › Privacy & Security › Full Disk Access**.
+so it can open only the files and folders you pick or drop onto it. SEGUI remembers each folder
+you pick or drop, so it opens again after a restart without asking. Access to a folder covers
+everything inside it.
+
+To allow a folder ahead of time, such as your home folder, open **Settings › Folder access**,
+select **Add folder**, and choose the folder. Remove a folder there to take its access back.
 
 ## Input format
 

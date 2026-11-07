@@ -60,7 +60,8 @@ enum GreetingTime {
   /// Stars that fade in after the moon, if any.
   final String? starsAsset;
 
-  static const String postAsset = '$_greetingDir/post.svg';
+  /// Two-strand DNA helix the gull lands on.
+  static const String helixAsset = '$_greetingDir/helix.svg';
   static const String gullBodyAsset = '$_greetingDir/gull_body.svg';
   static const String gullWingAsset = '$_greetingDir/gull_wing.svg';
 
@@ -79,7 +80,7 @@ enum GreetingTime {
         skyAsset,
         sceneAsset,
         if (starsAsset != null) starsAsset!,
-        postAsset,
+        helixAsset,
         gullBodyAsset,
         gullWingAsset,
       ];

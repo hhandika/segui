@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/screens/home/home.dart';
 import 'package:segui/screens/shared/motion.dart';
+import 'package:segui/services/io/folder_access.dart';
 import 'package:segui/services/io/input_cache.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/src/rust/api/common.dart';
@@ -26,6 +27,8 @@ Future<void> main() async {
     }
   }
   unawaited(_clearInputCache());
+  // Reopen the folders the user allowed before, ahead of any task.
+  await FolderAccessChannel.instance.restore();
   runApp(ProviderScope(
     overrides: [
       settingProvider.overrideWithValue(prefs),

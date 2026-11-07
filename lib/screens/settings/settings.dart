@@ -1,9 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/services/io/folder_access.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/settings/about.dart';
 import 'package:segui/screens/settings/colors.dart';
 import 'package:segui/screens/settings/data_usage.dart';
+import 'package:segui/screens/settings/folder_access.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/common.dart';
@@ -109,13 +111,21 @@ enum SettingsPage {
   logs('Logs', Icons.list_alt_outlined, Icons.list_alt_rounded),
   theme('Theme', Icons.brightness_6_outlined, Icons.brightness_6_rounded),
   colors('Colors', Icons.palette_outlined, Icons.palette_rounded),
-  dataUsage('Data usage', Icons.data_usage_outlined, Icons.data_usage_rounded);
+  dataUsage('Data usage', Icons.data_usage_outlined, Icons.data_usage_rounded),
+  folderAccess('Folder access', Icons.folder_outlined, Icons.folder_rounded);
 
   const SettingsPage(this.label, this.icon, this.selectedIcon);
 
   final String label;
   final IconData icon;
   final IconData selectedIcon;
+
+  /// Pages shown on this platform. Only the macOS sandbox needs folder
+  /// access.
+  static List<SettingsPage> get available => [
+        for (final SettingsPage page in values)
+          if (page != folderAccess || FolderAccessChannel.isSupported) page,
+      ];
 }
 
 /// Settings laid out like the home screen: the pages in a drawer on the
@@ -132,6 +142,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
 
   @override
   Widget build(BuildContext context) {
+    final List<SettingsPage> pages = SettingsPage.available;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -145,10 +156,10 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
           backgroundColor: getSEGULBackgroundColor(context),
           indicatorColor: getIndicatorColor(context),
           indicatorShape: getIndicatorShape(context),
-          selectedIndex: _page.index,
-          onDestinationSelected: (i) => _open(SettingsPage.values[i]),
+          selectedIndex: pages.indexOf(_page),
+          onDestinationSelected: (i) => _open(pages[i]),
           children: [
-            for (final SettingsPage page in SettingsPage.values)
+            for (final SettingsPage page in pages)
               NavigationDrawerDestination(
                 label: Text(page.label),
                 icon: Icon(page.icon),
@@ -165,6 +176,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
                 SettingsPage.theme => const ThemeSettingView(),
                 SettingsPage.colors => const ColorSettingView(),
                 SettingsPage.dataUsage => const DataUsageView(),
+                SettingsPage.folderAccess => const FolderAccessView(),
               },
             ),
           ),
@@ -309,6 +321,20 @@ class MainSettings extends ConsumerWidget {
               );
             },
           ),
+          if (FolderAccessChannel.isSupported) ...[
+            const CommonDivider(),
+            SettingTile(
+              title: 'Folder access',
+              subtitle: 'Folders SEGUI opens without asking',
+              icon: Icons.folder_outlined,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FolderAccessScreen(),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

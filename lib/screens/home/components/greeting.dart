@@ -8,7 +8,7 @@ import 'package:segui/services/utils.dart';
 /// The SEGUL gull greeting scene for [time].
 ///
 /// Plays once when shown: the sun rises or the moon and stars fade in, the
-/// gull glides onto its post, and it flaps twice. Tapping the gull replays the
+/// gull glides onto its DNA helix, and it flaps twice. Tapping the gull replays the
 /// flap. With reduced motion the scene shows its final pose and stays still.
 class GreetingIllustration extends StatefulWidget {
   const GreetingIllustration({super.key, required this.time, this.size = 56});
@@ -72,8 +72,8 @@ class _GreetingIllustrationState extends State<GreetingIllustration>
         : GreetingLayer(asset: time.starsAsset!, colorMapper: mapper);
     final Widget scene =
         GreetingLayer(asset: time.sceneAsset, colorMapper: mapper);
-    final Widget post =
-        GreetingLayer(asset: GreetingTime.postAsset, colorMapper: mapper);
+    final Widget helix =
+        GreetingLayer(asset: GreetingTime.helixAsset, colorMapper: mapper);
     final Widget body =
         GreetingLayer(asset: GreetingTime.gullBodyAsset, colorMapper: mapper);
     final Widget wing =
@@ -94,7 +94,7 @@ class _GreetingIllustrationState extends State<GreetingIllustration>
                 final double skyIn = _ease(v, 0, 0.5);
                 final double gullIn =
                     _ease(v, 0, GreetingIllustration.flapStart);
-                // A small dip as the gull's weight lands on the post.
+                // A small dip as the gull's weight lands on the helix.
                 final double dip = v > 0.55 && v < 0.75
                     ? math.sin(math.pi * (v - 0.55) / 0.2) * 2.5
                     : 0;
@@ -127,7 +127,7 @@ class _GreetingIllustrationState extends State<GreetingIllustration>
                     if (stars != null)
                       Opacity(opacity: _ease(v, 0.25, 0.75), child: stars),
                     scene,
-                    post,
+                    helix,
                     Opacity(
                       opacity: _ease(v, 0, 0.25),
                       child: Transform.translate(

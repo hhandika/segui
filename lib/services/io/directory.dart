@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/io/file.dart';
+import 'package:segui/services/io/folder_access.dart';
 import 'package:segui/services/io/io.dart';
 
 const Map<SupportedTask, String> defaultOutputDir = {
@@ -57,12 +58,16 @@ class DirectorySelectionServices {
     return false;
   }
 
+  /// Lets the user pick a folder. On macOS, the folder is remembered so
+  /// it opens without asking after a restart.
   Future<Directory?> selectDirectoryAdaptive() async {
-    if (Platform.isAndroid || Platform.isMacOS) {
-      return await _selectDirectoryFilePicker();
-    } else {
-      return await _selectDirectory();
+    final Directory? dir = Platform.isAndroid || Platform.isMacOS
+        ? await _selectDirectoryFilePicker()
+        : await _selectDirectory();
+    if (dir != null) {
+      await FolderAccessChannel.instance.remember([dir.path]);
     }
+    return dir;
   }
 
   Future<Directory?> _selectDirectory() async {
