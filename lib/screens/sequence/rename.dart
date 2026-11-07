@@ -126,8 +126,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
                 value: _isRegexMatchAll,
                 label: _isRemove ? 'Remove all matches' : 'Replace all matches',
                 helper: _isRegexMatchAll
-                    ? 'If multiple matches are found in a single sequence ID, '
-                        'they will be removed.'
+                    ? 'Applies to every match in an ID.'
                     : null,
                 onPressed: (value) {
                   setState(() {

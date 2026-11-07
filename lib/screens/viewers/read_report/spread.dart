@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
+import 'package:segui/screens/viewers/report/layout.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -247,54 +248,61 @@ class _SampleHeatmapState extends State<SampleHeatmap> {
       children: [
         Text(_hoverText(), style: theme.textTheme.bodySmall),
         const SizedBox(height: SeguiSpacing.sm),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final Size size = Size(
-              constraints.maxWidth,
-              rowCount * rowHeight + SeguiChartLayout.bottomAxis,
-            );
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              onHover: (event) => _hover(geometry.cellAt(
-                event.localPosition,
-                size.width,
-              )),
-              onExit: (_) => _hover(null),
-              child: GestureDetector(
-                onTapDown: (details) => _hover(geometry.cellAt(
-                  details.localPosition,
+        MinWidthScroll(
+          minWidth: math.max(
+            SeguiChartLayout.minWidth,
+            SeguiChartLayout.barLabel +
+                widget.matrix.x.length * SeguiChartLayout.heatmapColumnMin,
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final Size size = Size(
+                constraints.maxWidth,
+                rowCount * rowHeight + SeguiChartLayout.bottomAxis,
+              );
+              return MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onHover: (event) => _hover(geometry.cellAt(
+                  event.localPosition,
                   size.width,
                 )),
-                onTapUp: (details) {
-                  final (int, int)? cell = geometry.cellAt(
+                onExit: (_) => _hover(null),
+                child: GestureDetector(
+                  onTapDown: (details) => _hover(geometry.cellAt(
                     details.localPosition,
                     size.width,
-                  );
-                  if (cell != null) widget.onSelected(cell.$1);
-                },
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    size: size,
-                    painter: _HeatmapPainter(
-                      matrix: widget.matrix,
-                      names: widget.names,
-                      openRow: widget.openRow,
-                      geometry: geometry,
-                      maxValue: maxValue,
-                      cellColor: colors.primary,
-                      colormap: palette.heatmap,
-                      openColor: palette.lineFor(palette.open),
-                      labelStyle: labelStyle,
-                      // Bold rather than colored, so the name keeps 4.5:1.
-                      openLabelStyle: labelStyle.copyWith(
-                        fontWeight: FontWeight.w700,
+                  )),
+                  onTapUp: (details) {
+                    final (int, int)? cell = geometry.cellAt(
+                      details.localPosition,
+                      size.width,
+                    );
+                    if (cell != null) widget.onSelected(cell.$1);
+                  },
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      size: size,
+                      painter: _HeatmapPainter(
+                        matrix: widget.matrix,
+                        names: widget.names,
+                        openRow: widget.openRow,
+                        geometry: geometry,
+                        maxValue: maxValue,
+                        cellColor: colors.primary,
+                        colormap: palette.heatmap,
+                        openColor: palette.lineFor(palette.open),
+                        labelStyle: labelStyle,
+                        // Bold rather than colored, so the name keeps 4.5:1.
+                        openLabelStyle: labelStyle.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
         Center(child: Text(widget.xLabel, style: labelStyle)),
         const SizedBox(height: SeguiSpacing.md),

@@ -114,8 +114,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
                 ...sequenceReadDupSketchSizes.keys,
                 customDupSketchSize,
               ],
-              helper: 'Distinct sequences kept to estimate duplication from '
-                  'every read. Larger is more accurate and uses more memory.',
+              helper: 'Larger is more accurate but uses more memory.',
               onChanged: (String? value) {
                 setState(() {
                   if (value != null) {

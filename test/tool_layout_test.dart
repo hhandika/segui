@@ -24,6 +24,7 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/workbench.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/styles/themes.dart';
@@ -114,6 +115,16 @@ void main() {
     expect(find.byType(ToolSwitcherButton), findsOneWidget);
     expect(find.byType(ToolRunBar), findsOneWidget);
     expect(tester.takeException(), isNull);
+
+    // The description keeps to one line beside the guide link.
+    expect(find.byType(ToolGuideButton), findsOneWidget);
+    final Text about = tester.widget<Text>(find
+        .descendant(
+          of: find.byType(ToolHeader),
+          matching: find.textContaining('Concatenate'),
+        )
+        .last);
+    expect(about.maxLines, 1);
 
     await tester.tap(find.byType(FilesButton));
     await tester.pumpAndSettle();
@@ -373,6 +384,44 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PickerActionDialog), findsOneWidget);
     expect(find.byType(PickerActionSheet), findsNothing);
+  });
+
+  testWidgets('Compact tool page shows the workbench after a run',
+      (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    await pumpPage(tester, const Size(390, 844), container: container);
+    expect(find.byType(ToolResultsView), findsNothing);
+
+    container.read(lastRunProvider.notifier).record([]);
+    await tester.pumpAndSettle();
+    expect(find.byType(ToolResultsView), findsOneWidget);
+    expect(find.byType(WorkbenchView), findsOneWidget);
+    // The run bar stays pinned below the workbench.
+    expect(find.byType(ToolRunBar), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.text('Edit options'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ToolResultsView), findsNothing);
+    expect(find.byType(ToolRunBar), findsOneWidget);
+  });
+
+  testWidgets('Wide tool page keeps the form after a run', (tester) async {
+    final container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    container.read(tabSelectionProvider.notifier).setTab(2);
+    await pumpPage(tester, const Size(1600, 1000), container: container);
+
+    container.read(lastRunProvider.notifier).record([]);
+    await tester.pumpAndSettle();
+    expect(find.byType(ToolResultsView), findsNothing);
+    expect(find.byType(FileSidePanel), findsOneWidget);
   });
 
   testWidgets('File panel opens on the workbench summary', (tester) async {

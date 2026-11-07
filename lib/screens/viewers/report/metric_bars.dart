@@ -47,6 +47,14 @@ class _MetricBarsState extends State<MetricBars> {
   static const double _rowExtent =
       SeguiChartLayout.barRow + 2 * SeguiSpacing.xxs;
 
+  /// Row width besides the name, bar, and value columns: padding, gaps,
+  /// the scrollbar lane, and a leading mark.
+  static const double _rowChrome = 2 * SeguiSpacing.xs +
+      SeguiSpacing.md +
+      SeguiControlSize.scrollbarGutter +
+      SeguiControlSize.iconSmall +
+      SeguiSpacing.sm;
+
   final ScrollController _controller = ScrollController();
 
   @override
@@ -68,32 +76,41 @@ class _MetricBarsState extends State<MetricBars> {
     final List<int> view = widget.view;
     final double largest =
         view.map(widget.value).fold(0, (a, b) => b.isFinite && b > a ? b : a);
-    return Scrollbar(
-      controller: _controller,
-      child: ListView.builder(
+    return LayoutBuilder(builder: (context, constraints) {
+      // Narrow screens shorten the name column so the bar keeps its room.
+      final double labelWidth = (constraints.maxWidth -
+              SeguiChartLayout.barValue -
+              SeguiChartLayout.barTrackMin -
+              _rowChrome)
+          .clamp(SeguiChartLayout.barLabelMin, SeguiChartLayout.barLabel);
+      return Scrollbar(
         controller: _controller,
-        padding: const EdgeInsets.only(
-          right: SeguiControlSize.scrollbarGutter,
+        child: ListView.builder(
+          controller: _controller,
+          padding: const EdgeInsets.only(
+            right: SeguiControlSize.scrollbarGutter,
+          ),
+          itemExtent: _rowExtent,
+          itemCount: view.length,
+          itemBuilder: (context, position) {
+            final int item = view[position];
+            final double value = widget.value(item);
+            return MetricBar(
+              name: widget.name(item),
+              value: value,
+              largest: largest,
+              label: widget.label,
+              text: widget.format(value),
+              exact: (widget.exact ?? widget.format)(value),
+              leading: widget.leading?.call(item),
+              isOpen: item == widget.open,
+              labelWidth: labelWidth,
+              onTap: () => widget.onSelected(item),
+            );
+          },
         ),
-        itemExtent: _rowExtent,
-        itemCount: view.length,
-        itemBuilder: (context, position) {
-          final int item = view[position];
-          final double value = widget.value(item);
-          return MetricBar(
-            name: widget.name(item),
-            value: value,
-            largest: largest,
-            label: widget.label,
-            text: widget.format(value),
-            exact: (widget.exact ?? widget.format)(value),
-            leading: widget.leading?.call(item),
-            isOpen: item == widget.open,
-            onTap: () => widget.onSelected(item),
-          );
-        },
-      ),
-    );
+      );
+    });
   }
 
   /// Scrolls the open item into view.
@@ -121,6 +138,7 @@ class MetricBar extends StatelessWidget {
     required this.isOpen,
     required this.onTap,
     this.leading,
+    this.labelWidth = SeguiChartLayout.barLabel,
   });
 
   final String name;
@@ -136,6 +154,9 @@ class MetricBar extends StatelessWidget {
   final bool isOpen;
   final VoidCallback onTap;
   final Widget? leading;
+
+  /// Width of the name column.
+  final double labelWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +188,7 @@ class MetricBar extends StatelessWidget {
                   const SizedBox(width: SeguiSpacing.sm),
                 ],
                 SizedBox(
-                  width: SeguiChartLayout.barLabel,
+                  width: labelWidth,
                   child: Text(
                     name,
                     style: nameStyle,

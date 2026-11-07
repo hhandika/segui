@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:segui/services/utils.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/types.dart';
@@ -35,6 +36,7 @@ class HomeTool {
     required this.svgAsset,
     required this.scene,
     required this.diagrams,
+    required this.guide,
     this.isBeta = false,
   });
 
@@ -64,6 +66,12 @@ class HomeTool {
 
   /// Whether the tool is new and still in beta.
   final bool isBeta;
+
+  /// Page name of the tool's guide under the website's GUI usage docs.
+  final String guide;
+
+  /// The tool's guide on the SEGUL website.
+  String get guideUrl => '${segulDocUrl}docs/gui-usage/$guide/';
 
   String get sceneAsset => 'assets/images/tools/$scene.svg';
 
@@ -98,6 +106,7 @@ class HomeWorkflow {
 const HomeTool readSummaryTool = HomeTool(
   category: ToolCategory.genomics,
   operation: GenomicOperationType.readSummary,
+  guide: 'read-summary',
   title: 'Summarize genomic reads',
   description: 'FASTQ quality: read counts, length, GC content, and Q-scores.',
   about: 'Summarize raw genomic reads by calculating the number of reads, '
@@ -113,6 +122,7 @@ const HomeTool readSummaryTool = HomeTool(
 const HomeTool contigSummaryTool = HomeTool(
   category: ToolCategory.genomics,
   operation: GenomicOperationType.contigSummary,
+  guide: 'contig-summary',
   title: 'Summarize genomic contigs',
   description: 'Contig counts, N50, length, and GC content for assemblies.',
   about: 'Summarize contigs by calculating the number of contigs, total '
@@ -127,6 +137,7 @@ const HomeTool contigSummaryTool = HomeTool(
 const HomeTool mafConversionTool = HomeTool(
   category: ToolCategory.genomics,
   operation: GenomicOperationType.mafConversion,
+  guide: 'maf-convert',
   title: 'Convert MAF alignments',
   description:
       'Turn whole-genome MAF blocks into FASTA, NEXUS, or PHYLIP loci.',
@@ -145,6 +156,7 @@ const HomeTool mafConversionTool = HomeTool(
 const HomeTool mafSummaryTool = HomeTool(
   category: ToolCategory.genomics,
   operation: GenomicOperationType.mafSummary,
+  guide: 'maf-summary',
   title: 'Summarize MAF alignments',
   description: 'Blocks, species, reference coverage, and gaps in MAF files.',
   about: 'Summarize Multiple Alignment Format (MAF) files: the number of '
@@ -162,6 +174,7 @@ const HomeTool mafSummaryTool = HomeTool(
 const HomeTool concatenationTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.concatenation,
+  guide: 'align-concat',
   title: 'Concatenate alignments',
   description: 'Merge locus alignments into a supermatrix with partitions.',
   about: 'Concatenate multiple alignments and generate a partition file for '
@@ -176,6 +189,7 @@ const HomeTool concatenationTool = HomeTool(
 const HomeTool conversionTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.conversion,
+  guide: 'align-convert',
   title: 'Convert alignments',
   description: 'Switch alignments between FASTA, NEXUS, and PHYLIP.',
   about: 'Convert sequence alignments to other formats. It can convert '
@@ -190,6 +204,7 @@ const HomeTool conversionTool = HomeTool(
 const HomeTool filterTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.filter,
+  guide: 'align-filter',
   title: 'Filter alignments',
   description: 'Keep loci by taxon coverage, length, or informative sites.',
   about: 'Filter alignments by minimal alignment length, data matrix '
@@ -205,6 +220,7 @@ const HomeTool filterTool = HomeTool(
 const HomeTool partitionTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.partition,
+  guide: 'align-partition',
   title: 'Convert partition',
   description: 'Convert between RAxML, NEXUS, and charset partitions.',
   about: 'Convert partition files to a different format. It can convert '
@@ -219,6 +235,7 @@ const HomeTool partitionTool = HomeTool(
 const HomeTool splitTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.split,
+  guide: 'align-split',
   title: 'Split alignments',
   description: 'Break a concatenated matrix back into individual loci.',
   about: 'Split a concatenated alignment into multiple files based on its '
@@ -234,6 +251,7 @@ const HomeTool splitTool = HomeTool(
 const HomeTool alignmentSummaryTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.summary,
+  guide: 'align-summary',
   title: 'Summarize alignments',
   description: 'Missing data, informative sites, GC, and length statistics.',
   about: 'Summarize alignments by calculating the number of sequences, sites, '
@@ -248,6 +266,7 @@ const HomeTool alignmentSummaryTool = HomeTool(
 const HomeTool distanceTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.distance,
+  guide: 'align-distance',
   title: 'Compute genetic distances',
   description:
       'Pairwise p, JC69, K2P, TN93, or Poisson distances and group means.',
@@ -267,6 +286,7 @@ const HomeTool distanceTool = HomeTool(
 const HomeTool trimmingTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.trimming,
+  guide: 'align-trim',
   title: 'Trim alignments',
   description: 'Drop sites with too much missing data or too little signal.',
   about: 'Trim alignment sites by the proportion of missing data or by the '
@@ -281,6 +301,7 @@ const HomeTool trimmingTool = HomeTool(
 const HomeTool unalignmentTool = HomeTool(
   category: ToolCategory.alignment,
   operation: AlignmentOperationType.unalignment,
+  guide: 'align-unalign',
   title: 'Unalign sequences',
   description: 'Strip alignment gaps to get raw sequences for realignment.',
   about: 'Remove gaps from aligned sequences and write them as unaligned '
@@ -295,6 +316,7 @@ const HomeTool unalignmentTool = HomeTool(
 const HomeTool extractionTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.extraction,
+  guide: 'sequence-extract',
   title: 'Extract sequences',
   description: 'Pull sequences out of alignments by ID list or regex.',
   about: 'Extract sequences from multiple files. Supports regex, text file, '
@@ -309,6 +331,7 @@ const HomeTool extractionTool = HomeTool(
 const HomeTool idExtractionTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.idExtraction,
+  guide: 'sequence-id',
   title: 'Extract and map sequence IDs',
   description: 'List unique sample IDs and the files each one appears in.',
   about: 'Extract unique IDs across multiple sequence files. The output file '
@@ -324,6 +347,7 @@ const HomeTool idExtractionTool = HomeTool(
 const HomeTool removalTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.removal,
+  guide: 'sequence-remove',
   title: 'Remove sequences',
   description: 'Drop samples by ID or regex across many alignments.',
   about: 'Remove sequences from a collection of sequence files based on '
@@ -338,6 +362,7 @@ const HomeTool removalTool = HomeTool(
 const HomeTool renamingTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.renaming,
+  guide: 'sequence-rename',
   title: 'Rename sequence IDs',
   description: 'Rename samples from a mapping file or a text pattern.',
   about: 'Rename sequence IDs across a collection of sequence files. Supports '
@@ -352,6 +377,7 @@ const HomeTool renamingTool = HomeTool(
 const HomeTool translationTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.translation,
+  guide: 'sequence-translate',
   title: 'Translate sequences',
   description: 'Translate DNA to amino acids with NCBI genetic codes.',
   about: 'Translate nucleotide sequences to amino acid sequences. It can '
@@ -366,6 +392,7 @@ const HomeTool translationTool = HomeTool(
 const HomeTool additionTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.addition,
+  guide: 'sequence-add',
   title: 'Add sequences',
   description: 'Append new samples to matching alignments or a single file.',
   about: 'Add sequences to destination files that share the same file name, '
@@ -381,6 +408,7 @@ const HomeTool additionTool = HomeTool(
 const HomeTool sequenceFilteringTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.filtering,
+  guide: 'sequence-filter',
   title: 'Filter sequences',
   description: 'Keep samples by sequence length or proportion of gaps.',
   about: 'Filter sequences inside each file by minimum or maximum sequence '
@@ -395,6 +423,7 @@ const HomeTool sequenceFilteringTool = HomeTool(
 const HomeTool transpositionTool = HomeTool(
   category: ToolCategory.sequence,
   operation: SequenceOperationType.transposition,
+  guide: 'sequence-transpose',
   title: 'Transpose sequences',
   description: 'Turn locus alignments into one file of loci per sample.',
   about: 'Transpose locus alignments into per-sample files. Each output file '

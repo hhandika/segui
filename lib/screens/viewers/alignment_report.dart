@@ -99,25 +99,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
       padding: const EdgeInsets.all(SeguiSpacing.xl),
       child: DefaultTabController(
         length: tabs.length,
-        child: OutlinedPanel(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TabBar(
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
-                tabs: [for (final ReportTab tab in tabs) Tab(text: tab.label)],
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    for (final ReportTab tab in tabs) ReportPanel(tab: tab),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: OutlinedPanel(child: ReportTabView(tabs: tabs)),
       ),
     );
   }

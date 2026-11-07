@@ -297,4 +297,15 @@ void main() {
     expect(sizes, hasLength(1));
     expect(tester.takeException(), isNull);
   });
+
+  test('Every tool links to its guide on the website', () {
+    final String docs =
+        p.join('website', 'src', 'content', 'docs', 'docs', 'gui-usage');
+    for (final HomeTool tool in homeTools) {
+      expect(File(p.join(docs, '${tool.guide}.mdoc')).existsSync(), isTrue,
+          reason: '${tool.title} has no guide page ${tool.guide}');
+      expect(
+          tool.guideUrl, 'https://www.segul.app/docs/gui-usage/${tool.guide}/');
+    }
+  });
 }

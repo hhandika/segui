@@ -8,6 +8,7 @@ import 'package:segui/screens/viewers/alignment_report.dart';
 import 'package:segui/screens/viewers/alignment_report/items.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/heatmap_cell.dart';
+import 'package:segui/screens/viewers/report/layout.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
@@ -240,6 +241,37 @@ void main() {
     expect(find.byType(ReportItemPanel), findsOneWidget);
     await tester.tap(find.text('Table'));
     await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Phones change tabs only on tap', (tester) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await _pumpReport(tester, _report());
+    await tester.pumpAndSettle();
+
+    // A sideways swipe stays on the overview.
+    await tester.fling(find.byType(TabBarView), const Offset(-300, 0), 1000);
+    await tester.pumpAndSettle();
+    expect(find.text('Dataset'), findsOneWidget);
+
+    // Charts keep their width and scroll sideways.
+    await tester.ensureVisible(find.text('Distributions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Distributions'));
+    await tester.pumpAndSettle();
+    expect(find.text('Locus length'), findsOneWidget);
+    expect(find.byType(MinWidthScroll), findsWidgets);
+    final double chartWidth = tester
+        .getSize(find
+            .descendant(
+              of: find.byType(MinWidthScroll).first,
+              matching: find.byType(SizedBox),
+            )
+            .first)
+        .width;
+    expect(chartWidth, greaterThanOrEqualTo(480));
     expect(tester.takeException(), isNull);
   });
 

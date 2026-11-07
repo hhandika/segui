@@ -180,29 +180,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
                         const SizedBox(height: SeguiSpacing.md),
                       ],
                       Expanded(
-                        child: OutlinedPanel(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              TabBar(
-                                isScrollable: true,
-                                tabAlignment: TabAlignment.start,
-                                tabs: [
-                                  for (final ReportTab tab in tabs)
-                                    Tab(text: tab.label),
-                                ],
-                              ),
-                              Expanded(
-                                child: TabBarView(
-                                  children: [
-                                    for (final ReportTab tab in tabs)
-                                      ReportPanel(tab: tab),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        child: OutlinedPanel(child: ReportTabView(tabs: tabs)),
                       ),
                     ],
                   ),

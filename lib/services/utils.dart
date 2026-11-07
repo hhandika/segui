@@ -100,6 +100,11 @@ void launchSegulDocUrl() {
   launchUrl(uri);
 }
 
+/// Opens a tool's guide on the SEGUL website.
+void launchToolGuideUrl(String url) {
+  launchUrl(Uri.parse(url));
+}
+
 /// Opens the feature guides on the SEGUL website.
 void launchSegulFeaturesUrl() {
   launchUrl(Uri.parse('${segulDocUrl}docs/features/'));

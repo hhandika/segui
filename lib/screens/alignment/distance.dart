@@ -80,7 +80,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
             value: _model,
             label: 'Distance model',
             items: distanceModels,
-            helper: 'K2P and TN93 need DNA. Poisson needs amino acid data.',
+            helper: 'K2P and TN93: DNA. Poisson: amino acids.',
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
@@ -107,10 +107,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
             value: _diagonal,
             label: 'Diagonal',
             items: _diagonals,
-            helper: _isGrouped
-                ? 'Within-group values apply to the group matrices. '
-                    'Sample matrices then hold zero.'
-                : null,
+            helper: _isGrouped ? 'Sample matrices then hold zero.' : null,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
@@ -141,15 +138,14 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
               controller: _groupDelimiter,
               label: 'Delimiter',
               hint: '_',
-              helper: 'A single character that separates parts of the name.',
+              helper: 'One character between name parts.',
               onChanged: (_) => _updateGrouping(() {}),
             ),
             SharedTextField(
               controller: _groupFields,
               label: 'Fields to keep',
               hint: '2',
-              helper: 'Leading parts that name the group. With _ and 2, '
-                  'Rattus_rattus_FMNH1 belongs to Rattus_rattus.',
+              helper: 'With 2, Rattus_rattus_FMNH1 → Rattus_rattus.',
               keyboardType: TextInputType.number,
               onChanged: (_) => _updateGrouping(() {}),
             ),
@@ -159,14 +155,12 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
               controller: _groupPattern,
               label: 'Regex pattern',
               hint: r'^([A-Za-z]+_[a-z]+)_',
-              helper: 'The first capture group, or the whole match if there '
-                  'is none, names the group.',
+              helper: 'The first capture group names the group.',
               onChanged: (_) => _updateGrouping(() {}),
             ),
           if (_grouping == 'file')
             const FieldWithHelper(
-              helper: 'A CSV or TSV file. The first row is a header, '
-                  'followed by one sample and its group per row.',
+              helper: 'CSV or TSV with a sample and group per row.',
               child: SharedFilePicker(
                 label: 'Select group file',
                 allowMultiple: false,
@@ -200,8 +194,7 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
           ),
           SwitchForm(
             label: 'Long-format tables',
-            helper: 'Also write the distances of all loci as one table with '
-                'a row per pair, and with groups, a table of group statistics.',
+            helper: 'Also write all loci as one table.',
             value: _isLongFormat,
             onPressed: (value) {
               setState(() {
@@ -256,14 +249,11 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
   String get _groupingHelper {
     switch (_grouping) {
       case 'none':
-        return 'Group individuals into populations or species to also '
-            'compute mean distances within and between groups.';
+        return 'Adds within- and between-group means.';
       case 'auto':
-        return 'Finds a delimiter and number of fields that pool most '
-            'samples, such as species in Genus_species_ID names.';
+        return 'Finds groups like Genus_species_ID.';
       default:
-        return 'Within- and between-group means are written for each locus '
-            'and pooled across loci.';
+        return 'Means per locus and across loci.';
     }
   }
 

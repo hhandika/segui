@@ -68,9 +68,8 @@ class SequenceAdditionPageState extends ConsumerState<SequenceAdditionPage>
           SwitchForm(
             label: 'Add all to a single file',
             helper: _isSingleDestination
-                ? 'Every sequence is added to one destination file.'
-                : 'Sequences are added to destination files with the '
-                    'same file name.',
+                ? 'All sequences go to one file.'
+                : 'Adds to files with the same name.',
             value: _isSingleDestination,
             onPressed: (value) {
               setState(() {

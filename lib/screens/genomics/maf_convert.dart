@@ -85,10 +85,8 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
         FormCard(children: [
           FieldWithHelper(
             helper: hasBed
-                ? 'Each block is matched to every locus it overlaps on the '
-                    'same chromosome, and blocks of a locus are joined.'
-                : 'Without a BED file, each block or each reference '
-                    'chromosome becomes its own alignment.',
+                ? 'Joins the blocks that overlap each locus.'
+                : 'Each block or chromosome is one alignment.',
             child: const SharedFilePicker(
               label: 'Select BED file',
               allowMultiple: false,

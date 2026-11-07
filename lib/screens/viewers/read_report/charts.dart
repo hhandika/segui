@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/viewers/report/layout.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -95,57 +96,60 @@ class ReadLineChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: SeguiChartLayout.height,
-          child: ZoomResetFrame(
-            builder: (controller) => LineChart(
-              LineChartData(
-                minY: minY,
-                maxY: maxY,
-                lineBarsData: [
-                  for (final ChartLine line in drawn)
-                    _barData(line, SeguiColors.of(context)),
-                ],
-                betweenBarsData: [
-                  for (final ChartBand band in bands)
-                    BetweenBarsData(
-                      fromIndex: band.from,
-                      toIndex: band.to,
-                      color: band.color,
-                    ),
-                ],
-                rangeAnnotations: RangeAnnotations(
-                  horizontalRangeAnnotations: [
-                    for (final ChartZone zone in zones)
-                      HorizontalRangeAnnotation(
-                        y1: zone.from,
-                        y2: zone.to,
-                        color: zone.color,
+        MinWidthScroll(
+          minWidth: SeguiChartLayout.minWidth,
+          child: SizedBox(
+            height: SeguiChartLayout.height,
+            child: ZoomResetFrame(
+              builder: (controller) => LineChart(
+                LineChartData(
+                  minY: minY,
+                  maxY: maxY,
+                  lineBarsData: [
+                    for (final ChartLine line in drawn)
+                      _barData(line, SeguiColors.of(context)),
+                  ],
+                  betweenBarsData: [
+                    for (final ChartBand band in bands)
+                      BetweenBarsData(
+                        fromIndex: band.from,
+                        toIndex: band.to,
+                        color: band.color,
                       ),
                   ],
-                ),
-                titlesData:
-                    chartTitles(context, xLabel: xLabel, yLabel: yLabel),
-                gridData: chartGrid(colors),
-                borderData: chartBorder(colors),
-                clipData: const FlClipData.all(),
-                lineTouchData: LineTouchData(
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (_) => colors.inverseSurface,
-                    maxContentWidth: SeguiChartLayout.tooltipWidth,
-                    fitInsideHorizontally: true,
-                    fitInsideVertically: true,
-                    getTooltipItems: (spots) => [
-                      for (final LineBarSpot spot in spots)
-                        _tooltipItem(drawn, spot, tooltipStyle),
+                  rangeAnnotations: RangeAnnotations(
+                    horizontalRangeAnnotations: [
+                      for (final ChartZone zone in zones)
+                        HorizontalRangeAnnotation(
+                          y1: zone.from,
+                          y2: zone.to,
+                          color: zone.color,
+                        ),
                     ],
                   ),
+                  titlesData:
+                      chartTitles(context, xLabel: xLabel, yLabel: yLabel),
+                  gridData: chartGrid(colors),
+                  borderData: chartBorder(colors),
+                  clipData: const FlClipData.all(),
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipColor: (_) => colors.inverseSurface,
+                      maxContentWidth: SeguiChartLayout.tooltipWidth,
+                      fitInsideHorizontally: true,
+                      fitInsideVertically: true,
+                      getTooltipItems: (spots) => [
+                        for (final LineBarSpot spot in spots)
+                          _tooltipItem(drawn, spot, tooltipStyle),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              transformationConfig: FlTransformationConfig(
-                scaleAxis: FlScaleAxis.horizontal,
-                maxScale: SeguiChartLayout.maxZoom,
-                transformationController: controller,
+                transformationConfig: FlTransformationConfig(
+                  scaleAxis: FlScaleAxis.horizontal,
+                  maxScale: SeguiChartLayout.maxZoom,
+                  transformationController: controller,
+                ),
               ),
             ),
           ),
@@ -369,6 +373,15 @@ class ReadBarChart extends StatelessWidget {
   /// with wider bars.
   final double barWidth;
 
+  /// Narrowest width that keeps every bar group apart.
+  double get _minWidth => math.max(
+        SeguiChartLayout.minWidth,
+        SeguiChartLayout.axisName +
+            SeguiChartLayout.leftAxis +
+            categories.length *
+                (series.length * barWidth + SeguiChartLayout.barGroupGap),
+      );
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -383,56 +396,59 @@ class ReadBarChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: SeguiChartLayout.height,
-          child: BarChart(
-            BarChartData(
-              barGroups: [
-                for (int i = 0; i < categories.length; i++)
-                  BarChartGroupData(
-                    x: i,
-                    barRods: [
-                      for (final BarSeries s in series)
-                        BarChartRodData(
-                          toY: s.values[i],
-                          color: s.color,
-                          width: barWidth,
-                          // Rounded tops like the metric and table bars;
-                          // the base stays flat on the axis.
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(SeguiRadius.xs),
+        MinWidthScroll(
+          minWidth: _minWidth,
+          child: SizedBox(
+            height: SeguiChartLayout.height,
+            child: BarChart(
+              BarChartData(
+                barGroups: [
+                  for (int i = 0; i < categories.length; i++)
+                    BarChartGroupData(
+                      x: i,
+                      barRods: [
+                        for (final BarSeries s in series)
+                          BarChartRodData(
+                            toY: s.values[i],
+                            color: s.color,
+                            width: barWidth,
+                            // Rounded tops like the metric and table bars;
+                            // the base stays flat on the axis.
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(SeguiRadius.xs),
+                            ),
+                            // Outlined so pale fills reach 3:1 on the surface.
+                            borderSide: BorderSide(
+                              color: palette.lineFor(s.color),
+                              width: SeguiStroke.thin,
+                            ),
                           ),
-                          // Outlined so pale fills reach 3:1 on the surface.
-                          borderSide: BorderSide(
-                            color: palette.lineFor(s.color),
-                            width: SeguiStroke.thin,
-                          ),
-                        ),
-                    ],
-                  ),
-              ],
-              titlesData: chartTitles(
-                context,
-                xLabel: xLabel,
-                yLabel: yLabel,
-                bottomLabel: (value) {
-                  final int i = value.toInt();
-                  return i >= 0 && i < categories.length ? categories[i] : '';
-                },
-              ),
-              gridData: chartGrid(colors),
-              borderData: chartBorder(colors),
-              barTouchData: BarTouchData(
-                touchTooltipData: BarTouchTooltipData(
-                  getTooltipColor: (_) => colors.inverseSurface,
-                  maxContentWidth: SeguiChartLayout.tooltipWidth,
-                  fitInsideHorizontally: true,
-                  fitInsideVertically: true,
-                  getTooltipItem: (group, groupIndex, rod, rodIndex) =>
-                      BarTooltipItem(
-                    '${categories[group.x]}\n'
-                    '${series[rodIndex].name}: ${formatValue(rod.toY)}',
-                    tooltipStyle,
+                      ],
+                    ),
+                ],
+                titlesData: chartTitles(
+                  context,
+                  xLabel: xLabel,
+                  yLabel: yLabel,
+                  bottomLabel: (value) {
+                    final int i = value.toInt();
+                    return i >= 0 && i < categories.length ? categories[i] : '';
+                  },
+                ),
+                gridData: chartGrid(colors),
+                borderData: chartBorder(colors),
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => colors.inverseSurface,
+                    maxContentWidth: SeguiChartLayout.tooltipWidth,
+                    fitInsideHorizontally: true,
+                    fitInsideVertically: true,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) =>
+                        BarTooltipItem(
+                      '${categories[group.x]}\n'
+                      '${series[rodIndex].name}: ${formatValue(rod.toY)}',
+                      tooltipStyle,
+                    ),
                   ),
                 ),
               ),

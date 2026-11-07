@@ -189,6 +189,16 @@ abstract final class SeguiChartLayout {
   /// Space for an axis name.
   static const double axisName = 24;
 
+  /// Narrowest a chart gets before it scrolls sideways, so ticks, labels,
+  /// and bars do not overlap on small screens.
+  static const double minWidth = 480;
+
+  /// Space between bar groups when sizing a bar chart's narrowest width.
+  static const double barGroupGap = 8;
+
+  /// Narrowest heatmap column when sizing a heatmap's narrowest width.
+  static const double heatmapColumnMin = 4;
+
   /// Largest zoom on the horizontal axis.
   static const double maxZoom = 20;
 
@@ -206,6 +216,11 @@ abstract final class SeguiChartLayout {
   static const double barLabel = 140;
   static const double barThickness = 14;
   static const double barValue = 64;
+
+  /// Narrowest the sample name column and the bar track of a horizontal
+  /// sample bar get on small screens.
+  static const double barLabelMin = 72;
+  static const double barTrackMin = 96;
 
   /// Tallest the menu of compared samples gets, as a share of the screen
   /// height and in pixels, before it scrolls.

@@ -14,6 +14,8 @@ import 'package:segui/screens/shared/side_panel.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/tasks/progress.dart';
+import 'package:segui/services/utils.dart';
+import 'package:segui/services/workbench.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/screens/shared/badges.dart';
@@ -205,19 +207,55 @@ class ToolHeader extends StatelessWidget {
                   if (isCompact) const FilesButton(),
                 ],
               ),
-              const SizedBox(height: SeguiSpacing.xs),
-              Text(
-                tool.about,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.onSurfaceVariant,
-                ),
-                maxLines: isCompact ? 2 : null,
-                overflow: isCompact ? TextOverflow.ellipsis : null,
+              Row(
+                crossAxisAlignment: isCompact
+                    ? CrossAxisAlignment.center
+                    : CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      tool.about,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                      maxLines: isCompact ? 1 : null,
+                      overflow: isCompact ? TextOverflow.ellipsis : null,
+                    ),
+                  ),
+                  const SizedBox(width: SeguiSpacing.sm),
+                  ToolGuideButton(tool: tool),
+                ],
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Opens the tool's guide on the SEGUL website.
+class ToolGuideButton extends StatelessWidget {
+  const ToolGuideButton({super.key, required this.tool});
+
+  final HomeTool tool;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      // Sized to its text so the description stays close to the title.
+      style: TextButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        minimumSize: Size.zero,
+        padding: const EdgeInsets.symmetric(
+          horizontal: SeguiSpacing.sm,
+          vertical: SeguiSpacing.xs,
+        ),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      onPressed: () => launchToolGuideUrl(tool.guideUrl),
+      icon: const Icon(Icons.menu_book_outlined),
+      label: const Text('Guide'),
     );
   }
 }
@@ -314,6 +352,7 @@ class FilesButton extends ConsumerWidget {
     final int inputCount = ref.watch(fileInputProvider).value?.length ?? 0;
     return IconButton(
       tooltip: 'Input and output files',
+      visualDensity: VisualDensity.compact,
       icon: Badge(
         isLabelVisible: inputCount > 0,
         label: Text('$inputCount'),
@@ -446,6 +485,10 @@ class ToolFormLayout extends ConsumerStatefulWidget {
 class _ToolFormLayoutState extends ConsumerState<ToolFormLayout> {
   bool _isEdited = false;
 
+  /// Whether a finished run shows the workbench in place of the form on
+  /// pages without a file panel.
+  bool _isShowingResults = false;
+
   /// Last selected output directory. Output updates pass through a loading
   /// state, so the listener's previous value cannot be compared directly.
   String? _outputDir;
@@ -472,62 +515,104 @@ class _ToolFormLayoutState extends ConsumerState<ToolFormLayout> {
         _outputDir = next;
       },
     );
+    ref.listen(
+      lastRunProvider,
+      (_, ToolRun? next) => _setShowingResults(next != null),
+    );
     final bool isCompact = isPhoneScreen(context);
     final double sidePadding = isCompact ? 16 : 32;
-    return ToolFormEditScope(
-      isEdited: _isEdited,
-      onRunStarted: _clearEdited,
-      child: NotificationListener<FormEditedNotification>(
-        onNotification: (_) {
-          _markEdited();
-          return true;
-        },
-        child: Column(
-          children: [
-            Expanded(
-              child: LayoutBuilder(builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    // Fill the height so the gull scene sits on the run bar
-                    // when the form is short.
-                    constraints:
-                        BoxConstraints(minHeight: constraints.maxHeight),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: sidePadding),
-                          child: Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                maxWidth: maxToolFormWidth,
-                              ),
-                              child: Form(
-                                onChanged: _markEdited,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: widget.form,
+    final bool hasFilePanel =
+        ToolWorkspaceScope.maybeOf(context)?.hasFilePanel ?? true;
+    final bool showResults = _isShowingResults && !hasFilePanel;
+    return PopScope(
+      canPop: !showResults,
+      onPopInvokedWithResult: (bool didPop, _) {
+        if (!didPop) {
+          _setShowingResults(false);
+        }
+      },
+      child: ToolFormEditScope(
+        isEdited: _isEdited,
+        onRunStarted: _clearEdited,
+        child: NotificationListener<FormEditedNotification>(
+          onNotification: (_) {
+            _markEdited();
+            return true;
+          },
+          child: Column(
+            children: [
+              Expanded(
+                // The form stays built under the results, so its options
+                // survive switching back.
+                child: IndexedStack(
+                  index: showResults ? 1 : 0,
+                  sizing: StackFit.expand,
+                  children: [
+                    LayoutBuilder(builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        child: ConstrainedBox(
+                          // Fill the height so the gull scene sits on the
+                          // run bar when the form is short.
+                          constraints:
+                              BoxConstraints(minHeight: constraints.maxHeight),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: sidePadding),
+                                child: Center(
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      maxWidth: maxToolFormWidth,
+                                    ),
+                                    child: Form(
+                                      onChanged: _markEdited,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: widget.form,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              const Padding(
+                                padding: EdgeInsets.only(top: SeguiSpacing.xxl),
+                                child: ToolScene(),
+                              ),
+                            ],
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: SeguiSpacing.xxl),
-                          child: ToolScene(),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-            ),
-            ToolRunBar(action: widget.action),
-          ],
+                      );
+                    }),
+                    if (showResults)
+                      ToolResultsView(
+                        onEditOptions: () => _setShowingResults(false),
+                      ),
+                  ],
+                ),
+              ),
+              ToolRunBar(action: widget.action),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _setShowingResults(bool value) {
+    if (_isShowingResults == value || !mounted) {
+      return;
+    }
+    // The last run clears while widgets build, such as when a new run
+    // invalidates the input files.
+    final SchedulerBinding binding = SchedulerBinding.instance;
+    if (binding.schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      binding.addPostFrameCallback((_) => _setShowingResults(value));
+      return;
+    }
+    setState(() => _isShowingResults = value);
   }
 
   void _markEdited() {
@@ -548,6 +633,55 @@ class _ToolFormLayoutState extends ConsumerState<ToolFormLayout> {
     if (_isEdited) {
       setState(() => _isEdited = false);
     }
+  }
+}
+
+/// Tells a tool form whether its page shows the file panel beside it.
+class ToolWorkspaceScope extends InheritedWidget {
+  const ToolWorkspaceScope({
+    super.key,
+    required this.hasFilePanel,
+    required super.child,
+  });
+
+  final bool hasFilePanel;
+
+  static ToolWorkspaceScope? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ToolWorkspaceScope>();
+  }
+
+  @override
+  bool updateShouldNotify(ToolWorkspaceScope oldWidget) {
+    return hasFilePanel != oldWidget.hasFilePanel;
+  }
+}
+
+/// Workbench and files shown after a run on pages without a file panel,
+/// with a way back to the tool options.
+class ToolResultsView extends StatelessWidget {
+  const ToolResultsView({super.key, required this.onEditOptions});
+
+  final VoidCallback onEditOptions;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.md),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: onEditOptions,
+              icon: const Icon(Icons.arrow_back_rounded),
+              label: const Text('Edit options'),
+            ),
+          ),
+        ),
+        const Expanded(child: FilePanel()),
+      ],
+    );
   }
 }
 

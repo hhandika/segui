@@ -69,7 +69,8 @@ class SharedOperationPage extends StatelessWidget {
   }
 }
 
-/// Tool header above the tool form.
+/// Tool header above the tool form, which learns whether the page shows
+/// the file panel.
 class ToolWorkspace extends StatelessWidget {
   const ToolWorkspace({
     super.key,
@@ -94,7 +95,9 @@ class ToolWorkspace extends StatelessWidget {
           showSwitcher: showSwitcher,
           isCompact: isCompact,
         ),
-        Expanded(child: child),
+        Expanded(
+          child: ToolWorkspaceScope(hasFilePanel: !isCompact, child: child),
+        ),
       ],
     );
   }
