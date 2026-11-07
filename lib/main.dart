@@ -53,7 +53,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      title: 'SEGUL',
+      title: 'SEGUI',
       debugShowCheckedModeBanner: false,
       theme: SeguiTheme.lightTheme(
         colors: ref.watch(seguiColorsProvider(Brightness.light)),
