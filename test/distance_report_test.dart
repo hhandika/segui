@@ -8,6 +8,7 @@ import 'package:segui/screens/viewers/distance_report.dart';
 import 'package:segui/screens/viewers/distance_report/matrix.dart';
 import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
+import 'package:segui/screens/viewers/report/sheet_controls.dart';
 import 'package:segui/services/providers/distance_report.dart';
 import 'package:segui/services/viewers/distance_report.dart';
 import 'package:segui/src/rust/api/distance_report.dart';
@@ -183,6 +184,29 @@ void main() {
     await tester.tap(find.text('Group matrix').first);
     await tester.pumpAndSettle();
     expect(find.byType(DistanceMatrixPanel), findsOneWidget);
+  });
+
+  testWidgets('Phones show matrices and pick samples from a sheet',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await _pumpReport(tester, _report());
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Matrix').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Matrix').first);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.byType(MetricBar), findsWidgets);
+
+    await tester.tap(find.text('Sample: sp1_a'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ChoiceSheet<int>), findsOneWidget);
+    await tester.tap(find.text('sp2_a').last);
+    await tester.pumpAndSettle();
+    expect(find.byType(ChoiceSheet<int>), findsNothing);
+    expect(find.text('Sample: sp2_a'), findsOneWidget);
   });
 
   testWidgets('Large matrices show only the nearest samples', (tester) async {

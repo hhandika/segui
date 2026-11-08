@@ -9,9 +9,11 @@ import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
+import 'package:segui/screens/viewers/report/sheet_controls.dart';
 import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -115,36 +117,37 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: fills ? MainAxisSize.max : MainAxisSize.min,
       children: [
-        Wrap(
-          spacing: SeguiSpacing.md,
-          runSpacing: SeguiSpacing.sm,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            SegmentedButton<SummaryView>(
-              showSelectedIcon: false,
-              segments: [
-                for (final SummaryView mode in SummaryView.values)
-                  ButtonSegment(
-                    value: mode,
-                    label: Text(mode.label),
-                    icon: Icon(mode.icon),
-                  ),
-              ],
-              selected: {_mode},
-              onSelectionChanged: (modes) =>
-                  setState(() => _mode = modes.first),
-            ),
-            if (_mode == SummaryView.bars)
-              for (final ReadMetric option in metrics)
-                ChoiceChip(
-                  // Without a check mark, chips keep their width.
-                  showCheckmark: false,
-                  label: Text(option.label),
-                  selected: option == metric,
-                  onSelected: (_) => setState(() => _metric = option),
+        if (isPhoneScreen(context))
+          Row(
+            spacing: SeguiSpacing.md,
+            children: [
+              Expanded(
+                child: Text(
+                  _mode == SummaryView.bars ? metric.label : _mode.label,
+                  style: Theme.of(context).textTheme.titleSmall,
+                  overflow: TextOverflow.ellipsis,
                 ),
-          ],
-        ),
+              ),
+              ReportSettingsButton(
+                onPressed: () => showReportSettings(
+                  context: context,
+                  builder: (context, refresh) => _controls(
+                    metrics: metrics,
+                    isSheet: true,
+                    onChanged: (change) {
+                      setState(change);
+                      refresh();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          )
+        else
+          _controls(
+            metrics: metrics,
+            onChanged: setState,
+          ),
         const SizedBox(height: SeguiSpacing.lg),
         if (fills)
           Expanded(child: samples)
@@ -173,6 +176,68 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
               ),
           ],
         ),
+      ],
+    );
+  }
+
+  /// The view and metric pickers: in a row, or stacked under labels in
+  /// the settings sheet. [onChanged] applies each change.
+  Widget _controls({
+    required List<ReadMetric> metrics,
+    required void Function(VoidCallback change) onChanged,
+    bool isSheet = false,
+  }) {
+    final ReadMetric metric =
+        metrics.contains(_metric) ? _metric : metrics.first;
+    final Widget views = SegmentedButton<SummaryView>(
+      showSelectedIcon: false,
+      segments: [
+        for (final SummaryView mode in SummaryView.values)
+          ButtonSegment(
+            value: mode,
+            label: Text(mode.label),
+            icon: Icon(mode.icon),
+          ),
+      ],
+      selected: {_mode},
+      onSelectionChanged: (modes) => onChanged(() => _mode = modes.first),
+    );
+    final List<Widget> chips = [
+      for (final ReadMetric option in metrics)
+        ChoiceChip(
+          // Without a check mark, chips keep their width.
+          showCheckmark: false,
+          label: Text(option.label),
+          selected: option == metric,
+          onSelected: (_) => onChanged(() => _metric = option),
+        ),
+    ];
+    if (isSheet) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        spacing: SeguiSpacing.xl,
+        children: [
+          SheetSection(label: 'View', child: views),
+          if (_mode == SummaryView.bars)
+            SheetSection(
+              label: 'Metric',
+              child: Wrap(
+                spacing: SeguiSpacing.sm,
+                runSpacing: SeguiSpacing.sm,
+                children: chips,
+              ),
+            ),
+        ],
+      );
+    }
+    return Wrap(
+      spacing: SeguiSpacing.md,
+      runSpacing: SeguiSpacing.sm,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        views,
+        if (_mode == SummaryView.bars) ...chips,
       ],
     );
   }

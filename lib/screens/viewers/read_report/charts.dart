@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/report/layout.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -97,7 +98,7 @@ class ReadLineChart extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MinWidthScroll(
-          minWidth: SeguiChartLayout.minWidth,
+          minWidth: chartMinWidth(context),
           child: Container(
             height: SeguiChartLayout.height,
             padding: const EdgeInsets.only(right: SeguiChartLayout.rightInset),
@@ -390,6 +391,7 @@ class ReadBarChart extends StatelessWidget {
       children: [
         MinWidthScroll(
           minWidth: _minWidth(
+            chartMinWidth(context),
             theme.textTheme.labelSmall,
             MediaQuery.textScalerOf(context),
           ),
@@ -459,7 +461,7 @@ class ReadBarChart extends StatelessWidget {
   }
 
   /// Narrowest width that keeps every bar group and its label apart.
-  double _minWidth(TextStyle? style, TextScaler scaler) {
+  double _minWidth(double floor, TextStyle? style, TextScaler scaler) {
     double label = 0;
     for (final String category in categories) {
       final TextPainter painter = TextPainter(
@@ -476,7 +478,7 @@ class ReadBarChart extends StatelessWidget {
       label + SeguiChartLayout.labelGap,
     );
     return math.max(
-      SeguiChartLayout.minWidth,
+      floor,
       SeguiChartLayout.axisName +
           SeguiChartLayout.leftAxis +
           SeguiChartLayout.rightInset +
@@ -537,6 +539,13 @@ class ChartPlaceholder extends StatelessWidget {
   }
 }
 
+/// Narrowest width of a chart before it scrolls sideways: less on phones.
+double chartMinWidth(BuildContext context) {
+  return isPhoneScreen(context)
+      ? SeguiChartLayout.compactMinWidth
+      : SeguiChartLayout.minWidth;
+}
+
 /// Axis titles with tick labels on the left and bottom.
 FlTitlesData chartTitles(
   BuildContext context, {
@@ -571,6 +580,9 @@ FlTitlesData chartTitles(
         showTitles: true,
         reservedSize: SeguiChartLayout.bottomAxis,
         interval: bottomLabel != null ? 1 : null,
+        // Like the left axis, the end is often between ticks, so its label
+        // overlaps the last one. Categories always land on ticks.
+        maxIncluded: bottomLabel != null,
         getTitlesWidget: (value, meta) => SideTitleWidget(
           meta: meta,
           child: Text(

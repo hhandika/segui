@@ -104,7 +104,7 @@ class _DistanceReportContentState extends State<DistanceReportContent> {
     }
     final List<ReportTab> tabs = _tabs(report);
     return Padding(
-      padding: const EdgeInsets.all(SeguiSpacing.xl),
+      padding: reportPadding(context),
       child: DefaultTabController(
         length: tabs.length,
         child: OutlinedPanel(child: ReportTabView(tabs: tabs)),
@@ -203,9 +203,7 @@ class _DistanceReportContentState extends State<DistanceReportContent> {
     return [
       ReportSection(
         title: 'Dataset',
-        child: Wrap(
-          spacing: SeguiSpacing.md,
-          runSpacing: SeguiSpacing.md,
+        child: StatTileGrid(
           children: [
             StatTile(
               label: 'Model',

@@ -2,6 +2,20 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
+/// Space around a report's tabs: tighter on phones, where width is short.
+EdgeInsets reportPadding(BuildContext context) {
+  return EdgeInsets.all(
+    isPhoneScreen(context) ? SeguiSpacing.md : SeguiSpacing.xl,
+  );
+}
+
+/// Space inside a report tab: tighter on phones.
+EdgeInsets reportPanelPadding(BuildContext context) {
+  return EdgeInsets.all(
+    isPhoneScreen(context) ? SeguiSpacing.lg : SeguiSpacing.xl,
+  );
+}
+
 /// A tab of the report, made of one or more sections.
 class ReportTab {
   const ReportTab({required this.label, required this.sections});
@@ -78,21 +92,21 @@ class ReportPanel extends StatelessWidget {
                   !isPhoneScreen(context);
           if (isSticky) {
             return Padding(
-              padding: const EdgeInsets.all(SeguiSpacing.xl),
+              padding: reportPanelPadding(context),
               child: ReportSectionView(section: section, isSticky: true),
             );
           }
           // Too small to keep the controls in place, so the whole tab
           // scrolls and the section sizes its own list.
           return ListView(
-            padding: const EdgeInsets.all(SeguiSpacing.xl),
+            padding: reportPanelPadding(context),
             children: [ReportSectionView(section: section)],
           );
         },
       );
     }
     return ListView(
-      padding: const EdgeInsets.all(SeguiSpacing.xl),
+      padding: reportPanelPadding(context),
       children: [
         for (final (int i, ReportSection section) in tab.sections.indexed) ...[
           if (i > 0) const Divider(height: SeguiSpacing.xxxl * 2),

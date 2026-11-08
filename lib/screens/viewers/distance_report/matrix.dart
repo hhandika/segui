@@ -3,9 +3,11 @@ import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
+import 'package:segui/screens/viewers/report/sheet_controls.dart';
 import 'package:segui/services/viewers/distance_report.dart';
 import 'package:segui/services/viewers/natural_sort.dart';
 import 'package:segui/src/rust/api/distance_report.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 /// Matrices with more items than this show no heatmap, since every row
@@ -61,8 +63,45 @@ class _DistanceMatrixPanelState extends State<DistanceMatrixPanel> {
     final int open = _open.clamp(0, names.length - 1);
     final bool hasHeatmap = names.length <= maxHeatmapItems;
     final MatrixView mode = hasHeatmap ? _mode : MatrixView.nearest;
+    // In a tab that scrolls as a whole, as on phones, the height is
+    // unbounded, so the matrix gets a fixed height instead of the rest.
+    return LayoutBuilder(
+      builder: (context, constraints) => _content(
+        context,
+        names: names,
+        open: open,
+        hasHeatmap: hasHeatmap,
+        mode: mode,
+        fills: constraints.hasBoundedHeight,
+      ),
+    );
+  }
+
+  Widget _content(
+    BuildContext context, {
+    required List<String> names,
+    required int open,
+    required bool hasHeatmap,
+    required MatrixView mode,
+    required bool fills,
+  }) {
+    final DistanceMatrixData matrix = widget.matrix;
+    final Widget body = switch (mode) {
+      MatrixView.nearest => _NearestBars(
+          matrix: matrix,
+          open: open,
+          onSelected: (i) => setState(() => _open = i),
+        ),
+      MatrixView.heatmap => _MatrixHeatmap(
+          matrix: matrix,
+          itemLabel: widget.itemLabel,
+          open: open,
+          onSelected: (i) => setState(() => _open = i),
+        ),
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: fills ? MainAxisSize.max : MainAxisSize.min,
       children: [
         Wrap(
           spacing: SeguiSpacing.md,
@@ -84,39 +123,41 @@ class _DistanceMatrixPanelState extends State<DistanceMatrixPanel> {
                 onSelectionChanged: (views) =>
                     setState(() => _mode = views.first),
               ),
-            DropdownMenu<int>(
-              key: ValueKey(open),
-              initialSelection: open,
-              width: SeguiContentWidth.searchBar,
-              label: Text(widget.itemLabel),
-              enableFilter: true,
-              requestFocusOnTap: true,
-              dropdownMenuEntries: [
-                for (int i = 0; i < names.length; i++)
-                  DropdownMenuEntry(value: i, label: names[i]),
-              ],
-              onSelected: (i) {
-                if (i != null) setState(() => _open = i);
-              },
-            ),
+            if (isPhoneScreen(context))
+              ChoiceSheetButton<int>(
+                title: widget.itemLabel,
+                label: widget.itemLabel,
+                value: open,
+                isSearchable: true,
+                choices: [
+                  for (int i = 0; i < names.length; i++)
+                    (value: i, label: names[i]),
+                ],
+                onSelected: (i) => setState(() => _open = i),
+              )
+            else
+              DropdownMenu<int>(
+                key: ValueKey(open),
+                initialSelection: open,
+                width: SeguiContentWidth.searchBar,
+                label: Text(widget.itemLabel),
+                enableFilter: true,
+                requestFocusOnTap: true,
+                dropdownMenuEntries: [
+                  for (int i = 0; i < names.length; i++)
+                    DropdownMenuEntry(value: i, label: names[i]),
+                ],
+                onSelected: (i) {
+                  if (i != null) setState(() => _open = i);
+                },
+              ),
           ],
         ),
         const SizedBox(height: SeguiSpacing.md),
-        Expanded(
-          child: switch (mode) {
-            MatrixView.nearest => _NearestBars(
-                matrix: matrix,
-                open: open,
-                onSelected: (i) => setState(() => _open = i),
-              ),
-            MatrixView.heatmap => _MatrixHeatmap(
-                matrix: matrix,
-                itemLabel: widget.itemLabel,
-                open: open,
-                onSelected: (i) => setState(() => _open = i),
-              ),
-          },
-        ),
+        if (fills)
+          Expanded(child: body)
+        else
+          SizedBox(height: SeguiTableLayout.scrollingHeight, child: body),
       ],
     );
   }

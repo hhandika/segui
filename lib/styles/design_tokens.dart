@@ -116,6 +116,9 @@ abstract final class SeguiContentWidth {
   /// Statistic tiles, such as the file count on the data usage page.
   static const double statTile = 200;
 
+  /// Narrowest a statistic tile gets on phones, where tiles share a row.
+  static const double statTileMin = 150;
+
   /// Narrowest workbench file summary tile before input and output stack.
   static const double summaryTile = 140;
 
@@ -130,6 +133,12 @@ abstract final class SeguiContentWidth {
 }
 
 /// Sizes in the alignment viewer.
+abstract final class SeguiSheetLayout {
+  /// Share of the screen height a bottom sheet with a long, filterable
+  /// list takes.
+  static const double listHeight = 0.8;
+}
+
 abstract final class SeguiAlignmentLayout {
   /// Narrowest and widest residue cell, and the starting width.
   static const double cellMin = 2;
@@ -201,6 +210,9 @@ abstract final class SeguiChartLayout {
   /// Narrowest a chart gets before it scrolls sideways, so ticks, labels,
   /// and bars do not overlap on small screens.
   static const double minWidth = 480;
+
+  /// Narrowest a chart gets on phones, where zoom spreads dense points.
+  static const double compactMinWidth = 300;
 
   /// Space between bar groups when sizing a bar chart's narrowest width.
   static const double barGroupGap = 8;

@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
 import 'package:segui/services/keyboard.dart';
@@ -407,8 +408,8 @@ class AlignmentSettingsSheet extends StatelessWidget {
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-        const _SheetSection(label: 'Color', child: AlignmentColorControls()),
-        _SheetSection(
+        const SheetSection(label: 'Color', child: AlignmentColorControls()),
+        SheetSection(
           label: 'Chunk',
           child: AlignmentChunkControls(
             data: data,
@@ -424,7 +425,7 @@ class AlignmentSettingsSheet extends StatelessWidget {
             onGoToSite(text);
           },
         ),
-        _SheetSection(
+        SheetSection(
           label: 'Legend',
           child: AlignmentLegend(isDna: data.isDna),
         ),
@@ -476,32 +477,6 @@ class AlignmentSiteField extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Muted [label] above [child], for a group of controls in a sheet.
-class _SheetSection extends StatelessWidget {
-  const _SheetSection({required this.label, required this.child});
-
-  final String label;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: SeguiSpacing.sm,
-      children: [
-        Text(
-          label,
-          style: theme.textTheme.labelMedium!.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        child,
-      ],
     );
   }
 }

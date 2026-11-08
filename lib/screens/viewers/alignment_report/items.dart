@@ -1,11 +1,14 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
+import 'package:segui/screens/viewers/report/sheet_controls.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
 import 'package:segui/services/viewers/natural_sort.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -111,61 +114,28 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: fills ? MainAxisSize.max : MainAxisSize.min,
       children: [
-        Wrap(
-          spacing: SeguiSpacing.md,
-          runSpacing: SeguiSpacing.sm,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            SegmentedButton<ItemView>(
-              showSelectedIcon: false,
-              segments: [
-                for (final ItemView mode in ItemView.values)
-                  ButtonSegment(
-                    value: mode,
-                    label: Text(mode.label),
-                    icon: Icon(mode.icon),
+        if (isPhoneScreen(context))
+          Row(
+            spacing: SeguiSpacing.md,
+            children: [
+              Expanded(child: _filterField()),
+              ReportSettingsButton(
+                onPressed: () => showReportSettings(
+                  context: context,
+                  builder: (context, refresh) => _controls(
+                    metric: metric,
+                    isSheet: true,
+                    onChanged: (change) {
+                      setState(change);
+                      refresh();
+                    },
                   ),
-              ],
-              selected: {_mode},
-              onSelectionChanged: (modes) =>
-                  setState(() => _mode = modes.first),
-            ),
-            SizedBox(
-              width: SeguiContentWidth.searchBar,
-              child: TextField(
-                controller: _query,
-                decoration: InputDecoration(
-                  isDense: true,
-                  prefixIcon: const Icon(Icons.search_rounded),
-                  hintText: 'Filter by name',
-                  suffixIcon: _query.text.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Clear filter',
-                          icon: const Icon(Icons.close_rounded),
-                          onPressed: () => setState(_query.clear),
-                        ),
                 ),
-                onChanged: (_) => setState(() {}),
               ),
-            ),
-            if (_mode == ItemView.bars) ...[
-              FilterChip(
-                label: const Text('Highest first'),
-                selected: _highestFirst,
-                onSelected: (on) => setState(() => _highestFirst = on),
-              ),
-              for (final (int i, ReportMetric option) in widget.metrics.indexed)
-                ChoiceChip(
-                  // Without a check mark, chips keep their width.
-                  showCheckmark: false,
-                  label: Text(option.label),
-                  selected: option == metric,
-                  onSelected: (_) => setState(() => _metric = i),
-                ),
             ],
-          ],
-        ),
+          )
+        else
+          _controls(metric: metric, onChanged: setState),
         const SizedBox(height: SeguiSpacing.lg),
         if (fills)
           Expanded(child: items)
@@ -181,6 +151,94 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
           ],
         ),
       ],
+    );
+  }
+
+  /// The view, filter, order, and metric pickers: in a row, or stacked
+  /// under labels in the settings sheet, which leaves the filter out.
+  /// [onChanged] applies each change.
+  Widget _controls({
+    required ReportMetric metric,
+    required void Function(VoidCallback change) onChanged,
+    bool isSheet = false,
+  }) {
+    final Widget views = SegmentedButton<ItemView>(
+      showSelectedIcon: false,
+      segments: [
+        for (final ItemView mode in ItemView.values)
+          ButtonSegment(
+            value: mode,
+            label: Text(mode.label),
+            icon: Icon(mode.icon),
+          ),
+      ],
+      selected: {_mode},
+      onSelectionChanged: (modes) => onChanged(() => _mode = modes.first),
+    );
+    final Widget order = FilterChip(
+      label: const Text('Highest first'),
+      selected: _highestFirst,
+      onSelected: (on) => onChanged(() => _highestFirst = on),
+    );
+    final List<Widget> chips = [
+      for (final (int i, ReportMetric option) in widget.metrics.indexed)
+        ChoiceChip(
+          // Without a check mark, chips keep their width.
+          showCheckmark: false,
+          label: Text(option.label),
+          selected: option == metric,
+          onSelected: (_) => onChanged(() => _metric = i),
+        ),
+    ];
+    if (isSheet) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        spacing: SeguiSpacing.xl,
+        children: [
+          SheetSection(label: 'View', child: views),
+          if (_mode == ItemView.bars) ...[
+            SheetSection(label: 'Order', child: order),
+            SheetSection(
+              label: 'Metric',
+              child: Wrap(
+                spacing: SeguiSpacing.sm,
+                runSpacing: SeguiSpacing.sm,
+                children: chips,
+              ),
+            ),
+          ],
+        ],
+      );
+    }
+    return Wrap(
+      spacing: SeguiSpacing.md,
+      runSpacing: SeguiSpacing.sm,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        views,
+        SizedBox(width: SeguiContentWidth.searchBar, child: _filterField()),
+        if (_mode == ItemView.bars) ...[order, ...chips],
+      ],
+    );
+  }
+
+  Widget _filterField() {
+    return TextField(
+      controller: _query,
+      decoration: InputDecoration(
+        isDense: true,
+        prefixIcon: const Icon(Icons.search_rounded),
+        hintText: 'Filter by name',
+        suffixIcon: _query.text.isEmpty
+            ? null
+            : IconButton(
+                tooltip: 'Clear filter',
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => setState(_query.clear),
+              ),
+      ),
+      onChanged: (_) => setState(() {}),
     );
   }
 

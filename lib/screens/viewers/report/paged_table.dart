@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/viewers/report/sheet_controls.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 final NumberFormat _countFormat = NumberFormat('#,##0');
@@ -261,6 +263,15 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
     );
   }
 
+  void _setPageSize(int size) {
+    setState(() {
+      _pageSize = size;
+      _page = 0;
+      _showSelected();
+    });
+    _scrollToTop();
+  }
+
   Widget _pager(BuildContext context, int start, int end) {
     final TextStyle? style = Theme.of(context).textTheme.bodySmall;
     final bool hasPrevious = _page > 0;
@@ -273,25 +284,31 @@ class _PagedTableState<T> extends State<PagedTable<T>> {
         spacing: SeguiSpacing.md,
         children: [
           Text('Rows per page', style: style),
-          DropdownButton<int>(
-            value: _pageSize,
-            isDense: true,
-            underline: const SizedBox.shrink(),
-            style: style,
-            items: [
-              for (final int size in SeguiTableLayout.pageSizes)
-                DropdownMenuItem(value: size, child: Text('$size')),
-            ],
-            onChanged: (size) {
-              if (size == null) return;
-              setState(() {
-                _pageSize = size;
-                _page = 0;
-                _showSelected();
-              });
-              _scrollToTop();
-            },
-          ),
+          if (isPhoneScreen(context))
+            ChoiceSheetButton<int>(
+              title: 'Rows per page',
+              value: _pageSize,
+              isDense: true,
+              choices: [
+                for (final int size in SeguiTableLayout.pageSizes)
+                  (value: size, label: '$size'),
+              ],
+              onSelected: _setPageSize,
+            )
+          else
+            DropdownButton<int>(
+              value: _pageSize,
+              isDense: true,
+              underline: const SizedBox.shrink(),
+              style: style,
+              items: [
+                for (final int size in SeguiTableLayout.pageSizes)
+                  DropdownMenuItem(value: size, child: Text('$size')),
+              ],
+              onChanged: (size) {
+                if (size != null) _setPageSize(size);
+              },
+            ),
           Text(
             '${_countFormat.format(start + 1)}–${_countFormat.format(end)} '
             'of ${_countFormat.format(_order.length)}',

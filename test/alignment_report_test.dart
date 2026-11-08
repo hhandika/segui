@@ -239,8 +239,17 @@ void main() {
     await tester.tap(find.text('Loci').first);
     await tester.pumpAndSettle();
     expect(find.byType(ReportItemPanel), findsOneWidget);
+    // Phones keep the view and metric pickers in a settings sheet.
+    expect(find.text('Table'), findsNothing);
+    await tester.tap(find.byTooltip('View settings'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsOneWidget);
     await tester.tap(find.text('Table'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsNothing);
+    expect(find.byType(PagedTable<int>), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

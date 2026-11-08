@@ -276,3 +276,29 @@ class SheetContent extends StatelessWidget {
     );
   }
 }
+
+/// Muted [label] above [child], for a group of controls in a sheet.
+class SheetSection extends StatelessWidget {
+  const SheetSection({super.key, required this.label, required this.child});
+
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: SeguiSpacing.sm,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelMedium!.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        child,
+      ],
+    );
+  }
+}

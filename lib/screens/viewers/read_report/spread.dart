@@ -250,7 +250,7 @@ class _SampleHeatmapState extends State<SampleHeatmap> {
         const SizedBox(height: SeguiSpacing.sm),
         MinWidthScroll(
           minWidth: math.max(
-            SeguiChartLayout.minWidth,
+            chartMinWidth(context),
             SeguiChartLayout.barLabel +
                 widget.matrix.x.length * SeguiChartLayout.heatmapColumnMin,
           ),

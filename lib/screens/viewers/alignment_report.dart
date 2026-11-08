@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -96,7 +97,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
     }
     final List<ReportTab> tabs = _tabs(report);
     return Padding(
-      padding: const EdgeInsets.all(SeguiSpacing.xl),
+      padding: reportPadding(context),
       child: DefaultTabController(
         length: tabs.length,
         child: OutlinedPanel(child: ReportTabView(tabs: tabs)),
@@ -155,9 +156,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
     return [
       ReportSection(
         title: 'Dataset',
-        child: Wrap(
-          spacing: SeguiSpacing.md,
-          runSpacing: SeguiSpacing.md,
+        child: StatTileGrid(
           children: [
             StatTile(label: 'Taxa', value: _count(s.taxa)),
             StatTile(label: 'Loci', value: _count(s.loci)),
@@ -186,9 +185,7 @@ class _AlignmentReportContentState extends State<AlignmentReportContent> {
         title: 'Site types',
         description: 'Share of all sites of each type, and of loci that are '
             'fully conserved or have any variable or informative site.',
-        header: Wrap(
-          spacing: SeguiSpacing.md,
-          runSpacing: SeguiSpacing.md,
+        header: StatTileGrid(
           children: [
             for (final (String name, SiteTypeData sites) in siteTypes)
               StatTile(
@@ -383,7 +380,43 @@ List<ReportMetric> taxaMetrics(AlignTaxaData taxa) {
   ];
 }
 
+/// Stat tiles in rows: a fixed width on larger screens, and as many
+/// columns as fit, at least two, on phones.
+class StatTileGrid extends StatelessWidget {
+  const StatTileGrid({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const double gap = SeguiSpacing.md;
+        double width = SeguiContentWidth.statTile;
+        if (isPhoneScreen(context) && constraints.hasBoundedWidth) {
+          final int columns = math.max(
+            2,
+            ((constraints.maxWidth + gap) /
+                    (SeguiContentWidth.statTileMin + gap))
+                .floor(),
+          );
+          width = (constraints.maxWidth - gap * (columns - 1)) / columns;
+        }
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final Widget child in children)
+              SizedBox(width: width, child: child),
+          ],
+        );
+      },
+    );
+  }
+}
+
 /// One headline number of the report, with an optional detail below.
+/// It fills the width its parent gives it, such as a [StatTileGrid].
 class StatTile extends StatelessWidget {
   const StatTile({
     super.key,
@@ -411,7 +444,7 @@ class StatTile extends StatelessWidget {
       color: colors.onSurfaceVariant,
     );
     return Container(
-      width: SeguiContentWidth.statTile,
+      width: double.infinity,
       padding: const EdgeInsets.all(SeguiSpacing.lg),
       decoration: BoxDecoration(
         color: colors.surfaceContainerLow,

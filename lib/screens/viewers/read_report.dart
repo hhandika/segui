@@ -130,7 +130,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
       child: Focus(
         autofocus: true,
         child: Padding(
-          padding: const EdgeInsets.all(SeguiSpacing.xl),
+          padding: reportPadding(context),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -503,7 +503,7 @@ Set<int> _toggled(Set<int> selected, int i, bool on) {
 }
 
 /// Toggles the samples compared on a chart: chips for a few samples, a
-/// checkbox menu for more.
+/// checkbox menu for more, and a checkbox sheet on phones.
 class SampleCompareChips extends StatelessWidget {
   const SampleCompareChips({
     super.key,
@@ -518,7 +518,7 @@ class SampleCompareChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (samples.length > _maxCompareChips) {
+    if (samples.length > _maxCompareChips || isPhoneScreen(context)) {
       return Align(
         alignment: Alignment.centerLeft,
         child: SampleCompareMenu(
@@ -546,8 +546,8 @@ class SampleCompareChips extends StatelessWidget {
   }
 }
 
-/// A button that opens a checkbox list of every sample. The menu stays
-/// open while samples are toggled.
+/// A button that opens a checkbox list of every sample, as a menu or, on
+/// phones, a bottom sheet. Either stays open while samples are toggled.
 class SampleCompareMenu extends StatelessWidget {
   const SampleCompareMenu({
     super.key,
@@ -562,6 +562,19 @@ class SampleCompareMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Widget label = Text(
+      'Compared: ${selected.length} of ${samples.length} samples',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+    if (isPhoneScreen(context)) {
+      return OutlinedButton.icon(
+        onPressed: () => _showSheet(context),
+        icon: const Icon(Icons.arrow_drop_down_rounded),
+        iconAlignment: IconAlignment.end,
+        label: label,
+      );
+    }
     final bool isAllSelected = selected.length == samples.length;
     final double maxHeight = min(
       MediaQuery.sizeOf(context).height * SeguiChartLayout.compareMenuShare,
@@ -610,10 +623,110 @@ class SampleCompareMenu extends StatelessWidget {
         onPressed: controller.isOpen ? controller.close : controller.open,
         icon: const Icon(Icons.arrow_drop_down_rounded),
         iconAlignment: IconAlignment.end,
-        label: Text(
-          'Compared: ${selected.length} of ${samples.length} samples',
+        label: label,
+      ),
+    );
+  }
+
+  /// Phones pick samples from a sheet that stays open while they toggle.
+  Future<void> _showSheet(BuildContext context) {
+    Set<int> current = selected;
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      useSafeArea: true,
+      // Fits short lists and scrolls long ones.
+      builder: (context) => ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight:
+              MediaQuery.sizeOf(context).height * SeguiSheetLayout.listHeight,
+        ),
+        child: StatefulBuilder(
+          builder: (context, setSheetState) {
+            void update(Set<int> next) {
+              setSheetState(() => current = next);
+              onChanged(next);
+            }
+
+            return SampleCompareSheet(
+              samples: samples,
+              selected: current,
+              onChanged: update,
+            );
+          },
         ),
       ),
+    );
+  }
+}
+
+/// Every sample with a checkbox, with select all and clear, for the
+/// compare sheet on phones.
+class SampleCompareSheet extends StatelessWidget {
+  const SampleCompareSheet({
+    super.key,
+    required this.samples,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final List<ReadSampleData> samples;
+  final Set<int> selected;
+  final ValueChanged<Set<int>> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final bool isAllSelected = selected.length == samples.length;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xxl),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Compared samples',
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+              TextButton(
+                onPressed: isAllSelected
+                    ? null
+                    : () =>
+                        onChanged({for (int i = 0; i < samples.length; i++) i}),
+                child: const Text('Select all'),
+              ),
+              TextButton(
+                onPressed: selected.isEmpty ? null : () => onChanged({}),
+                child: const Text('Clear'),
+              ),
+            ],
+          ),
+        ),
+        const Divider(height: SeguiSpacing.lg),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.paddingOf(context).bottom,
+            ),
+            itemCount: samples.length,
+            itemBuilder: (context, i) => CheckboxListTile(
+              value: selected.contains(i),
+              onChanged: (on) => onChanged(_toggled(selected, i, on ?? false)),
+              secondary: CircleAvatar(
+                radius: SeguiControlSize.indicator / 2,
+                backgroundColor: SeguiColors.of(context).seriesAt(i),
+              ),
+              title: Text(samples[i].sample),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
