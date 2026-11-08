@@ -217,7 +217,11 @@ Future<T?> showResponsiveSheet<T>({
       showDragHandle: true,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => SafeArea(child: builder(context)),
+      // The sheet only caps its child's width, so narrow content would
+      // leave the sheet short of the screen edges.
+      builder: (context) => SafeArea(
+        child: SizedBox(width: double.infinity, child: builder(context)),
+      ),
     );
   }
   return showDialog<T>(

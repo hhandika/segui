@@ -70,7 +70,7 @@ class ReadSampleSwitcher extends StatelessWidget {
       children: [
         IconButton(
           tooltip: 'Previous sample (${PlatformKeys.altLabel} + ↑)',
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           icon: const Icon(Icons.keyboard_arrow_up_rounded),
           onPressed: () => onSelected(stepThrough(view, index, -1)),
         ),
@@ -88,7 +88,7 @@ class ReadSampleSwitcher extends StatelessWidget {
               onPressed: controller.openView,
               style: TextButton.styleFrom(
                 foregroundColor: theme.colorScheme.onSurface,
-                visualDensity: VisualDensity.compact,
+                visualDensity: controlDensity(context),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -147,7 +147,7 @@ class ReadSampleSwitcher extends StatelessWidget {
         ),
         IconButton(
           tooltip: 'Next sample (${PlatformKeys.altLabel} + ↓)',
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           icon: const Icon(Icons.keyboard_arrow_down_rounded),
           onPressed: () => onSelected(stepThrough(view, index, 1)),
         ),
@@ -372,7 +372,7 @@ class _SampleSortButton extends ConsumerWidget {
       return IconButton(
         tooltip: 'Sort samples',
         icon: const Icon(Icons.sort_rounded),
-        visualDensity: VisualDensity.compact,
+        visualDensity: controlDensity(context),
         onPressed: () => showResponsiveSheet<void>(
           context: context,
           builder: (context) => SheetContent(
@@ -411,7 +411,7 @@ class _SampleSortButton extends ConsumerWidget {
       builder: (context, controller, _) => IconButton(
         tooltip: 'Sort samples',
         icon: const Icon(Icons.sort_rounded),
-        visualDensity: VisualDensity.compact,
+        visualDensity: controlDensity(context),
         onPressed: controller.isOpen ? controller.close : controller.open,
       ),
     );

@@ -431,15 +431,19 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
+      useSafeArea: true,
       builder: (context) => FractionallySizedBox(
-        heightFactor: 0.8,
-        child: ReadSampleRail(
-          samples: _samples,
-          index: _index,
-          onSelected: (index) {
-            Navigator.of(context).pop();
-            _select(index);
-          },
+        heightFactor: SeguiSheetLayout.listHeight,
+        child: SafeArea(
+          top: false,
+          child: ReadSampleRail(
+            samples: _samples,
+            index: _index,
+            onSelected: (index) {
+              Navigator.of(context).pop();
+              _select(index);
+            },
+          ),
         ),
       ),
     );
@@ -480,7 +484,7 @@ class ReadReportHeader extends StatelessWidget {
             ),
             IconButton(
               tooltip: isListShown ? 'Hide sample list' : 'Show sample list',
-              visualDensity: VisualDensity.compact,
+              visualDensity: controlDensity(context),
               isSelected: isListShown,
               icon: const Icon(Icons.list_rounded),
               selectedIcon: const Icon(Icons.playlist_play_rounded),

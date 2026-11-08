@@ -126,6 +126,14 @@ Color getBorderColor(BuildContext context) {
 }
 
 /// Whether the window is [WindowSizeClass.compact].
+/// Density of small controls: compact on larger screens, and standard on
+/// phones, where controls need room for a finger.
+VisualDensity controlDensity(BuildContext context) {
+  return isPhoneScreen(context)
+      ? VisualDensity.standard
+      : VisualDensity.compact;
+}
+
 bool isPhoneScreen(BuildContext context) {
   return WindowSizeClass.of(context) == WindowSizeClass.compact;
 }

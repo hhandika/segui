@@ -141,7 +141,7 @@ class _AlignmentFileViewState extends ConsumerState<AlignmentFileView> {
                                 tooltip: settings.showFileList && !isCompact
                                     ? 'Hide file list'
                                     : 'Show file list',
-                                visualDensity: VisualDensity.compact,
+                                visualDensity: controlDensity(context),
                                 isSelected: showFileList,
                                 icon: const Icon(Icons.list_rounded),
                                 selectedIcon:
@@ -182,11 +182,13 @@ class _AlignmentFileViewState extends ConsumerState<AlignmentFileView> {
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) => FractionallySizedBox(
-        heightFactor: 0.8,
-        child: Center(
+        heightFactor: SeguiSheetLayout.listHeight,
+        child: SafeArea(
+          top: false,
           child: AlignmentFileRail(
             files: _files,
             index: _index,
+            width: double.infinity,
             onSelected: (index) {
               Navigator.of(context).pop();
               _select(index);
@@ -453,12 +455,10 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 AlignmentPhoneHeader(
-                  fileName: widget.fileName,
                   leading: widget.leading,
                   onShowChunks: _showChunkSheet,
                   onShowSettings: _showSettingsSheet,
                 ),
-                const AlignmentZoomControls(expand: true),
                 Padding(
                   padding: const EdgeInsets.only(right: SeguiSpacing.sm),
                   child: overview,
@@ -595,7 +595,13 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     return showResponsiveSheet<void>(
       context: context,
       builder: (context) => SheetContent(
-        title: 'Settings',
+        title: 'View settings',
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Done'),
+          ),
+        ],
         child: AlignmentSettingsSheet(
           data: widget.data,
           siteController: _siteController,
@@ -861,13 +867,13 @@ class AlignmentSelectionBar extends ConsumerWidget {
         ),
         FilterChip(
           label: const Text('Only selected'),
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           selected: selection.showOnlySelected,
           onSelected: notifier.setShowOnlySelected,
         ),
         FilterChip(
           label: const Text('Pin to top'),
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           selected: selection.pinSelected,
           onSelected: notifier.setPinSelected,
         ),

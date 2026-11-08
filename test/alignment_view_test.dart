@@ -531,7 +531,7 @@ void main() {
 
     testWidgets('Settings open in a sheet', (tester) async {
       await pumpPhone(tester);
-      await tester.tap(find.byTooltip('Settings'));
+      await tester.tap(find.byTooltip('View settings'));
       await pumpSheet(tester);
       expect(find.byType(AlignmentSettingsSheet), findsOneWidget);
       // Color modes are saved, which needs preferences; letters are not.

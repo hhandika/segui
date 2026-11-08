@@ -37,7 +37,7 @@ class AlignmentFileSwitcher extends StatelessWidget {
       children: [
         IconButton(
           tooltip: 'Previous file (${PlatformKeys.altLabel} + ↑)',
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           icon: const Icon(Icons.keyboard_arrow_up_rounded),
           onPressed: () => onSelected(files.step(index, -1)),
         ),
@@ -55,7 +55,7 @@ class AlignmentFileSwitcher extends StatelessWidget {
               onPressed: controller.openView,
               style: TextButton.styleFrom(
                 foregroundColor: theme.colorScheme.onSurface,
-                visualDensity: VisualDensity.compact,
+                visualDensity: controlDensity(context),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -118,7 +118,7 @@ class AlignmentFileSwitcher extends StatelessWidget {
         ),
         IconButton(
           tooltip: 'Next file (${PlatformKeys.altLabel} + ↓)',
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           icon: const Icon(Icons.keyboard_arrow_down_rounded),
           onPressed: () => onSelected(files.step(index, 1)),
         ),
@@ -184,11 +184,15 @@ class AlignmentFileRail extends ConsumerStatefulWidget {
     required this.files,
     required this.index,
     required this.onSelected,
+    this.width = SeguiAlignmentLayout.fileList,
   });
 
   final AlignmentFileList files;
   final int index;
   final ValueChanged<int> onSelected;
+
+  /// Width of the rail. Sheets pass the full width.
+  final double width;
 
   @override
   ConsumerState<AlignmentFileRail> createState() => _AlignmentFileRailState();
@@ -226,7 +230,7 @@ class _AlignmentFileRailState extends ConsumerState<AlignmentFileRail> {
     final int largest = sizes.values.fold(0, (a, b) => a > b ? a : b);
     final int position = view.indexOf(widget.index);
     return SizedBox(
-      width: SeguiAlignmentLayout.fileList,
+      width: widget.width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -348,7 +352,7 @@ class _FileSortButton extends ConsumerWidget {
       return IconButton(
         tooltip: 'Sort files',
         icon: const Icon(Icons.sort_rounded),
-        visualDensity: VisualDensity.compact,
+        visualDensity: controlDensity(context),
         onPressed: () => showResponsiveSheet<void>(
           context: context,
           builder: (context) => SheetContent(
@@ -388,7 +392,7 @@ class _FileSortButton extends ConsumerWidget {
       builder: (context, controller, _) => IconButton(
         tooltip: 'Sort files',
         icon: const Icon(Icons.sort_rounded),
-        visualDensity: VisualDensity.compact,
+        visualDensity: controlDensity(context),
         onPressed: controller.isOpen ? controller.close : controller.open,
       ),
     );

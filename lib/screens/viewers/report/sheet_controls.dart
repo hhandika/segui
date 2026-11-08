@@ -198,7 +198,8 @@ class _ChoiceSheetState<T> extends State<ChoiceSheet<T>> {
   }
 }
 
-/// A tonal icon button that opens a report's view settings.
+/// A plain icon button that opens a viewer's view settings, like the
+/// other header buttons.
 class ReportSettingsButton extends StatelessWidget {
   const ReportSettingsButton({super.key, required this.onPressed});
 
@@ -206,7 +207,7 @@ class ReportSettingsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton.filledTonal(
+    return IconButton(
       tooltip: 'View settings',
       onPressed: onPressed,
       icon: const Icon(Icons.tune_rounded),

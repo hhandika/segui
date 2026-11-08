@@ -5,9 +5,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
+import 'package:segui/screens/viewers/report/sheet_controls.dart';
 import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 final NumberFormat _siteFormat = NumberFormat('#,###');
@@ -155,50 +157,39 @@ class AlignmentToolbar extends StatelessWidget {
   }
 }
 
-/// Phone header: [leading] or the file name, then buttons that open the
-/// chunk list and the display settings as sheets.
+/// Phone header: [leading], such as the file switcher, on its own row,
+/// then zoom beside buttons that open the chunk list and the display
+/// settings as sheets. Without [leading], the app bar names the file.
 class AlignmentPhoneHeader extends StatelessWidget {
   const AlignmentPhoneHeader({
     super.key,
-    required this.fileName,
     required this.onShowChunks,
     required this.onShowSettings,
     this.leading,
   });
 
-  final String fileName;
   final VoidCallback onShowChunks;
   final VoidCallback onShowSettings;
-
-  /// Shown in place of the file name, such as the file switcher.
   final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
     final Widget? leading = this.leading;
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: leading ??
-                Text(
-                  fileName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-          ),
-        ),
-        IconButton(
-          tooltip: 'Chunks',
-          icon: const Icon(Icons.view_agenda_outlined),
-          onPressed: onShowChunks,
-        ),
-        IconButton(
-          tooltip: 'Settings',
-          icon: const Icon(Icons.tune_rounded),
-          onPressed: onShowSettings,
+        if (leading != null)
+          Align(alignment: Alignment.centerLeft, child: leading),
+        Row(
+          children: [
+            const Expanded(child: AlignmentZoomControls(expand: true)),
+            IconButton(
+              tooltip: 'Chunks',
+              icon: const Icon(Icons.view_agenda_outlined),
+              onPressed: onShowChunks,
+            ),
+            ReportSettingsButton(onPressed: onShowSettings),
+          ],
         ),
       ],
     );
@@ -207,7 +198,10 @@ class AlignmentPhoneHeader extends StatelessWidget {
 
 /// Color mode and the letters toggle.
 class AlignmentColorControls extends ConsumerWidget {
-  const AlignmentColorControls({super.key});
+  const AlignmentColorControls({super.key, this.expand = false});
+
+  /// Whether the color modes fill the width, as in the settings sheet.
+  final bool expand;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -215,28 +209,29 @@ class AlignmentColorControls extends ConsumerWidget {
         ref.watch(alignmentViewSettingsProvider);
     final AlignmentViewSettingsNotifier notifier =
         ref.read(alignmentViewSettingsProvider.notifier);
+    final Widget modes = SegmentedButton<AlignmentColorMode>(
+      showSelectedIcon: false,
+      style: ButtonStyle(visualDensity: controlDensity(context)),
+      segments: [
+        for (final AlignmentColorMode mode in AlignmentColorMode.values)
+          ButtonSegment(value: mode, label: Text(mode.label)),
+      ],
+      selected: {settings.colorMode},
+      onSelectionChanged: (modes) => notifier.setColorMode(modes.first),
+    );
     return Wrap(
       spacing: SeguiSpacing.sm,
-      runSpacing: SeguiSpacing.xs,
+      runSpacing: SeguiSpacing.sm,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        // Shrinks rather than overflows when the toolbar is narrow.
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: SegmentedButton<AlignmentColorMode>(
-            showSelectedIcon: false,
-            style: const ButtonStyle(visualDensity: VisualDensity.compact),
-            segments: [
-              for (final AlignmentColorMode mode in AlignmentColorMode.values)
-                ButtonSegment(value: mode, label: Text(mode.label)),
-            ],
-            selected: {settings.colorMode},
-            onSelectionChanged: (modes) => notifier.setColorMode(modes.first),
-          ),
-        ),
+        if (expand)
+          SizedBox(width: double.infinity, child: modes)
+        else
+          // Shrinks rather than overflows when the toolbar is narrow.
+          FittedBox(fit: BoxFit.scaleDown, child: modes),
         FilterChip(
           label: const Text('Letters'),
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           selected: settings.showLetters,
           onSelected: (_) => notifier.toggleLetters(),
         ),
@@ -272,7 +267,7 @@ class AlignmentZoomControls extends ConsumerWidget {
       children: [
         IconButton(
           tooltip: 'Zoom out',
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           icon: const Icon(Icons.remove_rounded),
           onPressed: notifier.zoomOut,
         ),
@@ -282,7 +277,7 @@ class AlignmentZoomControls extends ConsumerWidget {
           SizedBox(width: SeguiContentWidth.summaryTile, child: slider),
         IconButton(
           tooltip: 'Zoom in',
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           icon: const Icon(Icons.add_rounded),
           onPressed: notifier.zoomIn,
         ),
@@ -319,29 +314,40 @@ class AlignmentChunkControls extends ConsumerWidget {
       runSpacing: SeguiSpacing.xs,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        DropdownButton<int>(
-          value: settings.chunkSize,
-          isDense: true,
-          underline: const SizedBox.shrink(),
-          borderRadius: BorderRadius.circular(SeguiRadius.sm),
-          items: [
-            for (final int size in alignmentChunkSizes)
-              DropdownMenuItem(
-                value: size,
-                child: Text('${_siteFormat.format(size)} sites'),
-              ),
-          ],
-          onChanged: (size) {
-            if (size != null) notifier.setChunkSize(size);
-          },
-        ),
+        if (isPhoneScreen(context))
+          ChoiceSheetButton<int>(
+            title: 'Chunk size',
+            value: settings.chunkSize,
+            choices: [
+              for (final int size in alignmentChunkSizes)
+                (value: size, label: '${_siteFormat.format(size)} sites'),
+            ],
+            onSelected: notifier.setChunkSize,
+          )
+        else
+          DropdownButton<int>(
+            value: settings.chunkSize,
+            isDense: true,
+            underline: const SizedBox.shrink(),
+            borderRadius: BorderRadius.circular(SeguiRadius.sm),
+            items: [
+              for (final int size in alignmentChunkSizes)
+                DropdownMenuItem(
+                  value: size,
+                  child: Text('${_siteFormat.format(size)} sites'),
+                ),
+            ],
+            onChanged: (size) {
+              if (size != null) notifier.setChunkSize(size);
+            },
+          ),
         // Kept together, so the arrows never wrap away from the range.
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
               tooltip: 'Previous chunk',
-              visualDensity: VisualDensity.compact,
+              visualDensity: controlDensity(context),
               icon: const Icon(Icons.chevron_left_rounded),
               onPressed: chunk > 0 ? onPrevious : null,
             ),
@@ -356,7 +362,7 @@ class AlignmentChunkControls extends ConsumerWidget {
             ),
             IconButton(
               tooltip: 'Next chunk',
-              visualDensity: VisualDensity.compact,
+              visualDensity: controlDensity(context),
               icon: const Icon(Icons.chevron_right_rounded),
               onPressed: chunk < chunks.count - 1 ? onNext : null,
             ),
@@ -365,7 +371,7 @@ class AlignmentChunkControls extends ConsumerWidget {
         FilterChip(
           label: const Text('Page'),
           tooltip: 'Show one chunk at a time',
-          visualDensity: VisualDensity.compact,
+          visualDensity: controlDensity(context),
           selected: settings.isPaged,
           onSelected: notifier.setPaged,
         ),
@@ -408,7 +414,10 @@ class AlignmentSettingsSheet extends StatelessWidget {
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-        const SheetSection(label: 'Color', child: AlignmentColorControls()),
+        const SheetSection(
+          label: 'Color',
+          child: AlignmentColorControls(expand: true),
+        ),
         SheetSection(
           label: 'Chunk',
           child: AlignmentChunkControls(
