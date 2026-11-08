@@ -11,6 +11,12 @@ const List<Widget> pages = <Widget>[
   SequencePage(),
 ];
 
+/// Tab index of More, which only phones have, after the tool tabs.
+const int moreTab = 4;
+
+/// [tab] on screens without a More tab, which open Home instead.
+int toolTab(int tab) => tab < pages.length ? tab : 0;
+
 const List<String> pageTitles = <String>[
   'SEGUL GUI',
   'Genomic Sequence Tools',

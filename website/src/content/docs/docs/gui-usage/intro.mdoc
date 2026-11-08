@@ -35,6 +35,8 @@ Pick a task group from the navigation bar {% ref id="A" /%}. Tasks are grouped i
 [task groups](/docs/features/#task-group). You can also open a tool from the catalog on the home
 screen {% ref id="B" /%}, or find it by name or file format with the tool search {% ref id="C" /%}.
 
+On phones, the navigation bar also has **More**. It has shortcuts to the [Viewer](/docs/gui-usage/viewer/), colors, logs, and this guide; theme and reduce motion switches; and links to the other settings and **About**. On larger screens, the Viewer, **Settings**, and **About** are in the side menu.
+
 ## File input
 
 Each tool starts with an input card {% ref id="D" /%}. It offers these routes:
@@ -163,7 +165,7 @@ Use the **Inspector** card to check a single file without leaving the tool. Choo
 
 After a run finishes, the workbench also lists:
 
-- **Report**: tools that write an interactive report show this card first: `Summarize alignments`, `Compute genetic distances`, and the Complete mode of `Summarize genomic reads`. Select `View report` to open it. See [summary reports](#summary-reports).
+- **Report**: tools that write an interactive report show this card first: `Summarize alignments`, `Compute genetic distances`, and the Complete mode of `Summarize genomic reads`. Select `View report` to open it. See [summary reports](/docs/gui-usage/viewer/#summary-reports).
 - **Parameters**: the settings used by the run.
 - **Suggested workflows**: each common workflow from the home screen that includes the tool, with its progress. Select `Continue` to open the next step.
 - **Other compatible tools**: tools that can take the run's data.
@@ -183,59 +185,6 @@ Select `Export` to save the archive where you choose. Files keep their folders i
 
 On macOS, Windows, Android, and iOS, the app can share output files with other devices or apps, such as [OneDrive](https://onedrive.live.com/), [DropBox](https://www.dropbox.com/), and other installed cloud provider apps. For instance, using AirDrop for macOS. After a task finishes, the run button {% ref id="F" /%} becomes `Quick Share`. Select it to compress the output files and share them as a single file. To share one file, open the menu (⋮) next to it in the `Output` tab and select `Share`. Linux has no system share sheet, so use `Export` there instead.
 
-## In-App built-in file viewer
+## File viewer
 
-Supported file types:
-
-- Plain-text files (`.txt`)
-- Comma separated values (`.csv`)
-- Sequence files in FASTA, NEXUS, or PHYLIP format
-- Summary reports: `alignment-report.json`, `distance-report.json`, and `read-report.json`
-
-The app can directly view the supported file types. The content will be displayed in a new window. For the desktop version, you can also select open the file in other app. It will open default on default apps for the file type. This method also works for unsupported file types.
-
-### Table viewer
-
-CSV files, such as the locus, taxon, contig, and MAF summaries, open in a table. Numbers use a thousands separator and up to two decimals (for example, `1,000` and `0.65`).
-
-- **Sort**: select a column heading to sort by it. Select it again to reverse the order. The arrow next to the heading shows the direction. Names sort naturally, so `locus_2` comes before `locus_10`.
-- **Resize**: drag the handle at the right edge of a text column heading, such as a sample or locus name, to make the column wider or narrower. Double-click the handle (double-tap on a touch screen) to reset the width.
-- **Pages**: large tables show 50 rows at a time. Choose 50, 100, 250, or 500 under `Rows per page`, and move between pages with the arrows below the table. Sorting starts again from the first page.
-- **Bars in cells**: in columns of numbers, a bar behind each value shows where it sits between the lowest and highest value of the column, so you can spot unusually short loci or gappy taxa while scrolling. Columns where every row has the same value show no bars.
-- **Scrolling**: the column headings and the page controls stay in place while the rows scroll. Wide tables scroll sideways, and the row scrollbar stays at the right edge of the table.
-
-### Summary reports
-
-Summary tools write a report that SEGUI opens as interactive charts and tables:
-
-- [Alignment report](/docs/gui-usage/align-summary/#alignment-report) from `Summarize alignments`.
-- [Read report](/docs/gui-usage/read-summary/#read-report) from the Complete mode of `Summarize genomic reads`.
-- [Distance report](/docs/gui-usage/align-distance/#distance-report) from `Compute genetic distances`.
-
-Open a report from the `Report` card in the `Workbench` tab after a run, or open its JSON file from the `Output` tab or the inspector later. The other summary tools, such as contig and MAF summaries, write CSV files that open in the [table viewer](#table-viewer).
-
-The reports work the same way:
-
-- **Tabs**: each report is split into tabs, such as `Overview`, `Loci`, and `Distributions`. Select a tab to switch.
-- **Bars, Table, and Heatmap**: tabs that list items, such as loci, taxa, or samples, show one statistic per item as `Bars`, or every statistic as a `Table` or a `Heatmap`. Light lines separate the table columns, and the heatmap colors each number from the lowest to the highest value in its column. Choose the statistic with the chips above the bars. Select a bar or a row to open that item.
-- **Fixed controls**: the controls stay at the top and the open item's values stay at the bottom, while the bars or rows scroll between them. On phones and short windows, the whole tab scrolls instead.
-- **Tables**: the same table as the [table viewer](#table-viewer), sortable by column, a page at a time, with a bar behind each number. The open item's row is highlighted, and the table turns to its page when you open another item.
-- **Charts**: hover over or touch a chart to see its values. Zoom along the horizontal axis with the mouse wheel or a pinch, and drag or scroll with a trackpad to pan. A reset button appears at the top right of a zoomed chart; select it to show the whole chart again.
-
-
-### Alignment viewer
-
-FASTA, NEXUS, and PHYLIP files open in the alignment viewer. NEXUS partition files, which hold only a `sets` block of charsets, open as text instead, and the viewer leaves them out when it switches between files. It draws only the part of the alignment on screen, so alignments of 10,000 sites or more scroll smoothly. Taxon names stay pinned on the left and site numbers on the top.
-
-- **Switch files**: when you open a file from the input or output list, the viewer can move between the other alignment files in that list without going back. The file switcher sits at the start of the header. Use its arrows, press `Alt` + `↑` or `↓` (`Option` on macOS), or click the file name to search for a file. Files are listed in natural order, so `uce-2` comes before `uce-10`. Select the list button at the end of the switcher to show every file beside the viewer. Filter it by name, and use the sort button in the filter box to sort by name or size, in either direction. On phones, the list opens as a sheet. Zoom, colors, chunk size, and the name panel width stay the same when you switch. Selected sequences and the current chunk reset.
-
-- **Hide settings**: select the arrow at the right of the header, or press `Ctrl` + `\` (`Cmd` + `\` on macOS), to hide the color, zoom, and chunk controls, the overview, and the legend. The grid takes the freed space, while the file name, summary, and `Go to site` stay in the header. Select the settings button or press the shortcut again to bring them back.
-- **On phones**: the header keeps the file, zoom, and overview in view, and only the grid scrolls. Select the settings button for colors, chunks, `Go to site`, and the legend, or the chunks button for the chunk list; both open as sheets. Pinch the grid to zoom. Tap a cell to see its details at the bottom. When sequences are selected, tap `N selected` at the bottom for their actions.
-- **Colors**: `Base` colors nucleotides (A green, C blue, G amber, T red) or amino acids by chemistry. `Mono` shows residues in one color, which makes gaps easy to spot. `Diff to first` grays out residues that match the first sequence, so only the differences stand out.
-- **Zoom**: use the zoom buttons or slider, or hold `Ctrl` (`Cmd` on macOS) and scroll. When zoomed out, letters are hidden and each site becomes a colored block. Select `Letters` to hide or show residue letters.
-- **Overview**: the strip above the grid shows the whole alignment. The outlined box marks what is on screen. Tap or drag the strip to jump to another part.
-- **Chunks**: the alignment is split into chunks of 250 to 2,000 sites (`Chunk` in the toolbar). The chunk list on the left shows each chunk's share of gaps and variable sites, so you can find informative or gappy regions fast. Select a chunk, or use the arrows, to move between chunks. Turn on `Page` to show one chunk at a time.
-- **Go to site**: enter a site number to jump to it.
-- **Details**: hover over or select a cell to see the taxon, site, ungapped position, and residue below the grid.
-- **Name panel**: drag the divider between the names and the grid to resize the names. Double-click it to reset the width.
-- **Select sequences**: click a name to select its sequence. Hold `Shift` to select a range, or `Ctrl` (`Cmd` on macOS) to add or remove one. Selected sequences are highlighted in the grid, and the overview dims the rest. Below the grid, choose `Copy as FASTA` to copy them, `Only selected` to hide the others, or `Pin to top` to move them above the rest. When `Diff to first` is on, residues are compared with the top sequence, so you can pin a sequence to use it as the reference. Select `Clear` to deselect all.
+SEGUI opens alignments, tables, summary reports, and text files in built-in viewers. Open them from the `Input` or `Output` tab, from the inspector in the `Workbench` tab, or from the Viewer page without picking a tool first. See [File Viewer](/docs/gui-usage/viewer/).

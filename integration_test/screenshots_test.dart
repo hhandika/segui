@@ -10,6 +10,9 @@
 // Desktop runs capture the large-screen layout and mobile runs capture the
 // small-screen layout, matching the `-large` and `-small` image names the
 // website expects.
+//
+// Pass --dart-define=SCREENSHOT_ONLY=<prefix> to capture only the screens
+// whose names start with it, such as `viewer`.
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -22,15 +25,21 @@ import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/main.dart';
+import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
+import 'package:segui/services/providers/viewer.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/src/rust/frb_generated.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String _outputDir = String.fromEnvironment('SCREENSHOT_DIR');
+const String _only = String.fromEnvironment('SCREENSHOT_ONLY');
+
+/// Whether to capture the screen called [name].
+bool _wants(String name) => name.startsWith(_only);
 
 /// Logical size of the large-screen captures.
 const Size _largeSize = Size(1280, 800);
@@ -222,7 +231,7 @@ void main() {
     );
     await _settle(tester);
 
-    for (final _Shot shot in _shots) {
+    for (final _Shot shot in _shots.where((shot) => _wants(shot.name))) {
       container.read(tabSelectionProvider.notifier).setTab(shot.tab);
       final Enum? tool = shot.tool;
       if (tool is AlignmentOperationType) {
@@ -252,8 +261,46 @@ void main() {
         File(p.join(output.path, '${shot.name}-$suffix.png')),
       );
     }
+    if (_wants('viewer')) {
+      await _captureViewer(
+        tester,
+        container,
+        boundaryKey,
+        [for (final XFile file in inputs[_Input.alignments]!) File(file.path)],
+        (name) => File(p.join(output.path, '$name-$suffix.png')),
+      );
+    }
     debugPrint('Screenshots saved in ${output.path}');
   });
+}
+
+/// Captures the Viewer page with [files] open, then the alignment viewer
+/// opened from it.
+Future<void> _captureViewer(
+  WidgetTester tester,
+  ProviderContainer container,
+  GlobalKey boundaryKey,
+  List<File> files,
+  File Function(String name) target,
+) async {
+  // A readable folder name, since the files list shows it.
+  final Directory folder = Directory(
+    p.join(p.dirname(files.first.path), 'uce-loci'),
+  )..createSync();
+  final List<File> copies = [
+    for (final File file in files)
+      file.copySync(p.join(folder.path, p.basename(file.path))),
+  ];
+  container.read(viewerFilesProvider.notifier).addFiles(copies);
+  tester
+      .state<NavigatorState>(find.byType(Navigator).first)
+      .push(MaterialPageRoute(builder: (context) => const ViewerPage()));
+  await _settle(tester);
+  await _capture(tester, boundaryKey, target('viewer'));
+  await tester.tap(find.text(p.basename(copies.first.path)));
+  await _settle(tester);
+  await _settle(tester);
+  await _capture(tester, boundaryKey, target('viewer-alignment'));
 }
 
 const Map<_Input, XTypeGroup> _typeGroups = {

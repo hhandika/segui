@@ -340,8 +340,11 @@ class ThemeSplitClipper extends CustomClipper<Path> {
 
 /// Switch for the app's reduce motion setting. When the device already
 /// reduces motion, the switch shows on and explains why it cannot be off.
+/// With [isOutlined] false, the tile sits in a panel of its parent.
 class ReduceMotionTile extends ConsumerWidget {
-  const ReduceMotionTile({super.key});
+  const ReduceMotionTile({super.key, this.isOutlined = true});
+
+  final bool isOutlined;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -349,24 +352,22 @@ class ReduceMotionTile extends ConsumerWidget {
         !ref.watch(reduceMotionProvider);
     final bool reduceMotion =
         ref.watch(reduceMotionProvider) || isDeviceSetting;
-    return OutlinedPanel(
-      child: SwitchListTile(
-        title: const Text('Reduce motion'),
-        subtitle: Text(
-          isDeviceSetting
-              ? 'Your device reduces motion, so animations stay off.'
-              : 'Stop animations, such as the gull at work in the '
-                  'alignment viewer.',
-        ),
-        secondary: Icon(
-          Icons.motion_photos_off_outlined,
-          color: getIconColor(context),
-        ),
-        value: reduceMotion,
-        onChanged: isDeviceSetting
-            ? null
-            : ref.read(reduceMotionProvider.notifier).setReduceMotion,
+    final Widget tile = SwitchListTile(
+      title: const Text('Reduce motion'),
+      subtitle: Text(
+        isDeviceSetting
+            ? 'Your device reduces motion, so animations stay off.'
+            : 'Stop animations across the app.',
       ),
+      secondary: Icon(
+        Icons.motion_photos_off_outlined,
+        color: getIconColor(context),
+      ),
+      value: reduceMotion,
+      onChanged: isDeviceSetting
+          ? null
+          : ref.read(reduceMotionProvider.notifier).setReduceMotion,
     );
+    return isOutlined ? OutlinedPanel(child: tile) : tile;
   }
 }

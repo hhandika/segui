@@ -60,31 +60,18 @@ class DirectorySelectionServices {
 
   /// Lets the user pick a folder. On macOS, the folder is remembered so
   /// it opens without asking after a restart.
-  Future<Directory?> selectDirectoryAdaptive() async {
-    final Directory? dir = Platform.isAndroid || Platform.isMacOS
-        ? await _selectDirectoryFilePicker()
-        : await _selectDirectory();
-    if (dir != null) {
-      await FolderAccessChannel.instance.remember([dir.path]);
-    }
-    return dir;
-  }
+  Future<Directory?> selectDirectoryAdaptive() => pickDirectory();
+}
 
-  Future<Directory?> _selectDirectory() async {
-    final result = await getDirectoryPath();
-    if (result != null) {
-      return Directory(result);
-    }
-    return null;
-  }
-
-  Future<Directory?> _selectDirectoryFilePicker() async {
-    final result = await FilePicker.getDirectoryPath();
-    if (result != null) {
-      return Directory(result);
-    }
-    return null;
-  }
+/// Lets the user pick a folder. On macOS, the folder is remembered so it
+/// opens without asking after a restart.
+Future<Directory?> pickDirectory() async {
+  final String? path = Platform.isAndroid || Platform.isMacOS
+      ? await FilePicker.getDirectoryPath()
+      : await getDirectoryPath();
+  if (path == null) return null;
+  await FolderAccessChannel.instance.remember([path]);
+  return Directory(path);
 }
 
 class DirectoryCrawler extends FileUtils {

@@ -44,6 +44,9 @@ abstract final class SeguiElevation {
 
 abstract final class SeguiControlSize {
   static const double indicator = 8;
+
+  /// Width over height of a shortcut tile on the phone More tab.
+  static const double moreTileAspect = 1.7;
   static const double iconSmall = 16;
   static const double iconMedium = 20;
   static const double icon = 24;

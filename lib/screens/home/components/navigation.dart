@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/styles/segui_icons.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/screens/settings/settings.dart';
+import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/shared/common.dart';
+import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -91,10 +93,11 @@ class ExpandedScreenDrawer extends ConsumerWidget {
       backgroundColor: getSEGULBackgroundColor(context),
       indicatorColor: getIndicatorColor(context),
       indicatorShape: getIndicatorShape(context),
-      selectedIndex: ref.watch(tabSelectionProvider),
+      selectedIndex: toolTab(ref.watch(tabSelectionProvider)),
       children: const [
         ...navigationDrawerTargets,
         DrawerDivider(),
+        ViewerMenuTile(),
         SettingMenuTile(),
         AboutMenuTile(),
       ],
@@ -121,7 +124,7 @@ class MediumScreenRail extends ConsumerWidget {
                 label: Text(e.label),
               ))
           .toList(),
-      selectedIndex: ref.watch(tabSelectionProvider),
+      selectedIndex: toolTab(ref.watch(tabSelectionProvider)),
       onDestinationSelected: (int index) {
         ref.read(tabSelectionProvider.notifier).setTab(index);
       },
@@ -129,7 +132,10 @@ class MediumScreenRail extends ConsumerWidget {
       trailing: const Expanded(
         child: Align(
           alignment: Alignment.bottomCenter,
-          child: SettingButtons(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [ViewerButton(), SettingButtons()],
+          ),
         ),
       ),
     );
@@ -145,17 +151,53 @@ class CompactScreenNavBar extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       indicatorColor: getIndicatorColor(context),
       elevation: SeguiElevation.medium,
-      destinations: navigationTargets
-          .map((e) => NavigationDestination(
-                icon: e.icon,
-                selectedIcon: e.selectedIcon,
-                label: e.label,
-              ))
-          .toList(),
+      destinations: [
+        ...navigationTargets.map((e) => NavigationDestination(
+              icon: e.icon,
+              selectedIcon: e.selectedIcon,
+              label: e.label,
+            )),
+        const NavigationDestination(
+          icon: Icon(Icons.more_horiz_rounded),
+          label: 'More',
+        ),
+      ],
       selectedIndex: ref.watch(tabSelectionProvider),
       onDestinationSelected: (value) {
         ref.read(tabSelectionProvider.notifier).setTab(value);
       },
+    );
+  }
+}
+
+/// Drawer entry that opens the viewer.
+class ViewerMenuTile extends StatelessWidget {
+  const ViewerMenuTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SecondaryMenuTile(
+      text: 'Viewer',
+      icon: Icons.visibility_outlined,
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const ViewerPage()),
+      ),
+    );
+  }
+}
+
+/// Rail button that opens the viewer.
+class ViewerButton extends StatelessWidget {
+  const ViewerButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: 'Viewer',
+      icon: const Icon(Icons.visibility_outlined),
+      onPressed: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const ViewerPage()),
+      ),
     );
   }
 }

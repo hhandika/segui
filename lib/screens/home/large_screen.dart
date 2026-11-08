@@ -35,14 +35,16 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
     final bool isRail = screenWidth < expandedScreenSize ||
         (_isRailChoice ?? screenWidth < extraLargeScreenSize);
     final Color? mainColor = getSEGULBackgroundColor(context);
+    // More is a phone tab; wider windows show Home instead.
+    final int tab = toolTab(ref.watch(tabSelectionProvider));
     return Scaffold(
       appBar: AppBar(
         elevation: SeguiElevation.none,
-        title: Text(pageTitles[ref.watch(tabSelectionProvider)]),
+        title: Text(pageTitles[tab]),
         backgroundColor: mainColor,
         // Home has its own tool search.
         actions: [
-          if (ref.watch(tabSelectionProvider) != 0) const GlobalToolSearch(),
+          if (tab != 0) const GlobalToolSearch(),
           const SizedBox(width: SeguiSpacing.xl),
         ],
         leading: screenWidth < expandedScreenSize
@@ -67,7 +69,7 @@ class LargeScreenViewState extends ConsumerState<LargeScreenView> {
             isRail ? const MediumScreenRail() : const ExpandedScreenDrawer(),
             Expanded(
               child: Center(
-                child: pages[ref.watch(tabSelectionProvider)],
+                child: pages[tab],
               ),
             ),
           ],
