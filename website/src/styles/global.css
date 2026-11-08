@@ -79,6 +79,19 @@
   --sl-color-black: #ffffff;
 }
 
+/* Screenshot pins and their references in the GUI guides. A hue the app never uses, so the
+   markers stand out from the green, olive, and gold of the captured screens. */
+:root {
+  --sg-marker: #c026d3;
+  --sg-marker-text: #ffffff;
+  --sg-marker-active: #f0abfc;
+  --sg-marker-active-text: #4a044e;
+}
+:root[data-theme="light"] {
+  --sg-marker: #a21caf;
+  --sg-marker-active: #e879f9;
+}
+
 /* Freeze the page behind the mobile navigation overlay. */
 html.sg-menu-open,
 html.sg-menu-open body {

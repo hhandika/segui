@@ -19,8 +19,8 @@ const { id } = Astro.props;
     padding-inline: 0.3rem;
     vertical-align: 0.125rem;
     border-radius: 0.375rem;
-    background: var(--sl-color-accent);
-    color: var(--color-leaf-50);
+    background: var(--sg-marker);
+    color: var(--sg-marker-text);
     font-size: 0.72rem;
     font-weight: 700;
     line-height: 1;
@@ -34,9 +34,9 @@ const { id } = Astro.props;
   .sg-shot-ref:hover,
   .sg-shot-ref:focus-visible,
   .sg-shot-ref:global(.is-active) {
-    background: var(--color-pollen-400);
-    color: var(--color-leaf-950);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-pollen-400) 30%, transparent);
+    background: var(--sg-marker-active);
+    color: var(--sg-marker-active-text);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--sg-marker) 30%, transparent);
     outline: none;
   }
 
