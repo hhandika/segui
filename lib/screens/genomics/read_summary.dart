@@ -38,7 +38,8 @@ class ReadSummaryPage extends ConsumerStatefulWidget {
 class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
-  String mode = sequenceReadSummaryMode[0];
+  // Complete gives the read report, so it is selected first.
+  String mode = 'Complete';
   String phred = sequenceReadPhredOffset[0];
 
   /// Distinct sequences kept to estimate duplication: a preset from
@@ -97,7 +98,6 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
             value: mode,
             label: 'Summary Mode',
             items: sequenceReadSummaryMode,
-            betaItems: const {'Complete'},
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {

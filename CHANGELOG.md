@@ -1,27 +1,23 @@
 # Release Notes
 
-## Upcoming (in development)
+## v1.2.0 (upcoming)
 
 ### New Features
 
-- New interface: redesigned home screen with a searchable tool catalog, suggested workflows, new icons, color scheme, and better layouts for phones, tablets, and large screens.
-- New tools: genetic distance, alignment trimming, unaligning alignments, MAF conversion and summary, sequence addition, filtering, and transposition.
-- Input from folders and archives (`.zip`, `.tar.gz`), with faster loading of large datasets on mobile and files shared from other apps.
+- Redesigned interface: a searchable tool catalog, suggested workflows, new icons and colors, and layouts for phones, tablets, and large screens.
+- New tools: genetic distance, alignment trimming and unaligning, MAF conversion and summary, and sequence addition, filtering, and transposition.
+- Input from folders and archives (`.zip`, `.tar.gz`), with faster loading on mobile and files shared from other apps.
 - Workbench with a file inspector, run parameters, and next steps that pass output to the next tool.
 - Export output as `.zip` or `.tar.gz` archives.
 - Alignment viewer for large alignments, with file switching, color modes, zoom, an overview strip, and sequence selection.
-- Interactive read report for the Complete read summary, with per-sample charts and adjustable duplication counts.
-- Interactive alignment summary report, opened from the workbench after a run: an overview of the dataset with site types, matrix completeness, and character counts, every locus and taxon as bars or a sortable table, and distributions across loci.
-- More genetic distance options.
-- Interactive distance report, opened from the workbench after a genetic distance run: an overview with a histogram of every pairwise distance, every locus, sample, and group as bars or a sortable table, and the sample and group matrices as a heatmap or each sample's nearest samples.
+- Interactive reports for read summaries, alignment summaries, and genetic distances, with charts, sortable tables, and heatmaps.
 
 ### Improvements
 
 - Updated SEGUL and other dependencies, with native assets builds and Windows arm64 downloads.
 - New documentation website with visual guides for each feature.
-- Tables from CSV files sort by any column and show a page at a time with the header in place, and columns of numbers show a bar behind each value.
-- New **Settings › Colors** page to choose chart, heatmap, table, and alignment colors, with a live preview. Charts default to ColorBrewer Dark2.
-- Chart lines and text meet WCAG 2.2 AA contrast, read report heatmaps use the chosen colormap, and the alignment viewer remembers its color mode.
+- CSV tables sort by any column, page through rows, and show bars behind numbers.
+- New **Settings › Colors** page for chart, heatmap, table, and alignment colors. Charts default to ColorBrewer Dark2 and meet WCAG 2.2 AA contrast.
 
 ### Bug Fixes
 

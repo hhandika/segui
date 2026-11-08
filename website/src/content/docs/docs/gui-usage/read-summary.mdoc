@@ -40,7 +40,7 @@ The app supports the following summary modes:
 
 - **Minimal**: read count only
 - **Default**: generate essential statistics (see below)
-- **Complete** {% badge text="Beta" variant="caution" /%}: generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content for each file.
+- **Complete** (selected by default): generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content for each file.
 
 ## Essential statistics for raw reads
 
@@ -65,8 +65,6 @@ The app supports the following summary modes:
 In Complete mode, `Duplication sketch size` sets how many distinct sequences are kept to estimate duplication across every read. Leave it empty for the default of 100,000. Larger values are more accurate and use more memory, and `0` counts every sequence exactly.
 
 ## Read report
-
-{% badge text="Beta" variant="caution" /%}
 
 The read report shows the Complete mode statistics as interactive charts, one sample at a time, much like the alignment viewer shows one file at a time. It works like the other [summary reports](/docs/gui-usage/viewer/#summary-reports).
 
