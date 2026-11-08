@@ -153,8 +153,6 @@ abstract final class SeguiAlignmentLayout {
   /// Shortest the grid panel gets; shorter windows scroll the viewer.
   static const double gridMin = 320;
 
-  /// Height of the gull at work above the toolbar.
-  static const double mascot = 48;
   static const double overview = 48;
   static const double nameColumn = 160;
   static const double nameColumnCompact = 96;
@@ -172,10 +170,6 @@ abstract final class SeguiAlignmentLayout {
 
   /// Widest the go-to-site field grows to fit its label and hint.
   static const double siteFieldMax = 200;
-
-  /// Narrowest the file switcher gets beside the gull; narrower rows hide
-  /// the gull.
-  static const double fileSwitcherMin = 320;
 }
 
 abstract final class SeguiChartLayout {

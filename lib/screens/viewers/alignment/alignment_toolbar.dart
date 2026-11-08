@@ -1,36 +1,48 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 final NumberFormat _siteFormat = NumberFormat('#,###');
 
-/// One toolbar of labeled groups: file summary, color, zoom, chunk
-/// navigation, and go to site. Groups wrap onto more lines when narrow.
-class AlignmentToolbar extends ConsumerWidget {
-  const AlignmentToolbar({
+/// Shortcut that shows or hides the display settings: Cmd + \ on Apple
+/// platforms, Ctrl + \ elsewhere.
+SingleActivator get alignmentSettingsShortcut => SingleActivator(
+      LogicalKeyboardKey.backslash,
+      meta: PlatformKeys.isApple,
+      control: !PlatformKeys.isApple,
+    );
+
+/// Top row of the viewer panel: [leading] (such as the file switcher) or
+/// the file name, the file summary, go to site, the chunk list toggle, and
+/// the button that shows or hides the display settings. Stays visible when
+/// the settings are hidden.
+class AlignmentHeaderBar extends ConsumerWidget {
+  const AlignmentHeaderBar({
     super.key,
     required this.fileName,
     required this.data,
     required this.canShowChunkList,
     required this.siteController,
-    required this.onPrevious,
-    required this.onNext,
     required this.onGoToSite,
+    this.leading,
   });
 
   final String fileName;
   final AlignmentViewData data;
   final bool canShowChunkList;
   final TextEditingController siteController;
-  final VoidCallback onPrevious;
-  final VoidCallback onNext;
 
   /// Called with the submitted one-based site text.
   final ValueChanged<String> onGoToSite;
+
+  /// Shown in place of the file name, such as the file switcher.
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,6 +51,84 @@ class AlignmentToolbar extends ConsumerWidget {
     final AlignmentViewSettingsNotifier notifier =
         ref.read(alignmentViewSettingsProvider.notifier);
     final ThemeData theme = Theme.of(context);
+    final Widget? leading = this.leading;
+    final String shortcut = '${PlatformKeys.primaryLabel} + \\';
+    // The buttons stay level with the first line when the rest wraps.
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Wrap(
+            spacing: SeguiSpacing.md,
+            runSpacing: SeguiSpacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (leading != null)
+                leading
+              else
+                Text(fileName, style: theme.textTheme.titleSmall),
+              Text(
+                '${_siteFormat.format(data.names.length)} taxa · '
+                '${_siteFormat.format(data.length)} sites · '
+                '${data.isDna ? 'DNA' : 'Amino acid'}'
+                '${data.isAligned ? '' : ' · unaligned'}',
+                style: theme.textTheme.labelSmall!.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              _SiteField(
+                controller: siteController,
+                length: data.length,
+                onSubmitted: onGoToSite,
+              ),
+            ],
+          ),
+        ),
+        if (canShowChunkList)
+          IconButton(
+            tooltip:
+                settings.showChunkList ? 'Hide chunk list' : 'Show chunk list',
+            isSelected: settings.showChunkList,
+            icon: const Icon(Icons.view_sidebar_outlined),
+            selectedIcon: const Icon(Icons.view_sidebar_rounded),
+            onPressed: notifier.toggleChunkList,
+          ),
+        IconButton(
+          tooltip: settings.showSettings
+              ? 'Hide settings ($shortcut)'
+              : 'Show settings ($shortcut)',
+          icon: Icon(
+            settings.showSettings
+                ? Icons.keyboard_arrow_up_rounded
+                : Icons.tune_rounded,
+          ),
+          onPressed: notifier.toggleSettings,
+        ),
+      ],
+    );
+  }
+}
+
+/// Labeled groups of display controls: color, zoom, and chunk navigation.
+/// Groups wrap onto more lines when narrow.
+class AlignmentToolbar extends ConsumerWidget {
+  const AlignmentToolbar({
+    super.key,
+    required this.data,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  final AlignmentViewData data;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AlignmentViewSettings settings =
+        ref.watch(alignmentViewSettingsProvider);
+    final AlignmentViewSettingsNotifier notifier =
+        ref.read(alignmentViewSettingsProvider.notifier);
     final AlignmentChunks chunks =
         AlignmentChunks(length: data.length, size: settings.chunkSize);
     final int chunk = chunks.clamp(settings.chunk);
@@ -48,26 +138,6 @@ class AlignmentToolbar extends ConsumerWidget {
       children: [
         _ToolbarGroup(
           isFirst: true,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(fileName, style: theme.textTheme.titleSmall),
-                Text(
-                  '${_siteFormat.format(data.names.length)} taxa · '
-                  '${_siteFormat.format(data.length)} sites · '
-                  '${data.isDna ? 'DNA' : 'Amino acid'}'
-                  '${data.isAligned ? '' : ' · unaligned'}',
-                  style: theme.textTheme.labelSmall!.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        _ToolbarGroup(
           label: 'Color',
           children: [
             // Shrinks rather than overflows when the toolbar is narrow.
@@ -169,51 +239,53 @@ class AlignmentToolbar extends ConsumerWidget {
             ),
           ],
         ),
-        _ToolbarGroup(
-          children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: SeguiAlignmentLayout.siteFieldMax,
+      ],
+    );
+  }
+}
+
+/// Go-to-site field, sized to its label or hint, whichever is wider.
+class _SiteField extends StatelessWidget {
+  const _SiteField({
+    required this.controller,
+    required this.length,
+    required this.onSubmitted,
+  });
+
+  final TextEditingController controller;
+  final int length;
+  final ValueChanged<String> onSubmitted;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxWidth: SeguiAlignmentLayout.siteFieldMax,
+      ),
+      child: IntrinsicWidth(
+        child: FormFieldTheme(
+          child: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.go,
+            decoration: InputDecoration(
+              isDense: true,
+              maintainLabelSize: true,
+              maintainHintSize: true,
+              labelText: 'Go to site',
+              hintText: '1–${_siteFormat.format(length)}',
+              prefixIcon: const Icon(
+                Icons.search_rounded,
+                size: SeguiControlSize.iconSmall,
               ),
-              // Sized to the label or hint, whichever is wider.
-              child: IntrinsicWidth(
-                child: FormFieldTheme(
-                  child: TextField(
-                    controller: siteController,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.go,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      maintainLabelSize: true,
-                      maintainHintSize: true,
-                      labelText: 'Go to site',
-                      hintText: '1–${_siteFormat.format(data.length)}',
-                      prefixIcon: const Icon(
-                        Icons.search_rounded,
-                        size: SeguiControlSize.iconSmall,
-                      ),
-                      prefixIconConstraints: const BoxConstraints(
-                        minWidth: SeguiControlSize.badge,
-                      ),
-                    ),
-                    onSubmitted: onGoToSite,
-                  ),
-                ),
+              prefixIconConstraints: const BoxConstraints(
+                minWidth: SeguiControlSize.badge,
               ),
             ),
-            if (canShowChunkList)
-              IconButton(
-                tooltip: settings.showChunkList
-                    ? 'Hide chunk list'
-                    : 'Show chunk list',
-                isSelected: settings.showChunkList,
-                icon: const Icon(Icons.view_sidebar_outlined),
-                selectedIcon: const Icon(Icons.view_sidebar_rounded),
-                onPressed: notifier.toggleChunkList,
-              ),
-          ],
+            onSubmitted: onSubmitted,
+          ),
         ),
-      ],
+      ),
     );
   }
 }

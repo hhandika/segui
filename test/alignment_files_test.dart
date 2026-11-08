@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/viewers/alignment/alignment_files.dart';
-import 'package:segui/screens/viewers/alignment/alignment_gull.dart';
+import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/alignment_view.dart';
 import 'package:segui/screens/viewers/alignment/selected_row_mark.dart';
 import 'package:segui/services/providers/alignment_view.dart';
@@ -280,18 +280,17 @@ void main() {
       );
     });
 
-    testWidgets('The gull hides when it does not fit', (tester) async {
+    testWidgets('A shortcut hides and shows the settings', (tester) async {
       await pumpView(tester);
-      expect(find.byType(AlignmentGull), findsOneWidget);
-
-      // With the file list open, a 750 px window leaves no room for it.
-      await pumpView(tester, size: const Size(750, 1200));
-      expect(find.byType(AlignmentGull), findsOneWidget);
-      await tester.tap(find.byTooltip('Show file list'));
-      await tester.pump();
-      await tester.pump();
-      expect(find.byType(AlignmentGull), findsNothing);
+      expect(find.byType(AlignmentToolbar), findsOneWidget);
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.backslash);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+      await tester.pumpAndSettle();
+      expect(find.byType(AlignmentToolbar), findsNothing);
+      // The file switcher stays in the header.
       expect(find.byType(AlignmentFileSwitcher), findsOneWidget);
+      expect(find.byTooltip('Show settings (Ctrl + \\)'), findsOneWidget);
     });
 
     testWidgets('Apple platforms name Option and Cmd', (tester) async {
@@ -356,7 +355,6 @@ void main() {
     testWidgets('Phones show the file list as a sheet', (tester) async {
       await pumpView(tester, size: const Size(390, 900));
       await tester.tap(find.byTooltip('Show file list'));
-      // The gull never settles, so pump past the sheet animation instead.
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       final Finder rail = find.byType(AlignmentFileRail);

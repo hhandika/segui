@@ -9,7 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:segui/screens/viewers/alignment/alignment_axes.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
-import 'package:segui/screens/viewers/alignment/alignment_gull.dart';
+import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/alignment_view.dart';
 import 'package:segui/services/io/file.dart';
@@ -377,36 +377,25 @@ void main() {
       expect(width, lessThanOrEqualTo(SeguiAlignmentLayout.siteFieldMax));
     });
 
-    testWidgets('The gull stands on the toolbar and can hold still',
-        (tester) async {
+    testWidgets('Hiding the settings gives the grid more room', (tester) async {
       await pumpExplorer(tester);
-      final Finder gull = find.byType(AlignmentGull);
-      expect(gull, findsOneWidget);
-      List<Matrix4> pose() => tester
-          .widgetList<Transform>(
-            find.descendant(of: gull, matching: find.byType(Transform)),
-          )
-          .map((t) => t.transform)
-          .toList();
-      final List<Matrix4> start = pose();
-      await tester.pump(const Duration(milliseconds: 1200));
-      expect(pose(), isNot(equals(start)));
-      final Finder panel = find.ancestor(
-        of: find.byType(AlignmentToolbar),
-        matching: find.byType(Container),
-      );
-      final double feet =
-          tester.getTopLeft(gull).dy + AlignmentGull.standingHeight;
-      expect(feet, closeTo(tester.getTopLeft(panel.first).dy, 0.5));
+      double gridHeight() => tester.getSize(find.byType(AlignmentGrid)).height;
+      final double start = gridHeight();
+      expect(find.byType(AlignmentToolbar), findsOneWidget);
 
-      tester.platformDispatcher.accessibilityFeaturesTestValue =
-          const FakeAccessibilityFeatures(disableAnimations: true);
-      addTearDown(
-          tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-      await tester.pump();
-      final List<Matrix4> still = pose();
-      await tester.pump(const Duration(milliseconds: 1200));
-      expect(pose(), equals(still));
+      await tester.tap(find.byTooltip(RegExp('^Hide settings')));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlignmentToolbar), findsNothing);
+      expect(find.byType(AlignmentOverview), findsNothing);
+      // The summary and go to site stay in view.
+      expect(find.textContaining('20 taxa'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Go to site'), findsOneWidget);
+      expect(gridHeight(), greaterThan(start));
+
+      await tester.tap(find.byTooltip(RegExp('^Show settings')));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlignmentToolbar), findsOneWidget);
+      expect(gridHeight(), start);
     });
 
     testWidgets('The last sequence clears the panel border', (tester) async {

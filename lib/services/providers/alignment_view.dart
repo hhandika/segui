@@ -62,6 +62,7 @@ class AlignmentViewSettings {
     this.isPaged = false,
     this.chunk = 0,
     this.showChunkList = true,
+    this.showSettings = true,
     this.nameWidth,
     this.showFileList = false,
     this.fileSort = AlignmentFileSort.name,
@@ -79,6 +80,10 @@ class AlignmentViewSettings {
   /// Current chunk, zero-based.
   final int chunk;
   final bool showChunkList;
+
+  /// Shows the display settings, overview, and legend above the grid.
+  /// Hiding them leaves more room for the grid.
+  final bool showSettings;
 
   /// Width of the name panel set by dragging, or null for the default.
   final double? nameWidth;
@@ -101,6 +106,7 @@ class AlignmentViewSettings {
     bool? isPaged,
     int? chunk,
     bool? showChunkList,
+    bool? showSettings,
     double? Function()? nameWidth,
     bool? showFileList,
     AlignmentFileSort? fileSort,
@@ -114,6 +120,7 @@ class AlignmentViewSettings {
       isPaged: isPaged ?? this.isPaged,
       chunk: chunk ?? this.chunk,
       showChunkList: showChunkList ?? this.showChunkList,
+      showSettings: showSettings ?? this.showSettings,
       nameWidth: nameWidth == null ? this.nameWidth : nameWidth(),
       showFileList: showFileList ?? this.showFileList,
       fileSort: fileSort ?? this.fileSort,
@@ -170,6 +177,10 @@ class AlignmentViewSettingsNotifier extends Notifier<AlignmentViewSettings> {
 
   void toggleChunkList() {
     state = state.copyWith(showChunkList: !state.showChunkList);
+  }
+
+  void toggleSettings() {
+    state = state.copyWith(showSettings: !state.showSettings);
   }
 
   /// Changes the chunk size, keeping the first site of the current chunk.

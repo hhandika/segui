@@ -12,7 +12,6 @@ import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/alignment/alignment_axes.dart';
 import 'package:segui/screens/viewers/alignment/alignment_files.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
-import 'package:segui/screens/viewers/alignment/alignment_gull.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/chunk_sidebar.dart';
@@ -24,6 +23,9 @@ import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 final NumberFormat _siteFormat = NumberFormat('#,###');
+
+/// How long the display settings take to open or close.
+const Duration _settingsDuration = Duration(milliseconds: 200);
 
 /// Colored, zoomable view of a FASTA, NEXUS, or PHYLIP file. With
 /// [siblings], such as the other files of the list it was opened from, the
@@ -63,6 +65,8 @@ class _AlignmentFileViewState extends ConsumerState<AlignmentFileView> {
         hasOtherFiles && settings.showFileList && !isCompact;
     return CallbackShortcuts(
       bindings: {
+        alignmentSettingsShortcut:
+            ref.read(alignmentViewSettingsProvider.notifier).toggleSettings,
         if (hasOtherFiles) ...{
           const SingleActivator(LogicalKeyboardKey.arrowUp, alt: true): () =>
               _select(_files.step(_index, -1)),
@@ -197,8 +201,8 @@ class AlignmentViewBody extends ConsumerWidget {
 
   final String path;
 
-  /// Shown beside the gull, above the toolbar, such as the file switcher.
-  /// Stays in place while the file loads.
+  /// Shown at the start of the header, such as the file switcher. Stays in
+  /// place while the file loads.
   final Widget? leading;
 
   @override
@@ -216,17 +220,13 @@ class AlignmentViewBody extends ConsumerWidget {
       loading: () => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Keeps the file switcher in place while the file loads.
           if (leading != null)
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final bool showsGull =
-                    _HeaderRow.fitsGull(constraints.maxWidth, leading);
-                // Same height and inset as when loaded, without the gull.
-                return SizedBox(
-                  height: _HeaderRow.heightFor(leading, showsGull: showsGull),
-                  child: _HeaderRow(leading: leading!, showsGull: showsGull),
-                );
-              },
+            Container(
+              decoration: getContainerDecoration(context),
+              padding: const EdgeInsets.all(SeguiSpacing.lg),
+              alignment: Alignment.centerLeft,
+              child: leading,
             ),
           const Expanded(child: Center(child: CircularProgressIndicator())),
         ],
@@ -253,7 +253,7 @@ class AlignmentExplorer extends ConsumerStatefulWidget {
   final String fileName;
   final AlignmentViewData data;
 
-  /// Shown beside the gull, above the toolbar.
+  /// Shown at the start of the header in place of the file name.
   final Widget? leading;
 
   @override
@@ -318,74 +318,59 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
           ScrollConfiguration.of(context).copyWith(scrollbars: false),
       slivers: [
         SliverToBoxAdapter(
-          // The gull stands on the toolbar's top edge near its right corner
-          // when it fits; the file switcher sits above the toolbar's left
-          // edge.
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final bool showsGull =
-                  _HeaderRow.fitsGull(constraints.maxWidth, widget.leading);
-              final double headerHeight =
-                  _HeaderRow.heightFor(widget.leading, showsGull: showsGull);
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: headerHeight,
-                    ),
-                    child: Container(
-                      decoration: getContainerDecoration(context),
-                      padding: const EdgeInsets.all(SeguiSpacing.lg),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          AlignmentToolbar(
-                            fileName: widget.fileName,
-                            data: data,
-                            canShowChunkList: !isCompact,
-                            siteController: _siteController,
-                            onPrevious: () => _goToChunk(settings.chunk - 1),
-                            onNext: () => _goToChunk(settings.chunk + 1),
-                            onGoToSite: _goToSiteText,
-                          ),
-                          const SizedBox(height: SeguiSpacing.lg),
-                          AlignmentOverview(
-                            data: data,
-                            rowOrder: order,
-                            selectedRows: rowSelection.rows,
-                            window: window,
-                            cellSize: settings.cellSize,
-                            rowHeight: settings.rowHeight,
-                            horizontalController: _horizontal,
-                            verticalController: _vertical,
-                            onJump: (site, row) => _goToSite(site, row: row),
-                          ),
-                          const SizedBox(height: SeguiSpacing.sm),
-                          AlignmentLegend(isDna: data.isDna),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (widget.leading != null)
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: _HeaderRow(
-                        leading: widget.leading!,
-                        showsGull: showsGull,
-                      ),
-                    ),
-                  if (showsGull)
-                    Positioned(
-                      top: headerHeight - AlignmentGull.standingHeight,
-                      right: SeguiSpacing.xl,
-                      child: const AlignmentGull(),
-                    ),
-                ],
-              );
-            },
+          child: Container(
+            decoration: getContainerDecoration(context),
+            padding: const EdgeInsets.all(SeguiSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AlignmentHeaderBar(
+                  fileName: widget.fileName,
+                  data: data,
+                  leading: widget.leading,
+                  canShowChunkList: !isCompact,
+                  siteController: _siteController,
+                  onGoToSite: _goToSiteText,
+                ),
+                // Hiding the settings leaves the grid more room.
+                AnimatedSize(
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : _settingsDuration,
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: settings.showSettings
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: SeguiSpacing.md),
+                            const Divider(height: SeguiStroke.thin),
+                            const SizedBox(height: SeguiSpacing.md),
+                            AlignmentToolbar(
+                              data: data,
+                              onPrevious: () => _goToChunk(settings.chunk - 1),
+                              onNext: () => _goToChunk(settings.chunk + 1),
+                            ),
+                            const SizedBox(height: SeguiSpacing.lg),
+                            AlignmentOverview(
+                              data: data,
+                              rowOrder: order,
+                              selectedRows: rowSelection.rows,
+                              window: window,
+                              cellSize: settings.cellSize,
+                              rowHeight: settings.rowHeight,
+                              horizontalController: _horizontal,
+                              verticalController: _vertical,
+                              onJump: (site, row) => _goToSite(site, row: row),
+                            ),
+                            const SizedBox(height: SeguiSpacing.sm),
+                            AlignmentLegend(isDna: data.isDna),
+                          ],
+                        )
+                      : const SizedBox(width: double.infinity),
+                ),
+              ],
+            ),
           ),
         ),
         SliverLayoutBuilder(
@@ -699,55 +684,6 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     final ScrollPosition position = controller.position;
     position.jumpTo(
       offset.clamp(position.minScrollExtent, position.maxScrollExtent),
-    );
-  }
-}
-
-/// Small panel above the toolbar's left edge that holds [leading], styled
-/// like the toolbar and leaving room for the gull. On phones [leading]
-/// takes the whole row and the gull steps aside.
-class _HeaderRow extends StatelessWidget {
-  const _HeaderRow({required this.leading, required this.showsGull});
-
-  final Widget leading;
-
-  /// Whether the gull stands to the right, so [leading] leaves it room.
-  final bool showsGull;
-
-  /// Whether a row [width] wide has room for the gull beside [leading].
-  static bool fitsGull(double width, Widget? leading) {
-    final double needed = AlignmentGull.width +
-        SeguiSpacing.xl * 2 +
-        (leading == null ? 0 : SeguiAlignmentLayout.fileSwitcherMin);
-    return width >= needed;
-  }
-
-  /// Space above the toolbar: room for the gull to stand, and for
-  /// [leading] with a gap below it.
-  static double heightFor(Widget? leading, {required bool showsGull}) {
-    const double row = SeguiControlSize.touchTarget + SeguiSpacing.md;
-    if (leading == null) return showsGull ? AlignmentGull.standingHeight : 0;
-    if (!showsGull) return row;
-    return math.max(row, AlignmentGull.standingHeight);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        right: showsGull ? AlignmentGull.width + SeguiSpacing.xl * 2 : 0,
-      ),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Container(
-          height: SeguiControlSize.touchTarget,
-          decoration: getContainerDecoration(context),
-          // With the compact buttons' own padding, content sits
-          // SeguiSpacing.lg from the border, as in the toolbar.
-          padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xs),
-          child: leading,
-        ),
-      ),
     );
   }
 }
