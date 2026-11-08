@@ -98,8 +98,9 @@ class ReadLineChart extends StatelessWidget {
       children: [
         MinWidthScroll(
           minWidth: SeguiChartLayout.minWidth,
-          child: SizedBox(
+          child: Container(
             height: SeguiChartLayout.height,
+            padding: const EdgeInsets.only(right: SeguiChartLayout.rightInset),
             child: ZoomResetFrame(
               builder: (controller) => LineChart(
                 LineChartData(
@@ -373,15 +374,6 @@ class ReadBarChart extends StatelessWidget {
   /// with wider bars.
   final double barWidth;
 
-  /// Narrowest width that keeps every bar group apart.
-  double get _minWidth => math.max(
-        SeguiChartLayout.minWidth,
-        SeguiChartLayout.axisName +
-            SeguiChartLayout.leftAxis +
-            categories.length *
-                (series.length * barWidth + SeguiChartLayout.barGroupGap),
-      );
-
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -397,9 +389,13 @@ class ReadBarChart extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MinWidthScroll(
-          minWidth: _minWidth,
-          child: SizedBox(
+          minWidth: _minWidth(
+            theme.textTheme.labelSmall,
+            MediaQuery.textScalerOf(context),
+          ),
+          child: Container(
             height: SeguiChartLayout.height,
+            padding: const EdgeInsets.only(right: SeguiChartLayout.rightInset),
             child: BarChart(
               BarChartData(
                 barGroups: [
@@ -459,6 +455,32 @@ class ReadBarChart extends StatelessWidget {
         ChartLegend(
             entries: [for (final BarSeries s in series) (s.name, s.color)]),
       ],
+    );
+  }
+
+  /// Narrowest width that keeps every bar group and its label apart.
+  double _minWidth(TextStyle? style, TextScaler scaler) {
+    double label = 0;
+    for (final String category in categories) {
+      final TextPainter painter = TextPainter(
+        text: TextSpan(text: category, style: style),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+        maxLines: 1,
+      )..layout();
+      label = math.max(label, painter.width);
+      painter.dispose();
+    }
+    final double group = math.max(
+      series.length * barWidth + SeguiChartLayout.barGroupGap,
+      label + SeguiChartLayout.labelGap,
+    );
+    return math.max(
+      SeguiChartLayout.minWidth,
+      SeguiChartLayout.axisName +
+          SeguiChartLayout.leftAxis +
+          SeguiChartLayout.rightInset +
+          categories.length * group,
     );
   }
 }

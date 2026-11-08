@@ -189,6 +189,12 @@ abstract final class SeguiChartLayout {
   static const double leftAxis = 44;
   static const double bottomAxis = 32;
 
+  /// Space right of the plot area, so the last tick label is not cut off.
+  static const double rightInset = 24;
+
+  /// Space between neighboring category labels on a bar chart's axis.
+  static const double labelGap = 8;
+
   /// Space for an axis name.
   static const double axisName = 24;
 
