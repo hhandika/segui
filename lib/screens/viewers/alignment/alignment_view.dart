@@ -86,7 +86,9 @@ class _AlignmentFileViewState extends ConsumerState<AlignmentFileView> {
           ),
           backgroundColor: getSEGULBackgroundColor(context),
           body: Padding(
-            padding: const EdgeInsets.all(SeguiSpacing.xl),
+            // Phones keep more of the screen for the grid.
+            padding:
+                EdgeInsets.all(isCompact ? SeguiSpacing.sm : SeguiSpacing.xl),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -268,6 +270,9 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   final TextEditingController _siteController = TextEditingController();
   _ScrollTarget? _pending;
   RowSelection? _orderSelection;
+
+  /// Cell size when the current pinch began.
+  double _pinchStartSize = SeguiAlignmentLayout.cellDefault;
   List<int> _order = const [];
 
   @override
@@ -309,6 +314,186 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
         (isCompact
             ? SeguiAlignmentLayout.nameColumnCompact
             : SeguiAlignmentLayout.nameColumn);
+    final AlignmentOverview overview = AlignmentOverview(
+      data: data,
+      rowOrder: order,
+      selectedRows: rowSelection.rows,
+      window: window,
+      cellSize: settings.cellSize,
+      rowHeight: settings.rowHeight,
+      horizontalController: _horizontal,
+      verticalController: _vertical,
+      onJump: (site, row) => _goToSite(site, row: row),
+      height: isCompact
+          ? SeguiAlignmentLayout.overviewCompact
+          : SeguiAlignmentLayout.overview,
+    );
+    final AlignmentStatusBar status = AlignmentStatusBar(
+      data: data,
+      window: window,
+      cellSize: settings.cellSize,
+      horizontalController: _horizontal,
+      hover: _hover,
+      selection: _selection,
+      isTouch: isCompact,
+    );
+    final Widget gridPanel = Container(
+      decoration: getContainerDecoration(context),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (showChunkList) ...[
+            ChunkSidebar(
+              data: data,
+              chunkSize: settings.chunkSize,
+              currentChunk: settings.chunk,
+              onSelected: _goToChunk,
+            ),
+            const VerticalDivider(width: SeguiStroke.thin),
+          ],
+          Expanded(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: nameWidth + SeguiAlignmentLayout.nameDivider,
+                    ),
+                    Expanded(
+                      child: AlignmentRuler(
+                        controller: _horizontal,
+                        window: window,
+                        cellSize: settings.cellSize,
+                      ),
+                    ),
+                    // Above the grid's scrollbar lane.
+                    const SizedBox(width: SeguiControlSize.scrollbarGutter),
+                  ],
+                ),
+                const Divider(height: SeguiStroke.thin),
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Ends level with the grid, above its scrollbar lane.
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: SeguiControlSize.scrollbarGutter,
+                        ),
+                        child: AlignmentNames(
+                          names: data.names,
+                          rowOrder: order,
+                          selectedRows: rowSelection.rows,
+                          controller: _vertical,
+                          rowHeight: settings.rowHeight,
+                          width: nameWidth,
+                          selection: _selection,
+                          onRowTap: (row, {required extend, required toggle}) =>
+                              _rowSelectionNotifier.tap(
+                            row,
+                            order,
+                            extend: extend,
+                            // Phones have no keys to hold, so taps add
+                            // and remove names.
+                            toggle: toggle || isCompact,
+                          ),
+                        ),
+                      ),
+                      AlignmentNameDivider(
+                        onDrag: (dx) => _notifier.setNameWidth(nameWidth + dx),
+                        onReset: _notifier.resetNameWidth,
+                      ),
+                      Expanded(
+                        child: AlignmentGrid(
+                          data: data,
+                          rowOrder: order,
+                          selectedRows: rowSelection.rows,
+                          window: window,
+                          cellSize: settings.cellSize,
+                          rowHeight: settings.rowHeight,
+                          colorMode: settings.colorMode,
+                          showLetters: settings.showLetters,
+                          chunkSize: settings.chunkSize,
+                          showChunkBoundaries: !settings.isPaged,
+                          horizontalController: _horizontal,
+                          verticalController: _vertical,
+                          hover: _hover,
+                          selection: _selection,
+                          onZoom: _zoom,
+                          onPinchStart: () =>
+                              _pinchStartSize = _settings.cellSize,
+                          onPinch: (scale) =>
+                              _notifier.setCellSize(_pinchStartSize * scale),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    if (isCompact) {
+      // Nothing outside the grid scrolls, so every drag moves the residues.
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            decoration: getContainerDecoration(context),
+            padding: const EdgeInsets.fromLTRB(
+              SeguiSpacing.md,
+              SeguiSpacing.xs,
+              SeguiSpacing.xs,
+              SeguiSpacing.md,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AlignmentPhoneHeader(
+                  fileName: widget.fileName,
+                  leading: widget.leading,
+                  onShowChunks: _showChunkSheet,
+                  onShowSettings: _showSettingsSheet,
+                ),
+                const AlignmentZoomControls(expand: true),
+                Padding(
+                  padding: const EdgeInsets.only(right: SeguiSpacing.sm),
+                  child: overview,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: SeguiSpacing.sm),
+          Expanded(child: gridPanel),
+          Padding(
+            padding: const EdgeInsets.only(left: SeguiSpacing.md),
+            child: SizedBox(
+              height: SeguiControlSize.touchTarget,
+              child: Row(
+                children: [
+                  Expanded(child: status),
+                  if (!rowSelection.isEmpty)
+                    TextButton.icon(
+                      icon: const Icon(
+                        Icons.checklist_rounded,
+                        size: SeguiControlSize.iconSmall,
+                      ),
+                      label: Text(
+                        '${_siteFormat.format(rowSelection.rows.length)} '
+                        'selected',
+                      ),
+                      onPressed: _showSelectionSheet,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
     return CustomScrollView(
       // The grid and chunk list scroll on their own. This only scrolls the
       // header away when the window is too short for it and the grid, so it
@@ -328,7 +513,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                   fileName: widget.fileName,
                   data: data,
                   leading: widget.leading,
-                  canShowChunkList: !isCompact,
+                  canShowChunkList: true,
                   siteController: _siteController,
                   onGoToSite: _goToSiteText,
                 ),
@@ -352,17 +537,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                               onNext: () => _goToChunk(settings.chunk + 1),
                             ),
                             const SizedBox(height: SeguiSpacing.lg),
-                            AlignmentOverview(
-                              data: data,
-                              rowOrder: order,
-                              selectedRows: rowSelection.rows,
-                              window: window,
-                              cellSize: settings.cellSize,
-                              rowHeight: settings.rowHeight,
-                              horizontalController: _horizontal,
-                              verticalController: _vertical,
-                              onJump: (site, row) => _goToSite(site, row: row),
-                            ),
+                            overview,
                             const SizedBox(height: SeguiSpacing.sm),
                             AlignmentLegend(isDna: data.isDna),
                           ],
@@ -385,111 +560,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: SeguiSpacing.md),
-                  Expanded(
-                    child: Container(
-                      decoration: getContainerDecoration(context),
-                      clipBehavior: Clip.antiAlias,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (showChunkList) ...[
-                            ChunkSidebar(
-                              data: data,
-                              chunkSize: settings.chunkSize,
-                              currentChunk: settings.chunk,
-                              onSelected: _goToChunk,
-                            ),
-                            const VerticalDivider(width: SeguiStroke.thin),
-                          ],
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: nameWidth +
-                                          SeguiAlignmentLayout.nameDivider,
-                                    ),
-                                    Expanded(
-                                      child: AlignmentRuler(
-                                        controller: _horizontal,
-                                        window: window,
-                                        cellSize: settings.cellSize,
-                                      ),
-                                    ),
-                                    // Above the grid's scrollbar lane.
-                                    const SizedBox(
-                                      width: SeguiControlSize.scrollbarGutter,
-                                    ),
-                                  ],
-                                ),
-                                const Divider(height: SeguiStroke.thin),
-                                Expanded(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      // Ends level with the grid, above
-                                      // its scrollbar lane.
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom:
-                                              SeguiControlSize.scrollbarGutter,
-                                        ),
-                                        child: AlignmentNames(
-                                          names: data.names,
-                                          rowOrder: order,
-                                          selectedRows: rowSelection.rows,
-                                          controller: _vertical,
-                                          rowHeight: settings.rowHeight,
-                                          width: nameWidth,
-                                          selection: _selection,
-                                          onRowTap: (row,
-                                                  {required extend,
-                                                  required toggle}) =>
-                                              _rowSelectionNotifier.tap(
-                                            row,
-                                            order,
-                                            extend: extend,
-                                            toggle: toggle,
-                                          ),
-                                        ),
-                                      ),
-                                      AlignmentNameDivider(
-                                        onDrag: (dx) => _notifier
-                                            .setNameWidth(nameWidth + dx),
-                                        onReset: _notifier.resetNameWidth,
-                                      ),
-                                      Expanded(
-                                        child: AlignmentGrid(
-                                          data: data,
-                                          rowOrder: order,
-                                          selectedRows: rowSelection.rows,
-                                          window: window,
-                                          cellSize: settings.cellSize,
-                                          rowHeight: settings.rowHeight,
-                                          colorMode: settings.colorMode,
-                                          showLetters: settings.showLetters,
-                                          chunkSize: settings.chunkSize,
-                                          showChunkBoundaries:
-                                              !settings.isPaged,
-                                          horizontalController: _horizontal,
-                                          verticalController: _vertical,
-                                          hover: _hover,
-                                          selection: _selection,
-                                          onZoom: _zoom,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  Expanded(child: gridPanel),
                   // The text sits at the bottom, level with the file list's
                   // bottom edge, inset like the panels' content.
                   Padding(
@@ -504,14 +575,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                       runSpacing: SeguiSpacing.xs,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        AlignmentStatusBar(
-                          data: data,
-                          window: window,
-                          cellSize: settings.cellSize,
-                          horizontalController: _horizontal,
-                          hover: _hover,
-                          selection: _selection,
-                        ),
+                        status,
                         if (!rowSelection.isEmpty)
                           AlignmentSelectionBar(data: data),
                       ],
@@ -523,6 +587,86 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
           ),
         ),
       ],
+    );
+  }
+
+  /// Phones show the display settings in a sheet.
+  Future<void> _showSettingsSheet() {
+    return showResponsiveSheet<void>(
+      context: context,
+      builder: (context) => SheetContent(
+        title: 'Settings',
+        child: AlignmentSettingsSheet(
+          data: widget.data,
+          siteController: _siteController,
+          onPrevious: () => _goToChunk(_settings.chunk - 1),
+          onNext: () => _goToChunk(_settings.chunk + 1),
+          onGoToSite: _goToSiteText,
+        ),
+      ),
+    );
+  }
+
+  /// Phones show the chunk list in a sheet that closes on a pick.
+  Future<void> _showChunkSheet() {
+    final AlignmentViewSettings settings = _settings;
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      useSafeArea: true,
+      builder: (sheetContext) => FractionallySizedBox(
+        heightFactor: SeguiAlignmentLayout.chunkSheetHeight,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                SeguiSpacing.xxl,
+                0,
+                SeguiSpacing.xxl,
+                SeguiSpacing.md,
+              ),
+              child: Text(
+                'Chunks',
+                style: Theme.of(sheetContext).textTheme.headlineSmall,
+              ),
+            ),
+            Expanded(
+              child: ChunkSidebar(
+                data: widget.data,
+                width: double.infinity,
+                chunkSize: settings.chunkSize,
+                currentChunk: _chunksOf(settings).clamp(settings.chunk),
+                onSelected: (chunk) {
+                  Navigator.of(sheetContext).pop();
+                  _goToChunk(chunk);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Phones show what to do with selected sequences in a sheet.
+  Future<void> _showSelectionSheet() {
+    return showResponsiveSheet<void>(
+      context: context,
+      builder: (sheetContext) => SheetContent(
+        title: 'Selected sequences',
+        child: AlignmentSelectionSheet(
+          onCopy: () {
+            Navigator.of(sheetContext).pop();
+            _copySequences(
+              context,
+              widget.data,
+              ref.read(alignmentRowSelectionProvider),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -713,7 +857,7 @@ class AlignmentSelectionBar extends ConsumerWidget {
           icon:
               const Icon(Icons.copy_rounded, size: SeguiControlSize.iconSmall),
           label: const Text('Copy as FASTA'),
-          onPressed: () => _copy(context, selection),
+          onPressed: () => _copySequences(context, data, selection),
         ),
         FilterChip(
           label: const Text('Only selected'),
@@ -731,19 +875,75 @@ class AlignmentSelectionBar extends ConsumerWidget {
       ],
     );
   }
+}
 
-  Future<void> _copy(BuildContext context, RowSelection selection) async {
-    final String fasta = await data.residues.fasta(selection.rows);
-    await Clipboard.setData(ClipboardData(text: fasta));
-    if (!context.mounted) return;
+/// What to do with selected sequences, in a sheet on phones.
+class AlignmentSelectionSheet extends ConsumerWidget {
+  const AlignmentSelectionSheet({super.key, required this.onCopy});
+
+  final VoidCallback onCopy;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final RowSelection selection = ref.watch(alignmentRowSelectionProvider);
+    final AlignmentRowSelectionNotifier notifier =
+        ref.read(alignmentRowSelectionProvider.notifier);
     final int count = selection.rows.length;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        'Copied ${_siteFormat.format(count)} '
-        '${count == 1 ? 'sequence' : 'sequences'}',
-      ),
-    ));
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.copy_rounded),
+          title: Text(
+            'Copy ${_siteFormat.format(count)} as FASTA',
+          ),
+          onTap: onCopy,
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          secondary: const Icon(Icons.filter_list_rounded),
+          title: const Text('Only selected'),
+          value: selection.showOnlySelected,
+          onChanged: notifier.setShowOnlySelected,
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          secondary: const Icon(Icons.vertical_align_top_rounded),
+          title: const Text('Pin to top'),
+          value: selection.pinSelected,
+          onChanged: notifier.setPinSelected,
+        ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: const Icon(Icons.clear_rounded),
+          title: const Text('Clear selection'),
+          onTap: () {
+            Navigator.of(context).pop();
+            notifier.clear();
+          },
+        ),
+      ],
+    );
   }
+}
+
+/// Copies the [selection] of [data] as FASTA and confirms with a snack bar.
+Future<void> _copySequences(
+  BuildContext context,
+  AlignmentViewData data,
+  RowSelection selection,
+) async {
+  final String fasta = await data.residues.fasta(selection.rows);
+  await Clipboard.setData(ClipboardData(text: fasta));
+  if (!context.mounted) return;
+  final int count = selection.rows.length;
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text(
+      'Copied ${_siteFormat.format(count)} '
+      '${count == 1 ? 'sequence' : 'sequences'}',
+    ),
+  ));
 }
 
 /// Where to scroll once the grid lays out.
@@ -766,6 +966,7 @@ class AlignmentStatusBar extends StatelessWidget {
     required this.horizontalController,
     required this.hover,
     required this.selection,
+    this.isTouch = false,
   });
 
   final AlignmentViewData data;
@@ -774,6 +975,9 @@ class AlignmentStatusBar extends StatelessWidget {
   final ScrollController horizontalController;
   final ValueNotifier<AlignmentCell?> hover;
   final ValueNotifier<AlignmentCell?> selection;
+
+  /// Hints at pinching instead of scrolling with a key to zoom.
+  final bool isTouch;
 
   @override
   Widget build(BuildContext context) {
@@ -815,7 +1019,9 @@ class AlignmentStatusBar extends StatelessWidget {
       itemSize: cellSize,
       count: window.length,
     );
-    final String zoomHint = '${PlatformKeys.primaryLabel} + scroll to zoom';
+    final String zoomHint = isTouch
+        ? 'Pinch to zoom'
+        : '${PlatformKeys.primaryLabel} + scroll to zoom';
     if (cols.length == 0) return zoomHint;
     return 'Showing sites ${_siteFormat.format(window.start + cols.first + 1)}–'
         '${_siteFormat.format(window.start + cols.last)} of '

@@ -12,6 +12,7 @@ import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/alignment_view.dart';
+import 'package:segui/screens/viewers/alignment/chunk_sidebar.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment.dart';
@@ -477,6 +478,150 @@ void main() {
       await tester.testTextInput.receiveAction(TextInputAction.go);
       await tester.pump();
       expect(find.text('Enter a site from 1 to 3,000.'), findsOneWidget);
+    });
+  });
+
+  group('AlignmentExplorer on phones', () {
+    final AlignmentViewData data = _data([
+      for (int i = 0; i < 20; i++) ('ACGT-' * 600).substring(i),
+    ]);
+
+    Future<void> pumpPhone(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(390, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: Scaffold(
+            body: AlignmentExplorer(fileName: 'locus.fas', data: data),
+          ),
+        ),
+      ));
+      await tester.pump();
+    }
+
+    // Sheets have nothing that animates forever, but chunk stats load
+    // asynchronously, so pump past the sheet animation instead of settling.
+    Future<void> pumpSheet(WidgetTester tester) async {
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    AlignmentViewSettings settingsOf(WidgetTester tester) {
+      return ProviderScope.containerOf(
+        tester.element(find.byType(AlignmentGrid)),
+      ).read(alignmentViewSettingsProvider);
+    }
+
+    testWidgets('Keeps zoom and overview, and only the grid scrolls',
+        (tester) async {
+      await pumpPhone(tester);
+      expect(find.byType(CustomScrollView), findsNothing);
+      expect(find.byType(AlignmentToolbar), findsNothing);
+      expect(find.byType(AlignmentZoomControls), findsOneWidget);
+      expect(find.byType(AlignmentOverview), findsOneWidget);
+      expect(find.textContaining('Pinch to zoom'), findsOneWidget);
+      // The grid reaches down to the detail line at the bottom.
+      expect(
+        tester.getBottomLeft(find.byType(AlignmentGrid)).dy,
+        greaterThan(800 - SeguiControlSize.touchTarget * 2),
+      );
+    });
+
+    testWidgets('Settings open in a sheet', (tester) async {
+      await pumpPhone(tester);
+      await tester.tap(find.byTooltip('Settings'));
+      await pumpSheet(tester);
+      expect(find.byType(AlignmentSettingsSheet), findsOneWidget);
+      // Color modes are saved, which needs preferences; letters are not.
+      await tester.tap(find.text('Letters'));
+      await tester.pump();
+      expect(settingsOf(tester).showLetters, isFalse);
+      await tester.tap(find.byTooltip('Next chunk'));
+      await tester.pump();
+      expect(find.text('1,001–2,000 (2 of 3)'), findsOneWidget);
+
+      await tester.enterText(
+          find.widgetWithText(TextField, 'Go to site'), '2500');
+      await tester.testTextInput.receiveAction(TextInputAction.go);
+      await pumpSheet(tester);
+      expect(find.byType(AlignmentSettingsSheet), findsNothing);
+      expect(find.textContaining('site 2,500'), findsOneWidget);
+    });
+
+    testWidgets('The chunk list opens in a sheet', (tester) async {
+      await pumpPhone(tester);
+      expect(find.byType(ChunkSidebar), findsNothing);
+      await tester.tap(find.byTooltip('Chunks'));
+      await pumpSheet(tester);
+      expect(find.byType(ChunkSidebar), findsOneWidget);
+      await tester.tap(find.text('2,001–3,000'));
+      await pumpSheet(tester);
+      expect(find.byType(ChunkSidebar), findsNothing);
+      expect(settingsOf(tester).chunk, 2);
+    });
+
+    testWidgets('Tapping a cell shows its details', (tester) async {
+      await pumpPhone(tester);
+      const double cell = SeguiAlignmentLayout.cellDefault;
+      await tester.tapAt(
+        tester.getTopLeft(find.byType(AlignmentGrid)) +
+            const Offset(cell * 2.5, cell * 0.5),
+      );
+      await tester.pump();
+      expect(find.textContaining('taxon_0 · site 3'), findsOneWidget);
+    });
+
+    testWidgets('Selected sequences have actions in a sheet', (tester) async {
+      await pumpPhone(tester);
+      final Offset topLeft = tester.getTopLeft(find.byType(AlignmentNames));
+      await tester.tapAt(
+        topLeft + const Offset(20, SeguiAlignmentLayout.cellDefault * 1.5),
+      );
+      await tester.pump();
+      // Taps add names without holding a key.
+      await tester.tapAt(
+        topLeft + const Offset(20, SeguiAlignmentLayout.cellDefault * 3.5),
+      );
+      await tester.pump();
+      expect(find.text('2 selected'), findsOneWidget);
+      await tester.tapAt(
+        topLeft + const Offset(20, SeguiAlignmentLayout.cellDefault * 3.5),
+      );
+      await tester.pump();
+      await tester.tap(find.text('1 selected'));
+      await pumpSheet(tester);
+      expect(find.byType(AlignmentSelectionSheet), findsOneWidget);
+      await tester.tap(find.text('Pin to top'));
+      await tester.pump();
+      await tester.tap(find.text('Clear selection'));
+      await pumpSheet(tester);
+      expect(find.byType(AlignmentSelectionSheet), findsNothing);
+      expect(find.text('1 selected'), findsNothing);
+    });
+
+    testWidgets('Pinching zooms the grid', (tester) async {
+      await pumpPhone(tester);
+      final double start = settingsOf(tester).cellSize;
+      final Offset center = tester.getCenter(find.byType(AlignmentGrid));
+      final TestGesture a = await tester.startGesture(
+        center - const Offset(20, 0),
+        pointer: 1,
+      );
+      final TestGesture b = await tester.startGesture(
+        center + const Offset(20, 0),
+        pointer: 2,
+      );
+      for (int i = 0; i < 4; i++) {
+        await a.moveBy(const Offset(-10, 0));
+        await b.moveBy(const Offset(10, 0));
+        await tester.pump();
+      }
+      await a.up();
+      await b.up();
+      await tester.pump();
+      expect(settingsOf(tester).cellSize, greaterThan(start));
     });
   });
 }

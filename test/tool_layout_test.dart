@@ -24,6 +24,7 @@ import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/utils.dart';
 import 'package:segui/services/workbench.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/segui_icons.dart';
@@ -130,6 +131,50 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(FilesPage), findsOneWidget);
     expect(find.text('No input files selected.'), findsOneWidget);
+  });
+
+  test('Counts shorten for badges and keep separators elsewhere', () {
+    expect(compactCount(7), '7');
+    expect(compactCount(999), '999');
+    expect(compactCount(1234), '1.2K');
+    expect(compactCount(12345), '12K');
+    expect(compactCount(999999), '999K');
+    expect(compactCount(2000), '2K');
+    expect(compactCount(1234567), '1.2M');
+    expect(formatCount(1234), '1,234');
+  });
+
+  testWidgets('Thousands of inputs keep the files badge on its button',
+      (tester) async {
+    final ProviderContainer container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+    await container.read(fileInputProvider.notifier).addFiles(
+      [
+        for (int i = 0; i < 1234; i++)
+          XFile(p.join(Directory.systemTemp.path, 'locus_$i.nex')),
+      ],
+      plainTextTypeGroup,
+    );
+    await pumpPage(tester, const Size(390, 844), container: container);
+
+    final Finder button = find.byType(FilesButton);
+    final Finder label = find.descendant(
+      of: button,
+      matching: find.text('1.2K'),
+    );
+    expect(label, findsOneWidget);
+    final Rect bounds = tester.getRect(button);
+    final Rect badge = tester.getRect(label);
+    // Longer counts grow left over the icon, never past the button's
+    // right edge or the screen. The test font is wider than real text, so
+    // only the right edge is checked.
+    expect(badge.right, lessThanOrEqualTo(bounds.right));
+    expect(badge.right, lessThanOrEqualTo(390));
+    expect(find.byTooltip('Input and output files · 1,234 inputs'),
+        findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('Short option lists render as segmented buttons', (tester) async {

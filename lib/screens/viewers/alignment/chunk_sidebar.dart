@@ -18,6 +18,7 @@ class ChunkSidebar extends StatelessWidget {
     required this.chunkSize,
     required this.currentChunk,
     required this.onSelected,
+    this.width = SeguiAlignmentLayout.chunkSidebar,
   });
 
   final AlignmentViewData data;
@@ -25,12 +26,15 @@ class ChunkSidebar extends StatelessWidget {
   final int currentChunk;
   final ValueChanged<int> onSelected;
 
+  /// Width of the list; [double.infinity] fills a sheet.
+  final double width;
+
   @override
   Widget build(BuildContext context) {
     final AlignmentChunks chunks =
         AlignmentChunks(length: data.length, size: chunkSize);
     return SizedBox(
-      width: SeguiAlignmentLayout.chunkSidebar,
+      width: width,
       child: ListView.builder(
         primary: false,
         itemCount: chunks.count,

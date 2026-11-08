@@ -25,6 +25,7 @@ class AlignmentOverview extends StatefulWidget {
     required this.horizontalController,
     required this.verticalController,
     required this.onJump,
+    this.height = SeguiAlignmentLayout.overview,
   });
 
   final AlignmentViewData data;
@@ -42,6 +43,8 @@ class AlignmentOverview extends StatefulWidget {
 
   /// Called with the zero-based site and grid row under the pointer.
   final void Function(int site, int row) onJump;
+
+  final double height;
 
   @override
   State<AlignmentOverview> createState() => _AlignmentOverviewState();
@@ -83,7 +86,7 @@ class _AlignmentOverviewState extends State<AlignmentOverview> {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     return SizedBox(
-      height: SeguiAlignmentLayout.overview,
+      height: widget.height,
       width: double.infinity,
       child: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(

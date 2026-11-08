@@ -154,6 +154,12 @@ abstract final class SeguiAlignmentLayout {
   static const double gridMin = 320;
 
   static const double overview = 48;
+
+  /// Shorter overview on phones, which keeps the grid tall.
+  static const double overviewCompact = 28;
+
+  /// Share of the screen height the chunk list sheet fills on phones.
+  static const double chunkSheetHeight = 0.7;
   static const double nameColumn = 160;
   static const double nameColumnCompact = 96;
 

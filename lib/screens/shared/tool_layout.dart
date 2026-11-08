@@ -351,12 +351,24 @@ class FilesButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final int inputCount = ref.watch(fileInputProvider).value?.length ?? 0;
     return IconButton(
-      tooltip: 'Input and output files',
+      tooltip: inputCount > 0
+          ? 'Input and output files · ${formatCount(inputCount)} '
+              '${inputCount == 1 ? 'input' : 'inputs'}'
+          : 'Input and output files',
       visualDensity: VisualDensity.compact,
-      icon: Badge(
-        isLabelVisible: inputCount > 0,
-        label: Text('$inputCount'),
-        child: const Icon(Icons.folder_open_outlined),
+      // The count is anchored at the icon's right edge, so longer counts
+      // grow over the icon instead of past the button and screen edge.
+      icon: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const Icon(Icons.folder_open_outlined),
+          if (inputCount > 0)
+            Positioned(
+              top: -SeguiSpacing.xs,
+              right: -SeguiSpacing.xs,
+              child: Badge(label: Text(compactCount(inputCount))),
+            ),
+        ],
       ),
       onPressed: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const FilesPage()),
@@ -408,11 +420,11 @@ class FilePanel extends ConsumerWidget {
               ),
               ButtonSegment(
                 value: FilePanelView.input,
-                label: Text('Input · $inputCount'),
+                label: Text('Input · ${compactCount(inputCount)}'),
               ),
               ButtonSegment(
                 value: FilePanelView.output,
-                label: Text('Output · $outputCount'),
+                label: Text('Output · ${compactCount(outputCount)}'),
               ),
             ],
             selected: {view},

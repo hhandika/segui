@@ -60,6 +60,8 @@ class AlignmentGrid extends StatelessWidget {
     required this.hover,
     required this.selection,
     required this.onZoom,
+    this.onPinchStart,
+    this.onPinch,
   });
 
   final AlignmentViewData data;
@@ -85,6 +87,13 @@ class AlignmentGrid extends StatelessWidget {
   /// Cmd + scroll on Apple platforms.
   final ValueChanged<int> onZoom;
 
+  /// Called when two fingers touch the grid.
+  final VoidCallback? onPinchStart;
+
+  /// Called as two fingers move with the distance between them over the
+  /// distance when they touched down.
+  final ValueChanged<double>? onPinch;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -104,53 +113,58 @@ class AlignmentGrid extends StatelessWidget {
               right: SeguiControlSize.scrollbarGutter,
               bottom: SeguiControlSize.scrollbarGutter,
             ),
-            child: TwoDimensionalScrollable(
-              diagonalDragBehavior: DiagonalDragBehavior.free,
-              horizontalDetails: ScrollableDetails.horizontal(
-                  controller: horizontalController),
-              verticalDetails:
-                  ScrollableDetails.vertical(controller: verticalController),
-              viewportBuilder: (context, verticalOffset, horizontalOffset) {
-                return Listener(
-                  onPointerSignal: _onPointerSignal,
-                  child: MouseRegion(
-                    onHover: (event) => hover.value = _cellAt(
-                      event.localPosition,
-                      horizontalOffset.pixels,
-                      verticalOffset.pixels,
-                    ),
-                    onExit: (_) => hover.value = null,
-                    child: GestureDetector(
-                      onTapUp: (details) {
-                        final AlignmentCell? cell = _cellAt(
-                          details.localPosition,
-                          horizontalOffset.pixels,
-                          verticalOffset.pixels,
-                        );
-                        selection.value = cell == selection.value ? null : cell;
-                      },
-                      child: _AlignmentGridViewport(
-                        horizontalOffset: horizontalOffset,
-                        verticalOffset: verticalOffset,
-                        data: data,
-                        rowOrder: rowOrder,
-                        selectedRows: selectedRows,
-                        window: window,
-                        cellSize: cellSize,
-                        rowHeight: rowHeight,
-                        colorMode: colorMode,
-                        showLetters: showLetters,
-                        chunkSize: chunkSize,
-                        showChunkBoundaries: showChunkBoundaries,
-                        devicePixelRatio:
-                            MediaQuery.devicePixelRatioOf(context),
-                        style: _GridStyle.of(theme, data.isDna, colorMode),
-                        selection: selection,
+            child: _PinchListener(
+              onStart: onPinchStart,
+              onUpdate: onPinch,
+              child: TwoDimensionalScrollable(
+                diagonalDragBehavior: DiagonalDragBehavior.free,
+                horizontalDetails: ScrollableDetails.horizontal(
+                    controller: horizontalController),
+                verticalDetails:
+                    ScrollableDetails.vertical(controller: verticalController),
+                viewportBuilder: (context, verticalOffset, horizontalOffset) {
+                  return Listener(
+                    onPointerSignal: _onPointerSignal,
+                    child: MouseRegion(
+                      onHover: (event) => hover.value = _cellAt(
+                        event.localPosition,
+                        horizontalOffset.pixels,
+                        verticalOffset.pixels,
+                      ),
+                      onExit: (_) => hover.value = null,
+                      child: GestureDetector(
+                        onTapUp: (details) {
+                          final AlignmentCell? cell = _cellAt(
+                            details.localPosition,
+                            horizontalOffset.pixels,
+                            verticalOffset.pixels,
+                          );
+                          selection.value =
+                              cell == selection.value ? null : cell;
+                        },
+                        child: _AlignmentGridViewport(
+                          horizontalOffset: horizontalOffset,
+                          verticalOffset: verticalOffset,
+                          data: data,
+                          rowOrder: rowOrder,
+                          selectedRows: selectedRows,
+                          window: window,
+                          cellSize: cellSize,
+                          rowHeight: rowHeight,
+                          colorMode: colorMode,
+                          showLetters: showLetters,
+                          chunkSize: chunkSize,
+                          showChunkBoundaries: showChunkBoundaries,
+                          devicePixelRatio:
+                              MediaQuery.devicePixelRatioOf(context),
+                          style: _GridStyle.of(theme, data.isDna, colorMode),
+                          selection: selection,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -174,6 +188,67 @@ class AlignmentGrid extends StatelessWidget {
       final double dy = (event as PointerScrollEvent).scrollDelta.dy;
       if (dy != 0) onZoom(dy < 0 ? 1 : -1);
     });
+  }
+}
+
+/// Reports two-finger pinches on [child] without joining the gesture
+/// arena, so the grid keeps scrolling with one finger.
+class _PinchListener extends StatefulWidget {
+  const _PinchListener({
+    required this.child,
+    required this.onStart,
+    required this.onUpdate,
+  });
+
+  final Widget child;
+  final VoidCallback? onStart;
+  final ValueChanged<double>? onUpdate;
+
+  @override
+  State<_PinchListener> createState() => _PinchListenerState();
+}
+
+class _PinchListenerState extends State<_PinchListener> {
+  final Map<int, Offset> _touches = {};
+  double? _startDistance;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.onUpdate == null) return widget.child;
+    return Listener(
+      onPointerDown: _onDown,
+      onPointerMove: _onMove,
+      onPointerUp: _onEnd,
+      onPointerCancel: _onEnd,
+      child: widget.child,
+    );
+  }
+
+  void _onDown(PointerDownEvent event) {
+    if (event.kind != PointerDeviceKind.touch) return;
+    _touches[event.pointer] = event.position;
+    if (_touches.length == 2) {
+      _startDistance = _distance();
+      widget.onStart?.call();
+    }
+  }
+
+  void _onMove(PointerMoveEvent event) {
+    if (!_touches.containsKey(event.pointer)) return;
+    _touches[event.pointer] = event.position;
+    final double? start = _startDistance;
+    if (_touches.length != 2 || start == null || start == 0) return;
+    widget.onUpdate?.call(_distance() / start);
+  }
+
+  void _onEnd(PointerEvent event) {
+    _touches.remove(event.pointer);
+    if (_touches.length < 2) _startDistance = null;
+  }
+
+  double _distance() {
+    final List<Offset> points = _touches.values.take(2).toList();
+    return (points[0] - points[1]).distance;
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:segui/src/rust/api/common.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -85,6 +86,33 @@ enum GreetingTime {
         gullWingAsset,
       ];
 }
+
+final NumberFormat _countFormat = NumberFormat('#,##0');
+
+/// [count] in at most four characters, such as 999, 1.2K, 12K, or 1.2M,
+/// for badges. Rounds down, so a count never reads larger than it is.
+String compactCount(int count) {
+  if (count < 1000) return '$count';
+  for (final (int unit, String suffix) in const [
+    (1000000000, 'B'),
+    (1000000, 'M'),
+    (1000, 'K'),
+  ]) {
+    if (count < unit) continue;
+    final int tenths = count * 10 ~/ unit;
+    // One decimal below ten units, whole units from ten on.
+    if (tenths < 100) {
+      return tenths % 10 == 0
+          ? '${tenths ~/ 10}$suffix'
+          : '${tenths ~/ 10}.${tenths % 10}$suffix';
+    }
+    return '${count ~/ unit}$suffix';
+  }
+  return '$count';
+}
+
+/// [count] with thousands separators, such as 1,234.
+String formatCount(int count) => _countFormat.format(count);
 
 String get emptyDirIcon {
   return 'assets/images/sad-gull.svg';
