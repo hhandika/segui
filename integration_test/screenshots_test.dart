@@ -20,6 +20,11 @@
 // Pass --dart-define=SCREENSHOT_ALIGNMENTS=<folder> to show real alignments
 // instead of generated ones. The folder is copied, not changed.
 //
+// Pass --dart-define=SCREENSHOT_VIEWER_FILE=<name> to open that alignment
+// in the viewer instead of the first one listed, and
+// --dart-define=SCREENSHOT_VIEWER_SITE=<site> to scroll it to that site, so
+// the capture shows aligned bases rather than the gaps at its ends.
+//
 // Pass --dart-define=SCREENSHOT_READS=<folder> to show real raw reads
 // instead of generated ones. The reads are read in place, not changed.
 //
@@ -27,6 +32,7 @@
 // datasets give realistic plots. The sandboxed macOS app can only read its
 // own container, so copy the datasets into
 // ~/Library/Containers/com.hhandika.segui/Data/tmp first.
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -39,7 +45,9 @@ import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/main.dart';
+import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
 import 'package:segui/screens/viewers/alignment_report.dart';
+import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/screens/viewers/read_report.dart';
 import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/io/file.dart';
@@ -58,6 +66,8 @@ const String _outputDir = String.fromEnvironment('SCREENSHOT_DIR');
 const String _only = String.fromEnvironment('SCREENSHOT_ONLY');
 const String _alignmentDir = String.fromEnvironment('SCREENSHOT_ALIGNMENTS');
 const String _readDir = String.fromEnvironment('SCREENSHOT_READS');
+const String _viewerFile = String.fromEnvironment('SCREENSHOT_VIEWER_FILE');
+const int _viewerSite = int.fromEnvironment('SCREENSHOT_VIEWER_SITE');
 const bool _landscape = bool.fromEnvironment('SCREENSHOT_LANDSCAPE');
 
 /// Whether to capture the screen called [name].
@@ -330,15 +340,9 @@ void main() {
       );
     }
     if (_wants('viewer')) {
-      await _captureViewer(
-          tester,
-          container,
-          boundaryKey,
-          [
-            for (final XFile file in inputs[_Input.alignments]!)
-              File(file.path),
-          ],
-          (name) => File(p.join(output.path, '$name-$suffix.png')));
+      await _captureViewer(tester, container, boundaryKey, [
+        for (final XFile file in inputs[_Input.alignments]!) File(file.path),
+      ], (name) => File(p.join(output.path, '$name-$suffix.png')));
     }
     debugPrint('Screenshots saved in ${output.path}');
   });
@@ -358,15 +362,16 @@ Future<File> _summarizeReads(List<XFile> reads, Directory dir) async {
 
 /// Summarizes [alignments] and returns the alignment report.
 Future<File> _summarizeAlignments(List<XFile> alignments, Directory dir) async {
-  final String report = await AlignmentServices(
-    inputFiles: [for (final XFile file in alignments) file.path],
-    inputFmt: 'auto',
-    datatype: 'dna',
-    outputDir: p.join(dir.path, 'alignment-summary'),
-  ).summarizeAlignment(
-    outputPrefix: _alignmentDir.isEmpty ? 'uce' : p.basename(_alignmentDir),
-    interval: BigInt.from(5),
-  );
+  final String report =
+      await AlignmentServices(
+        inputFiles: [for (final XFile file in alignments) file.path],
+        inputFmt: 'auto',
+        datatype: 'dna',
+        outputDir: p.join(dir.path, 'alignment-summary'),
+      ).summarizeAlignment(
+        outputPrefix: _alignmentDir.isEmpty ? 'uce' : p.basename(_alignmentDir),
+        interval: BigInt.from(5),
+      );
   return File(report);
 }
 
@@ -425,12 +430,25 @@ Future<void> _captureViewer(
       .push(MaterialPageRoute(builder: (context) => const ViewerPage()));
   await _settle(tester);
   await _capture(tester, boundaryKey, target('viewer'));
-  // Open the first file shown, since the list order may differ from the
-  // order of [copies].
-  final Finder firstFile = copies
-      .map((file) => find.text(p.basename(file.path)).hitTestable())
-      .firstWhere((finder) => finder.evaluate().isNotEmpty);
-  await tester.tap(firstFile.first);
+  if (_viewerFile.isNotEmpty) {
+    final File file = copies.firstWhere(
+      (file) => p.basename(file.path) == _viewerFile,
+    );
+    unawaited(
+      openFileView(
+        tester.element(find.byType(ViewerPage)),
+        file,
+        siblings: copies,
+      ),
+    );
+  } else {
+    // Open the first file shown, since the list order may differ from the
+    // order of [copies].
+    final Finder firstFile = copies
+        .map((file) => find.text(p.basename(file.path)).hitTestable())
+        .firstWhere((finder) => finder.evaluate().isNotEmpty);
+    await tester.tap(firstFile.first);
+  }
   // Opening reads the file and its siblings first, which takes a while for
   // large datasets, so wait until the file list is covered.
   for (int i = 0; i < 100; i++) {
@@ -438,6 +456,17 @@ Future<void> _captureViewer(
     if (find.byType(ViewerFileList).hitTestable().evaluate().isEmpty) break;
   }
   await _settle(tester);
+  if (_viewerSite > 1) {
+    final AlignmentGrid grid = tester.widget(find.byType(AlignmentGrid));
+    final ScrollPosition position = grid.horizontalController.position;
+    position.jumpTo(
+      min(
+        (_viewerSite - 1 - grid.window.start) * grid.cellSize,
+        position.maxScrollExtent,
+      ),
+    );
+    await _settle(tester);
+  }
   await _capture(tester, boundaryKey, target('viewer-alignment'));
 }
 
@@ -465,8 +494,9 @@ Future<void> _capture(
   File file,
 ) async {
   await tester.runAsync(() async {
-    final boundary = boundaryKey.currentContext!.findRenderObject()!
-        as RenderRepaintBoundary;
+    final boundary =
+        boundaryKey.currentContext!.findRenderObject()!
+            as RenderRepaintBoundary;
     final ui.Image image = await boundary.toImage(
       pixelRatio: tester.view.devicePixelRatio,
     );
@@ -478,16 +508,17 @@ Future<void> _capture(
 
 /// Files in [source] that match [group], sorted by name.
 List<XFile> _listFiles(Directory source, XTypeGroup group) {
-  final List<File> files = source
-      .listSync()
-      .whereType<File>()
-      .where(
-        (file) => group.extensions!.any(
-          (ext) => p.basename(file.path).endsWith('.$ext'),
-        ),
-      )
-      .toList()
-    ..sort((a, b) => a.path.compareTo(b.path));
+  final List<File> files =
+      source
+          .listSync()
+          .whereType<File>()
+          .where(
+            (file) => group.extensions!.any(
+              (ext) => p.basename(file.path).endsWith('.$ext'),
+            ),
+          )
+          .toList()
+        ..sort((a, b) => a.path.compareTo(b.path));
   return [for (final File file in files) XFile(file.path)];
 }
 
@@ -496,16 +527,17 @@ List<XFile> _listFiles(Directory source, XTypeGroup group) {
 Future<List<XFile>> _copyAlignments(Directory source, Directory dir) async {
   final Directory folder = Directory(p.join(dir.path, p.basename(source.path)))
     ..createSync();
-  final List<File> files = source
-      .listSync()
-      .whereType<File>()
-      .where(
-        (file) => sequenceTypeGroup.extensions!.contains(
-          p.extension(file.path).replaceFirst('.', ''),
-        ),
-      )
-      .toList()
-    ..sort((a, b) => a.path.compareTo(b.path));
+  final List<File> files =
+      source
+          .listSync()
+          .whereType<File>()
+          .where(
+            (file) => sequenceTypeGroup.extensions!.contains(
+              p.extension(file.path).replaceFirst('.', ''),
+            ),
+          )
+          .toList()
+        ..sort((a, b) => a.path.compareTo(b.path));
   return [
     for (final File file in files)
       XFile(file.copySync(p.join(folder.path, p.basename(file.path))).path),
