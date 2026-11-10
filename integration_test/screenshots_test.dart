@@ -13,6 +13,10 @@
 //
 // Pass --dart-define=SCREENSHOT_ONLY=<prefix> to capture only the screens
 // whose names start with it, such as `viewer`.
+//
+// Pass --dart-define=SCREENSHOT_SCALE=<factor> to render the captures at a
+// higher pixel ratio than the display, such as 2 for sharp 4K store
+// screenshots, without changing the layout.
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -37,6 +41,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String _outputDir = String.fromEnvironment('SCREENSHOT_DIR');
 const String _only = String.fromEnvironment('SCREENSHOT_ONLY');
+const String _scale = String.fromEnvironment('SCREENSHOT_SCALE');
 
 /// Whether to capture the screen called [name].
 bool _wants(String name) => name.startsWith(_only);
@@ -330,7 +335,7 @@ Future<void> _capture(
     final boundary = boundaryKey.currentContext!.findRenderObject()!
         as RenderRepaintBoundary;
     final ui.Image image = await boundary.toImage(
-      pixelRatio: tester.view.devicePixelRatio,
+      pixelRatio: double.tryParse(_scale) ?? tester.view.devicePixelRatio,
     );
     final data = await image.toByteData(format: ui.ImageByteFormat.png);
     await file.writeAsBytes(data!.buffer.asUint8List());
