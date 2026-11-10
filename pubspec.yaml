@@ -147,3 +147,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+msix_config:
+  display_name: SEGUI
+  publisher_display_name: hhandika
+  identity_name: 41918EvoBio.segui
+  publisher: CN=F6E8B1C2-9B5D-4AFB-9418-082991B0E098
+  # msix_version is derived from `version` as major.minor.patch.0, which meets the
+  # Store rule that the last number is zero. Bump the version, not only the build
+  # number, for every Store submission.
+  logo_path: assets/launcher/icon.png
+  # Keep the logo's built-in padding; msix trims borders by default.
+  trim_logo: false
+  capabilities: internetClient,removableStorage
+  store: true
