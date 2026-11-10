@@ -15,7 +15,13 @@
 // whose names start with it, such as `viewer`.
 //
 // Pass --dart-define=SCREENSHOT_ALIGNMENTS=<folder> to show real alignments
-// instead of generated ones. The folder is copied, not changed.
+// instead of generated ones. The folder is copied, not changed. Add
+// --dart-define=SCREENSHOT_SITE=<site> to scroll the alignment viewer there,
+// and --dart-define=SCREENSHOT_HIDE_CHUNKS=true to hide its chunk list.
+//
+// Pass --dart-define=SCREENSHOT_REPORT=<file> to also capture a summary
+// report, such as `alignment-report.json`, as `viewer-report`, and
+// --dart-define=SCREENSHOT_REPORT_TAB=<tab> to open a tab of it first.
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -28,6 +34,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/main.dart';
+import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/io.dart';
@@ -41,6 +48,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String _outputDir = String.fromEnvironment('SCREENSHOT_DIR');
 const String _only = String.fromEnvironment('SCREENSHOT_ONLY');
 const String _alignmentDir = String.fromEnvironment('SCREENSHOT_ALIGNMENTS');
+const String _site = String.fromEnvironment('SCREENSHOT_SITE');
+const bool _hideChunks = bool.fromEnvironment('SCREENSHOT_HIDE_CHUNKS');
+const String _report = String.fromEnvironment('SCREENSHOT_REPORT');
+const String _reportTab = String.fromEnvironment('SCREENSHOT_REPORT_TAB');
 
 /// Whether to capture the screen called [name].
 bool _wants(String name) => name.startsWith(_only);
@@ -282,6 +293,14 @@ void main() {
         (name) => File(p.join(output.path, '$name-$suffix.png')),
       );
     }
+    if (_report.isNotEmpty && _wants('viewer-report')) {
+      await _captureReport(
+        tester,
+        boundaryKey,
+        File(_report),
+        File(p.join(output.path, 'viewer-report-$suffix.png')),
+      );
+    }
     debugPrint('Screenshots saved in ${output.path}');
   });
 }
@@ -328,7 +347,50 @@ Future<void> _captureViewer(
     if (find.byType(ViewerFileList).hitTestable().evaluate().isEmpty) break;
   }
   await _settle(tester);
+  if (_site.isNotEmpty) {
+    final Finder goToSite = find.ancestor(
+      of: find.text('Go to site'),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(goToSite, _site);
+    await tester.testTextInput.receiveAction(TextInputAction.go);
+    await _settle(tester);
+    // Leave the field so its cursor is not in the capture.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await _settle(tester);
+  }
+  if (_hideChunks) {
+    await tester.tap(find.byTooltip('Hide chunk list'));
+    await _settle(tester);
+  }
   await _capture(tester, boundaryKey, target('viewer-alignment'));
+}
+
+/// Opens [report] in the file viewer and captures it to [target].
+Future<void> _captureReport(
+  WidgetTester tester,
+  GlobalKey boundaryKey,
+  File report,
+  File target,
+) async {
+  final NavigatorState navigator = tester.state<NavigatorState>(
+    find.byType(Navigator).first,
+  );
+  navigator.popUntil((route) => route.isFirst);
+  await _settle(tester);
+  // The route stays open until the capture, so the future is not awaited.
+  openFileView(navigator.context, report);
+  for (int i = 0; i < 50; i++) {
+    await _settle(tester);
+    if (find.text(p.basename(report.path)).evaluate().isNotEmpty) break;
+  }
+  await _settle(tester);
+  if (_reportTab.isNotEmpty) {
+    await tester.tap(find.text(_reportTab).first);
+    await _settle(tester);
+    await _settle(tester);
+  }
+  await _capture(tester, boundaryKey, target);
 }
 
 const Map<_Input, XTypeGroup> _typeGroups = {
