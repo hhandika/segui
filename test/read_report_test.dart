@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/viewers/read_report.dart';
+import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/report/data_bar.dart';
 import 'package:segui/screens/viewers/report/heatmap_cell.dart';
 import 'package:segui/screens/viewers/report/metric_bars.dart';
@@ -409,6 +410,24 @@ void main() {
     expect(find.byType(BottomSheet), findsOneWidget);
     expect(find.text('Below 20'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Legends fit long sample names on phones', (tester) async {
+    tester.view.physicalSize = const Size(200, 400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    const String name = 'Bunomys_chrysocomus_LSUMZ39565_Torompupu_READ1.fq';
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        home: const Scaffold(
+          body: ChartLegend(entries: [(name, Colors.green)]),
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    final Text text = tester.widget(find.text(name));
+    expect(text.overflow, TextOverflow.ellipsis);
   });
 
   testWidgets('The table pages through many samples',

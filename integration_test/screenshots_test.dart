@@ -11,11 +11,22 @@
 // small-screen layout, matching the `-large` and `-small` image names the
 // website expects.
 //
+// Pass --dart-define=SCREENSHOT_LANDSCAPE=true on a mobile target to capture
+// its landscape layout, such as for iPad store screenshots.
+//
 // Pass --dart-define=SCREENSHOT_ONLY=<prefix> to capture only the screens
 // whose names start with it, such as `viewer`.
 //
 // Pass --dart-define=SCREENSHOT_ALIGNMENTS=<folder> to show real alignments
 // instead of generated ones. The folder is copied, not changed.
+//
+// Pass --dart-define=SCREENSHOT_READS=<folder> to show real raw reads
+// instead of generated ones. The reads are read in place, not changed.
+//
+// The read and alignment report screens summarize these inputs, so real
+// datasets give realistic plots. The sandboxed macOS app can only read its
+// own container, so copy the datasets into
+// ~/Library/Containers/com.hhandika.segui/Data/tmp first.
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -28,6 +39,8 @@ import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/main.dart';
+import 'package:segui/screens/viewers/alignment_report.dart';
+import 'package:segui/screens/viewers/read_report.dart';
 import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/io.dart';
@@ -35,12 +48,17 @@ import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/providers/viewer.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/src/rust/api/progress.dart';
+import 'package:segui/src/rust/api/reads.dart';
+import 'package:segui/src/rust/api/sequence.dart';
 import 'package:segui/src/rust/frb_generated.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String _outputDir = String.fromEnvironment('SCREENSHOT_DIR');
 const String _only = String.fromEnvironment('SCREENSHOT_ONLY');
 const String _alignmentDir = String.fromEnvironment('SCREENSHOT_ALIGNMENTS');
+const String _readDir = String.fromEnvironment('SCREENSHOT_READS');
+const bool _landscape = bool.fromEnvironment('SCREENSHOT_LANDSCAPE');
 
 /// Whether to capture the screen called [name].
 bool _wants(String name) => name.startsWith(_only);
@@ -207,6 +225,12 @@ void main() {
       inputs[_Input.alignments] = alignments;
       inputs[_Input.sequences] = alignments;
     }
+    if (_readDir.isNotEmpty) {
+      inputs[_Input.reads] = _listFiles(
+        Directory(_readDir),
+        genomicRawReadTypeGroup,
+      );
+    }
   });
 
   tearDownAll(() async {
@@ -223,6 +247,15 @@ void main() {
     await output.create(recursive: true);
     if (isLarge) {
       tester.view.physicalSize = _largeSize * tester.view.devicePixelRatio;
+      addTearDown(tester.view.resetPhysicalSize);
+    } else if (_landscape) {
+      // Tablets and foldables render their landscape layout at the device's
+      // own resolution, whichever way the simulator is turned.
+      final Size size = tester.view.physicalSize;
+      tester.view.physicalSize = Size(
+        max(size.width, size.height),
+        min(size.width, size.height),
+      );
       addTearDown(tester.view.resetPhysicalSize);
     }
 
@@ -273,17 +306,94 @@ void main() {
         File(p.join(output.path, '${shot.name}-$suffix.png')),
       );
     }
+    if (_wants('genomic-read-report')) {
+      final File report = await _summarizeReads(inputs[_Input.reads]!, dataDir);
+      await _captureRoute(
+        tester,
+        boundaryKey,
+        ReadReportView(file: report),
+        tab: 'Quality',
+        File(p.join(output.path, 'genomic-read-report-$suffix.png')),
+      );
+    }
+    if (_wants('align-summary-report')) {
+      final File report = await _summarizeAlignments(
+        inputs[_Input.alignments]!,
+        dataDir,
+      );
+      await _captureRoute(
+        tester,
+        boundaryKey,
+        AlignmentReportView(file: report),
+        tab: 'Distributions',
+        File(p.join(output.path, 'align-summary-report-$suffix.png')),
+      );
+    }
     if (_wants('viewer')) {
       await _captureViewer(
-        tester,
-        container,
-        boundaryKey,
-        [for (final XFile file in inputs[_Input.alignments]!) File(file.path)],
-        (name) => File(p.join(output.path, '$name-$suffix.png')),
-      );
+          tester,
+          container,
+          boundaryKey,
+          [
+            for (final XFile file in inputs[_Input.alignments]!)
+              File(file.path),
+          ],
+          (name) => File(p.join(output.path, '$name-$suffix.png')));
     }
     debugPrint('Screenshots saved in ${output.path}');
   });
+}
+
+/// Summarizes [reads] in Complete mode and returns the read report.
+Future<File> _summarizeReads(List<XFile> reads, Directory dir) async {
+  final RunMonitor monitor = RunMonitor();
+  final ReadSummaryOutput output = await RawReadServices(
+    files: [for (final XFile file in reads) file.path],
+    fileFmt: 'auto',
+    outputDir: p.join(dir.path, 'read-summary'),
+  ).summarize(mode: 'complete', phred: 'auto', monitor: monitor);
+  monitor.close();
+  return File(output.reportPath!);
+}
+
+/// Summarizes [alignments] and returns the alignment report.
+Future<File> _summarizeAlignments(List<XFile> alignments, Directory dir) async {
+  final String report = await AlignmentServices(
+    inputFiles: [for (final XFile file in alignments) file.path],
+    inputFmt: 'auto',
+    datatype: 'dna',
+    outputDir: p.join(dir.path, 'alignment-summary'),
+  ).summarizeAlignment(
+    outputPrefix: _alignmentDir.isEmpty ? 'uce' : p.basename(_alignmentDir),
+    interval: BigInt.from(5),
+  );
+  return File(report);
+}
+
+/// Pushes [page], opens its [tab], captures it in [file] once its report
+/// loads, and closes it.
+Future<void> _captureRoute(
+  WidgetTester tester,
+  GlobalKey boundaryKey,
+  Widget page,
+  File file, {
+  String? tab,
+}) async {
+  final NavigatorState navigator = tester.state<NavigatorState>(
+    find.byType(Navigator).first,
+  );
+  navigator.push(MaterialPageRoute(builder: (context) => page));
+  for (int i = 0; i < 100; i++) {
+    await _settle(tester);
+    if (find.byType(CircularProgressIndicator).evaluate().isEmpty) break;
+  }
+  if (tab != null) {
+    await tester.tap(find.widgetWithText(Tab, tab).first);
+  }
+  await _settle(tester);
+  await _capture(tester, boundaryKey, file);
+  navigator.pop();
+  await _settle(tester);
 }
 
 /// Captures the Viewer page with [files] open, then the alignment viewer
@@ -364,6 +474,21 @@ Future<void> _capture(
     await file.writeAsBytes(data!.buffer.asUint8List());
     image.dispose();
   });
+}
+
+/// Files in [source] that match [group], sorted by name.
+List<XFile> _listFiles(Directory source, XTypeGroup group) {
+  final List<File> files = source
+      .listSync()
+      .whereType<File>()
+      .where(
+        (file) => group.extensions!.any(
+          (ext) => p.basename(file.path).endsWith('.$ext'),
+        ),
+      )
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+  return [for (final File file in files) XFile(file.path)];
 }
 
 /// Copies the alignments in [source] into a folder of the same name in [dir],

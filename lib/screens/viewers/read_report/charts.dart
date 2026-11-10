@@ -510,7 +510,15 @@ class ChartLegend extends StatelessWidget {
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               ),
               const SizedBox(width: SeguiSpacing.xs),
-              Text(name, style: style),
+              // Long sample names would overflow a narrow screen.
+              Flexible(
+                child: Text(
+                  name,
+                  style: style,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
       ],

@@ -588,7 +588,15 @@ class _HeatmapLegend extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: SeguiSpacing.xs),
-              Text(openName!, style: style),
+              // Long sample names would overflow a narrow screen.
+              Flexible(
+                child: Text(
+                  openName!,
+                  style: style,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
       ],
