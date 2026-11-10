@@ -383,7 +383,7 @@ export const viewerShowcase = {
 export const latestRelease = {
   version: "v0.25.0",
   summary:
-    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play and rolling out to other stores.",
+    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play, the Microsoft Store, and the Snap Store, and rolling out to the App Store.",
   href: "/docs/intro/#segul-v0250",
   highlights: [
     { title: "Terminal alignment viewer", href: "/docs/cli-usage/view-align/" },
