@@ -3,7 +3,7 @@ use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::Mutex;
 
 use flutter_rust_bridge::frb;
-use segul::helper::progress::ProgressReporter;
+use segul_core::helper::progress::ProgressReporter;
 
 use crate::frb_generated::StreamSink;
 

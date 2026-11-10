@@ -92,9 +92,14 @@ class _ColorSettingViewState extends ConsumerState<ColorSettingView> {
             ),
             SizedBox(
               width: optionsWidth,
+              // The preview's padding supplies the gap between the two
+              // columns, so every edge is spaced alike.
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  vertical: SeguiSpacing.xl,
+                padding: const EdgeInsets.fromLTRB(
+                  SeguiSpacing.xl,
+                  SeguiSpacing.xl,
+                  0,
+                  SeguiSpacing.xl,
                 ),
                 child: options,
               ),
@@ -255,18 +260,15 @@ class ColorOptionList extends ConsumerWidget {
             ),
         ],
     };
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (final Widget tile in tiles)
-            Padding(
-              padding: const EdgeInsets.only(bottom: SeguiSpacing.sm),
-              child: tile,
-            ),
+    // No padding of its own, so the tiles line up with the preview card.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (int index, Widget tile) in tiles.indexed) ...[
+          if (index > 0) const SizedBox(height: SeguiSpacing.sm),
+          tile,
         ],
-      ),
+      ],
     );
   }
 }

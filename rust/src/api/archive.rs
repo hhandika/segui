@@ -1,6 +1,6 @@
 use flate2::write::GzEncoder;
 use flate2::Compression;
-use segul::writer::archive::Archive;
+use segul_core::writer::archive::Archive;
 use std::fs::File;
 use std::io::{self, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};

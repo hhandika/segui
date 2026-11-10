@@ -8,8 +8,8 @@
 use std::path::Path;
 
 use flutter_rust_bridge::frb;
-use segul::core::align::view::AlignmentView;
-use segul::helper::types::{DataType, InputFmt};
+use segul_core::core::align::view::AlignmentView;
+use segul_core::helper::types::{DataType, InputFmt};
 
 /// Names and shape of an open alignment.
 pub struct AlignmentSummary {

@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use segul::stats::align_report::{AlignReport, SiteTypeSummary};
+use segul_core::stats::align_report::{AlignReport, SiteTypeSummary};
 
 /// Loads `alignment-report.json` for the interactive alignment report.
 pub struct AlignReportServices {

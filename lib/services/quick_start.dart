@@ -25,27 +25,28 @@ const List<QuickStartStep> quickStartSteps = [
     icon: Icons.apps,
   ),
   QuickStartStep(
-    title: 'Add files',
-    description: 'Add files, a folder, or an archive. The app keeps only '
-        'files that match the tool.',
+    title: 'Add input',
+    description: 'Add files, a folder, or an archive, then check the input '
+        'format and data type.',
     icon: SeguiIcons.inputFolderOutlined,
   ),
   QuickStartStep(
-    title: 'Set options',
-    description: 'Pick the input format, data type, and any options the tool '
-        'needs. Most have defaults.',
-    icon: Icons.tune,
+    title: 'Set output',
+    description: 'Choose a folder for the results, then adjust the output '
+        'options. Most have defaults.',
+    icon: SeguiIcons.outputFolderOutlined,
   ),
   QuickStartStep(
     title: 'Run',
-    description: 'Press Run and keep the page open until the task finishes.',
+    description: 'Press the button named for the task, such as Concatenate. '
+        'Keep the screen open until it finishes.',
     icon: Icons.play_arrow_rounded,
   ),
   QuickStartStep(
-    title: 'Open results',
-    description: 'New files are marked in the output list. Open, view, or '
-        'share them from there.',
-    icon: SeguiIcons.outputFolderOutlined,
+    title: 'Review results',
+    description: 'The workbench sums up the run and suggests next tools. '
+        'New files are marked in the output list.',
+    icon: Icons.task_alt_rounded,
   ),
 ];
 

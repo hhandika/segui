@@ -1,10 +1,10 @@
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use segul::core::contig::summarize::ContigSummaryHandler;
-use segul::helper::logger::ContigLogger;
-use segul::helper::types::ContigFmt;
-use segul::helper::utils;
+use segul_core::core::contig::summarize::ContigSummaryHandler;
+use segul_core::helper::logger::ContigLogger;
+use segul_core::helper::types::ContigFmt;
+use segul_core::helper::utils;
 
 use crate::api::progress::RunMonitor;
 

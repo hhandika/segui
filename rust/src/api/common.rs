@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use segul::helper::{logger, utils};
+use segul_core::helper::{logger, utils};
 
 const LOG_FILE: &str = "segul";
 

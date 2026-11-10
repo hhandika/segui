@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use segul::stats::distance_report::{DistanceReport, PairStats};
+use segul_core::stats::distance_report::{DistanceReport, PairStats};
 
 /// Loads `distance-report.json` for the interactive distance report.
 pub struct DistanceReportServices {

@@ -1,12 +1,12 @@
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use segul::core::read::summarize::GenomicReadSummary;
-use segul::helper::logger::ReadLogger;
-use segul::helper::types::{PhredOffset, SeqReadFmt, SummaryMode};
-use segul::helper::utils;
-use segul::stats::fastq::report::{PositionSummary, ReadReport, SampleReadReport};
-use segul::stats::fastq::DEFAULT_DUP_SKETCH_SIZE;
+use segul_core::core::read::summarize::GenomicReadSummary;
+use segul_core::helper::logger::ReadLogger;
+use segul_core::helper::types::{PhredOffset, SeqReadFmt, SummaryMode};
+use segul_core::helper::utils;
+use segul_core::stats::fastq::report::{PositionSummary, ReadReport, SampleReadReport};
+use segul_core::stats::fastq::DEFAULT_DUP_SKETCH_SIZE;
 
 use crate::api::progress::RunMonitor;
 

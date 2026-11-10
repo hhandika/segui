@@ -1,11 +1,11 @@
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use segul::core::maf::convert::{MafConverter, MafGrouping};
-use segul::core::maf::summary::MafSummary;
-use segul::core::maf::BlockFilter;
-use segul::helper::types::OutputFmt;
-use segul::helper::utils;
+use segul_core::core::maf::convert::{MafConverter, MafGrouping};
+use segul_core::core::maf::summary::MafSummary;
+use segul_core::core::maf::BlockFilter;
+use segul_core::helper::types::OutputFmt;
+use segul_core::helper::utils;
 
 use crate::api::progress::RunMonitor;
 
