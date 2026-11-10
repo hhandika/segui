@@ -24,6 +24,11 @@ import mafSummary from "../assets/icons/maf_summary_outlined.svg";
 import genomics from "../assets/icons/genomics_outlined.svg";
 import alignments from "../assets/icons/alignments_outlined.svg";
 import sequences from "../assets/icons/sequences_outlined.svg";
+import readQualityScreenshot from "../assets/news/segui-android-read-quality.webp";
+import desktopViewerScreenshot from "../assets/showcase/segui-desktop-alignment.webp";
+import cliViewerScreenshot from "../assets/showcase/segul-cli-alignment.webp";
+import desktopSummaryScreenshot from "../assets/showcase/segui-desktop-summary.webp";
+import cliSummaryScreenshot from "../assets/showcase/segul-cli-summary.webp";
 
 export const docsPath = "/docs/intro/";
 
@@ -320,24 +325,77 @@ export const workflows = [
   { title: "Reformat for another program", steps: ["Convert", "Partition"] },
 ];
 
-/// Latest release news on the landing page. Benchmarks are mean concatenation
-/// times in seconds, from `bench/results/latest.json` in the SEGUL repository.
-export const latestRelease = {
-  version: "v0.24.0",
-  previousVersion: "v0.23.2",
+/// Viewer showcase on the landing page. All screenshots show the UCE loci of
+/// Esselstyn et al. 2021: SEGUI from `integration_test/screenshots_test.dart`
+/// on Linux, and `segul view` rendered from a virtual terminal. The alignment
+/// views show locus uce-10 at site 400.
+export const viewerShowcase = {
   summary:
-    "A faster CLI and new features. The GUI update will come later, with a redesigned interface.",
-  href: "/docs/intro/#whats-new-in-v0240",
+    "Check thousands of loci and their summary statistics without leaving SEGUL. The app and the command line show the same views.",
+  views: [
+    {
+      title: "SEGUI alignment viewer.",
+      caption: "Point and click through loci.",
+      label: "SEGUI · Linux",
+      terminal: false,
+      src: desktopViewerScreenshot,
+      alt: "SEGUI alignment viewer on Linux showing 49 shrew taxa of a UCE locus with colored bases",
+      href: "/docs/gui-usage/viewer/",
+    },
+    {
+      title: "segul view align.",
+      caption: "The same viewer in the terminal.",
+      label: "$ segul view align --input uce-10.nex",
+      terminal: true,
+      src: cliViewerScreenshot,
+      alt: "segul view align in a terminal showing the same UCE locus with colored bases",
+      href: "/docs/cli-usage/view-align/",
+    },
+    {
+      title: "SEGUI summary report.",
+      caption: "Charts and tables of a summary run.",
+      label: "SEGUI · Linux",
+      terminal: false,
+      src: desktopSummaryScreenshot,
+      alt: "SEGUI alignment summary report showing a histogram of locus length across 4,040 loci",
+      href: "/docs/gui-usage/viewer/#summary-reports",
+    },
+    {
+      title: "segul view summary.",
+      caption: "The same report as terminal plots.",
+      label: "$ segul view summary --input alignment-report.json",
+      terminal: true,
+      src: cliSummaryScreenshot,
+      alt: "segul view summary in a terminal showing a histogram of sites per locus across 4,040 loci",
+      href: "/docs/cli-usage/view-summary/",
+    },
+  ],
+  source: {
+    description: "4,040 UCE loci from 102 shrew samples",
+    citation: "Esselstyn et al. 2021",
+    href: "https://doi.org/10.1206/0003-0090.454.1.1",
+  },
+};
+
+/// Latest release news on the landing page. The screenshot is SEGUI v1.2.0
+/// on an Android emulator, after a complete read summary of the raw reads in
+/// the segul2-bench repository.
+export const latestRelease = {
+  version: "v0.25.0",
+  summary:
+    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play and rolling out to other stores.",
+  href: "/docs/intro/#segul-v0250",
   highlights: [
-    { title: "Genetic distances", href: "/docs/cli-usage/align-distance/" },
-    { title: "MAF summary and conversion", href: "/docs/cli-usage/maf-summary/" },
-    { title: "One-line CLI install", href: "/docs/installation/install_cli/#installer-script" },
+    { title: "Terminal alignment viewer", href: "/docs/cli-usage/view-align/" },
+    { title: "Summary charts and reports", href: "/docs/cli-usage/view-summary/" },
+    { title: "Richer read summary", href: "/docs/cli-usage/read-summary/" },
+    { title: "SEGUI v1.2.0", href: "/docs/installation/install_gui/" },
   ],
-  benchmarks: [
-    { dataset: "DNA · Oliveros et al. 2019 · 4,060 loci, 522.5 Mbases", before: 2.68, after: 0.63 },
-    { dataset: "Protein · Shen et al. 2018 · 2,408 loci, 398.8 Mbases", before: 4.14, after: 0.5 },
-  ],
-  benchmarkNote: "Alignment concatenation. Mean of five runs on Linux with an AMD Ryzen 9 5900X.",
+  screenshot: {
+    src: readQualityScreenshot,
+    alt: "SEGUI on Android showing per-base read quality for a Bunomys sample",
+    caption: "Read quality in SEGUI v1.2.0 on Android, from 921 MB of raw reads.",
+  },
 };
 
 export const citation = {

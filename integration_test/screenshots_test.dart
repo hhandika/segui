@@ -17,6 +17,15 @@
 // Pass --dart-define=SCREENSHOT_SCALE=<factor> to render the captures at a
 // higher pixel ratio than the display, such as 2 for sharp 4K store
 // screenshots, without changing the layout.
+//
+// Pass --dart-define=SCREENSHOT_ALIGNMENTS=<folder> to show real alignments
+// instead of generated ones. The folder is copied, not changed. Add
+// --dart-define=SCREENSHOT_SITE=<site> to scroll the alignment viewer there,
+// and --dart-define=SCREENSHOT_HIDE_CHUNKS=true to hide its chunk list.
+//
+// Pass --dart-define=SCREENSHOT_REPORT=<file> to also capture a summary
+// report, such as `alignment-report.json`, as `viewer-report`, and
+// --dart-define=SCREENSHOT_REPORT_TAB=<tab> to open a tab of it first.
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -29,6 +38,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/main.dart';
+import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/io.dart';
@@ -42,6 +52,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String _outputDir = String.fromEnvironment('SCREENSHOT_DIR');
 const String _only = String.fromEnvironment('SCREENSHOT_ONLY');
 const String _scale = String.fromEnvironment('SCREENSHOT_SCALE');
+const String _alignmentDir = String.fromEnvironment('SCREENSHOT_ALIGNMENTS');
+const String _site = String.fromEnvironment('SCREENSHOT_SITE');
+const bool _hideChunks = bool.fromEnvironment('SCREENSHOT_HIDE_CHUNKS');
+const String _report = String.fromEnvironment('SCREENSHOT_REPORT');
+const String _reportTab = String.fromEnvironment('SCREENSHOT_REPORT_TAB');
 
 /// Whether to capture the screen called [name].
 bool _wants(String name) => name.startsWith(_only);
@@ -200,6 +215,14 @@ void main() {
     await RustLib.init();
     dataDir = await Directory.systemTemp.createTemp('segui-screenshots-');
     inputs = await _writeInputs(dataDir);
+    if (_alignmentDir.isNotEmpty) {
+      final List<XFile> alignments = await _copyAlignments(
+        Directory(_alignmentDir),
+        dataDir,
+      );
+      inputs[_Input.alignments] = alignments;
+      inputs[_Input.sequences] = alignments;
+    }
   });
 
   tearDownAll(() async {
@@ -275,6 +298,14 @@ void main() {
         (name) => File(p.join(output.path, '$name-$suffix.png')),
       );
     }
+    if (_report.isNotEmpty && _wants('viewer-report')) {
+      await _captureReport(
+        tester,
+        boundaryKey,
+        File(_report),
+        File(p.join(output.path, 'viewer-report-$suffix.png')),
+      );
+    }
     debugPrint('Screenshots saved in ${output.path}');
   });
 }
@@ -288,24 +319,83 @@ Future<void> _captureViewer(
   List<File> files,
   File Function(String name) target,
 ) async {
-  // A readable folder name, since the files list shows it.
-  final Directory folder = Directory(
-    p.join(p.dirname(files.first.path), 'uce-loci'),
-  )..createSync();
-  final List<File> copies = [
-    for (final File file in files)
-      file.copySync(p.join(folder.path, p.basename(file.path))),
-  ];
+  // A readable folder name, since the files list shows it. Real alignments
+  // are already in a folder named after their dataset.
+  final List<File> copies;
+  if (_alignmentDir.isNotEmpty) {
+    copies = files;
+  } else {
+    final Directory folder = Directory(
+      p.join(p.dirname(files.first.path), 'uce-loci'),
+    )..createSync();
+    copies = [
+      for (final File file in files)
+        file.copySync(p.join(folder.path, p.basename(file.path))),
+    ];
+  }
   container.read(viewerFilesProvider.notifier).addFiles(copies);
   tester
       .state<NavigatorState>(find.byType(Navigator).first)
       .push(MaterialPageRoute(builder: (context) => const ViewerPage()));
   await _settle(tester);
   await _capture(tester, boundaryKey, target('viewer'));
-  await tester.tap(find.text(p.basename(copies.first.path)));
+  // Open the first file shown, since the list order may differ from the
+  // order of [copies].
+  final Finder firstFile = copies
+      .map((file) => find.text(p.basename(file.path)).hitTestable())
+      .firstWhere((finder) => finder.evaluate().isNotEmpty);
+  await tester.tap(firstFile.first);
+  // Opening reads the file and its siblings first, which takes a while for
+  // large datasets, so wait until the file list is covered.
+  for (int i = 0; i < 100; i++) {
+    await _settle(tester);
+    if (find.byType(ViewerFileList).hitTestable().evaluate().isEmpty) break;
+  }
   await _settle(tester);
-  await _settle(tester);
+  if (_site.isNotEmpty) {
+    final Finder goToSite = find.ancestor(
+      of: find.text('Go to site'),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(goToSite, _site);
+    await tester.testTextInput.receiveAction(TextInputAction.go);
+    await _settle(tester);
+    // Leave the field so its cursor is not in the capture.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await _settle(tester);
+  }
+  if (_hideChunks) {
+    await tester.tap(find.byTooltip('Hide chunk list'));
+    await _settle(tester);
+  }
   await _capture(tester, boundaryKey, target('viewer-alignment'));
+}
+
+/// Opens [report] in the file viewer and captures it to [target].
+Future<void> _captureReport(
+  WidgetTester tester,
+  GlobalKey boundaryKey,
+  File report,
+  File target,
+) async {
+  final NavigatorState navigator = tester.state<NavigatorState>(
+    find.byType(Navigator).first,
+  );
+  navigator.popUntil((route) => route.isFirst);
+  await _settle(tester);
+  // The route stays open until the capture, so the future is not awaited.
+  openFileView(navigator.context, report);
+  for (int i = 0; i < 50; i++) {
+    await _settle(tester);
+    if (find.text(p.basename(report.path)).evaluate().isNotEmpty) break;
+  }
+  await _settle(tester);
+  if (_reportTab.isNotEmpty) {
+    await tester.tap(find.text(_reportTab).first);
+    await _settle(tester);
+    await _settle(tester);
+  }
+  await _capture(tester, boundaryKey, target);
 }
 
 const Map<_Input, XTypeGroup> _typeGroups = {
@@ -341,6 +431,27 @@ Future<void> _capture(
     await file.writeAsBytes(data!.buffer.asUint8List());
     image.dispose();
   });
+}
+
+/// Copies the alignments in [source] into a folder of the same name in [dir],
+/// sorted by name.
+Future<List<XFile>> _copyAlignments(Directory source, Directory dir) async {
+  final Directory folder = Directory(p.join(dir.path, p.basename(source.path)))
+    ..createSync();
+  final List<File> files = source
+      .listSync()
+      .whereType<File>()
+      .where(
+        (file) => sequenceTypeGroup.extensions!.contains(
+          p.extension(file.path).replaceFirst('.', ''),
+        ),
+      )
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+  return [
+    for (final File file in files)
+      XFile(file.copySync(p.join(folder.path, p.basename(file.path))).path),
+  ];
 }
 
 /// Writes small example inputs with realistic names for each input type.
