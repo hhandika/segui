@@ -1,6 +1,7 @@
 name: segui
 base: core22 # the base snap is the execution environment for this snap
-version: "1.1.2"
+# The version comes from pubspec.yaml, set in the segui part below.
+adopt-info: segui
 summary: A phylogenomic data manipulation and summary statistic tool # 79 char long summary
 description: |
   SEGUI (SEGUL GUI) is an ultrafast, memory efficient, 
@@ -40,6 +41,10 @@ parts:
       - curl
     plugin: flutter
     flutter-target: lib/main.dart
+    # Use the pubspec version without the build number, e.g. 1.2.0.
+    override-pull: |
+      craftctl default
+      craftctl set version="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)"
     # The native assets build hook needs rustup to build the Rust crate.
     override-build: |
       curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal

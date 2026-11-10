@@ -13,6 +13,9 @@
 //
 // Pass --dart-define=SCREENSHOT_ONLY=<prefix> to capture only the screens
 // whose names start with it, such as `viewer`.
+//
+// Pass --dart-define=SCREENSHOT_ALIGNMENTS=<folder> to show real alignments
+// instead of generated ones. The folder is copied, not changed.
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -37,6 +40,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String _outputDir = String.fromEnvironment('SCREENSHOT_DIR');
 const String _only = String.fromEnvironment('SCREENSHOT_ONLY');
+const String _alignmentDir = String.fromEnvironment('SCREENSHOT_ALIGNMENTS');
 
 /// Whether to capture the screen called [name].
 bool _wants(String name) => name.startsWith(_only);
@@ -195,6 +199,14 @@ void main() {
     await RustLib.init();
     dataDir = await Directory.systemTemp.createTemp('segui-screenshots-');
     inputs = await _writeInputs(dataDir);
+    if (_alignmentDir.isNotEmpty) {
+      final List<XFile> alignments = await _copyAlignments(
+        Directory(_alignmentDir),
+        dataDir,
+      );
+      inputs[_Input.alignments] = alignments;
+      inputs[_Input.sequences] = alignments;
+    }
   });
 
   tearDownAll(() async {
@@ -283,22 +295,38 @@ Future<void> _captureViewer(
   List<File> files,
   File Function(String name) target,
 ) async {
-  // A readable folder name, since the files list shows it.
-  final Directory folder = Directory(
-    p.join(p.dirname(files.first.path), 'uce-loci'),
-  )..createSync();
-  final List<File> copies = [
-    for (final File file in files)
-      file.copySync(p.join(folder.path, p.basename(file.path))),
-  ];
+  // A readable folder name, since the files list shows it. Real alignments
+  // are already in a folder named after their dataset.
+  final List<File> copies;
+  if (_alignmentDir.isNotEmpty) {
+    copies = files;
+  } else {
+    final Directory folder = Directory(
+      p.join(p.dirname(files.first.path), 'uce-loci'),
+    )..createSync();
+    copies = [
+      for (final File file in files)
+        file.copySync(p.join(folder.path, p.basename(file.path))),
+    ];
+  }
   container.read(viewerFilesProvider.notifier).addFiles(copies);
   tester
       .state<NavigatorState>(find.byType(Navigator).first)
       .push(MaterialPageRoute(builder: (context) => const ViewerPage()));
   await _settle(tester);
   await _capture(tester, boundaryKey, target('viewer'));
-  await tester.tap(find.text(p.basename(copies.first.path)));
-  await _settle(tester);
+  // Open the first file shown, since the list order may differ from the
+  // order of [copies].
+  final Finder firstFile = copies
+      .map((file) => find.text(p.basename(file.path)).hitTestable())
+      .firstWhere((finder) => finder.evaluate().isNotEmpty);
+  await tester.tap(firstFile.first);
+  // Opening reads the file and its siblings first, which takes a while for
+  // large datasets, so wait until the file list is covered.
+  for (int i = 0; i < 100; i++) {
+    await _settle(tester);
+    if (find.byType(ViewerFileList).hitTestable().evaluate().isEmpty) break;
+  }
   await _settle(tester);
   await _capture(tester, boundaryKey, target('viewer-alignment'));
 }
@@ -336,6 +364,27 @@ Future<void> _capture(
     await file.writeAsBytes(data!.buffer.asUint8List());
     image.dispose();
   });
+}
+
+/// Copies the alignments in [source] into a folder of the same name in [dir],
+/// sorted by name.
+Future<List<XFile>> _copyAlignments(Directory source, Directory dir) async {
+  final Directory folder = Directory(p.join(dir.path, p.basename(source.path)))
+    ..createSync();
+  final List<File> files = source
+      .listSync()
+      .whereType<File>()
+      .where(
+        (file) => sequenceTypeGroup.extensions!.contains(
+          p.extension(file.path).replaceFirst('.', ''),
+        ),
+      )
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
+  return [
+    for (final File file in files)
+      XFile(file.copySync(p.join(folder.path, p.basename(file.path))).path),
+  ];
 }
 
 /// Writes small example inputs with realistic names for each input type.
