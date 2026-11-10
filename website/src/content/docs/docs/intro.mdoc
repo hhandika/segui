@@ -25,40 +25,43 @@ mamba install segul
 See [installing with conda](/docs/installation/install_cli/#conda).
 {% /aside %}
 
-## What's new in v0.24.0
+## What's new
 
-This release updates the SEGUL CLI and Rust library.
+### SEGUI v1.2.0
 
-{% aside %}
-The GUI update will come later, with a redesigned interface.
-{% /aside %}
+The redesigned SEGUI app is available now on [Google Play](https://play.google.com/store/apps/details?id=com.hhandika.segui)
+and rolling out to the other stores. See [GUI installation](/docs/installation/install_gui/).
 
-- **One-line install:** set up the CLI on Linux and macOS with the
-  [installer script](/docs/installation/install_cli/#installer-script).
-- **Genetic distances:** [`segul align distance`](/docs/cli-usage/align-distance/) computes
-  pairwise p, JC69, K2P, TN93, and Poisson distances for each locus, with within- and between-group
-  means.
-- **MAF tools:** [`segul maf summary`](/docs/cli-usage/maf-summary/) reports per-file and
-  per-species statistics. [`segul maf convert`](/docs/cli-usage/maf-convert/) now clips and merges
-  blocks by BED locus, filters blocks, and reads `.maf.gz` and `.bed.gz` files directly.
-- **Transpose:** [`segul sequence transpose`](/docs/cli-usage/sequence-transpose/) turns locus
-  alignments into one file of loci per sample.
-- **Performance:** alignment conversion is about 5× faster, `segul contig summary` is 5–10× faster,
-  `segul align concat` is about 3× faster or more, and NEXUS parsing uses about a third of the
-  memory.
-- **Rust library:** the library moved to the new
-  [`segul-core`](/docs/api-usage/rust-api/) crate, with Cargo features for each data type. Replace
-  `segul::` with `segul_core::` in your imports.
-- **Bug fix:** `segul align concat` output now keeps the same taxon order between runs.
+- **New interface:** a searchable tool catalog, suggested workflows, and layouts for phones,
+  tablets, and large screens.
+- **New tools:** genetic distance, alignment trimming and unaligning, MAF conversion and summary,
+  and sequence addition, filtering, and transposition.
+- **Viewers and reports:** an alignment viewer for large alignments, and interactive reports for
+  read, alignment, and distance summaries.
+- **Inputs and outputs:** open folders and `.zip` or `.tar.gz` archives, and export output as
+  archives.
+
+See the [SEGUI release notes](https://github.com/hhandika/segui/blob/main/CHANGELOG.md#v120) for
+all changes.
+
+### SEGUL v0.25.0
+
+- **Terminal viewers:** [`segul view align`](/docs/cli-usage/view-align/) opens alignments in an
+  interactive viewer, and [`segul view summary`](/docs/cli-usage/view-summary/) browses summary
+  reports as tables and charts.
+- **Charts and reports:** summary commands write PNG or SVG charts with `--plot`.
+  `segul align summary` and `segul align distance` also write JSON reports.
+- **Read summary:** [`segul read summary`](/docs/cli-usage/read-summary/) adds read length N50,
+  Q20 and Q30 bases, and, in complete mode, duplication, overrepresented sequences, and adapter
+  content. It is about 12× faster in complete mode.
+- **FASTQ input:** quality offsets and gzip or BGZF compression are detected from the reads, and
+  PacBio HiFi quality scores are supported.
 
 {% aside type="caution" %}
-This release changes the MAF commands. `segul maf maf` is now `segul maf convert`, `--bed <FILE>`
-replaces `--reference <FILE> --from-bed`, and `-F/--output-format` replaces `-t`. Sample names now
-drop the assembly suffix, so use `--full-source-name` to keep full names.
+This release changes some `segul-core` read summary APIs. See the
+[full release notes](https://github.com/hhandika/segul/blob/main/CHANGELOG.md#v0250) for all
+changes.
 {% /aside %}
-
-See the [full release notes](https://github.com/hhandika/segul/blob/main/CHANGELOG.md#v0240) for
-all changes.
 
 ## Platform support
 

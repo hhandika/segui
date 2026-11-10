@@ -320,24 +320,26 @@ export const workflows = [
   { title: "Reformat for another program", steps: ["Convert", "Partition"] },
 ];
 
-/// Latest release news on the landing page. Benchmarks are mean concatenation
-/// times in seconds, from `bench/results/latest.json` in the SEGUL repository.
+/// Latest release news on the landing page. Benchmarks are mean times in
+/// seconds, from `bench/results/2026-11-10-linux-x86_64.json` in the SEGUL
+/// repository.
 export const latestRelease = {
-  version: "v0.24.0",
-  previousVersion: "v0.23.2",
+  version: "v0.25.0",
+  previousVersion: "v0.24.0",
   summary:
-    "A faster CLI and new features. The GUI update will come later, with a redesigned interface.",
-  href: "/docs/intro/#whats-new-in-v0240",
+    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play and rolling out to other stores.",
+  href: "/docs/intro/#segul-v0250",
   highlights: [
-    { title: "Genetic distances", href: "/docs/cli-usage/align-distance/" },
-    { title: "MAF summary and conversion", href: "/docs/cli-usage/maf-summary/" },
-    { title: "One-line CLI install", href: "/docs/installation/install_cli/#installer-script" },
+    { title: "Terminal alignment viewer", href: "/docs/cli-usage/view-align/" },
+    { title: "Summary charts and reports", href: "/docs/cli-usage/view-summary/" },
+    { title: "Richer read summary", href: "/docs/cli-usage/read-summary/" },
+    { title: "SEGUI v1.2.0", href: "/docs/installation/install_gui/" },
   ],
   benchmarks: [
-    { dataset: "DNA · Oliveros et al. 2019 · 4,060 loci, 522.5 Mbases", before: 2.68, after: 0.63 },
-    { dataset: "Protein · Shen et al. 2018 · 2,408 loci, 398.8 Mbases", before: 4.14, after: 0.5 },
+    { dataset: "Read summary · 3 paired samples, 966 MB gzip FASTQ", before: 13.94, after: 1.17 },
   ],
-  benchmarkNote: "Alignment concatenation. Mean of five runs on Linux with an AMD Ryzen 9 5900X.",
+  benchmarkNote:
+    "Read summary in complete mode. Mean of five runs on Linux with an AMD Ryzen 9 5900X.",
 };
 
 export const citation = {
