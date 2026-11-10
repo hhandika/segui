@@ -24,6 +24,7 @@ import mafSummary from "../assets/icons/maf_summary_outlined.svg";
 import genomics from "../assets/icons/genomics_outlined.svg";
 import alignments from "../assets/icons/alignments_outlined.svg";
 import sequences from "../assets/icons/sequences_outlined.svg";
+import readQualityScreenshot from "../assets/news/segui-android-read-quality.webp";
 
 export const docsPath = "/docs/intro/";
 
@@ -320,12 +321,11 @@ export const workflows = [
   { title: "Reformat for another program", steps: ["Convert", "Partition"] },
 ];
 
-/// Latest release news on the landing page. Benchmarks are mean times in
-/// seconds, from `bench/results/2026-11-10-linux-x86_64.json` in the SEGUL
-/// repository.
+/// Latest release news on the landing page. The screenshot is SEGUI v1.2.0
+/// on an Android emulator, after a complete read summary of the raw reads in
+/// the segul2-bench repository.
 export const latestRelease = {
   version: "v0.25.0",
-  previousVersion: "v0.24.0",
   summary:
     "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play and rolling out to other stores.",
   href: "/docs/intro/#segul-v0250",
@@ -335,11 +335,11 @@ export const latestRelease = {
     { title: "Richer read summary", href: "/docs/cli-usage/read-summary/" },
     { title: "SEGUI v1.2.0", href: "/docs/installation/install_gui/" },
   ],
-  benchmarks: [
-    { dataset: "Read summary · 3 paired samples, 966 MB gzip FASTQ", before: 13.94, after: 1.17 },
-  ],
-  benchmarkNote:
-    "Read summary in complete mode. Mean of five runs on Linux with an AMD Ryzen 9 5900X.",
+  screenshot: {
+    src: readQualityScreenshot,
+    alt: "SEGUI on Android showing per-base read quality for a Bunomys sample",
+    caption: "Read quality in SEGUI v1.2.0 on Android, from 921 MB of raw reads.",
+  },
 };
 
 export const citation = {

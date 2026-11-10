@@ -1,23 +1,9 @@
 ---
-/// Latest release news: a short summary beside a before and after speed chart.
-/// All bars share one seconds scale, so their lengths compare across tasks.
+/// Latest release news: a short summary beside a screenshot of the release.
+import { Image } from "astro:assets";
 import { latestRelease } from "../../data/site";
 
-const {
-  version,
-  previousVersion,
-  summary,
-  href,
-  highlights,
-  benchmarks,
-  benchmarkNote,
-} = latestRelease;
-const longest = Math.max(...benchmarks.map((item) => item.before));
-const width = (seconds: number) => `${(seconds / longest) * 100}%`;
-const series = [
-  { key: "before", label: previousVersion, bar: "bg-pollen-500 dark:bg-pollen-700" },
-  { key: "after", label: version, bar: "bg-leaf-700 dark:bg-leaf-400" },
-] as const;
+const { version, summary, href, highlights, screenshot } = latestRelease;
 ---
 
 <section class="px-6 pt-16 sm:pt-20">
@@ -58,58 +44,35 @@ const series = [
       </a>
     </div>
 
-    <figure>
-      <figcaption class="flex flex-wrap items-center justify-between gap-2">
-        <span class="text-sm font-semibold text-leaf-950 dark:text-leaf-50">
-          Execution time (s)
-        </span>
-        <span
-          class="flex gap-4 text-xs text-leaf-900/70 dark:text-leaf-100/65"
-          aria-hidden="true"
-        >
-          {
-            series.map((item) => (
-              <span class="flex items-center gap-1.5">
-                <span class={`h-2.5 w-2.5 rounded-sm ${item.bar}`} />
-                {item.label}
-              </span>
-            ))
-          }
-        </span>
+    <figure class="mx-auto w-full max-w-xs">
+      <!-- Border and shadow match AppMockup in the bento grid, with Android
+           status and gesture bars instead of window controls. The bars use the
+           app's background color so they blend into the screenshot. -->
+      <div
+        class="overflow-hidden rounded-2xl border border-leaf-200/80 bg-[#ddeadd] shadow-2xl shadow-leaf-900/15 dark:border-leaf-800 dark:shadow-black/40"
+      >
+        <div class="flex items-center justify-between px-4 pt-2 pb-1 text-[11px] font-medium text-leaf-950/80" aria-hidden="true">
+          <span>10:34</span>
+          <span class="flex items-center gap-1">
+            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20 1 8a16 16 0 0 1 22 0z"></path></svg>
+            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22 22 2v20z"></path></svg>
+            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M9 2h6v2h2v18H7V4h2z"></path></svg>
+          </span>
+        </div>
+        <Image
+          src={screenshot.src}
+          alt={screenshot.alt}
+          widths={[320, 640]}
+          sizes="(min-width: 1024px) 320px, 80vw"
+          class="block w-full"
+        />
+        <div class="flex justify-center py-2" aria-hidden="true">
+          <span class="h-1 w-24 rounded-full bg-leaf-950/70"></span>
+        </div>
+      </div>
+      <figcaption class="mt-4 text-center text-xs text-leaf-900/65 dark:text-leaf-100/60">
+        {screenshot.caption}
       </figcaption>
-      <dl class="mt-4 space-y-4">
-        {
-          benchmarks.map((item) => (
-            <div>
-              <dt class="text-sm text-leaf-900/80 dark:text-leaf-100/75">
-                {item.dataset}
-              </dt>
-              <dd class="mt-1.5 space-y-0.5">
-                {series.map((run) => (
-                  <div
-                    class="flex items-center gap-2"
-                    title={`${run.label}: ${item[run.key].toFixed(2)} s`}
-                  >
-                    <span class="min-w-0 flex-1">
-                      <span
-                        class={`block h-2.5 rounded-e ${run.bar}`}
-                        style={{ width: width(item[run.key]) }}
-                      />
-                    </span>
-                    <span class="w-12 shrink-0 text-right font-mono text-xs text-leaf-900/75 dark:text-leaf-100/70">
-                      <span class="sr-only">{run.label}: </span>
-                      {item[run.key].toFixed(2)} s
-                    </span>
-                  </div>
-                ))}
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-      <p class="mt-4 text-xs text-leaf-900/65 dark:text-leaf-100/60">
-        {benchmarkNote}
-      </p>
     </figure>
   </div>
 </section>
