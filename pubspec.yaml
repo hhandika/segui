@@ -158,5 +158,4 @@ msix_config:
   logo_path: assets/launcher/icon.png
   # Keep the logo's built-in padding; msix trims borders by default.
   trim_logo: false
-  capabilities: internetClient,removableStorage
   store: true
