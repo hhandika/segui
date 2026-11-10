@@ -25,6 +25,10 @@ import genomics from "../assets/icons/genomics_outlined.svg";
 import alignments from "../assets/icons/alignments_outlined.svg";
 import sequences from "../assets/icons/sequences_outlined.svg";
 import readQualityScreenshot from "../assets/news/segui-android-read-quality.webp";
+import desktopViewerScreenshot from "../assets/showcase/segui-desktop-alignment.webp";
+import cliViewerScreenshot from "../assets/showcase/segul-cli-alignment.webp";
+import desktopSummaryScreenshot from "../assets/showcase/segui-desktop-summary.webp";
+import cliSummaryScreenshot from "../assets/showcase/segul-cli-summary.webp";
 
 export const docsPath = "/docs/intro/";
 
@@ -320,6 +324,58 @@ export const workflows = [
   { title: "Clean up sample names", steps: ["Extract IDs", "Rename"] },
   { title: "Reformat for another program", steps: ["Convert", "Partition"] },
 ];
+
+/// Viewer showcase on the landing page. All screenshots show the UCE loci of
+/// Esselstyn et al. 2021: SEGUI from `integration_test/screenshots_test.dart`
+/// on Linux, and `segul view` rendered from a virtual terminal. The alignment
+/// views show locus uce-10 at site 400.
+export const viewerShowcase = {
+  summary:
+    "Check thousands of loci and their summary statistics without leaving SEGUL. The app and the command line show the same views.",
+  views: [
+    {
+      title: "SEGUI alignment viewer.",
+      caption: "Point and click through loci.",
+      label: "SEGUI · Linux",
+      terminal: false,
+      src: desktopViewerScreenshot,
+      alt: "SEGUI alignment viewer on Linux showing 49 shrew taxa of a UCE locus with colored bases",
+      href: "/docs/gui-usage/viewer/",
+    },
+    {
+      title: "segul view align.",
+      caption: "The same viewer in the terminal.",
+      label: "$ segul view align --input uce-10.nex",
+      terminal: true,
+      src: cliViewerScreenshot,
+      alt: "segul view align in a terminal showing the same UCE locus with colored bases",
+      href: "/docs/cli-usage/view-align/",
+    },
+    {
+      title: "SEGUI summary report.",
+      caption: "Charts and tables of a summary run.",
+      label: "SEGUI · Linux",
+      terminal: false,
+      src: desktopSummaryScreenshot,
+      alt: "SEGUI alignment summary report showing a histogram of locus length across 4,040 loci",
+      href: "/docs/gui-usage/viewer/#summary-reports",
+    },
+    {
+      title: "segul view summary.",
+      caption: "The same report as terminal plots.",
+      label: "$ segul view summary --input alignment-report.json",
+      terminal: true,
+      src: cliSummaryScreenshot,
+      alt: "segul view summary in a terminal showing a histogram of sites per locus across 4,040 loci",
+      href: "/docs/cli-usage/view-summary/",
+    },
+  ],
+  source: {
+    description: "4,040 UCE loci from 102 shrew samples",
+    citation: "Esselstyn et al. 2021",
+    href: "https://doi.org/10.1206/0003-0090.454.1.1",
+  },
+};
 
 /// Latest release news on the landing page. The screenshot is SEGUI v1.2.0
 /// on an Android emulator, after a complete read summary of the raw reads in

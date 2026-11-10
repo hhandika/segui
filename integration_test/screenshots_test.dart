@@ -18,7 +18,14 @@
 // whose names start with it, such as `viewer`.
 //
 // Pass --dart-define=SCREENSHOT_ALIGNMENTS=<folder> to show real alignments
-// instead of generated ones. The folder is copied, not changed.
+// instead of generated ones. The folder is copied, not changed. Add
+// --dart-define=SCREENSHOT_SITE=<site> to scroll the alignment viewer there
+// with its Go to site field, and --dart-define=SCREENSHOT_HIDE_CHUNKS=true
+// to hide its chunk list.
+//
+// Pass --dart-define=SCREENSHOT_REPORT=<file> to also capture a summary
+// report, such as `alignment-report.json`, as `viewer-report`, and
+// --dart-define=SCREENSHOT_REPORT_TAB=<tab> to open a tab of it first.
 //
 // Pass --dart-define=SCREENSHOT_VIEWER_FILE=<name> to open that alignment
 // in the viewer instead of the first one listed, and
@@ -69,6 +76,10 @@ const String _readDir = String.fromEnvironment('SCREENSHOT_READS');
 const String _viewerFile = String.fromEnvironment('SCREENSHOT_VIEWER_FILE');
 const int _viewerSite = int.fromEnvironment('SCREENSHOT_VIEWER_SITE');
 const bool _landscape = bool.fromEnvironment('SCREENSHOT_LANDSCAPE');
+const String _site = String.fromEnvironment('SCREENSHOT_SITE');
+const bool _hideChunks = bool.fromEnvironment('SCREENSHOT_HIDE_CHUNKS');
+const String _report = String.fromEnvironment('SCREENSHOT_REPORT');
+const String _reportTab = String.fromEnvironment('SCREENSHOT_REPORT_TAB');
 
 /// Whether to capture the screen called [name].
 bool _wants(String name) => name.startsWith(_only);
@@ -340,9 +351,23 @@ void main() {
       );
     }
     if (_wants('viewer')) {
-      await _captureViewer(tester, container, boundaryKey, [
-        for (final XFile file in inputs[_Input.alignments]!) File(file.path),
-      ], (name) => File(p.join(output.path, '$name-$suffix.png')));
+      await _captureViewer(
+          tester,
+          container,
+          boundaryKey,
+          [
+            for (final XFile file in inputs[_Input.alignments]!)
+              File(file.path),
+          ],
+          (name) => File(p.join(output.path, '$name-$suffix.png')));
+    }
+    if (_report.isNotEmpty && _wants('viewer-report')) {
+      await _captureReport(
+        tester,
+        boundaryKey,
+        File(_report),
+        File(p.join(output.path, 'viewer-report-$suffix.png')),
+      );
     }
     debugPrint('Screenshots saved in ${output.path}');
   });
@@ -362,16 +387,15 @@ Future<File> _summarizeReads(List<XFile> reads, Directory dir) async {
 
 /// Summarizes [alignments] and returns the alignment report.
 Future<File> _summarizeAlignments(List<XFile> alignments, Directory dir) async {
-  final String report =
-      await AlignmentServices(
-        inputFiles: [for (final XFile file in alignments) file.path],
-        inputFmt: 'auto',
-        datatype: 'dna',
-        outputDir: p.join(dir.path, 'alignment-summary'),
-      ).summarizeAlignment(
-        outputPrefix: _alignmentDir.isEmpty ? 'uce' : p.basename(_alignmentDir),
-        interval: BigInt.from(5),
-      );
+  final String report = await AlignmentServices(
+    inputFiles: [for (final XFile file in alignments) file.path],
+    inputFmt: 'auto',
+    datatype: 'dna',
+    outputDir: p.join(dir.path, 'alignment-summary'),
+  ).summarizeAlignment(
+    outputPrefix: _alignmentDir.isEmpty ? 'uce' : p.basename(_alignmentDir),
+    interval: BigInt.from(5),
+  );
   return File(report);
 }
 
@@ -467,7 +491,50 @@ Future<void> _captureViewer(
     );
     await _settle(tester);
   }
+  if (_site.isNotEmpty) {
+    final Finder goToSite = find.ancestor(
+      of: find.text('Go to site'),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(goToSite, _site);
+    await tester.testTextInput.receiveAction(TextInputAction.go);
+    await _settle(tester);
+    // Leave the field so its cursor is not in the capture.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await _settle(tester);
+  }
+  if (_hideChunks) {
+    await tester.tap(find.byTooltip('Hide chunk list'));
+    await _settle(tester);
+  }
   await _capture(tester, boundaryKey, target('viewer-alignment'));
+}
+
+/// Opens [report] in the file viewer and captures it to [target].
+Future<void> _captureReport(
+  WidgetTester tester,
+  GlobalKey boundaryKey,
+  File report,
+  File target,
+) async {
+  final NavigatorState navigator = tester.state<NavigatorState>(
+    find.byType(Navigator).first,
+  );
+  navigator.popUntil((route) => route.isFirst);
+  await _settle(tester);
+  // The route stays open until the capture, so the future is not awaited.
+  openFileView(navigator.context, report);
+  for (int i = 0; i < 50; i++) {
+    await _settle(tester);
+    if (find.text(p.basename(report.path)).evaluate().isNotEmpty) break;
+  }
+  await _settle(tester);
+  if (_reportTab.isNotEmpty) {
+    await tester.tap(find.text(_reportTab).first);
+    await _settle(tester);
+    await _settle(tester);
+  }
+  await _capture(tester, boundaryKey, target);
 }
 
 const Map<_Input, XTypeGroup> _typeGroups = {
@@ -494,9 +561,8 @@ Future<void> _capture(
   File file,
 ) async {
   await tester.runAsync(() async {
-    final boundary =
-        boundaryKey.currentContext!.findRenderObject()!
-            as RenderRepaintBoundary;
+    final boundary = boundaryKey.currentContext!.findRenderObject()!
+        as RenderRepaintBoundary;
     final ui.Image image = await boundary.toImage(
       pixelRatio: tester.view.devicePixelRatio,
     );
@@ -508,17 +574,16 @@ Future<void> _capture(
 
 /// Files in [source] that match [group], sorted by name.
 List<XFile> _listFiles(Directory source, XTypeGroup group) {
-  final List<File> files =
-      source
-          .listSync()
-          .whereType<File>()
-          .where(
-            (file) => group.extensions!.any(
-              (ext) => p.basename(file.path).endsWith('.$ext'),
-            ),
-          )
-          .toList()
-        ..sort((a, b) => a.path.compareTo(b.path));
+  final List<File> files = source
+      .listSync()
+      .whereType<File>()
+      .where(
+        (file) => group.extensions!.any(
+          (ext) => p.basename(file.path).endsWith('.$ext'),
+        ),
+      )
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
   return [for (final File file in files) XFile(file.path)];
 }
 
@@ -527,17 +592,16 @@ List<XFile> _listFiles(Directory source, XTypeGroup group) {
 Future<List<XFile>> _copyAlignments(Directory source, Directory dir) async {
   final Directory folder = Directory(p.join(dir.path, p.basename(source.path)))
     ..createSync();
-  final List<File> files =
-      source
-          .listSync()
-          .whereType<File>()
-          .where(
-            (file) => sequenceTypeGroup.extensions!.contains(
-              p.extension(file.path).replaceFirst('.', ''),
-            ),
-          )
-          .toList()
-        ..sort((a, b) => a.path.compareTo(b.path));
+  final List<File> files = source
+      .listSync()
+      .whereType<File>()
+      .where(
+        (file) => sequenceTypeGroup.extensions!.contains(
+          p.extension(file.path).replaceFirst('.', ''),
+        ),
+      )
+      .toList()
+    ..sort((a, b) => a.path.compareTo(b.path));
   return [
     for (final File file in files)
       XFile(file.copySync(p.join(folder.path, p.basename(file.path))).path),
