@@ -8,7 +8,7 @@
 
 ### Bug Fixes
 
-- Fix bug where OS navigation buttons were covering the viewers.
+- Fix a bug where OS navigation buttons were covering the viewers.
 
 ## v1.2.0
 
