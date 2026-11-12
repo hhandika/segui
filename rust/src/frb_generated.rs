@@ -41,7 +41,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 442698181;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1480457887;
 
 // Section: executor
 
@@ -1671,6 +1671,65 @@ fn wire__crate__api__archive__extract_services_extract_impl(
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || {
                         let output_ok = crate::api::archive::ExtractServices::extract(&api_that)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__archive__extract_services_extract_with_monitor_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "extract_services_extract_with_monitor",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <crate::api::archive::ExtractServices>::sse_decode(&mut deserializer);
+            let api_monitor = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RunMonitor>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let mut api_monitor_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_monitor,
+                                    0,
+                                    false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_monitor_guard = Some(api_monitor.lockable_decode_sync_ref())
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_monitor_guard = api_monitor_guard.unwrap();
+                        let output_ok = crate::api::archive::ExtractServices::extract_with_monitor(
+                            &api_that,
+                            &*api_monitor_guard,
+                        )?;
                         std::result::Result::Ok(output_ok)
                     })(),
                 )
@@ -5212,11 +5271,15 @@ impl SseDecode for crate::api::progress::TaskProgress {
         let mut var_total = <u32>::sse_decode(deserializer);
         let mut var_currentFile = <Option<String>>::sse_decode(deserializer);
         let mut var_stage = <Option<String>>::sse_decode(deserializer);
+        let mut var_bytesDone = <u64>::sse_decode(deserializer);
+        let mut var_bytesTotal = <u64>::sse_decode(deserializer);
         return crate::api::progress::TaskProgress {
             done: var_done,
             total: var_total,
             current_file: var_currentFile,
             stage: var_stage,
+            bytes_done: var_bytesDone,
+            bytes_total: var_bytesTotal,
         };
     }
 }
@@ -5270,6 +5333,13 @@ impl SseDecode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u32::<NativeEndian>().unwrap()
+    }
+}
+
+impl SseDecode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u64::<NativeEndian>().unwrap()
     }
 }
 
@@ -5473,99 +5543,105 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__file_sort__file_list_services_sizes_impl(
+        42 => wire__crate__api__archive__extract_services_extract_with_monitor_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        45 => wire__crate__api__sequence__filtering_services_filter_impl(
+        45 => wire__crate__api__file_sort__file_list_services_sizes_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        46 => wire__crate__api__sequence__filtering_services_new_impl(
+        46 => wire__crate__api__sequence__filtering_services_filter_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        47 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
+        47 => wire__crate__api__sequence__filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__sequence__id_extraction_services_new_impl(
+        48 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__maf__maf_conversion_services_convert_impl(
+        50 => wire__crate__api__sequence__id_extraction_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        52 => wire__crate__api__maf__maf_conversion_services_new_impl(
+        51 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__maf__maf_conversion_services_convert_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => {
+        53 => wire__crate__api__maf__maf_conversion_services_new_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        54 => {
             wire__crate__api__maf__maf_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        54 => wire__crate__api__maf__maf_summary_services_summarize_impl(
+        55 => wire__crate__api__maf__maf_summary_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__crate__api__sequence__partition_services_convert_partition_impl(
+        58 => wire__crate__api__sequence__partition_services_convert_partition_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        58 => wire__crate__api__sequence__partition_services_new_impl(
+        59 => wire__crate__api__sequence__partition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        59 => {
+        60 => {
             wire__crate__api__reads__raw_read_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        60 => wire__crate__api__reads__raw_read_services_summarize_impl(
+        61 => wire__crate__api__reads__raw_read_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        61 => wire__crate__api__reads__read_report_services_load_impl(
+        62 => wire__crate__api__reads__read_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        62 => wire__crate__api__reads__read_report_services_new_impl(
+        63 => wire__crate__api__reads__read_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        65 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+        66 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        66 => {
+        67 => {
             wire__crate__api__sequence__sequence_addition_services_add_sequence_to_single_file_impl(
                 port,
                 ptr,
@@ -5573,127 +5649,127 @@ fn pde_ffi_dispatcher_primary_impl(
                 data_len,
             )
         }
-        67 => wire__crate__api__sequence__sequence_addition_services_new_impl(
+        68 => wire__crate__api__sequence__sequence_addition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        68 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
+        69 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        69 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
+        70 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        70 => wire__crate__api__sequence__sequence_extraction_extract_impl(
+        71 => wire__crate__api__sequence__sequence_extraction_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        71 => wire__crate__api__sequence__sequence_extraction_new_impl(
+        72 => wire__crate__api__sequence__sequence_extraction_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        72 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
+        73 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        73 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
+        74 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        74 => {
+        75 => {
             wire__crate__api__sequence__sequence_removal_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        75 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
+        76 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        76 => wire__crate__api__sequence__sequence_renaming_new_impl(
+        77 => wire__crate__api__sequence__sequence_renaming_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        77 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
+        78 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        78 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
+        79 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        79 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
+        80 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        80 => {
+        81 => {
             wire__crate__api__sequence__show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len)
         }
-        82 => wire__crate__api__sequence__split_alignment_services_new_impl(
+        83 => wire__crate__api__sequence__split_alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        83 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
+        84 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        85 => wire__crate__api__progress__task_progress_default_impl(
+        86 => wire__crate__api__progress__task_progress_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        86 => wire__crate__api__sequence__translation_services_new_impl(
+        87 => wire__crate__api__sequence__translation_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        87 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
+        88 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        88 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
+        89 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        89 => wire__crate__api__sequence__unalignment_services_new_impl(
+        90 => wire__crate__api__sequence__unalignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        90 => wire__crate__api__sequence__unalignment_services_unalign_impl(
+        91 => wire__crate__api__sequence__unalignment_services_unalign_impl(
             port,
             ptr,
             rust_vec_len,
@@ -5731,16 +5807,16 @@ fn pde_ffi_dispatcher_sync_impl(
         31 => wire__crate__api__colors__contrast_ratio_impl(ptr, rust_vec_len, data_len),
         36 => wire__crate__api__colors__cvd_options_impl(ptr, rust_vec_len, data_len),
         39 => wire__crate__api__colors__ensure_contrast_impl(ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
-        43 => {
+        43 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
+        44 => {
             wire__crate__api__file_sort__file_list_services_order_impl(ptr, rust_vec_len, data_len)
         }
-        55 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
-        56 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
-        63 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
-        64 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
-        81 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
-        84 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
+        56 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
+        57 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
+        64 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
+        65 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
+        82 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
+        85 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -7419,6 +7495,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::progress::TaskProgress {
             self.total.into_into_dart().into_dart(),
             self.current_file.into_into_dart().into_dart(),
             self.stage.into_into_dart().into_dart(),
+            self.bytes_done.into_into_dart().into_dart(),
+            self.bytes_total.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -8766,6 +8844,8 @@ impl SseEncode for crate::api::progress::TaskProgress {
         <u32>::sse_encode(self.total, serializer);
         <Option<String>>::sse_encode(self.current_file, serializer);
         <Option<String>>::sse_encode(self.stage, serializer);
+        <u64>::sse_encode(self.bytes_done, serializer);
+        <u64>::sse_encode(self.bytes_total, serializer);
     }
 }
 
@@ -8808,6 +8888,13 @@ impl SseEncode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
+    }
+}
+
+impl SseEncode for u64 {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u64::<NativeEndian>(self).unwrap();
     }
 }
 

@@ -1,9 +1,14 @@
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use segul_core::helper::progress::ProgressReporter;
 use segul_core::writer::archive::Archive;
 use std::fs::File;
 use std::io::{self, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
+
+use crate::api::progress::RunMonitor;
 
 pub struct ArchiveServices {
     pub output_path: String,
@@ -142,6 +147,18 @@ pub struct ExtractServices {
 impl ExtractServices {
     /// Extracts the archive and returns the number of files written.
     pub fn extract(&self) -> anyhow::Result<u32> {
+        self.extract_inner(None)
+    }
+
+    /// Extracts the archive like [`ExtractServices::extract`], reporting progress to `monitor`
+    /// and stopping between entries when it is cancelled. Zip archives report files and
+    /// uncompressed bytes; tar.gz archives report compressed bytes read, since their file count
+    /// is unknown until the end.
+    pub fn extract_with_monitor(&self, monitor: &RunMonitor) -> anyhow::Result<u32> {
+        self.extract_inner(Some(monitor))
+    }
+
+    fn extract_inner(&self, monitor: Option<&RunMonitor>) -> anyhow::Result<u32> {
         let input = Path::new(&self.input_path);
         let output_dir = Path::new(&self.output_dir);
         std::fs::create_dir_all(output_dir)?;
@@ -150,9 +167,9 @@ impl ExtractServices {
             .map(|name| name.to_string_lossy().to_lowercase())
             .unwrap_or_default();
         if name.ends_with(".zip") {
-            Self::extract_zip(input, output_dir)
+            Self::extract_zip(input, output_dir, monitor)
         } else if name.ends_with(".tar.gz") || name.ends_with(".tgz") {
-            Self::extract_tar_gz(input, output_dir)
+            Self::extract_tar_gz(input, output_dir, monitor)
         } else {
             anyhow::bail!(
                 "Unsupported archive: {}. Use .zip or .tar.gz",
@@ -161,10 +178,24 @@ impl ExtractServices {
         }
     }
 
-    fn extract_zip(input: &Path, output_dir: &Path) -> anyhow::Result<u32> {
+    fn extract_zip(
+        input: &Path,
+        output_dir: &Path,
+        monitor: Option<&RunMonitor>,
+    ) -> anyhow::Result<u32> {
         let mut archive = zip::ZipArchive::new(BufReader::new(File::open(input)?))?;
+        let (files, bytes_total) = match monitor {
+            Some(_) => Self::zip_totals(&mut archive, output_dir)?,
+            None => (0, 0),
+        };
+        if let Some(monitor) = monitor {
+            monitor.on_start(files);
+            monitor.report_bytes(0, bytes_total);
+        }
         let mut count = 0;
+        let mut bytes_done = 0;
         for index in 0..archive.len() {
+            Self::check_cancelled(monitor)?;
             let mut entry = archive.by_index(index)?;
             if entry.is_dir() {
                 continue;
@@ -172,30 +203,96 @@ impl ExtractServices {
             let Some(relative) = entry.enclosed_name().map(Path::to_path_buf) else {
                 continue;
             };
-            if let Some(target) = Self::target_path(output_dir, &relative) {
-                Self::write_entry(&mut entry, &target)?;
-                count += 1;
+            let Some(target) = Self::target_path(output_dir, &relative) else {
+                continue;
+            };
+            if let Some(monitor) = monitor {
+                monitor.on_file_started(&relative);
+            }
+            let entry_start = bytes_done;
+            Self::write_entry(&mut entry, &target, |written| {
+                if let Some(monitor) = monitor {
+                    monitor.report_bytes(entry_start + written, bytes_total);
+                }
+            })?;
+            count += 1;
+            bytes_done += entry.size();
+            if let Some(monitor) = monitor {
+                monitor.on_file_finished(&relative);
+                monitor.report_bytes(bytes_done, bytes_total);
             }
         }
         Ok(count)
     }
 
-    fn extract_tar_gz(input: &Path, output_dir: &Path) -> anyhow::Result<u32> {
-        let decoder = flate2::read::GzDecoder::new(BufReader::new(File::open(input)?));
+    fn extract_tar_gz(
+        input: &Path,
+        output_dir: &Path,
+        monitor: Option<&RunMonitor>,
+    ) -> anyhow::Result<u32> {
+        let file = File::open(input)?;
+        let total = file.metadata()?.len();
+        let reader = CountingReader::new(file);
+        let read = reader.counter();
+        let decoder = flate2::read::GzDecoder::new(BufReader::new(reader));
         let mut archive = tar::Archive::new(decoder);
+        if let Some(monitor) = monitor {
+            monitor.report_bytes(0, total);
+        }
         let mut count = 0;
         for entry in archive.entries()? {
+            Self::check_cancelled(monitor)?;
             let mut entry = entry?;
             if !entry.header().entry_type().is_file() {
                 continue;
             }
             let relative = entry.path()?.into_owned();
             if let Some(target) = Self::target_path(output_dir, &relative) {
-                Self::write_entry(&mut entry, &target)?;
+                Self::write_entry(&mut entry, &target, |_| {
+                    if let Some(monitor) = monitor {
+                        monitor.report_bytes(read.load(Ordering::Relaxed).min(total), total);
+                    }
+                })?;
                 count += 1;
             }
+            if let Some(monitor) = monitor {
+                monitor.report_bytes(read.load(Ordering::Relaxed).min(total), total);
+            }
+        }
+        if let Some(monitor) = monitor {
+            monitor.report_bytes(total, total);
         }
         Ok(count)
+    }
+
+    /// The number of files and uncompressed bytes a zip archive will extract into `output_dir`.
+    fn zip_totals<R: io::Read + io::Seek>(
+        archive: &mut zip::ZipArchive<R>,
+        output_dir: &Path,
+    ) -> anyhow::Result<(usize, u64)> {
+        let mut files = 0;
+        let mut bytes = 0;
+        for index in 0..archive.len() {
+            let entry = archive.by_index_raw(index)?;
+            if entry.is_dir() {
+                continue;
+            }
+            let kept = entry
+                .enclosed_name()
+                .is_some_and(|relative| Self::target_path(output_dir, relative).is_some());
+            if kept {
+                files += 1;
+                bytes += entry.size();
+            }
+        }
+        Ok((files, bytes))
+    }
+
+    fn check_cancelled(monitor: Option<&RunMonitor>) -> anyhow::Result<()> {
+        if monitor.is_some_and(|monitor| monitor.is_cancelled()) {
+            anyhow::bail!("Extraction cancelled");
+        }
+        Ok(())
     }
 
     /// Joins a relative entry path to the output folder. Returns `None` for
@@ -221,14 +318,67 @@ impl ExtractServices {
         Some(target)
     }
 
-    fn write_entry(reader: &mut impl io::Read, target: &Path) -> anyhow::Result<()> {
+    /// Writes one entry to `target`, calling `on_progress` with the bytes written so far
+    /// after every [`PROGRESS_STEP`] bytes, so a large entry still moves the progress bar.
+    fn write_entry(
+        reader: &mut impl io::Read,
+        target: &Path,
+        mut on_progress: impl FnMut(u64),
+    ) -> anyhow::Result<()> {
         if let Some(parent) = target.parent() {
             std::fs::create_dir_all(parent)?;
         }
         let mut writer = BufWriter::new(File::create(target)?);
-        io::copy(reader, &mut writer)?;
+        let mut buffer = vec![0; COPY_BUFFER];
+        let mut written = 0;
+        let mut next_report = PROGRESS_STEP;
+        loop {
+            let read = reader.read(&mut buffer)?;
+            if read == 0 {
+                break;
+            }
+            writer.write_all(&buffer[..read])?;
+            written += read as u64;
+            if written >= next_report {
+                on_progress(written);
+                next_report = written + PROGRESS_STEP;
+            }
+        }
         writer.flush()?;
         Ok(())
+    }
+}
+
+/// Buffer size for writing extracted entries.
+const COPY_BUFFER: usize = 64 * 1024;
+
+/// Bytes written between progress reports within one entry.
+const PROGRESS_STEP: u64 = 4 * 1024 * 1024;
+
+/// Counts the bytes read from the inner reader, so progress can follow a compressed stream.
+struct CountingReader<R> {
+    inner: R,
+    count: Arc<AtomicU64>,
+}
+
+impl<R> CountingReader<R> {
+    fn new(inner: R) -> Self {
+        Self {
+            inner,
+            count: Arc::new(AtomicU64::new(0)),
+        }
+    }
+
+    fn counter(&self) -> Arc<AtomicU64> {
+        Arc::clone(&self.count)
+    }
+}
+
+impl<R: io::Read> io::Read for CountingReader<R> {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        let read = self.inner.read(buf)?;
+        self.count.fetch_add(read as u64, Ordering::Relaxed);
+        Ok(read)
     }
 }
 
@@ -445,6 +595,68 @@ mod tests {
             vec![("keep/a.nex".to_string(), "data".to_string())]
         );
         assert!(!dir.path.join("escape.nex").exists());
+    }
+
+    fn export_archive(dir: &TempDir, archive_name: &str, format: ExportFormat) -> PathBuf {
+        let archive = dir.path.join(archive_name);
+        ExportServices::new(
+            archive.to_string_lossy().into_owned(),
+            input_files(dir),
+            format,
+        )
+        .write()
+        .expect("Failed exporting archive");
+        archive
+    }
+
+    fn extract_monitored(dir: &TempDir, archive: &Path, monitor: &RunMonitor) -> u32 {
+        ExtractServices {
+            input_path: archive.to_string_lossy().into_owned(),
+            output_dir: dir.path.join("extracted").to_string_lossy().into_owned(),
+        }
+        .extract_with_monitor(monitor)
+        .expect("Failed extracting archive")
+    }
+
+    #[test]
+    fn test_extract_zip_reports_files_and_bytes() {
+        let dir = TempDir::new("extract-zip-progress");
+        let archive = export_archive(&dir, "data.zip", ExportFormat::Zip);
+        let monitor = RunMonitor::new();
+        assert_eq!(extract_monitored(&dir, &archive, &monitor), 3);
+        let progress = monitor.snapshot();
+        assert_eq!(progress.done, 3);
+        assert_eq!(progress.total, 3);
+        // "alpha" + "beta" + "gamma"
+        assert_eq!(progress.bytes_total, 14);
+        assert_eq!(progress.bytes_done, 14);
+    }
+
+    #[test]
+    fn test_extract_tar_gz_reports_compressed_bytes() {
+        let dir = TempDir::new("extract-tar-gz-progress");
+        let archive = export_archive(&dir, "data.tar.gz", ExportFormat::TarGz);
+        let size = std::fs::metadata(&archive).expect("Archive exists").len();
+        let monitor = RunMonitor::new();
+        assert_eq!(extract_monitored(&dir, &archive, &monitor), 3);
+        let progress = monitor.snapshot();
+        assert_eq!(progress.bytes_total, size);
+        assert_eq!(progress.bytes_done, size);
+    }
+
+    #[test]
+    fn test_extract_stops_when_cancelled() {
+        let dir = TempDir::new("extract-cancel");
+        let archive = export_archive(&dir, "data.zip", ExportFormat::Zip);
+        let monitor = RunMonitor::new();
+        monitor.cancel();
+        let result = ExtractServices {
+            input_path: archive.to_string_lossy().into_owned(),
+            output_dir: dir.path.join("extracted").to_string_lossy().into_owned(),
+        }
+        .extract_with_monitor(&monitor);
+        assert!(result.is_err());
+        assert!(read_tree(&dir.path.join("extracted")).is_empty());
     }
 
     #[test]

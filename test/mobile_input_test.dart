@@ -55,6 +55,103 @@ void main() {
       expect(const InputCopyProgress.preparing().fraction, isNull);
       expect(const InputCopyProgress(copied: 50, total: 200).fraction, 0.25);
     });
+
+    test('Copy progress follows bytes when sizes are known', () {
+      const progress = InputCopyProgress(
+        copied: 1,
+        total: 2,
+        bytesCopied: 900,
+        bytesTotal: 1000,
+      );
+      expect(progress.fraction, 0.9);
+      expect(progress.isCounting, isFalse);
+    });
+
+    test('Copy progress stays within the bar', () {
+      const progress = InputCopyProgress(
+        copied: 1,
+        total: 1,
+        bytesCopied: 1200,
+        bytesTotal: 1000,
+      );
+      expect(progress.fraction, 1.0);
+    });
+
+    test('Native events without sizes follow the file count', () {
+      final progress = InputCopyProgress.fromEvent({'copied': 3, 'total': 4});
+      expect(progress.bytesTotal, 0);
+      expect(progress.fraction, 0.75);
+      expect(progress.canCancel, isFalse);
+    });
+
+    test('Native events read sizes and keep the stop action', () {
+      final progress = InputCopyProgress.fromEvent(
+        {'copied': 0, 'total': 1, 'bytesCopied': 25, 'bytesTotal': 100},
+        onCancel: () {},
+      );
+      expect(progress.fraction, 0.25);
+      expect(progress.canCancel, isTrue);
+    });
+
+    test('Copy labels count files or show the stage', () {
+      expect(inputCopyLabel(null), 'Preparing files…');
+      expect(
+        inputCopyLabel(const InputCopyProgress(copied: 12, total: 40)),
+        'Copying 12 of 40 files',
+      );
+      expect(
+        inputCopyLabel(const InputCopyProgress.preparing(
+          stage: InputCopyStage.extracting,
+        )),
+        'Extracting archive…',
+      );
+      expect(
+        inputCopyLabel(const InputCopyProgress(
+          copied: 0,
+          total: 0,
+          bytesCopied: 5,
+          bytesTotal: 10,
+          stage: InputCopyStage.extracting,
+        )),
+        'Extracting…',
+      );
+    });
+
+    testWidgets('Copy bar shows the share done and a stop button',
+        (tester) async {
+      bool stopped = false;
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: PickerCopyProgress(
+            progress: InputCopyProgress(
+              copied: 12,
+              total: 40,
+              onCancel: () => stopped = true,
+            ),
+          ),
+        ),
+      ));
+      expect(find.text('Copying 12 of 40 files'), findsOneWidget);
+      expect(find.text('30%'), findsOneWidget);
+      final bar = tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      );
+      expect(bar.value, closeTo(0.3, 1e-9));
+      await tester.tap(find.byTooltip('Stop'));
+      expect(stopped, isTrue);
+    });
+
+    testWidgets('Copy bar is indeterminate while counting', (tester) async {
+      await tester.pumpWidget(const MaterialApp(
+        home: Scaffold(body: PickerCopyProgress()),
+      ));
+      expect(find.text('Preparing files…'), findsOneWidget);
+      final bar = tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      );
+      expect(bar.value, isNull);
+      expect(find.byTooltip('Stop'), findsNothing);
+    });
   });
 
   group('Archive input', () {

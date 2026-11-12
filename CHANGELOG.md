@@ -2,6 +2,10 @@
 
 ## v1.2.1
 
+### Improvements
+
+- Add progress bar for file copying and archive extraction in the mobile app.
+
 ### Bug Fixes
 
 - Fix bug where OS navigation buttons were covering the viewers.

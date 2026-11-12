@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import io.flutter.plugin.common.BinaryMessenger
@@ -18,11 +19,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Folder picking and shared files for SEGUI on Android.
+ * Folder and file picking and shared files for SEGUI on Android.
  *
- * A folder from the system picker is a content URI, not a path, so the files that match the
- * requested extensions are copied into a folder Dart chooses, with progress events. Files shared
- * to SEGUI wait until Dart takes them, and are copied then.
+ * Picked folders and files are content URIs, not paths, so the files that match the requested
+ * extensions are copied into a folder Dart chooses, with progress events. Files shared to SEGUI
+ * wait until Dart takes them, and are copied then, also with progress events.
  */
 class MobileIoPlugin(
     private val activity: Activity,
@@ -35,7 +36,7 @@ class MobileIoPlugin(
     private val cancelled = AtomicBoolean(false)
     private val pendingShared = mutableListOf<Uri>()
     private var progressSink: EventChannel.EventSink? = null
-    private var folderRequest: FolderRequest? = null
+    private var pickRequest: PickRequest? = null
 
     init {
         channel.setMethodCallHandler(this)
@@ -44,7 +45,13 @@ class MobileIoPlugin(
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "pickFolder" -> pickFolder(call, result)
+            "pickFolder" -> startPick(call, result, multiple = false, folder = true)
+            "pickFiles" -> startPick(
+                call,
+                result,
+                multiple = call.argument<Boolean>("multiple") ?: true,
+                folder = false,
+            )
             "cancelCopy" -> {
                 cancelled.set(true)
                 result.success(null)
@@ -76,20 +83,29 @@ class MobileIoPlugin(
         channel.invokeMethod("sharedFilesAvailable", pendingShared.size)
     }
 
-    /** Handles the folder picker result. Returns false for other requests. */
+    /** Handles the folder and file picker results. Returns false for other requests. */
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode != PICK_FOLDER_REQUEST) {
+        if (requestCode != PICK_FOLDER_REQUEST && requestCode != PICK_FILES_REQUEST) {
             return false
         }
-        val request = folderRequest ?: return true
-        folderRequest = null
-        val treeUri = data?.data
-        if (resultCode != Activity.RESULT_OK || treeUri == null) {
+        val request = pickRequest ?: return true
+        pickRequest = null
+        if (resultCode != Activity.RESULT_OK || data == null) {
             request.result.success(null)
             return true
         }
         cancelled.set(false)
-        executor.execute { copyFolder(treeUri, request) }
+        if (requestCode == PICK_FOLDER_REQUEST) {
+            val treeUri = data.data
+            if (treeUri == null) {
+                request.result.success(null)
+                return true
+            }
+            executor.execute { copyFolder(treeUri, request) }
+        } else {
+            val uris = pickedUris(data)
+            executor.execute { copyPickedFiles(uris, request) }
+        }
         return true
     }
 
@@ -100,9 +116,14 @@ class MobileIoPlugin(
         executor.shutdown()
     }
 
-    private fun pickFolder(call: MethodCall, result: MethodChannel.Result) {
-        if (folderRequest != null) {
-            result.error("busy", "A folder picker is already open", null)
+    private fun startPick(
+        call: MethodCall,
+        result: MethodChannel.Result,
+        multiple: Boolean,
+        folder: Boolean,
+    ) {
+        if (pickRequest != null) {
+            result.error("busy", "A picker is already open", null)
             return
         }
         val destination = call.argument<String>("destination")
@@ -113,35 +134,74 @@ class MobileIoPlugin(
         val extensions = call.argument<List<String>>("extensions")
             ?.map { it.lowercase() }
             .orEmpty()
-        folderRequest = FolderRequest(File(destination), extensions, result)
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        pickRequest = PickRequest(File(destination), extensions, result)
+        val intent = if (folder) {
+            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        } else {
+            Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "*/*"
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple)
+            }
+        }
         @Suppress("DEPRECATION")
-        activity.startActivityForResult(intent, PICK_FOLDER_REQUEST)
+        activity.startActivityForResult(
+            intent,
+            if (folder) PICK_FOLDER_REQUEST else PICK_FILES_REQUEST,
+        )
     }
 
-    private fun copyFolder(treeUri: Uri, request: FolderRequest) {
+    private fun copyFolder(treeUri: Uri, request: PickRequest) {
         try {
             val rootId = DocumentsContract.getTreeDocumentId(treeUri)
             val rootName = displayName(
                 DocumentsContract.buildDocumentUriUsingTree(treeUri, rootId),
             ) ?: "folder"
+            sendCounting()
             val files = mutableListOf<TreeFile>()
             collectFiles(treeUri, rootId, emptyList(), request.extensions, files)
-            sendProgress(0, files.size)
+            val progress = CopyProgress(files.size, totalSize(files.map { it.size }))
             val output = File(request.destination, safeName(rootName))
-            for ((index, file) in files.withIndex()) {
-                if (cancelled.get()) {
+            for (file in files) {
+                val target = file.relativePath.fold(output) { dir, part -> File(dir, part) }
+                if (!copyUri(file.uri, target, progress)) {
                     break
                 }
-                val target = file.relativePath.fold(output) { dir, part -> File(dir, part) }
-                copyUri(file.uri, target)
-                sendProgress(index + 1, files.size)
+                progress.fileDone()
             }
             mainHandler.post { request.result.success(output.absolutePath) }
         } catch (e: OutOfMemoryError) {
             mainHandler.post { request.result.error("out_of_memory", e.message, null) }
         } catch (e: Exception) {
             mainHandler.post { request.result.error("folder_copy_failed", e.message, null) }
+        }
+    }
+
+    /** Copies the picked files that match the requested extensions into the destination. */
+    private fun copyPickedFiles(uris: List<Uri>, request: PickRequest) {
+        try {
+            sendCounting()
+            val usedNames = mutableSetOf<String>()
+            val documents = uris.map { uri -> openableInfo(uri) }
+            val matches = documents.filter { matchesExtension(it.name, request.extensions) }
+            val progress = CopyProgress(matches.size, totalSize(matches.map { it.size }))
+            val paths = mutableListOf<String>()
+            for (document in matches) {
+                val target = File(request.destination, uniqueName(safeName(document.name), usedNames))
+                if (!copyUri(document.uri, target, progress)) {
+                    break
+                }
+                progress.fileDone()
+                paths.add(target.absolutePath)
+            }
+            val skipped = documents.size - matches.size
+            mainHandler.post {
+                request.result.success(mapOf("paths" to paths, "skipped" to skipped))
+            }
+        } catch (e: OutOfMemoryError) {
+            mainHandler.post { request.result.error("out_of_memory", e.message, null) }
+        } catch (e: Exception) {
+            mainHandler.post { request.result.error("file_copy_failed", e.message, null) }
         }
     }
 
@@ -158,6 +218,7 @@ class MobileIoPlugin(
             DocumentsContract.Document.COLUMN_DOCUMENT_ID,
             DocumentsContract.Document.COLUMN_DISPLAY_NAME,
             DocumentsContract.Document.COLUMN_MIME_TYPE,
+            DocumentsContract.Document.COLUMN_SIZE,
         )
         activity.contentResolver.query(childrenUri, columns, null, null, null)?.use { cursor ->
             while (cursor.moveToNext()) {
@@ -174,7 +235,8 @@ class MobileIoPlugin(
                     collectFiles(treeUri, id, path, extensions, files)
                 } else if (matchesExtension(name, extensions)) {
                     val uri = DocumentsContract.buildDocumentUriUsingTree(treeUri, id)
-                    files.add(TreeFile(uri, path))
+                    val size = if (cursor.isNull(3)) UNKNOWN_SIZE else cursor.getLong(3)
+                    files.add(TreeFile(uri, path, size))
                 }
             }
         }
@@ -188,14 +250,22 @@ class MobileIoPlugin(
         }
         val uris = pendingShared.toList()
         pendingShared.clear()
+        cancelled.set(false)
         executor.execute {
             try {
+                sendCounting()
                 val usedNames = mutableSetOf<String>()
-                val paths = uris.map { uri ->
-                    val name = uniqueName(safeName(displayName(uri) ?: "shared"), usedNames)
-                    val target = File(destination, name)
-                    copyUri(uri, target)
-                    target.absolutePath
+                val documents = uris.map { uri -> openableInfo(uri, fallbackName = "shared") }
+                val progress = CopyProgress(documents.size, totalSize(documents.map { it.size }))
+                val paths = mutableListOf<String>()
+                for (document in documents) {
+                    val target =
+                        File(destination, uniqueName(safeName(document.name), usedNames))
+                    if (!copyUri(document.uri, target, progress)) {
+                        break
+                    }
+                    progress.fileDone()
+                    paths.add(target.absolutePath)
                 }
                 mainHandler.post { result.success(paths) }
             } catch (e: Exception) {
@@ -204,13 +274,66 @@ class MobileIoPlugin(
         }
     }
 
-    private fun copyUri(uri: Uri, target: File) {
+    /**
+     * Copies [uri] into [target] and counts the bytes in [progress]. Returns false when the copy
+     * was cancelled, after deleting the partial file.
+     */
+    private fun copyUri(uri: Uri, target: File, progress: CopyProgress): Boolean {
+        if (cancelled.get()) {
+            return false
+        }
         target.parentFile?.mkdirs()
         val input = activity.contentResolver.openInputStream(uri)
             ?: throw IllegalStateException("Cannot open $uri")
+        var completed = true
         input.use { source ->
-            target.outputStream().buffered().use { sink -> source.copyTo(sink, BUFFER_SIZE) }
+            target.outputStream().use { sink ->
+                val buffer = ByteArray(BUFFER_SIZE)
+                while (true) {
+                    if (cancelled.get()) {
+                        completed = false
+                        break
+                    }
+                    val read = source.read(buffer)
+                    if (read < 0) {
+                        break
+                    }
+                    sink.write(buffer, 0, read)
+                    progress.addBytes(read)
+                }
+            }
         }
+        if (!completed) {
+            target.delete()
+        }
+        return completed
+    }
+
+    /** The URIs of one or many picked documents. */
+    private fun pickedUris(data: Intent): List<Uri> {
+        val clip = data.clipData
+        if (clip != null) {
+            return (0 until clip.itemCount).mapNotNull { clip.getItemAt(it).uri }
+        }
+        return listOfNotNull(data.data)
+    }
+
+    /** The display name and size of a document, with a size of [UNKNOWN_SIZE] when unknown. */
+    private fun openableInfo(uri: Uri, fallbackName: String = "file"): Openable {
+        val columns = arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE)
+        val queried = activity.contentResolver.query(uri, columns, null, null, null)
+            ?.use { cursor: Cursor ->
+                if (!cursor.moveToFirst()) {
+                    return@use null
+                }
+                val name = if (cursor.isNull(0)) null else cursor.getString(0)
+                val size = if (cursor.isNull(1)) UNKNOWN_SIZE else cursor.getLong(1)
+                Pair(name, size)
+            }
+        val name = queried?.first
+            ?: uri.lastPathSegment?.substringAfterLast('/')
+            ?: fallbackName
+        return Openable(uri, name, queried?.second ?: UNKNOWN_SIZE)
     }
 
     private fun displayName(uri: Uri): String? {
@@ -220,13 +343,54 @@ class MobileIoPlugin(
             ?: uri.lastPathSegment?.substringAfterLast('/')
     }
 
-    private fun sendProgress(copied: Int, total: Int) {
-        // Send about 200 updates at most, plus the first and the last.
-        val step = maxOf(1, total / 200)
-        if (copied != 0 && copied != total && copied % step != 0) {
-            return
+    /** Tells Dart a copy started while the files are still being counted. */
+    private fun sendCounting() {
+        sendEvent(mapOf("copied" to 0, "total" to 0))
+    }
+
+    private fun sendEvent(event: Map<String, Any>) {
+        mainHandler.post { progressSink?.success(event) }
+    }
+
+    /**
+     * Counts copied files and bytes and sends progress events, at most one per
+     * [PROGRESS_INTERVAL_MS] except the first and the last. A total size of zero means some sizes
+     * are unknown, so Dart follows the file count.
+     */
+    private inner class CopyProgress(private val totalFiles: Int, private val totalBytes: Long) {
+        private var files = 0
+        private var bytes = 0L
+        private var lastSent = 0L
+
+        init {
+            send(force = true)
         }
-        mainHandler.post { progressSink?.success(mapOf("copied" to copied, "total" to total)) }
+
+        fun addBytes(count: Int) {
+            bytes += count
+            send(force = false)
+        }
+
+        fun fileDone() {
+            files++
+            send(force = files == totalFiles)
+        }
+
+        private fun send(force: Boolean) {
+            val now = SystemClock.uptimeMillis()
+            if (!force && now - lastSent < PROGRESS_INTERVAL_MS) {
+                return
+            }
+            lastSent = now
+            sendEvent(
+                mapOf(
+                    "copied" to files,
+                    "total" to totalFiles,
+                    "bytesCopied" to bytes,
+                    "bytesTotal" to totalBytes,
+                ),
+            )
+        }
     }
 
     private fun sharedUris(intent: Intent): List<Uri> {
@@ -257,17 +421,27 @@ class MobileIoPlugin(
         return uris.orEmpty()
     }
 
-    private data class FolderRequest(
+    private data class PickRequest(
         val destination: File,
         val extensions: List<String>,
         val result: MethodChannel.Result,
     )
 
-    private data class TreeFile(val uri: Uri, val relativePath: List<String>)
+    private data class TreeFile(val uri: Uri, val relativePath: List<String>, val size: Long)
+
+    private data class Openable(val uri: Uri, val name: String, val size: Long)
 
     private companion object {
         const val PICK_FOLDER_REQUEST = 7341
+        const val PICK_FILES_REQUEST = 7342
         const val BUFFER_SIZE = 64 * 1024
+        const val PROGRESS_INTERVAL_MS = 100L
+        const val UNKNOWN_SIZE = -1L
+
+        /** The sum of [sizes], or zero when any size is unknown. */
+        fun totalSize(sizes: List<Long>): Long {
+            return if (sizes.any { it < 0 }) 0L else sizes.sum()
+        }
 
         fun matchesExtension(name: String, extensions: List<String>): Boolean {
             if (extensions.isEmpty()) {

@@ -4,9 +4,10 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `update`
+// These functions are ignored because they are not marked as `pub`: `report_bytes`, `update`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `fmt`, `is_cancelled`, `on_file_finished`, `on_file_started`, `on_stage`, `on_start`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RunMonitor>>
@@ -41,11 +42,19 @@ class TaskProgress {
   /// A step after the files are read, such as writing outputs.
   final String? stage;
 
+  /// Bytes processed, for tasks that track bytes, such as extracting an archive.
+  final BigInt bytesDone;
+
+  /// Bytes to process, or zero when the task does not track bytes.
+  final BigInt bytesTotal;
+
   const TaskProgress({
     required this.done,
     required this.total,
     this.currentFile,
     this.stage,
+    required this.bytesDone,
+    required this.bytesTotal,
   });
 
   static Future<TaskProgress> default_() =>
@@ -53,7 +62,12 @@ class TaskProgress {
 
   @override
   int get hashCode =>
-      done.hashCode ^ total.hashCode ^ currentFile.hashCode ^ stage.hashCode;
+      done.hashCode ^
+      total.hashCode ^
+      currentFile.hashCode ^
+      stage.hashCode ^
+      bytesDone.hashCode ^
+      bytesTotal.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -63,5 +77,7 @@ class TaskProgress {
           done == other.done &&
           total == other.total &&
           currentFile == other.currentFile &&
-          stage == other.stage;
+          stage == other.stage &&
+          bytesDone == other.bytesDone &&
+          bytesTotal == other.bytesTotal;
 }
