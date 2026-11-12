@@ -26,32 +26,34 @@ class UnknownFileView extends StatelessWidget {
         ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: Center(
-        child: Padding(
-            padding: const EdgeInsets.all(SeguiSpacing.xl),
-            child: Container(
-              decoration: getContainerDecoration(context),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(SeguiSpacing.xl),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        PrimaryFileIcon(file: file),
-                        const SizedBox(width: SeguiSpacing.md),
-                        FileIOSubtitle(file: file),
-                      ],
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+              padding: const EdgeInsets.all(SeguiSpacing.xl),
+              child: Container(
+                decoration: getContainerDecoration(context),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(SeguiSpacing.xl),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PrimaryFileIcon(file: file),
+                          const SizedBox(width: SeguiSpacing.md),
+                          FileIOSubtitle(file: file),
+                        ],
+                      ),
                     ),
-                  ),
-                  const TopDivider(),
-                  Expanded(
-                    child: UnknownFileViewBody(file: file),
-                  ),
-                ],
-              ),
-            )),
+                    const TopDivider(),
+                    Expanded(
+                      child: UnknownFileViewBody(file: file),
+                    ),
+                  ],
+                ),
+              )),
+        ),
       ),
     );
   }

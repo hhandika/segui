@@ -44,7 +44,7 @@ class DistanceReportView extends StatelessWidget {
         actions: [InfoButton(file: file)],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: DistanceReportBody(path: file.path),
+      body: SafeArea(child: DistanceReportBody(path: file.path)),
     );
   }
 }

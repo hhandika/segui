@@ -42,7 +42,7 @@ class ReadReportView extends StatelessWidget {
         actions: [InfoButton(file: file)],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: ReadReportBody(path: file.path),
+      body: SafeArea(child: ReadReportBody(path: file.path)),
     );
   }
 }

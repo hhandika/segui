@@ -26,8 +26,10 @@ class DataUsageScreenState extends ConsumerState<DataUsageScreen> {
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: const Center(
-        child: DataUsageView(),
+      body: const SafeArea(
+        child: Center(
+          child: DataUsageView(),
+        ),
       ),
     );
   }

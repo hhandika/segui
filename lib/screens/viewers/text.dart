@@ -25,7 +25,7 @@ class PlainTextView extends StatelessWidget {
         ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: PlainTextViewBody(file: file),
+      body: SafeArea(child: PlainTextViewBody(file: file)),
     );
   }
 }

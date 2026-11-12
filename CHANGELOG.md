@@ -1,5 +1,11 @@
 # Release Notes
 
+## v1.2.1
+
+### Bug Fixes
+
+- Fix Android navigation buttons covering the alignment viewer, reports, quick start, file viewers, settings pages, and bottom sheets.
+
 ## v1.2.0
 
 ### New Features

@@ -39,7 +39,7 @@ class AlignmentReportView extends StatelessWidget {
         actions: [InfoButton(file: file)],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: AlignmentReportBody(path: file.path),
+      body: SafeArea(child: AlignmentReportBody(path: file.path)),
     );
   }
 }

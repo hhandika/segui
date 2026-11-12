@@ -31,37 +31,39 @@ class TabulatedFileView extends StatelessWidget {
         ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: Center(
-        child: Padding(
-            padding: const EdgeInsets.all(SeguiSpacing.xl),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
-                  child: Container(
-                    decoration: getContainerDecoration(context),
-                    child: Padding(
-                      padding: const EdgeInsets.all(SeguiSpacing.xl),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          FileIcon(file: file),
-                          const SizedBox(width: SeguiSpacing.md),
-                          FileIOSubtitle(file: file),
-                        ],
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+              padding: const EdgeInsets.all(SeguiSpacing.xl),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
+                    child: Container(
+                      decoration: getContainerDecoration(context),
+                      child: Padding(
+                        padding: const EdgeInsets.all(SeguiSpacing.xl),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FileIcon(file: file),
+                            const SizedBox(width: SeguiSpacing.md),
+                            FileIOSubtitle(file: file),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(SeguiSpacing.md),
-                    decoration: getContainerDecoration(context),
-                    child: TabulatedFileViewBody(file: file),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(SeguiSpacing.md),
+                      decoration: getContainerDecoration(context),
+                      child: TabulatedFileViewBody(file: file),
+                    ),
                   ),
-                ),
-              ],
-            )),
+                ],
+              )),
+        ),
       ),
     );
   }
