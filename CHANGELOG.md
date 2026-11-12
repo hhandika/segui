@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-- Fix Android navigation buttons covering the alignment viewer, reports, quick start, file viewers, settings pages, and bottom sheets.
+- Fix bug where OS navigation buttons were covering the viewers.
 
 ## v1.2.0
 
