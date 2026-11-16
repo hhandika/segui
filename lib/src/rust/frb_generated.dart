@@ -3366,9 +3366,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return DistanceGroupingParams_Auto();
+        return const DistanceGroupingParams_Auto();
       case 4:
-        return DistanceGroupingParams_None();
+        return const DistanceGroupingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -3590,7 +3590,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_String(raw[1]),
         );
       case 8:
-        return FilteringParams_None();
+        return const FilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -3719,6 +3719,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<ReadQcCheckData> dco_decode_list_read_qc_check_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_read_qc_check_data).toList();
+  }
+
+  @protected
+  List<ReadQcRangeData> dco_decode_list_read_qc_range_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_read_qc_range_data).toList();
   }
 
   @protected
@@ -3981,6 +3993,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadQcCheckData dco_decode_read_qc_check_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return ReadQcCheckData(
+      name: dco_decode_String(arr[0]),
+      value: dco_decode_String(arr[1]),
+      status: dco_decode_read_qc_status(arr[2]),
+      description: dco_decode_String(arr[3]),
+      ranges: dco_decode_list_read_qc_range_data(arr[4]),
+    );
+  }
+
+  @protected
+  ReadQcRangeData dco_decode_read_qc_range_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return ReadQcRangeData(
+      status: dco_decode_read_qc_status(arr[0]),
+      range: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  ReadQcStatus dco_decode_read_qc_status(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ReadQcStatus.values[raw as int];
+  }
+
+  @protected
   ReadReportData dco_decode_read_report_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -4006,8 +4051,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ReadSampleData dco_decode_read_sample_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 13)
-      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
+    if (arr.length != 15)
+      throw Exception('unexpected arr length: expect 15 but see ${arr.length}');
     return ReadSampleData(
       sample: dco_decode_String(arr[0]),
       fileName: dco_decode_String(arr[1]),
@@ -4022,6 +4067,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       duplication: dco_decode_opt_box_autoadd_read_duplication_data(arr[10]),
       overrepresented: dco_decode_list_overrepresented_data(arr[11]),
       adapters: dco_decode_list_adapter_content_data(arr[12]),
+      checks: dco_decode_list_read_qc_check_data(arr[13]),
+      status: dco_decode_read_qc_status(arr[14]),
     );
   }
 
@@ -4143,7 +4190,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return SequenceExtractionParams_None();
+        return const SequenceExtractionParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4166,7 +4213,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_f_64(raw[1]),
         );
       case 3:
-        return SequenceFilteringParams_None();
+        return const SequenceFilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4251,7 +4298,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_bool(raw[3]),
         );
       case 5:
-        return SequenceRenamingParams_None();
+        return const SequenceRenamingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4373,7 +4420,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_usize(raw[1]),
         );
       case 2:
-        return TrimmingParams_None();
+        return const TrimmingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5071,9 +5118,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return DistanceGroupingParams_MapFile(var_field0);
       case 3:
-        return DistanceGroupingParams_Auto();
+        return const DistanceGroupingParams_Auto();
       case 4:
-        return DistanceGroupingParams_None();
+        return const DistanceGroupingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -5314,7 +5361,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
       case 8:
-        return FilteringParams_None();
+        return const FilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -5517,6 +5564,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<ReadQcCheckData> sse_decode_list_read_qc_check_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ReadQcCheckData>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_read_qc_check_data(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<ReadQcRangeData> sse_decode_list_read_qc_range_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ReadQcRangeData>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_read_qc_range_data(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -5878,6 +5951,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadQcCheckData sse_decode_read_qc_check_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_name = sse_decode_String(deserializer);
+    var var_value = sse_decode_String(deserializer);
+    var var_status = sse_decode_read_qc_status(deserializer);
+    var var_description = sse_decode_String(deserializer);
+    var var_ranges = sse_decode_list_read_qc_range_data(deserializer);
+    return ReadQcCheckData(
+        name: var_name,
+        value: var_value,
+        status: var_status,
+        description: var_description,
+        ranges: var_ranges);
+  }
+
+  @protected
+  ReadQcRangeData sse_decode_read_qc_range_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_status = sse_decode_read_qc_status(deserializer);
+    var var_range = sse_decode_String(deserializer);
+    return ReadQcRangeData(status: var_status, range: var_range);
+  }
+
+  @protected
+  ReadQcStatus sse_decode_read_qc_status(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ReadQcStatus.values[inner];
+  }
+
+  @protected
   ReadReportData sse_decode_read_report_data(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_samples = sse_decode_list_read_sample_data(deserializer);
@@ -5910,6 +6014,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_overrepresented =
         sse_decode_list_overrepresented_data(deserializer);
     var var_adapters = sse_decode_list_adapter_content_data(deserializer);
+    var var_checks = sse_decode_list_read_qc_check_data(deserializer);
+    var var_status = sse_decode_read_qc_status(deserializer);
     return ReadSampleData(
         sample: var_sample,
         fileName: var_fileName,
@@ -5923,7 +6029,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         positions: var_positions,
         duplication: var_duplication,
         overrepresented: var_overrepresented,
-        adapters: var_adapters);
+        adapters: var_adapters,
+        checks: var_checks,
+        status: var_status);
   }
 
   @protected
@@ -6060,7 +6168,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return SequenceExtractionParams_Regex(var_field0);
       case 3:
-        return SequenceExtractionParams_None();
+        return const SequenceExtractionParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6083,7 +6191,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_f_64(deserializer);
         return SequenceFilteringParams_MaxGap(var_field0);
       case 3:
-        return SequenceFilteringParams_None();
+        return const SequenceFilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6174,7 +6282,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return SequenceRenamingParams_ReplaceRegex(
             var_field0, var_field1, var_field2);
       case 5:
-        return SequenceRenamingParams_None();
+        return const SequenceRenamingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6316,7 +6424,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_usize(deserializer);
         return TrimmingParams_ParsInf(var_field0);
       case 2:
-        return TrimmingParams_None();
+        return const TrimmingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -7268,6 +7376,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_read_qc_check_data(
+      List<ReadQcCheckData> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_read_qc_check_data(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_read_qc_range_data(
+      List<ReadQcRangeData> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_read_qc_range_data(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_read_sample_data(
       List<ReadSampleData> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -7531,6 +7659,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_read_qc_check_data(
+      ReadQcCheckData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.name, serializer);
+    sse_encode_String(self.value, serializer);
+    sse_encode_read_qc_status(self.status, serializer);
+    sse_encode_String(self.description, serializer);
+    sse_encode_list_read_qc_range_data(self.ranges, serializer);
+  }
+
+  @protected
+  void sse_encode_read_qc_range_data(
+      ReadQcRangeData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_read_qc_status(self.status, serializer);
+    sse_encode_String(self.range, serializer);
+  }
+
+  @protected
+  void sse_encode_read_qc_status(ReadQcStatus self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_read_report_data(
       ReadReportData self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -7562,6 +7715,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         self.duplication, serializer);
     sse_encode_list_overrepresented_data(self.overrepresented, serializer);
     sse_encode_list_adapter_content_data(self.adapters, serializer);
+    sse_encode_list_read_qc_check_data(self.checks, serializer);
+    sse_encode_read_qc_status(self.status, serializer);
   }
 
   @protected

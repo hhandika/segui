@@ -4391,6 +4391,34 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<crate::api::reads::ReadQcCheckData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::ReadQcCheckData>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::reads::ReadQcRangeData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::ReadQcRangeData>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::reads::ReadSampleData> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4769,6 +4797,49 @@ impl SseDecode for crate::api::reads::ReadPositionData {
     }
 }
 
+impl SseDecode for crate::api::reads::ReadQcCheckData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_value = <String>::sse_decode(deserializer);
+        let mut var_status = <crate::api::reads::ReadQcStatus>::sse_decode(deserializer);
+        let mut var_description = <String>::sse_decode(deserializer);
+        let mut var_ranges = <Vec<crate::api::reads::ReadQcRangeData>>::sse_decode(deserializer);
+        return crate::api::reads::ReadQcCheckData {
+            name: var_name,
+            value: var_value,
+            status: var_status,
+            description: var_description,
+            ranges: var_ranges,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadQcRangeData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_status = <crate::api::reads::ReadQcStatus>::sse_decode(deserializer);
+        let mut var_range = <String>::sse_decode(deserializer);
+        return crate::api::reads::ReadQcRangeData {
+            status: var_status,
+            range: var_range,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadQcStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::reads::ReadQcStatus::Pass,
+            1 => crate::api::reads::ReadQcStatus::Warn,
+            2 => crate::api::reads::ReadQcStatus::Fail,
+            _ => unreachable!("Invalid variant for ReadQcStatus: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::api::reads::ReadReportData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4806,6 +4877,8 @@ impl SseDecode for crate::api::reads::ReadSampleData {
             <Vec<crate::api::reads::OverrepresentedData>>::sse_decode(deserializer);
         let mut var_adapters =
             <Vec<crate::api::reads::AdapterContentData>>::sse_decode(deserializer);
+        let mut var_checks = <Vec<crate::api::reads::ReadQcCheckData>>::sse_decode(deserializer);
+        let mut var_status = <crate::api::reads::ReadQcStatus>::sse_decode(deserializer);
         return crate::api::reads::ReadSampleData {
             sample: var_sample,
             file_name: var_fileName,
@@ -4820,6 +4893,8 @@ impl SseDecode for crate::api::reads::ReadSampleData {
             duplication: var_duplication,
             overrepresented: var_overrepresented,
             adapters: var_adapters,
+            checks: var_checks,
+            status: var_status,
         };
     }
 }
@@ -6922,6 +6997,73 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadPositionData>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadQcCheckData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.name.into_into_dart().into_dart(),
+            self.value.into_into_dart().into_dart(),
+            self.status.into_into_dart().into_dart(),
+            self.description.into_into_dart().into_dart(),
+            self.ranges.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadQcCheckData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadQcCheckData>
+    for crate::api::reads::ReadQcCheckData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadQcCheckData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadQcRangeData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.status.into_into_dart().into_dart(),
+            self.range.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadQcRangeData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadQcRangeData>
+    for crate::api::reads::ReadQcRangeData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadQcRangeData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadQcStatus {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Pass => 0.into_dart(),
+            Self::Warn => 1.into_dart(),
+            Self::Fail => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadQcStatus
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadQcStatus>
+    for crate::api::reads::ReadQcStatus
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadQcStatus {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadReportData {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [self.samples.into_into_dart().into_dart()].into_dart()
@@ -6972,6 +7114,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadSampleData {
             self.duplication.into_into_dart().into_dart(),
             self.overrepresented.into_into_dart().into_dart(),
             self.adapters.into_into_dart().into_dart(),
+            self.checks.into_into_dart().into_dart(),
+            self.status.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -8211,6 +8355,26 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<crate::api::reads::ReadQcCheckData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::ReadQcCheckData>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::reads::ReadQcRangeData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::ReadQcRangeData>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::reads::ReadSampleData> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -8469,6 +8633,42 @@ impl SseEncode for crate::api::reads::ReadPositionData {
     }
 }
 
+impl SseEncode for crate::api::reads::ReadQcCheckData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.value, serializer);
+        <crate::api::reads::ReadQcStatus>::sse_encode(self.status, serializer);
+        <String>::sse_encode(self.description, serializer);
+        <Vec<crate::api::reads::ReadQcRangeData>>::sse_encode(self.ranges, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadQcRangeData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::api::reads::ReadQcStatus>::sse_encode(self.status, serializer);
+        <String>::sse_encode(self.range, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadQcStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::reads::ReadQcStatus::Pass => 0,
+                crate::api::reads::ReadQcStatus::Warn => 1,
+                crate::api::reads::ReadQcStatus::Fail => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::api::reads::ReadReportData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -8499,6 +8699,8 @@ impl SseEncode for crate::api::reads::ReadSampleData {
         <Option<crate::api::reads::ReadDuplicationData>>::sse_encode(self.duplication, serializer);
         <Vec<crate::api::reads::OverrepresentedData>>::sse_encode(self.overrepresented, serializer);
         <Vec<crate::api::reads::AdapterContentData>>::sse_encode(self.adapters, serializer);
+        <Vec<crate::api::reads::ReadQcCheckData>>::sse_encode(self.checks, serializer);
+        <crate::api::reads::ReadQcStatus>::sse_encode(self.status, serializer);
     }
 }
 

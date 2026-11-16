@@ -55,7 +55,46 @@ ReadMetricsData _metrics({
 
 Float64List _values(List<double> values) => Float64List.fromList(values);
 
-ReadSampleData _sample(String name, ReadMetricsData metrics) {
+ReadQcCheckData _check(
+  String name,
+  String value,
+  ReadQcStatus status, {
+  List<String> ranges = const ['Below 5%', '5% to below 10%', '10% or higher'],
+}) {
+  return ReadQcCheckData(
+    name: name,
+    value: value,
+    status: status,
+    description: 'What $name measures.',
+    ranges: [
+      for (int i = 0; i < ReadQcStatus.values.length; i++)
+        ReadQcRangeData(status: ReadQcStatus.values[i], range: ranges[i]),
+    ],
+  );
+}
+
+/// Checks as the bridge sends them. Statuses are given, since the
+/// thresholds live in SEGUL; every check passes except Q30 bases.
+List<ReadQcCheckData> _checks(ReadMetricsData metrics, ReadQcStatus q30) {
+  const ReadQcStatus pass = ReadQcStatus.pass;
+  return [
+    _check('Q30 bases', formatPercent(metrics.q30Pct), q30,
+        ranges: const ['80% or higher', '70% to below 80%', 'Below 70%']),
+    _check('Mean quality', metrics.meanQscore.toStringAsFixed(1), pass,
+        ranges: const ['28 or higher', '20 to below 28', 'Below 20']),
+    _check('N content', formatPercent(100 * metrics.nContent), pass),
+    if (metrics.duplicatePct != null)
+      _check('Duplication', formatPercent(metrics.duplicatePct!), pass),
+    if (metrics.adapterReadsPct != null)
+      _check('Adapters', formatPercent(metrics.adapterReadsPct!), pass),
+  ];
+}
+
+ReadSampleData _sample(
+  String name,
+  ReadMetricsData metrics, {
+  ReadQcStatus q30 = ReadQcStatus.pass,
+}) {
   final Float64List positions = _values([1, 2, 3, 4]);
   final Float64List quality = _values([30, 32, 34, 36]);
   final Float64List share = _values([25, 25, 25, 25]);
@@ -110,62 +149,21 @@ ReadSampleData _sample(String name, ReadMetricsData metrics) {
         cumulativePct: _values([0, 1, 2, 3]),
       ),
     ],
+    checks: _checks(metrics, q30),
+    status: q30,
   );
 }
 
 void main() {
-  group('Read quality checks', () {
-    test('Thresholds follow FastQC', () {
-      expect(statusAbove(85, warn: 80, fail: 70), ReadQcStatus.pass);
-      expect(statusAbove(75, warn: 80, fail: 70), ReadQcStatus.warn);
-      expect(statusAbove(60, warn: 80, fail: 70), ReadQcStatus.fail);
-      expect(statusBelow(4, warn: 5, fail: 10), ReadQcStatus.pass);
-      expect(statusBelow(5, warn: 5, fail: 10), ReadQcStatus.warn);
-      expect(statusBelow(10, warn: 5, fail: 10), ReadQcStatus.fail);
-    });
-
-    test('Rules describe the range of each status', () {
-      const ReadQcRule higher = ReadQcRule(
-        description: '',
-        warn: 80,
-        fail: 70,
-        higherIsBetter: true,
-        unit: '%',
-      );
-      expect(higher.ranges, [
-        (ReadQcStatus.pass, '80% or higher'),
-        (ReadQcStatus.warn, '70% to below 80%'),
-        (ReadQcStatus.fail, 'Below 70%'),
-      ]);
-      const ReadQcRule lower = ReadQcRule(
-        description: '',
-        warn: 0.1,
-        fail: 1,
-        higherIsBetter: false,
-        unit: '%',
-      );
-      expect(lower.ranges.first, (ReadQcStatus.pass, 'Below 0.1%'));
-      expect(lower.statusOf(1), ReadQcStatus.fail);
-      final ReadQcCheck q30 = readQcChecks(_sample('a', _metrics(q30Pct: 75)))
-          .firstWhere((c) => c.name == 'Q30 bases');
-      expect(q30.status, ReadQcStatus.warn);
-      expect(q30.status, q30.rule.statusOf(75));
-    });
-
-    test('Complete mode adds checks', () {
-      final List<ReadQcCheck> complete = readQcChecks(_sample('a', _metrics()));
-      final List<ReadQcCheck> defaults = readQcChecks(
-        _sample('a', _metrics(duplicatePct: null, adapterReadsPct: null)),
-      );
-      expect(complete.length, greaterThan(defaults.length));
-      // 7% adapters warns and 5% overrepresented fails.
-      expect(overallStatus(complete), ReadQcStatus.fail);
-      expect(
-        complete.firstWhere((c) => c.name == 'Adapters').status,
-        ReadQcStatus.warn,
-      );
-      expect(overallStatus(defaults), ReadQcStatus.pass);
-    });
+  test('Checks come with the sample', () {
+    final ReadSampleData sample =
+        _sample('a', _metrics(q30Pct: 60), q30: ReadQcStatus.fail);
+    expect(checkStatus(sample, 'Q30 bases'), ReadQcStatus.fail);
+    expect(checkStatus(sample, 'Adapters'), ReadQcStatus.pass);
+    expect(checkStatus(sample, 'Poly-G'), isNull);
+    expect(ReadMetric.q30.checkName, 'Q30 bases');
+    expect(ReadMetric.reads.checkName, isNull);
+    expect(ReadQcStatus.warn.label, 'Warn');
   });
 
   test('Read reports are found by name', () {
@@ -204,13 +202,13 @@ void main() {
         readSampleView(samples, sort: ReadSampleSort.reads, ascending: false),
         [1, 2, 0],
       );
-      // Default-mode samples skip the overrepresented check. s2 fails Q30,
-      // so it goes last when passing samples come first.
+      // s2 fails Q30, so it goes last when passing samples come first.
       final List<ReadSampleData> statuses = [
         _sample('s1', _metrics(duplicatePct: null, adapterReadsPct: null)),
         _sample(
           's2',
           _metrics(q30Pct: 60, duplicatePct: null, adapterReadsPct: null),
+          q30: ReadQcStatus.fail,
         ),
         _sample('s3', _metrics(duplicatePct: null, adapterReadsPct: null)),
       ];
@@ -250,7 +248,7 @@ void main() {
     addTearDown(tester.view.reset);
     final ReadReportData report = ReadReportData(samples: [
       _sample('alpha', _metrics()),
-      _sample('beta', _metrics(q30Pct: 60)),
+      _sample('beta', _metrics(q30Pct: 60), q30: ReadQcStatus.fail),
       _sample('gamma', _metrics(readCount: 50)),
     ]);
     await tester.pumpWidget(

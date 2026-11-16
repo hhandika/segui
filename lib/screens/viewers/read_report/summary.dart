@@ -163,7 +163,7 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
           spacing: SeguiSpacing.sm,
           runSpacing: SeguiSpacing.sm,
           children: [
-            for (final ReadQcCheck check in readQcChecks(open))
+            for (final ReadQcCheckData check in open.checks)
               QcStatusChip(
                 status: check.status,
                 label: '${check.name}: ${check.value}',
@@ -310,10 +310,8 @@ class ReadOverviewTable extends StatelessWidget {
               PagedTableColumn(
                 label: 'Status',
                 width: 140,
-                sortValue: (i) => overallStatus(readQcChecks(samples[i])).index,
-                cell: (i) => QcStatusChip(
-                  status: overallStatus(readQcChecks(samples[i])),
-                ),
+                sortValue: (i) => samples[i].status.index,
+                cell: (i) => QcStatusChip(status: samples[i].status),
               ),
               numeric('Reads', 130, ReadMetric.reads, _countFormat.format),
               numeric('Bases', 160, ReadMetric.bases, _countFormat.format),
@@ -352,7 +350,7 @@ class ReadOverviewTable extends StatelessWidget {
     ];
     final double low = listed.fold(double.infinity, math.min);
     final double high = listed.fold(double.negativeInfinity, math.max);
-    final ReadQcRule? rule = metric.rule;
+    final String? checkName = metric.checkName;
     return PagedTableColumn(
       label: label,
       width: width,
@@ -372,11 +370,11 @@ class ReadOverviewTable extends StatelessWidget {
         final Text text = Text(format(value), maxLines: 1, softWrap: false);
         // Bars say nothing when every listed sample has the same value.
         if (high <= low) return text;
+        final ReadQcStatus? status =
+            checkName == null ? null : checkStatus(samples[i], checkName);
         return DataBarCell(
           fraction: (value - low) / (high - low),
-          color: rule == null
-              ? neutral
-              : statusColor(rule.statusOf(value), colors),
+          color: status == null ? neutral : statusColor(status, colors),
           child: text,
         );
       },
@@ -430,7 +428,7 @@ class QcStatusChip extends StatelessWidget {
 /// as a dialog or, on phones, a bottom sheet.
 Future<void> showQcCheckRanges(
   BuildContext context, {
-  required ReadQcCheck check,
+  required ReadQcCheckData check,
   required String sample,
 }) {
   return showResponsiveSheet<void>(
@@ -453,7 +451,7 @@ Future<void> showQcCheckRanges(
 class QcCheckRanges extends StatelessWidget {
   const QcCheckRanges({super.key, required this.check, required this.sample});
 
-  final ReadQcCheck check;
+  final ReadQcCheckData check;
   final String sample;
 
   @override
@@ -464,14 +462,14 @@ class QcCheckRanges extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(check.rule.description, style: theme.textTheme.bodyMedium),
+        Text(check.description, style: theme.textTheme.bodyMedium),
         const SizedBox(height: SeguiSpacing.lg),
         Text(
           '$sample: ${check.value} (${check.status.label.toLowerCase()})',
           style: theme.textTheme.titleSmall,
         ),
         const SizedBox(height: SeguiSpacing.md),
-        for (final (ReadQcStatus status, String range) in check.rule.ranges)
+        for (final ReadQcRangeData(:status, :range) in check.ranges)
           Semantics(
             selected: status == check.status,
             child: Container(

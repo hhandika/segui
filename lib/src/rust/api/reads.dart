@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'progress.dart';
 
 // These functions are ignored because they are not marked as `pub`: `find_input_files`, `match_input_fmt`, `match_mode`, `match_phred`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`, `from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`, `from`, `from`, `from`
 
 class AdapterContentData {
   final String name;
@@ -339,6 +339,77 @@ class ReadPositionData {
           nPct == other.nPct;
 }
 
+/// One quality check of a sample.
+class ReadQcCheckData {
+  final String name;
+
+  /// The value as shown with the check, such as "92.4%".
+  final String value;
+  final ReadQcStatus status;
+
+  /// What the check measures.
+  final String description;
+
+  /// The values of each status, from pass to fail.
+  final List<ReadQcRangeData> ranges;
+
+  const ReadQcCheckData({
+    required this.name,
+    required this.value,
+    required this.status,
+    required this.description,
+    required this.ranges,
+  });
+
+  @override
+  int get hashCode =>
+      name.hashCode ^
+      value.hashCode ^
+      status.hashCode ^
+      description.hashCode ^
+      ranges.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadQcCheckData &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          value == other.value &&
+          status == other.status &&
+          description == other.description &&
+          ranges == other.ranges;
+}
+
+class ReadQcRangeData {
+  final ReadQcStatus status;
+  final String range;
+
+  const ReadQcRangeData({
+    required this.status,
+    required this.range,
+  });
+
+  @override
+  int get hashCode => status.hashCode ^ range.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadQcRangeData &&
+          runtimeType == other.runtimeType &&
+          status == other.status &&
+          range == other.range;
+}
+
+/// Outcome of a quality check, from best to worst.
+enum ReadQcStatus {
+  pass,
+  warn,
+  fail,
+  ;
+}
+
 class ReadReportData {
   final List<ReadSampleData> samples;
 
@@ -405,6 +476,12 @@ class ReadSampleData {
   final List<OverrepresentedData> overrepresented;
   final List<AdapterContentData> adapters;
 
+  /// Quality checks, from the thresholds shared with the SEGUL viewer.
+  final List<ReadQcCheckData> checks;
+
+  /// The worst status among the checks.
+  final ReadQcStatus status;
+
   const ReadSampleData({
     required this.sample,
     required this.fileName,
@@ -419,6 +496,8 @@ class ReadSampleData {
     this.duplication,
     required this.overrepresented,
     required this.adapters,
+    required this.checks,
+    required this.status,
   });
 
   @override
@@ -435,7 +514,9 @@ class ReadSampleData {
       positions.hashCode ^
       duplication.hashCode ^
       overrepresented.hashCode ^
-      adapters.hashCode;
+      adapters.hashCode ^
+      checks.hashCode ^
+      status.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -454,7 +535,9 @@ class ReadSampleData {
           positions == other.positions &&
           duplication == other.duplication &&
           overrepresented == other.overrepresented &&
-          adapters == other.adapters;
+          adapters == other.adapters &&
+          checks == other.checks &&
+          status == other.status;
 }
 
 /// Files written by a read summary.

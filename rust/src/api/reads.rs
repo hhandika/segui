@@ -5,6 +5,7 @@ use segul_core::core::read::summarize::GenomicReadSummary;
 use segul_core::helper::logger::ReadLogger;
 use segul_core::helper::types::{PhredOffset, SeqReadFmt, SummaryMode};
 use segul_core::helper::utils;
+use segul_core::stats::fastq::qc::{self, QcCheck, QcStatus};
 use segul_core::stats::fastq::report::{PositionSummary, ReadReport, SampleReadReport};
 use segul_core::stats::fastq::DEFAULT_DUP_SKETCH_SIZE;
 
@@ -143,6 +144,34 @@ pub struct ReadSampleData {
     pub duplication: Option<ReadDuplicationData>,
     pub overrepresented: Vec<OverrepresentedData>,
     pub adapters: Vec<AdapterContentData>,
+    /// Quality checks, from the thresholds shared with the SEGUL viewer.
+    pub checks: Vec<ReadQcCheckData>,
+    /// The worst status among the checks.
+    pub status: ReadQcStatus,
+}
+
+/// Outcome of a quality check, from best to worst.
+pub enum ReadQcStatus {
+    Pass,
+    Warn,
+    Fail,
+}
+
+/// One quality check of a sample.
+pub struct ReadQcCheckData {
+    pub name: String,
+    /// The value as shown with the check, such as "92.4%".
+    pub value: String,
+    pub status: ReadQcStatus,
+    /// What the check measures.
+    pub description: String,
+    /// The values of each status, from pass to fail.
+    pub ranges: Vec<ReadQcRangeData>,
+}
+
+pub struct ReadQcRangeData {
+    pub status: ReadQcStatus,
+    pub range: String,
 }
 
 pub struct ReadMetricsData {
@@ -221,6 +250,7 @@ impl From<&SampleReadReport> for ReadSampleData {
     fn from(report: &SampleReadReport) -> Self {
         let m = &report.metrics;
         let counts = |values: &[u64]| values.iter().map(|v| *v as f64).collect();
+        let checks = qc::qc_checks(report);
         ReadSampleData {
             sample: report.sample.clone(),
             file_name: report.file_name.clone(),
@@ -291,6 +321,38 @@ impl From<&SampleReadReport> for ReadSampleData {
                     cumulative_pct: a.cumulative_pct.clone(),
                 })
                 .collect(),
+            checks: checks.iter().map(ReadQcCheckData::from).collect(),
+            status: ReadQcStatus::from(qc::overall_status(&checks)),
+        }
+    }
+}
+
+impl From<QcStatus> for ReadQcStatus {
+    fn from(status: QcStatus) -> Self {
+        match status {
+            QcStatus::Pass => ReadQcStatus::Pass,
+            QcStatus::Warn => ReadQcStatus::Warn,
+            QcStatus::Fail => ReadQcStatus::Fail,
+        }
+    }
+}
+
+impl From<&QcCheck> for ReadQcCheckData {
+    fn from(check: &QcCheck) -> Self {
+        ReadQcCheckData {
+            name: check.name.to_string(),
+            value: check.value_text(),
+            status: ReadQcStatus::from(check.status),
+            description: check.rule.description.to_string(),
+            ranges: check
+                .rule
+                .ranges()
+                .into_iter()
+                .map(|(status, range)| ReadQcRangeData {
+                    status: ReadQcStatus::from(status),
+                    range,
+                })
+                .collect(),
         }
     }
 }
@@ -349,5 +411,12 @@ mod test {
             + sample.positions.t_pct[1]
             + sample.positions.n_pct[1];
         assert!((total - 100.0).abs() < 1e-9);
+        let names: Vec<&str> = sample.checks.iter().map(|c| c.name.as_str()).collect();
+        assert_eq!(names[..3], ["Q30 bases", "Mean quality", "N content"]);
+        let q30 = &sample.checks[0];
+        assert!(q30.value.ends_with('%'));
+        assert_eq!(q30.ranges.len(), 3);
+        assert_eq!(q30.ranges[0].range, "80% or higher");
+        assert!(matches!(q30.ranges[2].status, ReadQcStatus::Fail));
     }
 }

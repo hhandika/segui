@@ -352,6 +352,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<ReadQcCheckData> dco_decode_list_read_qc_check_data(dynamic raw);
+
+  @protected
+  List<ReadQcRangeData> dco_decode_list_read_qc_range_data(dynamic raw);
+
+  @protected
   List<ReadSampleData> dco_decode_list_read_sample_data(dynamic raw);
 
   @protected
@@ -419,6 +425,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadPositionData dco_decode_read_position_data(dynamic raw);
+
+  @protected
+  ReadQcCheckData dco_decode_read_qc_check_data(dynamic raw);
+
+  @protected
+  ReadQcRangeData dco_decode_read_qc_range_data(dynamic raw);
+
+  @protected
+  ReadQcStatus dco_decode_read_qc_status(dynamic raw);
 
   @protected
   ReadReportData dco_decode_read_report_data(dynamic raw);
@@ -864,6 +879,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<ReadQcCheckData> sse_decode_list_read_qc_check_data(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ReadQcRangeData> sse_decode_list_read_qc_range_data(
+      SseDeserializer deserializer);
+
+  @protected
   List<ReadSampleData> sse_decode_list_read_sample_data(
       SseDeserializer deserializer);
 
@@ -938,6 +961,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadPositionData sse_decode_read_position_data(SseDeserializer deserializer);
+
+  @protected
+  ReadQcCheckData sse_decode_read_qc_check_data(SseDeserializer deserializer);
+
+  @protected
+  ReadQcRangeData sse_decode_read_qc_range_data(SseDeserializer deserializer);
+
+  @protected
+  ReadQcStatus sse_decode_read_qc_status(SseDeserializer deserializer);
 
   @protected
   ReadReportData sse_decode_read_report_data(SseDeserializer deserializer);
@@ -1414,6 +1446,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_read_qc_check_data(
+      List<ReadQcCheckData> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_read_qc_range_data(
+      List<ReadQcRangeData> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_read_sample_data(
       List<ReadSampleData> self, SseSerializer serializer);
 
@@ -1493,6 +1533,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_read_position_data(
       ReadPositionData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_qc_check_data(
+      ReadQcCheckData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_qc_range_data(
+      ReadQcRangeData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_qc_status(ReadQcStatus self, SseSerializer serializer);
 
   @protected
   void sse_encode_read_report_data(

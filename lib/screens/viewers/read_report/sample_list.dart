@@ -19,7 +19,7 @@ class SampleStatusDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ReadQcStatus status = overallStatus(readQcChecks(sample));
+    final ReadQcStatus status = sample.status;
     return Tooltip(
       message: status.label,
       child: Container(
