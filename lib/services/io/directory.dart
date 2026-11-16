@@ -66,12 +66,24 @@ class DirectorySelectionServices {
 /// Lets the user pick a folder. On macOS, the folder is remembered so it
 /// opens without asking after a restart.
 Future<Directory?> pickDirectory() async {
-  final String? path = Platform.isAndroid || Platform.isMacOS
-      ? await FilePicker.getDirectoryPath()
-      : await getDirectoryPath();
+  final String? path = await _pickDirectoryPath();
   if (path == null) return null;
   await FolderAccessChannel.instance.remember([path]);
   return Directory(path);
+}
+
+Future<String?> _pickDirectoryPath() async {
+  if (Platform.isMacOS) {
+    final Uri? uri = await FilePicker.pickDirectory();
+    return uri?.toFilePath();
+  }
+  if (Platform.isAndroid) {
+    // pickDirectory() returns a content:// URI on Android, but the app reads
+    // folders through dart:io paths.
+    // ignore: deprecated_member_use
+    return FilePicker.getDirectoryPath();
+  }
+  return getDirectoryPath();
 }
 
 class DirectoryCrawler extends FileUtils {

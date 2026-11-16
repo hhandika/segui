@@ -12,7 +12,8 @@ use flutter_rust_bridge::frb;
 use polars::{
     error::PolarsResult,
     frame::DataFrame,
-    io::{csv::CsvReader, SerReader},
+    io::SerReader,
+    prelude::CsvReadOptions,
 };
 
 pub enum CsvSegulType {
@@ -35,9 +36,9 @@ const ID_COLOMN: [&str; 4] = ["locus", "taxon", "name", "path"];
 trait PolarDataFrame {
     #[frb(ignore)]
     fn get_dataframe(&self, input_path: &Path) -> PolarsResult<DataFrame> {
-        let df = CsvReader::from_path(input_path)?
-            .infer_schema(None)
-            .has_header(true)
+        let df = CsvReadOptions::default()
+            .with_has_header(true)
+            .try_into_reader_with_file_path(Some(input_path.to_path_buf()))?
             .finish()?;
         Ok(df)
     }
@@ -83,7 +84,7 @@ impl CsvSummaryServices {
         let new_df = self
             .select_columns(&col_names)
             .expect("Error parsing file.");
-        new_df.iter().for_each(|s| {
+        new_df.columns().iter().for_each(|s| {
             let file = s.get(0).expect("Failed getting locus column").to_string();
             let num_reads = s.get(1).expect("Failed getting a column").to_string();
             map.insert(file, num_reads);

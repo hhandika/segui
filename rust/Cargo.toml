@@ -13,10 +13,10 @@ flate2 = "1"
 flutter_rust_bridge = "=2.13.0"
 log = "0.*"
 rayon = "1"
-log4rs = "1.2.*"
-polars = { version = "0.37.0", features = ["lazy", "csv"] }
+log4rs = "1.4"
+polars = { version = "0.55", features = ["lazy", "csv"] }
 tar = "0.4"
-zip = { version = "0.6", default-features = false, features = ["deflate"] }
+zip = { version = "9", default-features = false, features = ["deflate"] }
 # SEGUL library. Plotting and PDF export are left out; the app draws its own charts.
 segul-core = { version = "0.25.0", default-features = false, features = [
     "align",

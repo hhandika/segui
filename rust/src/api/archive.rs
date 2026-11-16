@@ -113,7 +113,7 @@ impl ExportServices {
 
     fn write_zip(output: File, entries: &[(PathBuf, String)]) -> anyhow::Result<()> {
         let mut archive = zip::ZipWriter::new(output);
-        let options = zip::write::FileOptions::default()
+        let options = zip::write::SimpleFileOptions::default()
             .compression_method(zip::CompressionMethod::Deflated)
             .large_file(true);
         for (file, name) in entries {
@@ -200,7 +200,7 @@ impl ExtractServices {
             if entry.is_dir() {
                 continue;
             }
-            let Some(relative) = entry.enclosed_name().map(Path::to_path_buf) else {
+            let Some(relative) = entry.enclosed_name() else {
                 continue;
             };
             let Some(target) = Self::target_path(output_dir, &relative) else {
@@ -279,7 +279,7 @@ impl ExtractServices {
             }
             let kept = entry
                 .enclosed_name()
-                .is_some_and(|relative| Self::target_path(output_dir, relative).is_some());
+                .is_some_and(|relative| Self::target_path(output_dir, &relative).is_some());
             if kept {
                 files += 1;
                 bytes += entry.size();
@@ -436,7 +436,10 @@ mod tests {
 
         let mut archive =
             zip::ZipArchive::new(File::open(&output).expect("Zip exists")).expect("Valid zip");
-        let mut names: Vec<String> = archive.file_names().map(String::from).collect();
+        let mut names: Vec<String> = archive
+            .file_names()
+            .map(|name| name.expect("Valid name").into_owned())
+            .collect();
         names.sort();
         assert_eq!(names, vec!["concat.nex", "loci/a.nex", "other/a.nex"]);
         let mut content = String::new();
@@ -572,7 +575,7 @@ mod tests {
         let dir = TempDir::new("extract-unsafe");
         let archive = dir.path.join("unsafe.zip");
         let mut writer = zip::ZipWriter::new(File::create(&archive).expect("Archive created"));
-        let options = zip::write::FileOptions::default();
+        let options = zip::write::SimpleFileOptions::default();
         for name in [
             "../escape.nex",
             "__MACOSX/a.nex",
