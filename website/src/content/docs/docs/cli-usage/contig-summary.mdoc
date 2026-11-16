@@ -52,11 +52,16 @@ Available statistics for contiguous sequences:
 - N50
 - N75
 - N90
-- Contig 750 bp
-- Contig 1000 bp
-- Contig 1500 bp
+- Contigs longer than 750, 1000, and 1500 bp
 - Cumulative length
-- A, C, G, T, N counts
+- Length SD
+- A, C, G, T, N counts, and other characters
+- Contigs per length range, from under 200 bp to 100 kb and longer
+
+## Output
+
+- `contig-summary.csv`: one row per contig file.
+- `contig-report.json`: all statistics, with totals across samples. SEGUI opens it as an interactive report. Open it in the terminal with [`segul view summary`](/docs/cli-usage/view-summary/).
 
 ## All options
 

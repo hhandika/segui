@@ -24,7 +24,12 @@ impl ContigServices {
     }
 
     /// Summarize contigs. `monitor` reports progress and can cancel the run.
-    pub fn summarize(&self, prefix: Option<String>, monitor: &RunMonitor) -> anyhow::Result<()> {
+    /// Returns the path of the contig report.
+    pub fn summarize(
+        &self,
+        prefix: Option<String>,
+        monitor: &RunMonitor,
+    ) -> anyhow::Result<String> {
         let time = Instant::now();
         let input_fmt = self.match_input_fmt();
         let files = self.find_input_files();
@@ -32,12 +37,12 @@ impl ContigServices {
         let task = "Contig Summary";
         ContigLogger::new(None, &input_fmt, files.len()).log(task);
 
-        ContigSummaryHandler::new(&files, &input_fmt, output_path, prefix.as_deref())
+        let outputs = ContigSummaryHandler::new(&files, &input_fmt, output_path, prefix.as_deref())
             .with_progress(monitor)
             .try_summarize()?;
         let duration = time.elapsed();
         utils::print_execution_time(duration);
-        Ok(())
+        Ok(outputs.report.display().to_string())
     }
 
     fn match_input_fmt(&self) -> ContigFmt {

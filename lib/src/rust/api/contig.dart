@@ -25,7 +25,8 @@ class ContigServices {
       RustLib.instance.api.crateApiContigContigServicesNew();
 
   /// Summarize contigs. `monitor` reports progress and can cancel the run.
-  Future<void> summarize({String? prefix, required RunMonitor monitor}) =>
+  /// Returns the path of the contig report.
+  Future<String> summarize({String? prefix, required RunMonitor monitor}) =>
       RustLib.instance.api.crateApiContigContigServicesSummarize(
           that: this, prefix: prefix, monitor: monitor);
 

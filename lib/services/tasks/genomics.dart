@@ -26,14 +26,15 @@ class ContigSummaryRunner {
   /// Reports file progress and cancels the run. Null runs untracked.
   final RunMonitor? monitor;
 
-  Future<void> run() async {
+  /// Summarizes the contigs. Returns the path of the contig report.
+  Future<String> run() async {
     List<String> finalInputFiles =
         IOServices().convertPathsToString(inputFiles, SegulType.genomicContig);
     if (finalInputFiles.isEmpty) {
       throw 'No input files';
     }
 
-    await ContigServices(
+    return await ContigServices(
       files: finalInputFiles,
       fileFmt: inputFmt,
       outputDir: outputDir.path,

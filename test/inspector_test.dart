@@ -134,6 +134,12 @@ void main() {
       FileContentKind.distanceReport,
     );
     expect(
+      await contentKindOf(
+        write('run_contig-report.json', '{"summary":{"samples":2}}'),
+      ),
+      FileContentKind.contigReport,
+    );
+    expect(
       await contentKindOf(write('reads.fq', '@r\nA\n+\nI\n')),
       FileContentKind.other,
     );

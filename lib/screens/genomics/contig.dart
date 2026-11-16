@@ -165,7 +165,7 @@ class ContigPageState extends ConsumerState<ContigPage>
     final RunMonitor monitor = progress.start();
     try {
       _setRunning();
-      await ContigSummaryRunner(
+      final String report = await ContigSummaryRunner(
         inputFiles: inputFiles,
         inputFmt: _ctr.inputFormatController!,
         outputDir: outputDir,
@@ -173,7 +173,7 @@ class ContigPageState extends ConsumerState<ContigPage>
         monitor: monitor,
       ).run();
 
-      _setSuccess(outputDir);
+      _setSuccess(report);
     } catch (e) {
       _showError(monitor.isCancelled() ? runCancelledMessage : e.toString());
     } finally {
@@ -214,8 +214,12 @@ class ContigPageState extends ConsumerState<ContigPage>
     });
   }
 
-  void _setSuccess(Directory directory) {
-    ref.read(lastRunProvider.notifier).record(_parameters);
+  /// [reportPath] is the contig report, which the workbench offers to open.
+  void _setSuccess(String reportPath) {
+    ref.read(lastRunProvider.notifier).record(
+          _parameters,
+          report: File(reportPath),
+        );
     ref.read(fileOutputProvider.notifier).refresh();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -24,11 +24,12 @@ Check the [Installation Guide](/docs/installation/update/#segul-cli) to update S
 
 Explore a summary report in your terminal, as tables or plots. It shows the same report SEGUI opens after a summary, so you can check results on a remote server or in a terminal session where a GUI is not available.
 
-The viewer opens three reports:
+The viewer opens four reports:
 
 - `alignment-report.json`, written by [`segul align summary`](/docs/cli-usage/align-summary/).
 - `read-report.json`, written by [`segul read summary --mode complete`](/docs/cli-usage/read-summary/).
 - `distance-report.json`, written by [`segul align distance`](/docs/cli-usage/align-distance/).
+- `contig-report.json`, written by [`segul contig summary`](/docs/cli-usage/contig-summary/).
 
 SEGUL tells them apart from their content, so a report with an output prefix, such as `uce_alignment-report.json`, opens the same way:
 
@@ -52,7 +53,7 @@ Other files stop with a message that names the file.
 From top to bottom, the viewer shows:
 
 1. **Toolbar**: the file name, the kind of report, and its main counts, such as `120 taxa · 4,060 loci · DNA`.
-2. **Sections**: `Overview`, then one section for each kind of item. An alignment report has `Loci` and `Taxa`; a read report has `Samples`; a distance report has `Loci`, `Samples`, `Groups` with grouping, and the `Matrix` and `Group matrix` sections. Each section shows how many items it holds. On the right, `Table │ Plot` marks the current view, and the plot shows whether it draws bars, a histogram, or a heatmap.
+2. **Sections**: `Overview`, then one section for each kind of item. An alignment report has `Loci` and `Taxa`; a read report has `Samples`; a distance report has `Loci`, `Samples`, `Groups` with grouping, and the `Matrix` and `Group matrix` sections; a contig report has `Samples`. Each section shows how many items it holds. On the right, `Table │ Plot` marks the current view, and the plot shows whether it draws bars, a histogram, or a heatmap.
 3. **Section content**: the overview, or the items of a section as a table or a plot.
 4. **Status bar**: the selected item, the chosen column and its value, and the item's position, such as `uce-12 · Sites: 412 · 12 of 4,060`.
 

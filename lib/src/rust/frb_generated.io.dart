@@ -9,6 +9,7 @@ import 'api/archive.dart';
 import 'api/colors.dart';
 import 'api/common.dart';
 import 'api/contig.dart';
+import 'api/contig_report.dart';
 import 'api/csv.dart';
 import 'api/distance_report.dart';
 import 'api/file_sort.dart';
@@ -137,6 +138,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ArchiveServices dco_decode_box_autoadd_archive_services(dynamic raw);
 
   @protected
+  ContigReportServices dco_decode_box_autoadd_contig_report_services(
+      dynamic raw);
+
+  @protected
   ContigServices dco_decode_box_autoadd_contig_services(dynamic raw);
 
   @protected
@@ -241,6 +246,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ColormapOption dco_decode_colormap_option(dynamic raw);
 
   @protected
+  ContigOverviewData dco_decode_contig_overview_data(dynamic raw);
+
+  @protected
+  ContigReportData dco_decode_contig_report_data(dynamic raw);
+
+  @protected
+  ContigReportServices dco_decode_contig_report_services(dynamic raw);
+
+  @protected
+  ContigSamplesData dco_decode_contig_samples_data(dynamic raw);
+
+  @protected
   ContigServices dco_decode_contig_services(dynamic raw);
 
   @protected
@@ -329,6 +346,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<DistanceGroupCount> dco_decode_list_distance_group_count(dynamic raw);
+
+  @protected
+  List<Float64List> dco_decode_list_list_prim_f_64_strict(dynamic raw);
 
   @protected
   List<PlatformInt64?> dco_decode_list_opt_box_autoadd_i_64(dynamic raw);
@@ -627,6 +647,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  ContigReportServices sse_decode_box_autoadd_contig_report_services(
+      SseDeserializer deserializer);
+
+  @protected
   ContigServices sse_decode_box_autoadd_contig_services(
       SseDeserializer deserializer);
 
@@ -750,6 +774,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   ColormapOption sse_decode_colormap_option(SseDeserializer deserializer);
 
   @protected
+  ContigOverviewData sse_decode_contig_overview_data(
+      SseDeserializer deserializer);
+
+  @protected
+  ContigReportData sse_decode_contig_report_data(SseDeserializer deserializer);
+
+  @protected
+  ContigReportServices sse_decode_contig_report_services(
+      SseDeserializer deserializer);
+
+  @protected
+  ContigSamplesData sse_decode_contig_samples_data(
+      SseDeserializer deserializer);
+
+  @protected
   ContigServices sse_decode_contig_services(SseDeserializer deserializer);
 
   @protected
@@ -852,6 +891,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<DistanceGroupCount> sse_decode_list_distance_group_count(
+      SseDeserializer deserializer);
+
+  @protected
+  List<Float64List> sse_decode_list_list_prim_f_64_strict(
       SseDeserializer deserializer);
 
   @protected
@@ -1181,6 +1224,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ArchiveServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_contig_report_services(
+      ContigReportServices self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_contig_services(
       ContigServices self, SseSerializer serializer);
 
@@ -1305,6 +1352,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ColormapOption self, SseSerializer serializer);
 
   @protected
+  void sse_encode_contig_overview_data(
+      ContigOverviewData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_contig_report_data(
+      ContigReportData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_contig_report_services(
+      ContigReportServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_contig_samples_data(
+      ContigSamplesData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_contig_services(
       ContigServices self, SseSerializer serializer);
 
@@ -1416,6 +1479,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_distance_group_count(
       List<DistanceGroupCount> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_list_prim_f_64_strict(
+      List<Float64List> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_opt_box_autoadd_i_64(

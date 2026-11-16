@@ -8,6 +8,7 @@ pub mod archive;
 pub mod colors;
 pub mod common;
 pub mod contig;
+pub mod contig_report;
 pub mod csv;
 pub mod distance_report;
 pub mod file_sort;
