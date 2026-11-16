@@ -11,61 +11,57 @@ sidebar:
 This feature is in beta and may still change.
 :::
 
-Rename sequence IDs across many sequence files at once. Available renaming methods:
+Rename sequence IDs across many sequence files at once.
 
-- Replace IDs using a list of ID pairs or a CSV/TSV file
-- Remove a string or a regular expression match
-- Replace a string or a regular expression match
+## Example
 
-Regular expressions follow the [Rust regex syntax](https://docs.rs/regex/latest/regex/).
-
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code.
+Set the input with `input_dir` or `input_files`, then call a renaming method.
 
 ```python
 import pysegul
 
 def rename_sequences():
-    input_dir = 'tests/align-data'
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_format = 'fasta'
-    output_dir = 'tests/output'
     rename = pysegul.SequenceRenaming(
-        input_format,
-        datatype,
-        output_dir,
-        output_format,
-        # Optional. Log the new IDs without writing any files.
-        dry_run=False,
+        input_fmt='nexus',
+        datatype='dna',
+        output_path='tests/output',
+        output_format='fasta',
         )
-    rename.input_dir = input_dir
-    # Or use a list of files:
-    # rename.input_files = ['tests/align-data/locus1.nex']
-
-    # Replace IDs using a list of (original ID, new ID) pairs
+    rename.input_dir = 'tests/align-data'
     rename.replace_id([('seq1', 'Rattus_rattus'), ('seq2', 'Mus_musculus')])
 ```
 
-Use one of the other methods instead of `replace_id`:
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_path` | Required | Output directory |
+| `output_format` | Required | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
+| `dry_run` | `False` | Log the new IDs without writing any files |
+
+## Input
+
+| Attribute | Description |
+| --- | --- |
+| `input_dir` | Directory of input sequence files |
+| `input_files` | List of input sequence files |
+
+## Methods
+
+Regular expressions follow the [Rust regex syntax](https://docs.rs/regex/latest/regex/).
+
+| Method | Description |
+| --- | --- |
+| `replace_id(names)` | Replace IDs using a list of `(original ID, new ID)` pairs |
+| `replace_id_from_file(path)` | Replace IDs using a CSV or TSV file with a header row and two columns: original ID and new ID |
+| `remove_string(input_str)` | Remove a string from the IDs |
+| `remove_regex(regex, all=False)` | Remove the first regex match, or every match with `all=True` |
+| `replace_string(from_, to)` | Replace a string in the IDs |
+| `replace_regex(regex, to, all=False)` | Replace the first regex match, or every match with `all=True` |
 
 ```python
-# Replace IDs using a CSV or TSV file with a header row
-# and two columns: original ID and new ID
-rename.replace_id_from_file('new_ids.csv')
-# Remove a string from the IDs
-rename.remove_string('_voucher')
-# Remove the first regex match. Set all=True to remove every match.
-rename.remove_regex(r'_\d+$', all=False)
-# Replace a string
+rename.remove_regex(r'_\d+$')
 rename.replace_string('Rattus', 'R')
-# Replace the first regex match. Set all=True to replace every match.
-rename.replace_regex(r'^([A-Z])[a-z]+_', 'X_', all=False)
 ```

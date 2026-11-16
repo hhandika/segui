@@ -6,77 +6,47 @@ sidebar:
 
 Generate summary statistics for DNA and amino acid alignments.
 
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code.
+## Example
 
 ```python
 import pysegul
 
 def summarize_alignments():
-    input_dir = 'tests/align-data'
-    input_format = 'nexus'
-    datatype = 'dna'
-    # Available values for interval: 1, 2, 5, 10.
-    completeness_interval = 5
-    prefix = 'concatenated'
-    output_dir = 'tests/output'
-    concat = pysegul.AlignmentSummary(
-        input_format,  
-        datatype, 
-        output_dir,
-        completeness_interval,
-        prefix
+    summary = pysegul.AlignmentSummary(
+        input_fmt='nexus',
+        datatype='dna',
+        output_path='tests/output',
+        output_prefix='summary',
         )
-    concat.from_dir(input_dir)
+    outputs = summary.from_dir('tests/align-data')
 ```
 
-You can also input the alignment paths in a list directly instead of using a directory. Replace the `input_dir` with `input_files` and provide a list of paths. Then, call the `from_files` method instead of `from_dir`.
+To use a list of files, call `from_files` instead of `from_dir`:
 
 ```python
-import pysegul
-
-def summarize_alignments():
-    input_path = ['tests/align-data/alignment1.nex', 'tests/align-data/alignment2.nex']
-    input_format = 'nexus'
-    datatype = 'dna'
-    completeness_interval = 5
-    prefix = 'concatenated'
-    output_dir = 'tests/output'
-    concat = pysegul.AlignmentSummary(
-        input_format,  
-        datatype, 
-        output_dir,
-        completeness_interval,
-        prefix
-        )
-    concat.from_files(input_path)
+summary.from_files(['tests/align-data/alignment1.nex', 'tests/align-data/alignment2.nex'])
 ```
 
-## Per-locus summary
+## Options
 
-:::caution[Beta]
-The `per_locus` option is in beta and may still change.
-:::
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_path` | Required | Output directory |
+| `summary_interval` | `5` | Step of the missing data summary, in percent: `1`, `2`, `5`, `10` |
+| `output_prefix` | `None` | Name of the output files |
+| `per_locus` *(beta)* | `False` | Write a summary for each alignment instead of one across all alignments |
+| `plot` *(beta)* | `None` | Chart options. Not available with `per_locus=True`. See [Charts](#charts) |
 
-Set `per_locus` to `True` to write a summary for each alignment instead of one summary across all alignments:
+## Methods
 
-```python
-summary = pysegul.AlignmentSummary(
-    'nexus',
-    'dna',
-    'tests/output',
-    5,
-    per_locus=True,
-    )
-summary.from_dir('tests/align-data')
-```
+| Method | Description |
+| --- | --- |
+| `from_dir(input_dir)` | Summarize the alignments in a directory |
+| `from_files(input_files)` | Summarize a list of alignment files |
+
+Both return a dictionary of output paths: `locus`, `taxon`, `text`, `report`, and `plots`. With `per_locus=True`, the dictionary is empty.
 
 ## Charts
 
@@ -84,7 +54,7 @@ summary.from_dir('tests/align-data')
 Charts are in beta and may still change.
 :::
 
-Set `plot` to write charts to the `plots` folder of the output directory. Charts are not available with `per_locus=True`. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for the chart options and the returned output paths.
+Set `plot` to write charts to the `plots` folder of the output directory. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for the chart options.
 
 ```python
 summary = pysegul.AlignmentSummary(

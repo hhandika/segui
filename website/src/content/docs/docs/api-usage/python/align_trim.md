@@ -11,43 +11,45 @@ sidebar:
 This feature is in beta and may still change.
 :::
 
-Trim alignment sites across many alignments at once. Available trimming methods:
+Trim alignment sites across many alignments at once. PySEGUL writes the trimmed alignments to the `trimmed_alignments` directory and a trimming summary to `trimming_summary.csv`.
 
-- Missing data: remove sites whose proportion of missing data (gaps and `?`) is above a threshold.
-- Parsimony informative sites: trim using a threshold of parsimony informative sites.
+## Example
 
-PySEGUL writes the trimmed alignments to the `trimmed_alignments` directory and a trimming summary to `trimming_summary.csv`.
-
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code.
+Set the input with `input_dir` or `input_files`, then call a trimming method.
 
 ```python
 import pysegul
 
 def trim_alignments():
-    input_dir = 'tests/align-data'
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_format = 'fasta'
-    output_dir = 'tests/output'
     trim = pysegul.AlignmentTrimming(
-        input_format,
-        datatype,
-        output_dir,
-        output_format,
+        input_fmt='nexus',
+        datatype='dna',
+        output_path='tests/output',
+        output_fmt='fasta',
         )
-    trim.input_dir = input_dir
-    # Or use a list of files:
-    # trim.input_files = ['tests/align-data/locus1.nex']
-    # Remove sites with more than 50% missing data
+    trim.input_dir = 'tests/align-data'
     trim.missing_data(0.5)
-    # Or trim using parsimony informative sites
-    # trim.parsimony_inf(1)
 ```
+
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_path` | Required | Output directory |
+| `output_fmt` | Required | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
+
+## Input
+
+| Attribute | Description |
+| --- | --- |
+| `input_dir` | Directory of input alignments |
+| `input_files` | List of input alignment files |
+
+## Methods
+
+| Method | Description |
+| --- | --- |
+| `missing_data(max_missing)` | Remove sites with more than `max_missing` (0.0–1.0) missing data (gaps and `?`) |
+| `parsimony_inf(threshold)` | Trim using a threshold of parsimony informative sites |

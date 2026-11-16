@@ -31,35 +31,17 @@ Here is an example of how to use the library to concatenate alignments:
 import pysegul
 
 def concat_alignments():
-    input_paths = ['tests/data/alignment1.nex', 'tests/data/alignment2.nex']
-    # Available input_format values: nexus, fasta, phylip.
-    # Automatically detect interleaved format.
-    input_format = 'nexus'
-    # Available datatype values: dna, aa.
-    datatype = 'dna'
-    # Available output_format values: fasta, phylip, nexus.
-    # Suffix with -int for interleaved format. Example: phylip-int
-    output_format = 'fasta'
-    # Available partition_format values: raxml, nexus, charset.
-    # Charset format is only available for nexus output format.
-    # The charset partition data is stored in the same file as the alignment.
-    partition_format = 'raxml'
-    prefix = 'concatenated'
-    output_dir = 'tests/output'
     concat = pysegul.AlignmentConcatenation(
-        input_format,  
-        datatype,
-        output_dir,
-        output_format,
-        partition_format,
-        prefix
+        input_fmt='nexus',
+        datatype='dna',
+        output_dir='tests/output',
+        output_fmt='fasta',
+        partition_fmt='raxml',
+        output_prefix='concatenated',
         )
-    concat.from_files(input_paths)
-    # If you prefer to input a directory
-    # and let SEGUL API to find
-    # all alignment files that match the input format.
-    input_dir = 'tests/data'
-    concat.from_dir(input_dir)
+    concat.from_files(['tests/data/alignment1.nex', 'tests/data/alignment2.nex'])
+    # Or concatenate every alignment in a directory that matches input_fmt
+    concat.from_dir('tests/data')
 
 if __name__ == '__main__':
     concat_alignments()
@@ -70,6 +52,24 @@ if __name__ == '__main__':
 ```bash
 python concat_alignments.py
 ```
+
+## Common options
+
+Most classes share these options. Each page lists the options of its class.
+
+| Option | Values |
+| --- | --- |
+| `input_fmt` | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'`. Interleaved files are detected automatically |
+| `datatype` | `'dna'`, `'aa'`, `'ignore'` |
+| `output_fmt` / `output_format` | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
+| `partition_fmt` | `'charset'`, `'nexus'`, `'raxml'`. Add `-codon` for codon partitions, e.g. `'raxml-codon'` |
+
+## Input files
+
+Classes take input in one of two ways:
+
+- **Run methods**: call `from_dir(input_dir)` to use every file in a directory that matches `input_fmt`, or `from_files(input_files)` with a list of paths.
+- **Input attributes**: classes with several methods, such as `AlignmentFiltering`, take the input from the `input_dir` or `input_files` attribute. Set it before calling a method.
 
 ## Available features
 

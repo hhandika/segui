@@ -6,68 +6,57 @@ sidebar:
 
 Summary statistics for raw sequence reads in FASTQ format. For assembled contigs, see [Genomic Contig Summary](/docs/api-usage/python/contig_summary/).
 
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code.
+## Example
 
 ```python
 import pysegul
 
 def summarize_reads():
-    input_dir = 'tests/raw-data'
-    input_format = 'auto'
-    summary_mode = 'default'
-    prefix = 'read_summary'
-    output_dir = 'tests/output'
     summary = pysegul.ReadSummary(
-        input_format,  
-        summary_mode,
-        output_dir,
-        prefix
+        input_fmt='auto',
+        mode='default',
+        output_path='tests/output',
+        output_prefix='read_summary',
         )
-    summary.from_dir(input_dir)
+    outputs = summary.from_dir('tests/raw-data')
 ```
 
-You can also input the alignment paths in a list directly instead of using a directory. Replace the `input_dir` with `input_files` and provide a list of paths. Then, call the `from_files` method instead of `from_dir`.
+To use a list of files, call `from_files` instead of `from_dir`:
 
 ```python
-import pysegul
-
-def summarize_reads():
-    input_path = ['tests/raw-data/read1.fastq', 'tests/raw-data/read2.fastq']
-    input_format = 'auto'
-    # Available values for summary_mode: 'default', 'complete', 'minimal'.
-    summary_mode = 'default'
-    prefix = 'read_summary'
-    output_dir = 'tests/output'
-    summary = pysegul.ReadSummary(
-        input_format,  
-        summary_mode,
-        output_dir,
-        prefix
-        )
-    summary.from_files(input_path)
+summary.from_files(['tests/raw-data/read1.fastq', 'tests/raw-data/read2.fastq'])
 ```
 
-In `complete` mode, the output directory also has per-position statistics (`read-pos-summary.zip`), read distributions (`read-dist-summary.zip`), and all statistics as JSON (`read-report.json`).
-
-Complete mode matches the read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [fastp](https://github.com/OpenGene/fastp), and adds options only SEGUL has. See [how SEGUL compares](/docs/cli-usage/read-summary/#comparison-with-fastqc-and-fastp).
-
-## More options
-
-:::caution[Beta]
-These options are in beta and may still change.
-:::
+## Options
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `phred` | `'auto'` | Quality score offset: `'auto'`, `'33'`, or `'64'` |
-| `dup_sketch_size` | `100000` | Reads sampled to estimate duplication in `complete` mode |
-| `plot` | `None` | Write charts. See [Charts and Reports](/docs/api-usage/python/plots_reports/) |
+| `input_fmt` | Required | `'auto'`, `'fastq'`, `'gzip'` |
+| `mode` | Required | `'minimal'`, `'default'`, or `'complete'`. See [Summary modes](#summary-modes) |
+| `output_path` | Required | Output directory |
+| `output_prefix` | `None` | Name of the output files |
+| `phred` *(beta)* | `'auto'` | Quality score offset: `'auto'`, `'33'`, `'64'` |
+| `dup_sketch_size` *(beta)* | `100000` | Distinct sequences kept to estimate duplication in `complete` mode |
+| `plot` *(beta)* | `None` | Chart options. See [Charts and Reports](/docs/api-usage/python/plots_reports/) |
+
+## Methods
+
+| Method | Description |
+| --- | --- |
+| `from_dir(input_dir)` | Summarize the read files in a directory |
+| `from_files(input_files)` | Summarize a list of read files |
+
+Both return a dictionary of output paths: `summary`, `positions`, `distributions`, `report`, and `plots`. `positions`, `distributions`, and `report` are written in `complete` mode only.
+
+## Summary modes
+
+| Mode | Output |
+| --- | --- |
+| `'minimal'` | Read count only |
+| `'default'` | Essential statistics. See the [CLI guideline](/docs/cli-usage/read-summary/#statistics) |
+| `'complete'` | Essential statistics, plus per-position statistics (`read-pos-summary.zip`), read distributions (`read-dist-summary.zip`), and all statistics as JSON (`read-report.json`), including duplication, overrepresented sequences, and adapter content |
+
+Complete mode matches the read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [fastp](https://github.com/OpenGene/fastp), and adds options only SEGUL has. See [how SEGUL compares](/docs/cli-usage/read-summary/#comparison-with-fastqc-and-fastp).
 
 ```python
 summary = pysegul.ReadSummary(
@@ -80,8 +69,6 @@ summary = pysegul.ReadSummary(
     )
 outputs = summary.from_dir('tests/raw-data')
 ```
-
-`from_dir` and `from_files` return the paths of the files they write, such as `outputs['report']`.
 
 ## Quality checks
 

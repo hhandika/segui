@@ -30,11 +30,8 @@ import pysegul
 
 def summarize_with_charts():
     plot = pysegul.PlotOptions(
-        # Optional. 'png' (default), 'svg', or 'pdf'.
         format='svg',
-        # Optional. Colors for series.
         palette='okabe-ito',
-        # Optional. Colors for heatmaps.
         colormap='cividis',
         )
     summary = pysegul.AlignmentSummary('nexus', 'dna', 'tests/output', plot=plot)

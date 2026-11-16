@@ -4,58 +4,47 @@ sidebar:
   order: 2
 ---
 
-## Steps
+Concatenate multiple alignments into a single alignment and write a partition file for it.
 
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code
+## Example
 
 ```python
 import pysegul
 
 def concat_alignments():
-    input_dir = 'tests/data'
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_format = 'fasta'
-    partition_format = 'raxml'
-    prefix = 'concatenated'
-    output_dir = 'tests/output'
     concat = pysegul.AlignmentConcatenation(
-        input_format,  
-        datatype, 
-        output_dir, 
-        output_format, 
-        partition_format, 
-        prefix
+        input_fmt='nexus',
+        datatype='dna',
+        output_dir='tests/output',
+        output_fmt='fasta',
+        partition_fmt='raxml',
+        output_prefix='concatenated',
         )
-    concat.from_dir(input_dir)
+    concat.from_dir('tests/data')
 ```
 
-You can also input the alignment paths in a list directly instead of using a directory. Replace the `input_dir` with `input_files` and provide a list of paths. Then, call the `from_files` method instead of `from_dir`.
+To use a list of files, call `from_files` instead of `from_dir`:
 
 ```python
-import pysegul
-
-def concat_alignments():
-    input_path = ['tests/data/alignment1.nex', 'tests/data/alignment2.nex']
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_format = 'fasta'
-    partition_format = 'raxml'
-    prefix = 'concatenated'
-    output_dir = 'tests/output'
-    concat = pysegul.AlignmentConcatenation(
-        input_format,  
-        datatype, 
-        output_dir, 
-        output_format, 
-        partition_format, 
-        prefix
-        )
-    concat.from_files(input_path)
+concat.from_files(['tests/data/alignment1.nex', 'tests/data/alignment2.nex'])
 ```
+
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_dir` | Required | Directory for the concatenated alignment |
+| `output_fmt` | Required | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
+| `partition_fmt` | Required | `'charset'`, `'nexus'`, `'raxml'`. Add `-codon` for codon partitions, e.g. `'raxml-codon'` |
+| `output_prefix` | `None` | Name of the output files |
+
+`'charset'` writes the partitions into the alignment file, so it needs NEXUS output.
+
+## Methods
+
+| Method | Description |
+| --- | --- |
+| `from_dir(input_dir)` | Concatenate the alignments in a directory |
+| `from_files(input_files)` | Concatenate a list of alignment files |

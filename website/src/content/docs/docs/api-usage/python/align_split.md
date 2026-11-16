@@ -4,45 +4,45 @@ sidebar:
   order: 7
 ---
 
-Split an alignment into multiple alignments based on partition information.
+Split a concatenated alignment into one alignment per partition.
 
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code
+## Example
 
 ```python
 import pysegul
 
 def split_alignment():
-    input_alignment = 'tests/split-data/split-data.nex'
-    input_format = 'nexus'
-    datatype = 'dna'
-    partition_format = 'nexus'
-    output_format = 'fasta'
-    # Check the partition before splitting. Set to False to skip checking.
-    check_partition = True
-    input_partition = 'tests/split-data/split-data_partition.nex'
-    output_dir = 'tests/output'
     split = pysegul.AlignmentSplitting(
-        input_alignment,
-        input_format,  
-        datatype, 
-        output_dir, 
-        output_format,
-        partition_format,
-        check_partition,
-        input_partition = input_partition
+        input_path='tests/split-data/split-data.nex',
+        input_fmt='nexus',
+        datatype='dna',
+        output_dir='tests/output',
+        output_fmt='fasta',
+        partition_fmt='nexus',
+        input_partition='tests/split-data/split-data_partition.nex',
         )
     split.split()
 ```
 
-If `input_partition` is not set, PySEGUL reads the partition from the input alignment.
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_path` | Required | Concatenated alignment file |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_dir` | Required | Output directory |
+| `output_fmt` | Required | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
+| `partition_fmt` | Required | `'charset'`, `'nexus'`, `'raxml'` |
+| `check_partition` | `True` | Check that the partitions are valid before splitting |
+| `input_partition` | `None` | Partition file. Defaults to the charset block in the input alignment |
+| `output_prefix` | `None` | Prefix of the output file names |
+
+## Methods
+
+| Method | Description |
+| --- | --- |
+| `split()` | Split the alignment |
 
 :::note
 In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. PySEGUL v0.5.0 fixes it.

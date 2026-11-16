@@ -11,34 +11,20 @@ sidebar:
 This feature is in beta and may still change.
 :::
 
-Convert alignments to unaligned sequences by removing gaps and missing data. The output format can be `fasta` or `fasta-int` (interleaved).
+Convert alignments to unaligned sequences by removing gaps and missing data.
 
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code.
+## Example
 
 ```python
 import pysegul
 
 def unalign_alignments():
-    input_dir = 'tests/align-data'
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_dir = 'tests/output'
     unalign = pysegul.AlignmentUnalignment(
-        input_format,
-        datatype,
-        output_dir,
-        # Optional. Default: 'fasta'
-        output_fmt='fasta',
+        input_fmt='nexus',
+        datatype='dna',
+        output_path='tests/output',
         )
-    unalign.from_dir(input_dir)
+    unalign.from_dir('tests/align-data')
 ```
 
 To use a list of files, call `from_files` instead of `from_dir`:
@@ -46,3 +32,19 @@ To use a list of files, call `from_files` instead of `from_dir`:
 ```python
 unalign.from_files(['tests/align-data/locus1.nex', 'tests/align-data/locus2.nex'])
 ```
+
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_path` | Required | Output directory |
+| `output_fmt` | `'fasta'` | `'fasta'` or interleaved `'fasta-int'` |
+
+## Methods
+
+| Method | Description |
+| --- | --- |
+| `from_dir(input_dir)` | Unalign the alignments in a directory |
+| `from_files(input_files)` | Unalign a list of alignment files |

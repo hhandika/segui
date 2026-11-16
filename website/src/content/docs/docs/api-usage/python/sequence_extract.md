@@ -4,76 +4,48 @@ sidebar:
   order: 14
 ---
 
-Extract sequences based on the sequence ID. Available methods:
+Extract sequences by sequence ID, using a regular expression, a list of IDs, or a file of IDs.
 
-- Regular expression
-- List of sequence ID
-- Text file of sequence IDs, one per line
+## Example
 
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code
+Set the input with `input_dir` or `input_files`, then call an extraction method.
 
 ```python
 import pysegul
 
 def extract_sequences():
-    input_dir = 'tests/align-data'
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_format = 'fasta'
-    output_dir = 'tests/output'
     extract = pysegul.SequenceExtraction(
-        input_format,  
-        datatype, 
-        output_dir, 
-        output_format,
+        input_fmt='nexus',
+        datatype='dna',
+        output_path='tests/output',
+        output_format='fasta',
         )
-    extract.input_dir = input_dir
-    # Using regular expression method
-    extract.extract_regex("(?i)^(abce)")
-    # using list of sequence ID method
-    extract.extract_id_list(['abce1', 'abce2'])
+    extract.input_dir = 'tests/align-data'
+    # Or use a list of files:
+    # extract.input_files = ['tests/align-data/alignment1.nex']
+    extract.extract_regex('(?i)^(abce)')
 ```
 
-You can also input the alignment paths in a list directly instead of using a directory. Replace the `input_dir` with `input_files` and provide a list of paths. Then, call the `from_files` method instead of `from_dir`.
+## Options
 
-```python
-import pysegul
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_path` | Required | Output directory |
+| `output_format` | Required | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
 
-def extract_sequences():
-    input_path = ['tests/align-data/alignment1.nex', 'tests/align-data/alignment2.nex']
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_format = 'fasta'
-    output_dir = 'tests/output'
-    extract = pysegul.SequenceExtraction(
-        input_format,  
-        datatype, 
-        output_dir, 
-        output_format,
-        )
-    extract.input_files = input_path
-    # Using regular expression method
-    extract.extract_regex("(?i)^(abce)")
-    # using list of sequence ID method
-    extract.extract_id_list(['abce1', 'abce2'])
-```
+## Input
 
-## Extract IDs from a file
+| Attribute | Description |
+| --- | --- |
+| `input_dir` | Directory of input sequence files |
+| `input_files` | List of input sequence files |
 
-:::caution[Beta]
-This method is in beta and may still change.
-:::
+## Methods
 
-Use `extract_id_file` with a text file that has one sequence ID per line. A missing file raises a `FileNotFoundError`.
-
-```python
-extract.extract_id_file('ids.txt')
-```
+| Method | Extract sequences |
+| --- | --- |
+| `extract_regex(regex)` | whose IDs match a regular expression ([Rust regex syntax](https://docs.rs/regex/latest/regex/)) |
+| `extract_id_list(list)` | with the IDs in a list, e.g. `['abce1', 'abce2']` |
+| `extract_id_file(path)` *(beta)* | with the IDs in a text file, one per line. A missing file raises a `FileNotFoundError` |

@@ -11,36 +11,20 @@ sidebar:
 This feature is in beta and may still change.
 :::
 
-Transpose locus alignments into one sequence file per sample. Each output file contains all loci for one sample, labeled by the locus (input file name) they come from. Gaps and missing data are removed. PySEGUL writes each sample to `output_dir/<sample_id>/<sample_id>.<ext>`.
+Transpose locus alignments into one sequence file per sample. Each output file contains all loci for one sample, labeled by the locus (input file name) they come from. Gaps and missing data are removed. PySEGUL writes each sample to `<output_path>/<sample_id>/<sample_id>.<ext>`.
 
-Use `fasta` or `fasta-int` output, because the transposed sequences are unaligned.
-
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code.
+## Example
 
 ```python
 import pysegul
 
 def transpose_sequences():
-    input_dir = 'tests/align-data'
-    input_format = 'nexus'
-    datatype = 'dna'
-    output_dir = 'tests/output'
     transpose = pysegul.SequenceTranspose(
-        input_format,
-        datatype,
-        output_dir,
-        # Optional. Default: 'fasta'
-        output_fmt='fasta',
+        input_fmt='nexus',
+        datatype='dna',
+        output_path='tests/output',
         )
-    transpose.from_dir(input_dir)
+    transpose.from_dir('tests/align-data')
 ```
 
 To use a list of files, call `from_files` instead of `from_dir`:
@@ -48,3 +32,19 @@ To use a list of files, call `from_files` instead of `from_dir`:
 ```python
 transpose.from_files(['tests/align-data/locus1.nex', 'tests/align-data/locus2.nex'])
 ```
+
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | `'auto'`, `'fasta'`, `'nexus'`, `'phylip'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_path` | Required | Output directory |
+| `output_fmt` | `'fasta'` | `'fasta'` or interleaved `'fasta-int'`. Transposed sequences are unaligned |
+
+## Methods
+
+| Method | Description |
+| --- | --- |
+| `from_dir(input_dir)` | Transpose the alignments in a directory |
+| `from_files(input_files)` | Transpose a list of alignment files |

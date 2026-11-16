@@ -4,52 +4,43 @@ sidebar:
   order: 6
 ---
 
-Convert alignment partition data between different formats. Available partition formats:
+Convert partition files between RAxML, NEXUS, and charset formats. Charset is a NEXUS format that stores the partitions in the same file as a NEXUS alignment.
 
-- RAxML
-- NEXUS
-- Charset
-
-Charset is a nexus format that stores partition data in the same file as a NEXUS alignment.
-
-## Steps
-
-Install PySEGUL using pip if you haven't done it yet
-
-```bash
-pip install pysegul
-```
-
-Create a new Python script, import the library, and write python code. Example:
+## Example
 
 ```python
 import pysegul
 
 def convert_partitions():
-    input_paths = [
-        'tests/partition-data/partition_codon.txt', 
-        'tests/partition-data/partition.txt'
-        ]
-    # Available input and output format values: raxml, nexus, charset.
-    input_format = 'raxml'
-    output_format = 'nexus'
-    datatype = 'dna'
-    # Check the partition before converting. Set to False to skip checking.
-    check_partition = True
-    output_dir = 'tests/output'
     convert = pysegul.PartitionConversion(
-        input_format,
-        datatype,
-        output_dir,
-        output_format,
-        check_partition
+        input_fmt='raxml',
+        datatype='dna',
+        output_dir='tests/output',
+        output_fmt='nexus',
         )
-    convert.from_files(input_paths)
+    convert.from_files([
+        'tests/partition-data/partition_codon.txt',
+        'tests/partition-data/partition.txt',
+        ])
 ```
 
-:::note
-Unlike most of other features, partition conversion does not support input directory.
-:::
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `input_fmt` | Required | Input partition format: `'charset'`, `'nexus'`, `'raxml'` |
+| `datatype` | Required | `'dna'`, `'aa'`, `'ignore'` |
+| `output_dir` | Required | Output directory |
+| `output_fmt` | Required | Output partition format: `'charset'`, `'nexus'`, `'raxml'`. Add `-codon` for codon partitions, e.g. `'nexus-codon'` |
+| `check_partition` | `True` | Check that the partitions are valid before converting |
+
+## Methods
+
+| Method | Description |
+| --- | --- |
+| `from_files(input_files)` | Convert a list of partition files |
+
+Partition conversion does not take an input directory.
 
 :::note
 In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. PySEGUL v0.5.0 fixes it.
