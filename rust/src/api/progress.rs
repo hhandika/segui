@@ -18,6 +18,10 @@ pub struct TaskProgress {
     pub current_file: Option<String>,
     /// A step after the files are read, such as writing outputs.
     pub stage: Option<String>,
+    /// Bytes processed, for tasks that track bytes, such as extracting an archive.
+    pub bytes_done: u64,
+    /// Bytes to process, or zero when the task does not track bytes.
+    pub bytes_total: u64,
 }
 
 /// Follows a running task and cancels it. Create one per run, listen to
@@ -71,6 +75,22 @@ impl RunMonitor {
     #[frb(sync)]
     pub fn is_cancelled(&self) -> bool {
         self.cancelled.load(Ordering::Relaxed)
+    }
+
+    /// Records bytes processed out of `total`, for tasks that measure progress in bytes.
+    pub(crate) fn report_bytes(&self, done: u64, total: u64) {
+        self.update(|p| {
+            p.bytes_done = done;
+            p.bytes_total = total;
+        });
+    }
+
+    #[cfg(test)]
+    pub(crate) fn snapshot(&self) -> TaskProgress {
+        self.progress
+            .lock()
+            .map(|progress| progress.clone())
+            .unwrap_or_default()
     }
 
     fn update(&self, change: impl FnOnce(&mut TaskProgress)) {
@@ -138,6 +158,15 @@ mod tests {
         assert_eq!(progress.done, 1);
         assert_eq!(progress.total, 2);
         assert_eq!(progress.current_file.as_deref(), Some("a.fastq"));
+    }
+
+    #[test]
+    fn test_reports_bytes() {
+        let monitor = RunMonitor::new();
+        monitor.report_bytes(10, 40);
+        let progress = monitor.progress.lock().unwrap().clone();
+        assert_eq!(progress.bytes_done, 10);
+        assert_eq!(progress.bytes_total, 40);
     }
 
     #[test]

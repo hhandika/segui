@@ -161,11 +161,10 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                     compact: !widget.allowMultiple,
                     icon: Icons.upload_file_outlined,
                     title: widget.label,
-                    hint: _progressLabel ?? _dropHint(sharedCount),
+                    hint: _dropHint(sharedCount),
                     isDragging: isDragging,
                     isLoading: _isLoading,
-                    progress: _progress?.fraction,
-                    onCancel: _cancelAction,
+                    progress: _progress,
                     actions: _emptyActions(sharedCount),
                   );
                 }
@@ -179,11 +178,10 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                     style: Theme.of(context).textTheme.labelLarge,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: _progressLabel ?? _selectedHint(sharedCount),
+                  subtitle: _selectedHint(sharedCount),
                   isDragging: isDragging,
                   isLoading: _isLoading,
-                  progress: _progress?.fraction,
-                  onCancel: _cancelAction,
+                  progress: _progress,
                   sheetTitle: _selectionLabel(files),
                   actions: _selectedActions(files, sharedCount),
                 );
@@ -205,27 +203,6 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
 
   bool get _canSelectSeguiFolder {
     return Platform.isIOS && widget.allowDirectorySelection;
-  }
-
-  /// Only an Android folder copy reports progress and can stop.
-  VoidCallback? get _cancelAction {
-    if (_progress == null || _progress!.isCounting || !Platform.isAndroid) {
-      return null;
-    }
-    return () => MobileIoChannel.instance.cancelCopy();
-  }
-
-  String? get _progressLabel {
-    final InputCopyProgress? progress = _progress;
-    if (!_isLoading || progress == null) {
-      return null;
-    }
-    if (progress.isCounting) {
-      return 'Copying files into SEGUI…';
-    }
-    final format = NumberFormat.decimalPattern();
-    return 'Copying ${format.format(progress.copied)} / '
-        '${format.format(progress.total)}';
   }
 
   String _dropHint(int sharedCount) {
@@ -598,7 +575,6 @@ class PickerDropZone extends StatelessWidget {
     this.isDragging = false,
     this.isLoading = false,
     this.progress,
-    this.onCancel,
   });
 
   final IconData icon;
@@ -609,11 +585,8 @@ class PickerDropZone extends StatelessWidget {
   final bool isDragging;
   final bool isLoading;
 
-  /// Fraction of files copied, or null while the total is unknown.
-  final double? progress;
-
-  /// Stops the running copy, when it can stop.
-  final VoidCallback? onCancel;
+  /// Copy progress while [isLoading], or null while it is unknown.
+  final InputCopyProgress? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -639,7 +612,6 @@ class PickerDropZone extends StatelessWidget {
                   hint: hint,
                   isLoading: isLoading,
                   progress: progress,
-                  onCancel: onCancel,
                   onBrowse: () => _onTap(context),
                 )
               : PickerDropZoneColumn(
@@ -648,7 +620,6 @@ class PickerDropZone extends StatelessWidget {
                   hint: hint,
                   isLoading: isLoading,
                   progress: progress,
-                  onCancel: onCancel,
                   actions: actions,
                 ),
         ),
@@ -675,7 +646,6 @@ class PickerDropZoneColumn extends StatelessWidget {
     required this.isLoading,
     required this.actions,
     this.progress,
-    this.onCancel,
   });
 
   final IconData icon;
@@ -683,8 +653,7 @@ class PickerDropZoneColumn extends StatelessWidget {
   final String hint;
   final bool isLoading;
   final List<PickerAction> actions;
-  final double? progress;
-  final VoidCallback? onCancel;
+  final InputCopyProgress? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -713,9 +682,7 @@ class PickerDropZoneColumn extends StatelessWidget {
           ),
           const SizedBox(height: SeguiSpacing.lg),
           if (isLoading)
-            Center(
-              child: PickerProgress(value: progress, onCancel: onCancel),
-            )
+            PickerCopyProgress(progress: progress)
           else
             Wrap(
               alignment: WrapAlignment.center,
@@ -752,7 +719,6 @@ class PickerDropZoneRow extends StatelessWidget {
     required this.isLoading,
     required this.onBrowse,
     this.progress,
-    this.onCancel,
   });
 
   final IconData icon;
@@ -760,8 +726,7 @@ class PickerDropZoneRow extends StatelessWidget {
   final String hint;
   final bool isLoading;
   final VoidCallback onBrowse;
-  final double? progress;
-  final VoidCallback? onCancel;
+  final InputCopyProgress? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -769,23 +734,33 @@ class PickerDropZoneRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
           SeguiSpacing.lg, SeguiSpacing.md, SeguiSpacing.md, SeguiSpacing.md),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(icon, color: theme.colorScheme.primary),
-          const SizedBox(width: SeguiSpacing.lg),
-          Expanded(
-            child: PickerText(title: Text(title), subtitle: hint),
-          ),
-          const SizedBox(width: SeguiSpacing.md),
-          isLoading
-              ? PickerProgress(value: progress, onCancel: onCancel)
-              : FilledButton.tonal(
+          Row(
+            children: [
+              Icon(icon, color: theme.colorScheme.primary),
+              const SizedBox(width: SeguiSpacing.lg),
+              Expanded(
+                child: PickerText(title: Text(title), subtitle: hint),
+              ),
+              if (!isLoading) ...[
+                const SizedBox(width: SeguiSpacing.md),
+                FilledButton.tonal(
                   style: FilledButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                   ),
                   onPressed: onBrowse,
                   child: const Text('Browse'),
                 ),
+              ],
+            ],
+          ),
+          if (isLoading) ...[
+            const SizedBox(height: SeguiSpacing.md),
+            PickerCopyProgress(progress: progress),
+          ],
         ],
       ),
     );
@@ -805,7 +780,6 @@ class PickerSelectionCard extends StatelessWidget {
     this.isDragging = false,
     this.isLoading = false,
     this.progress,
-    this.onCancel,
   });
 
   final IconData icon;
@@ -815,8 +789,7 @@ class PickerSelectionCard extends StatelessWidget {
   final List<PickerAction> actions;
   final bool isDragging;
   final bool isLoading;
-  final double? progress;
-  final VoidCallback? onCancel;
+  final InputCopyProgress? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -835,20 +808,23 @@ class PickerSelectionCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
             SeguiSpacing.lg, SeguiSpacing.md, SeguiSpacing.md, SeguiSpacing.md),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(icon, color: colors.primary),
-            const SizedBox(width: SeguiSpacing.lg),
-            Expanded(
-              child: PickerText(
-                title: title,
-                subtitle: isDragging ? 'Release to add' : subtitle,
-              ),
-            ),
-            const SizedBox(width: SeguiSpacing.md),
-            isLoading
-                ? PickerProgress(value: progress, onCancel: onCancel)
-                : TextButton.icon(
+            Row(
+              children: [
+                Icon(icon, color: colors.primary),
+                const SizedBox(width: SeguiSpacing.lg),
+                Expanded(
+                  child: PickerText(
+                    title: title,
+                    subtitle: isDragging ? 'Release to add' : subtitle,
+                  ),
+                ),
+                if (!isLoading) ...[
+                  const SizedBox(width: SeguiSpacing.md),
+                  TextButton.icon(
                     style: TextButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                     ),
@@ -861,6 +837,13 @@ class PickerSelectionCard extends StatelessWidget {
                         size: SeguiControlSize.iconSmall),
                     label: const Text('Edit'),
                   ),
+                ],
+              ],
+            ),
+            if (isLoading) ...[
+              const SizedBox(height: SeguiSpacing.md),
+              PickerCopyProgress(progress: progress),
+            ],
           ],
         ),
       ),
@@ -901,42 +884,75 @@ class PickerText extends StatelessWidget {
   }
 }
 
-/// Progress indicator sized to sit in place of a picker button, with a
-/// cancel button when [onCancel] is set.
-class PickerProgress extends StatelessWidget {
-  const PickerProgress({super.key, this.value, this.onCancel});
+/// Inline bar for copying or extracting input files: a status line, the
+/// percentage, a stop button when the copy can stop, and a full-width bar.
+/// A null [progress] shows an indeterminate bar.
+class PickerCopyProgress extends StatelessWidget {
+  const PickerCopyProgress({super.key, this.progress});
 
-  /// Fraction done, or null for an indeterminate indicator.
-  final double? value;
-  final VoidCallback? onCancel;
+  final InputCopyProgress? progress;
 
   @override
   Widget build(BuildContext context) {
-    final Widget indicator = SizedBox.square(
-      dimension: 20,
-      child: CircularProgressIndicator(
-        value: value,
-        strokeWidth: SeguiStroke.regular,
-      ),
+    final ThemeData theme = Theme.of(context);
+    final InputCopyProgress? progress = this.progress;
+    final double? fraction = progress?.fraction;
+    final TextStyle? detailStyle = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
     );
-    if (onCancel == null) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xl),
-        child: indicator,
-      );
-    }
-    return Row(
+    return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        indicator,
-        IconButton(
-          tooltip: 'Stop copying',
-          onPressed: onCancel,
-          icon: const Icon(Icons.close_rounded),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                inputCopyLabel(progress),
+                style: theme.textTheme.labelMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (fraction != null)
+              Text('${(fraction * 100).floor()}%', style: detailStyle),
+            if (progress?.onCancel case final VoidCallback onCancel)
+              IconButton(
+                tooltip: 'Stop',
+                visualDensity: VisualDensity.compact,
+                onPressed: onCancel,
+                icon: const Icon(Icons.close_rounded,
+                    size: SeguiControlSize.iconMedium),
+              ),
+          ],
+        ),
+        const SizedBox(height: SeguiSpacing.xs),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(SeguiRadius.full),
+          child: LinearProgressIndicator(value: fraction),
         ),
       ],
     );
   }
+}
+
+/// Status line for [progress], such as `Copying 12 of 40 files`.
+String inputCopyLabel(InputCopyProgress? progress) {
+  final InputCopyStage stage = progress?.stage ?? InputCopyStage.copying;
+  final String verb =
+      stage == InputCopyStage.extracting ? 'Extracting' : 'Copying';
+  if (progress == null || progress.isCounting) {
+    return stage == InputCopyStage.extracting
+        ? 'Extracting archive…'
+        : 'Preparing files…';
+  }
+  if (progress.total == 0) {
+    return '$verb…';
+  }
+  final NumberFormat format = NumberFormat.decimalPattern();
+  final String noun = progress.total == 1 ? 'file' : 'files';
+  return '$verb ${format.format(progress.copied)} of '
+      '${format.format(progress.total)} $noun';
 }
 
 /// Shows the actions of a file picker in a bottom sheet on compact windows,

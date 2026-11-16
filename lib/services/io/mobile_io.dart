@@ -3,21 +3,75 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 
-/// Progress of copying input files into the app.
+/// What SEGUI is doing with input files while it reports progress.
+enum InputCopyStage { copying, extracting }
+
+/// Progress of copying or extracting input files into the app.
 class InputCopyProgress {
-  const InputCopyProgress({required this.copied, required this.total});
+  const InputCopyProgress({
+    required this.copied,
+    required this.total,
+    this.bytesCopied = 0,
+    this.bytesTotal = 0,
+    this.stage = InputCopyStage.copying,
+    this.onCancel,
+  });
 
   /// Copying has started but the file count is not known yet.
-  const InputCopyProgress.preparing()
-      : copied = 0,
-        total = 0;
+  const InputCopyProgress.preparing({
+    this.stage = InputCopyStage.copying,
+    this.onCancel,
+  })  : copied = 0,
+        total = 0,
+        bytesCopied = 0,
+        bytesTotal = 0;
 
+  /// Reads a progress event sent by the native mobile channel. Keys that
+  /// are missing count as unknown.
+  factory InputCopyProgress.fromEvent(
+    Map<Object?, Object?> data, {
+    VoidCallback? onCancel,
+  }) {
+    return InputCopyProgress(
+      copied: _asInt(data['copied']),
+      total: _asInt(data['total']),
+      bytesCopied: _asInt(data['bytesCopied']),
+      bytesTotal: _asInt(data['bytesTotal']),
+      onCancel: onCancel,
+    );
+  }
+
+  /// Files done and files to do. [total] is zero while counting.
   final int copied;
   final int total;
 
-  bool get isCounting => total == 0;
+  /// Bytes done and bytes to do. [bytesTotal] is zero when sizes are
+  /// unknown, and then progress follows the file count.
+  final int bytesCopied;
+  final int bytesTotal;
 
-  double? get fraction => isCounting ? null : copied / total;
+  final InputCopyStage stage;
+
+  /// Stops the copy, or null when it cannot stop.
+  final VoidCallback? onCancel;
+
+  bool get canCancel => onCancel != null;
+
+  /// Whether nothing is known about the amount of work yet.
+  bool get isCounting => total == 0 && bytesTotal == 0;
+
+  /// Share done, by bytes when sizes are known, else by files, else null.
+  double? get fraction {
+    if (bytesTotal > 0) {
+      return (bytesCopied / bytesTotal).clamp(0.0, 1.0);
+    }
+    if (total > 0) {
+      return (copied / total).clamp(0.0, 1.0);
+    }
+    return null;
+  }
+
+  static int _asInt(Object? value) => value is num ? value.toInt() : 0;
 }
 
 /// Native file access on Android and iOS that the picker plugins lack:
@@ -46,13 +100,13 @@ class MobileIoChannel {
   /// SEGUI while it is running.
   Stream<int> get onShared => _sharedController.stream;
 
-  /// Copy progress while [pickFolder] copies an Android folder.
+  /// Copy progress while [pickFolder], [pickFiles], or [takeSharedFiles]
+  /// copy files into the app.
   Stream<InputCopyProgress> get progress {
     return _progressChannel.receiveBroadcastStream().map((event) {
-      final Map<Object?, Object?> data = event as Map<Object?, Object?>;
-      return InputCopyProgress(
-        copied: data['copied'] as int? ?? 0,
-        total: data['total'] as int? ?? 0,
+      return InputCopyProgress.fromEvent(
+        event as Map<Object?, Object?>,
+        onCancel: cancelCopy,
       );
     });
   }
@@ -71,7 +125,35 @@ class MobileIoChannel {
     return path == null ? null : Directory(path);
   }
 
-  /// Stops an Android folder copy. Files copied so far are kept.
+  /// Lets the user pick files and copies them into [destination] with
+  /// progress events. Returns the copied paths and the number of picked
+  /// files left out. Android leaves out names without [extensions], and an
+  /// empty list keeps every file. iOS shows only files of
+  /// [typeIdentifiers], or of [extensions] when there are none.
+  Future<({List<String> paths, int skipped})> pickFiles({
+    required bool multiple,
+    required List<String> extensions,
+    required Directory destination,
+    List<String> typeIdentifiers = const [],
+  }) async {
+    final Map<Object?, Object?>? result =
+        await _channel.invokeMethod<Map<Object?, Object?>>('pickFiles', {
+      'multiple': multiple,
+      'extensions': extensions,
+      'typeIdentifiers': typeIdentifiers,
+      'destination': destination.path,
+    });
+    if (result == null) {
+      return (paths: const <String>[], skipped: 0);
+    }
+    final List<Object?> paths = result['paths'] as List<Object?>? ?? const [];
+    return (
+      paths: paths.whereType<String>().toList(),
+      skipped: (result['skipped'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  /// Stops a folder, file, or shared-file copy. Files copied so far are kept.
   Future<void> cancelCopy() async {
     await _channel.invokeMethod<void>('cancelCopy');
   }

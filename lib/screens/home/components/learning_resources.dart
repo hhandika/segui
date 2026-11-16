@@ -14,6 +14,6 @@ class _LearningResourcesPageState extends State<LearningResourcesPage> {
         appBar: AppBar(
           title: const Text('Learning Resources'),
         ),
-        body: const Center(child: Text('Coming soon...')));
+        body: const SafeArea(child: Center(child: Text('Coming soon...'))));
   }
 }

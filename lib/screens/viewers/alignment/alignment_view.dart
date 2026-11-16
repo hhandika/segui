@@ -85,80 +85,82 @@ class _AlignmentFileViewState extends ConsumerState<AlignmentFileView> {
             ],
           ),
           backgroundColor: getSEGULBackgroundColor(context),
-          body: Padding(
-            // Phones keep more of the screen for the grid.
-            padding:
-                EdgeInsets.all(isCompact ? SeguiSpacing.sm : SeguiSpacing.xl),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (showFileList) ...[
-                  SizedBox(
-                    width: SeguiAlignmentLayout.fileList,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          // A Material panel, so list tiles keep their ink
-                          // and color.
-                          child: OutlinedPanel(
-                            child: AlignmentFileRail(
-                              files: _files,
-                              index: _index,
-                              onSelected: _select,
+          body: SafeArea(
+            child: Padding(
+              // Phones keep more of the screen for the grid.
+              padding:
+                  EdgeInsets.all(isCompact ? SeguiSpacing.sm : SeguiSpacing.xl),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (showFileList) ...[
+                    SizedBox(
+                      width: SeguiAlignmentLayout.fileList,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            // A Material panel, so list tiles keep their ink
+                            // and color.
+                            child: OutlinedPanel(
+                              child: AlignmentFileRail(
+                                files: _files,
+                                index: _index,
+                                onSelected: _select,
+                              ),
                             ),
                           ),
-                        ),
-                        // Ends level with the status line under the grid.
-                        const AlignmentFileHint(),
-                      ],
+                          // Ends level with the status line under the grid.
+                          const AlignmentFileHint(),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: SeguiSpacing.md),
+                  ],
+                  Expanded(
+                    child: AlignmentViewBody(
+                      key: ValueKey(file.path),
+                      path: file.path,
+                      leading: hasOtherFiles
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: AlignmentFileSwitcher(
+                                    files: _files,
+                                    index: _index,
+                                    onSelected: _select,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: SeguiControlSize.iconMedium,
+                                  child: VerticalDivider(
+                                    width: SeguiSpacing.sm,
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: settings.showFileList && !isCompact
+                                      ? 'Hide file list'
+                                      : 'Show file list',
+                                  visualDensity: controlDensity(context),
+                                  isSelected: showFileList,
+                                  icon: const Icon(Icons.list_rounded),
+                                  selectedIcon:
+                                      const Icon(Icons.playlist_play_rounded),
+                                  onPressed: isCompact
+                                      ? _showFileSheet
+                                      : ref
+                                          .read(alignmentViewSettingsProvider
+                                              .notifier)
+                                          .toggleFileList,
+                                ),
+                              ],
+                            )
+                          : null,
                     ),
                   ),
-                  const SizedBox(width: SeguiSpacing.md),
                 ],
-                Expanded(
-                  child: AlignmentViewBody(
-                    key: ValueKey(file.path),
-                    path: file.path,
-                    leading: hasOtherFiles
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: AlignmentFileSwitcher(
-                                  files: _files,
-                                  index: _index,
-                                  onSelected: _select,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: SeguiControlSize.iconMedium,
-                                child: VerticalDivider(
-                                  width: SeguiSpacing.sm,
-                                ),
-                              ),
-                              IconButton(
-                                tooltip: settings.showFileList && !isCompact
-                                    ? 'Hide file list'
-                                    : 'Show file list',
-                                visualDensity: controlDensity(context),
-                                isSelected: showFileList,
-                                icon: const Icon(Icons.list_rounded),
-                                selectedIcon:
-                                    const Icon(Icons.playlist_play_rounded),
-                                onPressed: isCompact
-                                    ? _showFileSheet
-                                    : ref
-                                        .read(alignmentViewSettingsProvider
-                                            .notifier)
-                                        .toggleFileList,
-                              ),
-                            ],
-                          )
-                        : null,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -623,34 +625,37 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
       useSafeArea: true,
       builder: (sheetContext) => FractionallySizedBox(
         heightFactor: SeguiAlignmentLayout.chunkSheetHeight,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                SeguiSpacing.xxl,
-                0,
-                SeguiSpacing.xxl,
-                SeguiSpacing.md,
+        child: SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SeguiSpacing.xxl,
+                  0,
+                  SeguiSpacing.xxl,
+                  SeguiSpacing.md,
+                ),
+                child: Text(
+                  'Chunks',
+                  style: Theme.of(sheetContext).textTheme.headlineSmall,
+                ),
               ),
-              child: Text(
-                'Chunks',
-                style: Theme.of(sheetContext).textTheme.headlineSmall,
+              Expanded(
+                child: ChunkSidebar(
+                  data: widget.data,
+                  width: double.infinity,
+                  chunkSize: settings.chunkSize,
+                  currentChunk: _chunksOf(settings).clamp(settings.chunk),
+                  onSelected: (chunk) {
+                    Navigator.of(sheetContext).pop();
+                    _goToChunk(chunk);
+                  },
+                ),
               ),
-            ),
-            Expanded(
-              child: ChunkSidebar(
-                data: widget.data,
-                width: double.infinity,
-                chunkSize: settings.chunkSize,
-                currentChunk: _chunksOf(settings).clamp(settings.chunk),
-                onSelected: (chunk) {
-                  Navigator.of(sheetContext).pop();
-                  _goToChunk(chunk);
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

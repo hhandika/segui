@@ -38,52 +38,54 @@ class _QuickStartPageState extends State<QuickStartPage> {
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal:
-              isPhoneScreen(context) ? SeguiSpacing.xl : SeguiSpacing.xxxl,
-          vertical: SeguiSpacing.xl,
-        ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints:
-                const BoxConstraints(maxWidth: SeguiContentWidth.guide),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const QuickStartHeader(),
-                const SizedBox(height: SeguiSpacing.xl),
-                const QuickStartSteps(),
-                const SizedBox(height: SeguiSpacing.xxxl),
-                QuickStartInputGuide(
-                  platform: widget.inputPlatform ?? InputPlatform.current,
-                ),
-                const SizedBox(height: SeguiSpacing.xxxl),
-                Text('Feature guides', style: theme.textTheme.titleMedium),
-                const SizedBox(height: SeguiSpacing.xs),
-                Text(
-                  'See what each tool does to your data, then open it.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                isPhoneScreen(context) ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+            vertical: SeguiSpacing.xl,
+          ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints:
+                  const BoxConstraints(maxWidth: SeguiContentWidth.guide),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const QuickStartHeader(),
+                  const SizedBox(height: SeguiSpacing.xl),
+                  const QuickStartSteps(),
+                  const SizedBox(height: SeguiSpacing.xxxl),
+                  QuickStartInputGuide(
+                    platform: widget.inputPlatform ?? InputPlatform.current,
                   ),
-                ),
-                const SizedBox(height: SeguiSpacing.lg),
-                FeatureGuideFilter(
-                  selected: _category,
-                  onSelected: (category) {
-                    setState(() {
-                      _category = category;
-                    });
-                  },
-                ),
-                const SizedBox(height: SeguiSpacing.lg),
-                FeatureGuideGrid(tools: featureGuidesFor(_category)),
-                const SizedBox(height: SeguiSpacing.xl),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: LaunchDocButton(),
-                ),
-              ],
+                  const SizedBox(height: SeguiSpacing.xxxl),
+                  Text('Feature guides', style: theme.textTheme.titleMedium),
+                  const SizedBox(height: SeguiSpacing.xs),
+                  Text(
+                    'See what each tool does to your data, then open it.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: SeguiSpacing.lg),
+                  FeatureGuideFilter(
+                    selected: _category,
+                    onSelected: (category) {
+                      setState(() {
+                        _category = category;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: SeguiSpacing.lg),
+                  FeatureGuideGrid(tools: featureGuidesFor(_category)),
+                  const SizedBox(height: SeguiSpacing.xl),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: LaunchDocButton(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -532,90 +534,94 @@ class FeatureGuidePage extends StatelessWidget {
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal:
-              isPhoneScreen(context) ? SeguiSpacing.xl : SeguiSpacing.xxxl,
-          vertical: SeguiSpacing.xl,
-        ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: SeguiContentWidth.wide),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    ToolCategoryIcon(tool: tool, size: SeguiControlSize.avatar),
-                    const SizedBox(width: SeguiSpacing.lg),
-                    Expanded(
-                      child: Text(
-                        tool.category.label,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: colors.primary,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                isPhoneScreen(context) ? SeguiSpacing.xl : SeguiSpacing.xxxl,
+            vertical: SeguiSpacing.xl,
+          ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints:
+                  const BoxConstraints(maxWidth: SeguiContentWidth.wide),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      ToolCategoryIcon(
+                          tool: tool, size: SeguiControlSize.avatar),
+                      const SizedBox(width: SeguiSpacing.lg),
+                      Expanded(
+                        child: Text(
+                          tool.category.label,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: colors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: SeguiSpacing.lg),
+                  Text(tool.about, style: theme.textTheme.bodyLarge),
+                  const SizedBox(height: SeguiSpacing.xl),
+                  for (final asset in tool.diagramAssets)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: SeguiSpacing.xl),
+                      child: Card.filled(
+                        margin: EdgeInsets.zero,
+                        color: colors.surfaceContainerLow,
+                        child: Padding(
+                          padding: const EdgeInsets.all(SeguiSpacing.xl),
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            final double width = math.max(
+                              constraints.maxWidth,
+                              minDiagramWidth,
+                            );
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: width,
+                                child: FeatureDiagram(
+                                  asset: asset,
+                                  semanticsLabel: '${tool.title} diagram',
+                                ),
+                              ),
+                            );
+                          }),
                         ),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: SeguiSpacing.lg),
-                Text(tool.about, style: theme.textTheme.bodyLarge),
-                const SizedBox(height: SeguiSpacing.xl),
-                for (final asset in tool.diagramAssets)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: SeguiSpacing.xl),
-                    child: Card.filled(
-                      margin: EdgeInsets.zero,
-                      color: colors.surfaceContainerLow,
-                      child: Padding(
-                        padding: const EdgeInsets.all(SeguiSpacing.xl),
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          final double width = math.max(
-                            constraints.maxWidth,
-                            minDiagramWidth,
-                          );
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: SizedBox(
-                              width: width,
-                              child: FeatureDiagram(
-                                asset: asset,
-                                semanticsLabel: '${tool.title} diagram',
-                              ),
-                            ),
-                          );
-                        }),
+                  Text('How to run it', style: theme.textTheme.titleMedium),
+                  const SizedBox(height: SeguiSpacing.md),
+                  for (final (index, step) in quickStartSteps.indexed)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        radius: SeguiControlSize.badge / 2,
+                        backgroundColor: colors.primaryContainer,
+                        foregroundColor: colors.onPrimaryContainer,
+                        child: Text('${index + 1}'),
                       ),
+                      title: Text(step.title),
+                      subtitle: Text(step.description),
                     ),
+                  const SizedBox(height: SeguiSpacing.xl),
+                  Wrap(
+                    spacing: SeguiSpacing.md,
+                    runSpacing: SeguiSpacing.md,
+                    children: [
+                      OpenToolButton(tool: tool),
+                      OutlinedButton(
+                        onPressed: launchSegulFeaturesUrl,
+                        child: const Text('Feature guides on the website'),
+                      ),
+                    ],
                   ),
-                Text('How to run it', style: theme.textTheme.titleMedium),
-                const SizedBox(height: SeguiSpacing.md),
-                for (final (index, step) in quickStartSteps.indexed)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      radius: SeguiControlSize.badge / 2,
-                      backgroundColor: colors.primaryContainer,
-                      foregroundColor: colors.onPrimaryContainer,
-                      child: Text('${index + 1}'),
-                    ),
-                    title: Text(step.title),
-                    subtitle: Text(step.description),
-                  ),
-                const SizedBox(height: SeguiSpacing.xl),
-                Wrap(
-                  spacing: SeguiSpacing.md,
-                  runSpacing: SeguiSpacing.md,
-                  children: [
-                    OpenToolButton(tool: tool),
-                    OutlinedButton(
-                      onPressed: launchSegulFeaturesUrl,
-                      child: const Text('Feature guides on the website'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: SeguiSpacing.md),
-              ],
+                  const SizedBox(height: SeguiSpacing.md),
+                ],
+              ),
             ),
           ),
         ),

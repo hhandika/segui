@@ -5,9 +5,11 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'progress.dart';
 
-// These functions are ignored because they are not marked as `pub`: `common_parent`, `entries`, `extract_tar_gz`, `extract_zip`, `target_path`, `write_entry`, `write_tar_gz`, `write_zip`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `clone`, `eq`, `fmt`
+// These functions are ignored because they are not marked as `pub`: `check_cancelled`, `common_parent`, `counter`, `entries`, `extract_inner`, `extract_tar_gz`, `extract_zip`, `new`, `target_path`, `write_entry`, `write_tar_gz`, `write_zip`, `zip_totals`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `CountingReader`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `clone`, `eq`, `fmt`, `read`
 
 class ArchiveServices {
   final String outputPath;
@@ -98,6 +100,14 @@ class ExtractServices {
       RustLib.instance.api.crateApiArchiveExtractServicesExtract(
         that: this,
       );
+
+  /// Extracts the archive like [`ExtractServices::extract`], reporting progress to `monitor`
+  /// and stopping between entries when it is cancelled. Zip archives report files and
+  /// uncompressed bytes; tar.gz archives report compressed bytes read, since their file count
+  /// is unknown until the end.
+  Future<int> extractWithMonitor({required RunMonitor monitor}) =>
+      RustLib.instance.api.crateApiArchiveExtractServicesExtractWithMonitor(
+          that: this, monitor: monitor);
 
   @override
   int get hashCode => inputPath.hashCode ^ outputDir.hashCode;

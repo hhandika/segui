@@ -191,7 +191,7 @@ class _ChoiceSheetState<T> extends State<ChoiceSheet<T>> {
     if (widget.isSearchable) {
       return FractionallySizedBox(
         heightFactor: SeguiSheetLayout.listHeight,
-        child: content,
+        child: SafeArea(top: false, child: content),
       );
     }
     return SafeArea(child: content);

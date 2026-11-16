@@ -17,7 +17,7 @@ class FolderAccessScreen extends StatelessWidget {
         backgroundColor: getSEGULBackgroundColor(context),
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: const FolderAccessView(),
+      body: const SafeArea(child: FolderAccessView()),
     );
   }
 }

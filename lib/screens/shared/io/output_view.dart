@@ -300,28 +300,30 @@ class OutputActionMenu extends StatelessWidget {
               showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return Container(
-                    padding: const EdgeInsets.all(SeguiSpacing.xl),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (canShareFiles) ...[
-                          CommonShareTile(file: file),
+                  return SafeArea(
+                    child: Container(
+                      padding: const EdgeInsets.all(SeguiSpacing.xl),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (canShareFiles) ...[
+                            CommonShareTile(file: file),
+                            const SizedBox(height: SeguiSpacing.xxs),
+                          ],
+                          ExternalAppLauncher(
+                            file: file,
+                            fromPopUp: true,
+                          ),
                           const SizedBox(height: SeguiSpacing.xxs),
+                          FileInfoTile(file: file),
+                          if (showDelete) ...[
+                            const SizedBox(height: SeguiSpacing.md),
+                            const CommonDivider(),
+                            CommonDeleteTile(file: file),
+                          ],
+                          const SizedBox(height: SeguiSpacing.xs),
                         ],
-                        ExternalAppLauncher(
-                          file: file,
-                          fromPopUp: true,
-                        ),
-                        const SizedBox(height: SeguiSpacing.xxs),
-                        FileInfoTile(file: file),
-                        if (showDelete) ...[
-                          const SizedBox(height: SeguiSpacing.md),
-                          const CommonDivider(),
-                          CommonDeleteTile(file: file),
-                        ],
-                        const SizedBox(height: SeguiSpacing.xs),
-                      ],
+                      ),
                     ),
                   );
                 },

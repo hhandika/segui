@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -190,14 +189,18 @@ class FileInputServices {
     final cache = await InputCacheServices.create();
     onProgress?.call(const InputCopyProgress.preparing());
     return await cache.withSessionDir('shared', (destination) async {
-      final List<String> paths =
-          await MobileIoChannel.instance.takeSharedFiles(destination);
+      final List<String> paths = await _withChannelProgress(
+        () => MobileIoChannel.instance.takeSharedFiles(destination),
+      );
       final List<XFile> matches = [];
       int skipped = 0;
       for (final String path in paths) {
         if (isArchivePath(path) && acceptsArchiveInput(allowedExtension)) {
-          final files = await ArchiveInputServices(cache)
-              .extract(File(path), allowedExtension);
+          final files = await ArchiveInputServices(cache).extract(
+            File(path),
+            allowedExtension,
+            onProgress: onProgress,
+          );
           matches.addAll(files.map((e) => XFile(e.path)));
         } else if (matchesTypeGroup(File(path), allowedExtension)) {
           matches.add(XFile(path));
@@ -300,11 +303,8 @@ class FileInputServices {
   }) async {
     final bool pickMany = multiple ?? allowMultiple;
     try {
-      if (Platform.isAndroid) {
-        final List<XFile> picked = pickMany
-            ? await _selectMultiUsingFilePicker()
-            : await _selectUsingFilePicker();
-        return filterPickedFiles(picked, allowedExtension);
+      if (MobileIoChannel.isSupported) {
+        return await _pickMobileFiles(pickMany);
       }
       final List<XFile> picked = pickMany
           ? await _selectMultiFiles(allowedExtension)
@@ -325,20 +325,65 @@ class FileInputServices {
       return dir == null ? null : _crawl(dir);
     }
     final cache = await InputCacheServices.create();
-    final channel = MobileIoChannel.instance;
-    final subscription =
-        onProgress == null ? null : channel.progress.listen(onProgress);
     try {
-      return await cache.withSessionDir('folder', (destination) async {
-        final Directory? dir = await channel.pickFolder(
-          extensions: allowedExtension.extensions ?? const [],
-          destination: destination,
-        );
-        // Crawl while the copied folder is still protected from pruning.
-        return dir == null ? null : _crawl(dir);
+      return await _withChannelProgress(() {
+        return cache.withSessionDir('folder', (destination) async {
+          final Directory? dir = await MobileIoChannel.instance.pickFolder(
+            extensions: allowedExtension.extensions ?? const [],
+            destination: destination,
+          );
+          // Crawl while the copied folder is still protected from pruning.
+          return dir == null ? null : _crawl(dir);
+        });
       });
     } on PlatformException catch (e) {
       throw InputPickException.fromPlatform(e);
+    }
+  }
+
+  /// Picks files with the native mobile picker, which copies them into
+  /// the input cache with progress. Files in other formats are skipped.
+  Future<({List<XFile> files, int skipped})> _pickMobileFiles(
+    bool multiple,
+  ) async {
+    final picked = await _pickMobileCopies(allowedExtension, multiple);
+    final filtered = filterPickedFiles(
+      picked.paths.map((path) => XFile(path)).toList(),
+      allowedExtension,
+    );
+    return (
+      files: filtered.files,
+      skipped: picked.skipped + filtered.skipped,
+    );
+  }
+
+  /// Copies files picked with the native mobile picker into a new session
+  /// folder. Android skips names without [type]'s extensions before
+  /// copying; iOS shows only files of [type]'s uniform type identifiers.
+  Future<({List<String> paths, int skipped})> _pickMobileCopies(
+    XTypeGroup type,
+    bool multiple,
+  ) async {
+    final cache = await InputCacheServices.create();
+    return await _withChannelProgress(() {
+      return cache.withSessionDir('picked', (destination) {
+        return MobileIoChannel.instance.pickFiles(
+          multiple: multiple,
+          extensions: type.extensions ?? const [],
+          typeIdentifiers: type.uniformTypeIdentifiers ?? const [],
+          destination: destination,
+        );
+      });
+    });
+  }
+
+  /// Runs [work] while forwarding native copy progress to [onProgress].
+  Future<T> _withChannelProgress<T>(Future<T> Function() work) async {
+    final subscription = onProgress == null
+        ? null
+        : MobileIoChannel.instance.progress.listen(onProgress);
+    try {
+      return await work();
     } finally {
       await subscription?.cancel();
     }
@@ -361,19 +406,32 @@ class FileInputServices {
         'Choose a .zip, .tar.gz, or .tgz archive.',
       );
     }
-    onProgress?.call(const InputCopyProgress.preparing());
+    onProgress?.call(
+      const InputCopyProgress.preparing(stage: InputCopyStage.extracting),
+    );
     final cache = await InputCacheServices.create();
-    final files = await ArchiveInputServices(cache)
-        .extract(File(archive.path), allowedExtension);
+    final files = await ArchiveInputServices(cache).extract(
+      File(archive.path),
+      allowedExtension,
+      onProgress: onProgress,
+    );
     return files.map((e) => XFile(e.path)).toList();
   }
 
   Future<XFile?> _selectArchiveFile() async {
-    if (Platform.isAndroid) {
-      final picked = await _selectUsingFilePicker();
-      return picked.isEmpty ? null : picked.first;
+    if (!MobileIoChannel.isSupported) {
+      return await openFile(acceptedTypeGroups: [archiveTypeGroup]);
     }
-    return await openFile(acceptedTypeGroups: [archiveTypeGroup]);
+    final picked = await _pickMobileCopies(archiveTypeGroup, false);
+    if (picked.paths.isEmpty) {
+      if (picked.skipped > 0) {
+        throw const InputPickException(
+          'Choose a .zip, .tar.gz, or .tgz archive.',
+        );
+      }
+      return null;
+    }
+    return XFile(picked.paths.first);
   }
 
   ({List<XFile> files, int duplicate}) _checkDuplicateFiles(
@@ -427,40 +485,6 @@ class FileInputServices {
       acceptedTypeGroups: [allowedExtension],
     );
     return result == null ? [] : [result];
-  }
-
-  // Do selection without data. The Android picker copies the file into
-  // the app cache before returning.
-  Future<List<XFile>> _selectUsingFilePicker() async {
-    final result = await FilePicker.pickFile(
-      type: FileType.any,
-      onFileLoading: _onPickerStatus,
-    );
-    final path = result?.path;
-    if (path == null) {
-      return [];
-    }
-    return [XFile(path)];
-  }
-
-  // Do selection without data. The Android picker copies every file into
-  // the app cache before returning, which takes a while for many files.
-  Future<List<XFile>> _selectMultiUsingFilePicker() async {
-    final result = await FilePicker.pickFiles(
-      type: FileType.any,
-      onFileLoading: _onPickerStatus,
-    );
-    return result
-        .map((e) => e.path)
-        .whereType<String>()
-        .map((path) => XFile(path))
-        .toList();
-  }
-
-  void _onPickerStatus(FilePickerStatus status) {
-    if (status == FilePickerStatus.picking) {
-      onProgress?.call(const InputCopyProgress.preparing());
-    }
   }
 }
 
