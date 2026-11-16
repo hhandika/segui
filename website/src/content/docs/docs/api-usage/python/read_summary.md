@@ -53,15 +53,48 @@ def summarize_reads():
     summary.from_files(input_path)
 ```
 
-In `complete` mode, the output directory also has per-position statistics (`read-pos-summary.zip`), read distributions (`read-dist-summary.zip`), and all statistics as JSON (`read-report.json`), which you can load with Python's `json` module:
+In `complete` mode, the output directory also has per-position statistics (`read-pos-summary.zip`), read distributions (`read-dist-summary.zip`), and all statistics as JSON (`read-report.json`).
+
+## More options
+
+:::caution[Upcoming]
+These options are not yet published on PyPI. They will be available in the next PySEGUL release. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `phred` | `'auto'` | Quality score offset: `'auto'`, `'33'`, or `'64'` |
+| `dup_sketch_size` | `100000` | Reads sampled to estimate duplication in `complete` mode |
+| `plot` | `None` | Write charts. See [Charts and Reports](/docs/api-usage/python/plots_reports/) |
 
 ```python
-import json
+summary = pysegul.ReadSummary(
+    'auto',
+    'complete',
+    'tests/output',
+    'read_summary',
+    phred='33',
+    plot=pysegul.PlotOptions(format='svg'),
+    )
+outputs = summary.from_dir('tests/raw-data')
+```
 
-with open('tests/output/read_summary_read-report.json') as f:
-    report = json.load(f)
+`from_dir` and `from_files` return the paths of the files they write, such as `outputs['report']`.
+
+## Quality checks
+
+:::caution[Upcoming]
+This function is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::
+
+Load the JSON report with `load_read_report`. Each sample has its statistics, the read quality checks (`qc`), and the worst status among them (`qc_status`: `'Pass'`, `'Warn'`, or `'Fail'`). These are the same checks the GUI and the `segul view summary` viewer show.
+
+```python
+report = pysegul.load_read_report(outputs['report'])
 
 for sample in report['samples']:
     metrics = sample['metrics']
-    print(sample['sample'], metrics['read_count'], metrics['q30_pct'], metrics['duplicate_pct_est'])
+    print(sample['sample'], metrics['read_count'], sample['qc_status'])
+    for check in sample['qc']:
+        print('  ', check['name'], round(check['value'], 1), check['unit'], check['status'])
 ```

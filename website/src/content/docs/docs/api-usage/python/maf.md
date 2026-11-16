@@ -104,3 +104,11 @@ def summarize_maf():
         )
     summary.from_dir('tests/maf-data')
 ```
+
+Set `plot` to write charts to the `plots` folder of the output directory. See [Charts and Reports](/docs/api-usage/python/plots_reports/).
+
+```python
+summary = pysegul.MafSummary('tests/output', plot=pysegul.PlotOptions(format='svg'))
+outputs = summary.from_dir('tests/maf-data')
+print(outputs['per_species'], outputs['plots'])
+```

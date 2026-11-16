@@ -77,3 +77,22 @@ summary = pysegul.AlignmentSummary(
     )
 summary.from_dir('tests/align-data')
 ```
+
+## Charts
+
+:::caution[Upcoming]
+Charts are not yet published on PyPI. They will be available in the next PySEGUL release. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::
+
+Set `plot` to write charts to the `plots` folder of the output directory. Charts are not available with `per_locus=True`. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for the chart options and the returned output paths.
+
+```python
+summary = pysegul.AlignmentSummary(
+    'nexus',
+    'dna',
+    'tests/output',
+    plot=pysegul.PlotOptions(format='svg'),
+    )
+outputs = summary.from_dir('tests/align-data')
+report = pysegul.load_align_report(outputs['report'])
+```

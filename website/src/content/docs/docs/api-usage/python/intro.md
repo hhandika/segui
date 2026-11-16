@@ -96,8 +96,11 @@ python concat_alignments.py
 | `segul sequence rename` | [`SequenceRenaming`](/docs/api-usage/python/sequence_rename/) *(upcoming)* |
 | `segul sequence translate` | [`SequenceTranslation`](/docs/api-usage/python/sequence_translation/) |
 | `segul sequence transpose` | [`SequenceTranspose`](/docs/api-usage/python/sequence_transpose/) *(upcoming)* |
+| `--plot` and report viewers | [`PlotOptions` and report loaders](/docs/api-usage/python/plots_reports/) *(upcoming)* |
 
 Features marked *(upcoming)* are not yet published on PyPI. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+
+Starting with the next release, PySEGUL requires Python 3.9 or later. Invalid options, such as an unknown format, raise a `ValueError`. Editors show the parameters and help of each class.
 
 :::note
 The [pysegul](https://pypi.org/project/pysegul/) library is still in beta. If you encounter any issues, please report them in the [issue tracker](https://github.com/hhandika/pysegul/issues). It is now support all major features that CLI and GUI versions supports. Our goal is to expose more SEGUL public functions to Python, including the helper functions. It will allow Python developers to create a custom analyses using SEGUL API in Python.

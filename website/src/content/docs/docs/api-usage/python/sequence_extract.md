@@ -8,6 +8,7 @@ Extract sequences based on the sequence ID. Available methods:
 
 - Regular expression
 - List of sequence ID
+- Text file of sequence IDs, one per line
 
 ## Steps
 
@@ -38,7 +39,7 @@ def extract_sequences():
     # Using regular expression method
     extract.extract_regex("(?i)^(abce)")
     # using list of sequence ID method
-    extract.extract_list(['abce1', 'abce2'])
+    extract.extract_id_list(['abce1', 'abce2'])
 ```
 
 You can also input the alignment paths in a list directly instead of using a directory. Replace the `input_dir` with `input_files` and provide a list of paths. Then, call the `from_files` method instead of `from_dir`.
@@ -62,5 +63,17 @@ def extract_sequences():
     # Using regular expression method
     extract.extract_regex("(?i)^(abce)")
     # using list of sequence ID method
-    extract.extract_list(['abce1', 'abce2'])
+    extract.extract_id_list(['abce1', 'abce2'])
+```
+
+## Extract IDs from a file
+
+:::caution[Upcoming]
+This method is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::
+
+Use `extract_id_file` with a text file that has one sequence ID per line. A missing file raises a `FileNotFoundError`.
+
+```python
+extract.extract_id_file('ids.txt')
 ```

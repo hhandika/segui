@@ -89,3 +89,18 @@ def compute_group_distances():
     # distance.group_auto()
     distance.from_dir('tests/align-data')
 ```
+
+## Charts
+
+Set `plot` to write charts to the `plots` folder of the output directory. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for the chart options and the returned output paths.
+
+```python
+distance = pysegul.AlignmentDistance(
+    'nexus',
+    'dna',
+    'tests/output',
+    plot=pysegul.PlotOptions(format='svg'),
+    )
+outputs = distance.from_dir('tests/align-data')
+report = pysegul.load_distance_report(outputs['report'])
+```
