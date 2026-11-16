@@ -8,7 +8,7 @@ The SEGUL CLI is a single executable named `segul`. Pick the method that fits yo
 
 | Method | Platforms | Best for |
 | --- | --- | --- |
-| [Installer script](#installer-script) | Linux, macOS | The quickest install, no root access needed |
+| [Installer script](#installer-script) | Linux, macOS, Windows | The quickest install, no root access needed |
 | [Pre-compiled binary](#pre-compiled-binary) | Linux, macOS, Windows, WSL | Manual installs, Windows, offline machines |
 | [Conda](#conda) | Linux, macOS | Conda users and shared environments |
 | [Cargo](#cargo) | Any platform Rust supports | Rust users; builds tuned for your hardware |
@@ -22,7 +22,8 @@ segul --version
 
 ## Installer script
 
-On Linux and macOS, run:
+{% tabs syncKey="shell" %}
+{% tabitem label="macOS and Linux" %}
 
 ```bash
 curl -fsSL https://segul.app/install.sh | sh
@@ -38,6 +39,33 @@ Pass options after `sh -s --`, for example `curl -fsSL https://segul.app/install
 | `--version <tag>` | Install a specific release, such as `--version v0.23.2`. |
 | `--musl` | Use the static Linux build even when GLIBC is new enough. |
 | `--uninstall` | Remove the installed binary. Add `--dir` if you used a custom folder. |
+
+{% /tabitem %}
+{% tabitem label="Windows" %}
+
+In PowerShell, run:
+
+```powershell
+irm https://segul.app/install.ps1 | iex
+```
+
+The script picks the x86_64 or ARM64 build, installs it to `~\.local\bin` without administrator access, and adds that folder to your user `PATH`.
+
+To pass options, run it as a script block, for example:
+
+```powershell
+& ([scriptblock]::Create((irm https://segul.app/install.ps1))) -Dir C:\Tools
+```
+
+| Option | Description |
+| --- | --- |
+| `-Dir <path>` | Install into another folder, such as `-Dir C:\Tools`. |
+| `-Version <tag>` | Install a specific release, such as `-Version v0.23.2`. |
+| `-NoModifyPath` | Do not add the install folder to your `PATH`. |
+| `-Uninstall` | Remove the installed binary. Add `-Dir` if you used a custom folder. |
+
+{% /tabitem %}
+{% /tabs %}
 
 ## Pre-compiled binary
 

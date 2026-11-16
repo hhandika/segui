@@ -24,13 +24,19 @@ Install SEGUI, the SEGUL app, from your platform's store. See the [GUI installat
 {% /tabitem %}
 {% tabitem label="CLI" %}
 
-On Linux and macOS, the installer script picks the right build and needs no root access:
+The installer script picks the right build and needs no root or administrator access. On Linux and macOS:
 
 ```bash
 curl -fsSL https://segul.app/install.sh | sh
 ```
 
-On Windows, or to install by hand, download the binary for your system, unpack it, and put `segul` on your `PATH`. The [CLI installation guide](/docs/installation/install_cli/) walks through each method.
+On Windows, in PowerShell:
+
+```powershell
+irm https://segul.app/install.ps1 | iex
+```
+
+To install by hand, download the binary for your system, unpack it, and put `segul` on your `PATH`. The [CLI installation guide](/docs/installation/install_cli/) walks through each method.
 
 {% clidownloads /%}
 

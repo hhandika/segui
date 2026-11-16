@@ -1,0 +1,3 @@
+# Serve the installers as text so `irm | iex` and `curl | sh` read them as scripts.
+/install.ps1
+  Content-Type: text/plain; charset=utf-8
