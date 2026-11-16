@@ -72,9 +72,9 @@ outputs = summary.from_dir('tests/raw-data')
 
 ## Quality checks
 
-:::caution[Beta]
+{% aside type="caution" title="Beta" %}
 This function is in beta and may still change.
-:::
+{% /aside %}
 
 Load the JSON report with `load_read_report`. Each sample has its statistics, the read quality checks (`qc`), and the worst status among them (`qc_status`: `'Pass'`, `'Warn'`, or `'Fail'`). These are the same checks the GUI and the `segul view summary` viewer show.
 
