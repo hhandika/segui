@@ -3,12 +3,12 @@ title: Sequence Addition
 sidebar:
   order: 13
   badge:
-    text: Upcoming
+    text: Beta
     variant: caution
 ---
 
-:::caution[Upcoming]
-This feature is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This feature is in beta and may still change.
 :::
 
 Add sequences to existing sequence files. Input sequences are matched to destination files by file name, excluding the extension. The input and destination files can be in different formats. The output is unaligned: gaps and missing data are removed. The output format can be `fasta` or `fasta-int`.

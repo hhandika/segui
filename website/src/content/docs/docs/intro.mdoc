@@ -6,8 +6,8 @@ sidebar:
 
 **Thank you for using SEGUL!** 🙏🏻
 
-**SEGUL (SEquence and Genomic UtiLities)** is a fast, memory-efficient tool for phylogenomic
-datasets, from a few Sanger loci to thousands of loci across hundreds of samples. It runs on
+**SEGUL (SEquence and Genomic UtiLities)** is a fast, memory-efficient tool for sequence
+data of any size, from Sanger to genomic datasets. It runs on
 phones, tablets, desktops, and computing clusters. For an independent review, see the
 [Chan 2024 perspective](https://onlinelibrary.wiley.com/doi/full/10.1111/1755-0998.13993).
 
@@ -63,6 +63,33 @@ This release changes some `segul-core` read summary APIs. See the
 changes.
 {% /aside %}
 
+### PySEGUL v0.5.0
+
+Install or upgrade with `pip install -U pysegul`. Its new features are
+[beta](/docs/api-usage/python/intro/#beta-features).
+
+- **New classes:** [`AlignmentDistance`](/docs/api-usage/python/align_distance/),
+  [`AlignmentTrimming`](/docs/api-usage/python/align_trim/),
+  [`AlignmentUnalignment`](/docs/api-usage/python/align_unalign/),
+  [`MafConversion` and `MafSummary`](/docs/api-usage/python/maf/),
+  [`SequenceAddition`](/docs/api-usage/python/sequence_addition/),
+  [`SequenceFiltering`](/docs/api-usage/python/sequence_filter/),
+  [`SequenceRenaming`](/docs/api-usage/python/sequence_rename/), and
+  [`SequenceTranspose`](/docs/api-usage/python/sequence_transpose/).
+- **Charts and reports:** summary classes write charts with `plot=PlotOptions()`, return the
+  paths of their outputs, and load JSON reports as dictionaries. See
+  [Charts and Reports](/docs/api-usage/python/plots_reports/).
+- **Read summary:** `ReadSummary` adds `phred` and `dup_sketch_size`, and read reports include
+  the quality checks of each sample.
+- **Easier to use:** invalid options raise `ValueError`, and editors show the parameters and
+  help of each class.
+
+{% aside type="caution" %}
+PySEGUL v0.5.0 requires Python 3.9 or later and has breaking changes. See the
+[PySEGUL release notes](https://github.com/hhandika/pysegul/blob/main/CHANGELOG.md#050-unreleased) for all
+changes.
+{% /aside %}
+
 ## Platform support
 
 {% platformmatrix /%}
@@ -89,6 +116,11 @@ On phones, use the menu at the top of the page to move between sections.
 ## Citation
 
 > Handika, H., and J. A. Esselstyn. 2024. SEGUL: Ultrafast, memory-efficient and mobile-friendly software for manipulating and summarizing phylogenomic datasets. _Molecular Ecology Resources_, 24(7). [https://doi.org/10.1111/1755-0998.13964](https://doi.org/10.1111/1755-0998.13964).
+
+Always report the exact SEGUL version you used, because results may change between versions,
+and features marked **Beta** may still change. Check it with `segul --version` for the CLI, in
+**About** for SEGUI, or with `importlib.metadata.version("pysegul")` for
+[PySEGUL](/docs/api-usage/python/intro/#citing-pysegul).
 
 No access to the article? Request a copy on
 [ResearchGate](https://www.researchgate.net/publication/380125709_SEGUL_Ultrafast_memory-efficient_and_mobile-friendly_software_for_manipulating_and_summarizing_phylogenomic_datasets).

@@ -3,12 +3,12 @@ title: MAF Conversion & Summary
 sidebar:
   order: 12
   badge:
-    text: Upcoming
+    text: Beta
     variant: caution
 ---
 
-:::caution[Upcoming]
-This feature is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This feature is in beta and may still change.
 :::
 
 Convert and summarize multiple alignment format (MAF) files, such as whole-genome alignments. See the CLI guidelines for [MAF conversion](/docs/cli-usage/maf-convert/) and [MAF summary](/docs/cli-usage/maf-summary/) for details on the output files.

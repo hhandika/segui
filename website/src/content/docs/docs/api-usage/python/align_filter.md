@@ -10,7 +10,7 @@ Filter alignments. Available filtering options:
 - Parsimony informative sites
 - Percent parsimony informative sites
 - Taxon completeness
-- Missing data *(upcoming)*
+- Missing data *(beta)*
 
 ## Steps
 
@@ -66,10 +66,10 @@ filter = pysegul.AlignmentFiltering(
     )
 ```
 
-## Upcoming filtering methods
+## New filtering methods
 
-:::caution[Upcoming]
-These methods are not yet published on PyPI. They will be available in the next PySEGUL release. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+These methods are in beta and may still change.
 :::
 
 | Method | Keep alignments that |

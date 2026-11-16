@@ -57,8 +57,8 @@ In `complete` mode, the output directory also has per-position statistics (`read
 
 ## More options
 
-:::caution[Upcoming]
-These options are not yet published on PyPI. They will be available in the next PySEGUL release. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+These options are in beta and may still change.
 :::
 
 | Option | Default | Description |
@@ -83,8 +83,8 @@ outputs = summary.from_dir('tests/raw-data')
 
 ## Quality checks
 
-:::caution[Upcoming]
-This function is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This function is in beta and may still change.
 :::
 
 Load the JSON report with `load_read_report`. Each sample has its statistics, the read quality checks (`qc`), and the worst status among them (`qc_status`: `'Pass'`, `'Warn'`, or `'Fail'`). These are the same checks the GUI and the `segul view summary` viewer show.

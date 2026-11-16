@@ -3,12 +3,12 @@ title: Alignment Distance
 sidebar:
   order: 4
   badge:
-    text: Upcoming
+    text: Beta
     variant: caution
 ---
 
-:::caution[Upcoming]
-This feature is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This feature is in beta and may still change.
 :::
 
 Compute pairwise genetic distances between samples for each alignment. PySEGUL writes a distance matrix for every locus and a summary table across all loci. It can also compute the mean distance within and between groups of samples. See the [CLI guideline](/docs/cli-usage/align-distance/) for a description of the output files.

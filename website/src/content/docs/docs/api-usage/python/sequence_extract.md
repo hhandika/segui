@@ -68,8 +68,8 @@ def extract_sequences():
 
 ## Extract IDs from a file
 
-:::caution[Upcoming]
-This method is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This method is in beta and may still change.
 :::
 
 Use `extract_id_file` with a text file that has one sequence ID per line. A missing file raises a `FileNotFoundError`.

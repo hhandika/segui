@@ -61,8 +61,8 @@ def summarize_alignments():
 
 ## Per-locus summary
 
-:::caution[Upcoming]
-The `per_locus` option is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+The `per_locus` option is in beta and may still change.
 :::
 
 Set `per_locus` to `True` to write a summary for each alignment instead of one summary across all alignments:
@@ -80,8 +80,8 @@ summary.from_dir('tests/align-data')
 
 ## Charts
 
-:::caution[Upcoming]
-Charts are not yet published on PyPI. They will be available in the next PySEGUL release. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+Charts are in beta and may still change.
 :::
 
 Set `plot` to write charts to the `plots` folder of the output directory. Charts are not available with `per_locus=True`. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for the chart options and the returned output paths.

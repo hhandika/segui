@@ -77,30 +77,48 @@ python concat_alignments.py
 | --- | --- |
 | `segul align concat` | [`AlignmentConcatenation`](/docs/api-usage/python/align_concat/) |
 | `segul align convert` | [`AlignmentConversion`](/docs/api-usage/python/align_convert/) |
-| `segul align distance` | [`AlignmentDistance`](/docs/api-usage/python/align_distance/) *(upcoming)* |
+| `segul align distance` | [`AlignmentDistance`](/docs/api-usage/python/align_distance/) *(beta)* |
 | `segul align filter` | [`AlignmentFiltering`](/docs/api-usage/python/align_filter/) |
 | `segul align split` | [`AlignmentSplitting`](/docs/api-usage/python/align_split/) |
 | `segul align summary` | [`AlignmentSummary`](/docs/api-usage/python/align_summary/) |
-| `segul align trim` | [`AlignmentTrimming`](/docs/api-usage/python/align_trim/) *(upcoming)* |
-| `segul align unalign` | [`AlignmentUnalignment`](/docs/api-usage/python/align_unalign/) *(upcoming)* |
+| `segul align trim` | [`AlignmentTrimming`](/docs/api-usage/python/align_trim/) *(beta)* |
+| `segul align unalign` | [`AlignmentUnalignment`](/docs/api-usage/python/align_unalign/) *(beta)* |
 | `segul partition` | [`PartitionConversion`](/docs/api-usage/python/align_partition/) |
 | `segul read summary` | [`ReadSummary`](/docs/api-usage/python/read_summary/) |
 | `segul contig summary` | [`ContigSummary`](/docs/api-usage/python/contig_summary/) |
-| `segul maf convert` | [`MafConversion`](/docs/api-usage/python/maf/) *(upcoming)* |
-| `segul maf summary` | [`MafSummary`](/docs/api-usage/python/maf/) *(upcoming)* |
-| `segul sequence add` | [`SequenceAddition`](/docs/api-usage/python/sequence_addition/) *(upcoming)* |
+| `segul maf convert` | [`MafConversion`](/docs/api-usage/python/maf/) *(beta)* |
+| `segul maf summary` | [`MafSummary`](/docs/api-usage/python/maf/) *(beta)* |
+| `segul sequence add` | [`SequenceAddition`](/docs/api-usage/python/sequence_addition/) *(beta)* |
 | `segul sequence extract` | [`SequenceExtraction`](/docs/api-usage/python/sequence_extract/) |
-| `segul sequence filter` | [`SequenceFiltering`](/docs/api-usage/python/sequence_filter/) *(upcoming)* |
+| `segul sequence filter` | [`SequenceFiltering`](/docs/api-usage/python/sequence_filter/) *(beta)* |
 | `segul sequence id` | [`IDExtraction`](/docs/api-usage/python/sequence_id/) |
 | `segul sequence remove` | [`SequenceRemoval`](/docs/api-usage/python/sequence_remove/) |
-| `segul sequence rename` | [`SequenceRenaming`](/docs/api-usage/python/sequence_rename/) *(upcoming)* |
+| `segul sequence rename` | [`SequenceRenaming`](/docs/api-usage/python/sequence_rename/) *(beta)* |
 | `segul sequence translate` | [`SequenceTranslation`](/docs/api-usage/python/sequence_translation/) |
-| `segul sequence transpose` | [`SequenceTranspose`](/docs/api-usage/python/sequence_transpose/) *(upcoming)* |
-| `--plot` and report viewers | [`PlotOptions` and report loaders](/docs/api-usage/python/plots_reports/) *(upcoming)* |
+| `segul sequence transpose` | [`SequenceTranspose`](/docs/api-usage/python/sequence_transpose/) *(beta)* |
+| `--plot` and report viewers | [`PlotOptions` and report loaders](/docs/api-usage/python/plots_reports/) *(beta)* |
 
-Features marked *(upcoming)* are not yet published on PyPI. To use them now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+## Beta features
 
-Starting with the next release, PySEGUL requires Python 3.9 or later. Invalid options, such as an unknown format, raise a `ValueError`. Editors show the parameters and help of each class.
+Features marked *(beta)* are new and may still change. Their options, outputs, and results may differ between versions.
+
+## Citing PySEGUL
+
+If you use PySEGUL in a publication, [cite the SEGUL paper](/docs/intro/#citation) and always report the exact PySEGUL version you used, especially for beta features. Check the version in Python:
+
+```python
+from importlib.metadata import version
+
+print(version("pysegul"))
+```
+
+If you built PySEGUL from source, also report the commit:
+
+```bash
+git -C pysegul rev-parse --short HEAD
+```
+
+Starting with v0.5.0, PySEGUL requires Python 3.9 or later. Invalid options, such as an unknown format, raise a `ValueError`. Editors show the parameters and help of each class.
 
 :::note
 The [pysegul](https://pypi.org/project/pysegul/) library is still in beta. If you encounter any issues, please report them in the [issue tracker](https://github.com/hhandika/pysegul/issues). It is now support all major features that CLI and GUI versions supports. Our goal is to expose more SEGUL public functions to Python, including the helper functions. It will allow Python developers to create a custom analyses using SEGUL API in Python.

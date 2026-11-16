@@ -3,12 +3,12 @@ title: Charts and Reports
 sidebar:
   order: 21
   badge:
-    text: Upcoming
+    text: Beta
     variant: caution
 ---
 
-:::caution[Upcoming]
-This feature is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This feature is in beta and may still change.
 :::
 
 The summary classes can write charts, like the `--plot` option of the CLI, and return the paths of the files they write. PySEGUL can also load the JSON reports of these summaries as Python dictionaries.

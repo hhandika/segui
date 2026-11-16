@@ -45,5 +45,5 @@ def split_alignment():
 If `input_partition` is not set, PySEGUL reads the partition from the input alignment.
 
 :::note
-In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. The upcoming release fixes it.
+In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. PySEGUL v0.5.0 fixes it.
 :::

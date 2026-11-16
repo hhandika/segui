@@ -3,12 +3,12 @@ title: Sequence Filtering
 sidebar:
   order: 15
   badge:
-    text: Upcoming
+    text: Beta
     variant: caution
 ---
 
-:::caution[Upcoming]
-This feature is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This feature is in beta and may still change.
 :::
 
 Filter sequences across many sequence files. Available filtering methods:

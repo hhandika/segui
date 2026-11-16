@@ -3,12 +3,12 @@ title: Sequence Transpose
 sidebar:
   order: 20
   badge:
-    text: Upcoming
+    text: Beta
     variant: caution
 ---
 
-:::caution[Upcoming]
-This feature is not yet published on PyPI. It will be available in the next PySEGUL release. To use it now, build PySEGUL from [source](https://github.com/hhandika/pysegul).
+:::caution[Beta]
+This feature is in beta and may still change.
 :::
 
 Transpose locus alignments into one sequence file per sample. Each output file contains all loci for one sample, labeled by the locus (input file name) they come from. Gaps and missing data are removed. PySEGUL writes each sample to `output_dir/<sample_id>/<sample_id>.<ext>`.

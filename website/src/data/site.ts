@@ -29,6 +29,8 @@ import desktopViewerScreenshot from "../assets/showcase/segui-desktop-alignment.
 import cliViewerScreenshot from "../assets/showcase/segul-cli-alignment.webp";
 import desktopSummaryScreenshot from "../assets/showcase/segui-desktop-summary.webp";
 import cliSummaryScreenshot from "../assets/showcase/segul-cli-summary.webp";
+import pythonSummaryChart from "../assets/charts/python/align-completeness.webp";
+import pythonDistanceChart from "../assets/charts/python/distance-group-mean.webp";
 
 export const docsPath = "/docs/intro/";
 
@@ -317,7 +319,7 @@ export const fileFormats: {
 
 export const workflows = [
   {
-    title: "Build a phylogenomic supermatrix",
+    title: "Build a genomic supermatrix",
     steps: ["Summarize", "Filter", "Concatenate"],
   },
   { title: "Check a sequencing run", steps: ["Read summary", "Contig summary"] },
@@ -327,11 +329,12 @@ export const workflows = [
 
 /// Viewer showcase on the landing page. All screenshots show the UCE loci of
 /// Esselstyn et al. 2021: SEGUI from `integration_test/screenshots_test.dart`
-/// on Linux, and `segul view` rendered from a virtual terminal. The alignment
-/// views show locus uce-10 at site 400.
+/// on Linux, `segul view` rendered from a virtual terminal, and PySEGUL charts
+/// written with `PlotOptions` defaults. The alignment views show locus uce-10
+/// at site 400.
 export const viewerShowcase = {
   summary:
-    "Check thousands of loci and their summary statistics without leaving SEGUL. The app and the command line show the same views.",
+    "Check thousands of loci and their summary statistics without leaving SEGUL. The app and the command line show the same views, and PySEGUL writes the same charts from Python.",
   views: [
     {
       title: "SEGUI alignment viewer.",
@@ -368,6 +371,24 @@ export const viewerShowcase = {
       src: cliSummaryScreenshot,
       alt: "segul view summary in a terminal showing a histogram of sites per locus across 4,040 loci",
       href: "/docs/cli-usage/view-summary/",
+    },
+    {
+      title: "PySEGUL summary charts.",
+      caption: "Write charts from a Python script.",
+      label: "PySEGUL · AlignmentSummary · Beta",
+      terminal: false,
+      src: pythonSummaryChart,
+      alt: "PySEGUL line chart of matrix completeness across 4,040 UCE loci",
+      href: "/docs/api-usage/python/plots_reports/",
+    },
+    {
+      title: "PySEGUL distance charts.",
+      caption: "Group mean distances as a heatmap.",
+      label: "PySEGUL · AlignmentDistance · Beta",
+      terminal: false,
+      src: pythonDistanceChart,
+      alt: "PySEGUL heatmap of mean pairwise distances between shrew groups",
+      href: "/docs/api-usage/python/plots_reports/",
     },
   ],
   source: {

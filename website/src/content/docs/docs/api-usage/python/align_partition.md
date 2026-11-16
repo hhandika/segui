@@ -52,5 +52,5 @@ Unlike most of other features, partition conversion does not support input direc
 :::
 
 :::note
-In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. The upcoming release fixes it.
+In PySEGUL 0.4.1 and earlier, `check_partition` is inverted: `True` skips partition checking. PySEGUL v0.5.0 fixes it.
 :::
