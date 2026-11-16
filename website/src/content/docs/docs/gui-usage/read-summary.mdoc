@@ -68,6 +68,8 @@ The app supports the following summary modes:
 
 In Complete mode, `Duplication sketch size` sets how many distinct sequences are kept to estimate duplication across every read. Leave it empty for the default of 100,000. Larger values are more accurate and use more memory, and `0` counts every sequence exactly.
 
+Complete mode matches the read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [fastp](https://github.com/OpenGene/fastp), and adds options only SEGUL has. See [how SEGUL compares](/docs/cli-usage/read-summary/#comparison-with-fastqc-and-fastp).
+
 ## Read report
 
 The read report shows the Complete mode statistics as interactive charts, one sample at a time, much like the alignment viewer shows one file at a time. It works like the other [summary reports](/docs/gui-usage/viewer/#summary-reports).

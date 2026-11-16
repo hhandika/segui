@@ -99,9 +99,46 @@ Complete mode adds:
 - Adapter content by position for Illumina Universal, Nextera, Illumina Small RNA, poly-A, and poly-G
 - All of the above in `read-report.json`, which SEGUI opens as an interactive report. Open it in the terminal with [`segul view summary`](/docs/cli-usage/view-summary/)
 
+## Comparison with FastQC and fastp
+
+Complete mode covers the read quality checks of
+[FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and
+[fastp](https://github.com/OpenGene/fastp), and adds options only SEGUL has. fastp also trims and
+filters reads, which SEGUL does not.
+
+| Feature | SEGUL | FastQC | fastp |
+| --- | --- | --- | --- |
+| Read and base counts, GC content | ✓ | ✓ | ✓ |
+| Q20 and Q30 bases | ✓ | — | ✓ |
+| Read length N50 | ✓ | — | — |
+| Quality by position | Quartiles | Quartiles | Mean |
+| Base composition and N content by position | ✓ | ✓ | ✓ |
+| Mean read quality distribution | ✓ | ✓ | — |
+| GC distribution with theoretical curve | ✓ | ✓ | — |
+| Read length distribution | ✓ | ✓ | — |
+| Duplication | Every read, exact with `--dup-size 0` | First 100,000 distinct sequences | Every read, hashed estimate |
+| Overrepresented sequences | Every read | First 100,000 distinct sequences | Sampled reads |
+| Adapter content by position | ✓ | ✓ | Detected for trimming |
+| Pass, warn, and fail checks | ✓ | ✓ | — |
+| Per-tile quality, k-mer content | — | ✓ | k-mer counts |
+| Insert size of paired reads | — | — | ✓ |
+| Many samples in one table | ✓ | — | — |
+| Charts | PNG, SVG, or PDF; SEGUI and terminal viewers | HTML report | HTML report |
+| Read trimming and filtering | — | — | ✓ |
+
+The pass, warn, and fail checks follow FastQC conventions. SEGUL also checks Q30 bases,
+which FastQC does not.
+
 ## Duplication
 
-SEGUL compares the full sequence of every read in the file. FastQC, by comparison, follows only the first 100,000 distinct sequences, so long or sorted files can be misjudged. Counting every distinct sequence of a large file exactly takes a lot of memory, so by default SEGUL keeps a uniform sample of 100,000 distinct sequences and counts their copies across all reads. The duplicate share is estimated from this sample with an error of about 0.3% of the distinct sequences, and the levels chart uses the sample's exact copy counts. Files with fewer distinct sequences are counted exactly. The sample uses about 30 bytes per sequence, so the default takes about 3 MB per file.
+SEGUL compares the full sequence of every read in the file. FastQC follows only the first 100,000 distinct sequences, which can misjudge long or sorted files.
+
+Counting every distinct sequence exactly takes a lot of memory. By default, SEGUL keeps a uniform sample of 100,000 distinct sequences and counts their copies across all reads:
+
+- The duplicate share is estimated with an error of about 0.3% of the distinct sequences.
+- The levels chart uses the exact copy counts of the sample.
+- Files with fewer distinct sequences are counted exactly.
+- The sample uses about 30 bytes per sequence, about 3 MB per file by default.
 
 Use `--dup-size` to change the sample size. Larger samples are more accurate, and `0` counts every distinct sequence exactly:
 
@@ -109,7 +146,7 @@ Use `--dup-size` to change the sample size. Larger samples are more accurate, an
 segul read summary -d /raw_read_dir --mode complete --dup-size 1000000
 ```
 
-The duplication results are the same with any number of threads. Overrepresented sequences are found among all reads, and their counts can be short by up to 0.025% of reads in files with many distinct sequences, which `read-report.json` lists as `max_error_pct`.
+Duplication results are the same with any number of threads. Overrepresented sequences are found among all reads. In files with many distinct sequences, their counts can be short by up to 0.025% of reads, listed as `max_error_pct` in `read-report.json`.
 
 ## Quality score offset
 

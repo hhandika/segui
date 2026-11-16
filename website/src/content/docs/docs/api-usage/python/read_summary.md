@@ -55,6 +55,8 @@ def summarize_reads():
 
 In `complete` mode, the output directory also has per-position statistics (`read-pos-summary.zip`), read distributions (`read-dist-summary.zip`), and all statistics as JSON (`read-report.json`).
 
+Complete mode matches the read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [fastp](https://github.com/OpenGene/fastp), and adds options only SEGUL has. See [how SEGUL compares](/docs/cli-usage/read-summary/#comparison-with-fastqc-and-fastp).
+
 ## More options
 
 :::caution[Beta]
