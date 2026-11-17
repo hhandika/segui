@@ -49,7 +49,7 @@ In PowerShell, run:
 irm https://segul.app/install.ps1 | iex
 ```
 
-The script picks the x86_64 or ARM64 build, installs it to `~\.local\bin` without administrator access, and adds that folder to your user `PATH`.
+The script picks the x86_64 or ARM64 build, checks its SHA-256 checksum, installs it to `~\.local\bin` without administrator access, and adds that folder to your user `PATH`.
 
 To pass options, run it as a script block, for example:
 

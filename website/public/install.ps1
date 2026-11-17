@@ -23,8 +23,10 @@
 # SEGUL_VERSION=<tag>.
 
 # Everything runs from Install-Segul, called on the last line, so a download
-# cut short cannot execute half a script. Errors are thrown, never `exit`,
-# because `exit` would close the terminal when the script runs through iex.
+# cut short cannot execute half a script. Errors are thrown inside it, never
+# `exit`, because `exit` would close the terminal when the script runs through
+# iex. A failure sets $LASTEXITCODE to 1, and exits with 1 only when the
+# installer runs from a script file.
 
 param(
   [string]$Dir,
@@ -57,13 +59,15 @@ function Install-Segul {
 
   if ($Help) {
     Show-Usage
-    return
+    return $true
   }
 
   if (-not $Dir) { $Dir = $env:SEGUL_INSTALL_DIR }
   if (-not $Dir) { $Dir = Join-Path $HOME '.local\bin' }
   if (-not $Version) { $Version = $env:SEGUL_VERSION }
   if (-not $Version) { $Version = 'latest' }
+  # Release tags start with v, so accept 0.23.2 for v0.23.2.
+  if ($Version -match '^\d') { $Version = "v$Version" }
 
   # Resolve ~ and relative paths against the current PowerShell location.
   $Dir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Dir)
@@ -71,7 +75,7 @@ function Install-Segul {
   try {
     if ($Uninstall) {
       Remove-Segul $Dir
-      return
+      return $true
     }
 
     $asset = Select-Asset
@@ -86,6 +90,7 @@ function Install-Segul {
     try {
       $archive = Join-Path $tmpDir $asset
       Get-Release $url $archive
+      Test-Checksum $archive $asset
       Write-Info "Extracting $asset"
       Expand-Archive -Path $archive -DestinationPath $tmpDir -Force
       $newBinary = Join-Path $tmpDir $Binary
@@ -108,8 +113,10 @@ function Install-Segul {
     }
 
     Update-UserPath $Dir $NoModifyPath.IsPresent
+    return $true
   } catch {
     Write-Fail $_.Exception.Message
+    return $false
   }
 }
 
@@ -174,8 +181,49 @@ function Get-Release([string]$Url, [string]$OutFile) {
   try {
     Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing
   } catch {
-    throw "download failed: $Url"
+    $status = 0
+    try { $status = [int]$_.Exception.Response.StatusCode } catch { }
+    if ($status -eq 404 -and $Version -ne 'latest') {
+      throw "release $Version has no $(Split-Path $Url -Leaf). Check the tag at https://github.com/$Repo/releases"
+    }
+    if ($status -eq 404) {
+      throw "the latest release has no $(Split-Path $Url -Leaf). See $DocsUrl for other install options."
+    }
+    throw "download failed: $Url ($($_.Exception.Message))"
   }
+}
+
+# Compares the archive with the SHA-256 digest GitHub records for the release
+# asset. A mismatch stops the install. When the digest is unavailable, such as
+# for older releases or when the GitHub API is rate limited, the install
+# continues with a warning.
+function Test-Checksum([string]$Archive, [string]$Asset) {
+  if ($Version -eq 'latest') {
+    $api = "https://api.github.com/repos/$Repo/releases/latest"
+  } else {
+    $api = "https://api.github.com/repos/$Repo/releases/tags/$Version"
+  }
+
+  $expected = $null
+  try {
+    $release = Invoke-RestMethod -Uri $api -UseBasicParsing -Headers @{ 'User-Agent' = 'segul-installer' }
+    foreach ($item in $release.assets) {
+      if ($item.name -eq $Asset -and $item.PSObject.Properties['digest'] -and $item.digest) {
+        $expected = ($item.digest -replace '^sha256:', '').ToLowerInvariant()
+      }
+    }
+  } catch { }
+
+  if (-not $expected) {
+    Write-Warn "could not get the checksum for $Asset. Skipping verification."
+    return
+  }
+
+  $actual = (Get-FileHash -Path $Archive -Algorithm SHA256).Hash.ToLowerInvariant()
+  if ($actual -ne $expected) {
+    throw "checksum mismatch for $Asset. Expected $expected, got $actual. Try again."
+  }
+  Write-Info 'Verified SHA-256 checksum'
 }
 
 # Moves the binary into the install folder. A running segul.exe is locked by
@@ -196,13 +244,58 @@ function Set-Binary([string]$Source, [string]$InstallDir) {
   }
 }
 
-# True when a PATH value lists the folder, ignoring trailing slashes and case.
+# True when a PATH entry points to the folder, ignoring trailing slashes and
+# case. Entries may hold variables such as %USERPROFILE%.
+function Test-SameFolder([string]$Entry, [string]$InstallDir) {
+  if (-not $Entry) { return $false }
+  $expanded = [Environment]::ExpandEnvironmentVariables($Entry)
+  return $expanded.TrimEnd('\') -ieq $InstallDir.TrimEnd('\')
+}
+
+# True when a PATH value lists the folder.
 function Test-PathEntry([string]$PathValue, [string]$InstallDir) {
-  $wanted = $InstallDir.TrimEnd('\')
   foreach ($entry in ($PathValue -split ';')) {
-    if ($entry -and $entry.TrimEnd('\') -ieq $wanted) { return $true }
+    if (Test-SameFolder $entry $InstallDir) { return $true }
   }
   return $false
+}
+
+# Reads the user PATH from the registry as stored. The .NET environment API
+# would expand entries such as %USERPROFILE%\bin.
+function Get-UserPath {
+  $key = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Environment')
+  if (-not $key) { return '' }
+  try {
+    $options = [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames
+    return [string]$key.GetValue('Path', '', $options)
+  } finally {
+    $key.Close()
+  }
+}
+
+# Writes the user PATH and keeps its registry type, so entries with variables
+# keep working.
+function Set-UserPath([string]$Value) {
+  $key = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey('Environment')
+  try {
+    $kind = [Microsoft.Win32.RegistryValueKind]::ExpandString
+    try { $kind = $key.GetValueKind('Path') } catch { }
+    $key.SetValue('Path', $Value, $kind)
+  } finally {
+    $key.Close()
+  }
+
+  # A direct registry write sends no change notice. Setting a scratch variable
+  # makes Windows tell running programs to reload PATH. Delete it from the
+  # registry, since PowerShell 7 keeps a variable that is set to null.
+  $notice = 'SEGUL_INSTALL_' + [System.Guid]::NewGuid().ToString('N')
+  [Environment]::SetEnvironmentVariable($notice, '1', 'User')
+  $key = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey('Environment')
+  try {
+    $key.DeleteValue($notice, $false)
+  } finally {
+    $key.Close()
+  }
 }
 
 function Update-UserPath([string]$InstallDir, [bool]$SkipModify) {
@@ -219,14 +312,14 @@ function Update-UserPath([string]$InstallDir, [bool]$SkipModify) {
     return
   }
 
-  $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+  $userPath = Get-UserPath
   if (-not (Test-PathEntry $userPath $InstallDir)) {
     if ($userPath) {
       $userPath = "$InstallDir;$userPath"
     } else {
       $userPath = $InstallDir
     }
-    [Environment]::SetEnvironmentVariable('Path', $userPath, 'User')
+    Set-UserPath $userPath
     Write-Info "Added $InstallDir to your user PATH"
   }
   # Also update this session, so segul works without opening a new terminal.
@@ -246,17 +339,23 @@ function Remove-Segul([string]$InstallDir) {
     throw "cannot remove $target. Close any program using segul and try again."
   }
 
-  # Drop the PATH entry only when the folder is now empty, since other tools
-  # may share it.
+  # Drop the PATH entry and the folder only when the folder is now empty,
+  # since other tools may share it.
   $remaining = @(Get-ChildItem -Force $InstallDir -ErrorAction SilentlyContinue)
-  $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
-  if ($remaining.Count -eq 0 -and (Test-PathEntry $userPath $InstallDir)) {
-    $wanted = $InstallDir.TrimEnd('\')
-    $kept = ($userPath -split ';') | Where-Object { $_ -and $_.TrimEnd('\') -ine $wanted }
-    [Environment]::SetEnvironmentVariable('Path', ($kept -join ';'), 'User')
-    Write-Info "Removed $InstallDir from your user PATH"
+  if ($remaining.Count -eq 0) {
+    $userPath = Get-UserPath
+    if (Test-PathEntry $userPath $InstallDir) {
+      $kept = @(($userPath -split ';') | Where-Object { $_ -and -not (Test-SameFolder $_ $InstallDir) })
+      Set-UserPath ($kept -join ';')
+      Write-Info "Removed $InstallDir from your user PATH"
+    }
+    Remove-Item -Force $InstallDir -ErrorAction SilentlyContinue
   }
   Write-Host 'SEGUL is uninstalled.'
 }
 
-Install-Segul -Dir $Dir -Version $Version -NoModifyPath:$NoModifyPath -Uninstall:$Uninstall -Help:$Help
+if (-not (Install-Segul -Dir $Dir -Version $Version -NoModifyPath:$NoModifyPath -Uninstall:$Uninstall -Help:$Help)) {
+  $global:LASTEXITCODE = 1
+  # Empty when the script runs through iex at the prompt.
+  if ($PSCommandPath) { exit 1 }
+}

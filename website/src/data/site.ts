@@ -31,6 +31,9 @@ import desktopSummaryScreenshot from "../assets/showcase/segui-desktop-summary.w
 import cliSummaryScreenshot from "../assets/showcase/segul-cli-summary.webp";
 import pythonSummaryChart from "../assets/charts/python/align-completeness.webp";
 import pythonDistanceChart from "../assets/charts/python/distance-group-mean.webp";
+import phoneAlignmentViewer from "../assets/screenshots/gui/viewer-alignment-small.webp";
+import phoneReadReport from "../assets/screenshots/gui/genomic-read-report-small.webp";
+import phoneAlignmentReport from "../assets/screenshots/gui/align-summary-report-small.webp";
 
 export const docsPath = "/docs/intro/";
 
@@ -398,13 +401,41 @@ export const viewerShowcase = {
   },
 };
 
+/// Classroom section on the landing page. The screenshots are the phone
+/// layouts of the SEGUI data viewers.
+export const classroom = {
+  summary:
+    "SEGUI works on any platform, including phones and tablets. Students explore real alignments and sequencing reads on the devices they already have, with no command line and no computer lab.",
+  href: "/docs/installation/install_gui/",
+  viewerHref: "/docs/gui-usage/viewer/",
+  screens: [
+    {
+      title: "Alignment viewer",
+      caption: "Scroll and zoom through aligned sequences.",
+      src: phoneAlignmentViewer,
+      alt: "SEGUI alignment viewer on a phone showing colored bases of a shrew UCE locus",
+    },
+    {
+      title: "Read quality",
+      caption: "See how sequencing quality changes along a read.",
+      src: phoneReadReport,
+      alt: "SEGUI read summary report on a phone showing a per-base quality chart",
+    },
+    {
+      title: "Alignment summary",
+      caption: "Compare locus lengths and taxon sampling.",
+      src: phoneAlignmentReport,
+      alt: "SEGUI alignment summary report on a phone showing a histogram of locus length",
+    },
+  ],
+};
 /// Latest release news on the landing page. The screenshot is SEGUI v1.2.0
 /// on an Android emulator, after a complete read summary of the raw reads in
 /// the segul2-bench repository.
 export const latestRelease = {
   version: "v0.25.0",
   summary:
-    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play, the Microsoft Store, and the Snap Store, and rolling out to the App Store.",
+    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play, the Microsoft Store, the Snap Store, and the App Store for iPhone and iPad. The macOS version is in App Store review.",
   href: "/docs/intro/#segul-v0250",
   highlights: [
     { title: "Terminal alignment viewer", href: "/docs/cli-usage/view-align/" },
