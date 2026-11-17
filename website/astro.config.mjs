@@ -64,7 +64,7 @@ export default defineConfig({
       sidebar: [
         { label: "Introduction", slug: "docs/intro" },
         { label: "Quick Start", slug: "docs/quick_start" },
-        { label: "CLI vs GUI", slug: "docs/cli_gui" },
+        { label: "CLI vs GUI vs Python", slug: "docs/cli_gui" },
         { label: "Features", slug: "docs/features" },
         {
           label: "Installation",

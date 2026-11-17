@@ -252,12 +252,12 @@ export const pillars = [
 ];
 
 export const platforms = [
-  { name: "Windows", gui: true, cli: true },
-  { name: "macOS", gui: true, cli: true },
-  { name: "Linux", gui: true, cli: true },
-  { name: "WSL", gui: false, cli: true },
-  { name: "iOS & iPadOS", gui: true, cli: false },
-  { name: "Android", gui: true, cli: false },
+  { name: "Windows", gui: true, cli: true, python: true },
+  { name: "macOS", gui: true, cli: true, python: true },
+  { name: "Linux", gui: true, cli: true, python: true },
+  { name: "WSL", gui: false, cli: true, python: true },
+  { name: "iOS & iPadOS", gui: true, cli: false, python: false },
+  { name: "Android", gui: true, cli: false, python: false },
 ];
 
 export const interfaces = [
@@ -273,8 +273,8 @@ export const interfaces = [
     name: "CLI",
     title: "Command line",
     description:
-      "Script thousands of loci in a pipeline. Install from Bioconda, cargo, or a pre-built binary.",
-    command: "conda install bioconda::segul",
+      "Script thousands of loci in a pipeline. Install a pre-built binary, or use Bioconda or Cargo.",
+    command: "curl -fsSL https://segul.app/install.sh | sh",
     href: "/docs/installation/intro/",
   },
   {

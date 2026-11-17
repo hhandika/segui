@@ -57,6 +57,8 @@ Add focused `*_test.dart` files in `test/`. Prefer service tests for file discov
 
 Preserve user changes and avoid unrelated refactors. Write the GUI product name as `SEGUI` and the underlying toolkit as `SEGUL`; Dart package imports use `package:segui/`. Agents must not create commits, branches, pushes, or pull requests; leave Git under user control. After bridge API edits, regenerate bindings and verify analysis plus `cargo check` and `cargo clippy`. Do not hand-edit generated bridge or Freezed files. Add assets to `pubspec.yaml` only when needed.
 
+Always optimize images before adding them to the repository: resize screenshots to about the largest width the page renders (1600 px for large captures, 840 px for phone captures) and encode WebP at about quality 75 with effort 6, using `sharp` from `website/node_modules`. Never commit lossless or full-resolution captures.
+
 Edit website documentation directly under `website/src/content/docs/docs/` and in-app guidance, such as the quick start in `lib/services/quick_start.dart`, in Dart. Keep documentation aligned with the affected GUI or SEGUL behavior; do not edit generated website output or dependency directories.
 
 `AGENTS.md` is the repository's single source of agent guidance; `CLAUDE.md` only imports it.

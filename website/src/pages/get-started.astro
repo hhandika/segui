@@ -10,10 +10,20 @@ const sectionTitle = "mt-3 text-3xl font-bold tracking-tight text-leaf-950 sm:te
 const card = "sg-reveal rounded-3xl border border-leaf-100 bg-white p-6 sm:p-8 dark:border-leaf-900 dark:bg-[#141a16]";
 
 const cliOptions = [
-  { label: "Bioconda (Linux and macOS)", command: "conda install bioconda::segul", href: "/docs/installation/install_cli/#conda" },
-  { label: "Cargo (any platform with Rust)", command: "cargo install segul", href: "/docs/installation/install_cli/#cargo" },
   { label: "Pre-built binary (Linux and macOS)", command: "curl -fsSL https://segul.app/install.sh | sh", href: "/docs/installation/install_cli/#installer-script" },
   { label: "Pre-built binary (Windows)", command: "irm https://segul.app/install.ps1 | iex", href: "/docs/installation/install_cli/#installer-script" },
+  { label: "Bioconda (Linux and macOS)", command: "conda install bioconda::segul", href: "/docs/installation/install_cli/#conda" },
+  { label: "Cargo (any platform with Rust)", command: "cargo install segul", href: "/docs/installation/install_cli/#cargo" },
+];
+
+/// How the GUI, CLI, and Python library differ. They share the same tools.
+const comparison = [
+  { aspect: "How you use it", gui: "Point and click", cli: "Commands and scripts", python: "Python code" },
+  { aspect: "Best for", gui: "Most users, teaching, phones", cli: "Pipelines and HPC clusters", python: "Python workflows" },
+  { aspect: "Install", gui: "App stores", cli: "Pre-built binary, Bioconda, Cargo", python: "pip install pysegul" },
+  { aspect: "Runs on", gui: "Desktop, tablet, phone", cli: "Linux, macOS, Windows, WSL", python: "Linux, macOS, Windows, WSL" },
+  { aspect: "Requires", gui: "Nothing else", cli: "Nothing else", python: "Python 3.10+" },
+  { aspect: "Charts and reports", gui: "Built-in viewer", cli: "--plot option", python: "PlotOptions and report loaders" },
 ];
 
 const apiOptions = [
@@ -39,7 +49,7 @@ const datasets = [
         From install to your first supermatrix.
       </h1>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-leaf-50/85">
-        Pick the interface that fits how you work. Every interface runs the same genomic tools, so you can switch at any time.
+        Pick the interface that fits how you work. Every interface runs the same genomic tools and is self-contained. Switch at any time.
       </p>
     </div>
   </section>
@@ -96,6 +106,40 @@ const datasets = [
     </div>
   </section>
 
+  <section class="px-6 pb-16">
+    <div class="mx-auto max-w-6xl">
+      <p class={kicker}>Compare</p>
+      <h2 class={sectionTitle}>GUI, CLI, or Python?</h2>
+      <p class="mt-4 max-w-2xl text-leaf-900/75 dark:text-leaf-100/70">
+        Same tools and output files in each. Install one or all; they do not interfere.
+      </p>
+      <div class="mt-8 overflow-x-auto rounded-2xl border border-leaf-100 dark:border-leaf-900">
+        <table class="w-full min-w-xl text-left text-sm">
+          <thead class="bg-leaf-50 text-xs uppercase tracking-wider text-leaf-700 dark:bg-leaf-950 dark:text-leaf-300">
+            <tr>
+              <th class="px-5 py-3"><span class="sr-only">Aspect</span></th>
+              <th class="px-5 py-3">GUI</th>
+              <th class="px-5 py-3">CLI</th>
+              <th class="px-5 py-3">Python</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-leaf-100 dark:divide-leaf-900">
+            {
+              comparison.map((row) => (
+                <tr class="text-leaf-950 dark:text-leaf-50">
+                  <th scope="row" class="px-5 py-2.5 font-medium text-leaf-900/70 dark:text-leaf-100/65">{row.aspect}</th>
+                  <td class="px-5 py-2.5">{row.gui}</td>
+                  <td class="px-5 py-2.5">{row.cli}</td>
+                  <td class="px-5 py-2.5">{row.python}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <section class="bg-leaf-50/70 px-6 py-16 dark:bg-leaf-950/40">
     <div class="mx-auto grid grid-cols-1 max-w-6xl gap-12 lg:grid-cols-2">
       <div>
@@ -137,13 +181,13 @@ const datasets = [
         <p class={kicker}>Platforms</p>
         <h2 class={sectionTitle}>Where SEGUL runs</h2>
         <p class="mt-4 text-leaf-900/75 dark:text-leaf-100/70">
-          Native builds for ARM and x86 CPUs. Not sure which to choose? Read <a href="/docs/cli_gui/" class="font-semibold text-leaf-700 underline dark:text-leaf-300">CLI vs GUI</a>.
+          Native builds for ARM and x86 CPUs. Not sure which to choose? Read <a href="/docs/cli_gui/" class="font-semibold text-leaf-700 underline dark:text-leaf-300">CLI vs GUI vs Python</a>.
         </p>
       </div>
       <div class="overflow-x-auto rounded-2xl border border-leaf-100 dark:border-leaf-900">
         <table class="w-full text-left text-sm">
           <thead class="bg-leaf-50 text-xs uppercase tracking-wider text-leaf-700 dark:bg-leaf-950 dark:text-leaf-300">
-            <tr><th class="px-5 py-3">Platform</th><th class="px-5 py-3">GUI</th><th class="px-5 py-3">CLI</th></tr>
+            <tr><th class="px-5 py-3">Platform</th><th class="px-5 py-3">GUI</th><th class="px-5 py-3">CLI</th><th class="px-5 py-3">Python</th></tr>
           </thead>
           <tbody class="divide-y divide-leaf-100 dark:divide-leaf-900">
             {
@@ -152,6 +196,7 @@ const datasets = [
                   <td class="px-5 py-2.5 font-medium">{platform.name}</td>
                   <td class="px-5 py-2.5">{platform.gui ? "Yes" : "—"}</td>
                   <td class="px-5 py-2.5">{platform.cli ? "Yes" : "—"}</td>
+                  <td class="px-5 py-2.5">{platform.python ? "Yes" : "—"}</td>
                 </tr>
               ))
             }

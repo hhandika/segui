@@ -2,7 +2,7 @@
 /// The landing page: the app icon's green tile full bleed with the hero art in
 /// the `art` slot, then a bento grid of tools.
 import { Image } from "astro:assets";
-import AppMockup from "./AppMockup.astro";
+import homeIpad from "../../assets/screenshots/gui/home-ipad.webp";
 import Terminal from "./Terminal.astro";
 import FormatGlyph from "./FormatGlyph.astro";
 import ReleaseNews from "./ReleaseNews.astro";
@@ -114,7 +114,17 @@ const tile =
         >
           Redesigned interface · SEGUI v1.2.0
         </p>
-        <AppMockup count={4} />
+        <div
+          class="overflow-hidden rounded-2xl border border-leaf-200/80 shadow-2xl shadow-leaf-900/15 dark:border-leaf-800 dark:shadow-black/40"
+        >
+          <Image
+            src={homeIpad}
+            alt="SEGUI home screen on an iPad with the navigation rail, tool search, and genomics and alignment tools"
+            widths={[480, 800, 1200, 1600]}
+            sizes="(min-width: 1024px) 720px, 90vw"
+            class="block w-full"
+          />
+        </div>
       </div>
       {
         categories.map((category) => {
@@ -308,13 +318,13 @@ const tile =
       {
         classroom.screens.map((screen) => (
           <figure class="sg-reveal flex flex-col">
-            <div class="overflow-hidden rounded-2xl border-4 border-leaf-950 bg-leaf-950 shadow-2xl shadow-leaf-900/20 sm:rounded-4xl sm:border-[6px] dark:border-leaf-800 dark:shadow-black/40">
+            <div class="overflow-hidden rounded-2xl border border-leaf-200/80 shadow-2xl shadow-leaf-900/15 sm:rounded-4xl dark:border-leaf-800 dark:shadow-black/40">
               <Image
                 src={screen.src}
                 alt={screen.alt}
                 widths={[240, 420, 840]}
                 sizes="(min-width: 1024px) 200px, 30vw"
-                class="block w-full rounded-xl sm:rounded-3xl"
+                class="block w-full"
               />
             </div>
             <figcaption class="mt-3 text-xs text-leaf-900/75 sm:text-sm dark:text-leaf-100/70">

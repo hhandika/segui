@@ -1,10 +1,19 @@
 ---
-title: CLI vs GUI
+title: CLI vs GUI vs Python
 sidebar:
   order: 3
 ---
 
-SEGUL comes in two interfaces: a **command-line interface (CLI)** and a **graphical user interface (GUI)**. Both run the same core, so they produce the same results.
+SEGUL comes in three interfaces: a **graphical user interface (GUI)**, a **command-line interface (CLI)**, and a **Python library (PySEGUL)**. Every interface runs the same genomic tools and is self-contained. You can install one or all and switch at any time.
+
+| | GUI | CLI | Python |
+| --- | --- | --- | --- |
+| How you use it | Point and click | Commands and scripts | Python code |
+| Best for | Most users, teaching, phones | Pipelines and HPC clusters | Python workflows |
+| Install | [App stores](/docs/installation/install_gui/) | [Pre-built binary, Bioconda, Cargo](/docs/installation/install_cli/) | [`pip install pysegul`](/docs/api-usage/python/intro/) |
+| Runs on | Desktop, tablet, phone | Linux, macOS, Windows, WSL | Linux, macOS, Windows, WSL |
+| Requires | Nothing else | Nothing else | Python 3.10+ |
+| Charts and reports | Built-in viewer | `--plot` option | [`PlotOptions` and report loaders](/docs/api-usage/python/plots_reports/) |
 
 {% interfaceoverview /%}
 
@@ -22,7 +31,9 @@ Each GUI task group maps to one or more CLI commands:
 
 {% commandmap /%}
 
-Learn more about the [CLI](/docs/cli-usage/command_options/) and [GUI](/docs/gui-usage/intro/) options.
+Each CLI command also has a PySEGUL class, for example `segul align concat` is `AlignmentConcatenation`. See the [full list](/docs/api-usage/python/intro/#available-features).
+
+Learn more about the [CLI](/docs/cli-usage/command_options/), [GUI](/docs/gui-usage/intro/), and [Python](/docs/api-usage/python/intro/) options.
 
 ## Performance
 
