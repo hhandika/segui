@@ -1,0 +1,278 @@
+---
+title: "Tutorial 1: Build a supermatrix on a phone"
+description: Summarize, filter, trim, and concatenate 4,040 UCE loci with SEGUI on an Android or iOS phone.
+sidebar:
+  order: 1
+  label: "1. Supermatrix on a phone"
+---
+
+This tutorial takes a published phylogenomic dataset from download to a concatenated supermatrix, using only a phone. You will:
+
+1. Download the dataset.
+2. Summarize the alignments.
+3. Filter out poorly sampled loci.
+4. Trim sites with too much missing data.
+5. Concatenate the loci into a supermatrix with a partition file.
+
+It follows the **Build a phylogenomic supermatrix** workflow on the SEGUI home screen, with one extra trimming step.
+
+## Before you start
+
+- **A phone or tablet** with Android 8.0 or newer, or iOS or iPadOS 15.0 or newer.
+- **SEGUI v1.2.0 or newer.** See [GUI installation](/docs/installation/install_gui/).
+- **About 700 MB of free storage** for SEGUI's working copy of the dataset and the output of each step.
+
+{% aside type="note" title="Android and iOS" %}
+The steps inside SEGUI are the same on both systems. They differ in where the browser saves the download, how the file picker looks, and how the share sheet looks. Those steps have an Android tab and an iOS tab. The screenshots show SEGUI on Android.
+{% /aside %}
+
+## The dataset
+
+The data are the ultraconserved element (UCE) alignments of shrews from [Esselstyn et al. 2021](https://doi.org/10.1206/0003-0090.454.1.1), archived on Zenodo for the SEGUL publication.
+
+| | |
+| --- | --- |
+| Record | [zenodo.org/records/6459213](https://zenodo.org/records/6459213) |
+| File | `esselstyn_et_al_2021_uce_aln.zip`, 14.6 MB |
+| Content | 4,040 NEXUS alignments, one per UCE locus |
+| Taxa | 102 |
+| License | CC BY 4.0 |
+
+## 1. Download the dataset
+
+{% tabs syncKey="mobile-os" %}
+{% tabitem label="Android" %}
+
+{% steps %}
+
+1. Open [zenodo.org/records/6459213](https://zenodo.org/records/6459213) in Chrome.
+2. Scroll to **Files** and select **Download** next to `esselstyn_et_al_2021_uce_aln.zip`.
+3. Chrome saves the file to the **Downloads** folder. You do not need to open or extract it.
+
+{% /steps %}
+
+{% /tabitem %}
+{% tabitem label="iOS and iPadOS" %}
+
+{% steps %}
+
+1. Open [zenodo.org/records/6459213](https://zenodo.org/records/6459213) in Safari.
+2. Scroll to **Files** and select **Download** next to `esselstyn_et_al_2021_uce_aln.zip`. Select **Download** again if Safari asks.
+3. Safari saves the file to the **Downloads** folder in the Files app, in iCloud Drive or **On My iPhone**. Do not tap the file there: Files would extract it, and SEGUI reads the archive as it is.
+
+{% /steps %}
+
+{% /tabitem %}
+{% /tabs %}
+
+{% aside type="tip" title="Keep it zipped" %}
+On a phone, an archive is the fastest way to load thousands of files. Only one file is copied into SEGUI, which then extracts it. See [large datasets on mobile](/docs/gui-usage/intro/#large-datasets-on-mobile).
+{% /aside %}
+
+## 2. Summarize the alignments
+
+Start with summary statistics, so the filtering thresholds come from the data.
+
+### Open the tool and add the dataset
+
+{% steps %}
+
+1. Open SEGUI. On the home screen, select **Workflows**.
+2. Under **Build a phylogenomic supermatrix**, select **Summarize alignments**.
+3. In the **Input** card, select **Browse**, then **Open archive**.
+4. Pick `esselstyn_et_al_2021_uce_aln.zip`:
+
+   {% tabs syncKey="mobile-os" %}
+   {% tabitem label="Android" %}
+   The system file picker opens on **Recent**, which lists the download. If it is not there, open the menu and select **Downloads**. Tap the zip file.
+   {% /tabitem %}
+   {% tabitem label="iOS and iPadOS" %}
+   The Files picker opens. Select **Browse**, open **Downloads**, and tap the zip file.
+   {% /tabitem %}
+   {% /tabs %}
+
+5. Wait while SEGUI extracts the archive. The input card then shows **4040 files selected**.
+
+{% /steps %}
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-workflow.webp", "tutorials/supermatrix-phone-select-files.webp", "tutorials/supermatrix-phone-android-picker.webp", "tutorials/supermatrix-phone-extracting.webp"]
+   alts=["SEGUI home screen on Android with the Workflows tab and the Build a phylogenomic supermatrix workflow", "SEGUI Select files sheet with Browse files, Browse folder, and Open archive", "Android file picker listing esselstyn_et_al_2021_uce_aln.zip under Recent files", "SEGUI input card extracting 589 of 4,040 files"]
+   captions=["The workflow on the home screen.", "Choose Open archive.", "Pick the downloaded zip file.", "SEGUI extracts the 4,040 alignments."] /%}
+
+### Set the output and run
+
+{% steps %}
+
+1. Scroll to the **Output** card. Enter a **Directory name**, such as `summary`.
+2. Enter an **Output Prefix**, such as `shrews`. It starts the name of each output file, and the run button stays off without it.
+3. Under **Summary Interval**, select **5**. The matrix completeness chart then steps by 5%.
+4. Select **Summarize**.
+
+{% /steps %}
+
+When the run finishes, SEGUI opens the **Workbench** tab. Select **View report** on the **Report** card.
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-summary-form.webp", "tutorials/supermatrix-phone-summary-workbench.webp"]
+   alts=["SEGUI Summarize alignments output card with directory name summary, prefix shrews, and summary interval 5", "SEGUI workbench after the summary with 4,040 input files, 4 output files, and the Report card"]
+   captions=["The output settings before the run.", "The workbench after the run, with the Report card."] /%}
+
+### Read the report
+
+The **Overview** tab should show these numbers:
+
+| Statistic | Value |
+| --- | --- |
+| Taxa | 102 |
+| Loci | 4,040 |
+| Sites | 5,398,947 |
+| Missing data | 49.4% |
+| Locus length | 274 to 3,071 bp, mean 1,336 bp |
+| Taxa per locus | 3 to 92, mean 63.2 |
+| Parsimony informative sites | 248,319 |
+
+Two things stand out. Half of the matrix is missing data, and some loci have as few as 3 taxa. Scroll to the **Matrix completeness** chart to see what a taxon filter would keep. Touch a bar to read its value:
+
+| Loci with at least | Loci |
+| --- | --- |
+| 90% of taxa | 2 |
+| 80% of taxa | 308 |
+| 75% of taxa | 983 |
+| 70% of taxa | 1,895 |
+| 50% of taxa | 3,274 |
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-report-overview.webp", "tutorials/supermatrix-phone-report-completeness.webp"]
+   alts=["SEGUI alignment report overview with 102 taxa, 4,040 loci, 5,398,947 sites, and 49.4% missing data", "SEGUI alignment report matrix completeness chart with bars from 100% to 60% of taxa"]
+   captions=["The Overview tab of the report.", "Matrix completeness: loci kept at each taxon threshold."] /%}
+
+This tutorial uses 75%, which keeps 983 loci. Open the **Taxa** and **Distributions** tabs to see which taxa are missing from many loci and how locus length varies. See the [alignment report](/docs/gui-usage/align-summary/#alignment-report) guide for every tab.
+
+## 3. Filter poorly sampled loci
+
+{% steps %}
+
+1. Select the back arrow to return to the **Workbench** tab, and scroll to **Suggested workflows**.
+2. Under **Build a phylogenomic supermatrix**, select **Continue**. SEGUI opens **Filter alignments** with the same 4,040 files as input.
+3. Leave **Filter by** on **Minimal taxa**.
+4. Enter `0.75` as the **Minimum taxon proportion**.
+5. Enter a **Directory name**, such as `filtered`.
+6. Under **Output format**, select **NEXUS**.
+7. Leave **Concatenate output** off. You will trim the loci first.
+8. Select **Filter**.
+
+{% /steps %}
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-continue.webp", "tutorials/supermatrix-phone-filter-form.webp", "tutorials/supermatrix-phone-filter-result.webp"]
+   alts=["SEGUI workbench suggested workflows with Build a phylogenomic supermatrix at step 1 of 3 and a Continue button", "SEGUI Filter alignments form with Minimal taxa, 0.75, directory name filtered, and NEXUS output", "SEGUI workbench after filtering with 4,040 input files and 983 output files"]
+   captions=["Continue passes the files to the next tool.", "The filter settings.", "983 alignments pass the filter."] /%}
+
+SEGUI keeps the loci with at least 76 of the 102 taxa. The output has **983 alignments** with 1,504,374 sites. Missing data is still 48.38%, because the filter removes whole loci and not the gappy sites inside them.
+
+{% aside type="note" %}
+The proportion counts against all 102 taxa in the dataset, not the most taxa in a single locus. No locus here has more than 92 taxa, so `0.9` would keep only 2 loci.
+{% /aside %}
+
+## 4. Trim sites with missing data
+
+Trimming removes alignment columns where most samples have a gap or missing character. These columns are common at the ends of UCE alignments.
+
+{% steps %}
+
+1. In the **Workbench** tab, scroll to **Other compatible tools** and select **Show more**.
+2. Select **Trim alignments**. SEGUI passes the 983 filtered alignments to it.
+3. Leave **Trim by** on **Maximal missing data per site**.
+4. Enter `0.5` as the **Maximum missing data**. SEGUI keeps a site when at most half of the samples are missing there.
+5. Enter a **Directory name**, such as `trimmed`.
+6. Under **Format**, select **NEXUS**.
+7. Select **Trim**.
+
+{% /steps %}
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-compatible-tools.webp", "tutorials/supermatrix-phone-trim-form.webp", "tutorials/supermatrix-phone-trim-result.webp"]
+   alts=["SEGUI workbench Other compatible tools list with Trim alignments using 983 output files", "SEGUI Trim alignments form with Maximal missing data per site, 0.5, directory name trimmed, and NEXUS format", "SEGUI workbench after trimming with 983 input files and 984 output files"]
+   captions=["Trim alignments under Other compatible tools.", "The trim settings.", "983 trimmed alignments and a summary table."] /%}
+
+The output has 983 trimmed alignments and `trimming_summary.csv`, which lists the sites of each locus before and after trimming. Open it from the **Output** tab to sort it in the table viewer.
+
+| | Before trimming | After trimming |
+| --- | --- | --- |
+| Loci | 983 | 983 |
+| Sites | 1,504,374 | 756,449 |
+| Missing data | 48.38% | 13.55% |
+
+{% aside type="caution" title="Choose thresholds for your study" %}
+The 75% and 0.5 thresholds are examples. The right values depend on your taxa, your loci, and the analysis that follows. Run the summary again after each step to see what a threshold removes.
+{% /aside %}
+
+## 5. Build the supermatrix
+
+{% steps %}
+
+1. In the **Workbench** tab, scroll to **Other compatible tools** and select **Concatenate alignments**. SEGUI passes the 983 trimmed alignments to it.
+2. Enter a **Directory name**, such as `supermatrix`.
+3. Enter a **Prefix**, such as `shrews`. It names the output files.
+4. Under **Format**, select **PHYLIP**.
+5. Under **Partition Format**, select **RaXML**.
+6. Select **Concatenate**.
+
+{% /steps %}
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-concat-form.webp", "tutorials/supermatrix-phone-concat-result.webp", "tutorials/supermatrix-phone-output-files.webp"]
+   alts=["SEGUI Concatenate alignments form with directory name supermatrix, prefix shrews, PHYLIP format, and RaXML partition format", "SEGUI workbench after concatenation with 983 input files and 2 output files", "SEGUI Output tab listing shrews.phy at 73.59 Mb and shrews_partition.txt"]
+   captions=["The concatenation settings.", "Two output files from 983 alignments.", "The supermatrix and its partition file."] /%}
+
+The **Output** tab lists two files:
+
+- `shrews.phy`: the supermatrix, with **102 taxa** and **756,449 sites**. It is about 74 MB.
+- `shrews_partition.txt`: the position of each of the 983 loci, such as `DNA, uce-2 = 1-765`.
+
+To check the result, tap `shrews.phy`. The [alignment viewer](/docs/gui-usage/viewer/) loads large alignments in parts, so it opens on a phone. The line under the grid should read **Showing sites 1–22 of 756,449**.
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-viewer.webp"]
+   alts=["SEGUI alignment viewer on Android showing the first 22 of 756,449 sites of shrews.phy with colored bases"]
+   captions=["The supermatrix in the alignment viewer."] /%}
+
+## 6. Get the files off your phone
+
+On phones, SEGUI saves output in its own folder. To use the supermatrix elsewhere, such as for tree inference on a cluster:
+
+{% steps %}
+
+1. Select the back arrow to leave the viewer.
+2. Select **Quick Share**. SEGUI compresses the output into `supermatrix.zip` and opens the share sheet.
+3. Pick a destination:
+
+   {% tabs syncKey="mobile-os" %}
+   {% tabitem label="Android" %}
+   Choose an app such as **Drive** or **Gmail**, or **Quick Share** to send it to a nearby device.
+   {% /tabitem %}
+   {% tabitem label="iOS and iPadOS" %}
+   Choose **Save to Files**, **AirDrop**, or a cloud drive app.
+   {% /tabitem %}
+   {% /tabs %}
+
+{% /steps %}
+
+{% phoneshots
+   shots=["tutorials/supermatrix-phone-share.webp"]
+   alts=["Android share sheet sharing supermatrix.zip with Quick Share, Drive, Bluetooth, and Gmail"]
+   captions=["The Android share sheet with the zipped output."] /%}
+
+To save an archive to a folder instead, use **Select** and **Export** in the **Output** tab. See [exporting output](/docs/gui-usage/intro/#exporting-output).
+
+## What you did
+
+| Step | Tool | Loci | Sites | Missing data |
+| --- | --- | --- | --- | --- |
+| Start | Summarize alignments | 4,040 | 5,398,947 | 49.43% |
+| Filter | Filter alignments, minimal taxa 0.75 | 983 | 1,504,374 | 48.38% |
+| Trim | Trim alignments, missing data 0.5 | 983 | 756,449 | 13.55% |
+| Concatenate | Concatenate alignments | 1 supermatrix | 756,449 | 13.55% |
+
+The same workflow runs from the command line with [`segul align summary`](/docs/cli-usage/align-summary/), [`filter`](/docs/cli-usage/align-filter/), [`trim`](/docs/cli-usage/align-trim/), and [`concat`](/docs/cli-usage/align-concat/), and gives the same numbers.

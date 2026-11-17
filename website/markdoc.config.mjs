@@ -65,6 +65,16 @@ export default defineMarkdocConfig({
         id: { type: String, required: true, matches: /^[A-Z]$/ },
       },
     },
+    // A row of phone captures with captions, from `src/assets/screenshots/`.
+    phoneshots: {
+      render: component("./src/components/docs/PhoneShots.astro"),
+      selfClosing: true,
+      attributes: {
+        shots: { type: Array, required: true },
+        alts: { type: Array, required: true },
+        captions: { type: Array },
+      },
+    },
     // A terminal capture on a CLI usage page, from `src/assets/screenshots/cli/`.
     terminalshot: {
       render: component("./src/components/docs/TerminalScreenshot.astro"),

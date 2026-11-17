@@ -408,6 +408,7 @@ export const classroom = {
     "SEGUI works on any platform, including phones and tablets. Students explore real alignments and sequencing reads on the devices they already have, with no command line and no computer lab.",
   href: "/docs/installation/install_gui/",
   viewerHref: "/docs/gui-usage/viewer/",
+  tutorialHref: "/docs/tutorials/tutorial-1/",
   screens: [
     {
       title: "Alignment viewer",
