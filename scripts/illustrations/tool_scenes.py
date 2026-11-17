@@ -14,6 +14,7 @@ Writes `assets/images/tools/<tool>.svg`, named after `HomeTool.scene` in
 `assets/images/quick_start_gull.svg` used on the quick start page.
 """
 
+import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -351,23 +352,58 @@ def rename():
     )
 
 
-def helix(x, y, h=48):
-    return (
-        f'<path d="M{x},{y} C{x + 18},{y + h * 0.25} {x + 18},{y + h * 0.25} {x},{y + h * 0.5} '
-        f'C{x - 18},{y + h * 0.75} {x - 18},{y + h * 0.75} {x},{y + h}" stroke-width="2.5"/>'
-        f'<path d="M{x},{y} C{x - 18},{y + h * 0.25} {x - 18},{y + h * 0.25} {x},{y + h * 0.5} '
-        f'C{x + 18},{y + h * 0.75} {x + 18},{y + h * 0.75} {x},{y + h}" stroke-width="2.5"/>'
-    )
+def helix(x, base, h=60, radius=12, pitch=60, offset=135):
+    """A right-handed DNA helix centered on `x`, rising `h` from `base`.
+
+    The backbones sit `offset` degrees apart around the axis, as in B-DNA,
+    rather than opposite each other. Each strand is split into the half facing
+    the viewer and a dimmed half behind the axis, so the front halves show the
+    minor and major grooves alternating. Both strands cross at the base, and
+    base pairs sit in each lobe between crossings.
+    """
+    omega = 2 * math.pi / pitch
+    half = math.radians(offset) / 2
+
+    def angle(t):
+        return omega * t + math.pi / 2
+
+    def strand(phase):
+        paths = {"front": "", "back": ""}
+        previous = None
+        steps = int(h / 2)
+        for i in range(steps + 1):
+            t = h * i / steps
+            theta = angle(t) + phase
+            # Split where the strand passes behind the axis.
+            side = "front" if math.cos(angle(t + h / steps / 2) + phase) > 0 else "back"
+            point = f"{x + radius * math.sin(theta):.1f},{base - t:.1f}"
+            if side == previous:
+                paths[side] += f" {point}"
+            else:
+                # Close the previous half at this point, then start the next.
+                if previous is not None:
+                    paths[previous] += f" {point}"
+                paths[side] += f" M{point}"
+            previous = side
+        return paths
+
+    strands = [strand(half), strand(-half)]
+    rungs = ""
+    for center in range(int(pitch / 4), int(h), int(pitch / 2)):
+        for shift in (-6, 0, 6):
+            t = center + shift
+            x1 = x + radius * math.sin(angle(t) + half)
+            x2 = x + radius * math.sin(angle(t) - half)
+            rungs += f"M{x1:.1f},{base - t:.1f} H{x2:.1f} "
+    back = "".join(f'<path d="{s["back"].strip()}" stroke-width="2.5" opacity="0.45"/>'
+                   for s in strands)
+    front = "".join(f'<path d="{s["front"].strip()}" stroke-width="2.5"/>' for s in strands)
+    return f'{back}<path d="{rungs.strip()}" stroke-width="2"/>{front}'
 
 
 def translate():
-    # Rungs sit at the quarter points, where the two strands are widest.
-    rungs = "".join(
-        f'<path d="M{PX - 8},{GROUND - y} H{PX + 16}" stroke-width="2"/>' for y in (47, 17)
-    )
     return (
-        rungs
-        + helix(PX + 4, GROUND - 62, h=60)
+        helix(PX + 4, GROUND - 2)
         + arrow(PX + 24, GROUND - 32, PX + 42, GROUND - 32)
         + beads(PX + 52, GROUND - 32, 3, step=13)
     )
