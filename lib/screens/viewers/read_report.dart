@@ -195,6 +195,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
   List<ReportTab> _tabs(List<int> view) {
     final ReadSampleData sample = _samples[_index];
     final String name = sample.sample;
+    final List<(int, AdapterContentData)> adapters = detectedAdapters(sample);
     return [
       ReportTab(label: 'Summary', sections: [
         ReportSection(
@@ -295,22 +296,24 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           title: 'Adapter content: $name',
           description: 'Reads with an adapter starting at or before each '
               'position. Rising lines suggest the reads need trimming.',
-          child: ReadLineChart(
-            xLabel: 'Position (bp)',
-            yLabel: 'Reads (%)',
-            minY: 0,
-            lines: [
-              for (int i = 0; i < sample.adapters.length; i++)
-                ChartLine(
-                  points: ChartPoints(
-                    name: sample.adapters[i].name,
-                    x: sample.positions.start,
-                    y: sample.adapters[i].cumulativePct,
-                  ),
-                  color: SeguiColors.of(context).seriesAt(i),
+          child: adapters.isEmpty
+              ? const ChartPlaceholder(message: 'No adapters found.')
+              : ReadLineChart(
+                  xLabel: 'Position (bp)',
+                  yLabel: 'Reads (%)',
+                  minY: 0,
+                  lines: [
+                    for (final (int i, AdapterContentData adapter) in adapters)
+                      ChartLine(
+                        points: ChartPoints(
+                          name: adapter.name,
+                          x: sample.positions.start,
+                          y: adapter.cumulativePct,
+                        ),
+                        color: SeguiColors.of(context).seriesAt(i),
+                      ),
+                  ],
                 ),
-            ],
-          ),
         ),
       ]),
       ReportTab(label: 'Overrepresented', sections: [

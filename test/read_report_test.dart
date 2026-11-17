@@ -94,6 +94,7 @@ ReadSampleData _sample(
   String name,
   ReadMetricsData metrics, {
   ReadQcStatus q30 = ReadQcStatus.pass,
+  List<AdapterContentData>? adapters,
 }) {
   final Float64List positions = _values([1, 2, 3, 4]);
   final Float64List quality = _values([30, 32, 34, 36]);
@@ -142,13 +143,14 @@ ReadSampleData _sample(
         source: 'Illumina Universal',
       ),
     ],
-    adapters: [
-      AdapterContentData(
-        name: 'Illumina Universal',
-        sequence: 'AGATCGGAAGAG',
-        cumulativePct: _values([0, 1, 2, 3]),
-      ),
-    ],
+    adapters: adapters ??
+        [
+          AdapterContentData(
+            name: 'Illumina Universal',
+            sequence: 'AGATCGGAAGAG',
+            cumulativePct: _values([0, 1, 2, 3]),
+          ),
+        ],
     checks: _checks(metrics, q30),
     status: q30,
   );
@@ -164,6 +166,24 @@ void main() {
     expect(ReadMetric.q30.checkName, 'Q30 bases');
     expect(ReadMetric.reads.checkName, isNull);
     expect(ReadQcStatus.warn.label, 'Warn');
+  });
+
+  test('Only adapters found in the reads are charted', () {
+    final ReadSampleData sample = _sample('a', _metrics(), adapters: [
+      AdapterContentData(
+        name: 'Illumina Universal',
+        sequence: 'AGATCGGAAGAG',
+        cumulativePct: _values([0, 0, 0, 0]),
+      ),
+      AdapterContentData(
+        name: 'Nextera',
+        sequence: 'CTGTCTCTTATA',
+        cumulativePct: _values([0, 0, 1, 2]),
+      ),
+    ]);
+    final List<(int, AdapterContentData)> found = detectedAdapters(sample);
+    expect(found.map((a) => a.$1), [1]);
+    expect(found.map((a) => a.$2.name), ['Nextera']);
   });
 
   test('Read reports are found by name', () {

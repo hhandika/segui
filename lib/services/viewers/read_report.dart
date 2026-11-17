@@ -63,6 +63,16 @@ ChartPoints indexedPoints(String name, List<double> counts) {
   );
 }
 
+/// Adapters found in [sample]'s reads, with their index in the report so
+/// each keeps its color across samples.
+List<(int, AdapterContentData)> detectedAdapters(ReadSampleData sample) {
+  return [
+    for (int i = 0; i < sample.adapters.length; i++)
+      if (sample.adapters[i].cumulativePct.any((v) => v > 0))
+        (i, sample.adapters[i]),
+  ];
+}
+
 /// Samples with at least one read, which are the only ones with charts.
 List<ReadSampleData> samplesWithReads(ReadReportData report) {
   return report.samples.where((s) => s.metrics.readCount > 0).toList();
