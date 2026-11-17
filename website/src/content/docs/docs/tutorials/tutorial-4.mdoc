@@ -1,0 +1,348 @@
+---
+title: "Tutorial 4: Clean alignments with Python"
+description: Use PySEGUL to summarize 4,040 UCE alignments, choose thresholds from the summary, and build a supermatrix in one Python script.
+sidebar:
+  order: 4
+  label: "4. Clean alignments with Python"
+---
+
+This tutorial writes one Python script that takes a published set of alignments to a supermatrix. The script reads its own summary and chooses the thresholds from the data, which is the main reason to use Python instead of the command line. You will:
+
+1. Install PySEGUL.
+2. Download and summarize the alignments.
+3. Find and remove poorly sampled taxa.
+4. Choose a taxon filter from the summary, then filter and trim.
+5. Concatenate the loci and compare the summaries.
+
+The script uses only PySEGUL and the Python standard library.
+
+## Before you start
+
+- **A computer with Linux, macOS, or Windows.**
+- **Python 3.9 or newer.** Check with `python --version`. On some systems the command is `python3`.
+- **About 1 GB of free storage.**
+- **Basic Python**: functions, lists, and dictionaries.
+
+The script runs in less than a minute after the download.
+
+## The dataset
+
+The data are the same shrew UCE alignments as in [Tutorial 1](/docs/tutorials/tutorial-1/), from [Esselstyn et al. 2021](https://doi.org/10.1206/0003-0090.454.1.1): 4,040 NEXUS alignments of 102 taxa, in a 14.6 MB archive on [Zenodo](https://zenodo.org/records/6459213). The script downloads it.
+
+## 1. Set up the project
+
+Create a folder with a virtual environment, so PySEGUL stays apart from your other Python packages:
+
+```bash
+mkdir segul-python
+```
+
+```bash
+cd segul-python
+```
+
+```bash
+python -m venv .venv
+```
+
+Activate the environment:
+
+{% tabs syncKey="os" %}
+{% tabitem label="Linux and macOS" %}
+
+```bash
+source .venv/bin/activate
+```
+
+{% /tabitem %}
+{% tabitem label="Windows" %}
+
+```powershell
+.venv\Scripts\activate
+```
+
+{% /tabitem %}
+{% /tabs %}
+
+Install PySEGUL:
+
+```bash
+pip install pysegul
+```
+
+This tutorial was tested with PySEGUL 0.5.0. Check your version:
+
+```bash
+python -c "from importlib.metadata import version; print(version('pysegul'))"
+```
+
+## 2. Start the script
+
+Create a file named `clean_alignments.py` and add each block below, in order.
+
+The first block imports PySEGUL and sets the options. Keeping the thresholds at the top makes them easy to find and change.
+
+```python title="clean_alignments.py"
+#!/usr/bin/env python
+"""Clean a set of alignments with thresholds chosen from their summary."""
+import shutil
+import urllib.request
+import zipfile
+from pathlib import Path
+
+import pysegul
+
+DATASET_URL = (
+    "https://zenodo.org/records/6459213/files/"
+    "esselstyn_et_al_2021_uce_aln.zip?download=1"
+)
+DATA_DIR = Path("data")
+OUTPUT_DIR = Path("results")
+
+# Remove taxa found in fewer loci than this share of all loci.
+MIN_LOCUS_SHARE = 0.3
+# Use the strictest taxon filter that keeps at least this many loci.
+MIN_LOCI = 1000
+# Remove sites where more than this share of the taxa is missing.
+MAX_MISSING = 0.5
+```
+
+## 3. Download the alignments
+
+```python title="clean_alignments.py"
+def download_alignments() -> Path:
+    """Download and unpack the alignments, unless they are already there."""
+    loci_dir = DATA_DIR / "loci"
+    if loci_dir.exists():
+        return loci_dir
+    DATA_DIR.mkdir(exist_ok=True)
+    archive = DATA_DIR / "alignments.zip"
+    urllib.request.urlretrieve(DATASET_URL, archive)
+    loci_dir.mkdir()
+    with zipfile.ZipFile(archive) as zip_file:
+        for member in zip_file.namelist():
+            if member.endswith(".nex"):
+                target = loci_dir / Path(member).name
+                target.write_bytes(zip_file.read(member))
+    return loci_dir
+```
+
+The function skips the download when the `data/loci` folder exists, so you can run the script many times.
+
+## 4. Summarize the alignments
+
+```python title="clean_alignments.py"
+def summarize(input_dir: Path, name: str) -> dict:
+    """Summarize the alignments in a folder and load the report."""
+    summary = pysegul.AlignmentSummary(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(OUTPUT_DIR / f"summary-{name}"),
+        output_prefix=name,
+        plot=pysegul.PlotOptions(format="svg"),
+    )
+    outputs = summary.from_dir(str(input_dir))
+    return pysegul.load_align_report(outputs["report"])
+```
+
+Each PySEGUL task is a class. You create it with its options, then call `from_dir` with the input folder. `AlignmentSummary` returns the paths of the files it wrote, and `load_align_report` loads its JSON report as a dictionary:
+
+| Key | Content |
+| --- | --- |
+| `summary` | Totals, such as `taxa`, `loci`, `sites`, and `prop_missing` |
+| `completeness` | Loci kept at each share of taxa, from 100% down |
+| `loci` | Statistics of each locus |
+| `taxa` | Statistics of each taxon, such as `loci` and `prop_missing` |
+
+`PlotOptions` also writes ten charts to a `plots` folder. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for samples and options.
+
+## 5. Remove poorly sampled taxa
+
+A taxon that is missing from most loci adds little data and a lot of gaps. The report lists the number of loci of each taxon, so the script can find these taxa itself.
+
+```python title="clean_alignments.py"
+def find_sparse_taxa(report: dict) -> list[str]:
+    """Taxa found in too few loci."""
+    min_loci = MIN_LOCUS_SHARE * report["summary"]["loci"]
+    return [taxon["name"] for taxon in report["taxa"] if taxon["loci"] < min_loci]
+
+
+def remove_taxa(input_dir: Path, taxa: list[str]) -> Path:
+    """Remove the taxa from every alignment."""
+    output_dir = OUTPUT_DIR / "01-taxa-removed"
+    removal = pysegul.SequenceRemoval(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(output_dir),
+        output_format="nexus",
+    )
+    removal.input_dir = str(input_dir)
+    removal.remove_id_list(taxa)
+    return output_dir
+```
+
+`find_sparse_taxa` returns the taxa found in fewer than 30% of the loci. `SequenceRemoval` then writes every alignment without them. Classes with several methods, such as this one, take the input from `input_dir` and run when you call a method.
+
+## 6. Choose the filter and apply it
+
+The best taxon filter depends on the dataset. Instead of a fixed number, the script takes the strictest filter that still keeps 1,000 loci.
+
+```python title="clean_alignments.py"
+def choose_taxon_filter(report: dict) -> float:
+    """The strictest share of taxa that keeps enough loci."""
+    for level in report["completeness"]:
+        if level["loci"] >= MIN_LOCI:
+            return level["percent"] / 100
+    raise ValueError(f"No taxon filter keeps {MIN_LOCI} loci")
+
+
+def filter_alignments(input_dir: Path, min_taxa: float) -> Path:
+    """Keep the alignments with enough taxa."""
+    output_dir = OUTPUT_DIR / "02-filtered"
+    filtering = pysegul.AlignmentFiltering(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(output_dir),
+        output_fmt="nexus",
+    )
+    filtering.input_dir = str(input_dir)
+    filtering.minimal_taxa(min_taxa)
+    return output_dir
+```
+
+The `completeness` list starts at 100% of taxa, so the first level with enough loci is the strictest one.
+
+## 7. Trim and concatenate
+
+```python title="clean_alignments.py"
+def trim_alignments(input_dir: Path) -> Path:
+    """Remove sites with too much missing data."""
+    output_dir = OUTPUT_DIR / "03-trimmed"
+    trimming = pysegul.AlignmentTrimming(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(output_dir),
+        output_fmt="nexus",
+    )
+    trimming.input_dir = str(input_dir)
+    trimming.missing_data(MAX_MISSING)
+    return output_dir / "trimmed_alignments"
+
+
+def concatenate(input_dir: Path) -> None:
+    """Join the alignments into a supermatrix with a partition file."""
+    concat = pysegul.AlignmentConcatenation(
+        input_fmt="nexus",
+        datatype="dna",
+        output_dir=str(OUTPUT_DIR / "04-supermatrix"),
+        output_fmt="phylip",
+        partition_fmt="raxml",
+        output_prefix="shrews",
+    )
+    concat.from_dir(str(input_dir))
+```
+
+`AlignmentTrimming` writes the alignments to a `trimmed_alignments` folder inside its output folder, so `trim_alignments` returns that path.
+
+## 8. Put the steps together
+
+```python title="clean_alignments.py"
+def print_comparison(reports: dict[str, dict]) -> None:
+    """Print the main statistics of each summary side by side."""
+    print(f"{'':10}{'Taxa':>6}{'Loci':>8}{'Sites':>12}{'Missing':>10}")
+    for name, report in reports.items():
+        stats = report["summary"]
+        print(
+            f"{name:10}{stats['taxa']:>6}{stats['loci']:>8,}"
+            f"{stats['sites']:>12,}{stats['prop_missing']:>10.2%}"
+        )
+
+
+def main() -> None:
+    # PySEGUL does not overwrite files, so start from an empty output folder.
+    shutil.rmtree(OUTPUT_DIR, ignore_errors=True)
+
+    loci_dir = download_alignments()
+    raw = summarize(loci_dir, "raw")
+
+    sparse_taxa = find_sparse_taxa(raw)
+    print(f"Removing {len(sparse_taxa)} taxa:")
+    for taxon in sparse_taxa:
+        print(f"  {taxon}")
+    removed_dir = remove_taxa(loci_dir, sparse_taxa)
+    removed = summarize(removed_dir, "removed")
+
+    min_taxa = choose_taxon_filter(removed)
+    print(f"Taxon filter: {min_taxa:.0%}")
+    filtered_dir = filter_alignments(removed_dir, min_taxa)
+    trimmed_dir = trim_alignments(filtered_dir)
+    concatenate(trimmed_dir)
+    clean = summarize(trimmed_dir, "clean")
+
+    print_comparison({"Raw": raw, "Removed": removed, "Clean": clean})
+
+
+if __name__ == "__main__":
+    main()
+```
+
+`main` runs the steps in order and summarizes the data three times: raw, after removing taxa, and clean.
+
+{% aside type="note" title="Output folders" %}
+PySEGUL stops when an output file already exists. The script deletes the `results` folder first, so every run starts clean. Keep results you need under another name.
+{% /aside %}
+
+## 9. Run the script
+
+```bash
+python clean_alignments.py
+```
+
+PySEGUL prints the log of each step. Among it, the script prints its decisions and the comparison:
+
+```plaintext
+Removing 10 taxa:
+  Crocidura_australis_Bawakaraeng_MVZ237610_NMV_Z57224
+  Crocidura_australis_Bawakaraeng_MZB40991_NMV_Z57198
+  Crocidura_australis_Bawakaraeng_NMV_Z57223_KCR2954
+  Crocidura_caudipilosa_Bawakaraeng_NMV_Z57044_KCR2849
+  Crocidura_musseri_Rorekatimbo_FMNH213263
+  Crocidura_normalis_Latimojong_FMNH213011
+  Crocidura_normalis_Rorekatimbo_FMNH213184
+  Crocidura_parva_Bawakaraeng_MVZ237603_NMV_Z56998
+  Crocidura_parva_Bawakaraeng_NMV_Z56314_HH925
+  DIPLOPULCHELLUM_MVZ179157
+Taxon filter: 80%
+            Taxa    Loci       Sites   Missing
+Raw          102   4,040   5,398,947    49.43%
+Removed       92   4,040   5,387,970    48.61%
+Clean         92   1,019     806,165    12.91%
+```
+
+The ten removed taxa are each in 781 to 1,043 of the 4,040 loci. The next taxon is in 1,458. With them gone, an 80% filter keeps 1,019 loci. On all 102 taxa, the same filter keeps only 308.
+
+The `results` folder holds:
+
+```plaintext
+results/
+├── summary-raw/         report, tables, and plots/
+├── 01-taxa-removed/     4,040 alignments without the ten taxa
+├── summary-removed/
+├── 02-filtered/         1,019 alignments
+├── 03-trimmed/          trimmed_alignments/, trimming_summary.csv
+├── 04-supermatrix/      shrews.phy, shrews_partition.txt
+└── summary-clean/
+```
+
+`shrews.phy` has 92 taxa and 806,165 sites. Open it with `segul view align` or in the [SEGUI alignment viewer](/docs/gui-usage/viewer/).
+
+{% aside type="caution" title="Thresholds are decisions" %}
+A script applies a rule the same way every time, but the rule is still yours. Removing a taxon removes it from the study. Check the list the script prints, and set `MIN_LOCUS_SHARE`, `MIN_LOCI`, and `MAX_MISSING` for your own data.
+{% /aside %}
+
+## Where to go next
+
+- **Change the rules.** Set `MIN_LOCI` to `2000` and run the script again. It picks a looser filter by itself.
+- **Use other statistics.** Each locus in `report["loci"]` has `sites`, `informative`, and `prop_missing`. Build a list of paths and pass it to `from_files` to keep any loci you choose.
+- **Add other programs.** [Tutorial 5](/docs/tutorials/tutorial-5/) runs fastp and SPAdes from Python, with PySEGUL checking each step.
+- **Read the reference.** Every class and its options are in the [Python guides](/docs/api-usage/python/intro/).

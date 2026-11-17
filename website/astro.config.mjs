@@ -113,6 +113,10 @@ export default defineConfig({
               label: "Command line",
               items: ["docs/tutorials/tutorial-3"],
             },
+            {
+              label: "Python",
+              items: ["docs/tutorials/tutorial-4", "docs/tutorials/tutorial-5"],
+            },
           ],
         },
         { label: "Support", slug: "docs/support" },
