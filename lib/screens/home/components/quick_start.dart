@@ -16,10 +16,18 @@ import 'package:segui/screens/shared/badges.dart';
 
 /// How to run a task, then a guide for every tool with its feature diagram.
 class QuickStartPage extends StatefulWidget {
-  const QuickStartPage({super.key, this.inputPlatform});
+  const QuickStartPage({
+    super.key,
+    this.inputPlatform,
+    this.showInputGuide = false,
+  });
 
   /// Platform whose input guidelines to show, the running one when null.
   final InputPlatform? inputPlatform;
+
+  /// Scrolls to the input guide on open, for users choosing how to add
+  /// input files.
+  final bool showInputGuide;
 
   @override
   State<QuickStartPage> createState() => _QuickStartPageState();
@@ -28,6 +36,21 @@ class QuickStartPage extends StatefulWidget {
 class _QuickStartPageState extends State<QuickStartPage> {
   /// Category shown in the guide grid, or every tool when null.
   ToolCategory? _category;
+
+  final GlobalKey _inputGuideKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showInputGuide) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final BuildContext? guideContext = _inputGuideKey.currentContext;
+        if (guideContext != null && guideContext.mounted) {
+          Scrollable.ensureVisible(guideContext);
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +80,7 @@ class _QuickStartPageState extends State<QuickStartPage> {
                   const QuickStartSteps(),
                   const SizedBox(height: SeguiSpacing.xxxl),
                   QuickStartInputGuide(
+                    key: _inputGuideKey,
                     platform: widget.inputPlatform ?? InputPlatform.current,
                   ),
                   const SizedBox(height: SeguiSpacing.xxxl),

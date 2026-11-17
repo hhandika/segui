@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
+import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -166,6 +167,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                     isLoading: _isLoading,
                     progress: _progress,
                     actions: _emptyActions(sharedCount),
+                    showInputGuide: _hasInputChoices(sharedCount),
                   );
                 }
                 return PickerSelectionCard(
@@ -184,6 +186,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                   progress: _progress,
                   sheetTitle: _selectionLabel(files),
                   actions: _selectedActions(files, sharedCount),
+                  showInputGuide: _hasInputChoices(sharedCount),
                 );
               },
             );
@@ -203,6 +206,16 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
 
   bool get _canSelectSeguiFolder {
     return Platform.isIOS && widget.allowDirectorySelection;
+  }
+
+  /// Whether the picker offers more than one way to add files, so a link
+  /// to the input guide helps users choose.
+  bool _hasInputChoices(int sharedCount) {
+    return widget.allowMultiple &&
+        (_canSelectDirectory ||
+            _canSelectArchive ||
+            _canSelectSeguiFolder ||
+            sharedCount > 0);
   }
 
   String _dropHint(int sharedCount) {
@@ -575,6 +588,7 @@ class PickerDropZone extends StatelessWidget {
     this.isDragging = false,
     this.isLoading = false,
     this.progress,
+    this.showInputGuide = false,
   });
 
   final IconData icon;
@@ -582,6 +596,9 @@ class PickerDropZone extends StatelessWidget {
   final String hint;
   final List<PickerAction> actions;
   final bool compact;
+
+  /// Links to the quick start guide that compares the input options.
+  final bool showInputGuide;
   final bool isDragging;
   final bool isLoading;
 
@@ -621,6 +638,7 @@ class PickerDropZone extends StatelessWidget {
                   isLoading: isLoading,
                   progress: progress,
                   actions: actions,
+                  showInputGuide: showInputGuide,
                 ),
         ),
       ),
@@ -632,7 +650,12 @@ class PickerDropZone extends StatelessWidget {
       actions.first.onSelected();
       return;
     }
-    showPickerActions(context, title: title, actions: actions);
+    showPickerActions(
+      context,
+      title: title,
+      actions: actions,
+      showInputGuide: showInputGuide,
+    );
   }
 }
 
@@ -646,6 +669,7 @@ class PickerDropZoneColumn extends StatelessWidget {
     required this.isLoading,
     required this.actions,
     this.progress,
+    this.showInputGuide = false,
   });
 
   final IconData icon;
@@ -654,6 +678,7 @@ class PickerDropZoneColumn extends StatelessWidget {
   final bool isLoading;
   final List<PickerAction> actions;
   final InputCopyProgress? progress;
+  final bool showInputGuide;
 
   @override
   Widget build(BuildContext context) {
@@ -703,6 +728,10 @@ class PickerDropZoneColumn extends StatelessWidget {
                         ),
               ],
             ),
+          if (showInputGuide && !isLoading) ...[
+            const SizedBox(height: SeguiSpacing.xs),
+            const Center(child: InputGuideButton()),
+          ],
         ],
       ),
     );
@@ -780,6 +809,7 @@ class PickerSelectionCard extends StatelessWidget {
     this.isDragging = false,
     this.isLoading = false,
     this.progress,
+    this.showInputGuide = false,
   });
 
   final IconData icon;
@@ -790,6 +820,7 @@ class PickerSelectionCard extends StatelessWidget {
   final bool isDragging;
   final bool isLoading;
   final InputCopyProgress? progress;
+  final bool showInputGuide;
 
   @override
   Widget build(BuildContext context) {
@@ -832,6 +863,7 @@ class PickerSelectionCard extends StatelessWidget {
                       context,
                       title: sheetTitle,
                       actions: actions,
+                      showInputGuide: showInputGuide,
                     ),
                     icon: const Icon(Icons.edit_outlined,
                         size: SeguiControlSize.iconSmall),
@@ -962,19 +994,28 @@ Future<void> showPickerActions(
   BuildContext context, {
   required String title,
   required List<PickerAction> actions,
+  bool showInputGuide = false,
 }) {
   if (WindowSizeClass.of(context).isAtLeast(WindowSizeClass.medium)) {
     return showDialog<void>(
       context: context,
       barrierLabel: title,
-      builder: (context) => PickerActionDialog(title: title, actions: actions),
+      builder: (context) => PickerActionDialog(
+        title: title,
+        actions: actions,
+        showInputGuide: showInputGuide,
+      ),
     );
   }
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
     barrierLabel: title,
-    builder: (context) => PickerActionSheet(title: title, actions: actions),
+    builder: (context) => PickerActionSheet(
+      title: title,
+      actions: actions,
+      showInputGuide: showInputGuide,
+    ),
   );
 }
 
@@ -984,10 +1025,14 @@ class PickerActionSheet extends StatelessWidget {
     super.key,
     required this.title,
     required this.actions,
+    this.showInputGuide = false,
   });
 
   final String title;
   final List<PickerAction> actions;
+
+  /// Adds a link to the quick start guide that compares the input options.
+  final bool showInputGuide;
 
   @override
   Widget build(BuildContext context) {
@@ -1015,6 +1060,10 @@ class PickerActionSheet extends StatelessWidget {
                 const Divider(height: SeguiSpacing.xl),
               PickerActionTile(action: action),
             ],
+            if (showInputGuide) ...[
+              const SizedBox(height: SeguiSpacing.md),
+              const InputGuideButton(closesRoute: true),
+            ],
           ],
         ),
       ),
@@ -1028,10 +1077,14 @@ class PickerActionDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.actions,
+    this.showInputGuide = false,
   });
 
   final String title;
   final List<PickerAction> actions;
+
+  /// Adds a link to the quick start guide that compares the input options.
+  final bool showInputGuide;
 
   @override
   Widget build(BuildContext context) {
@@ -1053,11 +1106,41 @@ class PickerActionDialog extends StatelessWidget {
         ),
       ),
       actions: [
+        if (showInputGuide) const InputGuideButton(closesRoute: true),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
       ],
+    );
+  }
+}
+
+/// Opens the quick start guide at the section that compares the ways to
+/// add input files.
+class InputGuideButton extends StatelessWidget {
+  const InputGuideButton({super.key, this.closesRoute = false});
+
+  /// Closes the sheet or dialog holding the button before opening the
+  /// guide.
+  final bool closesRoute;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: () {
+        final NavigatorState navigator = Navigator.of(context);
+        if (closesRoute) {
+          navigator.pop();
+        }
+        navigator.push(
+          MaterialPageRoute(
+            builder: (context) => const QuickStartPage(showInputGuide: true),
+          ),
+        );
+      },
+      icon: const Icon(Icons.help_outline_rounded),
+      label: const Text('Which option to use?'),
     );
   }
 }
