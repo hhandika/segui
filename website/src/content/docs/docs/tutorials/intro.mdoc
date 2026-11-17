@@ -6,10 +6,32 @@ sidebar:
   label: Overview
 ---
 
-Tutorials walk through a full workflow on a published dataset, from download to final output. Each one lists the device, the data, and the numbers to expect, so you can check your results as you go.
+Tutorials walk through a full workflow on a published dataset, from download to final output. Each one lists what you need, the data, and the numbers to expect, so you can check your results as you go.
 
 For the options of a single tool, see the [GUI](/docs/gui-usage/intro/) and [CLI](/docs/cli-usage/intro/) guides instead.
 
+## On a phone
+
+Workflows in SEGUI on Android or iOS, with no computer needed.
+
 {% cardgrid %}
-{% linkcard title="Build a supermatrix on a phone" description="Summarize 4,040 loci, filter and trim them, then concatenate them. Android and iOS." href="/docs/tutorials/tutorial-1/" /%}
+{% linkcard title="Build a supermatrix on a phone" description="Summarize 4,040 loci, filter and trim them, then concatenate them." href="/docs/tutorials/tutorial-1/" /%}
+{% linkcard title="Inspect raw reads on a phone" description="Download an Illumina run and check its quality, duplication, and adapters." href="/docs/tutorials/tutorial-2/" /%}
+{% /cardgrid %}
+
+## Command line
+
+Workflows with the SEGUL command line and other software.
+
+{% cardgrid %}
+{% linkcard title="Phylogenomic workflow with Snakemake" description="From alignments to concatenated and species trees with SEGUL, IQ-TREE, and ASTRAL." href="/docs/tutorials/tutorial-3/" /%}
+{% /cardgrid %}
+
+## Python
+
+Scripts with PySEGUL, the SEGUL library for Python.
+
+{% cardgrid %}
+{% linkcard title="Clean alignments with Python" description="Summarize the loci, choose thresholds from the summary, and build a supermatrix. PySEGUL only." href="/docs/tutorials/tutorial-4/" /%}
+{% linkcard title="From reads to contigs with Python" description="Check raw reads, clean them with fastp, assemble them with SPAdes, and summarize each step." href="/docs/tutorials/tutorial-5/" /%}
 {% /cardgrid %}

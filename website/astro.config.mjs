@@ -103,7 +103,21 @@ export default defineConfig({
         {
           label: "Tutorials",
           collapsed: true,
-          items: [{ autogenerate: { directory: "docs/tutorials" } }],
+          items: [
+            "docs/tutorials/intro",
+            {
+              label: "On a phone",
+              items: ["docs/tutorials/tutorial-1", "docs/tutorials/tutorial-2"],
+            },
+            {
+              label: "Command line",
+              items: ["docs/tutorials/tutorial-3"],
+            },
+            {
+              label: "Python",
+              items: ["docs/tutorials/tutorial-4", "docs/tutorials/tutorial-5"],
+            },
+          ],
         },
         { label: "Support", slug: "docs/support" },
         { label: "Terms and Conditions", slug: "docs/terms" },

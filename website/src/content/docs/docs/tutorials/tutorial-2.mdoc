@@ -1,0 +1,242 @@
+---
+title: "Tutorial 2: Inspect raw reads on a phone"
+description: Download a paired-end Illumina run from a public archive and check its quality with SEGUI on an Android or iOS phone.
+sidebar:
+  order: 2
+  label: "2. Raw reads on a phone"
+---
+
+This tutorial takes one sequencing run from a public archive to a full quality report, using only a phone. You will:
+
+1. Find the run in the Sequence Read Archive.
+2. Download its FASTQ files.
+3. Summarize the reads in Complete mode.
+4. Read the report: quality, composition, duplication, and adapters.
+
+## Before you start
+
+- **A phone or tablet** with Android 8.0 or newer, or iOS or iPadOS 15.0 or newer.
+- **SEGUI v1.2.0 or newer.** See [GUI installation](/docs/installation/install_gui/).
+- **About 500 MB of free storage**: 238 MB for the download and the same again for SEGUI's working copy.
+- **Wi-Fi.** The two files add up to 238 MB.
+
+{% aside type="note" title="Android and iOS" %}
+The steps inside SEGUI are the same on both systems. They differ in where the browser saves the download and how the file picker looks. Those steps have an Android tab and an iOS tab. The screenshots show SEGUI on Android.
+{% /aside %}
+
+## The dataset
+
+The data are the raw reads of one sample from [Esselstyn et al. 2017](https://doi.org/10.1093/gbe/evx168), a study of the placental mammal tree based on ultraconserved elements (UCEs). The sample is a short-tailed gymnure, *Hylomys suillus*, from the Field Museum (FMNH 168652).
+
+| | |
+| --- | --- |
+| Run | [SRR6053059](https://www.ncbi.nlm.nih.gov/sra/?term=SRR6053059) |
+| BioProject | [PRJNA390442](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA390442) |
+| Library | UCE target enrichment, paired-end |
+| Instrument | Illumina HiSeq 3000 |
+| Reads | 1,761,846 pairs, 125 bp each |
+| Files | `SRR6053059_1.fastq.gz`, 119 MB, and `SRR6053059_2.fastq.gz`, 119 MB |
+
+## 1. Find the run
+
+Reads submitted to GenBank's Sequence Read Archive (SRA) get a run accession that starts with `SRR`. A paper lists either the runs or a BioProject that groups them.
+
+{% steps %}
+
+1. Open the [SRA record of SRR6053059](https://www.ncbi.nlm.nih.gov/sra/?term=SRR6053059) in your browser.
+2. Check the record: the organism is *Hylomys suillus*, the layout is **PAIRED**, and the run has 1.8M spots and 440.5M bases. A spot is one read pair.
+3. Note the run accession, `SRR6053059`. The same accession finds the run in every archive that mirrors the SRA.
+
+{% /steps %}
+
+{% aside type="caution" title="Download the FASTQ files from ENA" %}
+The **FASTA/FASTQ download** tab of the SRA Run Browser replaces the quality scores of this run with a fixed score for each read, so every quality chart would be flat. The [European Nucleotide Archive](https://www.ebi.ac.uk/ena/browser/view/SRR6053059) (ENA) mirrors the same run with the quality scores from the sequencer, as one compressed FASTQ file per read direction. Use those files to inspect read quality.
+{% /aside %}
+
+## 2. Download the reads
+
+{% tabs syncKey="mobile-os" %}
+{% tabitem label="Android" %}
+
+{% steps %}
+
+1. In Chrome, tap [SRR6053059_1.fastq.gz](https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR605/009/SRR6053059/SRR6053059_1.fastq.gz). The download starts.
+2. Tap [SRR6053059_2.fastq.gz](https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR605/009/SRR6053059/SRR6053059_2.fastq.gz).
+3. To follow the progress, open the Chrome menu and select **Downloads**.
+4. Chrome saves both files to the **Downloads** folder. Wait for both to finish. You do not need to open or extract them.
+
+{% /steps %}
+
+{% /tabitem %}
+{% tabitem label="iOS and iPadOS" %}
+
+{% steps %}
+
+1. In Safari, tap [SRR6053059_1.fastq.gz](https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR605/009/SRR6053059/SRR6053059_1.fastq.gz), then select **Download**.
+2. Tap [SRR6053059_2.fastq.gz](https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR605/009/SRR6053059/SRR6053059_2.fastq.gz), then select **Download**.
+3. Safari saves both files to the **Downloads** folder in the Files app, in iCloud Drive or **On My iPhone**. Do not tap the files there: Files would extract them, and SEGUI reads them compressed.
+
+{% /steps %}
+
+{% /tabitem %}
+{% /tabs %}
+
+{% phoneshots
+   shots=["tutorials/reads-phone-sra-record.webp", "tutorials/reads-phone-chrome-downloads.webp"]
+   alts=["SRA record of SRR6053059 in Chrome on Android with the Hylomys suillus library and 1,761,846 spots", "Chrome Downloads page on Android with SRR6053059_1.fastq.gz and SRR6053059_2.fastq.gz in progress"]
+   captions=["The SRA record of the run. Zoom in to read it.", "Both files downloading in Chrome."] /%}
+
+{% aside type="tip" title="Finding the files of another run" %}
+The ENA page of a run lists its FASTQ files, but its links use FTP, which phone browsers no longer open. Copy a link and replace `ftp://` with `https://`.
+{% /aside %}
+
+## 3. Summarize the reads
+
+### Open the tool and add the reads
+
+{% steps %}
+
+1. Open SEGUI. On the home screen, select **Summarize genomic reads**.
+2. In the **Input** card, select **Browse**, then **Browse files**.
+3. Pick both FASTQ files:
+
+   {% tabs syncKey="mobile-os" %}
+   {% tabitem label="Android" %}
+   In the system file picker, open the menu and select **Downloads**. Touch and hold `SRR6053059_1.fastq.gz`, tap `SRR6053059_2.fastq.gz`, then tap **Select**.
+   {% /tabitem %}
+   {% tabitem label="iOS and iPadOS" %}
+   In the Files picker, select **Browse** and open **Downloads**. Tap both files, then tap **Open**.
+   {% /tabitem %}
+   {% /tabs %}
+
+4. Wait while SEGUI copies the files. The input card then shows **2 files selected**.
+5. Leave **Format** on **Auto**.
+
+{% /steps %}
+
+{% phoneshots
+   shots=["tutorials/reads-phone-home.webp", "tutorials/reads-phone-select-files.webp", "tutorials/reads-phone-android-picker.webp"]
+   alts=["SEGUI home screen on Android with Summarize genomic reads at the top of the Genomics tools", "SEGUI Select files sheet with Browse files and Browse folder", "Android file picker with SRR6053059_1.fastq.gz and SRR6053059_2.fastq.gz selected in the Download folder"]
+   captions=["The tool on the home screen.", "Choose Browse files.", "Select both FASTQ files."] /%}
+
+### Set the output and run
+
+{% steps %}
+
+1. In the **Output** card, enter a **Directory name**, such as `read-summary`.
+2. Enter a **Prefix**, such as `hylomys`. It starts the name of each output file.
+3. Leave **Summary Mode** on **Complete**. Only this mode writes the read report.
+4. Leave **Duplication sketch size** on **100k** and **Quality score offset** on **Auto**.
+5. Select **Summarize**.
+
+{% /steps %}
+
+The run takes a few seconds. SEGUI then opens the **Workbench** tab, with 2 input files and 4 output files.
+
+{% phoneshots
+   shots=["tutorials/reads-phone-form.webp", "tutorials/reads-phone-running.webp", "tutorials/reads-phone-workbench.webp"]
+   alts=["SEGUI Summarize genomic reads output card with directory name read-summary, prefix hylomys, and Complete summary mode", "SEGUI running the read summary with a progress bar at 0 of 2 files and a Cancel button", "SEGUI workbench after the read summary with 2 input files, 4 output files, and the Report card"]
+   captions=["The output settings before the run.", "Progress while SEGUI reads the files.", "The workbench after the run, with the Report card."] /%}
+
+The output files are:
+
+- `hylomys_default-read-summary.csv`: one row of statistics per file.
+- `hylomys_read-pos-summary.zip` and `hylomys_read-dist-summary.zip`: tables per read position and distributions for each file.
+- `hylomys_read-report.json`: the read report.
+
+## 4. Read the report
+
+Select **View report** on the **Report** card. The report shows one file at a time. The two files are the two directions of the same read pairs, so inspect both.
+
+### Start with the checks
+
+The **Summary** tab lists both files with their read counts. Scroll down to the checks of the open file. Each one is marked pass, warn, or fail.
+
+| Check | `SRR6053059_1` | `SRR6053059_2` |
+| --- | --- | --- |
+| Q30 bases | 85.7% | 83.2% |
+| Mean quality | 33.3 | 32.6 |
+| N content | 0.0% | 0.1% |
+| Duplication | 76.0% | 73.7% |
+| Adapters | 0.4% | 0.4% |
+| Poly-G | 0.1% | 0.1% |
+| Overrepresented | 0.2% | 0.2% |
+
+Quality, N content, adapters, and poly-G pass. Duplication fails and overrepresented sequences get a warning. Tap a check to see what it measures and its thresholds.
+
+To open the other file, use the arrows next to the file name, or the list button to see both files with their reads and Q30 bases. For every statistic side by side, tap the settings button above the bars and select **Table**.
+
+{% phoneshots
+   shots=["tutorials/reads-phone-report-summary.webp", "tutorials/reads-phone-check-duplication.webp", "tutorials/reads-phone-sample-list.webp"]
+   alts=["SEGUI read report Summary tab with both files at 1.8M reads and the checks of SRR6053059_1", "SEGUI Duplication check sheet with 76.0% marked fail against the pass, warn, and fail ranges", "SEGUI sample list sheet with SRR6053059_1 at Q30 85.7% and SRR6053059_2 at Q30 83.2%"]
+   captions=["The Summary tab with the checks.", "A check with its thresholds.", "The sample list switches files."] /%}
+
+### Quality
+
+Open the **Quality** tab. The per-base quality chart plots the quality score at each position of the read, over green, yellow, and red zones for good, reasonable, and poor quality.
+
+- The median stays at 37 from position 6 to 124, well inside the green zone.
+- The mean falls slowly, from about 35 near the start to 30 at position 120, then drops to 23 at the last base.
+- The shaded band shows the 10th percentile. It reaches a score of 2 at position 115 in the first file and at position 107 in the second.
+
+So most bases are good, but a share of reads have poor ends, and the second file is slightly worse than the first. Both are typical of Illumina paired-end runs. The bands move in steps because this instrument reports only a few quality values.
+
+{% phoneshots
+   shots=["tutorials/reads-phone-report-quality.webp", "tutorials/reads-phone-report-quality-r2.webp"]
+   alts=["SEGUI per-base quality chart of SRR6053059_1 with a median of 37 and a mean falling toward the read end", "SEGUI per-base quality chart of SRR6053059_2 with the low quality band starting earlier in the read"]
+   captions=["Per-base quality of the first file.", "The second file loses quality earlier."] /%}
+
+Scroll down to **Per-read quality**, which compares both files. Most reads have a mean quality above 30. In total, 82,824 reads of the first file and 118,992 of the second have a mean quality below 20, or 4.7% and 6.8%.
+
+### Composition
+
+Open the **Composition** tab.
+
+- **GC content**: the reads average 46.3% GC, and their distribution follows the theoretical curve closely. A second peak would point to contamination.
+- **Base composition**: the four lines are flat after the first few bases, as expected of a random library.
+- **N content**: the sequencer could not call 0.01% of the bases in the first file and 0.13% in the second.
+
+Touch a chart to read its values, and pinch to zoom.
+
+{% phoneshots
+   shots=["tutorials/reads-phone-report-composition.webp"]
+   alts=["SEGUI GC content chart of SRR6053059_1 with the observed distribution close to the theoretical curve"]
+   captions=["GC content against the theoretical curve."] /%}
+
+### Duplication, adapters, and overrepresented sequences
+
+- **Duplication**: 76.0% of the reads in the first file repeat another read. This fails the check, but it is common in target enrichment libraries, which sequence a small part of the genome many times after PCR. Remove duplicates before calling variants, or let the assembler handle them.
+- **Adapters**: the Illumina Universal adapter is found in 0.4% of the reads, mostly from position 100 onward, where short fragments run out. The line is low, but it rises, so trim the reads before assembly.
+- **Overrepresented**: one sequence makes up 0.2% of each file. Both start with `GATCGGAAGAGC`, which is Illumina adapter sequence. These are reads of adapters with almost no insert, and trimming removes them. Use the copy button to search for a sequence elsewhere.
+
+{% phoneshots
+   shots=["tutorials/reads-phone-report-duplication.webp", "tutorials/reads-phone-report-adapters.webp", "tutorials/reads-phone-report-overrepresented.webp"]
+   alts=["SEGUI duplication chart of SRR6053059_1 showing 76.0% of 1,761,846 reads repeat another read", "SEGUI adapter content chart of SRR6053059_1 with the Illumina Universal line rising to 0.4% near the read end", "SEGUI overrepresented sequences table of SRR6053059_1 with one sequence starting with GATCGGAAGAGC"]
+   captions=["Duplication of the first file.", "Adapter content along the read.", "The overrepresented sequence."] /%}
+
+The **Length** tab has little to show here: every read is 125 bp, because the reads are untrimmed.
+
+## What you found
+
+| Statistic | `SRR6053059_1` | `SRR6053059_2` |
+| --- | --- | --- |
+| Reads | 1,761,846 | 1,761,846 |
+| Bases | 220,230,750 | 220,230,750 |
+| Read length | 125 bp | 125 bp |
+| GC content | 46.3% | 46.4% |
+| Mean quality | 33.3 | 32.6 |
+| Q20 bases | 90.7% | 88.5% |
+| Q30 bases | 85.7% | 83.2% |
+| Reads with mean quality below 20 | 82,824 | 118,992 |
+| Duplication | 76.0% | 73.7% |
+| Reads with adapters | 0.4% | 0.4% |
+
+The run is good enough to use: both files have the same number of reads, more than 83% of the bases reach Q30, and there is no sign of contamination. Before assembly, trim the adapters and the low quality read ends.
+
+{% aside type="caution" title="Checks are a guide" %}
+The pass, warn, and fail ranges suit whole-genome libraries. Judge a failed check against how the library was made, as with duplication here.
+{% /aside %}
+
+To keep the results, select the back arrow, then **Quick Share** on the **Workbench** tab. See [exporting output](/docs/gui-usage/intro/#exporting-output). For every chart and control of the report, see the [read report](/docs/gui-usage/read-summary/#read-report) guide.
+
+The same summary runs from the command line with [`segul read summary`](/docs/cli-usage/read-summary/) and `--mode complete`, and gives the same numbers.

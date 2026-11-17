@@ -1,0 +1,504 @@
+---
+title: "Tutorial 3: A phylogenomic workflow with Snakemake"
+description: Run SEGUL, IQ-TREE, and ASTRAL as one reproducible Snakemake workflow, from 4,040 UCE alignments to concatenated and species trees.
+sidebar:
+  order: 3
+  label: "3. Workflow with Snakemake"
+---
+
+This tutorial builds a workflow that takes a published set of alignments to two phylogenetic trees with one command. SEGUL does the alignment work, and other software infers the trees. You will:
+
+1. Install Snakemake.
+2. Describe the software of each step.
+3. Write the workflow, one rule at a time.
+4. Run it and check the results.
+5. Change a setting and rerun only the steps it affects.
+
+## The software
+
+| Software | Role in the workflow |
+| --- | --- |
+| [Snakemake](https://snakemake.github.io/) | Runs the steps in order, in parallel where it can, and only when their input changed. |
+| [SEGUL](/docs/cli-usage/intro/) | Summarizes, filters, trims, and concatenates the alignments. |
+| [IQ-TREE](https://iqtree.github.io/) | Infers a maximum likelihood tree from the supermatrix, and one gene tree per locus. |
+| [ASTRAL](https://github.com/chaoszhang/ASTER) | Estimates a species tree from the gene trees. |
+
+You install only Snakemake. It installs the other three from [Bioconda](https://bioconda.github.io/) the first time the workflow runs.
+
+## Before you start
+
+- **A computer with Linux or macOS.** On Windows, use [WSL](https://learn.microsoft.com/windows/wsl/install).
+- **Conda 24.7.1 or newer.** [Miniforge](https://conda-forge.org/download/) is a good way to get it. Check with `conda --version`.
+- **About 1 GB of free storage**, and an internet connection for the first run.
+- **Basic use of a terminal.** You do not need to know Snakemake or Python.
+
+With 8 cores, the whole workflow takes about 10 minutes.
+
+## The dataset
+
+The data are the same shrew UCE alignments as in [Tutorial 1](/docs/tutorials/tutorial-1/), from [Esselstyn et al. 2021](https://doi.org/10.1206/0003-0090.454.1.1): 4,040 NEXUS alignments of 102 taxa, in a 14.6 MB archive on [Zenodo](https://zenodo.org/records/6459213). The workflow downloads it.
+
+## The workflow
+
+| Step | Rule | Software | Output |
+| --- | --- | --- | --- |
+| Download and unpack the alignments | `download`, `unpack` | curl, unzip | `data/loci` |
+| Summarize the raw alignments | `summary_raw` | SEGUL | `results/01-summary-raw` |
+| Keep loci with enough taxa | `filter` | SEGUL | `results/02-filtered` |
+| Trim sites with missing data | `trim` | SEGUL | `results/03-trimmed` |
+| Summarize the clean alignments | `summary_clean` | SEGUL | `results/04-summary-clean` |
+| Concatenate the loci | `concat` | SEGUL | `results/05-supermatrix` |
+| Infer the concatenated tree | `concat_tree` | IQ-TREE | `results/06-concat-tree` |
+| Infer a tree per locus | `gene_tree` | IQ-TREE | `results/07-gene-trees` |
+| Estimate the species tree | `collect_gene_trees`, `species_tree` | ASTRAL | `results/08-species-tree` |
+
+## 1. Install Snakemake
+
+Create a conda environment with Snakemake and activate it:
+
+```bash
+conda create --name snakemake --channel conda-forge --channel bioconda snakemake-minimal conda
+```
+
+```bash
+conda activate snakemake
+```
+
+Check the installation. This tutorial was tested with Snakemake 9.27:
+
+```bash
+snakemake --version
+```
+
+## 2. Create the project
+
+A Snakemake project is a folder with a `Snakefile`, a configuration file, and one file per software environment:
+
+```plaintext
+segul-phylo/
+├── Snakefile
+├── config.yaml
+└── envs/
+    ├── segul.yaml
+    ├── iqtree.yaml
+    └── aster.yaml
+```
+
+```bash
+mkdir -p segul-phylo/envs
+```
+
+```bash
+cd segul-phylo
+```
+
+Create the files in the next sections with any text editor.
+
+## 3. Describe the software
+
+Each file in `envs` lists the conda channels and one package with its version. Fixed versions give the same results on another computer or a year from now.
+
+```yaml title="envs/segul.yaml"
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - segul=0.25.0
+```
+
+```yaml title="envs/iqtree.yaml"
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - iqtree=3.1.4
+```
+
+The `aster` package contains ASTRAL:
+
+```yaml title="envs/aster.yaml"
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - aster=1.25
+```
+
+## 4. Set the options
+
+Settings you may want to change go in `config.yaml`, so you never edit the commands themselves:
+
+```yaml title="config.yaml"
+# Alignments to download: a zip archive of NEXUS files, one per locus.
+dataset_url: "https://zenodo.org/records/6459213/files/esselstyn_et_al_2021_uce_aln.zip?download=1"
+
+# Name of the supermatrix and the trees.
+prefix: shrews
+
+# Keep loci with at least this proportion of the taxa.
+min_taxa: 0.75
+
+# Remove sites where more than this proportion of the taxa is missing.
+max_missing: 0.5
+
+# Substitution model for IQ-TREE.
+model: GTR+G
+
+# Extra IQ-TREE options. `--fast` runs a quick tree search, which suits a
+# first look. Set it to "" for a full search.
+iqtree_options: "--fast"
+```
+
+## 5. Write the Snakefile
+
+A Snakefile is a list of rules. A rule names its `input` files, its `output` files, and the `shell` command that makes one from the other. Snakemake reads the rules backward from the files you ask for and works out which commands to run.
+
+Add each block below to the `Snakefile`, in order.
+
+### Settings and targets
+
+The first lines load the settings. The rule `all` lists the final files of the workflow: the two summaries and the two trees.
+
+```python title="Snakefile"
+configfile: "config.yaml"
+
+PREFIX = config["prefix"]
+TRIMMED = "results/03-trimmed/trimmed_alignments"
+
+
+rule all:
+    input:
+        "results/01-summary-raw/raw_alignment_summary.txt",
+        "results/04-summary-clean/clean_alignment_summary.txt",
+        f"results/06-concat-tree/{PREFIX}.treefile",
+        f"results/08-species-tree/{PREFIX}.tre",
+```
+
+### Get the data
+
+```python title="Snakefile"
+rule download:
+    output:
+        "data/alignments.zip",
+    params:
+        url=config["dataset_url"],
+    shell:
+        "curl --location --silent --show-error --output {output} '{params.url}'"
+
+
+rule unpack:
+    input:
+        "data/alignments.zip",
+    output:
+        directory("data/loci"),
+    shell:
+        "unzip -q -j {input} '*.nex' -d {output}"
+```
+
+`directory()` marks an output that is a folder. `unzip -j` leaves out the folder inside the archive, so the alignments land in `data/loci`.
+
+### Summarize and filter with SEGUL
+
+```python title="Snakefile"
+rule summary_raw:
+    input:
+        "data/loci",
+    output:
+        "results/01-summary-raw/raw_alignment_summary.txt",
+        "results/01-summary-raw/raw_locus_summary.csv",
+        "results/01-summary-raw/raw_taxon_summary.csv",
+    log:
+        "logs/summary-raw.log",
+    conda:
+        "envs/segul.yaml"
+    shell:
+        "segul align summary --dir {input} --input-format nexus "
+        "--output results/01-summary-raw --prefix raw --force --log {log}"
+
+
+rule filter:
+    input:
+        "data/loci",
+    output:
+        directory("results/02-filtered"),
+    params:
+        min_taxa=config["min_taxa"],
+    log:
+        "logs/filter.log",
+    conda:
+        "envs/segul.yaml"
+    shell:
+        # SEGUL adds the threshold to the folder name, such as `_75p`.
+        "segul align filter --dir {input} --input-format nexus "
+        "--percent {params.min_taxa} --output {output} --log {log} && "
+        "mv {output}_*p {output}"
+```
+
+Four things make SEGUL fit a workflow:
+
+- **`conda:`** names the environment file, so the rule runs with that SEGUL version.
+- **`--log {log}`** sends SEGUL's log file to the `logs` folder. Without it, every step writes `segul.log` in the project folder.
+- **`--force`** lets SEGUL write into a folder that already exists. Snakemake creates the folder of a rule's output files before it runs the command.
+- **`params:`** passes a setting from `config.yaml` to the command, here `--percent {params.min_taxa}`.
+
+`segul align filter` adds the threshold to the name of its output folder, such as `02-filtered_75p`. The `mv` command gives it back the name that the rule declares.
+
+### Trim, summarize again, and concatenate
+
+```python title="Snakefile"
+checkpoint trim:
+    input:
+        "results/02-filtered",
+    output:
+        directory("results/03-trimmed"),
+    params:
+        max_missing=config["max_missing"],
+    log:
+        "logs/trim.log",
+    conda:
+        "envs/segul.yaml"
+    shell:
+        "segul align trim --dir {input} --input-format nexus "
+        "--missing-data {params.max_missing} --output {output} --log {log}"
+
+
+def trimmed_dir(wildcards):
+    """The trimmed alignments, once the trim checkpoint has run."""
+    checkpoints.trim.get()
+    return TRIMMED
+
+
+rule summary_clean:
+    input:
+        trimmed_dir,
+    output:
+        "results/04-summary-clean/clean_alignment_summary.txt",
+        "results/04-summary-clean/clean_locus_summary.csv",
+        "results/04-summary-clean/clean_taxon_summary.csv",
+    log:
+        "logs/summary-clean.log",
+    conda:
+        "envs/segul.yaml"
+    shell:
+        "segul align summary --dir {input} --input-format nexus "
+        "--output results/04-summary-clean --prefix clean --force --log {log}"
+
+
+rule concat:
+    input:
+        trimmed_dir,
+    output:
+        alignment=f"results/05-supermatrix/{PREFIX}.phy",
+        partition=f"results/05-supermatrix/{PREFIX}_partition.txt",
+    params:
+        prefix=PREFIX,
+    log:
+        "logs/concat.log",
+    conda:
+        "envs/segul.yaml"
+    shell:
+        "segul align concat --dir {input} --input-format nexus "
+        "--output-format phylip --partition-format raxml "
+        "--output results/05-supermatrix --prefix {params.prefix} --force --log {log}"
+```
+
+`trim` is a `checkpoint`, not a `rule`. Snakemake cannot know which loci pass the filter before it runs, so it cannot plan one gene tree per locus yet. A checkpoint tells Snakemake to look at the files again after this step and extend its plan.
+
+`segul align trim` writes the alignments to a `trimmed_alignments` folder inside its output folder, next to `trimming_summary.csv`. The function `trimmed_dir` waits for the checkpoint, then gives that folder to the rules that need it.
+
+### Infer the concatenated tree
+
+```python title="Snakefile"
+rule concat_tree:
+    input:
+        f"results/05-supermatrix/{PREFIX}.phy",
+    output:
+        f"results/06-concat-tree/{PREFIX}.treefile",
+    params:
+        prefix=f"results/06-concat-tree/{PREFIX}",
+        model=config["model"],
+        extra=config["iqtree_options"],
+    threads: 8
+    conda:
+        "envs/iqtree.yaml"
+    shell:
+        "iqtree -s {input} -m {params.model} {params.extra} -T {threads} "
+        "--prefix {params.prefix} --redo --quiet"
+```
+
+`threads: 8` lets IQ-TREE use up to 8 cores. `--redo` lets IQ-TREE overwrite the files of an earlier run. Without it, IQ-TREE stops when Snakemake reruns the rule.
+
+### Infer gene trees and the species tree
+
+```python title="Snakefile"
+rule gene_tree:
+    input:
+        TRIMMED + "/{locus}.nex",
+    output:
+        "results/07-gene-trees/{locus}.treefile",
+    params:
+        prefix="results/07-gene-trees/{locus}",
+        model=config["model"],
+        extra=config["iqtree_options"],
+    conda:
+        "envs/iqtree.yaml"
+    shell:
+        "iqtree -s {input} -m {params.model} {params.extra} -T 1 "
+        "--prefix {params.prefix} --redo --quiet"
+
+
+def gene_trees(wildcards):
+    """One gene tree per alignment that the trim checkpoint wrote."""
+    checkpoints.trim.get()
+    loci = glob_wildcards(TRIMMED + "/{locus}.nex").locus
+    return expand("results/07-gene-trees/{locus}.treefile", locus=loci)
+
+
+rule collect_gene_trees:
+    input:
+        gene_trees,
+    output:
+        "results/08-species-tree/gene-trees.tre",
+    run:
+        with open(output[0], "w") as out:
+            for tree in input:
+                with open(tree) as file:
+                    out.write(file.read())
+
+
+rule species_tree:
+    input:
+        "results/08-species-tree/gene-trees.tre",
+    output:
+        f"results/08-species-tree/{PREFIX}.tre",
+    threads: 8
+    log:
+        "logs/species-tree.log",
+    conda:
+        "envs/aster.yaml"
+    shell:
+        "astral4 -t {threads} -i {input} -o {output} 2> {log}"
+```
+
+`gene_tree` has a wildcard, `{locus}`. It is one rule that Snakemake runs once per locus, several at a time. The function `gene_trees` lists the trimmed alignments after the checkpoint and asks for one tree for each. `collect_gene_trees` joins the trees into one file, the input that ASTRAL needs.
+
+## 6. Check the plan
+
+A dry run prints what Snakemake would do without running it:
+
+```bash
+snakemake --dry-run --cores 8
+```
+
+The job table at the end should list 11 jobs:
+
+```plaintext
+job                   count
+------------------  -------
+download                  1
+unpack                    1
+filter                    1
+summary_raw               1
+trim                      1
+collect_gene_trees        1
+concat                    1
+summary_clean             1
+concat_tree               1
+species_tree              1
+all                       1
+total                    11
+```
+
+The gene trees are missing, because Snakemake adds them after the `trim` checkpoint. An error here usually means a typo or a wrong indent in the `Snakefile`. Snakemake names the line.
+
+## 7. Run the workflow
+
+```bash
+snakemake --cores 8 --sdm conda
+```
+
+- `--cores 8` is the number of cores Snakemake may use. Jobs run side by side up to this limit.
+- `--sdm conda` creates the environments in `envs` and runs each rule in its own. This takes a few minutes on the first run only.
+
+After the `trim` checkpoint, the plan grows to 994 steps: one gene tree for each of the 983 loci that passed the filter. The run ends with:
+
+```plaintext
+994 of 994 steps (100%) done
+```
+
+{% aside type="tip" title="When a step fails" %}
+Snakemake prints the rule and its command. SEGUL's own messages are in the `logs` folder. Fix the cause and run the same command again: Snakemake continues from the failed step and keeps the finished ones.
+{% /aside %}
+
+## 8. Check the results
+
+```plaintext
+results/
+├── 01-summary-raw/      raw_alignment_summary.txt, locus and taxon tables
+├── 02-filtered/         983 alignments
+├── 03-trimmed/          trimmed_alignments/, trimming_summary.csv
+├── 04-summary-clean/    clean_alignment_summary.txt, locus and taxon tables
+├── 05-supermatrix/      shrews.phy, shrews_partition.txt
+├── 06-concat-tree/      shrews.treefile
+├── 07-gene-trees/       983 gene trees
+└── 08-species-tree/     gene-trees.tre, shrews.tre
+```
+
+Compare the two summaries:
+
+```bash
+head -n 7 results/01-summary-raw/raw_alignment_summary.txt results/04-summary-clean/clean_alignment_summary.txt
+```
+
+| | Raw | Clean |
+| --- | --- | --- |
+| Taxa | 102 | 102 |
+| Loci | 4,040 | 983 |
+| Sites | 5,398,947 | 756,449 |
+| Missing data | 49.43% | 13.55% |
+
+These match [Tutorial 1](/docs/tutorials/tutorial-1/#what-you-did), which runs the same steps in SEGUI. To browse a summary in the terminal, run `segul view summary` on its `alignment-report.json` file. See [viewing summaries](/docs/cli-usage/view-summary/).
+
+The two trees are in Newick format, each with 102 taxa:
+
+- `results/06-concat-tree/shrews.treefile`: the maximum likelihood tree of the supermatrix.
+- `results/08-species-tree/shrews.tre`: the ASTRAL species tree, with support values on its branches.
+
+Open them in a tree viewer such as [FigTree](https://github.com/rambaut/figtree/releases) or [iTOL](https://itol.embl.de/).
+
+## 9. Change a setting and rerun
+
+Snakemake records how each file was made. Change a setting, and it reruns only the steps that depend on it.
+
+{% steps %}
+
+1. In `config.yaml`, change `min_taxa` to `0.8`.
+2. Check the plan:
+
+   ```bash
+   snakemake --dry-run --cores 8 --sdm conda
+   ```
+
+   Snakemake lists `filter` and every step after it. It leaves out `download`, `unpack`, and `summary_raw`, whose results still hold.
+
+3. Run the workflow again:
+
+   ```bash
+   snakemake --cores 8 --sdm conda
+   ```
+
+{% /steps %}
+
+The stricter filter keeps 308 loci, so this run is faster.
+
+## Where to go next
+
+{% aside type="caution" title="A first look, not a final analysis" %}
+The settings favor speed. `--fast` shortens the tree search, one model is used for all loci, and the concatenated tree has no support values. For a study, set `iqtree_options` to `""` or to the options you need, such as `-B 1000` for ultrafast bootstrap, and choose thresholds from your own summaries.
+{% /aside %}
+
+- **Use your own data.** Point `dataset_url` to your archive, or put your alignments in `data/loci` and remove the `download` and `unpack` rules. Change `--input-format` if they are not NEXUS.
+- **Add a step.** A new rule needs only its input, output, and command. Every SEGUL command works the same way. See the [CLI guides](/docs/cli-usage/intro/).
+- **Use a partitioned model.** `concat` already writes `shrews_partition.txt`. Add it to the `concat_tree` input and pass it to IQ-TREE with `-p`.
+- **Run on a cluster.** Snakemake can submit each job to a scheduler such as Slurm. See the [Snakemake documentation](https://snakemake.readthedocs.io/).
+- **Share the workflow.** The project folder is all someone needs to repeat the analysis. Keep it under version control, without `data`, `results`, and `.snakemake`.
