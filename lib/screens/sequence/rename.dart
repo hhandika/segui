@@ -100,6 +100,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
             if (_renamingOptionController != RenamingOptions.renameFile)
               SharedTextField(
                 controller: _paramValueController,
+                onChanged: (_) => setState(() {}),
                 label: _isRemove
                     ? _isRegex
                         ? 'Regex pattern'
@@ -118,6 +119,7 @@ class SequenceRenamingPageState extends ConsumerState<SequenceRenamingPage>
             if (_isReplace)
               SharedTextField(
                 controller: _paramReplaceWithController,
+                onChanged: (_) => setState(() {}),
                 label: 'Replace with',
                 hint: 'contigs_1',
               ),

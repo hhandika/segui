@@ -290,6 +290,7 @@ class SharedTextField extends StatelessWidget {
                 onPressed: () {
                   controller.clear();
                   const FormEditedNotification().dispatch(context);
+                  onChanged?.call('');
                 },
               )
             : null,

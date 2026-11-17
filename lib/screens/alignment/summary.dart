@@ -70,6 +70,7 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
             controller: _ctr.prefixController,
             label: 'Output Prefix',
             hint: 'Enter output prefix',
+            onChanged: (_) => setState(() {}),
           ),
           SwitchForm(
             label: 'Summarize each locus separately',

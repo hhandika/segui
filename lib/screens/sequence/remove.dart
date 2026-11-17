@@ -86,6 +86,7 @@ class SequenceRemovalPageState extends ConsumerState<SequenceRemovalPage>
             ),
             SharedTextField(
               controller: _idRegexController,
+              onChanged: (_) => setState(() {}),
               label: _removalMethodController == RemovalOptions.regex
                   ? 'Regular expression'
                   : 'Sequence IDs',

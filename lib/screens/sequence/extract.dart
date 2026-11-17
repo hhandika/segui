@@ -86,6 +86,7 @@ class ExtractSequencePageState extends ConsumerState<ExtractSequencePage>
                 )
               : SharedTextField(
                   controller: _idRegexController,
+                  onChanged: (_) => setState(() {}),
                   label: _extractionOptionsController == ExtractionOptions.regex
                       ? 'Regular expression'
                       : 'Sequence ID',

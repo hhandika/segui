@@ -69,6 +69,7 @@ class ConcatPageState extends ConsumerState<ConcatPage>
             controller: _ctr.prefixController,
             label: 'Prefix',
             hint: 'concat, species_concat, etc.',
+            onChanged: (_) => setState(() {}),
           ),
           // Default to NEXUS if user does not select
           SharedDropdownField(
