@@ -279,7 +279,7 @@ export const interfaces = [
   },
   {
     name: "API",
-    title: "Python, Rust, and R",
+    title: "Python and Rust",
     description: "Call SEGUL from your own code with pysegul or the segul crate.",
     command: "pip install pysegul",
     href: "/docs/api-usage/",

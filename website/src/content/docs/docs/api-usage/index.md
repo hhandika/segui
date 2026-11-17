@@ -1,6 +1,6 @@
 ---
 title: API Usages
-description: Use SEGUL as a library from Python, Rust, or R.
+description: Use SEGUL as a library from Python or Rust.
 sidebar:
   order: 0
   label: Overview
