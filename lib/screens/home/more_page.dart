@@ -10,7 +10,6 @@ import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/io/folder_access.dart';
-import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/providers/viewer.dart';
 import 'package:segui/services/utils.dart';
@@ -200,8 +199,6 @@ class MoreSettingsList extends ConsumerWidget {
             subtitle: 'View and manage app data',
             icon: Icons.data_usage_outlined,
             onTap: () {
-              // Data usage lists the files in the app folder.
-              ref.read(fileOutputProvider.notifier).addFromAppDir();
               _push(context, const DataUsageScreen());
             },
           ),

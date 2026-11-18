@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/io/folder_access.dart';
-import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/settings/about.dart';
 import 'package:segui/screens/settings/colors.dart';
 import 'package:segui/screens/settings/data_usage.dart';
@@ -186,10 +185,6 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
   }
 
   void _open(SettingsPage page) {
-    // Data usage lists the files in the app folder.
-    if (page == SettingsPage.dataUsage) {
-      ref.read(fileOutputProvider.notifier).addFromAppDir();
-    }
     setState(() => _page = page);
   }
 }
@@ -312,7 +307,6 @@ class MainSettings extends ConsumerWidget {
             subtitle: 'View and manage app data',
             icon: Icons.data_usage_outlined,
             onTap: () {
-              ref.read(fileOutputProvider.notifier).addFromAppDir();
               Navigator.push(
                 context,
                 MaterialPageRoute(

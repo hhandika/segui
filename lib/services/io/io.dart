@@ -147,21 +147,6 @@ class FileUtils {
   }
 }
 
-class DataUsageServices extends FileUtils {
-  DataUsageServices();
-
-  ({String count, String size}) calculateUsage(SegulOutputFile outputFiles) {
-    final files = outputFiles.files.map((e) => e.file).toList();
-    final fileCount = files.length;
-    final totalSize = calculateTotalSizeSync(files);
-    return _getUsageText(fileCount, totalSize);
-  }
-
-  ({String count, String size}) _getUsageText(int fileCount, int totalSize) {
-    return (count: '$fileCount files', size: formatSize(totalSize));
-  }
-}
-
 class TempDataServices extends FileUtils {
   TempDataServices();
 

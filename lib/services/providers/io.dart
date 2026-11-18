@@ -246,14 +246,6 @@ class FileOutput extends AsyncNotifier<SegulOutputFile> {
     });
   }
 
-  Future<void> addFromAppDir() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      Directory dir = await getSeguiDirectory();
-      return SegulOutputFile.fromDirectory(dir, isRecursive: true);
-    });
-  }
-
   /// Treat only files written from now on as new outputs.
   /// This is used before each run, so a rerun does not count
   /// the previous run's files as its own.
