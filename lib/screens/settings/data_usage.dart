@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -10,6 +11,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/providers/data_usage.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/styles/themes.dart';
 
 class DataUsageScreen extends StatelessWidget {
   const DataUsageScreen({super.key});
@@ -213,47 +215,205 @@ class DataUsageSummary extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final int folders = tree.folderCount;
     final int files = tree.fileCount;
+    final List<DataUsageTypeShare> shares = tree.typeShares();
     return DataUsageCard(
       padding: const EdgeInsets.fromLTRB(
           SeguiSpacing.xl, SeguiSpacing.lg, SeguiSpacing.md, SeguiSpacing.lg),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            width: SeguiControlSize.touchTarget,
-            height: SeguiControlSize.touchTarget,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(SeguiRadius.md),
-            ),
-            child: Icon(
-              Icons.data_usage_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
+          Row(
+            children: [
+              Container(
+                width: SeguiControlSize.touchTarget,
+                height: SeguiControlSize.touchTarget,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(SeguiRadius.md),
+                ),
+                child: Icon(
+                  Icons.data_usage_rounded,
+                  color: theme.colorScheme.onSecondaryContainer,
+                ),
+              ),
+              const SizedBox(width: SeguiSpacing.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      FileUtils().formatSize(tree.size),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      '${folders == 1 ? '1 folder' : '$folders folders'} · '
+                      '${files == 1 ? '1 file' : '$files files'}',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const ClearAppDataButton(),
+            ],
           ),
-          const SizedBox(width: SeguiSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          if (shares.isNotEmpty)
+            // Lines the breakdown up with the left inset on the right too.
+            Padding(
+              padding: const EdgeInsets.only(
+                top: SeguiSpacing.lg,
+                right: SeguiSpacing.md,
+              ),
+              child: DataUsageTypeBreakdown(shares: shares, total: tree.size),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Share of the app data each file format takes: a stacked bar, then a
+/// two-column legend with each format's size.
+class DataUsageTypeBreakdown extends StatelessWidget {
+  const DataUsageTypeBreakdown({
+    super.key,
+    required this.shares,
+    required this.total,
+  });
+
+  final List<DataUsageTypeShare> shares;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Color> colors = [
+      for (int i = 0; i < shares.length; i++) _colorOf(context, i),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DataUsageTypeBar(shares: shares, colors: colors, total: total),
+        const SizedBox(height: SeguiSpacing.md),
+        for (int row = 0; row < shares.length; row += 2)
+          Padding(
+            padding: const EdgeInsets.only(top: SeguiSpacing.xs),
+            child: Row(
               children: [
-                Text(
-                  FileUtils().formatSize(tree.size),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
+                Expanded(
+                  child: DataUsageTypeLegendItem(
+                    share: shares[row],
+                    color: colors[row],
                   ),
                 ),
-                Text(
-                  '${folders == 1 ? '1 folder' : '$folders folders'} · '
-                  '${files == 1 ? '1 file' : '$files files'}',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                const SizedBox(width: SeguiSpacing.xl),
+                Expanded(
+                  child: row + 1 < shares.length
+                      ? DataUsageTypeLegendItem(
+                          share: shares[row + 1],
+                          color: colors[row + 1],
+                        )
+                      : const SizedBox.shrink(),
                 ),
               ],
             ),
           ),
-          const ClearAppDataButton(),
-        ],
+      ],
+    );
+  }
+
+  Color _colorOf(BuildContext context, int index) {
+    return shares[index].isOther
+        ? Theme.of(context).colorScheme.outline
+        : SeguiColors.of(context).seriesAt(index);
+  }
+}
+
+/// One bar split by the size of each format. Formats too small to see
+/// keep a sliver, and empty ones are left out.
+class DataUsageTypeBar extends StatelessWidget {
+  const DataUsageTypeBar({
+    super.key,
+    required this.shares,
+    required this.colors,
+    required this.total,
+  });
+
+  final List<DataUsageTypeShare> shares;
+  final List<Color> colors;
+  final int total;
+
+  /// Flex units of the whole bar, so a share's flex is its size in
+  /// thousandths.
+  static const int _resolution = 1000;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: [
+        for (final DataUsageTypeShare share in shares)
+          '${share.label} ${formatDataUsageSize(share.size)}',
+      ].join(', '),
+      excludeSemantics: true,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(SeguiRadius.full),
+        child: SizedBox(
+          height: SeguiControlSize.indicator,
+          // Stretched, since the color boxes have no height of their own.
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: SeguiStroke.regular,
+            children: [
+              for (int i = 0; i < shares.length; i++)
+                if (shares[i].size > 0)
+                  Expanded(
+                    flex: math.max(
+                      1,
+                      (shares[i].size / math.max(total, 1) * _resolution)
+                          .round(),
+                    ),
+                    child: ColoredBox(color: colors[i]),
+                  ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+}
+
+/// Color dot, format name, and size of one format in the legend.
+class DataUsageTypeLegendItem extends StatelessWidget {
+  const DataUsageTypeLegendItem({
+    super.key,
+    required this.share,
+    required this.color,
+  });
+
+  final DataUsageTypeShare share;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: SeguiControlSize.indicator,
+          height: SeguiControlSize.indicator,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: SeguiSpacing.sm),
+        Expanded(
+          child: Text(
+            share.label,
+            style: Theme.of(context).textTheme.bodySmall,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        DataUsageSizeLabel(size: share.size),
+      ],
     );
   }
 }

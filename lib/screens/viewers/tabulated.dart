@@ -35,10 +35,13 @@ class TabulatedFileView extends StatelessWidget {
         child: Center(
           child: Padding(
               padding: const EdgeInsets.all(SeguiSpacing.xl),
+              // Stretched, so the table card is as wide as the file card
+              // even when it only holds a short message.
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(bottom: SeguiSpacing.xs),
+                    padding: const EdgeInsets.only(bottom: SeguiSpacing.md),
                     child: Container(
                       decoration: getContainerDecoration(context),
                       child: Padding(
@@ -103,9 +106,12 @@ class _TabulatedFileViewBodyState extends State<TabulatedFileViewBody> {
             return const Center(child: Text('Failed to parse file.'));
           }
           if (content.length < 2) {
-            return const EmptyScreen(
-                title: 'Table is empty.',
-                description: 'Try run the analysis again.');
+            return const Center(
+              child: EmptyScreen(
+                title: 'Table is empty',
+                description: 'Try running the analysis again.',
+              ),
+            );
           }
           return CsvTable(content: content);
         });

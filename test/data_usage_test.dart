@@ -6,6 +6,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/data_usage_tree.dart';
+import 'package:segui/screens/shared/io/io.dart';
+import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/services/io/data_usage.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -139,6 +141,32 @@ void main() {
         labels(tree, {}, sort: DataUsageSort.recent).last,
         '0:large.log',
       );
+    });
+
+    test('Breaks sizes down by format, top three then Other', () {
+      createFile(['run', 'a.nex'], size: 100);
+      createFile(['run', 'b.nex'], size: 50);
+      createFile(['reads.csv'], size: 60);
+      createFile(['loci', 'c.fas'], size: 30);
+      createFile(['notes.txt'], size: 5);
+      createFile(['segui.log'], size: 2);
+      createFile(['mystery.xyz'], size: 1);
+
+      final shares = DataUsageTree.fromDirectory(dir).typeShares();
+
+      expect(
+        shares.map((e) => '${e.label}:${e.size}:${e.isOther}'),
+        ['NEXUS:150:false', 'CSV:60:false', 'FASTA:30:false', 'Other:8:true'],
+      );
+    });
+
+    test('Leaves Other out when three formats or fewer', () {
+      createFile(['a.nex'], size: 10);
+      createFile(['b.csv'], size: 5);
+
+      final shares = DataUsageTree.fromDirectory(dir).typeShares();
+
+      expect(shares.map((e) => e.label), ['NEXUS', 'CSV']);
     });
   });
 
@@ -389,6 +417,65 @@ void main() {
               .byWidgetPredicate((widget) => widget is ButtonStyleButton))) {
         expect(button.onPressed, isNull);
       }
+    });
+
+    testWidgets('Summary shows the format legend', (tester) async {
+      createFile(['run', 'a.nex'], size: 2048);
+      createFile(['reads.csv'], size: 10);
+      final tree = DataUsageTree.fromDirectory(dir);
+
+      await tester.pumpWidget(ProviderScope(
+        child: wrap(DataUsageSummary(tree: tree)),
+      ));
+
+      expect(find.byType(DataUsageTypeBar), findsOneWidget);
+      final Iterable<ColoredBox> segments = tester.widgetList<ColoredBox>(
+        find.descendant(
+          of: find.byType(DataUsageTypeBar),
+          matching: find.byType(ColoredBox),
+        ),
+      );
+      expect(segments, hasLength(2));
+      for (final Element segment in find
+          .descendant(
+            of: find.byType(DataUsageTypeBar),
+            matching: find.byType(ColoredBox),
+          )
+          .evaluate()) {
+        expect(tester.getSize(find.byWidget(segment.widget)).height,
+            greaterThan(0));
+      }
+      expect(find.text('NEXUS'), findsOneWidget);
+      expect(find.text('CSV'), findsOneWidget);
+      expect(find.text('10 B'), findsOneWidget);
+    });
+
+    testWidgets('An empty table is as wide as the file card', (tester) async {
+      final File csv = createFile(['empty.csv']);
+      csv.writeAsStringSync('sample,reads\n');
+
+      await tester.pumpWidget(wrap(TabulatedFileView(file: csv)));
+      // The file is read off the test clock, so wait for it in real time.
+      for (int i = 0; i < 5; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)),
+        );
+        await tester.pump();
+      }
+
+      expect(find.text('Table is empty'), findsOneWidget);
+      Finder cardAround(Finder child) => find
+          .ancestor(
+            of: child,
+            matching: find.byWidgetPredicate((widget) =>
+                widget is Container && widget.decoration is BoxDecoration),
+          )
+          .first;
+      final double fileCard =
+          tester.getSize(cardAround(find.byType(FileIOSubtitle))).width;
+      final double tableCard =
+          tester.getSize(cardAround(find.text('Table is empty'))).width;
+      expect(tableCard, fileCard);
     });
   });
 }

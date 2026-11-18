@@ -311,13 +311,13 @@ class DataUsageSizeLabel extends StatelessWidget {
     );
   }
 
-  // Sizes under 1 KB show in bytes rather than as 0.00 Kb.
-  String get _label {
-    if (isEmpty) {
-      return '—';
-    }
-    return size < 1024 ? '$size B' : FileUtils().formatSize(size);
-  }
+  String get _label => isEmpty ? '—' : formatDataUsageSize(size);
+}
+
+/// [size] in bytes under 1 KB, rather than as 0.00 Kb, and in the app's
+/// usual units above.
+String formatDataUsageSize(int size) {
+  return size < 1024 ? '$size B' : FileUtils().formatSize(size);
 }
 
 /// What a [DataUsageActionMenu] can do with a folder or file.

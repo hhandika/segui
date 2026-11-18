@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
+import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/logging.dart';
 
 /// Order of the folders and files in a [DataUsageTree]. Folders always come
@@ -86,6 +87,19 @@ class DataUsageFolder {
   }
 }
 
+/// Bytes held by one file format, or by every format grouped as Other.
+class DataUsageTypeShare {
+  const DataUsageTypeShare({
+    required this.label,
+    required this.size,
+    this.isOther = false,
+  });
+
+  final String label;
+  final int size;
+  final bool isOther;
+}
+
 /// A row of a [DataUsageTree] as it is listed on screen.
 sealed class DataUsageRow {
   const DataUsageRow({required this.depth});
@@ -131,6 +145,37 @@ class DataUsageTree {
   int get fileCount => root.fileCount;
   int get folderCount => root.folderCount;
   bool get isEmpty => root.isEmpty;
+
+  /// Bytes per file format, largest first: the [top] largest formats, then
+  /// one Other share for the rest, including unrecognized files.
+  List<DataUsageTypeShare> typeShares({int top = 3}) {
+    final Map<FileIconType, int> sizes = {};
+    for (final DataUsageFile file in root.allFiles) {
+      final FileIconType type = FileIconType.fromFileName(file.name);
+      sizes[type] = (sizes[type] ?? 0) + file.size;
+    }
+    final List<MapEntry<FileIconType, int>> named =
+        sizes.entries.where((e) => e.key != FileIconType.unknown).toList()
+          ..sort((a, b) {
+            final int order = b.value.compareTo(a.value);
+            return order != 0 ? order : a.key.label.compareTo(b.key.label);
+          });
+    final List<DataUsageTypeShare> shares = [
+      for (final MapEntry<FileIconType, int> entry in named.take(top))
+        DataUsageTypeShare(label: entry.key.label, size: entry.value),
+    ];
+    final bool hasRest =
+        named.length > top || sizes.containsKey(FileIconType.unknown);
+    if (hasRest) {
+      final int shown = shares.fold(0, (sum, e) => sum + e.size);
+      shares.add(DataUsageTypeShare(
+        label: FileIconType.unknown.label,
+        size: size - shown,
+        isOther: true,
+      ));
+    }
+    return shares;
+  }
 
   /// Rows to list in [sort] order, showing the contents of [expanded]
   /// folder paths.
