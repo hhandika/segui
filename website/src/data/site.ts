@@ -436,7 +436,7 @@ export const classroom = {
 export const latestRelease = {
   version: "v0.25.0",
   summary:
-    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play, the Microsoft Store, the Snap Store, and the App Store for iPhone and iPad. The macOS version is in App Store review.",
+    "Terminal viewers, charts, and a much faster read summary. The redesigned SEGUI v1.2.0 is out on Google Play, the Microsoft Store, the Snap Store, and the App Store for iPhone, iPad, and Mac.",
   href: "/docs/intro/#segul-v0250",
   highlights: [
     { title: "Terminal alignment viewer", href: "/docs/cli-usage/view-align/" },
