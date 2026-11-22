@@ -26,8 +26,8 @@ const List<QuickStartStep> quickStartSteps = [
   ),
   QuickStartStep(
     title: 'Add input',
-    description: 'Add files, a folder, or an archive, then check the input '
-        'format and data type.',
+    description: 'Add files, a folder, an archive, or database records, '
+        'then check the input format and data type.',
     icon: SeguiIcons.inputFolderOutlined,
   ),
   QuickStartStep(
@@ -95,6 +95,13 @@ const InputGuideline _archiveGuideline = InputGuideline(
   icon: Icons.folder_zip_outlined,
 );
 
+const InputGuideline _databaseGuideline = InputGuideline(
+  title: 'Search databases',
+  description: 'Download records from GenBank or ENA. Not for tools that '
+      'need aligned sequences.',
+  icon: Icons.travel_explore_outlined,
+);
+
 /// Ways to add input files on [platform], most useful first.
 List<InputGuideline> inputGuidelinesFor(InputPlatform platform) {
   return switch (platform) {
@@ -111,6 +118,7 @@ List<InputGuideline> inputGuidelinesFor(InputPlatform platform) {
           icon: Icons.create_new_folder_outlined,
         ),
         _archiveGuideline,
+        _databaseGuideline,
       ],
     InputPlatform.android => const [
         InputGuideline(
@@ -138,6 +146,7 @@ List<InputGuideline> inputGuidelinesFor(InputPlatform platform) {
               'then pick them in the tool.',
           icon: Icons.move_to_inbox_outlined,
         ),
+        _databaseGuideline,
       ],
     InputPlatform.ios => const [
         InputGuideline(
@@ -165,6 +174,7 @@ List<InputGuideline> inputGuidelinesFor(InputPlatform platform) {
               'then pick them in the tool.',
           icon: Icons.move_to_inbox_outlined,
         ),
+        _databaseGuideline,
       ],
   };
 }

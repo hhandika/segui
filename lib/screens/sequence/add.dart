@@ -84,6 +84,13 @@ class SequenceAdditionPageState extends ConsumerState<SequenceAdditionPage>
             xTypeGroup: destinationSequenceTypeGroup,
             task: task,
             allowDirectorySelection: !_isSingleDestination,
+            onDownloaded: (download) {
+              setState(() {
+                _destinationFormat = 'FASTA';
+                _ctr.dataTypeController =
+                    download.dataType ?? _ctr.dataTypeController;
+              });
+            },
           ),
           SharedDropdownField(
             value: _destinationFormat,

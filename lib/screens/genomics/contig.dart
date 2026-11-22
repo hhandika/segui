@@ -62,6 +62,9 @@ class ContigPageState extends ConsumerState<ContigPage>
             hasSecondaryPicker: false,
             allowDirectorySelection: true,
             task: task,
+            onDownloaded: (_) {
+              setState(() => _ctr.inputFormatController = 'FASTA');
+            },
           ),
           SharedDropdownField(
             value: _ctr.inputFormatController,

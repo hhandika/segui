@@ -39,6 +39,7 @@ class ConvertPageState extends ConsumerState<ConvertPage>
   bool _isSortSequence = false;
   bool _isInterleave = false;
   bool _isShowMore = false;
+  bool _hasDownloads = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -59,6 +60,12 @@ class ConvertPageState extends ConsumerState<ConvertPage>
           ctr: _ctr,
           xTypeGroup: sequenceTypeGroup,
           task: task,
+          onDownloaded: (_) {
+            setState(() {
+              _hasDownloads = true;
+              _ctr.outputFormatController = 'FASTA';
+            });
+          },
         ),
         const CardTitle(step: 2, title: 'Output'),
         FormCard(children: [
@@ -69,6 +76,9 @@ class ConvertPageState extends ConsumerState<ConvertPage>
             value: _ctr.outputFormatController,
             label: 'Format',
             items: outputFormat,
+            helper: _hasDownloads
+                ? 'Downloaded records are unaligned, so use FASTA.'
+                : null,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
@@ -230,6 +240,7 @@ class ConvertPageState extends ConsumerState<ConvertPage>
 
   void _setNewRun() {
     setState(() {
+      _hasDownloads = false;
       _ctr.reset();
       _ctr.isSuccess = false;
       ref.invalidate(fileInputProvider);

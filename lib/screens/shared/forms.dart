@@ -1,8 +1,8 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:segui/screens/genomics/read_summary.dart';
 import 'package:segui/services/controllers.dart';
+import 'package:segui/services/databases/download.dart';
 import 'package:segui/screens/shared/io/io.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
@@ -27,6 +27,7 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
     this.isDatatypeEnabled = true,
     this.hasSecondaryPicker = false,
     this.allowDirectorySelection = true,
+    this.onDownloaded,
   });
 
   final IOController ctr;
@@ -36,6 +37,9 @@ class SharedSequenceInputForm extends ConsumerStatefulWidget {
   final bool hasSecondaryPicker;
   final bool allowDirectorySelection;
   final SupportedTask task;
+
+  /// Called after the format and data type are set to those of a download.
+  final ValueChanged<CompletedDownload>? onDownloaded;
 
   @override
   SharedSequenceInputFormState createState() => SharedSequenceInputFormState();
@@ -53,7 +57,8 @@ class SharedSequenceInputFormState
           xTypeGroup: widget.xTypeGroup,
           hasSecondaryPicker: widget.isDatatypeEnabled,
           allowDirectorySelection: widget.allowDirectorySelection,
-          task: task,
+          task: widget.task,
+          onDownloaded: _setDownloaded,
         ),
         SharedDropdownField(
           value: widget.ctr.inputFormatController,
@@ -83,6 +88,15 @@ class SharedSequenceInputFormState
         ),
       ],
     );
+  }
+
+  void _setDownloaded(CompletedDownload download) {
+    setState(() {
+      widget.ctr.inputFormatController = 'FASTA';
+      widget.ctr.dataTypeController =
+          download.dataType ?? widget.ctr.dataTypeController;
+    });
+    widget.onDownloaded?.call(download);
   }
 }
 

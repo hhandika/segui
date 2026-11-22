@@ -1,0 +1,77 @@
+---
+title: GenBank and ENA Downloads
+sidebar:
+  order: 1
+  badge: New
+---
+
+Search GenBank and the European Nucleotide Archive (ENA) from a tool, then add the records as
+input in the format that tool reads. This needs an internet connection.
+
+## What each tool can download
+
+| Tool                                       | GenBank                     | ENA                  | File added  |
+| ------------------------------------------ | --------------------------- | -------------------- | ----------- |
+| Translate sequences                        | Coding sequence             | Coding sequence      | `.fasta`    |
+| Other sequence tools, Convert alignments   | Record, coding, protein     | Record, coding       | `.fasta`    |
+| Summarize genomic reads                    | Not available               | Runs, including SRA  | `.fastq.gz` |
+| Summarize genomic contigs                  | Assemblies                  | Assemblies           | `.fna`      |
+
+Concatenate, summarize, filter, split, distance, trim, and unalign need aligned sequences, so they
+have no database search. Align the sequences in another program first. Partition and MAF tools
+have none because the archives do not serve those formats.
+
+## Steps
+
+{% steps %}
+
+1. Open the tool and select **Search databases** in the input area. On phones, select **Browse**
+   first. If files are already selected, select **Edit** first.
+2. Choose the database and the content.
+3. Select **Search** and enter an organism, gene, or keyword. Or select **Paste accessions** and
+   enter accessions separated by commas, spaces, or lines.
+4. Select the records. The selection stays while you run more searches.
+5. Open **Download options** to choose the files, the sequence names, or one gene to keep.
+6. Select **Download and add**. SEGUI sets the input format and data type.
+
+{% /steps %}
+
+If some records fail, select **Retry**, or **Add the rest** to continue without them.
+
+## Searching
+
+- ENA searches need an organism and can take several seconds. They show up to 500 records, so
+  refine broad searches.
+- ENA finds the gene of a whole record in its description. Choose **Coding sequence** to search
+  by gene name.
+- A study, sample, or experiment accession pasted in the read tool lists all its runs.
+- ENA takes GenBank accessions but not RefSeq ones, such as `NC_` and `GCF_`. Use GenBank for those.
+- ENA serves the latest version of each assembly. Use GenBank for older versions.
+
+## Names and files
+
+SEGUL treats the whole FASTA header as the sequence ID, so SEGUI renames each sequence, for
+example to `Mus_musculus_NC_005089.1`. Repeated names get a number.
+
+To match loci in **Add sequences**, give the downloaded file the same **File name** as its
+destination file.
+
+Downloads are saved in `segui-data/downloads` in the app's documents folder. Each folder has a
+`sources.tsv` file with the accessions, versions, original headers, addresses, and dates. Removing
+files from the input keeps the downloads. Delete them in **Settings** under data usage.
+
+## Translating coding sequences
+
+For **Translate sequences**, SEGUI removes the bases before the first full codon of partial coding
+sequences, sets reading frame 1, and turns off automatic frame detection, which does not accept
+the stop codon at the end of a complete coding sequence.
+
+{% aside type="caution" title="Check the translation table" %}
+SEGUI does not choose the genetic code. For example, use the Vertebrate Mitochondrial Code for
+vertebrate mitochondrial genes.
+{% /aside %}
+
+## Large downloads
+
+SEGUI asks before downloads known to be over 1 GB. Keep the app open until a download finishes.
+Stopping a download deletes its files.

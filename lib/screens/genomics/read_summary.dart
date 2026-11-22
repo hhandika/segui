@@ -72,6 +72,9 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
             hasSecondaryPicker: false,
             allowDirectorySelection: true,
             task: task,
+            onDownloaded: (_) {
+              setState(() => _ctr.inputFormatController = 'Auto');
+            },
           ),
           SharedDropdownField(
             value: _ctr.inputFormatController,

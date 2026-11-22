@@ -38,6 +38,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^2.0.0
+  crypto: ^3.0.6
   ffi: ^2.1.4
   flutter_rust_bridge: 2.13.0
   flutter_rust_bridge_hooks: 2.13.0

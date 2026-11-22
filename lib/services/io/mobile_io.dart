@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 /// What SEGUI is doing with input files while it reports progress.
-enum InputCopyStage { copying, extracting }
+enum InputCopyStage { copying, extracting, downloading }
 
 /// Progress of copying or extracting input files into the app.
 class InputCopyProgress {
@@ -151,6 +151,20 @@ class MobileIoChannel {
       paths: paths.whereType<String>().toList(),
       skipped: (result['skipped'] as num?)?.toInt() ?? 0,
     );
+  }
+
+  /// Keeps [dir] out of iCloud backups on iOS.
+  Future<void> excludeFromBackup(Directory dir) async {
+    try {
+      await _channel.invokeMethod<void>(
+        'excludeFromBackup',
+        {'path': dir.path},
+      );
+    } on PlatformException {
+      // A folder in a backup is no reason to fail a download.
+    } on MissingPluginException {
+      // Platforms other than iOS have nothing to exclude.
+    }
   }
 
   /// Stops a folder, file, or shared-file copy. Files copied so far are kept.

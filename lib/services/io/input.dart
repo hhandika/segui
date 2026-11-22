@@ -216,6 +216,18 @@ class FileInputServices {
     });
   }
 
+  /// Adds [files] downloaded from a database, by the rules of other
+  /// additions: they join the selection, or replace a single file.
+  Future<InputAddResult> addDownloaded(
+    List<File> files,
+    List<File> currentFiles,
+  ) async {
+    return await _addMatches(
+      files.map((file) => XFile(file.path)).toList(),
+      currentFiles,
+    );
+  }
+
   /// Select a file in place of the current file of this type.
   Future<void> replaceFile() async {
     final picked = await _pickFiles(multiple: false);

@@ -39,6 +39,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
   bool _isInterleave = false;
   String _readingFrame = readingFrame[0];
   bool _isAutoFrame = false;
+  bool _hasDownloads = false;
   int _tableIndex = 0;
 
   @override
@@ -55,6 +56,15 @@ class TranslatePageState extends ConsumerState<TranslatePage>
           xTypeGroup: sequenceTypeGroup,
           isDatatypeEnabled: false,
           task: task,
+          onDownloaded: (_) {
+            setState(() {
+              _hasDownloads = true;
+              // Downloads start at a codon. Detection fails on the stop
+              // codon that ends a complete coding sequence.
+              _isAutoFrame = false;
+              _readingFrame = readingFrame[0];
+            });
+          },
         ),
         const CardTitle(step: 2, title: 'Output'),
         FormCard(children: [
@@ -85,6 +95,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
             value: translationTable[_tableIndex],
             label: 'Translation Table',
             items: translationTable,
+            helper: _hasDownloads ? 'Match the organism and genome.' : null,
             onChanged: (String? value) {
               setState(() {
                 if (value != null) {
@@ -244,6 +255,7 @@ class TranslatePageState extends ConsumerState<TranslatePage>
 
   void _setNewRun() {
     setState(() {
+      _hasDownloads = false;
       _ctr.reset();
       _ctr.isSuccess = false;
       ref.invalidate(fileInputProvider);

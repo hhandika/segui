@@ -130,6 +130,9 @@ abstract final class SeguiContentWidth {
 
   /// Narrowest tool search suggestions view on larger screens.
   static const double searchViewMin = 360;
+
+  /// Side panel that searches the sequence databases.
+  static const double databasePanel = 520;
 }
 
 /// Sizes in the alignment viewer.

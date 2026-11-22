@@ -11,7 +11,10 @@ import 'package:segui/screens/home/components/quick_start.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io/database/panel.dart';
 import 'package:segui/screens/shared/io/io.dart';
+import 'package:segui/services/databases/compatibility.dart';
+import 'package:segui/services/databases/download.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/io/archive_input.dart';
 import 'package:segui/services/io/directory.dart';
@@ -127,6 +130,7 @@ class SharedFilePicker extends ConsumerStatefulWidget {
     required this.hasSecondaryPicker,
     required this.task,
     required this.allowDirectorySelection,
+    this.onDownloaded,
   });
 
   final String label;
@@ -135,6 +139,10 @@ class SharedFilePicker extends ConsumerStatefulWidget {
   final bool hasSecondaryPicker;
   final SupportedTask task;
   final bool allowDirectorySelection;
+
+  /// Called after database downloads become inputs, to set the form to
+  /// their format.
+  final ValueChanged<CompletedDownload>? onDownloaded;
 
   @override
   SharedFilePickerState createState() => SharedFilePickerState();
@@ -151,10 +159,14 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
   Widget build(BuildContext context) {
     final type = matchTypeByXTypeGroup(widget.xTypeGroup);
     final int sharedCount = ref.watch(sharedInputProvider);
+    final String? databaseNote = switch (_databaseSupport) {
+      DatabaseUnavailable(:final reason) => reason,
+      DatabaseAvailable() || DatabaseNotOffered() => null,
+    };
     return ref.watch(fileInputProvider).when(
           data: (data) {
             final files = data.where((e) => e.type == type).toList();
-            return FileDropTarget(
+            final Widget picker = FileDropTarget(
               onDropped: (items) => _addDropped(items, files),
               builder: (context, isDragging, _) {
                 if (files.isEmpty) {
@@ -190,11 +202,20 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
                 );
               },
             );
+            return FieldWithHelper(
+              helper: databaseNote,
+              child: picker,
+            );
           },
           loading: () => const SharedProgressIndicator(),
           error: (err, stack) => Text(err.toString()),
         );
   }
+
+  DatabaseSupport get _databaseSupport =>
+      databaseSupportFor(widget.task, widget.xTypeGroup);
+
+  bool get _canSearchDatabases => _databaseSupport is DatabaseAvailable;
 
   bool get _canSelectDirectory => widget.allowDirectorySelection;
 
@@ -215,6 +236,7 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
         (_canSelectDirectory ||
             _canSelectArchive ||
             _canSelectSeguiFolder ||
+            _canSearchDatabases ||
             sharedCount > 0);
   }
 
@@ -282,6 +304,12 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
           icon: Icons.snippet_folder_outlined,
           onSelected: () => _addFrom(const [], InputSource.seguiFolder),
         ),
+      if (_canSearchDatabases)
+        PickerAction(
+          label: 'Search databases',
+          icon: Icons.travel_explore_outlined,
+          onSelected: _searchDatabases,
+        ),
     ];
   }
 
@@ -298,6 +326,12 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
           icon: Icons.swap_horiz_rounded,
           onSelected: _replaceFile,
         ),
+        if (_canSearchDatabases)
+          PickerAction(
+            label: 'Search databases',
+            icon: Icons.travel_explore_outlined,
+            onSelected: _searchDatabases,
+          ),
         PickerAction(
           label: 'Remove file',
           icon: Icons.clear_rounded,
@@ -335,6 +369,12 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
           label: 'Add from SEGUI folder',
           icon: Icons.snippet_folder_outlined,
           onSelected: () => _addFrom(files, InputSource.seguiFolder),
+        ),
+      if (_canSearchDatabases)
+        PickerAction(
+          label: 'Search databases',
+          icon: Icons.travel_explore_outlined,
+          onSelected: _searchDatabases,
         ),
       PickerAction(
         label: 'Clear files',
@@ -399,6 +439,19 @@ class SharedFilePickerState extends ConsumerState<SharedFilePicker> {
     } finally {
       ref.read(sharedInputProvider.notifier).clear();
     }
+  }
+
+  /// The panel adds the files itself, so this only updates the form.
+  Future<void> _searchDatabases() async {
+    final CompletedDownload? completed = await showDatabasePanel(
+      context,
+      task: widget.task,
+      group: widget.xTypeGroup,
+      allowMultiple: widget.allowMultiple,
+    );
+    if (completed == null || !mounted) return;
+    const FormEditedNotification().dispatch(context);
+    widget.onDownloaded?.call(completed);
   }
 
   Future<void> _replaceFile() async {
@@ -971,6 +1024,13 @@ class PickerCopyProgress extends StatelessWidget {
 /// Status line for [progress], such as `Copying 12 of 40 files`.
 String inputCopyLabel(InputCopyProgress? progress) {
   final InputCopyStage stage = progress?.stage ?? InputCopyStage.copying;
+  if (stage == InputCopyStage.downloading) {
+    final int total = progress?.total ?? 0;
+    if (total == 0) return 'Downloading…';
+    final NumberFormat format = NumberFormat.decimalPattern();
+    return 'Downloading ${format.format(progress!.copied)} of '
+        '${format.format(total)} records';
+  }
   final String verb =
       stage == InputCopyStage.extracting ? 'Extracting' : 'Copying';
   if (progress == null || progress.isCounting) {
@@ -1038,7 +1098,8 @@ class PickerActionSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return SafeArea(
-      child: Padding(
+      // Scrolls, as short screens cannot fit every action.
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
             SeguiSpacing.xl, 0, SeguiSpacing.xl, SeguiSpacing.xl),
         child: Column(
@@ -1089,6 +1150,7 @@ class PickerActionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      scrollable: true,
       title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
       contentPadding: const EdgeInsets.fromLTRB(
           SeguiSpacing.lg, SeguiSpacing.xl, SeguiSpacing.lg, 0),

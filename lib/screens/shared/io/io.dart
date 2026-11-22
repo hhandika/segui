@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/services/controllers.dart';
+import 'package:segui/services/databases/download.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/metadata.dart';
@@ -19,6 +20,7 @@ class InputSelectorForm extends StatelessWidget {
     required this.hasSecondaryPicker,
     required this.allowDirectorySelection,
     required this.task,
+    this.onDownloaded,
   });
 
   final IOController ctr;
@@ -27,6 +29,7 @@ class InputSelectorForm extends StatelessWidget {
   final bool hasSecondaryPicker;
   final SupportedTask task;
   final bool allowDirectorySelection;
+  final ValueChanged<CompletedDownload>? onDownloaded;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +40,7 @@ class InputSelectorForm extends StatelessWidget {
       hasSecondaryPicker: hasSecondaryPicker,
       allowDirectorySelection: allowDirectorySelection,
       task: task,
+      onDownloaded: onDownloaded,
     );
   }
 }

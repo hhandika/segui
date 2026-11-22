@@ -77,6 +77,13 @@ class MobileIoPlugin: NSObject, FlutterPlugin, FlutterStreamHandler,
     case "releaseFolders":
       releaseFolders()
       result(nil)
+    case "excludeFromBackup":
+      let args = call.arguments as? [String: Any]
+      guard let path = args?["path"] as? String else {
+        result(FlutterError(code: "bad_args", message: "Missing folder", details: nil))
+        return
+      }
+      excludeFromBackup(path: path, result: result)
     case "pendingSharedCount":
       result(pendingShared.count)
     case "takeSharedFiles":
@@ -217,6 +224,20 @@ class MobileIoPlugin: NSObject, FlutterPlugin, FlutterStreamHandler,
       folder.stopAccessingSecurityScopedResource()
     }
     accessedFolders.removeAll()
+  }
+
+  /// Downloads can be fetched again, so iCloud need not back them up.
+  private func excludeFromBackup(path: String, result: FlutterResult) {
+    var url = URL(fileURLWithPath: path, isDirectory: true)
+    var values = URLResourceValues()
+    values.isExcludedFromBackup = true
+    do {
+      try url.setResourceValues(values)
+      result(nil)
+    } catch {
+      result(
+        FlutterError(code: "backup_failed", message: error.localizedDescription, details: nil))
+    }
   }
 
   private func queueShared(_ urls: [URL]) {

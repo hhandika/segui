@@ -10,15 +10,21 @@ This Privacy Policy describes how SEGUL (“we”, “us”, or “our”) handl
 
 ## Your Data Stays on Your Device
 
-SEGUL and SEGUI run entirely on your device. The sequence files, alignments, and other data you open are read and written only on your device, or on the computer or cluster where you run SEGUL. They are never uploaded to us or to anyone else.
+SEGUL and SEGUI do all their analyses on your device. The sequence files, alignments, and other data you open are read and written only on your device, or on the computer or cluster where you run SEGUL. They are never uploaded to us or to anyone else.
 
 ## Information We Collect
 
-We do not collect any personal information. The SEGUI app, the SEGUL command-line tool, and the SEGUL libraries do not include analytics, advertising, tracking, or crash reporting, and do not connect to the internet while you use them.
+We do not collect any personal information. The SEGUI app, the SEGUL command-line tool, and the SEGUL libraries do not include analytics, advertising, tracking, or crash reporting. The SEGUL command-line tool and libraries do not connect to the internet while you use them. SEGUI connects only when you use its database search, described below.
 
 SEGUI keeps your settings, such as the theme, on your device. SEGUL writes a log file (`segul.log` by default) next to your output. Neither is sent to us.
 
 SEGUI opens links, such as the documentation, in your web browser, and shares output files only when you choose to share them.
+
+## Database Searches and Downloads
+
+When you use **Search databases** in SEGUI, the app connects directly to the [National Center for Biotechnology Information (NCBI)](https://www.ncbi.nlm.nih.gov/home/about/policies/) for GenBank and to [EMBL-EBI](https://www.ebi.ac.uk/about/terms-of-use/) for the European Nucleotide Archive, whichever you choose.
+
+They receive your search terms, including organism names as you type them for suggestions, the accessions you look up or download, and your IP address, as with any internet request. They handle this information under their own policies. SEGUI does not send it to us and never uploads your files.
 
 ## Crash Reports from App Stores
 
