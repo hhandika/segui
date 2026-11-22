@@ -2484,6 +2484,7 @@ fn wire__crate__api__reads__raw_read_services_summarize_impl(
             let api_prefix = <Option<String>>::sse_decode(&mut deserializer);
             let api_phred = <Option<String>>::sse_decode(&mut deserializer);
             let api_dup_sketch_size = <Option<u32>>::sse_decode(&mut deserializer);
+            let api_qc_profile = <Option<String>>::sse_decode(&mut deserializer);
             let api_monitor = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RunMonitor>,
             >>::sse_decode(&mut deserializer);
@@ -2515,6 +2516,7 @@ fn wire__crate__api__reads__raw_read_services_summarize_impl(
                             api_prefix,
                             api_phred,
                             api_dup_sketch_size,
+                            api_qc_profile,
                             &*api_monitor_guard,
                         )?;
                         std::result::Result::Ok(output_ok)
@@ -4634,6 +4636,60 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Vec<crate::api::reads::ReadCohortOutlierData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::ReadCohortOutlierData>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::reads::ReadExpectedErrorData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::ReadExpectedErrorData>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::reads::ReadLengthQualityData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::ReadLengthQualityData>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::reads::ReadPairData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::reads::ReadPairData>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::reads::ReadQcCheckData> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4797,6 +4853,19 @@ impl SseDecode for Option<i64> {
     }
 }
 
+impl SseDecode for Option<crate::api::reads::ReadCohortData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::reads::ReadCohortData>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<crate::api::reads::ReadDuplicationData> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4934,6 +5003,57 @@ impl SseDecode for crate::api::reads::RawReadServices {
     }
 }
 
+impl SseDecode for crate::api::reads::ReadCohortData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_sampleCount = <f64>::sse_decode(deserializer);
+        let mut var_emptySampleCount = <f64>::sse_decode(deserializer);
+        let mut var_totalReads = <f64>::sse_decode(deserializer);
+        let mut var_totalBases = <f64>::sse_decode(deserializer);
+        let mut var_medianReads = <f64>::sse_decode(deserializer);
+        let mut var_p10Reads = <f64>::sse_decode(deserializer);
+        let mut var_p90Reads = <f64>::sse_decode(deserializer);
+        let mut var_depthP90P10Ratio = <f64>::sse_decode(deserializer);
+        let mut var_depthCv = <f64>::sse_decode(deserializer);
+        let mut var_depthGini = <f64>::sse_decode(deserializer);
+        let mut var_lowYieldSamples = <Vec<String>>::sse_decode(deserializer);
+        let mut var_outliers =
+            <Vec<crate::api::reads::ReadCohortOutlierData>>::sse_decode(deserializer);
+        return crate::api::reads::ReadCohortData {
+            sample_count: var_sampleCount,
+            empty_sample_count: var_emptySampleCount,
+            total_reads: var_totalReads,
+            total_bases: var_totalBases,
+            median_reads: var_medianReads,
+            p10_reads: var_p10Reads,
+            p90_reads: var_p90Reads,
+            depth_p90_p10_ratio: var_depthP90P10Ratio,
+            depth_cv: var_depthCv,
+            depth_gini: var_depthGini,
+            low_yield_samples: var_lowYieldSamples,
+            outliers: var_outliers,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadCohortOutlierData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_sample = <String>::sse_decode(deserializer);
+        let mut var_metric = <String>::sse_decode(deserializer);
+        let mut var_value = <f64>::sse_decode(deserializer);
+        let mut var_cohortMedian = <f64>::sse_decode(deserializer);
+        let mut var_modifiedZ = <f64>::sse_decode(deserializer);
+        return crate::api::reads::ReadCohortOutlierData {
+            sample: var_sample,
+            metric: var_metric,
+            value: var_value,
+            cohort_median: var_cohortMedian,
+            modified_z: var_modifiedZ,
+        };
+    }
+}
+
 impl SseDecode for crate::api::reads::ReadDuplicationData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4958,6 +5078,46 @@ impl SseDecode for crate::api::reads::ReadDuplicationData {
     }
 }
 
+impl SseDecode for crate::api::reads::ReadExpectedErrorData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_label = <String>::sse_decode(deserializer);
+        let mut var_reads = <f64>::sse_decode(deserializer);
+        let mut var_readsPct = <f64>::sse_decode(deserializer);
+        return crate::api::reads::ReadExpectedErrorData {
+            label: var_label,
+            reads: var_reads,
+            reads_pct: var_readsPct,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadLengthQualityData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_label = <String>::sse_decode(deserializer);
+        let mut var_reads = <f64>::sse_decode(deserializer);
+        let mut var_bases = <f64>::sse_decode(deserializer);
+        let mut var_meanQscore = <f64>::sse_decode(deserializer);
+        let mut var_effectiveMeanQscore = <f64>::sse_decode(deserializer);
+        let mut var_q1Qscore = <f64>::sse_decode(deserializer);
+        let mut var_medianQscore = <f64>::sse_decode(deserializer);
+        let mut var_q3Qscore = <f64>::sse_decode(deserializer);
+        let mut var_meanExpectedErrors = <f64>::sse_decode(deserializer);
+        return crate::api::reads::ReadLengthQualityData {
+            label: var_label,
+            reads: var_reads,
+            bases: var_bases,
+            mean_qscore: var_meanQscore,
+            effective_mean_qscore: var_effectiveMeanQscore,
+            q1_qscore: var_q1Qscore,
+            median_qscore: var_medianQscore,
+            q3_qscore: var_q3Qscore,
+            mean_expected_errors: var_meanExpectedErrors,
+        };
+    }
+}
+
 impl SseDecode for crate::api::reads::ReadMetricsData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4969,18 +5129,60 @@ impl SseDecode for crate::api::reads::ReadMetricsData {
         let mut var_medianReadLength = <f64>::sse_decode(deserializer);
         let mut var_stdevReadLength = <f64>::sse_decode(deserializer);
         let mut var_n50ReadLength = <f64>::sse_decode(deserializer);
+        let mut var_n90ReadLength = <f64>::sse_decode(deserializer);
+        let mut var_l50ReadLength = <f64>::sse_decode(deserializer);
+        let mut var_aunReadLength = <f64>::sse_decode(deserializer);
+        let mut var_emptyReads = <f64>::sse_decode(deserializer);
+        let mut var_otherCount = <f64>::sse_decode(deserializer);
         let mut var_gcContent = <f64>::sse_decode(deserializer);
         let mut var_nContent = <f64>::sse_decode(deserializer);
+        let mut var_atSkew = <f64>::sse_decode(deserializer);
+        let mut var_gcSkew = <f64>::sse_decode(deserializer);
+        let mut var_gcStdev = <f64>::sse_decode(deserializer);
+        let mut var_gcNormalDivergencePct = <f64>::sse_decode(deserializer);
+        let mut var_gcPeaks = <f64>::sse_decode(deserializer);
         let mut var_meanQscore = <f64>::sse_decode(deserializer);
+        let mut var_effectiveMeanQscore = <f64>::sse_decode(deserializer);
+        let mut var_meanErrorRate = <f64>::sse_decode(deserializer);
+        let mut var_q10Pct = <f64>::sse_decode(deserializer);
+        let mut var_q15Pct = <f64>::sse_decode(deserializer);
         let mut var_q20Pct = <f64>::sse_decode(deserializer);
         let mut var_q30Pct = <f64>::sse_decode(deserializer);
+        let mut var_q40Pct = <f64>::sse_decode(deserializer);
+        let mut var_distinctQscores = <f64>::sse_decode(deserializer);
         let mut var_meanReadQscore = <f64>::sse_decode(deserializer);
         let mut var_lowQualityReads = <f64>::sse_decode(deserializer);
+        let mut var_meanExpectedErrors = <f64>::sse_decode(deserializer);
+        let mut var_expectedErrorsPer100Bp = <f64>::sse_decode(deserializer);
+        let mut var_expectedErrorFreeReadsPct = <f64>::sse_decode(deserializer);
+        let mut var_readsEeLt1Pct = <f64>::sse_decode(deserializer);
+        let mut var_q10ReadBasesPct = <f64>::sse_decode(deserializer);
+        let mut var_q20ReadBasesPct = <f64>::sse_decode(deserializer);
+        let mut var_q30ReadBasesPct = <f64>::sse_decode(deserializer);
+        let mut var_meanComplexity = <f64>::sse_decode(deserializer);
+        let mut var_lowComplexityReadsPct = <f64>::sse_decode(deserializer);
+        let mut var_homopolymerBasesPct = <f64>::sse_decode(deserializer);
+        let mut var_maxHomopolymerLength = <f64>::sse_decode(deserializer);
+        let mut var_homopolymerMeanQscore = <f64>::sse_decode(deserializer);
+        let mut var_nonHomopolymerMeanQscore = <f64>::sse_decode(deserializer);
+        let mut var_homopolymerQscoreGap = <f64>::sse_decode(deserializer);
+        let mut var_polyGTailReadsPct = <f64>::sse_decode(deserializer);
+        let mut var_polyATailReadsPct = <f64>::sse_decode(deserializer);
+        let mut var_polyTTailReadsPct = <f64>::sse_decode(deserializer);
+        let mut var_polyCTailReadsPct = <f64>::sse_decode(deserializer);
+        let mut var_platform = <Option<String>>::sse_decode(deserializer);
+        let mut var_chastityFailedReads = <f64>::sse_decode(deserializer);
+        let mut var_chastityFailedPct = <f64>::sse_decode(deserializer);
+        let mut var_runGroupCount = <f64>::sse_decode(deserializer);
         let mut var_phredOffset = <u32>::sse_decode(deserializer);
         let mut var_duplicatePct = <Option<f64>>::sse_decode(deserializer);
         let mut var_adapterReadsPct = <Option<f64>>::sse_decode(deserializer);
         let mut var_polyGReadsPct = <Option<f64>>::sse_decode(deserializer);
         let mut var_overrepresentedCount = <Option<f64>>::sse_decode(deserializer);
+        let mut var_qscoreTailDrop = <Option<f64>>::sse_decode(deserializer);
+        let mut var_effectiveQ20Span = <Option<f64>>::sse_decode(deserializer);
+        let mut var_effectiveQ30Span = <Option<f64>>::sse_decode(deserializer);
+        let mut var_headBiasBp = <Option<f64>>::sse_decode(deserializer);
         return crate::api::reads::ReadMetricsData {
             read_count: var_readCount,
             base_count: var_baseCount,
@@ -4990,18 +5192,92 @@ impl SseDecode for crate::api::reads::ReadMetricsData {
             median_read_length: var_medianReadLength,
             stdev_read_length: var_stdevReadLength,
             n50_read_length: var_n50ReadLength,
+            n90_read_length: var_n90ReadLength,
+            l50_read_length: var_l50ReadLength,
+            aun_read_length: var_aunReadLength,
+            empty_reads: var_emptyReads,
+            other_count: var_otherCount,
             gc_content: var_gcContent,
             n_content: var_nContent,
+            at_skew: var_atSkew,
+            gc_skew: var_gcSkew,
+            gc_stdev: var_gcStdev,
+            gc_normal_divergence_pct: var_gcNormalDivergencePct,
+            gc_peaks: var_gcPeaks,
             mean_qscore: var_meanQscore,
+            effective_mean_qscore: var_effectiveMeanQscore,
+            mean_error_rate: var_meanErrorRate,
+            q10_pct: var_q10Pct,
+            q15_pct: var_q15Pct,
             q20_pct: var_q20Pct,
             q30_pct: var_q30Pct,
+            q40_pct: var_q40Pct,
+            distinct_qscores: var_distinctQscores,
             mean_read_qscore: var_meanReadQscore,
             low_quality_reads: var_lowQualityReads,
+            mean_expected_errors: var_meanExpectedErrors,
+            expected_errors_per_100bp: var_expectedErrorsPer100Bp,
+            expected_error_free_reads_pct: var_expectedErrorFreeReadsPct,
+            reads_ee_lt_1_pct: var_readsEeLt1Pct,
+            q10_read_bases_pct: var_q10ReadBasesPct,
+            q20_read_bases_pct: var_q20ReadBasesPct,
+            q30_read_bases_pct: var_q30ReadBasesPct,
+            mean_complexity: var_meanComplexity,
+            low_complexity_reads_pct: var_lowComplexityReadsPct,
+            homopolymer_bases_pct: var_homopolymerBasesPct,
+            max_homopolymer_length: var_maxHomopolymerLength,
+            homopolymer_mean_qscore: var_homopolymerMeanQscore,
+            non_homopolymer_mean_qscore: var_nonHomopolymerMeanQscore,
+            homopolymer_qscore_gap: var_homopolymerQscoreGap,
+            poly_g_tail_reads_pct: var_polyGTailReadsPct,
+            poly_a_tail_reads_pct: var_polyATailReadsPct,
+            poly_t_tail_reads_pct: var_polyTTailReadsPct,
+            poly_c_tail_reads_pct: var_polyCTailReadsPct,
+            platform: var_platform,
+            chastity_failed_reads: var_chastityFailedReads,
+            chastity_failed_pct: var_chastityFailedPct,
+            run_group_count: var_runGroupCount,
             phred_offset: var_phredOffset,
             duplicate_pct: var_duplicatePct,
             adapter_reads_pct: var_adapterReadsPct,
             poly_g_reads_pct: var_polyGReadsPct,
             overrepresented_count: var_overrepresentedCount,
+            qscore_tail_drop: var_qscoreTailDrop,
+            effective_q20_span: var_effectiveQ20Span,
+            effective_q30_span: var_effectiveQ30Span,
+            head_bias_bp: var_headBiasBp,
+        };
+    }
+}
+
+impl SseDecode for crate::api::reads::ReadPairData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_pairName = <String>::sse_decode(deserializer);
+        let mut var_r1Sample = <String>::sse_decode(deserializer);
+        let mut var_r2Sample = <String>::sse_decode(deserializer);
+        let mut var_r1Reads = <f64>::sse_decode(deserializer);
+        let mut var_r2Reads = <f64>::sse_decode(deserializer);
+        let mut var_readCountDiff = <f64>::sse_decode(deserializer);
+        let mut var_inSync = <bool>::sse_decode(deserializer);
+        let mut var_q30DropPct = <f64>::sse_decode(deserializer);
+        let mut var_effectiveQDrop = <f64>::sse_decode(deserializer);
+        let mut var_meanLengthDiff = <f64>::sse_decode(deserializer);
+        let mut var_gcDiffPct = <f64>::sse_decode(deserializer);
+        let mut var_status = <crate::api::reads::ReadQcStatus>::sse_decode(deserializer);
+        return crate::api::reads::ReadPairData {
+            pair_name: var_pairName,
+            r1_sample: var_r1Sample,
+            r2_sample: var_r2Sample,
+            r1_reads: var_r1Reads,
+            r2_reads: var_r2Reads,
+            read_count_diff: var_readCountDiff,
+            in_sync: var_inSync,
+            q30_drop_pct: var_q30DropPct,
+            effective_q_drop: var_effectiveQDrop,
+            mean_length_diff: var_meanLengthDiff,
+            gc_diff_pct: var_gcDiffPct,
+            status: var_status,
         };
     }
 }
@@ -5012,6 +5288,8 @@ impl SseDecode for crate::api::reads::ReadPositionData {
         let mut var_start = <Vec<f64>>::sse_decode(deserializer);
         let mut var_end = <Vec<f64>>::sse_decode(deserializer);
         let mut var_meanQscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_effectiveMeanQscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_readSurvivalPct = <Vec<f64>>::sse_decode(deserializer);
         let mut var_p10Qscore = <Vec<f64>>::sse_decode(deserializer);
         let mut var_q1Qscore = <Vec<f64>>::sse_decode(deserializer);
         let mut var_medianQscore = <Vec<f64>>::sse_decode(deserializer);
@@ -5026,6 +5304,8 @@ impl SseDecode for crate::api::reads::ReadPositionData {
             start: var_start,
             end: var_end,
             mean_qscore: var_meanQscore,
+            effective_mean_qscore: var_effectiveMeanQscore,
+            read_survival_pct: var_readSurvivalPct,
             p10_qscore: var_p10Qscore,
             q1_qscore: var_q1Qscore,
             median_qscore: var_medianQscore,
@@ -5083,12 +5363,54 @@ impl SseDecode for crate::api::reads::ReadQcStatus {
     }
 }
 
+impl SseDecode for crate::api::reads::ReadRelativePositionData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_startPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_endPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_meanQscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_effectiveMeanQscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_p10Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_q1Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_medianQscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_q3Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_p90Qscore = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_aPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_cPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_gPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_tPct = <Vec<f64>>::sse_decode(deserializer);
+        let mut var_nPct = <Vec<f64>>::sse_decode(deserializer);
+        return crate::api::reads::ReadRelativePositionData {
+            start_pct: var_startPct,
+            end_pct: var_endPct,
+            mean_qscore: var_meanQscore,
+            effective_mean_qscore: var_effectiveMeanQscore,
+            p10_qscore: var_p10Qscore,
+            q1_qscore: var_q1Qscore,
+            median_qscore: var_medianQscore,
+            q3_qscore: var_q3Qscore,
+            p90_qscore: var_p90Qscore,
+            a_pct: var_aPct,
+            c_pct: var_cPct,
+            g_pct: var_gPct,
+            t_pct: var_tPct,
+            n_pct: var_nPct,
+        };
+    }
+}
+
 impl SseDecode for crate::api::reads::ReadReportData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_samples = <Vec<crate::api::reads::ReadSampleData>>::sse_decode(deserializer);
+        let mut var_qcProfile = <String>::sse_decode(deserializer);
+        let mut var_pairs = <Vec<crate::api::reads::ReadPairData>>::sse_decode(deserializer);
+        let mut var_cohort = <Option<crate::api::reads::ReadCohortData>>::sse_decode(deserializer);
         return crate::api::reads::ReadReportData {
             samples: var_samples,
+            qc_profile: var_qcProfile,
+            pairs: var_pairs,
+            cohort: var_cohort,
         };
     }
 }
@@ -5114,6 +5436,13 @@ impl SseDecode for crate::api::reads::ReadSampleData {
         let mut var_gcCounts = <Vec<f64>>::sse_decode(deserializer);
         let mut var_gcTheoretical = <Vec<f64>>::sse_decode(deserializer);
         let mut var_positions = <crate::api::reads::ReadPositionData>::sse_decode(deserializer);
+        let mut var_relativePositions =
+            <crate::api::reads::ReadRelativePositionData>::sse_decode(deserializer);
+        let mut var_lengthQuality =
+            <Vec<crate::api::reads::ReadLengthQualityData>>::sse_decode(deserializer);
+        let mut var_expectedErrors =
+            <Vec<crate::api::reads::ReadExpectedErrorData>>::sse_decode(deserializer);
+        let mut var_complexityCounts = <Vec<f64>>::sse_decode(deserializer);
         let mut var_duplication =
             <Option<crate::api::reads::ReadDuplicationData>>::sse_decode(deserializer);
         let mut var_overrepresented =
@@ -5122,6 +5451,7 @@ impl SseDecode for crate::api::reads::ReadSampleData {
             <Vec<crate::api::reads::AdapterContentData>>::sse_decode(deserializer);
         let mut var_checks = <Vec<crate::api::reads::ReadQcCheckData>>::sse_decode(deserializer);
         let mut var_status = <crate::api::reads::ReadQcStatus>::sse_decode(deserializer);
+        let mut var_qcProfile = <String>::sse_decode(deserializer);
         return crate::api::reads::ReadSampleData {
             sample: var_sample,
             file_name: var_fileName,
@@ -5133,11 +5463,16 @@ impl SseDecode for crate::api::reads::ReadSampleData {
             gc_counts: var_gcCounts,
             gc_theoretical: var_gcTheoretical,
             positions: var_positions,
+            relative_positions: var_relativePositions,
+            length_quality: var_lengthQuality,
+            expected_errors: var_expectedErrors,
+            complexity_counts: var_complexityCounts,
             duplication: var_duplication,
             overrepresented: var_overrepresented,
             adapters: var_adapters,
             checks: var_checks,
             status: var_status,
+            qc_profile: var_qcProfile,
         };
     }
 }
@@ -7279,6 +7614,61 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::RawReadServices>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadCohortData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.sample_count.into_into_dart().into_dart(),
+            self.empty_sample_count.into_into_dart().into_dart(),
+            self.total_reads.into_into_dart().into_dart(),
+            self.total_bases.into_into_dart().into_dart(),
+            self.median_reads.into_into_dart().into_dart(),
+            self.p10_reads.into_into_dart().into_dart(),
+            self.p90_reads.into_into_dart().into_dart(),
+            self.depth_p90_p10_ratio.into_into_dart().into_dart(),
+            self.depth_cv.into_into_dart().into_dart(),
+            self.depth_gini.into_into_dart().into_dart(),
+            self.low_yield_samples.into_into_dart().into_dart(),
+            self.outliers.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadCohortData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadCohortData>
+    for crate::api::reads::ReadCohortData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadCohortData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadCohortOutlierData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.sample.into_into_dart().into_dart(),
+            self.metric.into_into_dart().into_dart(),
+            self.value.into_into_dart().into_dart(),
+            self.cohort_median.into_into_dart().into_dart(),
+            self.modified_z.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadCohortOutlierData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadCohortOutlierData>
+    for crate::api::reads::ReadCohortOutlierData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadCohortOutlierData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadDuplicationData {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -7306,6 +7696,56 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadDuplicationData>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadExpectedErrorData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.label.into_into_dart().into_dart(),
+            self.reads.into_into_dart().into_dart(),
+            self.reads_pct.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadExpectedErrorData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadExpectedErrorData>
+    for crate::api::reads::ReadExpectedErrorData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadExpectedErrorData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadLengthQualityData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.label.into_into_dart().into_dart(),
+            self.reads.into_into_dart().into_dart(),
+            self.bases.into_into_dart().into_dart(),
+            self.mean_qscore.into_into_dart().into_dart(),
+            self.effective_mean_qscore.into_into_dart().into_dart(),
+            self.q1_qscore.into_into_dart().into_dart(),
+            self.median_qscore.into_into_dart().into_dart(),
+            self.q3_qscore.into_into_dart().into_dart(),
+            self.mean_expected_errors.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadLengthQualityData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadLengthQualityData>
+    for crate::api::reads::ReadLengthQualityData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadLengthQualityData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadMetricsData {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -7317,18 +7757,64 @@ impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadMetricsData {
             self.median_read_length.into_into_dart().into_dart(),
             self.stdev_read_length.into_into_dart().into_dart(),
             self.n50_read_length.into_into_dart().into_dart(),
+            self.n90_read_length.into_into_dart().into_dart(),
+            self.l50_read_length.into_into_dart().into_dart(),
+            self.aun_read_length.into_into_dart().into_dart(),
+            self.empty_reads.into_into_dart().into_dart(),
+            self.other_count.into_into_dart().into_dart(),
             self.gc_content.into_into_dart().into_dart(),
             self.n_content.into_into_dart().into_dart(),
+            self.at_skew.into_into_dart().into_dart(),
+            self.gc_skew.into_into_dart().into_dart(),
+            self.gc_stdev.into_into_dart().into_dart(),
+            self.gc_normal_divergence_pct.into_into_dart().into_dart(),
+            self.gc_peaks.into_into_dart().into_dart(),
             self.mean_qscore.into_into_dart().into_dart(),
+            self.effective_mean_qscore.into_into_dart().into_dart(),
+            self.mean_error_rate.into_into_dart().into_dart(),
+            self.q10_pct.into_into_dart().into_dart(),
+            self.q15_pct.into_into_dart().into_dart(),
             self.q20_pct.into_into_dart().into_dart(),
             self.q30_pct.into_into_dart().into_dart(),
+            self.q40_pct.into_into_dart().into_dart(),
+            self.distinct_qscores.into_into_dart().into_dart(),
             self.mean_read_qscore.into_into_dart().into_dart(),
             self.low_quality_reads.into_into_dart().into_dart(),
+            self.mean_expected_errors.into_into_dart().into_dart(),
+            self.expected_errors_per_100bp.into_into_dart().into_dart(),
+            self.expected_error_free_reads_pct
+                .into_into_dart()
+                .into_dart(),
+            self.reads_ee_lt_1_pct.into_into_dart().into_dart(),
+            self.q10_read_bases_pct.into_into_dart().into_dart(),
+            self.q20_read_bases_pct.into_into_dart().into_dart(),
+            self.q30_read_bases_pct.into_into_dart().into_dart(),
+            self.mean_complexity.into_into_dart().into_dart(),
+            self.low_complexity_reads_pct.into_into_dart().into_dart(),
+            self.homopolymer_bases_pct.into_into_dart().into_dart(),
+            self.max_homopolymer_length.into_into_dart().into_dart(),
+            self.homopolymer_mean_qscore.into_into_dart().into_dart(),
+            self.non_homopolymer_mean_qscore
+                .into_into_dart()
+                .into_dart(),
+            self.homopolymer_qscore_gap.into_into_dart().into_dart(),
+            self.poly_g_tail_reads_pct.into_into_dart().into_dart(),
+            self.poly_a_tail_reads_pct.into_into_dart().into_dart(),
+            self.poly_t_tail_reads_pct.into_into_dart().into_dart(),
+            self.poly_c_tail_reads_pct.into_into_dart().into_dart(),
+            self.platform.into_into_dart().into_dart(),
+            self.chastity_failed_reads.into_into_dart().into_dart(),
+            self.chastity_failed_pct.into_into_dart().into_dart(),
+            self.run_group_count.into_into_dart().into_dart(),
             self.phred_offset.into_into_dart().into_dart(),
             self.duplicate_pct.into_into_dart().into_dart(),
             self.adapter_reads_pct.into_into_dart().into_dart(),
             self.poly_g_reads_pct.into_into_dart().into_dart(),
             self.overrepresented_count.into_into_dart().into_dart(),
+            self.qscore_tail_drop.into_into_dart().into_dart(),
+            self.effective_q20_span.into_into_dart().into_dart(),
+            self.effective_q30_span.into_into_dart().into_dart(),
+            self.head_bias_bp.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -7345,12 +7831,45 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadMetricsData>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadPairData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.pair_name.into_into_dart().into_dart(),
+            self.r1_sample.into_into_dart().into_dart(),
+            self.r2_sample.into_into_dart().into_dart(),
+            self.r1_reads.into_into_dart().into_dart(),
+            self.r2_reads.into_into_dart().into_dart(),
+            self.read_count_diff.into_into_dart().into_dart(),
+            self.in_sync.into_into_dart().into_dart(),
+            self.q30_drop_pct.into_into_dart().into_dart(),
+            self.effective_q_drop.into_into_dart().into_dart(),
+            self.mean_length_diff.into_into_dart().into_dart(),
+            self.gc_diff_pct.into_into_dart().into_dart(),
+            self.status.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadPairData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadPairData>
+    for crate::api::reads::ReadPairData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadPairData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadPositionData {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.start.into_into_dart().into_dart(),
             self.end.into_into_dart().into_dart(),
             self.mean_qscore.into_into_dart().into_dart(),
+            self.effective_mean_qscore.into_into_dart().into_dart(),
+            self.read_survival_pct.into_into_dart().into_dart(),
             self.p10_qscore.into_into_dart().into_dart(),
             self.q1_qscore.into_into_dart().into_dart(),
             self.median_qscore.into_into_dart().into_dart(),
@@ -7444,9 +7963,48 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadQcStatus>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadRelativePositionData {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.start_pct.into_into_dart().into_dart(),
+            self.end_pct.into_into_dart().into_dart(),
+            self.mean_qscore.into_into_dart().into_dart(),
+            self.effective_mean_qscore.into_into_dart().into_dart(),
+            self.p10_qscore.into_into_dart().into_dart(),
+            self.q1_qscore.into_into_dart().into_dart(),
+            self.median_qscore.into_into_dart().into_dart(),
+            self.q3_qscore.into_into_dart().into_dart(),
+            self.p90_qscore.into_into_dart().into_dart(),
+            self.a_pct.into_into_dart().into_dart(),
+            self.c_pct.into_into_dart().into_dart(),
+            self.g_pct.into_into_dart().into_dart(),
+            self.t_pct.into_into_dart().into_dart(),
+            self.n_pct.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::reads::ReadRelativePositionData
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::reads::ReadRelativePositionData>
+    for crate::api::reads::ReadRelativePositionData
+{
+    fn into_into_dart(self) -> crate::api::reads::ReadRelativePositionData {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadReportData {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [self.samples.into_into_dart().into_dart()].into_dart()
+        [
+            self.samples.into_into_dart().into_dart(),
+            self.qc_profile.into_into_dart().into_dart(),
+            self.pairs.into_into_dart().into_dart(),
+            self.cohort.into_into_dart().into_dart(),
+        ]
+        .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -7491,11 +8049,16 @@ impl flutter_rust_bridge::IntoDart for crate::api::reads::ReadSampleData {
             self.gc_counts.into_into_dart().into_dart(),
             self.gc_theoretical.into_into_dart().into_dart(),
             self.positions.into_into_dart().into_dart(),
+            self.relative_positions.into_into_dart().into_dart(),
+            self.length_quality.into_into_dart().into_dart(),
+            self.expected_errors.into_into_dart().into_dart(),
+            self.complexity_counts.into_into_dart().into_dart(),
             self.duplication.into_into_dart().into_dart(),
             self.overrepresented.into_into_dart().into_dart(),
             self.adapters.into_into_dart().into_dart(),
             self.checks.into_into_dart().into_dart(),
             self.status.into_into_dart().into_dart(),
+            self.qc_profile.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -8806,6 +9369,46 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Vec<crate::api::reads::ReadCohortOutlierData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::ReadCohortOutlierData>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::reads::ReadExpectedErrorData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::ReadExpectedErrorData>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::reads::ReadLengthQualityData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::ReadLengthQualityData>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::reads::ReadPairData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::reads::ReadPairData>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::reads::ReadQcCheckData> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -8925,6 +9528,16 @@ impl SseEncode for Option<i64> {
     }
 }
 
+impl SseEncode for Option<crate::api::reads::ReadCohortData> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::reads::ReadCohortData>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::api::reads::ReadDuplicationData> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -9025,6 +9638,35 @@ impl SseEncode for crate::api::reads::RawReadServices {
     }
 }
 
+impl SseEncode for crate::api::reads::ReadCohortData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f64>::sse_encode(self.sample_count, serializer);
+        <f64>::sse_encode(self.empty_sample_count, serializer);
+        <f64>::sse_encode(self.total_reads, serializer);
+        <f64>::sse_encode(self.total_bases, serializer);
+        <f64>::sse_encode(self.median_reads, serializer);
+        <f64>::sse_encode(self.p10_reads, serializer);
+        <f64>::sse_encode(self.p90_reads, serializer);
+        <f64>::sse_encode(self.depth_p90_p10_ratio, serializer);
+        <f64>::sse_encode(self.depth_cv, serializer);
+        <f64>::sse_encode(self.depth_gini, serializer);
+        <Vec<String>>::sse_encode(self.low_yield_samples, serializer);
+        <Vec<crate::api::reads::ReadCohortOutlierData>>::sse_encode(self.outliers, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadCohortOutlierData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.sample, serializer);
+        <String>::sse_encode(self.metric, serializer);
+        <f64>::sse_encode(self.value, serializer);
+        <f64>::sse_encode(self.cohort_median, serializer);
+        <f64>::sse_encode(self.modified_z, serializer);
+    }
+}
+
 impl SseEncode for crate::api::reads::ReadDuplicationData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -9039,6 +9681,30 @@ impl SseEncode for crate::api::reads::ReadDuplicationData {
     }
 }
 
+impl SseEncode for crate::api::reads::ReadExpectedErrorData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.label, serializer);
+        <f64>::sse_encode(self.reads, serializer);
+        <f64>::sse_encode(self.reads_pct, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadLengthQualityData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.label, serializer);
+        <f64>::sse_encode(self.reads, serializer);
+        <f64>::sse_encode(self.bases, serializer);
+        <f64>::sse_encode(self.mean_qscore, serializer);
+        <f64>::sse_encode(self.effective_mean_qscore, serializer);
+        <f64>::sse_encode(self.q1_qscore, serializer);
+        <f64>::sse_encode(self.median_qscore, serializer);
+        <f64>::sse_encode(self.q3_qscore, serializer);
+        <f64>::sse_encode(self.mean_expected_errors, serializer);
+    }
+}
+
 impl SseEncode for crate::api::reads::ReadMetricsData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -9050,18 +9716,78 @@ impl SseEncode for crate::api::reads::ReadMetricsData {
         <f64>::sse_encode(self.median_read_length, serializer);
         <f64>::sse_encode(self.stdev_read_length, serializer);
         <f64>::sse_encode(self.n50_read_length, serializer);
+        <f64>::sse_encode(self.n90_read_length, serializer);
+        <f64>::sse_encode(self.l50_read_length, serializer);
+        <f64>::sse_encode(self.aun_read_length, serializer);
+        <f64>::sse_encode(self.empty_reads, serializer);
+        <f64>::sse_encode(self.other_count, serializer);
         <f64>::sse_encode(self.gc_content, serializer);
         <f64>::sse_encode(self.n_content, serializer);
+        <f64>::sse_encode(self.at_skew, serializer);
+        <f64>::sse_encode(self.gc_skew, serializer);
+        <f64>::sse_encode(self.gc_stdev, serializer);
+        <f64>::sse_encode(self.gc_normal_divergence_pct, serializer);
+        <f64>::sse_encode(self.gc_peaks, serializer);
         <f64>::sse_encode(self.mean_qscore, serializer);
+        <f64>::sse_encode(self.effective_mean_qscore, serializer);
+        <f64>::sse_encode(self.mean_error_rate, serializer);
+        <f64>::sse_encode(self.q10_pct, serializer);
+        <f64>::sse_encode(self.q15_pct, serializer);
         <f64>::sse_encode(self.q20_pct, serializer);
         <f64>::sse_encode(self.q30_pct, serializer);
+        <f64>::sse_encode(self.q40_pct, serializer);
+        <f64>::sse_encode(self.distinct_qscores, serializer);
         <f64>::sse_encode(self.mean_read_qscore, serializer);
         <f64>::sse_encode(self.low_quality_reads, serializer);
+        <f64>::sse_encode(self.mean_expected_errors, serializer);
+        <f64>::sse_encode(self.expected_errors_per_100bp, serializer);
+        <f64>::sse_encode(self.expected_error_free_reads_pct, serializer);
+        <f64>::sse_encode(self.reads_ee_lt_1_pct, serializer);
+        <f64>::sse_encode(self.q10_read_bases_pct, serializer);
+        <f64>::sse_encode(self.q20_read_bases_pct, serializer);
+        <f64>::sse_encode(self.q30_read_bases_pct, serializer);
+        <f64>::sse_encode(self.mean_complexity, serializer);
+        <f64>::sse_encode(self.low_complexity_reads_pct, serializer);
+        <f64>::sse_encode(self.homopolymer_bases_pct, serializer);
+        <f64>::sse_encode(self.max_homopolymer_length, serializer);
+        <f64>::sse_encode(self.homopolymer_mean_qscore, serializer);
+        <f64>::sse_encode(self.non_homopolymer_mean_qscore, serializer);
+        <f64>::sse_encode(self.homopolymer_qscore_gap, serializer);
+        <f64>::sse_encode(self.poly_g_tail_reads_pct, serializer);
+        <f64>::sse_encode(self.poly_a_tail_reads_pct, serializer);
+        <f64>::sse_encode(self.poly_t_tail_reads_pct, serializer);
+        <f64>::sse_encode(self.poly_c_tail_reads_pct, serializer);
+        <Option<String>>::sse_encode(self.platform, serializer);
+        <f64>::sse_encode(self.chastity_failed_reads, serializer);
+        <f64>::sse_encode(self.chastity_failed_pct, serializer);
+        <f64>::sse_encode(self.run_group_count, serializer);
         <u32>::sse_encode(self.phred_offset, serializer);
         <Option<f64>>::sse_encode(self.duplicate_pct, serializer);
         <Option<f64>>::sse_encode(self.adapter_reads_pct, serializer);
         <Option<f64>>::sse_encode(self.poly_g_reads_pct, serializer);
         <Option<f64>>::sse_encode(self.overrepresented_count, serializer);
+        <Option<f64>>::sse_encode(self.qscore_tail_drop, serializer);
+        <Option<f64>>::sse_encode(self.effective_q20_span, serializer);
+        <Option<f64>>::sse_encode(self.effective_q30_span, serializer);
+        <Option<f64>>::sse_encode(self.head_bias_bp, serializer);
+    }
+}
+
+impl SseEncode for crate::api::reads::ReadPairData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.pair_name, serializer);
+        <String>::sse_encode(self.r1_sample, serializer);
+        <String>::sse_encode(self.r2_sample, serializer);
+        <f64>::sse_encode(self.r1_reads, serializer);
+        <f64>::sse_encode(self.r2_reads, serializer);
+        <f64>::sse_encode(self.read_count_diff, serializer);
+        <bool>::sse_encode(self.in_sync, serializer);
+        <f64>::sse_encode(self.q30_drop_pct, serializer);
+        <f64>::sse_encode(self.effective_q_drop, serializer);
+        <f64>::sse_encode(self.mean_length_diff, serializer);
+        <f64>::sse_encode(self.gc_diff_pct, serializer);
+        <crate::api::reads::ReadQcStatus>::sse_encode(self.status, serializer);
     }
 }
 
@@ -9071,6 +9797,8 @@ impl SseEncode for crate::api::reads::ReadPositionData {
         <Vec<f64>>::sse_encode(self.start, serializer);
         <Vec<f64>>::sse_encode(self.end, serializer);
         <Vec<f64>>::sse_encode(self.mean_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.effective_mean_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.read_survival_pct, serializer);
         <Vec<f64>>::sse_encode(self.p10_qscore, serializer);
         <Vec<f64>>::sse_encode(self.q1_qscore, serializer);
         <Vec<f64>>::sse_encode(self.median_qscore, serializer);
@@ -9120,10 +9848,33 @@ impl SseEncode for crate::api::reads::ReadQcStatus {
     }
 }
 
+impl SseEncode for crate::api::reads::ReadRelativePositionData {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<f64>>::sse_encode(self.start_pct, serializer);
+        <Vec<f64>>::sse_encode(self.end_pct, serializer);
+        <Vec<f64>>::sse_encode(self.mean_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.effective_mean_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.p10_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.q1_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.median_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.q3_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.p90_qscore, serializer);
+        <Vec<f64>>::sse_encode(self.a_pct, serializer);
+        <Vec<f64>>::sse_encode(self.c_pct, serializer);
+        <Vec<f64>>::sse_encode(self.g_pct, serializer);
+        <Vec<f64>>::sse_encode(self.t_pct, serializer);
+        <Vec<f64>>::sse_encode(self.n_pct, serializer);
+    }
+}
+
 impl SseEncode for crate::api::reads::ReadReportData {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<crate::api::reads::ReadSampleData>>::sse_encode(self.samples, serializer);
+        <String>::sse_encode(self.qc_profile, serializer);
+        <Vec<crate::api::reads::ReadPairData>>::sse_encode(self.pairs, serializer);
+        <Option<crate::api::reads::ReadCohortData>>::sse_encode(self.cohort, serializer);
     }
 }
 
@@ -9147,11 +9898,25 @@ impl SseEncode for crate::api::reads::ReadSampleData {
         <Vec<f64>>::sse_encode(self.gc_counts, serializer);
         <Vec<f64>>::sse_encode(self.gc_theoretical, serializer);
         <crate::api::reads::ReadPositionData>::sse_encode(self.positions, serializer);
+        <crate::api::reads::ReadRelativePositionData>::sse_encode(
+            self.relative_positions,
+            serializer,
+        );
+        <Vec<crate::api::reads::ReadLengthQualityData>>::sse_encode(
+            self.length_quality,
+            serializer,
+        );
+        <Vec<crate::api::reads::ReadExpectedErrorData>>::sse_encode(
+            self.expected_errors,
+            serializer,
+        );
+        <Vec<f64>>::sse_encode(self.complexity_counts, serializer);
         <Option<crate::api::reads::ReadDuplicationData>>::sse_encode(self.duplication, serializer);
         <Vec<crate::api::reads::OverrepresentedData>>::sse_encode(self.overrepresented, serializer);
         <Vec<crate::api::reads::AdapterContentData>>::sse_encode(self.adapters, serializer);
         <Vec<crate::api::reads::ReadQcCheckData>>::sse_encode(self.checks, serializer);
         <crate::api::reads::ReadQcStatus>::sse_encode(self.status, serializer);
+        <String>::sse_encode(self.qc_profile, serializer);
     }
 }
 

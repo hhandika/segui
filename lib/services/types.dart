@@ -27,10 +27,19 @@ const List<String> contigFormat = [
 ];
 
 const List<String> sequenceReadSummaryMode = [
-  'Default',
-  'Minimal',
   'Complete',
+  'Basic',
+  'Minimal',
 ];
+
+/// Quality-check profiles for raw reads, keyed by the SEGUL option name.
+const Map<String, String> sequenceReadQcProfiles = {
+  'auto': 'Auto',
+  'short-wgs': 'Short (WGS)',
+  'amplicon': 'Amplicon / Capture',
+  'long-ont': 'Long (ONT)',
+  'long-hifi': 'Long (HiFi)',
+};
 
 /// Quality score offsets for raw reads. Auto detects it from the reads.
 const List<String> sequenceReadPhredOffset = [

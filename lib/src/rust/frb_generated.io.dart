@@ -193,6 +193,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawReadServices dco_decode_box_autoadd_raw_read_services(dynamic raw);
 
   @protected
+  ReadCohortData dco_decode_box_autoadd_read_cohort_data(dynamic raw);
+
+  @protected
   ReadDuplicationData dco_decode_box_autoadd_read_duplication_data(dynamic raw);
 
   @protected
@@ -372,6 +375,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<ReadCohortOutlierData> dco_decode_list_read_cohort_outlier_data(
+      dynamic raw);
+
+  @protected
+  List<ReadExpectedErrorData> dco_decode_list_read_expected_error_data(
+      dynamic raw);
+
+  @protected
+  List<ReadLengthQualityData> dco_decode_list_read_length_quality_data(
+      dynamic raw);
+
+  @protected
+  List<ReadPairData> dco_decode_list_read_pair_data(dynamic raw);
+
+  @protected
   List<ReadQcCheckData> dco_decode_list_read_qc_check_data(dynamic raw);
 
   @protected
@@ -407,6 +425,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
 
   @protected
+  ReadCohortData? dco_decode_opt_box_autoadd_read_cohort_data(dynamic raw);
+
+  @protected
   ReadDuplicationData? dco_decode_opt_box_autoadd_read_duplication_data(
       dynamic raw);
 
@@ -438,10 +459,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawReadServices dco_decode_raw_read_services(dynamic raw);
 
   @protected
+  ReadCohortData dco_decode_read_cohort_data(dynamic raw);
+
+  @protected
+  ReadCohortOutlierData dco_decode_read_cohort_outlier_data(dynamic raw);
+
+  @protected
   ReadDuplicationData dco_decode_read_duplication_data(dynamic raw);
 
   @protected
+  ReadExpectedErrorData dco_decode_read_expected_error_data(dynamic raw);
+
+  @protected
+  ReadLengthQualityData dco_decode_read_length_quality_data(dynamic raw);
+
+  @protected
   ReadMetricsData dco_decode_read_metrics_data(dynamic raw);
+
+  @protected
+  ReadPairData dco_decode_read_pair_data(dynamic raw);
 
   @protected
   ReadPositionData dco_decode_read_position_data(dynamic raw);
@@ -454,6 +490,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadQcStatus dco_decode_read_qc_status(dynamic raw);
+
+  @protected
+  ReadRelativePositionData dco_decode_read_relative_position_data(dynamic raw);
 
   @protected
   ReadReportData dco_decode_read_report_data(dynamic raw);
@@ -716,6 +755,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  ReadCohortData sse_decode_box_autoadd_read_cohort_data(
+      SseDeserializer deserializer);
+
+  @protected
   ReadDuplicationData sse_decode_box_autoadd_read_duplication_data(
       SseDeserializer deserializer);
 
@@ -925,6 +968,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<ReadCohortOutlierData> sse_decode_list_read_cohort_outlier_data(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ReadExpectedErrorData> sse_decode_list_read_expected_error_data(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ReadLengthQualityData> sse_decode_list_read_length_quality_data(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ReadPairData> sse_decode_list_read_pair_data(
+      SseDeserializer deserializer);
+
+  @protected
   List<ReadQcCheckData> sse_decode_list_read_qc_check_data(
       SseDeserializer deserializer);
 
@@ -966,6 +1025,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
+  ReadCohortData? sse_decode_opt_box_autoadd_read_cohort_data(
+      SseDeserializer deserializer);
+
+  @protected
   ReadDuplicationData? sse_decode_opt_box_autoadd_read_duplication_data(
       SseDeserializer deserializer);
 
@@ -999,11 +1062,29 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RawReadServices sse_decode_raw_read_services(SseDeserializer deserializer);
 
   @protected
+  ReadCohortData sse_decode_read_cohort_data(SseDeserializer deserializer);
+
+  @protected
+  ReadCohortOutlierData sse_decode_read_cohort_outlier_data(
+      SseDeserializer deserializer);
+
+  @protected
   ReadDuplicationData sse_decode_read_duplication_data(
       SseDeserializer deserializer);
 
   @protected
+  ReadExpectedErrorData sse_decode_read_expected_error_data(
+      SseDeserializer deserializer);
+
+  @protected
+  ReadLengthQualityData sse_decode_read_length_quality_data(
+      SseDeserializer deserializer);
+
+  @protected
   ReadMetricsData sse_decode_read_metrics_data(SseDeserializer deserializer);
+
+  @protected
+  ReadPairData sse_decode_read_pair_data(SseDeserializer deserializer);
 
   @protected
   ReadPositionData sse_decode_read_position_data(SseDeserializer deserializer);
@@ -1016,6 +1097,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ReadQcStatus sse_decode_read_qc_status(SseDeserializer deserializer);
+
+  @protected
+  ReadRelativePositionData sse_decode_read_relative_position_data(
+      SseDeserializer deserializer);
 
   @protected
   ReadReportData sse_decode_read_report_data(SseDeserializer deserializer);
@@ -1297,6 +1382,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       RawReadServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_read_cohort_data(
+      ReadCohortData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_read_duplication_data(
       ReadDuplicationData self, SseSerializer serializer);
 
@@ -1519,6 +1608,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_read_cohort_outlier_data(
+      List<ReadCohortOutlierData> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_read_expected_error_data(
+      List<ReadExpectedErrorData> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_read_length_quality_data(
+      List<ReadLengthQualityData> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_read_pair_data(
+      List<ReadPairData> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_read_qc_check_data(
       List<ReadQcCheckData> self, SseSerializer serializer);
 
@@ -1561,6 +1666,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       PlatformInt64? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_read_cohort_data(
+      ReadCohortData? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_read_duplication_data(
       ReadDuplicationData? self, SseSerializer serializer);
 
@@ -1596,12 +1705,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       RawReadServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_read_cohort_data(
+      ReadCohortData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_cohort_outlier_data(
+      ReadCohortOutlierData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_read_duplication_data(
       ReadDuplicationData self, SseSerializer serializer);
 
   @protected
+  void sse_encode_read_expected_error_data(
+      ReadExpectedErrorData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_length_quality_data(
+      ReadLengthQualityData self, SseSerializer serializer);
+
+  @protected
   void sse_encode_read_metrics_data(
       ReadMetricsData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_pair_data(ReadPairData self, SseSerializer serializer);
 
   @protected
   void sse_encode_read_position_data(
@@ -1617,6 +1745,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_read_qc_status(ReadQcStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_read_relative_position_data(
+      ReadRelativePositionData self, SseSerializer serializer);
 
   @protected
   void sse_encode_read_report_data(

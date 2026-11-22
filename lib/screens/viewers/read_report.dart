@@ -10,6 +10,7 @@ import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
+import 'package:segui/screens/viewers/read_report/cohort.dart';
 import 'package:segui/screens/viewers/read_report/sample_list.dart';
 import 'package:segui/screens/viewers/read_report/spread.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
@@ -83,6 +84,7 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
   int _index = 0;
   late Set<int> _compared;
   SpreadView _spreadView = SpreadView.band;
+  bool _relativePosition = false;
 
   @override
   void initState() {
@@ -196,6 +198,8 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
     final ReadSampleData sample = _samples[_index];
     final String name = sample.sample;
     final List<(int, AdapterContentData)> adapters = detectedAdapters(sample);
+    final bool hasRelative = sample.relativePositions.startPct.isNotEmpty;
+    final bool useRelative = _relativePosition && hasRelative;
     return [
       ReportTab(label: 'Summary', sections: [
         ReportSection(
@@ -213,10 +217,24 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
       ]),
       ReportTab(label: 'Quality', sections: [
         ReportSection(
-          title: 'Per-base quality: $name',
-          description: 'Median and mean quality at each position, with the '
-              'middle half of bases and the 10th to 90th percentile shaded.',
-          child: PositionQualityChart(positions: sample.positions),
+          title: useRelative
+              ? 'Relative-position quality: $name'
+              : 'Per-base quality: $name',
+          description:
+              'Median, mean, and effective quality across read position, '
+              'with the middle half and 10th to 90th percentile shaded.',
+          header: hasRelative
+              ? PositionCoordinateToggle(
+                  relative: _relativePosition,
+                  onChanged: (value) =>
+                      setState(() => _relativePosition = value),
+                )
+              : null,
+          child: useRelative
+              ? RelativePositionQualityChart(
+                  positions: sample.relativePositions,
+                )
+              : PositionQualityChart(positions: sample.positions),
         ),
         _comparison(
           view,
@@ -227,6 +245,12 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           points: (s) => indexedPoints(s.sample, s.readQualityCounts),
           isCount: true,
         ),
+        if (sample.expectedErrors.isNotEmpty)
+          ReportSection(
+            title: 'Expected errors per read: $name',
+            description: 'Estimated sequencing errors per read.',
+            child: ExpectedErrorsChart(sample: sample),
+          ),
       ]),
       ReportTab(label: 'Composition', sections: [
         ReportSection(
@@ -251,10 +275,23 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           ),
         ),
         ReportSection(
-          title: 'Base composition: $name',
+          title: useRelative
+              ? 'Relative base composition: $name'
+              : 'Base composition: $name',
           description: 'Share of each base at each position. Lines should '
               'be flat after the first few bases of most libraries.',
-          child: BaseCompositionChart(positions: sample.positions),
+          header: hasRelative
+              ? PositionCoordinateToggle(
+                  relative: _relativePosition,
+                  onChanged: (value) =>
+                      setState(() => _relativePosition = value),
+                )
+              : null,
+          child: useRelative
+              ? RelativeBaseCompositionChart(
+                  positions: sample.relativePositions,
+                )
+              : BaseCompositionChart(positions: sample.positions),
         ),
         _comparison(
           view,
@@ -282,6 +319,12 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           ),
           isCount: true,
         ),
+        if (sample.lengthQuality.isNotEmpty)
+          ReportSection(
+            title: 'Quality by read length: $name',
+            description: 'Effective and mean quality by read-length range.',
+            child: LengthQualityChart(bins: sample.lengthQuality),
+          ),
       ]),
       ReportTab(label: 'Duplication', sections: [
         ReportSection(
@@ -325,6 +368,31 @@ class _ReadReportContentState extends ConsumerState<ReadReportContent> {
           child: OverrepresentedTable(sequences: sample.overrepresented),
         ),
       ]),
+      if (widget.report.cohort != null || widget.report.pairs.isNotEmpty)
+        ReportTab(label: 'Cohort', sections: [
+          if (widget.report.cohort case final ReadCohortData cohort)
+            ReportSection(
+              title: 'Pooling depth balance',
+              description: 'Read-depth distribution across all samples.',
+              child: CohortBalanceSummary(
+                cohort: cohort,
+                qcProfile: widget.report.qcProfile,
+              ),
+            ),
+          if (widget.report.pairs.isNotEmpty)
+            ReportSection(
+              title: 'Paired-end R1/R2 consistency',
+              description: 'Read-count sync and R2 quality drop per pair.',
+              child: ReadPairsTable(pairs: widget.report.pairs),
+            ),
+          if (widget.report.cohort case final ReadCohortData cohort
+              when cohort.outliers.isNotEmpty)
+            ReportSection(
+              title: 'Cohort-relative outliers',
+              description: 'Samples far from the cohort median.',
+              child: CohortOutliersTable(outliers: cohort.outliers),
+            ),
+        ]),
     ];
   }
 
@@ -731,6 +799,147 @@ class SampleCompareSheet extends StatelessWidget {
               title: Text(samples[i].sample),
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Toggles between absolute read coordinates (bp) and relative read progress (%).
+class PositionCoordinateToggle extends StatelessWidget {
+  const PositionCoordinateToggle({
+    super.key,
+    required this.relative,
+    required this.onChanged,
+  });
+
+  final bool relative;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: SegmentedButton<bool>(
+        showSelectedIcon: false,
+        segments: const [
+          ButtonSegment(value: false, label: Text('Absolute (bp)')),
+          ButtonSegment(value: true, label: Text('Relative (%)')),
+        ],
+        selected: {relative},
+        onSelectionChanged: (values) => onChanged(values.first),
+      ),
+    );
+  }
+}
+
+/// Share of A, C, G, T, and N across relative read position (0-100%).
+class RelativeBaseCompositionChart extends StatelessWidget {
+  const RelativeBaseCompositionChart({super.key, required this.positions});
+
+  final ReadRelativePositionData positions;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ResiduePalette palette = SeguiColors.fromTheme(theme).nucleotideLines;
+    final List<double> x = [
+      for (int i = 0; i < positions.startPct.length; i++)
+        (positions.startPct[i] + positions.endPct[i]) / 2,
+    ];
+    final List<(String, List<double>)> bases = [
+      ('A', positions.aPct),
+      ('C', positions.cPct),
+      ('G', positions.gPct),
+      ('T', positions.tPct),
+      ('N', positions.nPct),
+    ];
+    return ReadLineChart(
+      xLabel: 'Relative position (%)',
+      yLabel: 'Bases (%)',
+      minY: 0,
+      lines: [
+        for (final (String base, List<double> y) in bases)
+          ChartLine(
+            points: ChartPoints(name: base, x: x, y: y),
+            color: base == 'N'
+                ? theme.colorScheme.outline
+                : palette.colorOf(base.codeUnitAt(0)),
+          ),
+      ],
+    );
+  }
+}
+
+/// Distribution of expected sequencing errors per read.
+class ExpectedErrorsChart extends StatelessWidget {
+  const ExpectedErrorsChart({super.key, required this.sample});
+
+  final ReadSampleData sample;
+
+  @override
+  Widget build(BuildContext context) {
+    final ReadMetricsData m = sample.metrics;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Mean: ${m.meanExpectedErrors.toStringAsFixed(2)}/read '
+          '(${m.expectedErrorsPer100Bp.toStringAsFixed(2)}/100 bp) · '
+          'Error-free est: ${formatPercent(m.expectedErrorFreeReadsPct)} · '
+          'EE < 1: ${formatPercent(m.readsEeLt1Pct)}',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: SeguiSpacing.md),
+        ReadBarChart(
+          xLabel: 'Expected errors',
+          yLabel: 'Reads (%)',
+          barWidth: SeguiChartLayout.wideBarWidth,
+          categories: [
+            for (final ReadExpectedErrorData b in sample.expectedErrors)
+              b.label,
+          ],
+          series: [
+            BarSeries(
+              name: 'Reads (%)',
+              values: [
+                for (final ReadExpectedErrorData b in sample.expectedErrors)
+                  b.readsPct,
+              ],
+              color: SeguiColors.of(context).seriesAt(0),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Effective and mean quality score stratified by read-length range.
+class LengthQualityChart extends StatelessWidget {
+  const LengthQualityChart({super.key, required this.bins});
+
+  final List<ReadLengthQualityData> bins;
+
+  @override
+  Widget build(BuildContext context) {
+    final SeguiColors palette = SeguiColors.of(context);
+    return ReadBarChart(
+      xLabel: 'Read length (bp)',
+      yLabel: 'Quality score',
+      categories: [for (final ReadLengthQualityData b in bins) b.label],
+      series: [
+        BarSeries(
+          name: 'Effective Q',
+          values: [
+            for (final ReadLengthQualityData b in bins) b.effectiveMeanQscore,
+          ],
+          color: palette.seriesAt(0),
+        ),
+        BarSeries(
+          name: 'Mean Q',
+          values: [for (final ReadLengthQualityData b in bins) b.meanQscore],
+          color: palette.seriesAt(1),
         ),
       ],
     );

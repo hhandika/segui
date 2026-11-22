@@ -54,6 +54,7 @@ class ReadSummaryRunner {
     required this.mode,
     this.phred = 'Auto',
     this.dupSketchSize,
+    this.qcProfile = 'auto',
     this.monitor,
   });
 
@@ -69,6 +70,9 @@ class ReadSummaryRunner {
   /// Distinct sequences kept to estimate duplication, zero for all, or
   /// null for SEGUL's default.
   final int? dupSketchSize;
+
+  /// Quality-check profile key from [sequenceReadQcProfiles].
+  final String qcProfile;
 
   /// Reports file progress and cancels the run. Null runs untracked.
   final RunMonitor? monitor;
@@ -89,6 +93,7 @@ class ReadSummaryRunner {
       prefix: prefix.isEmpty ? null : prefix,
       phred: phred.toLowerCase(),
       dupSketchSize: dupSketchSize,
+      qcProfile: qcProfile,
       monitor: monitor ?? RunMonitor(),
     );
   }

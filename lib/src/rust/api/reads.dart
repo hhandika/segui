@@ -7,8 +7,8 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'progress.dart';
 
-// These functions are ignored because they are not marked as `pub`: `find_input_files`, `match_input_fmt`, `match_mode`, `match_phred`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`, `from`, `from`, `from`
+// These functions are ignored because they are not marked as `pub`: `find_input_files`, `from_report`, `match_input_fmt`, `match_mode`, `match_phred`, `match_qc_profile`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
 
 class AdapterContentData {
   final String name;
@@ -94,12 +94,14 @@ class RawReadServices {
   /// Summarize reads. `phred` is "auto", "33", or "64", and defaults to "auto".
   /// `dup_sketch_size` is the number of distinct sequences kept to estimate
   /// duplication in Complete mode, zero to count all, or SEGUL's default.
+  /// `qc_profile` is "auto", "short-wgs", "amplicon", "long-ont", or "long-hifi".
   /// `monitor` reports progress and can cancel the run.
   Future<ReadSummaryOutput> summarize(
           {required String mode,
           String? prefix,
           String? phred,
           int? dupSketchSize,
+          String? qcProfile,
           required RunMonitor monitor}) =>
       RustLib.instance.api.crateApiReadsRawReadServicesSummarize(
           that: this,
@@ -107,6 +109,7 @@ class RawReadServices {
           prefix: prefix,
           phred: phred,
           dupSketchSize: dupSketchSize,
+          qcProfile: qcProfile,
           monitor: monitor);
 
   @override
@@ -120,6 +123,104 @@ class RawReadServices {
           files == other.files &&
           fileFmt == other.fileFmt &&
           outputDir == other.outputDir;
+}
+
+class ReadCohortData {
+  final double sampleCount;
+  final double emptySampleCount;
+  final double totalReads;
+  final double totalBases;
+  final double medianReads;
+  final double p10Reads;
+  final double p90Reads;
+  final double depthP90P10Ratio;
+  final double depthCv;
+  final double depthGini;
+  final List<String> lowYieldSamples;
+  final List<ReadCohortOutlierData> outliers;
+
+  const ReadCohortData({
+    required this.sampleCount,
+    required this.emptySampleCount,
+    required this.totalReads,
+    required this.totalBases,
+    required this.medianReads,
+    required this.p10Reads,
+    required this.p90Reads,
+    required this.depthP90P10Ratio,
+    required this.depthCv,
+    required this.depthGini,
+    required this.lowYieldSamples,
+    required this.outliers,
+  });
+
+  @override
+  int get hashCode =>
+      sampleCount.hashCode ^
+      emptySampleCount.hashCode ^
+      totalReads.hashCode ^
+      totalBases.hashCode ^
+      medianReads.hashCode ^
+      p10Reads.hashCode ^
+      p90Reads.hashCode ^
+      depthP90P10Ratio.hashCode ^
+      depthCv.hashCode ^
+      depthGini.hashCode ^
+      lowYieldSamples.hashCode ^
+      outliers.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadCohortData &&
+          runtimeType == other.runtimeType &&
+          sampleCount == other.sampleCount &&
+          emptySampleCount == other.emptySampleCount &&
+          totalReads == other.totalReads &&
+          totalBases == other.totalBases &&
+          medianReads == other.medianReads &&
+          p10Reads == other.p10Reads &&
+          p90Reads == other.p90Reads &&
+          depthP90P10Ratio == other.depthP90P10Ratio &&
+          depthCv == other.depthCv &&
+          depthGini == other.depthGini &&
+          lowYieldSamples == other.lowYieldSamples &&
+          outliers == other.outliers;
+}
+
+class ReadCohortOutlierData {
+  final String sample;
+  final String metric;
+  final double value;
+  final double cohortMedian;
+  final double modifiedZ;
+
+  const ReadCohortOutlierData({
+    required this.sample,
+    required this.metric,
+    required this.value,
+    required this.cohortMedian,
+    required this.modifiedZ,
+  });
+
+  @override
+  int get hashCode =>
+      sample.hashCode ^
+      metric.hashCode ^
+      value.hashCode ^
+      cohortMedian.hashCode ^
+      modifiedZ.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadCohortOutlierData &&
+          runtimeType == other.runtimeType &&
+          sample == other.sample &&
+          metric == other.metric &&
+          value == other.value &&
+          cohortMedian == other.cohortMedian &&
+          modifiedZ == other.modifiedZ;
 }
 
 class ReadDuplicationData {
@@ -174,6 +275,81 @@ class ReadDuplicationData {
           readsPct == other.readsPct;
 }
 
+class ReadExpectedErrorData {
+  final String label;
+  final double reads;
+  final double readsPct;
+
+  const ReadExpectedErrorData({
+    required this.label,
+    required this.reads,
+    required this.readsPct,
+  });
+
+  @override
+  int get hashCode => label.hashCode ^ reads.hashCode ^ readsPct.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadExpectedErrorData &&
+          runtimeType == other.runtimeType &&
+          label == other.label &&
+          reads == other.reads &&
+          readsPct == other.readsPct;
+}
+
+class ReadLengthQualityData {
+  final String label;
+  final double reads;
+  final double bases;
+  final double meanQscore;
+  final double effectiveMeanQscore;
+  final double q1Qscore;
+  final double medianQscore;
+  final double q3Qscore;
+  final double meanExpectedErrors;
+
+  const ReadLengthQualityData({
+    required this.label,
+    required this.reads,
+    required this.bases,
+    required this.meanQscore,
+    required this.effectiveMeanQscore,
+    required this.q1Qscore,
+    required this.medianQscore,
+    required this.q3Qscore,
+    required this.meanExpectedErrors,
+  });
+
+  @override
+  int get hashCode =>
+      label.hashCode ^
+      reads.hashCode ^
+      bases.hashCode ^
+      meanQscore.hashCode ^
+      effectiveMeanQscore.hashCode ^
+      q1Qscore.hashCode ^
+      medianQscore.hashCode ^
+      q3Qscore.hashCode ^
+      meanExpectedErrors.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadLengthQualityData &&
+          runtimeType == other.runtimeType &&
+          label == other.label &&
+          reads == other.reads &&
+          bases == other.bases &&
+          meanQscore == other.meanQscore &&
+          effectiveMeanQscore == other.effectiveMeanQscore &&
+          q1Qscore == other.q1Qscore &&
+          medianQscore == other.medianQscore &&
+          q3Qscore == other.q3Qscore &&
+          meanExpectedErrors == other.meanExpectedErrors;
+}
+
 class ReadMetricsData {
   final double readCount;
   final double baseCount;
@@ -183,18 +359,60 @@ class ReadMetricsData {
   final double medianReadLength;
   final double stdevReadLength;
   final double n50ReadLength;
+  final double n90ReadLength;
+  final double l50ReadLength;
+  final double aunReadLength;
+  final double emptyReads;
+  final double otherCount;
   final double gcContent;
   final double nContent;
+  final double atSkew;
+  final double gcSkew;
+  final double gcStdev;
+  final double gcNormalDivergencePct;
+  final double gcPeaks;
   final double meanQscore;
+  final double effectiveMeanQscore;
+  final double meanErrorRate;
+  final double q10Pct;
+  final double q15Pct;
   final double q20Pct;
   final double q30Pct;
+  final double q40Pct;
+  final double distinctQscores;
   final double meanReadQscore;
   final double lowQualityReads;
+  final double meanExpectedErrors;
+  final double expectedErrorsPer100Bp;
+  final double expectedErrorFreeReadsPct;
+  final double readsEeLt1Pct;
+  final double q10ReadBasesPct;
+  final double q20ReadBasesPct;
+  final double q30ReadBasesPct;
+  final double meanComplexity;
+  final double lowComplexityReadsPct;
+  final double homopolymerBasesPct;
+  final double maxHomopolymerLength;
+  final double homopolymerMeanQscore;
+  final double nonHomopolymerMeanQscore;
+  final double homopolymerQscoreGap;
+  final double polyGTailReadsPct;
+  final double polyATailReadsPct;
+  final double polyTTailReadsPct;
+  final double polyCTailReadsPct;
+  final String? platform;
+  final double chastityFailedReads;
+  final double chastityFailedPct;
+  final double runGroupCount;
   final int phredOffset;
   final double? duplicatePct;
   final double? adapterReadsPct;
   final double? polyGReadsPct;
   final double? overrepresentedCount;
+  final double? qscoreTailDrop;
+  final double? effectiveQ20Span;
+  final double? effectiveQ30Span;
+  final double? headBiasBp;
 
   const ReadMetricsData({
     required this.readCount,
@@ -205,18 +423,60 @@ class ReadMetricsData {
     required this.medianReadLength,
     required this.stdevReadLength,
     required this.n50ReadLength,
+    required this.n90ReadLength,
+    required this.l50ReadLength,
+    required this.aunReadLength,
+    required this.emptyReads,
+    required this.otherCount,
     required this.gcContent,
     required this.nContent,
+    required this.atSkew,
+    required this.gcSkew,
+    required this.gcStdev,
+    required this.gcNormalDivergencePct,
+    required this.gcPeaks,
     required this.meanQscore,
+    required this.effectiveMeanQscore,
+    required this.meanErrorRate,
+    required this.q10Pct,
+    required this.q15Pct,
     required this.q20Pct,
     required this.q30Pct,
+    required this.q40Pct,
+    required this.distinctQscores,
     required this.meanReadQscore,
     required this.lowQualityReads,
+    required this.meanExpectedErrors,
+    required this.expectedErrorsPer100Bp,
+    required this.expectedErrorFreeReadsPct,
+    required this.readsEeLt1Pct,
+    required this.q10ReadBasesPct,
+    required this.q20ReadBasesPct,
+    required this.q30ReadBasesPct,
+    required this.meanComplexity,
+    required this.lowComplexityReadsPct,
+    required this.homopolymerBasesPct,
+    required this.maxHomopolymerLength,
+    required this.homopolymerMeanQscore,
+    required this.nonHomopolymerMeanQscore,
+    required this.homopolymerQscoreGap,
+    required this.polyGTailReadsPct,
+    required this.polyATailReadsPct,
+    required this.polyTTailReadsPct,
+    required this.polyCTailReadsPct,
+    this.platform,
+    required this.chastityFailedReads,
+    required this.chastityFailedPct,
+    required this.runGroupCount,
     required this.phredOffset,
     this.duplicatePct,
     this.adapterReadsPct,
     this.polyGReadsPct,
     this.overrepresentedCount,
+    this.qscoreTailDrop,
+    this.effectiveQ20Span,
+    this.effectiveQ30Span,
+    this.headBiasBp,
   });
 
   @override
@@ -229,18 +489,60 @@ class ReadMetricsData {
       medianReadLength.hashCode ^
       stdevReadLength.hashCode ^
       n50ReadLength.hashCode ^
+      n90ReadLength.hashCode ^
+      l50ReadLength.hashCode ^
+      aunReadLength.hashCode ^
+      emptyReads.hashCode ^
+      otherCount.hashCode ^
       gcContent.hashCode ^
       nContent.hashCode ^
+      atSkew.hashCode ^
+      gcSkew.hashCode ^
+      gcStdev.hashCode ^
+      gcNormalDivergencePct.hashCode ^
+      gcPeaks.hashCode ^
       meanQscore.hashCode ^
+      effectiveMeanQscore.hashCode ^
+      meanErrorRate.hashCode ^
+      q10Pct.hashCode ^
+      q15Pct.hashCode ^
       q20Pct.hashCode ^
       q30Pct.hashCode ^
+      q40Pct.hashCode ^
+      distinctQscores.hashCode ^
       meanReadQscore.hashCode ^
       lowQualityReads.hashCode ^
+      meanExpectedErrors.hashCode ^
+      expectedErrorsPer100Bp.hashCode ^
+      expectedErrorFreeReadsPct.hashCode ^
+      readsEeLt1Pct.hashCode ^
+      q10ReadBasesPct.hashCode ^
+      q20ReadBasesPct.hashCode ^
+      q30ReadBasesPct.hashCode ^
+      meanComplexity.hashCode ^
+      lowComplexityReadsPct.hashCode ^
+      homopolymerBasesPct.hashCode ^
+      maxHomopolymerLength.hashCode ^
+      homopolymerMeanQscore.hashCode ^
+      nonHomopolymerMeanQscore.hashCode ^
+      homopolymerQscoreGap.hashCode ^
+      polyGTailReadsPct.hashCode ^
+      polyATailReadsPct.hashCode ^
+      polyTTailReadsPct.hashCode ^
+      polyCTailReadsPct.hashCode ^
+      platform.hashCode ^
+      chastityFailedReads.hashCode ^
+      chastityFailedPct.hashCode ^
+      runGroupCount.hashCode ^
       phredOffset.hashCode ^
       duplicatePct.hashCode ^
       adapterReadsPct.hashCode ^
       polyGReadsPct.hashCode ^
-      overrepresentedCount.hashCode;
+      overrepresentedCount.hashCode ^
+      qscoreTailDrop.hashCode ^
+      effectiveQ20Span.hashCode ^
+      effectiveQ30Span.hashCode ^
+      headBiasBp.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -255,18 +557,123 @@ class ReadMetricsData {
           medianReadLength == other.medianReadLength &&
           stdevReadLength == other.stdevReadLength &&
           n50ReadLength == other.n50ReadLength &&
+          n90ReadLength == other.n90ReadLength &&
+          l50ReadLength == other.l50ReadLength &&
+          aunReadLength == other.aunReadLength &&
+          emptyReads == other.emptyReads &&
+          otherCount == other.otherCount &&
           gcContent == other.gcContent &&
           nContent == other.nContent &&
+          atSkew == other.atSkew &&
+          gcSkew == other.gcSkew &&
+          gcStdev == other.gcStdev &&
+          gcNormalDivergencePct == other.gcNormalDivergencePct &&
+          gcPeaks == other.gcPeaks &&
           meanQscore == other.meanQscore &&
+          effectiveMeanQscore == other.effectiveMeanQscore &&
+          meanErrorRate == other.meanErrorRate &&
+          q10Pct == other.q10Pct &&
+          q15Pct == other.q15Pct &&
           q20Pct == other.q20Pct &&
           q30Pct == other.q30Pct &&
+          q40Pct == other.q40Pct &&
+          distinctQscores == other.distinctQscores &&
           meanReadQscore == other.meanReadQscore &&
           lowQualityReads == other.lowQualityReads &&
+          meanExpectedErrors == other.meanExpectedErrors &&
+          expectedErrorsPer100Bp == other.expectedErrorsPer100Bp &&
+          expectedErrorFreeReadsPct == other.expectedErrorFreeReadsPct &&
+          readsEeLt1Pct == other.readsEeLt1Pct &&
+          q10ReadBasesPct == other.q10ReadBasesPct &&
+          q20ReadBasesPct == other.q20ReadBasesPct &&
+          q30ReadBasesPct == other.q30ReadBasesPct &&
+          meanComplexity == other.meanComplexity &&
+          lowComplexityReadsPct == other.lowComplexityReadsPct &&
+          homopolymerBasesPct == other.homopolymerBasesPct &&
+          maxHomopolymerLength == other.maxHomopolymerLength &&
+          homopolymerMeanQscore == other.homopolymerMeanQscore &&
+          nonHomopolymerMeanQscore == other.nonHomopolymerMeanQscore &&
+          homopolymerQscoreGap == other.homopolymerQscoreGap &&
+          polyGTailReadsPct == other.polyGTailReadsPct &&
+          polyATailReadsPct == other.polyATailReadsPct &&
+          polyTTailReadsPct == other.polyTTailReadsPct &&
+          polyCTailReadsPct == other.polyCTailReadsPct &&
+          platform == other.platform &&
+          chastityFailedReads == other.chastityFailedReads &&
+          chastityFailedPct == other.chastityFailedPct &&
+          runGroupCount == other.runGroupCount &&
           phredOffset == other.phredOffset &&
           duplicatePct == other.duplicatePct &&
           adapterReadsPct == other.adapterReadsPct &&
           polyGReadsPct == other.polyGReadsPct &&
-          overrepresentedCount == other.overrepresentedCount;
+          overrepresentedCount == other.overrepresentedCount &&
+          qscoreTailDrop == other.qscoreTailDrop &&
+          effectiveQ20Span == other.effectiveQ20Span &&
+          effectiveQ30Span == other.effectiveQ30Span &&
+          headBiasBp == other.headBiasBp;
+}
+
+class ReadPairData {
+  final String pairName;
+  final String r1Sample;
+  final String r2Sample;
+  final double r1Reads;
+  final double r2Reads;
+  final double readCountDiff;
+  final bool inSync;
+  final double q30DropPct;
+  final double effectiveQDrop;
+  final double meanLengthDiff;
+  final double gcDiffPct;
+  final ReadQcStatus status;
+
+  const ReadPairData({
+    required this.pairName,
+    required this.r1Sample,
+    required this.r2Sample,
+    required this.r1Reads,
+    required this.r2Reads,
+    required this.readCountDiff,
+    required this.inSync,
+    required this.q30DropPct,
+    required this.effectiveQDrop,
+    required this.meanLengthDiff,
+    required this.gcDiffPct,
+    required this.status,
+  });
+
+  @override
+  int get hashCode =>
+      pairName.hashCode ^
+      r1Sample.hashCode ^
+      r2Sample.hashCode ^
+      r1Reads.hashCode ^
+      r2Reads.hashCode ^
+      readCountDiff.hashCode ^
+      inSync.hashCode ^
+      q30DropPct.hashCode ^
+      effectiveQDrop.hashCode ^
+      meanLengthDiff.hashCode ^
+      gcDiffPct.hashCode ^
+      status.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadPairData &&
+          runtimeType == other.runtimeType &&
+          pairName == other.pairName &&
+          r1Sample == other.r1Sample &&
+          r2Sample == other.r2Sample &&
+          r1Reads == other.r1Reads &&
+          r2Reads == other.r2Reads &&
+          readCountDiff == other.readCountDiff &&
+          inSync == other.inSync &&
+          q30DropPct == other.q30DropPct &&
+          effectiveQDrop == other.effectiveQDrop &&
+          meanLengthDiff == other.meanLengthDiff &&
+          gcDiffPct == other.gcDiffPct &&
+          status == other.status;
 }
 
 /// Per-position statistics in columns, one value per position or bin.
@@ -274,6 +681,8 @@ class ReadPositionData {
   final Float64List start;
   final Float64List end;
   final Float64List meanQscore;
+  final Float64List effectiveMeanQscore;
+  final Float64List readSurvivalPct;
   final Float64List p10Qscore;
   final Float64List q1Qscore;
   final Float64List medianQscore;
@@ -291,6 +700,8 @@ class ReadPositionData {
     required this.start,
     required this.end,
     required this.meanQscore,
+    required this.effectiveMeanQscore,
+    required this.readSurvivalPct,
     required this.p10Qscore,
     required this.q1Qscore,
     required this.medianQscore,
@@ -308,6 +719,8 @@ class ReadPositionData {
       start.hashCode ^
       end.hashCode ^
       meanQscore.hashCode ^
+      effectiveMeanQscore.hashCode ^
+      readSurvivalPct.hashCode ^
       p10Qscore.hashCode ^
       q1Qscore.hashCode ^
       medianQscore.hashCode ^
@@ -327,6 +740,8 @@ class ReadPositionData {
           start == other.start &&
           end == other.end &&
           meanQscore == other.meanQscore &&
+          effectiveMeanQscore == other.effectiveMeanQscore &&
+          readSurvivalPct == other.readSurvivalPct &&
           p10Qscore == other.p10Qscore &&
           q1Qscore == other.q1Qscore &&
           medianQscore == other.medianQscore &&
@@ -410,22 +825,104 @@ enum ReadQcStatus {
   ;
 }
 
-class ReadReportData {
-  final List<ReadSampleData> samples;
+/// Per-relative-position statistics in columns (20 bins of 5% each).
+class ReadRelativePositionData {
+  final Float64List startPct;
+  final Float64List endPct;
+  final Float64List meanQscore;
+  final Float64List effectiveMeanQscore;
+  final Float64List p10Qscore;
+  final Float64List q1Qscore;
+  final Float64List medianQscore;
+  final Float64List q3Qscore;
+  final Float64List p90Qscore;
+  final Float64List aPct;
+  final Float64List cPct;
+  final Float64List gPct;
+  final Float64List tPct;
+  final Float64List nPct;
 
-  const ReadReportData({
-    required this.samples,
+  const ReadRelativePositionData({
+    required this.startPct,
+    required this.endPct,
+    required this.meanQscore,
+    required this.effectiveMeanQscore,
+    required this.p10Qscore,
+    required this.q1Qscore,
+    required this.medianQscore,
+    required this.q3Qscore,
+    required this.p90Qscore,
+    required this.aPct,
+    required this.cPct,
+    required this.gPct,
+    required this.tPct,
+    required this.nPct,
   });
 
   @override
-  int get hashCode => samples.hashCode;
+  int get hashCode =>
+      startPct.hashCode ^
+      endPct.hashCode ^
+      meanQscore.hashCode ^
+      effectiveMeanQscore.hashCode ^
+      p10Qscore.hashCode ^
+      q1Qscore.hashCode ^
+      medianQscore.hashCode ^
+      q3Qscore.hashCode ^
+      p90Qscore.hashCode ^
+      aPct.hashCode ^
+      cPct.hashCode ^
+      gPct.hashCode ^
+      tPct.hashCode ^
+      nPct.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ReadRelativePositionData &&
+          runtimeType == other.runtimeType &&
+          startPct == other.startPct &&
+          endPct == other.endPct &&
+          meanQscore == other.meanQscore &&
+          effectiveMeanQscore == other.effectiveMeanQscore &&
+          p10Qscore == other.p10Qscore &&
+          q1Qscore == other.q1Qscore &&
+          medianQscore == other.medianQscore &&
+          q3Qscore == other.q3Qscore &&
+          p90Qscore == other.p90Qscore &&
+          aPct == other.aPct &&
+          cPct == other.cPct &&
+          gPct == other.gPct &&
+          tPct == other.tPct &&
+          nPct == other.nPct;
+}
+
+class ReadReportData {
+  final List<ReadSampleData> samples;
+  final String qcProfile;
+  final List<ReadPairData> pairs;
+  final ReadCohortData? cohort;
+
+  const ReadReportData({
+    required this.samples,
+    required this.qcProfile,
+    required this.pairs,
+    this.cohort,
+  });
+
+  @override
+  int get hashCode =>
+      samples.hashCode ^ qcProfile.hashCode ^ pairs.hashCode ^ cohort.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ReadReportData &&
           runtimeType == other.runtimeType &&
-          samples == other.samples;
+          samples == other.samples &&
+          qcProfile == other.qcProfile &&
+          pairs == other.pairs &&
+          cohort == other.cohort;
 }
 
 /// Loads `read-report.json` for the interactive read report.
@@ -472,6 +969,10 @@ class ReadSampleData {
   final Float64List gcCounts;
   final Float64List gcTheoretical;
   final ReadPositionData positions;
+  final ReadRelativePositionData relativePositions;
+  final List<ReadLengthQualityData> lengthQuality;
+  final List<ReadExpectedErrorData> expectedErrors;
+  final Float64List complexityCounts;
   final ReadDuplicationData? duplication;
   final List<OverrepresentedData> overrepresented;
   final List<AdapterContentData> adapters;
@@ -481,6 +982,9 @@ class ReadSampleData {
 
   /// The worst status among the checks.
   final ReadQcStatus status;
+
+  /// Resolved QC profile label for this sample.
+  final String qcProfile;
 
   const ReadSampleData({
     required this.sample,
@@ -493,11 +997,16 @@ class ReadSampleData {
     required this.gcCounts,
     required this.gcTheoretical,
     required this.positions,
+    required this.relativePositions,
+    required this.lengthQuality,
+    required this.expectedErrors,
+    required this.complexityCounts,
     this.duplication,
     required this.overrepresented,
     required this.adapters,
     required this.checks,
     required this.status,
+    required this.qcProfile,
   });
 
   @override
@@ -512,11 +1021,16 @@ class ReadSampleData {
       gcCounts.hashCode ^
       gcTheoretical.hashCode ^
       positions.hashCode ^
+      relativePositions.hashCode ^
+      lengthQuality.hashCode ^
+      expectedErrors.hashCode ^
+      complexityCounts.hashCode ^
       duplication.hashCode ^
       overrepresented.hashCode ^
       adapters.hashCode ^
       checks.hashCode ^
-      status.hashCode;
+      status.hashCode ^
+      qcProfile.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -533,11 +1047,16 @@ class ReadSampleData {
           gcCounts == other.gcCounts &&
           gcTheoretical == other.gcTheoretical &&
           positions == other.positions &&
+          relativePositions == other.relativePositions &&
+          lengthQuality == other.lengthQuality &&
+          expectedErrors == other.expectedErrors &&
+          complexityCounts == other.complexityCounts &&
           duplication == other.duplication &&
           overrepresented == other.overrepresented &&
           adapters == other.adapters &&
           checks == other.checks &&
-          status == other.status;
+          status == other.status &&
+          qcProfile == other.qcProfile;
 }
 
 /// Files written by a read summary.

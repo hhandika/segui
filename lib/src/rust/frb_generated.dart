@@ -284,6 +284,7 @@ abstract class RustLibApi extends BaseApi {
       String? prefix,
       String? phred,
       int? dupSketchSize,
+      String? qcProfile,
       required RunMonitor monitor});
 
   Future<ReadReportData> crateApiReadsReadReportServicesLoad(
@@ -2035,6 +2036,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       String? prefix,
       String? phred,
       int? dupSketchSize,
+      String? qcProfile,
       required RunMonitor monitor}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -2044,6 +2046,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_opt_String(prefix, serializer);
         sse_encode_opt_String(phred, serializer);
         sse_encode_opt_box_autoadd_u_32(dupSketchSize, serializer);
+        sse_encode_opt_String(qcProfile, serializer);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
             monitor, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
@@ -2054,7 +2057,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: sse_decode_AnyhowException,
       ),
       constMeta: kCrateApiReadsRawReadServicesSummarizeConstMeta,
-      argValues: [that, mode, prefix, phred, dupSketchSize, monitor],
+      argValues: [that, mode, prefix, phred, dupSketchSize, qcProfile, monitor],
       apiImpl: this,
     ));
   }
@@ -2068,6 +2071,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           "prefix",
           "phred",
           "dupSketchSize",
+          "qcProfile",
           "monitor"
         ],
       );
@@ -3271,6 +3275,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadCohortData dco_decode_box_autoadd_read_cohort_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_read_cohort_data(raw);
+  }
+
+  @protected
   ReadDuplicationData dco_decode_box_autoadd_read_duplication_data(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -3536,9 +3546,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const DistanceGroupingParams_Auto();
+        return DistanceGroupingParams_Auto();
       case 4:
-        return const DistanceGroupingParams_None();
+        return DistanceGroupingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -3760,7 +3770,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_String(raw[1]),
         );
       case 8:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -3900,6 +3910,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ReadCohortOutlierData> dco_decode_list_read_cohort_outlier_data(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_read_cohort_outlier_data)
+        .toList();
+  }
+
+  @protected
+  List<ReadExpectedErrorData> dco_decode_list_read_expected_error_data(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_read_expected_error_data)
+        .toList();
+  }
+
+  @protected
+  List<ReadLengthQualityData> dco_decode_list_read_length_quality_data(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_read_length_quality_data)
+        .toList();
+  }
+
+  @protected
+  List<ReadPairData> dco_decode_list_read_pair_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_read_pair_data).toList();
+  }
+
+  @protected
   List<ReadQcCheckData> dco_decode_list_read_qc_check_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_read_qc_check_data).toList();
@@ -3994,6 +4037,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_i_64(raw);
+  }
+
+  @protected
+  ReadCohortData? dco_decode_opt_box_autoadd_read_cohort_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_read_cohort_data(raw);
   }
 
   @protected
@@ -4100,6 +4149,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadCohortData dco_decode_read_cohort_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 12)
+      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
+    return ReadCohortData(
+      sampleCount: dco_decode_f_64(arr[0]),
+      emptySampleCount: dco_decode_f_64(arr[1]),
+      totalReads: dco_decode_f_64(arr[2]),
+      totalBases: dco_decode_f_64(arr[3]),
+      medianReads: dco_decode_f_64(arr[4]),
+      p10Reads: dco_decode_f_64(arr[5]),
+      p90Reads: dco_decode_f_64(arr[6]),
+      depthP90P10Ratio: dco_decode_f_64(arr[7]),
+      depthCv: dco_decode_f_64(arr[8]),
+      depthGini: dco_decode_f_64(arr[9]),
+      lowYieldSamples: dco_decode_list_String(arr[10]),
+      outliers: dco_decode_list_read_cohort_outlier_data(arr[11]),
+    );
+  }
+
+  @protected
+  ReadCohortOutlierData dco_decode_read_cohort_outlier_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return ReadCohortOutlierData(
+      sample: dco_decode_String(arr[0]),
+      metric: dco_decode_String(arr[1]),
+      value: dco_decode_f_64(arr[2]),
+      cohortMedian: dco_decode_f_64(arr[3]),
+      modifiedZ: dco_decode_f_64(arr[4]),
+    );
+  }
+
+  @protected
   ReadDuplicationData dco_decode_read_duplication_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -4118,11 +4204,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadExpectedErrorData dco_decode_read_expected_error_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return ReadExpectedErrorData(
+      label: dco_decode_String(arr[0]),
+      reads: dco_decode_f_64(arr[1]),
+      readsPct: dco_decode_f_64(arr[2]),
+    );
+  }
+
+  @protected
+  ReadLengthQualityData dco_decode_read_length_quality_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
+    return ReadLengthQualityData(
+      label: dco_decode_String(arr[0]),
+      reads: dco_decode_f_64(arr[1]),
+      bases: dco_decode_f_64(arr[2]),
+      meanQscore: dco_decode_f_64(arr[3]),
+      effectiveMeanQscore: dco_decode_f_64(arr[4]),
+      q1Qscore: dco_decode_f_64(arr[5]),
+      medianQscore: dco_decode_f_64(arr[6]),
+      q3Qscore: dco_decode_f_64(arr[7]),
+      meanExpectedErrors: dco_decode_f_64(arr[8]),
+    );
+  }
+
+  @protected
   ReadMetricsData dco_decode_read_metrics_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 20)
-      throw Exception('unexpected arr length: expect 20 but see ${arr.length}');
+    if (arr.length != 62)
+      throw Exception('unexpected arr length: expect 62 but see ${arr.length}');
     return ReadMetricsData(
       readCount: dco_decode_f_64(arr[0]),
       baseCount: dco_decode_f_64(arr[1]),
@@ -4132,18 +4250,82 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       medianReadLength: dco_decode_f_64(arr[5]),
       stdevReadLength: dco_decode_f_64(arr[6]),
       n50ReadLength: dco_decode_f_64(arr[7]),
-      gcContent: dco_decode_f_64(arr[8]),
-      nContent: dco_decode_f_64(arr[9]),
-      meanQscore: dco_decode_f_64(arr[10]),
-      q20Pct: dco_decode_f_64(arr[11]),
-      q30Pct: dco_decode_f_64(arr[12]),
-      meanReadQscore: dco_decode_f_64(arr[13]),
-      lowQualityReads: dco_decode_f_64(arr[14]),
-      phredOffset: dco_decode_u_32(arr[15]),
-      duplicatePct: dco_decode_opt_box_autoadd_f_64(arr[16]),
-      adapterReadsPct: dco_decode_opt_box_autoadd_f_64(arr[17]),
-      polyGReadsPct: dco_decode_opt_box_autoadd_f_64(arr[18]),
-      overrepresentedCount: dco_decode_opt_box_autoadd_f_64(arr[19]),
+      n90ReadLength: dco_decode_f_64(arr[8]),
+      l50ReadLength: dco_decode_f_64(arr[9]),
+      aunReadLength: dco_decode_f_64(arr[10]),
+      emptyReads: dco_decode_f_64(arr[11]),
+      otherCount: dco_decode_f_64(arr[12]),
+      gcContent: dco_decode_f_64(arr[13]),
+      nContent: dco_decode_f_64(arr[14]),
+      atSkew: dco_decode_f_64(arr[15]),
+      gcSkew: dco_decode_f_64(arr[16]),
+      gcStdev: dco_decode_f_64(arr[17]),
+      gcNormalDivergencePct: dco_decode_f_64(arr[18]),
+      gcPeaks: dco_decode_f_64(arr[19]),
+      meanQscore: dco_decode_f_64(arr[20]),
+      effectiveMeanQscore: dco_decode_f_64(arr[21]),
+      meanErrorRate: dco_decode_f_64(arr[22]),
+      q10Pct: dco_decode_f_64(arr[23]),
+      q15Pct: dco_decode_f_64(arr[24]),
+      q20Pct: dco_decode_f_64(arr[25]),
+      q30Pct: dco_decode_f_64(arr[26]),
+      q40Pct: dco_decode_f_64(arr[27]),
+      distinctQscores: dco_decode_f_64(arr[28]),
+      meanReadQscore: dco_decode_f_64(arr[29]),
+      lowQualityReads: dco_decode_f_64(arr[30]),
+      meanExpectedErrors: dco_decode_f_64(arr[31]),
+      expectedErrorsPer100Bp: dco_decode_f_64(arr[32]),
+      expectedErrorFreeReadsPct: dco_decode_f_64(arr[33]),
+      readsEeLt1Pct: dco_decode_f_64(arr[34]),
+      q10ReadBasesPct: dco_decode_f_64(arr[35]),
+      q20ReadBasesPct: dco_decode_f_64(arr[36]),
+      q30ReadBasesPct: dco_decode_f_64(arr[37]),
+      meanComplexity: dco_decode_f_64(arr[38]),
+      lowComplexityReadsPct: dco_decode_f_64(arr[39]),
+      homopolymerBasesPct: dco_decode_f_64(arr[40]),
+      maxHomopolymerLength: dco_decode_f_64(arr[41]),
+      homopolymerMeanQscore: dco_decode_f_64(arr[42]),
+      nonHomopolymerMeanQscore: dco_decode_f_64(arr[43]),
+      homopolymerQscoreGap: dco_decode_f_64(arr[44]),
+      polyGTailReadsPct: dco_decode_f_64(arr[45]),
+      polyATailReadsPct: dco_decode_f_64(arr[46]),
+      polyTTailReadsPct: dco_decode_f_64(arr[47]),
+      polyCTailReadsPct: dco_decode_f_64(arr[48]),
+      platform: dco_decode_opt_String(arr[49]),
+      chastityFailedReads: dco_decode_f_64(arr[50]),
+      chastityFailedPct: dco_decode_f_64(arr[51]),
+      runGroupCount: dco_decode_f_64(arr[52]),
+      phredOffset: dco_decode_u_32(arr[53]),
+      duplicatePct: dco_decode_opt_box_autoadd_f_64(arr[54]),
+      adapterReadsPct: dco_decode_opt_box_autoadd_f_64(arr[55]),
+      polyGReadsPct: dco_decode_opt_box_autoadd_f_64(arr[56]),
+      overrepresentedCount: dco_decode_opt_box_autoadd_f_64(arr[57]),
+      qscoreTailDrop: dco_decode_opt_box_autoadd_f_64(arr[58]),
+      effectiveQ20Span: dco_decode_opt_box_autoadd_f_64(arr[59]),
+      effectiveQ30Span: dco_decode_opt_box_autoadd_f_64(arr[60]),
+      headBiasBp: dco_decode_opt_box_autoadd_f_64(arr[61]),
+    );
+  }
+
+  @protected
+  ReadPairData dco_decode_read_pair_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 12)
+      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
+    return ReadPairData(
+      pairName: dco_decode_String(arr[0]),
+      r1Sample: dco_decode_String(arr[1]),
+      r2Sample: dco_decode_String(arr[2]),
+      r1Reads: dco_decode_f_64(arr[3]),
+      r2Reads: dco_decode_f_64(arr[4]),
+      readCountDiff: dco_decode_f_64(arr[5]),
+      inSync: dco_decode_bool(arr[6]),
+      q30DropPct: dco_decode_f_64(arr[7]),
+      effectiveQDrop: dco_decode_f_64(arr[8]),
+      meanLengthDiff: dco_decode_f_64(arr[9]),
+      gcDiffPct: dco_decode_f_64(arr[10]),
+      status: dco_decode_read_qc_status(arr[11]),
     );
   }
 
@@ -4151,22 +4333,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ReadPositionData dco_decode_read_position_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 13)
-      throw Exception('unexpected arr length: expect 13 but see ${arr.length}');
+    if (arr.length != 15)
+      throw Exception('unexpected arr length: expect 15 but see ${arr.length}');
     return ReadPositionData(
       start: dco_decode_list_prim_f_64_strict(arr[0]),
       end: dco_decode_list_prim_f_64_strict(arr[1]),
       meanQscore: dco_decode_list_prim_f_64_strict(arr[2]),
-      p10Qscore: dco_decode_list_prim_f_64_strict(arr[3]),
-      q1Qscore: dco_decode_list_prim_f_64_strict(arr[4]),
-      medianQscore: dco_decode_list_prim_f_64_strict(arr[5]),
-      q3Qscore: dco_decode_list_prim_f_64_strict(arr[6]),
-      p90Qscore: dco_decode_list_prim_f_64_strict(arr[7]),
-      aPct: dco_decode_list_prim_f_64_strict(arr[8]),
-      cPct: dco_decode_list_prim_f_64_strict(arr[9]),
-      gPct: dco_decode_list_prim_f_64_strict(arr[10]),
-      tPct: dco_decode_list_prim_f_64_strict(arr[11]),
-      nPct: dco_decode_list_prim_f_64_strict(arr[12]),
+      effectiveMeanQscore: dco_decode_list_prim_f_64_strict(arr[3]),
+      readSurvivalPct: dco_decode_list_prim_f_64_strict(arr[4]),
+      p10Qscore: dco_decode_list_prim_f_64_strict(arr[5]),
+      q1Qscore: dco_decode_list_prim_f_64_strict(arr[6]),
+      medianQscore: dco_decode_list_prim_f_64_strict(arr[7]),
+      q3Qscore: dco_decode_list_prim_f_64_strict(arr[8]),
+      p90Qscore: dco_decode_list_prim_f_64_strict(arr[9]),
+      aPct: dco_decode_list_prim_f_64_strict(arr[10]),
+      cPct: dco_decode_list_prim_f_64_strict(arr[11]),
+      gPct: dco_decode_list_prim_f_64_strict(arr[12]),
+      tPct: dco_decode_list_prim_f_64_strict(arr[13]),
+      nPct: dco_decode_list_prim_f_64_strict(arr[14]),
     );
   }
 
@@ -4204,13 +4388,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadRelativePositionData dco_decode_read_relative_position_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 14)
+      throw Exception('unexpected arr length: expect 14 but see ${arr.length}');
+    return ReadRelativePositionData(
+      startPct: dco_decode_list_prim_f_64_strict(arr[0]),
+      endPct: dco_decode_list_prim_f_64_strict(arr[1]),
+      meanQscore: dco_decode_list_prim_f_64_strict(arr[2]),
+      effectiveMeanQscore: dco_decode_list_prim_f_64_strict(arr[3]),
+      p10Qscore: dco_decode_list_prim_f_64_strict(arr[4]),
+      q1Qscore: dco_decode_list_prim_f_64_strict(arr[5]),
+      medianQscore: dco_decode_list_prim_f_64_strict(arr[6]),
+      q3Qscore: dco_decode_list_prim_f_64_strict(arr[7]),
+      p90Qscore: dco_decode_list_prim_f_64_strict(arr[8]),
+      aPct: dco_decode_list_prim_f_64_strict(arr[9]),
+      cPct: dco_decode_list_prim_f_64_strict(arr[10]),
+      gPct: dco_decode_list_prim_f_64_strict(arr[11]),
+      tPct: dco_decode_list_prim_f_64_strict(arr[12]),
+      nPct: dco_decode_list_prim_f_64_strict(arr[13]),
+    );
+  }
+
+  @protected
   ReadReportData dco_decode_read_report_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 1)
-      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return ReadReportData(
       samples: dco_decode_list_read_sample_data(arr[0]),
+      qcProfile: dco_decode_String(arr[1]),
+      pairs: dco_decode_list_read_pair_data(arr[2]),
+      cohort: dco_decode_opt_box_autoadd_read_cohort_data(arr[3]),
     );
   }
 
@@ -4229,8 +4440,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ReadSampleData dco_decode_read_sample_data(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 15)
-      throw Exception('unexpected arr length: expect 15 but see ${arr.length}');
+    if (arr.length != 20)
+      throw Exception('unexpected arr length: expect 20 but see ${arr.length}');
     return ReadSampleData(
       sample: dco_decode_String(arr[0]),
       fileName: dco_decode_String(arr[1]),
@@ -4242,11 +4453,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       gcCounts: dco_decode_list_prim_f_64_strict(arr[7]),
       gcTheoretical: dco_decode_list_prim_f_64_strict(arr[8]),
       positions: dco_decode_read_position_data(arr[9]),
-      duplication: dco_decode_opt_box_autoadd_read_duplication_data(arr[10]),
-      overrepresented: dco_decode_list_overrepresented_data(arr[11]),
-      adapters: dco_decode_list_adapter_content_data(arr[12]),
-      checks: dco_decode_list_read_qc_check_data(arr[13]),
-      status: dco_decode_read_qc_status(arr[14]),
+      relativePositions: dco_decode_read_relative_position_data(arr[10]),
+      lengthQuality: dco_decode_list_read_length_quality_data(arr[11]),
+      expectedErrors: dco_decode_list_read_expected_error_data(arr[12]),
+      complexityCounts: dco_decode_list_prim_f_64_strict(arr[13]),
+      duplication: dco_decode_opt_box_autoadd_read_duplication_data(arr[14]),
+      overrepresented: dco_decode_list_overrepresented_data(arr[15]),
+      adapters: dco_decode_list_adapter_content_data(arr[16]),
+      checks: dco_decode_list_read_qc_check_data(arr[17]),
+      status: dco_decode_read_qc_status(arr[18]),
+      qcProfile: dco_decode_String(arr[19]),
     );
   }
 
@@ -4368,7 +4584,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4391,7 +4607,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_f_64(raw[1]),
         );
       case 3:
-        return const SequenceFilteringParams_None();
+        return SequenceFilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4476,7 +4692,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_bool(raw[3]),
         );
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4600,7 +4816,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_usize(raw[1]),
         );
       case 2:
-        return const TrimmingParams_None();
+        return TrimmingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5125,6 +5341,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadCohortData sse_decode_box_autoadd_read_cohort_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_read_cohort_data(deserializer));
+  }
+
+  @protected
   ReadDuplicationData sse_decode_box_autoadd_read_duplication_data(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5406,9 +5629,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return DistanceGroupingParams_MapFile(var_field0);
       case 3:
-        return const DistanceGroupingParams_Auto();
+        return DistanceGroupingParams_Auto();
       case 4:
-        return const DistanceGroupingParams_None();
+        return DistanceGroupingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -5649,7 +5872,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
       case 8:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -5868,6 +6091,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<ReadCohortOutlierData> sse_decode_list_read_cohort_outlier_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ReadCohortOutlierData>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_read_cohort_outlier_data(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<ReadExpectedErrorData> sse_decode_list_read_expected_error_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ReadExpectedErrorData>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_read_expected_error_data(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<ReadLengthQualityData> sse_decode_list_read_length_quality_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ReadLengthQualityData>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_read_length_quality_data(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<ReadPairData> sse_decode_list_read_pair_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <ReadPairData>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_read_pair_data(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<ReadQcCheckData> sse_decode_list_read_qc_check_data(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -6025,6 +6300,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadCohortData? sse_decode_opt_box_autoadd_read_cohort_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_read_cohort_data(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   ReadDuplicationData? sse_decode_opt_box_autoadd_read_duplication_data(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -6150,6 +6437,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadCohortData sse_decode_read_cohort_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_sampleCount = sse_decode_f_64(deserializer);
+    var var_emptySampleCount = sse_decode_f_64(deserializer);
+    var var_totalReads = sse_decode_f_64(deserializer);
+    var var_totalBases = sse_decode_f_64(deserializer);
+    var var_medianReads = sse_decode_f_64(deserializer);
+    var var_p10Reads = sse_decode_f_64(deserializer);
+    var var_p90Reads = sse_decode_f_64(deserializer);
+    var var_depthP90P10Ratio = sse_decode_f_64(deserializer);
+    var var_depthCv = sse_decode_f_64(deserializer);
+    var var_depthGini = sse_decode_f_64(deserializer);
+    var var_lowYieldSamples = sse_decode_list_String(deserializer);
+    var var_outliers = sse_decode_list_read_cohort_outlier_data(deserializer);
+    return ReadCohortData(
+        sampleCount: var_sampleCount,
+        emptySampleCount: var_emptySampleCount,
+        totalReads: var_totalReads,
+        totalBases: var_totalBases,
+        medianReads: var_medianReads,
+        p10Reads: var_p10Reads,
+        p90Reads: var_p90Reads,
+        depthP90P10Ratio: var_depthP90P10Ratio,
+        depthCv: var_depthCv,
+        depthGini: var_depthGini,
+        lowYieldSamples: var_lowYieldSamples,
+        outliers: var_outliers);
+  }
+
+  @protected
+  ReadCohortOutlierData sse_decode_read_cohort_outlier_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_sample = sse_decode_String(deserializer);
+    var var_metric = sse_decode_String(deserializer);
+    var var_value = sse_decode_f_64(deserializer);
+    var var_cohortMedian = sse_decode_f_64(deserializer);
+    var var_modifiedZ = sse_decode_f_64(deserializer);
+    return ReadCohortOutlierData(
+        sample: var_sample,
+        metric: var_metric,
+        value: var_value,
+        cohortMedian: var_cohortMedian,
+        modifiedZ: var_modifiedZ);
+  }
+
+  @protected
   ReadDuplicationData sse_decode_read_duplication_data(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -6173,6 +6507,42 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadExpectedErrorData sse_decode_read_expected_error_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_label = sse_decode_String(deserializer);
+    var var_reads = sse_decode_f_64(deserializer);
+    var var_readsPct = sse_decode_f_64(deserializer);
+    return ReadExpectedErrorData(
+        label: var_label, reads: var_reads, readsPct: var_readsPct);
+  }
+
+  @protected
+  ReadLengthQualityData sse_decode_read_length_quality_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_label = sse_decode_String(deserializer);
+    var var_reads = sse_decode_f_64(deserializer);
+    var var_bases = sse_decode_f_64(deserializer);
+    var var_meanQscore = sse_decode_f_64(deserializer);
+    var var_effectiveMeanQscore = sse_decode_f_64(deserializer);
+    var var_q1Qscore = sse_decode_f_64(deserializer);
+    var var_medianQscore = sse_decode_f_64(deserializer);
+    var var_q3Qscore = sse_decode_f_64(deserializer);
+    var var_meanExpectedErrors = sse_decode_f_64(deserializer);
+    return ReadLengthQualityData(
+        label: var_label,
+        reads: var_reads,
+        bases: var_bases,
+        meanQscore: var_meanQscore,
+        effectiveMeanQscore: var_effectiveMeanQscore,
+        q1Qscore: var_q1Qscore,
+        medianQscore: var_medianQscore,
+        q3Qscore: var_q3Qscore,
+        meanExpectedErrors: var_meanExpectedErrors);
+  }
+
+  @protected
   ReadMetricsData sse_decode_read_metrics_data(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_readCount = sse_decode_f_64(deserializer);
@@ -6183,19 +6553,61 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_medianReadLength = sse_decode_f_64(deserializer);
     var var_stdevReadLength = sse_decode_f_64(deserializer);
     var var_n50ReadLength = sse_decode_f_64(deserializer);
+    var var_n90ReadLength = sse_decode_f_64(deserializer);
+    var var_l50ReadLength = sse_decode_f_64(deserializer);
+    var var_aunReadLength = sse_decode_f_64(deserializer);
+    var var_emptyReads = sse_decode_f_64(deserializer);
+    var var_otherCount = sse_decode_f_64(deserializer);
     var var_gcContent = sse_decode_f_64(deserializer);
     var var_nContent = sse_decode_f_64(deserializer);
+    var var_atSkew = sse_decode_f_64(deserializer);
+    var var_gcSkew = sse_decode_f_64(deserializer);
+    var var_gcStdev = sse_decode_f_64(deserializer);
+    var var_gcNormalDivergencePct = sse_decode_f_64(deserializer);
+    var var_gcPeaks = sse_decode_f_64(deserializer);
     var var_meanQscore = sse_decode_f_64(deserializer);
+    var var_effectiveMeanQscore = sse_decode_f_64(deserializer);
+    var var_meanErrorRate = sse_decode_f_64(deserializer);
+    var var_q10Pct = sse_decode_f_64(deserializer);
+    var var_q15Pct = sse_decode_f_64(deserializer);
     var var_q20Pct = sse_decode_f_64(deserializer);
     var var_q30Pct = sse_decode_f_64(deserializer);
+    var var_q40Pct = sse_decode_f_64(deserializer);
+    var var_distinctQscores = sse_decode_f_64(deserializer);
     var var_meanReadQscore = sse_decode_f_64(deserializer);
     var var_lowQualityReads = sse_decode_f_64(deserializer);
+    var var_meanExpectedErrors = sse_decode_f_64(deserializer);
+    var var_expectedErrorsPer100Bp = sse_decode_f_64(deserializer);
+    var var_expectedErrorFreeReadsPct = sse_decode_f_64(deserializer);
+    var var_readsEeLt1Pct = sse_decode_f_64(deserializer);
+    var var_q10ReadBasesPct = sse_decode_f_64(deserializer);
+    var var_q20ReadBasesPct = sse_decode_f_64(deserializer);
+    var var_q30ReadBasesPct = sse_decode_f_64(deserializer);
+    var var_meanComplexity = sse_decode_f_64(deserializer);
+    var var_lowComplexityReadsPct = sse_decode_f_64(deserializer);
+    var var_homopolymerBasesPct = sse_decode_f_64(deserializer);
+    var var_maxHomopolymerLength = sse_decode_f_64(deserializer);
+    var var_homopolymerMeanQscore = sse_decode_f_64(deserializer);
+    var var_nonHomopolymerMeanQscore = sse_decode_f_64(deserializer);
+    var var_homopolymerQscoreGap = sse_decode_f_64(deserializer);
+    var var_polyGTailReadsPct = sse_decode_f_64(deserializer);
+    var var_polyATailReadsPct = sse_decode_f_64(deserializer);
+    var var_polyTTailReadsPct = sse_decode_f_64(deserializer);
+    var var_polyCTailReadsPct = sse_decode_f_64(deserializer);
+    var var_platform = sse_decode_opt_String(deserializer);
+    var var_chastityFailedReads = sse_decode_f_64(deserializer);
+    var var_chastityFailedPct = sse_decode_f_64(deserializer);
+    var var_runGroupCount = sse_decode_f_64(deserializer);
     var var_phredOffset = sse_decode_u_32(deserializer);
     var var_duplicatePct = sse_decode_opt_box_autoadd_f_64(deserializer);
     var var_adapterReadsPct = sse_decode_opt_box_autoadd_f_64(deserializer);
     var var_polyGReadsPct = sse_decode_opt_box_autoadd_f_64(deserializer);
     var var_overrepresentedCount =
         sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_qscoreTailDrop = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_effectiveQ20Span = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_effectiveQ30Span = sse_decode_opt_box_autoadd_f_64(deserializer);
+    var var_headBiasBp = sse_decode_opt_box_autoadd_f_64(deserializer);
     return ReadMetricsData(
         readCount: var_readCount,
         baseCount: var_baseCount,
@@ -6205,18 +6617,90 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         medianReadLength: var_medianReadLength,
         stdevReadLength: var_stdevReadLength,
         n50ReadLength: var_n50ReadLength,
+        n90ReadLength: var_n90ReadLength,
+        l50ReadLength: var_l50ReadLength,
+        aunReadLength: var_aunReadLength,
+        emptyReads: var_emptyReads,
+        otherCount: var_otherCount,
         gcContent: var_gcContent,
         nContent: var_nContent,
+        atSkew: var_atSkew,
+        gcSkew: var_gcSkew,
+        gcStdev: var_gcStdev,
+        gcNormalDivergencePct: var_gcNormalDivergencePct,
+        gcPeaks: var_gcPeaks,
         meanQscore: var_meanQscore,
+        effectiveMeanQscore: var_effectiveMeanQscore,
+        meanErrorRate: var_meanErrorRate,
+        q10Pct: var_q10Pct,
+        q15Pct: var_q15Pct,
         q20Pct: var_q20Pct,
         q30Pct: var_q30Pct,
+        q40Pct: var_q40Pct,
+        distinctQscores: var_distinctQscores,
         meanReadQscore: var_meanReadQscore,
         lowQualityReads: var_lowQualityReads,
+        meanExpectedErrors: var_meanExpectedErrors,
+        expectedErrorsPer100Bp: var_expectedErrorsPer100Bp,
+        expectedErrorFreeReadsPct: var_expectedErrorFreeReadsPct,
+        readsEeLt1Pct: var_readsEeLt1Pct,
+        q10ReadBasesPct: var_q10ReadBasesPct,
+        q20ReadBasesPct: var_q20ReadBasesPct,
+        q30ReadBasesPct: var_q30ReadBasesPct,
+        meanComplexity: var_meanComplexity,
+        lowComplexityReadsPct: var_lowComplexityReadsPct,
+        homopolymerBasesPct: var_homopolymerBasesPct,
+        maxHomopolymerLength: var_maxHomopolymerLength,
+        homopolymerMeanQscore: var_homopolymerMeanQscore,
+        nonHomopolymerMeanQscore: var_nonHomopolymerMeanQscore,
+        homopolymerQscoreGap: var_homopolymerQscoreGap,
+        polyGTailReadsPct: var_polyGTailReadsPct,
+        polyATailReadsPct: var_polyATailReadsPct,
+        polyTTailReadsPct: var_polyTTailReadsPct,
+        polyCTailReadsPct: var_polyCTailReadsPct,
+        platform: var_platform,
+        chastityFailedReads: var_chastityFailedReads,
+        chastityFailedPct: var_chastityFailedPct,
+        runGroupCount: var_runGroupCount,
         phredOffset: var_phredOffset,
         duplicatePct: var_duplicatePct,
         adapterReadsPct: var_adapterReadsPct,
         polyGReadsPct: var_polyGReadsPct,
-        overrepresentedCount: var_overrepresentedCount);
+        overrepresentedCount: var_overrepresentedCount,
+        qscoreTailDrop: var_qscoreTailDrop,
+        effectiveQ20Span: var_effectiveQ20Span,
+        effectiveQ30Span: var_effectiveQ30Span,
+        headBiasBp: var_headBiasBp);
+  }
+
+  @protected
+  ReadPairData sse_decode_read_pair_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_pairName = sse_decode_String(deserializer);
+    var var_r1Sample = sse_decode_String(deserializer);
+    var var_r2Sample = sse_decode_String(deserializer);
+    var var_r1Reads = sse_decode_f_64(deserializer);
+    var var_r2Reads = sse_decode_f_64(deserializer);
+    var var_readCountDiff = sse_decode_f_64(deserializer);
+    var var_inSync = sse_decode_bool(deserializer);
+    var var_q30DropPct = sse_decode_f_64(deserializer);
+    var var_effectiveQDrop = sse_decode_f_64(deserializer);
+    var var_meanLengthDiff = sse_decode_f_64(deserializer);
+    var var_gcDiffPct = sse_decode_f_64(deserializer);
+    var var_status = sse_decode_read_qc_status(deserializer);
+    return ReadPairData(
+        pairName: var_pairName,
+        r1Sample: var_r1Sample,
+        r2Sample: var_r2Sample,
+        r1Reads: var_r1Reads,
+        r2Reads: var_r2Reads,
+        readCountDiff: var_readCountDiff,
+        inSync: var_inSync,
+        q30DropPct: var_q30DropPct,
+        effectiveQDrop: var_effectiveQDrop,
+        meanLengthDiff: var_meanLengthDiff,
+        gcDiffPct: var_gcDiffPct,
+        status: var_status);
   }
 
   @protected
@@ -6225,6 +6709,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_start = sse_decode_list_prim_f_64_strict(deserializer);
     var var_end = sse_decode_list_prim_f_64_strict(deserializer);
     var var_meanQscore = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_effectiveMeanQscore =
+        sse_decode_list_prim_f_64_strict(deserializer);
+    var var_readSurvivalPct = sse_decode_list_prim_f_64_strict(deserializer);
     var var_p10Qscore = sse_decode_list_prim_f_64_strict(deserializer);
     var var_q1Qscore = sse_decode_list_prim_f_64_strict(deserializer);
     var var_medianQscore = sse_decode_list_prim_f_64_strict(deserializer);
@@ -6239,6 +6726,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         start: var_start,
         end: var_end,
         meanQscore: var_meanQscore,
+        effectiveMeanQscore: var_effectiveMeanQscore,
+        readSurvivalPct: var_readSurvivalPct,
         p10Qscore: var_p10Qscore,
         q1Qscore: var_q1Qscore,
         medianQscore: var_medianQscore,
@@ -6283,10 +6772,53 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  ReadRelativePositionData sse_decode_read_relative_position_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_startPct = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_endPct = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_meanQscore = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_effectiveMeanQscore =
+        sse_decode_list_prim_f_64_strict(deserializer);
+    var var_p10Qscore = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_q1Qscore = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_medianQscore = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_q3Qscore = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_p90Qscore = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_aPct = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_cPct = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_gPct = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_tPct = sse_decode_list_prim_f_64_strict(deserializer);
+    var var_nPct = sse_decode_list_prim_f_64_strict(deserializer);
+    return ReadRelativePositionData(
+        startPct: var_startPct,
+        endPct: var_endPct,
+        meanQscore: var_meanQscore,
+        effectiveMeanQscore: var_effectiveMeanQscore,
+        p10Qscore: var_p10Qscore,
+        q1Qscore: var_q1Qscore,
+        medianQscore: var_medianQscore,
+        q3Qscore: var_q3Qscore,
+        p90Qscore: var_p90Qscore,
+        aPct: var_aPct,
+        cPct: var_cPct,
+        gPct: var_gPct,
+        tPct: var_tPct,
+        nPct: var_nPct);
+  }
+
+  @protected
   ReadReportData sse_decode_read_report_data(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_samples = sse_decode_list_read_sample_data(deserializer);
-    return ReadReportData(samples: var_samples);
+    var var_qcProfile = sse_decode_String(deserializer);
+    var var_pairs = sse_decode_list_read_pair_data(deserializer);
+    var var_cohort = sse_decode_opt_box_autoadd_read_cohort_data(deserializer);
+    return ReadReportData(
+        samples: var_samples,
+        qcProfile: var_qcProfile,
+        pairs: var_pairs,
+        cohort: var_cohort);
   }
 
   @protected
@@ -6310,6 +6842,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_gcCounts = sse_decode_list_prim_f_64_strict(deserializer);
     var var_gcTheoretical = sse_decode_list_prim_f_64_strict(deserializer);
     var var_positions = sse_decode_read_position_data(deserializer);
+    var var_relativePositions =
+        sse_decode_read_relative_position_data(deserializer);
+    var var_lengthQuality =
+        sse_decode_list_read_length_quality_data(deserializer);
+    var var_expectedErrors =
+        sse_decode_list_read_expected_error_data(deserializer);
+    var var_complexityCounts = sse_decode_list_prim_f_64_strict(deserializer);
     var var_duplication =
         sse_decode_opt_box_autoadd_read_duplication_data(deserializer);
     var var_overrepresented =
@@ -6317,6 +6856,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_adapters = sse_decode_list_adapter_content_data(deserializer);
     var var_checks = sse_decode_list_read_qc_check_data(deserializer);
     var var_status = sse_decode_read_qc_status(deserializer);
+    var var_qcProfile = sse_decode_String(deserializer);
     return ReadSampleData(
         sample: var_sample,
         fileName: var_fileName,
@@ -6328,11 +6868,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         gcCounts: var_gcCounts,
         gcTheoretical: var_gcTheoretical,
         positions: var_positions,
+        relativePositions: var_relativePositions,
+        lengthQuality: var_lengthQuality,
+        expectedErrors: var_expectedErrors,
+        complexityCounts: var_complexityCounts,
         duplication: var_duplication,
         overrepresented: var_overrepresented,
         adapters: var_adapters,
         checks: var_checks,
-        status: var_status);
+        status: var_status,
+        qcProfile: var_qcProfile);
   }
 
   @protected
@@ -6469,7 +7014,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return SequenceExtractionParams_Regex(var_field0);
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6492,7 +7037,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_f_64(deserializer);
         return SequenceFilteringParams_MaxGap(var_field0);
       case 3:
-        return const SequenceFilteringParams_None();
+        return SequenceFilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6583,7 +7128,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return SequenceRenamingParams_ReplaceRegex(
             var_field0, var_field1, var_field2);
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6729,7 +7274,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_usize(deserializer);
         return TrimmingParams_ParsInf(var_field0);
       case 2:
-        return const TrimmingParams_None();
+        return TrimmingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -7178,6 +7723,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       RawReadServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_raw_read_services(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_read_cohort_data(
+      ReadCohortData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_read_cohort_data(self, serializer);
   }
 
   @protected
@@ -7763,6 +8315,46 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_read_cohort_outlier_data(
+      List<ReadCohortOutlierData> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_read_cohort_outlier_data(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_read_expected_error_data(
+      List<ReadExpectedErrorData> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_read_expected_error_data(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_read_length_quality_data(
+      List<ReadLengthQualityData> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_read_length_quality_data(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_read_pair_data(
+      List<ReadPairData> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_read_pair_data(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_read_qc_check_data(
       List<ReadQcCheckData> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -7885,6 +8477,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_read_cohort_data(
+      ReadCohortData? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_read_cohort_data(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_read_duplication_data(
       ReadDuplicationData? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -7987,6 +8590,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_read_cohort_data(
+      ReadCohortData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_64(self.sampleCount, serializer);
+    sse_encode_f_64(self.emptySampleCount, serializer);
+    sse_encode_f_64(self.totalReads, serializer);
+    sse_encode_f_64(self.totalBases, serializer);
+    sse_encode_f_64(self.medianReads, serializer);
+    sse_encode_f_64(self.p10Reads, serializer);
+    sse_encode_f_64(self.p90Reads, serializer);
+    sse_encode_f_64(self.depthP90P10Ratio, serializer);
+    sse_encode_f_64(self.depthCv, serializer);
+    sse_encode_f_64(self.depthGini, serializer);
+    sse_encode_list_String(self.lowYieldSamples, serializer);
+    sse_encode_list_read_cohort_outlier_data(self.outliers, serializer);
+  }
+
+  @protected
+  void sse_encode_read_cohort_outlier_data(
+      ReadCohortOutlierData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.sample, serializer);
+    sse_encode_String(self.metric, serializer);
+    sse_encode_f_64(self.value, serializer);
+    sse_encode_f_64(self.cohortMedian, serializer);
+    sse_encode_f_64(self.modifiedZ, serializer);
+  }
+
+  @protected
   void sse_encode_read_duplication_data(
       ReadDuplicationData self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -8001,6 +8633,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_read_expected_error_data(
+      ReadExpectedErrorData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.label, serializer);
+    sse_encode_f_64(self.reads, serializer);
+    sse_encode_f_64(self.readsPct, serializer);
+  }
+
+  @protected
+  void sse_encode_read_length_quality_data(
+      ReadLengthQualityData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.label, serializer);
+    sse_encode_f_64(self.reads, serializer);
+    sse_encode_f_64(self.bases, serializer);
+    sse_encode_f_64(self.meanQscore, serializer);
+    sse_encode_f_64(self.effectiveMeanQscore, serializer);
+    sse_encode_f_64(self.q1Qscore, serializer);
+    sse_encode_f_64(self.medianQscore, serializer);
+    sse_encode_f_64(self.q3Qscore, serializer);
+    sse_encode_f_64(self.meanExpectedErrors, serializer);
+  }
+
+  @protected
   void sse_encode_read_metrics_data(
       ReadMetricsData self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -8012,18 +8668,77 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_f_64(self.medianReadLength, serializer);
     sse_encode_f_64(self.stdevReadLength, serializer);
     sse_encode_f_64(self.n50ReadLength, serializer);
+    sse_encode_f_64(self.n90ReadLength, serializer);
+    sse_encode_f_64(self.l50ReadLength, serializer);
+    sse_encode_f_64(self.aunReadLength, serializer);
+    sse_encode_f_64(self.emptyReads, serializer);
+    sse_encode_f_64(self.otherCount, serializer);
     sse_encode_f_64(self.gcContent, serializer);
     sse_encode_f_64(self.nContent, serializer);
+    sse_encode_f_64(self.atSkew, serializer);
+    sse_encode_f_64(self.gcSkew, serializer);
+    sse_encode_f_64(self.gcStdev, serializer);
+    sse_encode_f_64(self.gcNormalDivergencePct, serializer);
+    sse_encode_f_64(self.gcPeaks, serializer);
     sse_encode_f_64(self.meanQscore, serializer);
+    sse_encode_f_64(self.effectiveMeanQscore, serializer);
+    sse_encode_f_64(self.meanErrorRate, serializer);
+    sse_encode_f_64(self.q10Pct, serializer);
+    sse_encode_f_64(self.q15Pct, serializer);
     sse_encode_f_64(self.q20Pct, serializer);
     sse_encode_f_64(self.q30Pct, serializer);
+    sse_encode_f_64(self.q40Pct, serializer);
+    sse_encode_f_64(self.distinctQscores, serializer);
     sse_encode_f_64(self.meanReadQscore, serializer);
     sse_encode_f_64(self.lowQualityReads, serializer);
+    sse_encode_f_64(self.meanExpectedErrors, serializer);
+    sse_encode_f_64(self.expectedErrorsPer100Bp, serializer);
+    sse_encode_f_64(self.expectedErrorFreeReadsPct, serializer);
+    sse_encode_f_64(self.readsEeLt1Pct, serializer);
+    sse_encode_f_64(self.q10ReadBasesPct, serializer);
+    sse_encode_f_64(self.q20ReadBasesPct, serializer);
+    sse_encode_f_64(self.q30ReadBasesPct, serializer);
+    sse_encode_f_64(self.meanComplexity, serializer);
+    sse_encode_f_64(self.lowComplexityReadsPct, serializer);
+    sse_encode_f_64(self.homopolymerBasesPct, serializer);
+    sse_encode_f_64(self.maxHomopolymerLength, serializer);
+    sse_encode_f_64(self.homopolymerMeanQscore, serializer);
+    sse_encode_f_64(self.nonHomopolymerMeanQscore, serializer);
+    sse_encode_f_64(self.homopolymerQscoreGap, serializer);
+    sse_encode_f_64(self.polyGTailReadsPct, serializer);
+    sse_encode_f_64(self.polyATailReadsPct, serializer);
+    sse_encode_f_64(self.polyTTailReadsPct, serializer);
+    sse_encode_f_64(self.polyCTailReadsPct, serializer);
+    sse_encode_opt_String(self.platform, serializer);
+    sse_encode_f_64(self.chastityFailedReads, serializer);
+    sse_encode_f_64(self.chastityFailedPct, serializer);
+    sse_encode_f_64(self.runGroupCount, serializer);
     sse_encode_u_32(self.phredOffset, serializer);
     sse_encode_opt_box_autoadd_f_64(self.duplicatePct, serializer);
     sse_encode_opt_box_autoadd_f_64(self.adapterReadsPct, serializer);
     sse_encode_opt_box_autoadd_f_64(self.polyGReadsPct, serializer);
     sse_encode_opt_box_autoadd_f_64(self.overrepresentedCount, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.qscoreTailDrop, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.effectiveQ20Span, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.effectiveQ30Span, serializer);
+    sse_encode_opt_box_autoadd_f_64(self.headBiasBp, serializer);
+  }
+
+  @protected
+  void sse_encode_read_pair_data(ReadPairData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.pairName, serializer);
+    sse_encode_String(self.r1Sample, serializer);
+    sse_encode_String(self.r2Sample, serializer);
+    sse_encode_f_64(self.r1Reads, serializer);
+    sse_encode_f_64(self.r2Reads, serializer);
+    sse_encode_f_64(self.readCountDiff, serializer);
+    sse_encode_bool(self.inSync, serializer);
+    sse_encode_f_64(self.q30DropPct, serializer);
+    sse_encode_f_64(self.effectiveQDrop, serializer);
+    sse_encode_f_64(self.meanLengthDiff, serializer);
+    sse_encode_f_64(self.gcDiffPct, serializer);
+    sse_encode_read_qc_status(self.status, serializer);
   }
 
   @protected
@@ -8033,6 +8748,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_list_prim_f_64_strict(self.start, serializer);
     sse_encode_list_prim_f_64_strict(self.end, serializer);
     sse_encode_list_prim_f_64_strict(self.meanQscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.effectiveMeanQscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.readSurvivalPct, serializer);
     sse_encode_list_prim_f_64_strict(self.p10Qscore, serializer);
     sse_encode_list_prim_f_64_strict(self.q1Qscore, serializer);
     sse_encode_list_prim_f_64_strict(self.medianQscore, serializer);
@@ -8071,10 +8788,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_read_relative_position_data(
+      ReadRelativePositionData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_f_64_strict(self.startPct, serializer);
+    sse_encode_list_prim_f_64_strict(self.endPct, serializer);
+    sse_encode_list_prim_f_64_strict(self.meanQscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.effectiveMeanQscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.p10Qscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.q1Qscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.medianQscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.q3Qscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.p90Qscore, serializer);
+    sse_encode_list_prim_f_64_strict(self.aPct, serializer);
+    sse_encode_list_prim_f_64_strict(self.cPct, serializer);
+    sse_encode_list_prim_f_64_strict(self.gPct, serializer);
+    sse_encode_list_prim_f_64_strict(self.tPct, serializer);
+    sse_encode_list_prim_f_64_strict(self.nPct, serializer);
+  }
+
+  @protected
   void sse_encode_read_report_data(
       ReadReportData self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_read_sample_data(self.samples, serializer);
+    sse_encode_String(self.qcProfile, serializer);
+    sse_encode_list_read_pair_data(self.pairs, serializer);
+    sse_encode_opt_box_autoadd_read_cohort_data(self.cohort, serializer);
   }
 
   @protected
@@ -8098,12 +8838,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_list_prim_f_64_strict(self.gcCounts, serializer);
     sse_encode_list_prim_f_64_strict(self.gcTheoretical, serializer);
     sse_encode_read_position_data(self.positions, serializer);
+    sse_encode_read_relative_position_data(self.relativePositions, serializer);
+    sse_encode_list_read_length_quality_data(self.lengthQuality, serializer);
+    sse_encode_list_read_expected_error_data(self.expectedErrors, serializer);
+    sse_encode_list_prim_f_64_strict(self.complexityCounts, serializer);
     sse_encode_opt_box_autoadd_read_duplication_data(
         self.duplication, serializer);
     sse_encode_list_overrepresented_data(self.overrepresented, serializer);
     sse_encode_list_adapter_content_data(self.adapters, serializer);
     sse_encode_list_read_qc_check_data(self.checks, serializer);
     sse_encode_read_qc_status(self.status, serializer);
+    sse_encode_String(self.qcProfile, serializer);
   }
 
   @protected

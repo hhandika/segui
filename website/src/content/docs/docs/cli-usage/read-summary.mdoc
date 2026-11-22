@@ -39,7 +39,7 @@ or using directory input:
 segul read summary -d /raw_read_dir
 ```
 
-The output file will be saved as `default-read-summary.csv` in `Read-Summary` directory.
+The output file will be saved as `read-summary.csv` (along with the Complete mode archives and `read-report.json`) in the `Read-Summary` directory.
 
 To specify the output directory, use the `--output` or `-o` argument:
 
@@ -57,77 +57,73 @@ segul read summary -d /raw_read_dir -o read_dir_output --prefix my_read_summary
 
 SEGUL provides three modes to calculate summary statistics for raw reads:
 
-- **Minimal**: read count only
-- **Default**: generate essential statistics (see below)
-- **Complete**: generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content (see below).
+- **Minimal**: read count only (`minimal-read-summary.csv`)
+- **Basic**: per-file and per-read summary statistics in a single CSV (`read-summary.csv`)
+- **Complete** (default): all Basic statistics plus per-position and relative-position profiles, read length × quality, distributions, duplication, overrepresented sequences, adapter content, paired-end consistency, cohort balance, and `read-report.json`.
 
-Use the `--mode` option to choose `minimal`, `default`, or `complete`:
+Use the `--mode` option to choose `minimal`, `basic`, or `complete` (`default` is kept as an alias for `basic`):
 
 ```bash
-segul read summary -d /raw_read_dir --mode complete
+segul read summary -d /raw_read_dir --mode basic
 ```
 
 ## Statistics
 
-Essential statistics for raw reads:
+Basic statistics for raw reads:
 
-- Number of reads
-- Number of bases
-- Mean read length
-- Minimum read length
-- Maximum read length
-- GC count
-- GC content
-- AT count
-- AT content
-- A, C, G, T, N count
-- Low-quality base count
-- Mean base quality
-- Min base quality
-- Max base quality
-- Median, standard deviation, and N50 of read length
-- Bases with quality 20 or higher (Q20) and 30 or higher (Q30)
-- Mean quality per read, and reads with mean quality below 20
+- Number of reads, empty reads, and bases
+- Read length min, max, mean, median, SD, N50, N90, L50, and auN
+- Base counts (A, C, G, T, N, other), GC/AT/N content, and strand skew (AT-skew, GC-skew)
+- Per-read GC shape (SD, divergence from normal, peak count)
+- Arithmetic mean, min, and max base quality, plus error-rate–aware effective mean quality and mean error rate
+- Base shares at Q10, Q15, Q20, Q30, and Q40, plus distinct Phred quality count
+- Per-read mean quality, low-quality reads (< Q20), expected errors per read and per 100 bp, expected error-free read share, reads with < 1 expected error, and read-level base survival at Q10, Q20, and Q30
+- Sequence complexity (dinucleotide entropy) and low-complexity read share
+- Homopolymer runs (≥ 6 bp), max run length, homopolymer vs non-homopolymer quality gap, and 3'-terminal poly-A/C/G/T tail shares
+- Header metadata: sequencing platform hint, Illumina chastity-failed (`:Y:`) reads, and distinct run/lane group count
 - Quality score offset (Phred+33 or Phred+64)
 
 Complete mode adds:
 
-- Quality quartiles, 10th and 90th percentiles, and base composition, including N, at each read position (`read-pos-summary.zip`)
-- Read length, mean read quality, and GC content distributions, with the theoretical GC distribution (`read-dist-summary.zip`)
+- Quality quartiles, 10th and 90th percentiles, effective quality, read survival, and base composition at each read position (`read-pos-summary.zip`)
+- Relative-position (0–100%) quality and base profiles, read length × quality bins, expected-error and complexity distributions, plus read length, quality, and GC distributions (`read-dist-summary.zip`)
+- Summary positional scalars: 5'-to-3' quality drop, effective Q20/Q30 spans, and 5'-head composition bias span
+- Automatic R1/R2 paired-end consistency (`pairs.csv`) and cohort-level pooling balance and robust outliers (`cohort-outliers.csv`)
 - Duplication across every read of each file, with the number of copies of each sequence (see below)
-- Overrepresented sequences, above 0.1% of all reads, with the adapter they match. Reads longer than 75 bp are compared by their first 50 bp, like FastQC
+- Overrepresented sequences, above 0.1% of all reads, with the adapter they match. Reads longer than 75 bp are compared by their first 50 bp
 - Adapter content by position for Illumina Universal, Nextera, Illumina Small RNA, poly-A, and poly-G
+- Technology- and library-aware QC checks (`--qc-profile auto|short-wgs|amplicon|long-ont|long-hifi`)
 - All of the above in `read-report.json`, which SEGUI opens as an interactive report. Open it in the terminal with [`segul view summary`](/docs/cli-usage/view-summary/)
 
-## Comparison with FastQC and fastp
+## Comparison with other tools
 
-Complete mode covers the read quality checks of
-[FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and
-[fastp](https://github.com/OpenGene/fastp), and adds options only SEGUL has. fastp also trims and
-filters reads, which SEGUL does not.
+Complete mode covers the core read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [fastp](https://github.com/OpenGene/fastp), [NanoPlot](https://github.com/wdecoster/NanoPlot), and [SeqKit](https://bioinf.shenwei.me/seqkit/) in a single pass, while adding error-probability–aware quality metrics, sequence complexity and homopolymer diagnostics, paired-end sync checks, and cohort-level balance and outlier detection. fastp also trims and filters reads, which SEGUL does not.
 
-| Feature | SEGUL | FastQC | fastp |
-| --- | --- | --- | --- |
-| Read and base counts, GC content | ✓ | ✓ | ✓ |
-| Q20 and Q30 bases | ✓ | — | ✓ |
-| Read length N50 | ✓ | — | — |
-| Quality by position | Quartiles | Quartiles | Mean |
-| Base composition and N content by position | ✓ | ✓ | ✓ |
-| Mean read quality distribution | ✓ | ✓ | — |
-| GC distribution with theoretical curve | ✓ | ✓ | — |
-| Read length distribution | ✓ | ✓ | — |
-| Duplication | Every read, exact with `--dup-size 0` | First 100,000 distinct sequences | Every read, hashed estimate |
-| Overrepresented sequences | Every read | First 100,000 distinct sequences | Sampled reads |
-| Adapter content by position | ✓ | ✓ | Detected for trimming |
-| Pass, warn, and fail checks | ✓ | ✓ | — |
-| Per-tile quality, k-mer content | — | ✓ | k-mer counts |
-| Insert size of paired reads | — | — | ✓ |
-| Many samples in one table | ✓ | — | — |
-| Charts | PNG, SVG, or PDF; SEGUI and terminal viewers | HTML report | HTML report |
-| Read trimming and filtering | — | — | ✓ |
+| Feature | SEGUL | FastQC | fastp | NanoPlot | SeqKit (`stats`) |
+| --- | --- | --- | --- | --- | --- |
+| Read & base counts, GC content | ✓ | ✓ | ✓ | Read/base counts | ✓ |
+| Q10, Q15, Q20, Q30, Q40 base shares | ✓ (all 5 + read-level survival) | — | Q20, Q30 | Threshold counts | Q20, Q30 (`-a`) |
+| Effective mean Q (error-rate) & expected errors | ✓ (per-base & per-read EE, error-free %) | — | — | Error-rate mean Q | — |
+| Length metrics (N50, N90, L50, auN) | ✓ (all 4 + empty reads) | Min/max only | Mean only | N50 | N50 (`-a`) |
+| Quality by position | Quartiles, mean, effective Q, read survival | Quartiles | Mean | — | — |
+| Relative read-position profile (0–100%) | ✓ (quality & composition) | — | — | — | — |
+| Read length × quality relationship | ✓ (length-stratified Q & EE) | — | — | ✓ | — |
+| Base composition, strand skew, & 5'-head bias | ✓ (per-position, AT/GC skew, bias span) | Per-position only | Per-position only | — | — |
+| GC distribution & anomaly quantification | ✓ (curve + normal divergence & peak count) | Curve only | — | — | — |
+| Sequence complexity & homopolymer Q gap | ✓ (dinucleotide entropy, runs, 3' tails, Q gap) | — | Low-complexity / poly-X filter | — | — |
+| Header metadata (platform, chastity `:Y:`, runs) | ✓ | — | — | — | — |
+| Duplication | Every read, exact with `--dup-size 0` | First 100k distinct | Every read (hashed) | — | — |
+| Overrepresented sequences | Every read | First 100k distinct | Sampled reads | — | — |
+| Adapter content by position | ✓ | ✓ | Detected for trimming | — | — |
+| Pass, warn, and fail checks | ✓ (technology/library QC profiles) | ✓ (fixed short-read) | — | — | — |
+| R1/R2 pair sync & quality-drop check | ✓ (automatic across directory) | — | Single pair | — | — |
+| Cohort pooling balance & robust outliers | ✓ (CV, Gini, P90/P10, dropouts, MAD outliers) | — (needs MultiQC) | — (needs MultiQC) | — | — |
+| Per-tile quality, k-mer content | — | ✓ | k-mer counts | — | — |
+| Insert size & read trimming/filtering | — | — | ✓ | — | — |
+| Many samples in one report | ✓ | — | — | — | Table only |
+| Charts & viewers | PNG/SVG/PDF; SEGUI & terminal viewers | HTML report | HTML report | HTML/PNG/SVG | — |
 
-The pass, warn, and fail checks follow FastQC conventions. SEGUL also checks Q30 bases,
-which FastQC does not.
+Use `--qc-profile` (`auto`, `short-wgs`, `amplicon`, `long-ont`, or `long-hifi`) to match pass, warn, and fail thresholds to your sequencing platform and library type.
 
 ## Duplication
 
@@ -154,7 +150,7 @@ SEGUL detects the quality score offset from the first reads. Use `--phred 33` or
 
 ## Charts
 
-Add `--plot` to also write charts to `<OUTPUT>/plots`. Complete mode adds charts of quality by position (`pos-qscore-box_<sample>`), read length (`length-dist`), mean read quality (`read-qscore-dist`), GC content (`gc-dist_<sample>`), N content (`pos-n-content`), adapter content (`adapter-content_<sample>`), and duplication (`duplication_<sample>`):
+Add `--plot` to also write charts to `<OUTPUT>/plots`. Complete mode adds charts of quality by position (`pos-qscore-box_<sample>`), relative-position effective quality (`rel-pos-qscore`), read length (`length-dist`), quality by read length (`length-qscore_<sample>`), mean read quality (`read-qscore-dist`), expected errors per read (`expected-errors_<sample>`), sequence complexity (`complexity-dist`), GC content (`gc-dist_<sample>`), N content (`pos-n-content`), adapter content (`adapter-content_<sample>`), duplication (`duplication_<sample>`), and R1 vs R2 Q30 bases per pair (`pair-q30`):
 
 ```bash
 segul read summary -d /raw_read_dir --mode complete --plot
@@ -167,9 +163,10 @@ segul read summary -d /raw_read_dir --mode complete --plot
 | `-d`, `--dir`          | Directory with FASTQ files                                     |
 | `-i`, `--input`        | FASTQ files. Allows wildcards                                  |
 | `-f`, `--input-format` | Input format: `auto` (default), `fastq`, or `gzip`             |
-| `--mode`               | Summary mode: `default` (default), `minimal`, or `complete`    |
-| `--phred`              | Quality score offset: `auto` (default), `33`, or `64`       |
+| `--mode`               | Summary mode: `complete` (default), `basic`, or `minimal`      |
+| `--phred`              | Quality score offset: `auto` (default), `33`, or `64`          |
 | `--dup-size`           | Distinct sequences kept to estimate duplication. Default: `100000`. `0` counts all |
+| `--qc-profile`         | QC check profile: `auto` (default), `short-wgs`, `amplicon`, `long-ont`, or `long-hifi` |
 | `--plot`               | Also write charts to `<OUTPUT>/plots`                          |
 | `-o`, `--output`       | Output directory. Default: `Read-Summary`                      |
 | `--prefix`             | Prefix of the output files                                     |

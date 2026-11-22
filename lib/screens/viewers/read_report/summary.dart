@@ -155,7 +155,9 @@ class _ReadSummaryPanelState extends State<ReadSummaryPanel> {
           SizedBox(height: SeguiTableLayout.scrollingHeight, child: samples),
         const Divider(height: SeguiSpacing.xl),
         Text(
-          'Checks for ${open.sample}',
+          open.qcProfile.isEmpty
+              ? 'Checks for ${open.sample}'
+              : 'Checks for ${open.sample} · ${open.qcProfile}',
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: SeguiSpacing.md),
@@ -327,6 +329,21 @@ class ReadOverviewTable extends StatelessWidget {
                 _decimal,
               ),
               numeric('Adapters (%)', 140, ReadMetric.adapters, _decimal),
+              numeric('Eff Q', 100, ReadMetric.effectiveQuality, _decimal),
+              numeric(
+                'Err-free (%)',
+                130,
+                ReadMetric.errorFreeReads,
+                _decimal,
+              ),
+              numeric(
+                'Low-cplx (%)',
+                130,
+                ReadMetric.lowComplexity,
+                _decimal,
+              ),
+              numeric('GC div (%)', 120, ReadMetric.gcDivergence, _decimal),
+              numeric('auN', 100, ReadMetric.aun, _countFormat.format),
             ],
           ),
         ),

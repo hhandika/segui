@@ -34,7 +34,7 @@ Summarize raw sequence reads in FASTQ format, plain or compressed, from read cou
 2. Open `Summarize genomic reads` from the tool picker {% ref id="B" /%}: the tool list on wide windows, or the tool name at the top of the page on phones.
 3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
 4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
-5. Select the summary mode. For the Default and Complete modes, `Quality score offset` is `Auto` unless your reads use a known offset.
+5. Select the summary mode. For Basic and Complete modes, `Quality score offset` is `Auto` unless your reads use a known offset. In Complete mode, you can also select a `Quality check profile` (`Auto`, `Short (WGS)`, `Amplicon / Capture`, `Long (ONT)`, or `Long (HiFi)`).
 6. Select the run button {% ref id="D" /%}, labeled `Summarize`, to start the task.
 7. In Complete mode, the `Workbench` tab of the file panel shows a `Report` card when the task finishes. Select `View report` to open the read report. You can also open `read-report.json` from the `Output` tab later.
 8. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
@@ -43,9 +43,9 @@ Summarize raw sequence reads in FASTQ format, plain or compressed, from read cou
 
 The app supports the following summary modes:
 
-- **Minimal**: read count only
-- **Default**: generate essential statistics (see below)
-- **Complete** (selected by default): generate all the essential statistics plus statistics per read position, distributions, duplication, overrepresented sequences, and adapter content for each file.
+- **Complete** (selected by default): all Basic statistics plus per-position and relative-position profiles, length × quality, distributions, duplication, overrepresented sequences, adapter content, paired-end consistency, cohort balance, and `read-report.json`.
+- **Basic**: per-file and per-read summary statistics in a single CSV (`read-summary.csv`).
+- **Minimal**: read count only (`minimal-read-summary.csv`).
 
 ## Essential statistics for raw reads
 
@@ -69,7 +69,7 @@ The app supports the following summary modes:
 
 In Complete mode, `Duplication sketch size` sets how many distinct sequences are kept to estimate duplication across every read. Leave it empty for the default of 100,000. Larger values are more accurate and use more memory, and `0` counts every sequence exactly.
 
-Complete mode matches the read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [fastp](https://github.com/OpenGene/fastp), and adds options only SEGUL has. See [how SEGUL compares](/docs/cli-usage/read-summary/#comparison-with-fastqc-and-fastp).
+Complete mode covers the read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [fastp](https://github.com/OpenGene/fastp), [NanoPlot](https://github.com/wdecoster/NanoPlot), and [SeqKit](https://bioinf.shenwei.me/seqkit/), and adds multi-sample and error-probability diagnostics unique to SEGUL. See [how SEGUL compares](/docs/cli-usage/read-summary/#comparison-with-other-tools).
 
 ## Read report
 
@@ -85,10 +85,11 @@ The tabs are:
   - `Table` lists every statistic, sortable by column, 50 samples to a page. A bar behind each number shows where it sits between the lowest and highest sample. In columns with a quality check, such as Q30 bases, mean quality, duplication, and adapters, the bars are colored pass, warn, or fail, so failing samples stand out. Select a row to open that sample.
   - `Heatmap` shows the same table with each number colored from the lowest to the highest sample in its column.
   - The checks below show pass, warn, or fail for the open sample. Select a check to see what it measures and the values that pass, warn, or fail, with the sample's own range highlighted. It opens as a dialog, or as a sheet on phones.
-- **Quality**: per-base quality of the open sample over the good, reasonable, and poor quality zones, and per-read quality of several samples.
-- **Composition**: GC content with the theoretical distribution and base composition of the open sample, and N content of several samples.
-- **Length**: read length of several samples.
+- **Quality**: per-base quality of the open sample (with an `Absolute (bp)` / `Relative (%)` toggle and effective quality line), per-read quality across samples, and expected errors per read.
+- **Composition**: GC content with the theoretical distribution, base composition (with `Absolute (bp)` / `Relative (%)` toggle), and N content across samples.
+- **Length**: read length across samples and quality stratified by read-length range.
 - **Duplication**, **Adapters**, and **Overrepresented**: the open sample. Overrepresented sequences are listed in a sortable table, and each has a button to copy it.
+- **Cohort**: pooling depth balance across samples, R1/R2 paired-end consistency, and cohort-relative outliers.
 
 ### Comparing samples
 

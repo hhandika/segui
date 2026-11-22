@@ -84,9 +84,14 @@ enum ReadMetric {
   bases('Bases'),
   meanLength('Mean length (bp)'),
   n50('N50 (bp)'),
+  aun('auN (bp)'),
   q30('Q30 bases (%)'),
   meanQuality('Mean quality'),
+  effectiveQuality('Effective quality'),
+  errorFreeReads('Error-free reads (%)'),
   gc('GC (%)'),
+  gcDivergence('GC divergence (%)'),
+  lowComplexity('Low complexity (%)'),
   duplication('Duplication (%)'),
   adapters('Adapters (%)');
 
@@ -101,9 +106,14 @@ enum ReadMetric {
       ReadMetric.bases => metrics.baseCount,
       ReadMetric.meanLength => metrics.meanReadLength,
       ReadMetric.n50 => metrics.n50ReadLength,
+      ReadMetric.aun => metrics.aunReadLength,
       ReadMetric.q30 => metrics.q30Pct,
       ReadMetric.meanQuality => metrics.meanQscore,
+      ReadMetric.effectiveQuality => metrics.effectiveMeanQscore,
+      ReadMetric.errorFreeReads => metrics.expectedErrorFreeReadsPct,
       ReadMetric.gc => 100 * metrics.gcContent,
+      ReadMetric.gcDivergence => metrics.gcNormalDivergencePct,
+      ReadMetric.lowComplexity => metrics.lowComplexityReadsPct,
       ReadMetric.duplication => metrics.duplicatePct,
       ReadMetric.adapters => metrics.adapterReadsPct,
     };
@@ -115,6 +125,7 @@ enum ReadMetric {
     return switch (this) {
       ReadMetric.q30 => 'Q30 bases',
       ReadMetric.meanQuality => 'Mean quality',
+      ReadMetric.lowComplexity => 'Low complexity',
       ReadMetric.duplication => 'Duplication',
       ReadMetric.adapters => 'Adapters',
       _ => null,
@@ -125,7 +136,7 @@ enum ReadMetric {
   String format(double value) {
     return switch (this) {
       ReadMetric.reads || ReadMetric.bases => formatCompact(value),
-      ReadMetric.n50 => value.round().toString(),
+      ReadMetric.n50 || ReadMetric.aun => value.round().toString(),
       _ => value.toStringAsFixed(1),
     };
   }

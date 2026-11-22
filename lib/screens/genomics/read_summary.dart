@@ -39,8 +39,9 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   // Complete gives the read report, so it is selected first.
-  String mode = 'Complete';
+  String mode = sequenceReadSummaryMode.first;
   String phred = sequenceReadPhredOffset[0];
+  String qcProfile = sequenceReadQcProfiles.keys.first;
 
   /// Distinct sequences kept to estimate duplication: a preset from
   /// [sequenceReadDupSketchSizes] or [customDupSketchSize].
@@ -109,6 +110,22 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
               });
             },
           ),
+          if (mode == 'Complete')
+            SharedDropdownField(
+              value: sequenceReadQcProfiles[qcProfile],
+              label: 'Quality check profile',
+              items: sequenceReadQcProfiles.values.toList(),
+              helper: 'Thresholds for pass, warn, and fail checks.',
+              onChanged: (String? label) {
+                setState(() {
+                  if (label != null) {
+                    qcProfile = sequenceReadQcProfiles.entries
+                        .firstWhere((e) => e.value == label)
+                        .key;
+                  }
+                });
+              },
+            ),
           if (mode == 'Complete')
             SharedDropdownField(
               value: dupSketchSize,
@@ -214,6 +231,11 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         if (mode != 'Minimal') RunParameter('Quality score offset', phred),
         if (mode == 'Complete')
           RunParameter(
+            'Quality check profile',
+            sequenceReadQcProfiles[qcProfile] ?? qcProfile,
+          ),
+        if (mode == 'Complete')
+          RunParameter(
               'Duplication sketch size', '${_dupSketchSizeValue ?? ''}'),
       ];
 
@@ -250,6 +272,7 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
         mode: mode,
         phred: phred,
         dupSketchSize: mode == 'Complete' ? _dupSketchSizeValue : null,
+        qcProfile: qcProfile,
         monitor: monitor,
       ).run();
       _setSuccess(output.reportPath);

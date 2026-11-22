@@ -38,18 +38,60 @@ ReadMetricsData _metrics({
     medianReadLength: 4,
     stdevReadLength: 0,
     n50ReadLength: 4,
+    n90ReadLength: 4,
+    l50ReadLength: readCount / 2,
+    aunReadLength: 4,
+    emptyReads: 0,
+    otherCount: 0,
     gcContent: 0.5,
     nContent: nContent,
+    atSkew: 0,
+    gcSkew: 0,
+    gcStdev: 5,
+    gcNormalDivergencePct: 2.5,
+    gcPeaks: 1,
     meanQscore: meanQscore,
+    effectiveMeanQscore: meanQscore - 2,
+    meanErrorRate: 0.001,
+    q10Pct: 100,
+    q15Pct: 99,
     q20Pct: 98,
     q30Pct: q30Pct,
+    q40Pct: 50,
+    distinctQscores: 4,
     meanReadQscore: meanQscore,
     lowQualityReads: 0,
+    meanExpectedErrors: 0.05,
+    expectedErrorsPer100Bp: 1.25,
+    expectedErrorFreeReadsPct: 95,
+    readsEeLt1Pct: 99,
+    q10ReadBasesPct: 100,
+    q20ReadBasesPct: 98,
+    q30ReadBasesPct: q30Pct,
+    meanComplexity: 0.92,
+    lowComplexityReadsPct: 1.5,
+    homopolymerBasesPct: 0.5,
+    maxHomopolymerLength: 4,
+    homopolymerMeanQscore: 34,
+    nonHomopolymerMeanQscore: 35,
+    homopolymerQscoreGap: 1,
+    polyGTailReadsPct: 0,
+    polyATailReadsPct: 0,
+    polyTTailReadsPct: 0,
+    polyCTailReadsPct: 0,
+    platform: 'Illumina',
+    chastityFailedReads: 0,
+    chastityFailedPct: 0,
+    runGroupCount: 1,
     phredOffset: 33,
     duplicatePct: duplicatePct,
     adapterReadsPct: adapterReadsPct,
     polyGReadsPct: duplicatePct == null ? null : 0,
     overrepresentedCount: duplicatePct == null ? null : 1,
+    qscoreTailDrop: duplicatePct == null ? null : 1.0,
+    effectiveQ20Span: duplicatePct == null ? null : 4,
+    effectiveQ30Span: duplicatePct == null ? null : 4,
+    headBiasBp: duplicatePct == null ? null : 0,
   );
 }
 
@@ -113,6 +155,8 @@ ReadSampleData _sample(
       start: positions,
       end: positions,
       meanQscore: quality,
+      effectiveMeanQscore: quality,
+      readSurvivalPct: _values([100, 100, 100, 100]),
       p10Qscore: quality,
       q1Qscore: quality,
       medianQscore: quality,
@@ -124,6 +168,40 @@ ReadSampleData _sample(
       tPct: share,
       nPct: _values([0, 0, 0, 0]),
     ),
+    relativePositions: ReadRelativePositionData(
+      startPct: _values([0, 50]),
+      endPct: _values([50, 100]),
+      meanQscore: _values([34, 32]),
+      effectiveMeanQscore: _values([33, 30]),
+      p10Qscore: _values([30, 28]),
+      q1Qscore: _values([32, 30]),
+      medianQscore: _values([34, 32]),
+      q3Qscore: _values([36, 34]),
+      p90Qscore: _values([38, 36]),
+      aPct: _values([25, 25]),
+      cPct: _values([25, 25]),
+      gPct: _values([25, 25]),
+      tPct: _values([25, 25]),
+      nPct: _values([0, 0]),
+    ),
+    lengthQuality: const [
+      ReadLengthQualityData(
+        label: '1-49',
+        reads: 100,
+        bases: 400,
+        meanQscore: 35,
+        effectiveMeanQscore: 33,
+        q1Qscore: 32,
+        medianQscore: 35,
+        q3Qscore: 38,
+        meanExpectedErrors: 0.05,
+      ),
+    ],
+    expectedErrors: const [
+      ReadExpectedErrorData(label: '<0.1', reads: 90, readsPct: 90),
+      ReadExpectedErrorData(label: '0.1-0.25', reads: 10, readsPct: 10),
+    ],
+    complexityCounts: _values([0, 10, 90]),
     duplication: ReadDuplicationData(
       reads: metrics.readCount,
       distinctSequences: metrics.readCount * 0.9,
@@ -153,6 +231,20 @@ ReadSampleData _sample(
         ],
     checks: _checks(metrics, q30),
     status: q30,
+    qcProfile: 'Short (WGS)',
+  );
+}
+
+ReadReportData _report(
+  List<ReadSampleData> samples, {
+  List<ReadPairData> pairs = const [],
+  ReadCohortData? cohort,
+}) {
+  return ReadReportData(
+    samples: samples,
+    qcProfile: 'Auto',
+    pairs: pairs,
+    cohort: cohort,
   );
 }
 
@@ -193,7 +285,7 @@ void main() {
   });
 
   test('Empty samples have no charts', () {
-    final ReadReportData report = ReadReportData(samples: [
+    final ReadReportData report = _report([
       _sample('a', _metrics()),
       _sample('empty', _metrics(readCount: 0)),
     ]);
@@ -266,7 +358,7 @@ void main() {
     tester.view.physicalSize = const Size(1600, 1200);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final ReadReportData report = ReadReportData(samples: [
+    final ReadReportData report = _report([
       _sample('alpha', _metrics()),
       _sample('beta', _metrics(q30Pct: 60), q30: ReadQcStatus.fail),
       _sample('gamma', _metrics(readCount: 50)),
@@ -286,7 +378,7 @@ void main() {
     // The rail lists every sample and the summary has one bar each.
     expect(find.byType(ReadSampleTile), findsNWidgets(3));
     expect(find.byType(MetricBar), findsNWidgets(3));
-    expect(find.text('Checks for alpha'), findsOneWidget);
+    expect(find.text('Checks for alpha · Short (WGS)'), findsOneWidget);
     expect(find.text('1 of 3'), findsWidgets);
 
     // A check opens the ranges of each status in a dialog.
@@ -302,17 +394,17 @@ void main() {
     // A bar opens its sample.
     await tester.tap(find.widgetWithText(MetricBar, 'beta'));
     await tester.pumpAndSettle();
-    expect(find.text('Checks for beta'), findsOneWidget);
+    expect(find.text('Checks for beta · Short (WGS)'), findsOneWidget);
 
     // Keyboard and switcher arrows step through the list.
     await tester.sendKeyDownEvent(LogicalKeyboardKey.altLeft);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyUpEvent(LogicalKeyboardKey.altLeft);
     await tester.pumpAndSettle();
-    expect(find.text('Checks for gamma'), findsOneWidget);
+    expect(find.text('Checks for gamma · Short (WGS)'), findsOneWidget);
     await tester.tap(find.byTooltip(RegExp('^Next sample \\(')).first);
     await tester.pumpAndSettle();
-    expect(find.text('Checks for alpha'), findsOneWidget);
+    expect(find.text('Checks for alpha · Short (WGS)'), findsOneWidget);
 
     // The table lists the same samples.
     await tester.tap(find.text('Table'));
@@ -328,10 +420,10 @@ void main() {
     expect(find.byTooltip('Next page'), findsNothing);
     await tester.tap(find.text('gamma').last);
     await tester.pumpAndSettle();
-    expect(find.text('Checks for gamma'), findsOneWidget);
+    expect(find.text('Checks for gamma · Short (WGS)'), findsOneWidget);
     await tester.tap(find.text('alpha').last);
     await tester.pumpAndSettle();
-    expect(find.text('Checks for alpha'), findsOneWidget);
+    expect(find.text('Checks for alpha · Short (WGS)'), findsOneWidget);
 
     // The heatmap colors the same table, scaled per column.
     await tester.tap(find.text('Heatmap'));
@@ -390,7 +482,7 @@ void main() {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final ReadReportData report = ReadReportData(samples: [
+    final ReadReportData report = _report([
       _sample('alpha', _metrics()),
       _sample('beta', _metrics()),
     ]);
@@ -414,7 +506,7 @@ void main() {
     await tester.tap(find.widgetWithText(ReadSampleTile, 'beta'));
     await tester.pumpAndSettle();
     expect(find.byType(ReadSampleRail), findsNothing);
-    expect(find.text('Checks for beta'), findsOneWidget);
+    expect(find.text('Checks for beta · Short (WGS)'), findsOneWidget);
 
     // Phones show check ranges in a bottom sheet.
     final Finder panelScroll = find.descendant(
@@ -454,7 +546,7 @@ void main() {
     tester.view.physicalSize = const Size(1600, 1200);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final ReadReportData report = ReadReportData(samples: [
+    final ReadReportData report = _report([
       for (int i = 0; i < 120; i++)
         _sample('s${i.toString().padLeft(3, '0')}', _metrics()),
     ]);
@@ -473,7 +565,7 @@ void main() {
     await tester.tap(find.text('Table'));
     await tester.pumpAndSettle();
     expect(find.text('1–50 of 120'), findsOneWidget);
-    expect(find.text('Checks for s000'), findsOneWidget);
+    expect(find.text('Checks for s000 · Short (WGS)'), findsOneWidget);
     // One scrollbar for rows and one for columns, even on desktop, where
     // scroll views add their own.
     expect(
@@ -494,7 +586,7 @@ void main() {
     // Opening a sample from the switcher turns to its page.
     await tester.tap(find.byTooltip(RegExp('^Previous sample \\(')).first);
     await tester.pumpAndSettle();
-    expect(find.text('Checks for s119'), findsOneWidget);
+    expect(find.text('Checks for s119 · Short (WGS)'), findsOneWidget);
     expect(find.text('101–120 of 120'), findsOneWidget);
     await tester.tap(find.byTooltip(RegExp('^Next sample \\(')).first);
     await tester.pumpAndSettle();
@@ -504,7 +596,7 @@ void main() {
     await tester.drag(find.byType(PagedTable<int>), const Offset(0, -2000));
     await tester.pumpAndSettle();
     expect(find.text('Samples'), findsOneWidget);
-    expect(find.text('Checks for s000'), findsOneWidget);
+    expect(find.text('Checks for s000 · Short (WGS)'), findsOneWidget);
 
     // Many samples are summarized rather than drawn one line each.
     await tester.tap(find.text('Quality'));
@@ -534,7 +626,7 @@ void main() {
     tester.view.physicalSize = const Size(1600, 1200);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    final ReadReportData report = ReadReportData(samples: [
+    final ReadReportData report = _report([
       for (int i = 0; i < maxOverlaidSamples; i++)
         _sample('s${i.toString().padLeft(3, '0')}', _metrics()),
     ]);
@@ -570,6 +662,108 @@ void main() {
     await tester.tap(find.text('Clear'));
     await tester.pumpAndSettle();
     expect(find.text('Compared: 0 of 10 samples'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Cohort tab, relative position toggle, and new charts render',
+      (tester) async {
+    tester.view.physicalSize = const Size(1600, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final ReadReportData report = _report(
+      [
+        _sample('taxA_R1', _metrics()),
+        _sample('taxA_R2', _metrics(q30Pct: 86)),
+      ],
+      pairs: const [
+        ReadPairData(
+          pairName: 'taxA',
+          r1Sample: 'taxA_R1',
+          r2Sample: 'taxA_R2',
+          r1Reads: 100,
+          r2Reads: 100,
+          readCountDiff: 0,
+          inSync: true,
+          q30DropPct: 6,
+          effectiveQDrop: 2,
+          meanLengthDiff: 0,
+          gcDiffPct: 0.2,
+          status: ReadQcStatus.pass,
+        ),
+      ],
+      cohort: const ReadCohortData(
+        sampleCount: 2,
+        emptySampleCount: 0,
+        totalReads: 200,
+        totalBases: 800,
+        medianReads: 100,
+        p10Reads: 100,
+        p90Reads: 100,
+        depthP90P10Ratio: 1,
+        depthCv: 0,
+        depthGini: 0,
+        lowYieldSamples: ['low_sample'],
+        outliers: [
+          ReadCohortOutlierData(
+            sample: 'taxA_R2',
+            metric: 'GC (%)',
+            value: 68,
+            cohortMedian: 45,
+            modifiedZ: 5.2,
+          ),
+        ],
+      ),
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          readReportLoaderProvider.overrideWithValue((_) async => report),
+        ],
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: const Scaffold(body: ReadReportBody(path: 'read-report.json')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Quality'));
+    await tester.pumpAndSettle();
+    expect(find.text('Per-base quality: taxA_R1'), findsOneWidget);
+    await tester.tap(find.text('Relative (%)'));
+    await tester.pumpAndSettle();
+    expect(find.text('Relative-position quality: taxA_R1'), findsOneWidget);
+    final Finder tabScroll = find.descendant(
+      of: find.byType(ReportPanel),
+      matching: find.byType(Scrollable),
+    );
+    await tester.scrollUntilVisible(
+      find.text('Expected errors per read: taxA_R1'),
+      300,
+      scrollable: tabScroll.first,
+    );
+    expect(find.text('Expected errors per read: taxA_R1'), findsOneWidget);
+
+    await tester.tap(find.text('Length'));
+    await tester.pumpAndSettle();
+    expect(find.text('Quality by read length: taxA_R1'), findsOneWidget);
+
+    await tester.tap(find.text('Cohort'));
+    await tester.pumpAndSettle();
+    expect(find.text('Pooling depth balance'), findsOneWidget);
+    expect(find.text('low_sample'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Paired-end R1/R2 consistency'),
+      300,
+      scrollable: tabScroll.first,
+    );
+    expect(find.text('In sync'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Cohort-relative outliers'),
+      300,
+      scrollable: tabScroll.first,
+    );
+    expect(find.text('Cohort-relative outliers'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

@@ -247,8 +247,8 @@ class _ZoomResetFrameState extends State<ZoomResetFrame> {
   }
 }
 
-/// Quality by read position: the median and mean, with the interquartile
-/// range and the 10th to 90th percentile range as bands, over FastQC zones.
+/// Quality by read position: the median, mean, and effective quality, with
+/// the interquartile range and the 10th to 90th percentile range as bands.
 class PositionQualityChart extends StatelessWidget {
   const PositionQualityChart({super.key, required this.positions});
 
@@ -267,6 +267,8 @@ class PositionQualityChart extends StatelessWidget {
         1;
     final Color band = colors.primary;
     final SeguiColors palette = SeguiColors.of(context);
+    final bool hasEffective =
+        positions.effectiveMeanQscore.any((double v) => v > 0);
     return ReadLineChart(
       xLabel: 'Position (bp)',
       yLabel: 'Quality score',
@@ -297,6 +299,11 @@ class PositionQualityChart extends StatelessWidget {
           color: colors.tertiary,
           dashed: true,
         ),
+        if (hasEffective)
+          ChartLine(
+            points: points('Effective Q', positions.effectiveMeanQscore),
+            color: palette.seriesAt(2),
+          ),
       ],
       bands: [
         ChartBand(
@@ -333,13 +340,121 @@ class PositionQualityChart extends StatelessWidget {
         final String range = positions.start[i] == positions.end[i]
             ? formatValue(positions.start[i])
             : '${formatValue(positions.start[i])}-${formatValue(positions.end[i])}';
+        final String effLine = hasEffective
+            ? '\nEffective Q: ${positions.effectiveMeanQscore[i].toStringAsFixed(1)}'
+            : '';
+        final String survivalLine = i < positions.readSurvivalPct.length &&
+                positions.readSurvivalPct[i] > 0
+            ? '\nRead survival: ${positions.readSurvivalPct[i].toStringAsFixed(1)}%'
+            : '';
         return 'Position $range\n'
             'Median: ${formatValue(positions.medianQscore[i])}\n'
-            'Mean: ${positions.meanQscore[i].toStringAsFixed(1)}\n'
+            'Mean: ${positions.meanQscore[i].toStringAsFixed(1)}'
+            '$effLine\n'
             'Q1-Q3: ${formatValue(positions.q1Qscore[i])}-'
             '${formatValue(positions.q3Qscore[i])}\n'
             'P10-P90: ${formatValue(positions.p10Qscore[i])}-'
-            '${formatValue(positions.p90Qscore[i])}';
+            '${formatValue(positions.p90Qscore[i])}'
+            '$survivalLine';
+      },
+    );
+  }
+}
+
+/// Quality across normalized relative read position (0-100%).
+class RelativePositionQualityChart extends StatelessWidget {
+  const RelativePositionQualityChart({super.key, required this.positions});
+
+  final ReadRelativePositionData positions;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final SeguiColors palette = SeguiColors.of(context);
+    final List<double> x = [
+      for (int i = 0; i < positions.startPct.length; i++)
+        (positions.startPct[i] + positions.endPct[i]) / 2,
+    ];
+    ChartPoints points(String name, List<double> y) =>
+        ChartPoints(name: name, x: x, y: y);
+    final double top = math.max(
+          41,
+          positions.p90Qscore.fold<double>(0, math.max),
+        ) +
+        1;
+    final Color band = colors.primary;
+    return ReadLineChart(
+      xLabel: 'Relative position (%)',
+      yLabel: 'Quality score',
+      minY: 0,
+      maxY: top,
+      lines: [
+        ChartLine(
+            points: points('P10', positions.p10Qscore),
+            color: band,
+            visible: false),
+        ChartLine(
+            points: points('P90', positions.p90Qscore),
+            color: band,
+            visible: false),
+        ChartLine(
+            points: points('Q1', positions.q1Qscore),
+            color: band,
+            visible: false),
+        ChartLine(
+            points: points('Q3', positions.q3Qscore),
+            color: band,
+            visible: false),
+        ChartLine(
+            points: points('Median', positions.medianQscore),
+            color: colors.primary),
+        ChartLine(
+          points: points('Mean', positions.meanQscore),
+          color: colors.tertiary,
+          dashed: true,
+        ),
+        ChartLine(
+          points: points('Effective Q', positions.effectiveMeanQscore),
+          color: palette.seriesAt(2),
+        ),
+      ],
+      bands: [
+        ChartBand(
+          from: 0,
+          to: 1,
+          color: band.withValues(alpha: ChartPalette.outerBandAlpha),
+        ),
+        ChartBand(
+          from: 2,
+          to: 3,
+          color: band.withValues(alpha: ChartPalette.innerBandAlpha),
+        ),
+      ],
+      zones: [
+        ChartZone(
+          from: 0,
+          to: _poorQuality,
+          color: palette.fail.withValues(alpha: ChartPalette.zoneAlpha),
+        ),
+        ChartZone(
+          from: _poorQuality,
+          to: _goodQuality,
+          color: palette.warn.withValues(alpha: ChartPalette.zoneAlpha),
+        ),
+        ChartZone(
+          from: _goodQuality,
+          to: top,
+          color: palette.pass.withValues(alpha: ChartPalette.zoneAlpha),
+        ),
+      ],
+      tooltipText: (line, i) {
+        if (line != 4) return null;
+        return '${formatValue(positions.startPct[i])}–${formatValue(positions.endPct[i])}%\n'
+            'Median: ${formatValue(positions.medianQscore[i])}\n'
+            'Mean: ${positions.meanQscore[i].toStringAsFixed(1)}\n'
+            'Effective Q: ${positions.effectiveMeanQscore[i].toStringAsFixed(1)}\n'
+            'Q1-Q3: ${formatValue(positions.q1Qscore[i])}-'
+            '${formatValue(positions.q3Qscore[i])}';
       },
     );
   }
