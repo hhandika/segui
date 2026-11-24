@@ -18,6 +18,7 @@ import 'package:segui/services/io/input.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/providers/databases.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/types.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -277,8 +278,11 @@ class DatabaseBrowserState extends ConsumerState<DatabaseBrowser> {
     ref.listen(databaseSessionProvider(target), _revealResults);
     final support =
         databaseSupportFor(target.task, target.group) as DatabaseAvailable;
-    final bool hasOptions = state.content.isSequence &&
-        (state.page.records.isNotEmpty || state.selection.isNotEmpty);
+    final bool hasRecords =
+        state.page.records.isNotEmpty || state.selection.isNotEmpty;
+    final bool hasOptions = state.content.isSequence && hasRecords;
+    final bool hasFolder =
+        hasRecords && runningPlatform == PlatformType.isDesktop;
     return CustomScrollView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       slivers: [
@@ -304,6 +308,8 @@ class DatabaseBrowserState extends ConsumerState<DatabaseBrowser> {
                     allowMultiple: allowMultiple,
                   ),
                 ),
+              if (hasFolder)
+                const SliverToBoxAdapter(child: DownloadFolderTile()),
               DatabaseResults(target: target),
             ],
           ),

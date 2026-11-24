@@ -3,8 +3,49 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/io/database/search_fields.dart';
 import 'package:segui/services/databases/types.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/services/providers/databases.dart';
 import 'package:segui/styles/design_tokens.dart';
+
+/// Where downloads are saved, with buttons to change it on desktop.
+class DownloadFolderTile extends ConsumerWidget {
+  const DownloadFolderTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String? folder = ref.watch(downloadFolderProvider);
+    final int? space = ref.watch(downloadSpaceProvider).value;
+    final DownloadFolderSetting setting =
+        ref.read(downloadFolderProvider.notifier);
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: SeguiSpacing.xs),
+      leading: const Icon(Icons.folder_outlined),
+      title: const Text('Save to'),
+      subtitle: Text(
+        [
+          folder ?? 'SEGUI data folder',
+          if (space != null) '${FileUtils().formatSize(space)} free',
+        ].join(' · '),
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (folder != null)
+            IconButton(
+              tooltip: 'Use SEGUI data folder',
+              onPressed: setting.reset,
+              icon: const Icon(Icons.restart_alt_rounded),
+            ),
+          TextButton(
+            onPressed: setting.choose,
+            child: const Text('Change'),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// How the selected sequences are cut, named, and split into files.
 class DatabaseDownloadOptions extends ConsumerWidget {

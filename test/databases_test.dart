@@ -622,6 +622,15 @@ void main() {
       expect((await job.commit()).files.single.readAsLinesSync(), hasLength(4));
     });
 
+    test('Names SEGUI and a contact to NCBI', () async {
+      final client = FakeDatabaseClient((_, __) => ok('>AB000001.1 a\nACGT\n'));
+      final job = jobFor(client, [record('AB000001.1')]);
+      await job.run();
+      final Map<String, String> form = client.requests.single.form;
+      expect(form['tool'], 'segui');
+      expect(form['email'], isNotEmpty);
+    });
+
     test('Lists the source of each sequence', () async {
       final job = jobFor(
         FakeDatabaseClient((_, __) => ok('>U49845.1 Yeast genes\nACGT\n')),

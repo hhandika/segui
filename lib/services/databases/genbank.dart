@@ -16,6 +16,13 @@ class GenBankArchive extends SequenceArchive {
   /// E-utilities list at most this many summaries of one search.
   static const int _maxResults = 10000;
 
+  /// NCBI asks E-utilities clients for a tool name and a contact email, so
+  /// it can reach the developer before blocking heavy use.
+  static const Map<String, String> _identity = {
+    'tool': 'segui',
+    'email': 'herubiolog@gmail.com',
+  };
+
   @override
   DatabaseSource get source => DatabaseSource.genBank;
 
@@ -161,7 +168,7 @@ class GenBankArchive extends SequenceArchive {
     await client.save(
       url,
       destination,
-      form: form,
+      form: {...form, ..._identity},
       cancel: cancel,
       onReceived: onReceived,
     );
@@ -340,7 +347,7 @@ class GenBankArchive extends SequenceArchive {
   ) async {
     final response = await client.read(
       _utility(utility),
-      form: {...form, 'retmode': 'json'},
+      form: {...form, 'retmode': 'json', ..._identity},
       cancel: cancel,
     );
     if (!response.isOk) {

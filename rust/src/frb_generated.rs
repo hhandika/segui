@@ -41,7 +41,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1864810782;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1682631744;
 
 // Section: executor
 
@@ -2003,6 +2003,39 @@ fn wire__crate__api__common__get_api_version_impl(
             move |context| {
                 transform_result_sse::<_, ()>((move || {
                     let output_ok = Ok::<_, ()>(crate::api::common::get_api_version())?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__common__get_available_space_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_available_space",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Ok::<_, ()>(crate::api::common::get_available_space(api_path))?;
                     std::result::Result::Ok(output_ok)
                 })())
             }
@@ -6174,80 +6207,81 @@ fn pde_ffi_dispatcher_primary_impl(
             data_len,
         ),
         50 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
+        51 => wire__crate__api__common__get_available_space_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        52 => wire__crate__api__sequence__id_extraction_services_new_impl(
+        53 => wire__crate__api__sequence__id_extraction_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
-        54 => wire__crate__api__maf__maf_conversion_services_convert_impl(
+        54 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__maf__maf_conversion_services_convert_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        55 => wire__crate__api__maf__maf_conversion_services_new_impl(
+        56 => wire__crate__api__maf__maf_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => {
+        57 => {
             wire__crate__api__maf__maf_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        57 => wire__crate__api__maf__maf_summary_services_summarize_impl(
+        58 => wire__crate__api__maf__maf_summary_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        60 => wire__crate__api__sequence__partition_services_convert_partition_impl(
+        61 => wire__crate__api__sequence__partition_services_convert_partition_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        61 => wire__crate__api__sequence__partition_services_new_impl(
+        62 => wire__crate__api__sequence__partition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        62 => {
+        63 => {
             wire__crate__api__reads__raw_read_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        63 => wire__crate__api__reads__raw_read_services_summarize_impl(
+        64 => wire__crate__api__reads__raw_read_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        64 => wire__crate__api__reads__read_report_services_load_impl(
+        65 => wire__crate__api__reads__read_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        65 => wire__crate__api__reads__read_report_services_new_impl(
+        66 => wire__crate__api__reads__read_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        68 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+        69 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        69 => {
+        70 => {
             wire__crate__api__sequence__sequence_addition_services_add_sequence_to_single_file_impl(
                 port,
                 ptr,
@@ -6255,127 +6289,127 @@ fn pde_ffi_dispatcher_primary_impl(
                 data_len,
             )
         }
-        70 => wire__crate__api__sequence__sequence_addition_services_new_impl(
+        71 => wire__crate__api__sequence__sequence_addition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        71 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
+        72 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        72 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
+        73 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        73 => wire__crate__api__sequence__sequence_extraction_extract_impl(
+        74 => wire__crate__api__sequence__sequence_extraction_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        74 => wire__crate__api__sequence__sequence_extraction_new_impl(
+        75 => wire__crate__api__sequence__sequence_extraction_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        75 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
+        76 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        76 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
+        77 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        77 => {
+        78 => {
             wire__crate__api__sequence__sequence_removal_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        78 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
+        79 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        79 => wire__crate__api__sequence__sequence_renaming_new_impl(
+        80 => wire__crate__api__sequence__sequence_renaming_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        80 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
+        81 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        81 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
+        82 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        82 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
+        83 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        83 => {
+        84 => {
             wire__crate__api__sequence__show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len)
         }
-        85 => wire__crate__api__sequence__split_alignment_services_new_impl(
+        86 => wire__crate__api__sequence__split_alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        86 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
+        87 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        88 => wire__crate__api__progress__task_progress_default_impl(
+        89 => wire__crate__api__progress__task_progress_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        89 => wire__crate__api__sequence__translation_services_new_impl(
+        90 => wire__crate__api__sequence__translation_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        90 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
+        91 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        91 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
+        92 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        92 => wire__crate__api__sequence__unalignment_services_new_impl(
+        93 => wire__crate__api__sequence__unalignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        93 => wire__crate__api__sequence__unalignment_services_unalign_impl(
+        94 => wire__crate__api__sequence__unalignment_services_unalign_impl(
             port,
             ptr,
             rust_vec_len,
@@ -6417,12 +6451,12 @@ fn pde_ffi_dispatcher_sync_impl(
         46 => {
             wire__crate__api__file_sort__file_list_services_order_impl(ptr, rust_vec_len, data_len)
         }
-        58 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
-        59 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
-        66 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
-        67 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
-        84 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
-        87 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
+        60 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
+        67 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
+        68 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
+        85 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
+        88 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

@@ -11,8 +11,12 @@ import 'package:segui/services/databases/download.dart';
 import 'package:segui/services/databases/ena.dart';
 import 'package:segui/services/databases/genbank.dart';
 import 'package:segui/services/databases/types.dart';
+import 'package:segui/services/io/directory.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/mobile_io.dart';
+import 'package:segui/services/providers/settings.dart';
+import 'package:segui/services/types.dart';
+import 'package:segui/src/rust/api/common.dart';
 
 final databaseClientProvider =
     Provider<DatabaseClient>((ref) => HttpDatabaseClient());
@@ -26,9 +30,45 @@ final databaseArchivesProvider =
   };
 });
 
-/// Finds the downloads folder in SEGUI's data folder.
+final downloadFolderProvider =
+    NotifierProvider<DownloadFolderSetting, String?>(DownloadFolderSetting.new);
+
+/// Remembers the folder the user picked for downloads on desktop, or null
+/// for the downloads folder in SEGUI's data folder.
+class DownloadFolderSetting extends Notifier<String?> {
+  static const String _key = 'downloadFolder';
+
+  @override
+  String? build() {
+    if (runningPlatform != PlatformType.isDesktop) return null;
+    return ref.watch(settingProvider).getString(_key);
+  }
+
+  /// Asks the user for a folder. Returns false when the user cancels.
+  Future<bool> choose() async {
+    final Directory? dir = await pickDirectory();
+    if (dir == null) return false;
+    state = dir.path;
+    await ref.read(settingProvider).setString(_key, dir.path);
+    return true;
+  }
+
+  Future<void> reset() async {
+    state = null;
+    await ref.read(settingProvider).remove(_key);
+  }
+}
+
+/// Finds the folder downloads are saved to: the one the user picked, or
+/// the downloads folder in SEGUI's data folder.
 final downloadsDirProvider = Provider<Future<Directory> Function()>((ref) {
   return () async {
+    final String? chosen = ref.read(downloadFolderProvider);
+    if (chosen != null) {
+      final dir = Directory(chosen);
+      await dir.create(recursive: true);
+      return dir;
+    }
     final Directory data = await getSeguiDirectory();
     final dir = Directory(p.join(data.path, downloadsDirName));
     await dir.create(recursive: true);
@@ -38,6 +78,18 @@ final downloadsDirProvider = Provider<Future<Directory> Function()>((ref) {
     }
     return dir;
   };
+});
+
+/// Bytes free on the drive downloads are saved to, or null when unknown.
+final downloadSpaceProvider = FutureProvider.autoDispose<int?>((ref) async {
+  ref.watch(downloadFolderProvider);
+  try {
+    final Directory dir = await ref.read(downloadsDirProvider)();
+    return await getAvailableSpace(path: dir.path);
+  } on Object {
+    // Free space is a hint, so a drive that cannot be read shows none.
+    return null;
+  }
 });
 
 /// The picker a database search adds to.
@@ -416,20 +468,23 @@ class DatabaseSession extends Notifier<DatabaseState> {
     _isRunning = true;
     final DownloadReport report = await job
         .run(
-          cancel: token,
-          onProgress: (progress) {
-            if (!ref.mounted || token.isCancelled) return;
-            // Bytes arrive far more often than the screen can show.
-            if (progress.done == lastDone &&
-                sinceUpdate.elapsed < _progressInterval) {
-              return;
-            }
-            lastDone = progress.done;
-            sinceUpdate.reset();
-            state = state.copyWith(progress: () => progress);
-          },
-        )
-        .whenComplete(() => _isRunning = false);
+      cancel: token,
+      onProgress: (progress) {
+        if (!ref.mounted || token.isCancelled) return;
+        // Bytes arrive far more often than the screen can show.
+        if (progress.done == lastDone &&
+            sinceUpdate.elapsed < _progressInterval) {
+          return;
+        }
+        lastDone = progress.done;
+        sinceUpdate.reset();
+        state = state.copyWith(progress: () => progress);
+      },
+    )
+        .whenComplete(() {
+      _isRunning = false;
+      if (ref.mounted) ref.invalidate(downloadSpaceProvider);
+    });
     if (!ref.mounted) {
       await job.discard();
       return null;

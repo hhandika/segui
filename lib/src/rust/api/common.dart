@@ -11,3 +11,8 @@ Future<void> initLogger({required String logDir}) =>
 
 Future<String> getApiVersion() =>
     RustLib.instance.api.crateApiCommonGetApiVersion();
+
+/// Bytes free for the user on the drive that holds `path`, or `None` when
+/// the drive cannot be read.
+Future<PlatformInt64?> getAvailableSpace({required String path}) =>
+    RustLib.instance.api.crateApiCommonGetAvailableSpace(path: path);

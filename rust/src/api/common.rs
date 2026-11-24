@@ -15,3 +15,11 @@ pub fn init_logger(log_dir: String) {
 pub fn get_api_version() -> String {
     utils::get_crate_version()
 }
+
+/// Bytes free for the user on the drive that holds `path`, or `None` when
+/// the drive cannot be read.
+pub fn get_available_space(path: String) -> Option<i64> {
+    fs4::available_space(Path::new(&path))
+        .ok()
+        .and_then(|bytes| i64::try_from(bytes).ok())
+}

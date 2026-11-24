@@ -13,8 +13,10 @@ import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/providers/databases.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/settings.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'databases_fake.dart';
 
@@ -71,9 +73,14 @@ void main() {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
+    SharedPreferences.setMockInitialValues({});
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
     final container = ProviderContainer(overrides: [
+      settingProvider.overrideWithValue(preferences),
       databaseClientProvider.overrideWithValue(client ?? proteinClient()),
       downloadsDirProvider.overrideWithValue(() async => root),
+      // The Rust library that reads free space is not loaded in tests.
+      downloadSpaceProvider.overrideWith((ref) async => 2 * 1024 * 1024 * 1024),
     ]);
     addTearDown(container.dispose);
     await tester.pumpWidget(UncontrolledProviderScope(
@@ -253,6 +260,7 @@ void main() {
     await tester.testTextInput.receiveAction(TextInputAction.search);
     await tester.pumpAndSettle();
     expect(find.text('Mus musculus').hitTestable(), findsOneWidget);
+    expect(find.textContaining('2.00 Gb free'), findsOneWidget);
   });
 
   testWidgets('A download becomes input and sets the form', (tester) async {
