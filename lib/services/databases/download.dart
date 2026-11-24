@@ -18,12 +18,30 @@ const String downloadsDirName = 'downloads';
 /// File listing the origin of each sequence, beside every download.
 const String sourcesFileName = 'sources.tsv';
 
+/// Phase of a download job.
+enum DownloadStage {
+  connecting,
+  downloading,
+  retrying,
+  verifying,
+  decompressing,
+  preparing,
+}
+
+/// Per-record download state.
+enum RecordDownloadStatus { pending, active, done, failed }
+
 class DownloadProgress {
   const DownloadProgress({
     required this.done,
     required this.total,
     this.bytes = 0,
     this.bytesTotal = 0,
+    this.bytesPerSecond,
+    this.stage = DownloadStage.downloading,
+    this.retryAttempt,
+    this.retryMax,
+    this.statuses = const {},
   });
 
   final int done;
@@ -32,6 +50,13 @@ class DownloadProgress {
 
   /// Zero when the archive does not give sizes.
   final int bytesTotal;
+
+  /// Rolling transfer speed, or null before the first sample.
+  final int? bytesPerSecond;
+  final DownloadStage stage;
+  final int? retryAttempt;
+  final int? retryMax;
+  final Map<String, RecordDownloadStatus> statuses;
 }
 
 class DownloadFailure {
@@ -60,9 +85,21 @@ class CompletedDownload {
   final String? dataType;
 }
 
+/// Execution contract shared by the Rust downloader and the Dart test job.
+abstract interface class DownloadHandle {
+  Future<DownloadReport> run({
+    CancelToken? cancel,
+    void Function(DownloadProgress progress)? onProgress,
+  });
+
+  Future<CompletedDownload> commit();
+
+  Future<void> discard();
+}
+
 /// One download. [run] can be repeated to retry what failed, and nothing is
 /// visible until [commit]. [discard] deletes everything.
-class DownloadJob {
+class DownloadJob implements DownloadHandle {
   DownloadJob({
     required this.client,
     required this.archives,
@@ -111,6 +148,7 @@ class DownloadJob {
   int _bytes = 0;
   int _temporary = 0;
 
+  @override
   Future<DownloadReport> run({
     CancelToken? cancel,
     void Function(DownloadProgress progress)? onProgress,
@@ -121,12 +159,19 @@ class DownloadJob {
           records.where((record) => !_done.contains(record.key)).toList();
       final int bytesTotal = _knownBytes(pending);
       _bytes = 0;
+      final Map<String, RecordDownloadStatus> statuses = {
+        for (final record in records)
+          record.key: _done.contains(record.key)
+              ? RecordDownloadStatus.done
+              : RecordDownloadStatus.pending,
+      };
       void report([int partial = 0]) {
         onProgress?.call(DownloadProgress(
           done: _done.length,
           total: records.length,
           bytes: _bytes + partial,
           bytesTotal: bytesTotal,
+          statuses: Map.unmodifiable(statuses),
         ));
       }
 
@@ -140,11 +185,21 @@ class DownloadJob {
         final SequenceArchive archive = archives[source]!;
         for (final batch in batches(sequences, archive.batchSize)) {
           cancel?.throwIfCancelled();
+          for (final record in batch) {
+            statuses[record.key] = RecordDownloadStatus.active;
+          }
+          report();
           try {
             await _saveSequences(archive, batch, reasons, cancel, report);
+            for (final record in batch) {
+              statuses[record.key] = _done.contains(record.key)
+                  ? RecordDownloadStatus.done
+                  : RecordDownloadStatus.failed;
+            }
           } on DatabaseException catch (e) {
             for (final record in batch) {
               reasons[record.key] = e.message;
+              statuses[record.key] = RecordDownloadStatus.failed;
             }
           }
           report();
@@ -152,11 +207,15 @@ class DownloadJob {
       }
       for (final record in pending.where((e) => !e.content.isSequence)) {
         cancel?.throwIfCancelled();
+        statuses[record.key] = RecordDownloadStatus.active;
+        report();
         try {
           await _saveWholeFiles(record, cancel, report);
           _done.add(record.key);
+          statuses[record.key] = RecordDownloadStatus.done;
         } on DatabaseException catch (e) {
           reasons[record.key] = e.message;
+          statuses[record.key] = RecordDownloadStatus.failed;
         }
         report();
       }
@@ -185,6 +244,7 @@ class DownloadJob {
   }
 
   /// Moves the finished files out of staging and lists their sources.
+  @override
   Future<CompletedDownload> commit() async {
     final Directory? staging = _staging;
     if (staging == null || _fileNames.isEmpty) {
@@ -227,6 +287,7 @@ class DownloadJob {
   }
 
   /// Deletes what this job saved.
+  @override
   Future<void> discard() async {
     final Directory? staging = _staging;
     _staging = null;

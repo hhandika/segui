@@ -28,6 +28,7 @@
 // Section: imports
 
 use crate::api::alignment_view::*;
+use crate::api::download::*;
 use crate::api::progress::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
@@ -41,7 +42,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1682631744;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1399392410;
 
 // Section: executor
 
@@ -412,6 +413,475 @@ fn wire__crate__api__alignment_view__AlignmentHandle_ungapped_position_impl(
                 )?;
                 std::result::Result::Ok(output_ok)
             })())
+        },
+    )
+}
+fn wire__crate__api__download__DatabaseDownloadJob_commit_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DatabaseDownloadJob_commit",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::api::download::DatabaseDownloadJob::commit(&*api_that_guard)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__download__DatabaseDownloadJob_discard_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DatabaseDownloadJob_discard",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::api::download::DatabaseDownloadJob::discard(&*api_that_guard)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__download__DatabaseDownloadJob_new_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DatabaseDownloadJob_new",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_request =
+                <crate::api::download::FrbDownloadRequest>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                (move || {
+                    let output_ok = crate::api::download::DatabaseDownloadJob::new(api_request)?;
+                    std::result::Result::Ok(output_ok)
+                })(),
+            )
+        },
+    )
+}
+fn wire__crate__api__download__DatabaseDownloadJob_run_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DatabaseDownloadJob_run",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>,
+            >>::sse_decode(&mut deserializer);
+            let api_monitor = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let mut api_that_guard = None;
+                        let mut api_monitor_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_that, 0, false,
+                                    ),
+                                    flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                        &api_monitor,
+                                        1,
+                                        false,
+                                    ),
+                                ],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                                1 => {
+                                    api_monitor_guard = Some(api_monitor.lockable_decode_sync_ref())
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let api_monitor_guard = api_monitor_guard.unwrap();
+                        let output_ok = crate::api::download::DatabaseDownloadJob::run(
+                            &*api_that_guard,
+                            &*api_monitor_guard,
+                        )?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__download__DownloadMonitor_cancel_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DownloadMonitor_cancel",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>({
+                    crate::api::download::DownloadMonitor::cancel(&*api_that_guard);
+                })?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__download__DownloadMonitor_close_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DownloadMonitor_close",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>({
+                    crate::api::download::DownloadMonitor::close(&*api_that_guard);
+                })?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__download__DownloadMonitor_default_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DownloadMonitor_default",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Ok::<_, ()>(crate::api::download::DownloadMonitor::default())?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__download__DownloadMonitor_is_cancelled_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DownloadMonitor_is_cancelled",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>(crate::api::download::DownloadMonitor::is_cancelled(
+                    &*api_that_guard,
+                ))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__download__DownloadMonitor_new_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DownloadMonitor_new",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let output_ok = Ok::<_, ()>(crate::api::download::DownloadMonitor::new())?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__download__DownloadMonitor_subscribe_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "DownloadMonitor_subscribe",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>,
+            >>::sse_decode(&mut deserializer);
+            let api_sink = <StreamSink<
+                crate::api::download::FrbDownloadProgress,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, false,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let api_that_guard = api_that_guard.unwrap();
+                    let output_ok = Ok::<_, ()>({
+                        crate::api::download::DownloadMonitor::subscribe(
+                            &*api_that_guard,
+                            api_sink,
+                        );
+                    })?;
+                    std::result::Result::Ok(output_ok)
+                })())
+            }
         },
     )
 }
@@ -3587,6 +4057,12 @@ flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>
 );
 flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>
+);
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
     flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RunMonitor>
 );
 
@@ -3605,6 +4081,26 @@ impl SseDecode for AlignmentHandle {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <RustOpaqueMoi<
             flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for DatabaseDownloadJob {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
+    }
+}
+
+impl SseDecode for DownloadMonitor {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>,
         >>::sse_decode(deserializer);
         return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
@@ -3639,12 +4135,45 @@ impl SseDecode
 }
 
 impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RunMonitor>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
         return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode
+    for StreamSink<
+        crate::api::download::FrbDownloadProgress,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
     }
 }
 
@@ -4469,6 +4998,243 @@ impl SseDecode for crate::api::sequence::FilteringServices {
     }
 }
 
+impl SseDecode for crate::api::download::FrbCompletedDownload {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_files = <Vec<String>>::sse_decode(deserializer);
+        let mut var_dataType = <Option<String>>::sse_decode(deserializer);
+        return crate::api::download::FrbCompletedDownload {
+            files: var_files,
+            data_type: var_dataType,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDatabaseSource {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::download::FrbDatabaseSource::GenBank,
+            1 => crate::api::download::FrbDatabaseSource::Ena,
+            _ => unreachable!("Invalid variant for FrbDatabaseSource: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadContent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::download::FrbDownloadContent::Nucleotide,
+            1 => crate::api::download::FrbDownloadContent::Coding,
+            2 => crate::api::download::FrbDownloadContent::Protein,
+            3 => crate::api::download::FrbDownloadContent::Reads,
+            4 => crate::api::download::FrbDownloadContent::Assembly,
+            _ => unreachable!("Invalid variant for FrbDownloadContent: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadFailure {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_recordKey = <String>::sse_decode(deserializer);
+        let mut var_accession = <String>::sse_decode(deserializer);
+        let mut var_reason = <String>::sse_decode(deserializer);
+        return crate::api::download::FrbDownloadFailure {
+            record_key: var_recordKey,
+            accession: var_accession,
+            reason: var_reason,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadOptions {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_grouping =
+            <crate::api::download::FrbSequenceGrouping>::sse_decode(deserializer);
+        let mut var_naming = <crate::api::download::FrbSequenceNaming>::sse_decode(deserializer);
+        let mut var_gene = <String>::sse_decode(deserializer);
+        let mut var_fileName = <String>::sse_decode(deserializer);
+        return crate::api::download::FrbDownloadOptions {
+            grouping: var_grouping,
+            naming: var_naming,
+            gene: var_gene,
+            file_name: var_fileName,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadProgress {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_done = <u32>::sse_decode(deserializer);
+        let mut var_total = <u32>::sse_decode(deserializer);
+        let mut var_bytes = <u64>::sse_decode(deserializer);
+        let mut var_bytesTotal = <u64>::sse_decode(deserializer);
+        let mut var_bytesPerSecond = <Option<u64>>::sse_decode(deserializer);
+        let mut var_stage = <crate::api::download::FrbDownloadStage>::sse_decode(deserializer);
+        let mut var_retryAttempt = <Option<u32>>::sse_decode(deserializer);
+        let mut var_retryMax = <Option<u32>>::sse_decode(deserializer);
+        let mut var_statuses =
+            <Vec<crate::api::download::FrbRecordStatusEntry>>::sse_decode(deserializer);
+        return crate::api::download::FrbDownloadProgress {
+            done: var_done,
+            total: var_total,
+            bytes: var_bytes,
+            bytes_total: var_bytesTotal,
+            bytes_per_second: var_bytesPerSecond,
+            stage: var_stage,
+            retry_attempt: var_retryAttempt,
+            retry_max: var_retryMax,
+            statuses: var_statuses,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadRecord {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_source = <crate::api::download::FrbDatabaseSource>::sse_decode(deserializer);
+        let mut var_content = <crate::api::download::FrbDownloadContent>::sse_decode(deserializer);
+        let mut var_accession = <String>::sse_decode(deserializer);
+        let mut var_organism = <String>::sse_decode(deserializer);
+        let mut var_title = <String>::sse_decode(deserializer);
+        let mut var_length = <Option<u64>>::sse_decode(deserializer);
+        let mut var_codonStart = <u32>::sse_decode(deserializer);
+        let mut var_gene = <String>::sse_decode(deserializer);
+        let mut var_files = <Vec<crate::api::download::FrbRemoteFile>>::sse_decode(deserializer);
+        return crate::api::download::FrbDownloadRecord {
+            source: var_source,
+            content: var_content,
+            accession: var_accession,
+            organism: var_organism,
+            title: var_title,
+            length: var_length,
+            codon_start: var_codonStart,
+            gene: var_gene,
+            files: var_files,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadReport {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_completed = <u32>::sse_decode(deserializer);
+        let mut var_failures =
+            <Vec<crate::api::download::FrbDownloadFailure>>::sse_decode(deserializer);
+        return crate::api::download::FrbDownloadReport {
+            completed: var_completed,
+            failures: var_failures,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_records =
+            <Vec<crate::api::download::FrbDownloadRecord>>::sse_decode(deserializer);
+        let mut var_options = <crate::api::download::FrbDownloadOptions>::sse_decode(deserializer);
+        let mut var_ncbiApiKey = <Option<String>>::sse_decode(deserializer);
+        let mut var_trimsToFrame = <bool>::sse_decode(deserializer);
+        let mut var_rootDir = <String>::sse_decode(deserializer);
+        let mut var_takenNames = <Vec<String>>::sse_decode(deserializer);
+        return crate::api::download::FrbDownloadRequest {
+            records: var_records,
+            options: var_options,
+            ncbi_api_key: var_ncbiApiKey,
+            trims_to_frame: var_trimsToFrame,
+            root_dir: var_rootDir,
+            taken_names: var_takenNames,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbDownloadStage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::download::FrbDownloadStage::Connecting,
+            1 => crate::api::download::FrbDownloadStage::Downloading,
+            2 => crate::api::download::FrbDownloadStage::Retrying,
+            3 => crate::api::download::FrbDownloadStage::Verifying,
+            4 => crate::api::download::FrbDownloadStage::Decompressing,
+            5 => crate::api::download::FrbDownloadStage::Preparing,
+            _ => unreachable!("Invalid variant for FrbDownloadStage: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbRecordStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::download::FrbRecordStatus::Pending,
+            1 => crate::api::download::FrbRecordStatus::Active,
+            2 => crate::api::download::FrbRecordStatus::Done,
+            3 => crate::api::download::FrbRecordStatus::Failed,
+            _ => unreachable!("Invalid variant for FrbRecordStatus: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbRecordStatusEntry {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_key = <String>::sse_decode(deserializer);
+        let mut var_status = <crate::api::download::FrbRecordStatus>::sse_decode(deserializer);
+        return crate::api::download::FrbRecordStatusEntry {
+            key: var_key,
+            status: var_status,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbRemoteFile {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_url = <String>::sse_decode(deserializer);
+        let mut var_bytes = <Option<u64>>::sse_decode(deserializer);
+        let mut var_md5 = <Option<String>>::sse_decode(deserializer);
+        return crate::api::download::FrbRemoteFile {
+            url: var_url,
+            bytes: var_bytes,
+            md5: var_md5,
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbSequenceGrouping {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::download::FrbSequenceGrouping::SingleFile,
+            1 => crate::api::download::FrbSequenceGrouping::PerRecord,
+            _ => unreachable!("Invalid variant for FrbSequenceGrouping: {}", inner),
+        };
+    }
+}
+
+impl SseDecode for crate::api::download::FrbSequenceNaming {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::download::FrbSequenceNaming::SpeciesAccession,
+            1 => crate::api::download::FrbSequenceNaming::Accession,
+            _ => unreachable!("Invalid variant for FrbSequenceNaming: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -4574,6 +5340,62 @@ impl SseDecode for Vec<crate::api::sequence::DistanceGroupCount> {
         let mut ans_ = Vec::with_capacity(len_ as usize);
         for idx_ in 0..len_ {
             ans_.push(<crate::api::sequence::DistanceGroupCount>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::download::FrbDownloadFailure> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::download::FrbDownloadFailure>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::download::FrbDownloadRecord> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::download::FrbDownloadRecord>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::download::FrbRecordStatusEntry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::download::FrbRecordStatusEntry>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::api::download::FrbRemoteFile> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::download::FrbRemoteFile>::sse_decode(
                 deserializer,
             ));
         }
@@ -4917,6 +5739,17 @@ impl SseDecode for Option<u32> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<u32>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u64>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -6046,242 +6879,272 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        12 => {
+        8 => wire__crate__api__download__DatabaseDownloadJob_commit_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        9 => wire__crate__api__download__DatabaseDownloadJob_discard_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        11 => wire__crate__api__download__DatabaseDownloadJob_run_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        14 => wire__crate__api__download__DownloadMonitor_default_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        17 => wire__crate__api__download__DownloadMonitor_subscribe_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        22 => {
             wire__crate__api__progress__RunMonitor_subscribe_impl(port, ptr, rust_vec_len, data_len)
         }
-        13 => wire__crate__api__alignment_report__align_report_services_load_impl(
+        23 => wire__crate__api__alignment_report__align_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__alignment_report__align_report_services_new_impl(
+        24 => wire__crate__api__alignment_report__align_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__api__sequence__alignment_distance_services_compute_distance_impl(
+        25 => wire__crate__api__sequence__alignment_distance_services_compute_distance_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__sequence__alignment_distance_services_new_impl(
+        26 => wire__crate__api__sequence__alignment_distance_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__sequence__alignment_distance_services_preview_groups_impl(
+        27 => wire__crate__api__sequence__alignment_distance_services_preview_groups_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__sequence__alignment_services_concat_alignment_impl(
+        28 => wire__crate__api__sequence__alignment_services_concat_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        19 => wire__crate__api__sequence__alignment_services_new_impl(
+        29 => wire__crate__api__sequence__alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__sequence__alignment_services_summarize_alignment_impl(
+        30 => wire__crate__api__sequence__alignment_services_summarize_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__sequence__alignment_services_summarize_alignment_per_locus_impl(
+        31 => wire__crate__api__sequence__alignment_services_summarize_alignment_per_locus_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => wire__crate__api__sequence__alignment_trimming_services_new_impl(
+        32 => wire__crate__api__sequence__alignment_trimming_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__sequence__alignment_trimming_services_trim_impl(
+        33 => wire__crate__api__sequence__alignment_trimming_services_trim_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => {
+        34 => {
             wire__crate__api__archive__archive_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        25 => {
+        35 => {
             wire__crate__api__archive__archive_services_zip_impl(port, ptr, rust_vec_len, data_len)
         }
-        29 => wire__crate__api__contig_report__contig_report_services_load_impl(
+        39 => wire__crate__api__contig_report__contig_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => wire__crate__api__contig_report__contig_report_services_new_impl(
+        40 => wire__crate__api__contig_report__contig_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__contig__contig_services_new_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__contig__contig_services_summarize_impl(
+        41 => wire__crate__api__contig__contig_services_new_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__contig__contig_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => wire__crate__api__csv__csv_summary_services_get_column_names_impl(
+        44 => wire__crate__api__csv__csv_summary_services_get_column_names_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__api__csv__csv_summary_services_get_line_impl(
+        45 => wire__crate__api__csv__csv_summary_services_get_line_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => {
+        46 => {
             wire__crate__api__csv__csv_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        37 => wire__crate__api__csv__csv_summary_services_parse_columns_impl(
+        47 => wire__crate__api__csv__csv_summary_services_parse_columns_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        39 => wire__crate__api__distance_report__distance_report_services_load_impl(
+        49 => wire__crate__api__distance_report__distance_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__distance_report__distance_report_services_new_impl(
+        50 => wire__crate__api__distance_report__distance_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        42 => {
+        52 => {
             wire__crate__api__archive__export_services_write_impl(port, ptr, rust_vec_len, data_len)
         }
-        43 => wire__crate__api__archive__extract_services_extract_impl(
+        53 => wire__crate__api__archive__extract_services_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__archive__extract_services_extract_with_monitor_impl(
+        54 => wire__crate__api__archive__extract_services_extract_with_monitor_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        47 => wire__crate__api__file_sort__file_list_services_sizes_impl(
+        57 => wire__crate__api__file_sort__file_list_services_sizes_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        48 => wire__crate__api__sequence__filtering_services_filter_impl(
+        58 => wire__crate__api__sequence__filtering_services_filter_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__sequence__filtering_services_new_impl(
+        59 => wire__crate__api__sequence__filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__common__get_available_space_impl(port, ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
+        60 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
+        61 => wire__crate__api__common__get_available_space_impl(port, ptr, rust_vec_len, data_len),
+        62 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        53 => wire__crate__api__sequence__id_extraction_services_new_impl(
+        63 => wire__crate__api__sequence__id_extraction_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        54 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
-        55 => wire__crate__api__maf__maf_conversion_services_convert_impl(
+        64 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
+        65 => wire__crate__api__maf__maf_conversion_services_convert_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        56 => wire__crate__api__maf__maf_conversion_services_new_impl(
+        66 => wire__crate__api__maf__maf_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => {
+        67 => {
             wire__crate__api__maf__maf_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        58 => wire__crate__api__maf__maf_summary_services_summarize_impl(
+        68 => wire__crate__api__maf__maf_summary_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        61 => wire__crate__api__sequence__partition_services_convert_partition_impl(
+        71 => wire__crate__api__sequence__partition_services_convert_partition_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        62 => wire__crate__api__sequence__partition_services_new_impl(
+        72 => wire__crate__api__sequence__partition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        63 => {
+        73 => {
             wire__crate__api__reads__raw_read_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        64 => wire__crate__api__reads__raw_read_services_summarize_impl(
+        74 => wire__crate__api__reads__raw_read_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        65 => wire__crate__api__reads__read_report_services_load_impl(
+        75 => wire__crate__api__reads__read_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        66 => wire__crate__api__reads__read_report_services_new_impl(
+        76 => wire__crate__api__reads__read_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        69 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+        79 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        70 => {
+        80 => {
             wire__crate__api__sequence__sequence_addition_services_add_sequence_to_single_file_impl(
                 port,
                 ptr,
@@ -6289,127 +7152,127 @@ fn pde_ffi_dispatcher_primary_impl(
                 data_len,
             )
         }
-        71 => wire__crate__api__sequence__sequence_addition_services_new_impl(
+        81 => wire__crate__api__sequence__sequence_addition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        72 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
+        82 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        73 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
+        83 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        74 => wire__crate__api__sequence__sequence_extraction_extract_impl(
+        84 => wire__crate__api__sequence__sequence_extraction_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        75 => wire__crate__api__sequence__sequence_extraction_new_impl(
+        85 => wire__crate__api__sequence__sequence_extraction_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        76 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
+        86 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        77 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
+        87 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        78 => {
+        88 => {
             wire__crate__api__sequence__sequence_removal_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        79 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
+        89 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        80 => wire__crate__api__sequence__sequence_renaming_new_impl(
+        90 => wire__crate__api__sequence__sequence_renaming_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        81 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
+        91 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        82 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
+        92 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        83 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
+        93 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        84 => {
+        94 => {
             wire__crate__api__sequence__show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len)
         }
-        86 => wire__crate__api__sequence__split_alignment_services_new_impl(
+        96 => wire__crate__api__sequence__split_alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        87 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
+        97 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        89 => wire__crate__api__progress__task_progress_default_impl(
+        99 => wire__crate__api__progress__task_progress_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        90 => wire__crate__api__sequence__translation_services_new_impl(
+        100 => wire__crate__api__sequence__translation_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        91 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
+        101 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        92 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
+        102 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        93 => wire__crate__api__sequence__unalignment_services_new_impl(
+        103 => wire__crate__api__sequence__unalignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        94 => wire__crate__api__sequence__unalignment_services_unalign_impl(
+        104 => wire__crate__api__sequence__unalignment_services_unalign_impl(
             port,
             ptr,
             rust_vec_len,
@@ -6437,26 +7300,35 @@ fn pde_ffi_dispatcher_sync_impl(
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__progress__RunMonitor_cancel_impl(ptr, rust_vec_len, data_len),
-        9 => wire__crate__api__progress__RunMonitor_close_impl(ptr, rust_vec_len, data_len),
-        10 => wire__crate__api__progress__RunMonitor_is_cancelled_impl(ptr, rust_vec_len, data_len),
-        11 => wire__crate__api__progress__RunMonitor_new_impl(ptr, rust_vec_len, data_len),
-        26 => wire__crate__api__colors__best_text_on_impl(ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__colors__colormap_options_impl(ptr, rust_vec_len, data_len),
-        28 => wire__crate__api__colors__colormap_stops_impl(ptr, rust_vec_len, data_len),
-        33 => wire__crate__api__colors__contrast_ratio_impl(ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__colors__cvd_options_impl(ptr, rust_vec_len, data_len),
-        41 => wire__crate__api__colors__ensure_contrast_impl(ptr, rust_vec_len, data_len),
-        45 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
-        46 => {
+        10 => wire__crate__api__download__DatabaseDownloadJob_new_impl(ptr, rust_vec_len, data_len),
+        12 => wire__crate__api__download__DownloadMonitor_cancel_impl(ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__download__DownloadMonitor_close_impl(ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__download__DownloadMonitor_is_cancelled_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        16 => wire__crate__api__download__DownloadMonitor_new_impl(ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__progress__RunMonitor_cancel_impl(ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__progress__RunMonitor_close_impl(ptr, rust_vec_len, data_len),
+        20 => wire__crate__api__progress__RunMonitor_is_cancelled_impl(ptr, rust_vec_len, data_len),
+        21 => wire__crate__api__progress__RunMonitor_new_impl(ptr, rust_vec_len, data_len),
+        36 => wire__crate__api__colors__best_text_on_impl(ptr, rust_vec_len, data_len),
+        37 => wire__crate__api__colors__colormap_options_impl(ptr, rust_vec_len, data_len),
+        38 => wire__crate__api__colors__colormap_stops_impl(ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__colors__contrast_ratio_impl(ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__colors__cvd_options_impl(ptr, rust_vec_len, data_len),
+        51 => wire__crate__api__colors__ensure_contrast_impl(ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
+        56 => {
             wire__crate__api__file_sort__file_list_services_order_impl(ptr, rust_vec_len, data_len)
         }
-        59 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
-        60 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
-        67 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
-        68 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
-        85 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
-        88 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
+        69 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
+        70 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
+        77 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
+        78 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
+        95 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
+        98 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -6474,6 +7346,39 @@ impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<
 
 impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<AlignmentHandle>> for AlignmentHandle {
     fn into_into_dart(self) -> FrbWrapper<AlignmentHandle> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<DatabaseDownloadJob> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for FrbWrapper<DatabaseDownloadJob>
+{
+}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<DatabaseDownloadJob>> for DatabaseDownloadJob {
+    fn into_into_dart(self) -> FrbWrapper<DatabaseDownloadJob> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for FrbWrapper<DownloadMonitor> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<DownloadMonitor> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<DownloadMonitor>> for DownloadMonitor {
+    fn into_into_dart(self) -> FrbWrapper<DownloadMonitor> {
         self.into()
     }
 }
@@ -7449,6 +8354,352 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::FilteringServices>
     for crate::api::sequence::FilteringServices
 {
     fn into_into_dart(self) -> crate::api::sequence::FilteringServices {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbCompletedDownload {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.files.into_into_dart().into_dart(),
+            self.data_type.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbCompletedDownload
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbCompletedDownload>
+    for crate::api::download::FrbCompletedDownload
+{
+    fn into_into_dart(self) -> crate::api::download::FrbCompletedDownload {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDatabaseSource {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::GenBank => 0.into_dart(),
+            Self::Ena => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDatabaseSource
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDatabaseSource>
+    for crate::api::download::FrbDatabaseSource
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDatabaseSource {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadContent {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Nucleotide => 0.into_dart(),
+            Self::Coding => 1.into_dart(),
+            Self::Protein => 2.into_dart(),
+            Self::Reads => 3.into_dart(),
+            Self::Assembly => 4.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadContent
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadContent>
+    for crate::api::download::FrbDownloadContent
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadContent {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadFailure {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.record_key.into_into_dart().into_dart(),
+            self.accession.into_into_dart().into_dart(),
+            self.reason.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadFailure
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadFailure>
+    for crate::api::download::FrbDownloadFailure
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadFailure {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadOptions {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.grouping.into_into_dart().into_dart(),
+            self.naming.into_into_dart().into_dart(),
+            self.gene.into_into_dart().into_dart(),
+            self.file_name.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadOptions
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadOptions>
+    for crate::api::download::FrbDownloadOptions
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadOptions {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadProgress {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.done.into_into_dart().into_dart(),
+            self.total.into_into_dart().into_dart(),
+            self.bytes.into_into_dart().into_dart(),
+            self.bytes_total.into_into_dart().into_dart(),
+            self.bytes_per_second.into_into_dart().into_dart(),
+            self.stage.into_into_dart().into_dart(),
+            self.retry_attempt.into_into_dart().into_dart(),
+            self.retry_max.into_into_dart().into_dart(),
+            self.statuses.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadProgress
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadProgress>
+    for crate::api::download::FrbDownloadProgress
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadProgress {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadRecord {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.source.into_into_dart().into_dart(),
+            self.content.into_into_dart().into_dart(),
+            self.accession.into_into_dart().into_dart(),
+            self.organism.into_into_dart().into_dart(),
+            self.title.into_into_dart().into_dart(),
+            self.length.into_into_dart().into_dart(),
+            self.codon_start.into_into_dart().into_dart(),
+            self.gene.into_into_dart().into_dart(),
+            self.files.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadRecord
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadRecord>
+    for crate::api::download::FrbDownloadRecord
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadRecord {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadReport {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.completed.into_into_dart().into_dart(),
+            self.failures.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadReport
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadReport>
+    for crate::api::download::FrbDownloadReport
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadReport {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadRequest {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.records.into_into_dart().into_dart(),
+            self.options.into_into_dart().into_dart(),
+            self.ncbi_api_key.into_into_dart().into_dart(),
+            self.trims_to_frame.into_into_dart().into_dart(),
+            self.root_dir.into_into_dart().into_dart(),
+            self.taken_names.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadRequest
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadRequest>
+    for crate::api::download::FrbDownloadRequest
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadRequest {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadStage {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Connecting => 0.into_dart(),
+            Self::Downloading => 1.into_dart(),
+            Self::Retrying => 2.into_dart(),
+            Self::Verifying => 3.into_dart(),
+            Self::Decompressing => 4.into_dart(),
+            Self::Preparing => 5.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbDownloadStage
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbDownloadStage>
+    for crate::api::download::FrbDownloadStage
+{
+    fn into_into_dart(self) -> crate::api::download::FrbDownloadStage {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbRecordStatus {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Pending => 0.into_dart(),
+            Self::Active => 1.into_dart(),
+            Self::Done => 2.into_dart(),
+            Self::Failed => 3.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbRecordStatus
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbRecordStatus>
+    for crate::api::download::FrbRecordStatus
+{
+    fn into_into_dart(self) -> crate::api::download::FrbRecordStatus {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbRecordStatusEntry {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.key.into_into_dart().into_dart(),
+            self.status.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbRecordStatusEntry
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbRecordStatusEntry>
+    for crate::api::download::FrbRecordStatusEntry
+{
+    fn into_into_dart(self) -> crate::api::download::FrbRecordStatusEntry {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbRemoteFile {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.url.into_into_dart().into_dart(),
+            self.bytes.into_into_dart().into_dart(),
+            self.md5.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbRemoteFile
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbRemoteFile>
+    for crate::api::download::FrbRemoteFile
+{
+    fn into_into_dart(self) -> crate::api::download::FrbRemoteFile {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbSequenceGrouping {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::SingleFile => 0.into_dart(),
+            Self::PerRecord => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbSequenceGrouping
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbSequenceGrouping>
+    for crate::api::download::FrbSequenceGrouping
+{
+    fn into_into_dart(self) -> crate::api::download::FrbSequenceGrouping {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbSequenceNaming {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::SpeciesAccession => 0.into_dart(),
+            Self::Accession => 1.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbSequenceNaming
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbSequenceNaming>
+    for crate::api::download::FrbSequenceNaming
+{
+    fn into_into_dart(self) -> crate::api::download::FrbSequenceNaming {
         self
     }
 }
@@ -8650,6 +9901,20 @@ impl SseEncode for AlignmentHandle {
     }
 }
 
+impl SseEncode for DatabaseDownloadJob {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
+impl SseEncode for DownloadMonitor {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
+    }
+}
+
 impl SseEncode for RunMonitor {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -8676,6 +9941,28 @@ impl SseEncode
 }
 
 impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
     for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<RunMonitor>>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -8683,6 +9970,18 @@ impl SseEncode
         let (ptr, size) = self.sse_encode_raw();
         <usize>::sse_encode(ptr, serializer);
         <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode
+    for StreamSink<
+        crate::api::download::FrbDownloadProgress,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
     }
 }
 
@@ -9247,6 +10546,205 @@ impl SseEncode for crate::api::sequence::FilteringServices {
     }
 }
 
+impl SseEncode for crate::api::download::FrbCompletedDownload {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<String>>::sse_encode(self.files, serializer);
+        <Option<String>>::sse_encode(self.data_type, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDatabaseSource {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::download::FrbDatabaseSource::GenBank => 0,
+                crate::api::download::FrbDatabaseSource::Ena => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadContent {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::download::FrbDownloadContent::Nucleotide => 0,
+                crate::api::download::FrbDownloadContent::Coding => 1,
+                crate::api::download::FrbDownloadContent::Protein => 2,
+                crate::api::download::FrbDownloadContent::Reads => 3,
+                crate::api::download::FrbDownloadContent::Assembly => 4,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadFailure {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.record_key, serializer);
+        <String>::sse_encode(self.accession, serializer);
+        <String>::sse_encode(self.reason, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadOptions {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::api::download::FrbSequenceGrouping>::sse_encode(self.grouping, serializer);
+        <crate::api::download::FrbSequenceNaming>::sse_encode(self.naming, serializer);
+        <String>::sse_encode(self.gene, serializer);
+        <String>::sse_encode(self.file_name, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadProgress {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u32>::sse_encode(self.done, serializer);
+        <u32>::sse_encode(self.total, serializer);
+        <u64>::sse_encode(self.bytes, serializer);
+        <u64>::sse_encode(self.bytes_total, serializer);
+        <Option<u64>>::sse_encode(self.bytes_per_second, serializer);
+        <crate::api::download::FrbDownloadStage>::sse_encode(self.stage, serializer);
+        <Option<u32>>::sse_encode(self.retry_attempt, serializer);
+        <Option<u32>>::sse_encode(self.retry_max, serializer);
+        <Vec<crate::api::download::FrbRecordStatusEntry>>::sse_encode(self.statuses, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadRecord {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::api::download::FrbDatabaseSource>::sse_encode(self.source, serializer);
+        <crate::api::download::FrbDownloadContent>::sse_encode(self.content, serializer);
+        <String>::sse_encode(self.accession, serializer);
+        <String>::sse_encode(self.organism, serializer);
+        <String>::sse_encode(self.title, serializer);
+        <Option<u64>>::sse_encode(self.length, serializer);
+        <u32>::sse_encode(self.codon_start, serializer);
+        <String>::sse_encode(self.gene, serializer);
+        <Vec<crate::api::download::FrbRemoteFile>>::sse_encode(self.files, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadReport {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u32>::sse_encode(self.completed, serializer);
+        <Vec<crate::api::download::FrbDownloadFailure>>::sse_encode(self.failures, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadRequest {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<crate::api::download::FrbDownloadRecord>>::sse_encode(self.records, serializer);
+        <crate::api::download::FrbDownloadOptions>::sse_encode(self.options, serializer);
+        <Option<String>>::sse_encode(self.ncbi_api_key, serializer);
+        <bool>::sse_encode(self.trims_to_frame, serializer);
+        <String>::sse_encode(self.root_dir, serializer);
+        <Vec<String>>::sse_encode(self.taken_names, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbDownloadStage {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::download::FrbDownloadStage::Connecting => 0,
+                crate::api::download::FrbDownloadStage::Downloading => 1,
+                crate::api::download::FrbDownloadStage::Retrying => 2,
+                crate::api::download::FrbDownloadStage::Verifying => 3,
+                crate::api::download::FrbDownloadStage::Decompressing => 4,
+                crate::api::download::FrbDownloadStage::Preparing => 5,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::download::FrbRecordStatus {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::download::FrbRecordStatus::Pending => 0,
+                crate::api::download::FrbRecordStatus::Active => 1,
+                crate::api::download::FrbRecordStatus::Done => 2,
+                crate::api::download::FrbRecordStatus::Failed => 3,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::download::FrbRecordStatusEntry {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.key, serializer);
+        <crate::api::download::FrbRecordStatus>::sse_encode(self.status, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbRemoteFile {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.url, serializer);
+        <Option<u64>>::sse_encode(self.bytes, serializer);
+        <Option<String>>::sse_encode(self.md5, serializer);
+    }
+}
+
+impl SseEncode for crate::api::download::FrbSequenceGrouping {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::download::FrbSequenceGrouping::SingleFile => 0,
+                crate::api::download::FrbSequenceGrouping::PerRecord => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
+impl SseEncode for crate::api::download::FrbSequenceNaming {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::download::FrbSequenceNaming::SpeciesAccession => 0,
+                crate::api::download::FrbSequenceNaming::Accession => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for i32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -9329,6 +10827,46 @@ impl SseEncode for Vec<crate::api::sequence::DistanceGroupCount> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::api::sequence::DistanceGroupCount>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::download::FrbDownloadFailure> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::download::FrbDownloadFailure>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::download::FrbDownloadRecord> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::download::FrbDownloadRecord>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::download::FrbRecordStatusEntry> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::download::FrbRecordStatusEntry>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::api::download::FrbRemoteFile> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::download::FrbRemoteFile>::sse_encode(item, serializer);
         }
     }
 }
@@ -9588,6 +11126,16 @@ impl SseEncode for Option<u32> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <u32>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<u64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u64>::sse_encode(value, serializer);
         }
     }
 }
@@ -10314,6 +11862,7 @@ mod io {
 
     use super::*;
     use crate::api::alignment_view::*;
+    use crate::api::download::*;
     use crate::api::progress::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
@@ -10337,6 +11886,34 @@ mod io {
         ptr: *const std::ffi::c_void,
     ) {
         MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>>::decrement_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>>::decrement_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>>::increment_strong_count(ptr as _);
+    }
+
+    #[unsafe(no_mangle)]
+    pub extern "C" fn frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DownloadMonitor>>::decrement_strong_count(ptr as _);
     }
 
     #[unsafe(no_mangle)]

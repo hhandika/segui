@@ -135,4 +135,47 @@ void main() {
       )),
     );
   });
+
+  test('Reuses keep-alive connections and respects Retry-After', () async {
+    handle = (request) async {
+      if (calls == 1) {
+        request.response.statusCode = 429;
+        request.response.headers.set(HttpHeaders.retryAfterHeader, '0');
+        request.response.write('busy');
+      } else {
+        request.response.statusCode = 200;
+        request.response.write('ok');
+      }
+      await request.response.close();
+    };
+    final shared = client();
+    addTearDown(shared.close);
+    expect((await shared.read(url())).body, 'ok');
+    expect((await shared.read(url())).body, 'ok');
+    expect(calls, 3);
+    expect(server.connectionsInfo().total, 1);
+  });
+
+  test('Cancelling one request leaves the pooled client usable', () async {
+    handle = (request) async {
+      request.response.bufferOutput = false;
+      request.response.write('first');
+      await request.response.flush();
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      await request.response.close();
+    };
+    final shared = client();
+    addTearDown(shared.close);
+    final token = CancelToken();
+    await expectLater(
+      shared.save(
+        url(),
+        File(p.join(dir.path, 'part')),
+        cancel: token,
+        onReceived: (_) => token.cancel(),
+      ),
+      throwsA(isA<DatabaseCancelled>()),
+    );
+    expect((await shared.read(url())).body, 'first');
+  });
 }

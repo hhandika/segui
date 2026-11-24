@@ -11,6 +11,7 @@ pub mod contig;
 pub mod contig_report;
 pub mod csv;
 pub mod distance_report;
+pub mod download;
 pub mod file_sort;
 pub mod maf;
 pub mod progress;

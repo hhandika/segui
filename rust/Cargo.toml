@@ -18,6 +18,7 @@ log4rs = "1.4"
 polars = { version = "0.55", features = ["lazy", "csv"] }
 tar = "0.4"
 zip = { version = "9", default-features = false, features = ["deflate"] }
+tokio = "1"
 # SEGUL library. Plotting and PDF export are left out; the app draws its own charts.
 segul-core = { version = "0.25.0", default-features = false, features = [
     "align",
@@ -25,13 +26,14 @@ segul-core = { version = "0.25.0", default-features = false, features = [
     "read",
     "contig",
     "maf",
+    "download",
 ] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
 
-# SEGUL main until a segul-core release has the read quality checks.
+# SEGUL main until a segul-core release has the read quality checks and downloader.
 [patch.crates-io]
-segul-core = { git = "https://github.com/hhandika/segul", branch = "main" }
+# segul-core = { git = "https://github.com/hhandika/segul", branch = "main" }
 # Local segul checkout for development:
-# segul-core = { path = "../../../Rust/segul/crates/segul-core" }
+segul-core = { path = "../../../Rust/segul/crates/segul-core" }

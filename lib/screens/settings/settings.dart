@@ -4,6 +4,7 @@ import 'package:segui/services/io/folder_access.dart';
 import 'package:segui/screens/settings/about.dart';
 import 'package:segui/screens/settings/colors.dart';
 import 'package:segui/screens/settings/data_usage.dart';
+import 'package:segui/screens/settings/databases.dart';
 import 'package:segui/screens/settings/folder_access.dart';
 import 'package:segui/screens/settings/logs.dart';
 import 'package:segui/screens/settings/themes.dart';
@@ -111,6 +112,11 @@ enum SettingsPage {
   theme('Theme', Icons.brightness_6_outlined, Icons.brightness_6_rounded),
   colors('Colors', Icons.palette_outlined, Icons.palette_rounded),
   dataUsage('Data usage', Icons.data_usage_outlined, Icons.data_usage_rounded),
+  databases(
+    'Databases',
+    Icons.travel_explore_outlined,
+    Icons.travel_explore_rounded,
+  ),
   folderAccess('Folder access', Icons.folder_outlined, Icons.folder_rounded);
 
   const SettingsPage(this.label, this.icon, this.selectedIcon);
@@ -175,6 +181,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
                 SettingsPage.theme => const ThemeSettingView(),
                 SettingsPage.colors => const ColorSettingView(),
                 SettingsPage.dataUsage => const DataUsageView(),
+                SettingsPage.databases => const DatabaseSettingsView(),
                 SettingsPage.folderAccess => const FolderAccessView(),
               },
             ),
@@ -311,6 +318,20 @@ class MainSettings extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const DataUsageScreen(),
+                ),
+              );
+            },
+          ),
+          const CommonDivider(),
+          SettingTile(
+            title: 'Databases',
+            subtitle: 'NCBI API key for faster GenBank access',
+            icon: Icons.travel_explore_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const DatabaseSettings(),
                 ),
               );
             },

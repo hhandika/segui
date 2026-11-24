@@ -2962,6 +2962,7 @@ dependencies = [
  "rayon",
  "segul-core",
  "tar",
+ "tokio",
  "zip",
 ]
 
@@ -3108,7 +3109,6 @@ dependencies = [
 [[package]]
 name = "segul-core"
 version = "0.25.0"
-source = "git+https://github.com/hhandika/segul?branch=main#ee5f9c45461f9bbba1a661a6778425cb48a1c999"
 dependencies = [
  "ahash",
  "alphanumeric-sort",
@@ -3126,6 +3126,7 @@ dependencies = [
  "lazy_static",
  "log",
  "log4rs",
+ "md-5",
  "memchr",
  "memmap2",
  "nom",
@@ -3133,8 +3134,10 @@ dependencies = [
  "num-format",
  "rayon",
  "regex",
+ "reqwest",
  "serde",
  "serde_json",
+ "tokio",
  "walkdir",
  "xxhash-rust",
  "zip",

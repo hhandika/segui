@@ -5,25 +5,66 @@ import 'package:segui/styles/design_tokens.dart';
 
 /// The records being downloaded, in place of the search.
 class DownloadingList extends StatelessWidget {
-  const DownloadingList({super.key, required this.records});
+  const DownloadingList({
+    super.key,
+    required this.records,
+    this.statuses = const {},
+  });
 
   final List<DatabaseRecord> records;
+  final Map<String, RecordDownloadStatus> statuses;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.all(SeguiSpacing.md),
       itemCount: records.length,
-      itemBuilder: (context, index) => ListTile(
-        title: Text(records[index].accession),
-        subtitle: records[index].organism.isEmpty
-            ? null
-            : Text(
-                records[index].organism,
-                style: const TextStyle(fontStyle: FontStyle.italic),
-              ),
-      ),
+      itemBuilder: (context, index) {
+        final DatabaseRecord record = records[index];
+        final RecordDownloadStatus status =
+            statuses[record.key] ?? RecordDownloadStatus.pending;
+        return ListTile(
+          leading: DownloadRecordStatusIcon(status: status),
+          title: Text(record.accession),
+          subtitle: record.organism.isEmpty
+              ? null
+              : Text(
+                  record.organism,
+                  style: const TextStyle(fontStyle: FontStyle.italic),
+                ),
+        );
+      },
     );
+  }
+}
+
+/// Leading indicator for a record's current download state.
+class DownloadRecordStatusIcon extends StatelessWidget {
+  const DownloadRecordStatusIcon({super.key, required this.status});
+
+  final RecordDownloadStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return switch (status) {
+      RecordDownloadStatus.pending => Icon(
+          Icons.schedule_rounded,
+          color: colors.onSurfaceVariant,
+        ),
+      RecordDownloadStatus.active => const SizedBox.square(
+          dimension: SeguiControlSize.iconMedium,
+          child: CircularProgressIndicator(strokeWidth: SeguiStroke.regular),
+        ),
+      RecordDownloadStatus.done => Icon(
+          Icons.check_circle_outline_rounded,
+          color: colors.primary,
+        ),
+      RecordDownloadStatus.failed => Icon(
+          Icons.error_outline_rounded,
+          color: colors.error,
+        ),
+    };
   }
 }
 

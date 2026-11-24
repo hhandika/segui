@@ -112,6 +112,29 @@ class ReduceMotionSetting extends Notifier<bool> {
   }
 }
 
+final ncbiApiKeyProvider =
+    NotifierProvider<NcbiApiKeySetting, String>(NcbiApiKeySetting.new);
+
+/// Optional NCBI API key stored on this device for faster GenBank requests.
+class NcbiApiKeySetting extends Notifier<String> {
+  static const String _key = 'ncbiApiKey';
+
+  @override
+  String build() => ref.watch(settingProvider).getString(_key) ?? '';
+
+  Future<void> set(String key) async {
+    final String trimmed = key.trim();
+    state = trimmed;
+    if (trimmed.isEmpty) {
+      await ref.read(settingProvider).remove(_key);
+    } else {
+      await ref.read(settingProvider).setString(_key, trimmed);
+    }
+  }
+
+  Future<void> clear() => set('');
+}
+
 final chartPaletteProvider = NotifierProvider<ColorNameSetting, String>(
   () => ColorNameSetting('chartPalette', defaultChartPalette),
 );

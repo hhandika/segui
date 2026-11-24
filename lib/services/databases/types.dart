@@ -218,6 +218,7 @@ class PageCursor {
     this.total = 0,
     this.webEnv,
     this.queryKey,
+    this.taxId,
   });
 
   final int offset;
@@ -228,6 +229,9 @@ class PageCursor {
   /// NCBI history server session of the search.
   final String? webEnv;
   final String? queryKey;
+
+  /// Cached ENA taxon ID for subsequent pages.
+  final int? taxId;
 }
 
 /// A failure explained in words users can act on.

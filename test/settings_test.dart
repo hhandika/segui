@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
 import 'package:segui/screens/settings/about.dart';
+import 'package:segui/screens/settings/databases.dart';
+import 'package:segui/screens/settings/settings.dart';
 import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/motion.dart';
 import 'package:segui/services/providers/settings.dart';
@@ -186,5 +188,69 @@ void main() {
     expect(tile.value, isTrue);
     expect(tile.onChanged, isNull);
     expect(find.textContaining('Your device reduces motion'), findsOneWidget);
+  });
+
+  testWidgets('NCBI API key saves, toggles visibility, and clears',
+      (tester) async {
+    setWindowSize(tester, const Size(1000, 900));
+    final ProviderContainer container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        home: const DatabaseSettings(),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.widgetWithText(TextField, 'NCBI API key'),
+      ' test_ncbi_key_42 ',
+    );
+    await tester.pump();
+    expect(
+        tester.widget<TextField>(find.byType(TextField)).obscureText, isTrue);
+
+    await tester.tap(find.byTooltip('Show key'));
+    await tester.pump();
+    expect(
+        tester.widget<TextField>(find.byType(TextField)).obscureText, isFalse);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+    expect(preferences.getString('ncbiApiKey'), 'test_ncbi_key_42');
+    expect(container.read(ncbiApiKeyProvider), 'test_ncbi_key_42');
+    expect(find.text('Saved on this device'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(TextButton, 'Clear'));
+    await tester.pumpAndSettle();
+    expect(preferences.getString('ncbiApiKey'), isNull);
+    expect(container.read(ncbiApiKeyProvider), isEmpty);
+    expect(find.text('Saved on this device'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Settings exposes Databases page on desktop', (tester) async {
+    setWindowSize(tester, const Size(1200, 900));
+    final ProviderContainer container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        home: const SettingMenu(isFromNavigationDrawer: true),
+      ),
+    ));
+    await tester.pump();
+    await tester.tap(find.text('Databases'));
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(TextField, 'NCBI API key'), findsOneWidget);
   });
 }

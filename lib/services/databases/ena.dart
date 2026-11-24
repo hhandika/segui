@@ -38,7 +38,7 @@ class EnaArchive extends SequenceArchive {
     if (query.organism.trim().isEmpty) {
       throw const DatabaseException('Enter an organism to search ENA.');
     }
-    final int taxId = await _taxId(query.organism, cancel);
+    final int taxId = after?.taxId ?? await _taxId(query.organism, cancel);
     final int limit = min(after?.offset ?? pageSize, maxResults);
     final String result = _result(query.content);
     final String terms = buildQuery(query, taxId);
@@ -61,7 +61,10 @@ class EnaArchive extends SequenceArchive {
       records: records,
       total: total,
       next: !hasAll && limit < maxResults
-          ? PageCursor(offset: min(limit + pageSize, maxResults))
+          ? PageCursor(
+              offset: min(limit + pageSize, maxResults),
+              taxId: taxId,
+            )
           : null,
     );
   }
@@ -81,15 +84,21 @@ class EnaArchive extends SequenceArchive {
 
     switch (content) {
       case DownloadContent.reads:
-        // A study, sample, or experiment lists its runs.
-        for (final String accession in accessions) {
-          final rows = await _rowsOrNone({
-            'accession': accession,
-            'result': 'read_run',
-            'fields': _fields(content),
-          }, cancel, endpoint: 'filereport');
-          for (final record in _records(rows, content)) {
-            keep(record, accession);
+        // A study, sample, or experiment lists its runs; fetch 4 concurrently.
+        for (final List<String> chunk in batches(accessions, 4)) {
+          final results = await Future.wait([
+            for (final String accession in chunk)
+              _rowsOrNone({
+                'accession': accession,
+                'result': 'read_run',
+                'fields': _fields(content),
+              }, cancel, endpoint: 'filereport')
+                  .then((rows) => (accession: accession, rows: rows)),
+          ]);
+          for (final item in results) {
+            for (final record in _records(item.rows, content)) {
+              keep(record, item.accession);
+            }
           }
         }
       case DownloadContent.coding:

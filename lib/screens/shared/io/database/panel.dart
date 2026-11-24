@@ -110,8 +110,10 @@ class DatabasePanelState extends ConsumerState<DatabasePanel> {
                       ),
                       Expanded(
                         child: switch (state) {
-                          DatabaseState(isDownloading: true) =>
-                            DownloadingList(records: state.selection),
+                          DatabaseState(isDownloading: true) => DownloadingList(
+                              records: state.selection,
+                              statuses: state.progress?.statuses ?? const {},
+                            ),
                           DatabaseState(:final report?) =>
                             DownloadFailureList(report: report),
                           _ => DatabaseBrowser(

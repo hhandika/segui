@@ -10,6 +10,7 @@ import 'package:segui/services/databases/compatibility.dart';
 import 'package:segui/services/databases/download.dart';
 import 'package:segui/services/databases/ena.dart';
 import 'package:segui/services/databases/genbank.dart';
+import 'package:segui/services/databases/rust_download.dart';
 import 'package:segui/services/databases/types.dart';
 import 'package:segui/services/io/directory.dart';
 import 'package:segui/services/io/io.dart';
@@ -18,16 +19,54 @@ import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/src/rust/api/common.dart';
 
-final databaseClientProvider =
-    Provider<DatabaseClient>((ref) => HttpDatabaseClient());
+final databaseClientProvider = Provider<DatabaseClient>((ref) {
+  final String apiKey = ref.watch(ncbiApiKeyProvider).trim();
+  final HttpDatabaseClient client = HttpDatabaseClient(
+    ncbiInterval: apiKey.isEmpty
+        ? HttpDatabaseClient.defaultNcbiInterval
+        : HttpDatabaseClient.keyedNcbiInterval,
+  );
+  ref.onDispose(client.close);
+  return client;
+});
 
 final databaseArchivesProvider =
     Provider<Map<DatabaseSource, SequenceArchive>>((ref) {
   final DatabaseClient client = ref.watch(databaseClientProvider);
+  final String apiKey = ref.watch(ncbiApiKeyProvider).trim();
   return {
-    DatabaseSource.genBank: GenBankArchive(client),
+    DatabaseSource.genBank: GenBankArchive(client, apiKey: apiKey),
     DatabaseSource.ena: EnaArchive(client),
   };
+});
+
+typedef DownloadHandleFactory = DownloadHandle Function({
+  required List<DatabaseRecord> records,
+  required DownloadOptions options,
+  required bool trimsToFrame,
+  required Directory root,
+  required Set<String> takenNames,
+});
+
+/// Creates the download runner for a session; overridden in tests to avoid
+/// loading the native Rust library.
+final downloadHandleFactoryProvider = Provider<DownloadHandleFactory>((ref) {
+  final String apiKey = ref.watch(ncbiApiKeyProvider).trim();
+  return ({
+    required List<DatabaseRecord> records,
+    required DownloadOptions options,
+    required bool trimsToFrame,
+    required Directory root,
+    required Set<String> takenNames,
+  }) =>
+      RustDownloadHandle(
+        records: records,
+        options: options,
+        trimsToFrame: trimsToFrame,
+        root: root,
+        takenNames: takenNames,
+        ncbiApiKey: apiKey,
+      );
 });
 
 final downloadFolderProvider =
@@ -204,7 +243,7 @@ class DatabaseSession extends Notifier<DatabaseState> {
   CancelToken? _searchToken;
   CancelToken? _suggestToken;
   CancelToken? _downloadToken;
-  DownloadJob? _job;
+  DownloadHandle? _job;
   DatabaseQuery? _query;
   bool _isRunning = false;
 
@@ -358,9 +397,7 @@ class DatabaseSession extends Notifier<DatabaseState> {
     try {
       final Directory root = await ref.read(downloadsDirProvider)();
       token.throwIfCancelled();
-      _job = DownloadJob(
-        client: ref.read(databaseClientProvider),
-        archives: ref.read(databaseArchivesProvider),
+      _job = ref.read(downloadHandleFactoryProvider)(
         records: records,
         options: state.options,
         trimsToFrame: support.trimsToFrame,
@@ -396,7 +433,7 @@ class DatabaseSession extends Notifier<DatabaseState> {
 
   /// Keeps what arrived and leaves out what failed.
   Future<CompletedDownload?> addRest() async {
-    final DownloadJob? job = _job;
+    final DownloadHandle? job = _job;
     if (job == null || state.report == null) return null;
     try {
       final completed = await job.commit();
@@ -410,7 +447,7 @@ class DatabaseSession extends Notifier<DatabaseState> {
 
   /// Drops a download that failed in part, and returns to the results.
   Future<void> dismissReport() async {
-    final DownloadJob? job = _job;
+    final DownloadHandle? job = _job;
     _job = null;
     state = state.copyWith(report: () => null);
     await job?.discard();
@@ -462,21 +499,27 @@ class DatabaseSession extends Notifier<DatabaseState> {
   }
 
   Future<CompletedDownload?> _run(CancelToken token) async {
-    final DownloadJob job = _job!;
+    final DownloadHandle job = _job!;
     final Stopwatch sinceUpdate = Stopwatch()..start();
     int lastDone = -1;
+    DownloadStage? lastStage;
+    int? lastRetryAttempt;
     _isRunning = true;
     final DownloadReport report = await job
         .run(
       cancel: token,
       onProgress: (progress) {
         if (!ref.mounted || token.isCancelled) return;
+        final bool stateChanged = progress.done != lastDone ||
+            progress.stage != lastStage ||
+            progress.retryAttempt != lastRetryAttempt;
         // Bytes arrive far more often than the screen can show.
-        if (progress.done == lastDone &&
-            sinceUpdate.elapsed < _progressInterval) {
+        if (!stateChanged && sinceUpdate.elapsed < _progressInterval) {
           return;
         }
         lastDone = progress.done;
+        lastStage = progress.stage;
+        lastRetryAttempt = progress.retryAttempt;
         sinceUpdate.reset();
         state = state.copyWith(progress: () => progress);
       },
@@ -492,7 +535,6 @@ class DatabaseSession extends Notifier<DatabaseState> {
     if (report.isComplete) {
       final CompletedDownload completed = await job.commit();
       _job = null;
-      if (ref.mounted) state = state.copyWith(progress: () => null);
       return completed;
     }
     state = state.copyWith(progress: () => null, report: () => report);
@@ -500,7 +542,7 @@ class DatabaseSession extends Notifier<DatabaseState> {
   }
 
   void _endDownload(Exception error) {
-    final DownloadJob? job = _job;
+    final DownloadHandle? job = _job;
     _job = null;
     unawaited(job?.discard());
     if (!ref.mounted) return;

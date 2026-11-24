@@ -12,6 +12,7 @@ import 'api/contig.dart';
 import 'api/contig_report.dart';
 import 'api/csv.dart';
 import 'api/distance_report.dart';
+import 'api/download.dart';
 import 'api/file_sort.dart';
 import 'api/maf.dart';
 import 'api/progress.dart';
@@ -35,6 +36,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       get rust_arc_decrement_strong_count_AlignmentHandlePtr => wire
           ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr;
 
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_DatabaseDownloadJobPtr => wire
+          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJobPtr;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_DownloadMonitorPtr => wire
+          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitorPtr;
+
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_RunMonitorPtr =>
       wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitorPtr;
 
@@ -47,6 +56,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  DatabaseDownloadJob
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          dynamic raw);
+
+  @protected
+  DownloadMonitor
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+          dynamic raw);
+
+  @protected
   RunMonitor
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
           dynamic raw);
@@ -54,6 +73,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   AlignmentHandle
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          dynamic raw);
+
+  @protected
+  DatabaseDownloadJob
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          dynamic raw);
+
+  @protected
+  DownloadMonitor
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
           dynamic raw);
 
   @protected
@@ -70,9 +99,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  DatabaseDownloadJob
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          dynamic raw);
+
+  @protected
+  DownloadMonitor
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+          dynamic raw);
+
+  @protected
   RunMonitor
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
           dynamic raw);
+
+  @protected
+  RustStreamSink<FrbDownloadProgress>
+      dco_decode_StreamSink_frb_download_progress_Sse(dynamic raw);
 
   @protected
   RustStreamSink<TaskProgress> dco_decode_StreamSink_task_progress_Sse(
@@ -173,6 +216,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FilteringServices dco_decode_box_autoadd_filtering_services(dynamic raw);
 
   @protected
+  FrbDownloadRequest dco_decode_box_autoadd_frb_download_request(dynamic raw);
+
+  @protected
   PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw);
 
   @protected
@@ -235,6 +281,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int dco_decode_box_autoadd_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
 
   @protected
   UnalignmentServices dco_decode_box_autoadd_unalignment_services(dynamic raw);
@@ -324,6 +373,51 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FilteringServices dco_decode_filtering_services(dynamic raw);
 
   @protected
+  FrbCompletedDownload dco_decode_frb_completed_download(dynamic raw);
+
+  @protected
+  FrbDatabaseSource dco_decode_frb_database_source(dynamic raw);
+
+  @protected
+  FrbDownloadContent dco_decode_frb_download_content(dynamic raw);
+
+  @protected
+  FrbDownloadFailure dco_decode_frb_download_failure(dynamic raw);
+
+  @protected
+  FrbDownloadOptions dco_decode_frb_download_options(dynamic raw);
+
+  @protected
+  FrbDownloadProgress dco_decode_frb_download_progress(dynamic raw);
+
+  @protected
+  FrbDownloadRecord dco_decode_frb_download_record(dynamic raw);
+
+  @protected
+  FrbDownloadReport dco_decode_frb_download_report(dynamic raw);
+
+  @protected
+  FrbDownloadRequest dco_decode_frb_download_request(dynamic raw);
+
+  @protected
+  FrbDownloadStage dco_decode_frb_download_stage(dynamic raw);
+
+  @protected
+  FrbRecordStatus dco_decode_frb_record_status(dynamic raw);
+
+  @protected
+  FrbRecordStatusEntry dco_decode_frb_record_status_entry(dynamic raw);
+
+  @protected
+  FrbRemoteFile dco_decode_frb_remote_file(dynamic raw);
+
+  @protected
+  FrbSequenceGrouping dco_decode_frb_sequence_grouping(dynamic raw);
+
+  @protected
+  FrbSequenceNaming dco_decode_frb_sequence_naming(dynamic raw);
+
+  @protected
   int dco_decode_i_32(dynamic raw);
 
   @protected
@@ -349,6 +443,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<DistanceGroupCount> dco_decode_list_distance_group_count(dynamic raw);
+
+  @protected
+  List<FrbDownloadFailure> dco_decode_list_frb_download_failure(dynamic raw);
+
+  @protected
+  List<FrbDownloadRecord> dco_decode_list_frb_download_record(dynamic raw);
+
+  @protected
+  List<FrbRecordStatusEntry> dco_decode_list_frb_record_status_entry(
+      dynamic raw);
+
+  @protected
+  List<FrbRemoteFile> dco_decode_list_frb_remote_file(dynamic raw);
 
   @protected
   List<Float64List> dco_decode_list_list_prim_f_64_strict(dynamic raw);
@@ -433,6 +540,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw);
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
 
   @protected
   BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
@@ -588,6 +698,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  DatabaseDownloadJob
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          SseDeserializer deserializer);
+
+  @protected
+  DownloadMonitor
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+          SseDeserializer deserializer);
+
+  @protected
   RunMonitor
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
           SseDeserializer deserializer);
@@ -595,6 +715,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   AlignmentHandle
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+          SseDeserializer deserializer);
+
+  @protected
+  DatabaseDownloadJob
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          SseDeserializer deserializer);
+
+  @protected
+  DownloadMonitor
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
           SseDeserializer deserializer);
 
   @protected
@@ -612,8 +742,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  DatabaseDownloadJob
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          SseDeserializer deserializer);
+
+  @protected
+  DownloadMonitor
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+          SseDeserializer deserializer);
+
+  @protected
   RunMonitor
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+          SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<FrbDownloadProgress>
+      sse_decode_StreamSink_frb_download_progress_Sse(
           SseDeserializer deserializer);
 
   @protected
@@ -732,6 +877,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  FrbDownloadRequest sse_decode_box_autoadd_frb_download_request(
+      SseDeserializer deserializer);
+
+  @protected
   PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
@@ -805,6 +954,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
   UnalignmentServices sse_decode_box_autoadd_unalignment_services(
@@ -908,6 +1060,63 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FilteringServices sse_decode_filtering_services(SseDeserializer deserializer);
 
   @protected
+  FrbCompletedDownload sse_decode_frb_completed_download(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDatabaseSource sse_decode_frb_database_source(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadContent sse_decode_frb_download_content(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadFailure sse_decode_frb_download_failure(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadOptions sse_decode_frb_download_options(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadProgress sse_decode_frb_download_progress(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadRecord sse_decode_frb_download_record(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadReport sse_decode_frb_download_report(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadRequest sse_decode_frb_download_request(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbDownloadStage sse_decode_frb_download_stage(SseDeserializer deserializer);
+
+  @protected
+  FrbRecordStatus sse_decode_frb_record_status(SseDeserializer deserializer);
+
+  @protected
+  FrbRecordStatusEntry sse_decode_frb_record_status_entry(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbRemoteFile sse_decode_frb_remote_file(SseDeserializer deserializer);
+
+  @protected
+  FrbSequenceGrouping sse_decode_frb_sequence_grouping(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbSequenceNaming sse_decode_frb_sequence_naming(
+      SseDeserializer deserializer);
+
+  @protected
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
@@ -937,6 +1146,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<DistanceGroupCount> sse_decode_list_distance_group_count(
+      SseDeserializer deserializer);
+
+  @protected
+  List<FrbDownloadFailure> sse_decode_list_frb_download_failure(
+      SseDeserializer deserializer);
+
+  @protected
+  List<FrbDownloadRecord> sse_decode_list_frb_download_record(
+      SseDeserializer deserializer);
+
+  @protected
+  List<FrbRecordStatusEntry> sse_decode_list_frb_record_status_entry(
+      SseDeserializer deserializer);
+
+  @protected
+  List<FrbRemoteFile> sse_decode_list_frb_remote_file(
       SseDeserializer deserializer);
 
   @protected
@@ -1034,6 +1259,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int? sse_decode_opt_box_autoadd_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
 
   @protected
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
@@ -1211,6 +1439,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          DatabaseDownloadJob self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+          DownloadMonitor self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
           RunMonitor self, SseSerializer serializer);
 
@@ -1218,6 +1456,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
           AlignmentHandle self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          DatabaseDownloadJob self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+          DownloadMonitor self, SseSerializer serializer);
 
   @protected
   void
@@ -1235,8 +1483,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+          DatabaseDownloadJob self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+          DownloadMonitor self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
           RunMonitor self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_StreamSink_frb_download_progress_Sse(
+      RustStreamSink<FrbDownloadProgress> self, SseSerializer serializer);
 
   @protected
   void sse_encode_StreamSink_task_progress_Sse(
@@ -1358,6 +1620,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FilteringServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_frb_download_request(
+      FrbDownloadRequest self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_i_64(
       PlatformInt64 self, SseSerializer serializer);
 
@@ -1431,6 +1697,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_unalignment_services(
@@ -1543,6 +1812,65 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       FilteringServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_frb_completed_download(
+      FrbCompletedDownload self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_database_source(
+      FrbDatabaseSource self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_content(
+      FrbDownloadContent self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_failure(
+      FrbDownloadFailure self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_options(
+      FrbDownloadOptions self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_progress(
+      FrbDownloadProgress self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_record(
+      FrbDownloadRecord self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_report(
+      FrbDownloadReport self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_request(
+      FrbDownloadRequest self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_download_stage(
+      FrbDownloadStage self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_record_status(
+      FrbRecordStatus self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_record_status_entry(
+      FrbRecordStatusEntry self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_remote_file(FrbRemoteFile self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_sequence_grouping(
+      FrbSequenceGrouping self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_sequence_naming(
+      FrbSequenceNaming self, SseSerializer serializer);
+
+  @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
@@ -1574,6 +1902,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_distance_group_count(
       List<DistanceGroupCount> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_frb_download_failure(
+      List<FrbDownloadFailure> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_frb_download_record(
+      List<FrbDownloadRecord> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_frb_record_status_entry(
+      List<FrbRecordStatusEntry> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_frb_remote_file(
+      List<FrbRemoteFile> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_list_prim_f_64_strict(
@@ -1675,6 +2019,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_box_autoadd_u_32(int? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
@@ -1899,6 +2246,70 @@ class RustLibWire implements BaseWire {
           'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle');
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandlePtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJobPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJobPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJobPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJob =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDatabaseDownloadJobPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitorPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitorPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitorPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_segui_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitor =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDownloadMonitorPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void

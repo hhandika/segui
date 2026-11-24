@@ -6,9 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/forms.dart';
+import 'package:segui/screens/shared/io/database/download_status.dart';
+import 'package:segui/screens/shared/io/database/footer.dart';
 import 'package:segui/screens/shared/io/database/panel.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/services/controllers.dart';
+import 'package:segui/services/databases/download.dart';
+import 'package:segui/services/databases/types.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/io.dart';
 import 'package:segui/services/providers/databases.dart';
@@ -78,6 +82,24 @@ void main() {
     final container = ProviderContainer(overrides: [
       settingProvider.overrideWithValue(preferences),
       databaseClientProvider.overrideWithValue(client ?? proteinClient()),
+      downloadHandleFactoryProvider.overrideWith((ref) {
+        return ({
+          required records,
+          required options,
+          required trimsToFrame,
+          required root,
+          takenNames = const {},
+        }) =>
+            DownloadJob(
+              client: ref.read(databaseClientProvider),
+              archives: ref.read(databaseArchivesProvider),
+              records: records,
+              options: options,
+              trimsToFrame: trimsToFrame,
+              root: root,
+              takenNames: takenNames,
+            );
+      }),
       downloadsDirProvider.overrideWithValue(() async => root),
       // The Rust library that reads free space is not loaded in tests.
       downloadSpaceProvider.overrideWith((ref) async => 2 * 1024 * 1024 * 1024),
@@ -303,5 +325,94 @@ void main() {
     expect(controller.inputFormatController, 'FASTA');
     expect(controller.dataTypeController, 'AA');
     expect(find.text('1 file selected'), findsOneWidget);
+  });
+
+  testWidgets('Footer shows live bytes, speed, ETA, and stages',
+      (tester) async {
+    bool cancelled = false;
+    await tester.pumpWidget(MaterialApp(
+      theme: SeguiTheme.lightTheme(),
+      home: Scaffold(
+        body: Column(
+          children: [
+            DatabaseDownloadProgress(
+              progress: const DownloadProgress(
+                done: 1,
+                total: 4,
+                bytes: 5 * 1024 * 1024,
+                bytesTotal: 20 * 1024 * 1024,
+                bytesPerSecond: 1024 * 1024,
+                stage: DownloadStage.downloading,
+              ),
+              onCancel: () => cancelled = true,
+            ),
+            DatabaseDownloadProgress(
+              progress: const DownloadProgress(
+                done: 0,
+                total: 1,
+                stage: DownloadStage.retrying,
+                retryAttempt: 2,
+                retryMax: 3,
+              ),
+              onCancel: () {},
+            ),
+          ],
+        ),
+      ),
+    ));
+    expect(find.text('Downloading 1 of 4 records'), findsOneWidget);
+    expect(find.text('25%'), findsOneWidget);
+    expect(find.textContaining('5.00 Mb / 20.00 Mb'), findsOneWidget);
+    expect(find.textContaining('1.00 Mb/s'), findsOneWidget);
+    expect(find.textContaining('15s left'), findsOneWidget);
+    expect(find.text('Retrying (2/3)…'), findsOneWidget);
+    expect(find.text('Waiting for server…'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Stop').first);
+    expect(cancelled, isTrue);
+  });
+
+  testWidgets('DownloadingList renders per-record status indicators',
+      (tester) async {
+    const List<DatabaseRecord> records = [
+      DatabaseRecord(
+        source: DatabaseSource.genBank,
+        content: DownloadContent.nucleotide,
+        accession: 'U49845.1',
+      ),
+      DatabaseRecord(
+        source: DatabaseSource.genBank,
+        content: DownloadContent.nucleotide,
+        accession: 'U49846.1',
+      ),
+      DatabaseRecord(
+        source: DatabaseSource.genBank,
+        content: DownloadContent.nucleotide,
+        accession: 'U49847.1',
+      ),
+      DatabaseRecord(
+        source: DatabaseSource.genBank,
+        content: DownloadContent.nucleotide,
+        accession: 'U49848.1',
+      ),
+    ];
+    await tester.pumpWidget(MaterialApp(
+      theme: SeguiTheme.lightTheme(),
+      home: Scaffold(
+        body: DownloadingList(
+          records: records,
+          statuses: {
+            records[0].key: RecordDownloadStatus.done,
+            records[1].key: RecordDownloadStatus.active,
+            records[2].key: RecordDownloadStatus.failed,
+            records[3].key: RecordDownloadStatus.pending,
+          },
+        ),
+      ),
+    ));
+    expect(find.byIcon(Icons.check_circle_outline_rounded), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.schedule_rounded), findsOneWidget);
   });
 }

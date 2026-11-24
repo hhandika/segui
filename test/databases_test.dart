@@ -629,6 +629,53 @@ void main() {
       final Map<String, String> form = client.requests.single.form;
       expect(form['tool'], 'segui');
       expect(form['email'], isNotEmpty);
+      expect(form.containsKey('api_key'), isFalse);
+    });
+
+    test('Sends NCBI API key in POST form and omits it from sources.tsv',
+        () async {
+      final client = FakeDatabaseClient((_, __) => ok('>AB000001.1 a\nACGT\n'));
+      final job = DownloadJob(
+        client: client,
+        archives: {
+          DatabaseSource.genBank: GenBankArchive(client, apiKey: 'secret_key'),
+          DatabaseSource.ena: EnaArchive(client),
+        },
+        records: [record('AB000001.1')],
+        options: const DownloadOptions(),
+        trimsToFrame: false,
+        root: root,
+      );
+      await job.run();
+      expect(client.requests.single.form['api_key'], 'secret_key');
+      final completed = await job.commit();
+      final String sources = File(
+        p.join(completed.files.single.parent.path, sourcesFileName),
+      ).readAsStringSync();
+      expect(sources, isNot(contains('secret_key')));
+    });
+
+    test('ENA caches taxId across search pages', () async {
+      int taxCalls = 0;
+      final client = FakeDatabaseClient((url, form) {
+        if (url.path.contains('any-name')) {
+          taxCalls++;
+          return ok('[{"taxId":"10114"}]');
+        }
+        if (url.path.endsWith('count')) return ok('{"count":"250"}');
+        return ok(jsonEncode([
+          for (int i = 0; i < int.parse(form['limit']!); i++)
+            {'accession': 'AB${100000 + i}', 'sequence_version': '1'},
+        ]));
+      });
+      final archive = EnaArchive(client);
+      const query = DatabaseQuery(
+        content: DownloadContent.nucleotide,
+        organism: 'Rattus',
+      );
+      final first = await archive.search(query);
+      await archive.search(query, after: first.next);
+      expect(taxCalls, 1);
     });
 
     test('Lists the source of each sequence', () async {

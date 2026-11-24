@@ -9,7 +9,9 @@ import 'package:segui/services/databases/client.dart';
 import 'package:segui/services/databases/types.dart';
 
 class GenBankArchive extends SequenceArchive {
-  const GenBankArchive(super.client);
+  const GenBankArchive(super.client, {this.apiKey = ''});
+
+  final String apiKey;
 
   static const int pageSize = 50;
 
@@ -168,7 +170,7 @@ class GenBankArchive extends SequenceArchive {
     await client.save(
       url,
       destination,
-      form: {...form, ..._identity},
+      form: {...form, ..._authParams},
       cancel: cancel,
       onReceived: onReceived,
     );
@@ -347,7 +349,7 @@ class GenBankArchive extends SequenceArchive {
   ) async {
     final response = await client.read(
       _utility(utility),
-      form: {...form, 'retmode': 'json', ..._identity},
+      form: {...form, 'retmode': 'json', ..._authParams},
       cancel: cancel,
     );
     if (!response.isOk) {
@@ -378,6 +380,11 @@ class GenBankArchive extends SequenceArchive {
 
   Uri _utility(String name) =>
       Uri.https('eutils.ncbi.nlm.nih.gov', '/entrez/eutils/$name.fcgi');
+
+  Map<String, String> get _authParams {
+    final String key = apiKey.trim();
+    return key.isEmpty ? _identity : {..._identity, 'api_key': key};
+  }
 }
 
 String _text(Object? value) => value?.toString().trim() ?? '';

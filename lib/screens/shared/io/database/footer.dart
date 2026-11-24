@@ -3,7 +3,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:segui/screens/shared/io/picker_widget.dart';
 import 'package:segui/services/databases/download.dart';
 import 'package:segui/services/io/io.dart';
-import 'package:segui/services/io/mobile_io.dart';
 import 'package:segui/services/providers/databases.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -41,19 +40,9 @@ class DatabasePanelFooter extends ConsumerWidget {
           vertical: SeguiSpacing.lg,
         ),
         child: switch (state) {
-          DatabaseState(:final progress?) => PickerCopyProgress(
-              progress: InputCopyProgress(
-                copied: progress.done,
-                // Without sizes, no share shows until a record is done.
-                total: progress.bytesTotal == 0 &&
-                        (progress.done == 0 || progress.total == 1)
-                    ? 0
-                    : progress.total,
-                bytesCopied: progress.bytes,
-                bytesTotal: progress.bytesTotal,
-                stage: InputCopyStage.downloading,
-                onCancel: session.cancelDownload,
-              ),
+          DatabaseState(:final progress?) => DatabaseDownloadProgress(
+              progress: progress,
+              onCancel: session.cancelDownload,
             ),
           DatabaseState(:final report?) => DownloadFailureActions(
               report: report,
@@ -69,6 +58,135 @@ class DatabasePanelFooter extends ConsumerWidget {
         },
       ),
     );
+  }
+}
+
+/// Live progress bar with stage, percentage, transfer speed, and ETA.
+class DatabaseDownloadProgress extends StatelessWidget {
+  const DatabaseDownloadProgress({
+    super.key,
+    required this.progress,
+    required this.onCancel,
+  });
+
+  final DownloadProgress progress;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final double? fraction = _fraction;
+    final TextStyle? detailStyle = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                _stageLabel,
+                style: theme.textTheme.labelMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (fraction != null)
+              Text('${(fraction * 100).floor()}%', style: detailStyle),
+            IconButton(
+              tooltip: 'Stop',
+              visualDensity: VisualDensity.compact,
+              onPressed: onCancel,
+              icon: const Icon(
+                Icons.close_rounded,
+                size: SeguiControlSize.iconMedium,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: SeguiSpacing.xs),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(SeguiRadius.full),
+          child: LinearProgressIndicator(value: fraction),
+        ),
+        const SizedBox(height: SeguiSpacing.xs),
+        Text(
+          _metricsLabel,
+          style: detailStyle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  double? get _fraction {
+    if (progress.bytesTotal > 0) {
+      return (progress.bytes / progress.bytesTotal).clamp(0.0, 1.0);
+    }
+    if (progress.total > 1 && progress.done > 0) {
+      return (progress.done / progress.total).clamp(0.0, 1.0);
+    }
+    return null;
+  }
+
+  String get _stageLabel {
+    return switch (progress.stage) {
+      DownloadStage.connecting => 'Connecting…',
+      DownloadStage.retrying =>
+        progress.retryAttempt != null && progress.retryMax != null
+            ? 'Retrying (${progress.retryAttempt}/${progress.retryMax})…'
+            : 'Retrying…',
+      DownloadStage.verifying => 'Verifying…',
+      DownloadStage.decompressing => 'Decompressing…',
+      DownloadStage.preparing => 'Preparing sequences…',
+      DownloadStage.downloading => progress.total == 0
+          ? 'Downloading…'
+          : 'Downloading ${formatCount(progress.done)} of '
+              '${formatCount(progress.total)} records',
+    };
+  }
+
+  String get _metricsLabel {
+    final FileUtils files = FileUtils();
+    final int bytes = progress.bytes;
+    final int total = progress.bytesTotal;
+    final int? speed = progress.bytesPerSecond;
+    if (bytes == 0 && total == 0) {
+      return 'Waiting for server…';
+    }
+    final List<String> parts = [];
+    if (total > 0) {
+      parts.add('${files.formatSize(bytes)} / ${files.formatSize(total)}');
+    } else if (bytes > 0) {
+      parts.add(files.formatSize(bytes));
+    }
+    if (speed != null && speed > 0) {
+      parts.add('${files.formatSize(speed)}/s');
+      if (total > bytes) {
+        final int seconds = ((total - bytes) / speed).ceil();
+        if (seconds >= 1) {
+          parts.add('${_formatEta(seconds)} left');
+        }
+      }
+    } else if (bytes == 0 || speed == 0) {
+      parts.add('Waiting for server…');
+    }
+    return parts.join(' · ');
+  }
+
+  String _formatEta(int seconds) {
+    if (seconds < 60) return '${seconds}s';
+    final int minutes = seconds ~/ 60;
+    final int remSeconds = seconds % 60;
+    if (minutes < 60) {
+      return remSeconds == 0 ? '${minutes}m' : '${minutes}m ${remSeconds}s';
+    }
+    final int hours = minutes ~/ 60;
+    final int remMinutes = minutes % 60;
+    return remMinutes == 0 ? '${hours}h' : '${hours}h ${remMinutes}m';
   }
 }
 
