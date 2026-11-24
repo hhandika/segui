@@ -14,17 +14,19 @@ SEGUL and SEGUI do all their analyses on your device. The sequence files, alignm
 
 ## Information We Collect
 
-We do not collect any personal information. The SEGUI app, the SEGUL command-line tool, and the SEGUL libraries do not include analytics, advertising, tracking, or crash reporting. The SEGUL command-line tool and libraries do not connect to the internet while you use them. SEGUI connects only when you use its database search, described below.
+We do not collect any personal information. The SEGUI app, the SEGUL command-line tool, and the SEGUL libraries do not include analytics, advertising, tracking, or crash reporting. The SEGUL command-line tool does not connect to the internet. SEGUI and the optional `download` feature of `segul-core` connect only when you search or download from public sequence databases, described below.
 
-SEGUI keeps your settings, such as the theme, on your device. SEGUL writes a log file (`segul.log` by default) next to your output. Neither is sent to us.
+SEGUI keeps your settings, such as the theme and an optional NCBI API key, on your device. SEGUL writes a log file (`segul.log` by default) next to your output. Neither is sent to us.
 
 SEGUI opens links, such as the documentation, in your web browser, and shares output files only when you choose to share them.
 
 ## Database Searches and Downloads
 
-When you use **Search databases** in SEGUI, the app connects directly to the [National Center for Biotechnology Information (NCBI)](https://www.ncbi.nlm.nih.gov/home/about/policies/) for GenBank and to [EMBL-EBI](https://www.ebi.ac.uk/about/terms-of-use/) for the European Nucleotide Archive, whichever you choose.
+When you use **Search databases** in SEGUI, the app connects directly over HTTPS to the [National Center for Biotechnology Information (NCBI)](https://www.ncbi.nlm.nih.gov/home/about/policies/) for GenBank and to [EMBL-EBI](https://www.ebi.ac.uk/about/terms-of-use/) for the European Nucleotide Archive, whichever you choose.
 
-They receive your search terms, including organism names as you type them for suggestions, the accessions you look up or download, and your IP address, as with any internet request. They handle this information under their own policies. SEGUI does not send it to us and never uploads your files.
+They receive your search terms, including organism names as you type them for suggestions, the accessions you look up or download, and your IP address, as with any internet request. Requests to NCBI also include the app name and a developer contact address as requested by NCBI policy, never your own email address. Both archives handle requests under their own policies. SEGUI does not send this information to us and never uploads your files.
+
+If you add an optional NCBI API key in **Settings › Databases**, SEGUI stores it only on your device and sends it over HTTPS only to NCBI (`eutils.ncbi.nlm.nih.gov`) to raise the GenBank rate limit. It is never sent to us or to EMBL-EBI, and it is not written to `sources.tsv` or log files. You can remove the key at any time in **Settings › Databases** (**Clear**), and you can delete downloaded files in **Settings › Data usage**.
 
 ## Crash Reports from App Stores
 
