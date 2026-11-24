@@ -189,7 +189,6 @@ class CsvTable extends StatelessWidget {
         label: label,
         width: width,
         sortValue: (row) => NaturalText(cellAt(row)?.toString() ?? ''),
-        resizable: true,
         cell: (row) => Text(
           _format(cellAt(row)),
           maxLines: 1,

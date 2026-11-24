@@ -303,7 +303,6 @@ class ReadOverviewTable extends StatelessWidget {
                 label: 'Sample',
                 width: 200,
                 sortValue: (i) => NaturalText(samples[i].sample),
-                resizable: true,
                 cell: (i) => Text(
                   samples[i].sample,
                   overflow: TextOverflow.ellipsis,

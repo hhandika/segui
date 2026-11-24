@@ -16,7 +16,7 @@ class PagedTableColumn<T> {
     required this.cell,
     this.numeric = false,
     this.sortValue,
-    this.resizable = false,
+    this.resizable = true,
   });
 
   final String label;
@@ -32,8 +32,8 @@ class PagedTableColumn<T> {
   /// names in `NaturalText` so `locus_2` sorts before `locus_10`.
   final Comparable Function(T row)? sortValue;
 
-  /// Whether a handle at the column's right edge resizes it, such as for
-  /// long sample or locus names. A double tap on the handle resets it.
+  /// Whether a handle at the column's right edge resizes it. A double tap
+  /// on the handle resets it.
   final bool resizable;
 }
 

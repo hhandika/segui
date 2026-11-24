@@ -265,7 +265,6 @@ class _ReportItemPanelState extends State<ReportItemPanel> {
                 label: widget.nameLabel,
                 width: 220,
                 sortValue: (i) => NaturalText(widget.names[i]),
-                resizable: true,
                 cell: (i) => Text(
                   widget.names[i],
                   overflow: TextOverflow.ellipsis,

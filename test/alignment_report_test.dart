@@ -332,6 +332,8 @@ void main() {
       await tester.tap(handle);
       await tester.pumpAndSettle();
       expect(tester.getTopLeft(find.text('sites')).dx, closeTo(before, 1));
+      // Numeric columns resize too.
+      expect(find.bySemanticsLabel('Resize sites column'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

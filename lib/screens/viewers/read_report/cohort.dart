@@ -131,7 +131,6 @@ class ReadPairsTable extends StatelessWidget {
           PagedTableColumn(
             label: 'Pair',
             width: 200,
-            resizable: true,
             sortValue: (p) => NaturalText(p.pairName),
             cell: (p) => Text(p.pairName, overflow: TextOverflow.ellipsis),
           ),
@@ -222,7 +221,6 @@ class CohortOutliersTable extends StatelessWidget {
           PagedTableColumn(
             label: 'Sample',
             width: 200,
-            resizable: true,
             sortValue: (o) => NaturalText(o.sample),
             cell: (o) => Text(o.sample, overflow: TextOverflow.ellipsis),
           ),

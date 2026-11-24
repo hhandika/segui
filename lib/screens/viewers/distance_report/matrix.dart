@@ -227,7 +227,6 @@ class _MatrixHeatmap extends StatelessWidget {
                 label: itemLabel,
                 width: 220,
                 sortValue: (i) => NaturalText(names[i]),
-                resizable: true,
                 cell: (i) => Text(names[i], overflow: TextOverflow.ellipsis),
               ),
               for (int j = 0; j < names.length; j++)
