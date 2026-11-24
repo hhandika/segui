@@ -4229,6 +4229,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FrbConcurrencyProfile dco_decode_frb_concurrency_profile(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return FrbConcurrencyProfile.values[raw as int];
+  }
+
+  @protected
   FrbDatabaseSource dco_decode_frb_database_source(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return FrbDatabaseSource.values[raw as int];
@@ -4321,15 +4327,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   FrbDownloadRequest dco_decode_frb_download_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
     return FrbDownloadRequest(
       records: dco_decode_list_frb_download_record(arr[0]),
       options: dco_decode_frb_download_options(arr[1]),
       ncbiApiKey: dco_decode_opt_String(arr[2]),
-      trimsToFrame: dco_decode_bool(arr[3]),
-      rootDir: dco_decode_String(arr[4]),
-      takenNames: dco_decode_list_String(arr[5]),
+      concurrency: dco_decode_frb_concurrency_profile(arr[3]),
+      maxConnections: dco_decode_opt_box_autoadd_u_32(arr[4]),
+      trimsToFrame: dco_decode_bool(arr[5]),
+      rootDir: dco_decode_String(arr[6]),
+      takenNames: dco_decode_list_String(arr[7]),
     );
   }
 
@@ -6608,6 +6616,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  FrbConcurrencyProfile sse_decode_frb_concurrency_profile(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return FrbConcurrencyProfile.values[inner];
+  }
+
+  @protected
   FrbDatabaseSource sse_decode_frb_database_source(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -6715,6 +6731,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_records = sse_decode_list_frb_download_record(deserializer);
     var var_options = sse_decode_frb_download_options(deserializer);
     var var_ncbiApiKey = sse_decode_opt_String(deserializer);
+    var var_concurrency = sse_decode_frb_concurrency_profile(deserializer);
+    var var_maxConnections = sse_decode_opt_box_autoadd_u_32(deserializer);
     var var_trimsToFrame = sse_decode_bool(deserializer);
     var var_rootDir = sse_decode_String(deserializer);
     var var_takenNames = sse_decode_list_String(deserializer);
@@ -6722,6 +6740,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         records: var_records,
         options: var_options,
         ncbiApiKey: var_ncbiApiKey,
+        concurrency: var_concurrency,
+        maxConnections: var_maxConnections,
         trimsToFrame: var_trimsToFrame,
         rootDir: var_rootDir,
         takenNames: var_takenNames);
@@ -9188,6 +9208,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_frb_concurrency_profile(
+      FrbConcurrencyProfile self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
   void sse_encode_frb_database_source(
       FrbDatabaseSource self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -9265,6 +9292,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_list_frb_download_record(self.records, serializer);
     sse_encode_frb_download_options(self.options, serializer);
     sse_encode_opt_String(self.ncbiApiKey, serializer);
+    sse_encode_frb_concurrency_profile(self.concurrency, serializer);
+    sse_encode_opt_box_autoadd_u_32(self.maxConnections, serializer);
     sse_encode_bool(self.trimsToFrame, serializer);
     sse_encode_String(self.rootDir, serializer);
     sse_encode_list_String(self.takenNames, serializer);

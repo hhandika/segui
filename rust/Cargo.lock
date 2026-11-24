@@ -3109,7 +3109,6 @@ dependencies = [
 [[package]]
 name = "segul-core"
 version = "0.25.0"
-source = "git+https://github.com/hhandika/segul?branch=main#86d77aede5acb9c1f2f81892dc2f2495aabf9044"
 dependencies = [
  "ahash",
  "alphanumeric-sort",

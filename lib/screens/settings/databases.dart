@@ -55,6 +55,8 @@ class _DatabaseSettingsViewState extends ConsumerState<DatabaseSettingsView> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final String savedKey = ref.watch(ncbiApiKeyProvider);
+    final DownloadConcurrency concurrency =
+        ref.watch(downloadConcurrencyProvider);
     final bool hasSaved = savedKey.isNotEmpty;
     final bool hasInput = _controller.text.trim().isNotEmpty;
     final bool isDirty = _controller.text.trim() != savedKey;
@@ -137,6 +139,52 @@ class _DatabaseSettingsViewState extends ConsumerState<DatabaseSettingsView> {
                   ),
                   Text(
                     'Stored only on this device and sent only to NCBI.',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: SeguiSpacing.lg),
+              FormCard(
+                children: [
+                  Text(
+                    'Concurrent downloads',
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  SegmentedButton<DownloadConcurrency>(
+                    segments: const [
+                      ButtonSegment(
+                        value: DownloadConcurrency.auto,
+                        label: Text('Auto'),
+                      ),
+                      ButtonSegment(
+                        value: DownloadConcurrency.conservative,
+                        label: Text('Conservative'),
+                      ),
+                      ButtonSegment(
+                        value: DownloadConcurrency.single,
+                        label: Text('Single'),
+                      ),
+                    ],
+                    selected: {concurrency},
+                    onSelectionChanged: (selected) {
+                      ref
+                          .read(downloadConcurrencyProvider.notifier)
+                          .set(selected.first);
+                    },
+                  ),
+                  Text(
+                    switch (concurrency) {
+                      DownloadConcurrency.auto =>
+                        'Uses the fastest safe limit for each archive and '
+                            'slows down automatically if busy.',
+                      DownloadConcurrency.conservative =>
+                        'Uses fewer parallel connections for slower or shared '
+                            'networks.',
+                      DownloadConcurrency.single =>
+                        'Downloads one file or batch at a time.',
+                    },
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),

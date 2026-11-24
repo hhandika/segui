@@ -7,6 +7,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:segui/services/databases/client.dart';
 import 'package:segui/services/databases/download.dart';
 import 'package:segui/services/databases/types.dart';
+import 'package:segui/services/providers/settings.dart';
 import 'package:segui/src/rust/api/download.dart';
 
 /// Executes GenBank and ENA downloads through `segul-core` via Flutter Rust
@@ -19,6 +20,8 @@ class RustDownloadHandle implements DownloadHandle {
     required this.root,
     this.takenNames = const {},
     this.ncbiApiKey = '',
+    this.concurrency = DownloadConcurrency.auto,
+    this.maxConnections,
   });
 
   final List<DatabaseRecord> records;
@@ -27,6 +30,8 @@ class RustDownloadHandle implements DownloadHandle {
   final Directory root;
   final Set<String> takenNames;
   final String ncbiApiKey;
+  final DownloadConcurrency concurrency;
+  final int? maxConnections;
 
   DatabaseDownloadJob? _job;
 
@@ -112,6 +117,13 @@ class RustDownloadHandle implements DownloadHandle {
           fileName: options.fileName,
         ),
         ncbiApiKey: key.isEmpty ? null : key,
+        concurrency: switch (concurrency) {
+          DownloadConcurrency.auto => FrbConcurrencyProfile.auto,
+          DownloadConcurrency.conservative =>
+            FrbConcurrencyProfile.conservative,
+          DownloadConcurrency.single => FrbConcurrencyProfile.single,
+        },
+        maxConnections: maxConnections,
         trimsToFrame: trimsToFrame,
         rootDir: root.path,
         takenNames: takenNames.toList(),

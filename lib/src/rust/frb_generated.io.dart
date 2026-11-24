@@ -376,6 +376,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   FrbCompletedDownload dco_decode_frb_completed_download(dynamic raw);
 
   @protected
+  FrbConcurrencyProfile dco_decode_frb_concurrency_profile(dynamic raw);
+
+  @protected
   FrbDatabaseSource dco_decode_frb_database_source(dynamic raw);
 
   @protected
@@ -1061,6 +1064,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   FrbCompletedDownload sse_decode_frb_completed_download(
+      SseDeserializer deserializer);
+
+  @protected
+  FrbConcurrencyProfile sse_decode_frb_concurrency_profile(
       SseDeserializer deserializer);
 
   @protected
@@ -1814,6 +1821,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_frb_completed_download(
       FrbCompletedDownload self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_frb_concurrency_profile(
+      FrbConcurrencyProfile self, SseSerializer serializer);
 
   @protected
   void sse_encode_frb_database_source(

@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `reporter`, `runtime`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `MonitorInner`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `is_cancelled`, `on_progress`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `assert_fields_are_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `is_cancelled`, `on_progress`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<DatabaseDownloadJob>>
 abstract class DatabaseDownloadJob implements RustOpaqueInterface {
@@ -66,6 +66,14 @@ class FrbCompletedDownload {
           runtimeType == other.runtimeType &&
           files == other.files &&
           dataType == other.dataType;
+}
+
+/// Parallel connection profile for GenBank and ENA downloads.
+enum FrbConcurrencyProfile {
+  auto,
+  conservative,
+  single,
+  ;
 }
 
 /// Public sequence archive supported by the downloader.
@@ -270,6 +278,8 @@ class FrbDownloadRequest {
   final List<FrbDownloadRecord> records;
   final FrbDownloadOptions options;
   final String? ncbiApiKey;
+  final FrbConcurrencyProfile concurrency;
+  final int? maxConnections;
   final bool trimsToFrame;
   final String rootDir;
   final List<String> takenNames;
@@ -278,6 +288,8 @@ class FrbDownloadRequest {
     required this.records,
     required this.options,
     this.ncbiApiKey,
+    required this.concurrency,
+    this.maxConnections,
     required this.trimsToFrame,
     required this.rootDir,
     required this.takenNames,
@@ -288,6 +300,8 @@ class FrbDownloadRequest {
       records.hashCode ^
       options.hashCode ^
       ncbiApiKey.hashCode ^
+      concurrency.hashCode ^
+      maxConnections.hashCode ^
       trimsToFrame.hashCode ^
       rootDir.hashCode ^
       takenNames.hashCode;
@@ -300,6 +314,8 @@ class FrbDownloadRequest {
           records == other.records &&
           options == other.options &&
           ncbiApiKey == other.ncbiApiKey &&
+          concurrency == other.concurrency &&
+          maxConnections == other.maxConnections &&
           trimsToFrame == other.trimsToFrame &&
           rootDir == other.rootDir &&
           takenNames == other.takenNames;

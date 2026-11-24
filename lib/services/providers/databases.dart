@@ -52,6 +52,12 @@ typedef DownloadHandleFactory = DownloadHandle Function({
 /// loading the native Rust library.
 final downloadHandleFactoryProvider = Provider<DownloadHandleFactory>((ref) {
   final String apiKey = ref.watch(ncbiApiKeyProvider).trim();
+  final DownloadConcurrency concurrency =
+      ref.watch(downloadConcurrencyProvider);
+  final int? maxConnections = concurrency == DownloadConcurrency.auto &&
+          runningPlatform == PlatformType.isMobile
+      ? 4
+      : null;
   return ({
     required List<DatabaseRecord> records,
     required DownloadOptions options,
@@ -66,6 +72,8 @@ final downloadHandleFactoryProvider = Provider<DownloadHandleFactory>((ref) {
         root: root,
         takenNames: takenNames,
         ncbiApiKey: apiKey,
+        concurrency: concurrency,
+        maxConnections: maxConnections,
       );
 });
 

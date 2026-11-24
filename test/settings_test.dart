@@ -234,6 +234,47 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('Concurrent downloads defaults to Auto and persists selection',
+      (tester) async {
+    setWindowSize(tester, const Size(1000, 900));
+    final ProviderContainer container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        home: const DatabaseSettings(),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(
+        container.read(downloadConcurrencyProvider), DownloadConcurrency.auto);
+    expect(find.textContaining('fastest safe limit'), findsOneWidget);
+
+    await tester.tap(find.text('Conservative'));
+    await tester.pumpAndSettle();
+    expect(
+      container.read(downloadConcurrencyProvider),
+      DownloadConcurrency.conservative,
+    );
+    expect(preferences.getString('downloadConcurrency'), 'conservative');
+    expect(find.textContaining('slower or shared networks'), findsOneWidget);
+
+    await tester.tap(find.text('Single'));
+    await tester.pumpAndSettle();
+    expect(
+      container.read(downloadConcurrencyProvider),
+      DownloadConcurrency.single,
+    );
+    expect(preferences.getString('downloadConcurrency'), 'single');
+    expect(find.textContaining('one file or batch at a time'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Settings exposes Databases page on desktop', (tester) async {
     setWindowSize(tester, const Size(1200, 900));
     final ProviderContainer container = ProviderContainer(

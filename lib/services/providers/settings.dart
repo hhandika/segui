@@ -135,6 +135,33 @@ class NcbiApiKeySetting extends Notifier<String> {
   Future<void> clear() => set('');
 }
 
+/// Parallel connection mode for GenBank and ENA downloads.
+enum DownloadConcurrency { auto, conservative, single }
+
+final downloadConcurrencyProvider =
+    NotifierProvider<DownloadConcurrencySetting, DownloadConcurrency>(
+  DownloadConcurrencySetting.new,
+);
+
+/// Remembers how many parallel connections SEGUI uses for database downloads.
+class DownloadConcurrencySetting extends Notifier<DownloadConcurrency> {
+  static const String _key = 'downloadConcurrency';
+
+  @override
+  DownloadConcurrency build() {
+    final String? saved = ref.watch(settingProvider).getString(_key);
+    return DownloadConcurrency.values.firstWhere(
+      (mode) => mode.name == saved,
+      orElse: () => DownloadConcurrency.auto,
+    );
+  }
+
+  Future<void> set(DownloadConcurrency mode) async {
+    state = mode;
+    await ref.read(settingProvider).setString(_key, mode.name);
+  }
+}
+
 final chartPaletteProvider = NotifierProvider<ColorNameSetting, String>(
   () => ColorNameSetting('chartPalette', defaultChartPalette),
 );

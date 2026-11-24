@@ -5,10 +5,10 @@ use std::sync::{Arc, Mutex, OnceLock};
 
 use flutter_rust_bridge::frb;
 use segul_core::core::download::{
-    CompletedDownload, DatabaseSource, DownloadCancelled, DownloadConfig, DownloadContent,
-    DownloadJob, DownloadOptions, DownloadProgress, DownloadProgressReporter, DownloadRecord,
-    DownloadReport, DownloadStage, RecordDownloadStatus, RemoteFile, SequenceGrouping,
-    SequenceNaming,
+    CompletedDownload, ConcurrencyProfile, DatabaseSource, DownloadCancelled, DownloadConfig,
+    DownloadContent, DownloadJob, DownloadOptions, DownloadProgress, DownloadProgressReporter,
+    DownloadRecord, DownloadReport, DownloadStage, RecordDownloadStatus, RemoteFile,
+    SequenceGrouping, SequenceNaming,
 };
 
 use crate::frb_generated::StreamSink;
@@ -99,6 +99,14 @@ pub struct FrbDownloadRecord {
     pub files: Vec<FrbRemoteFile>,
 }
 
+/// Parallel connection profile for GenBank and ENA downloads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FrbConcurrencyProfile {
+    Auto,
+    Conservative,
+    Single,
+}
+
 /// Output grouping, naming, and gene filter options.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FrbDownloadOptions {
@@ -114,6 +122,8 @@ pub struct FrbDownloadRequest {
     pub records: Vec<FrbDownloadRecord>,
     pub options: FrbDownloadOptions,
     pub ncbi_api_key: Option<String>,
+    pub concurrency: FrbConcurrencyProfile,
+    pub max_connections: Option<u32>,
     pub trims_to_frame: bool,
     pub root_dir: String,
     pub taken_names: Vec<String>,
@@ -260,8 +270,17 @@ impl DatabaseDownloadJob {
             .map(DownloadRecord::from)
             .collect();
         let options = DownloadOptions::from(request.options);
+        let concurrency = match request.concurrency {
+            FrbConcurrencyProfile::Single => ConcurrencyProfile::Max(1),
+            FrbConcurrencyProfile::Conservative => ConcurrencyProfile::Conservative,
+            FrbConcurrencyProfile::Auto => request
+                .max_connections
+                .map(|n| ConcurrencyProfile::Max(n as usize))
+                .unwrap_or(ConcurrencyProfile::Auto),
+        };
         let config = DownloadConfig {
             ncbi_api_key: request.ncbi_api_key,
+            concurrency,
             ..Default::default()
         };
         let taken_names: HashSet<String> = request

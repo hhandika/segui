@@ -5010,6 +5010,19 @@ impl SseDecode for crate::api::download::FrbCompletedDownload {
     }
 }
 
+impl SseDecode for crate::api::download::FrbConcurrencyProfile {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::api::download::FrbConcurrencyProfile::Auto,
+            1 => crate::api::download::FrbConcurrencyProfile::Conservative,
+            2 => crate::api::download::FrbConcurrencyProfile::Single,
+            _ => unreachable!("Invalid variant for FrbConcurrencyProfile: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::api::download::FrbDatabaseSource {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -5141,6 +5154,9 @@ impl SseDecode for crate::api::download::FrbDownloadRequest {
             <Vec<crate::api::download::FrbDownloadRecord>>::sse_decode(deserializer);
         let mut var_options = <crate::api::download::FrbDownloadOptions>::sse_decode(deserializer);
         let mut var_ncbiApiKey = <Option<String>>::sse_decode(deserializer);
+        let mut var_concurrency =
+            <crate::api::download::FrbConcurrencyProfile>::sse_decode(deserializer);
+        let mut var_maxConnections = <Option<u32>>::sse_decode(deserializer);
         let mut var_trimsToFrame = <bool>::sse_decode(deserializer);
         let mut var_rootDir = <String>::sse_decode(deserializer);
         let mut var_takenNames = <Vec<String>>::sse_decode(deserializer);
@@ -5148,6 +5164,8 @@ impl SseDecode for crate::api::download::FrbDownloadRequest {
             records: var_records,
             options: var_options,
             ncbi_api_key: var_ncbiApiKey,
+            concurrency: var_concurrency,
+            max_connections: var_maxConnections,
             trims_to_frame: var_trimsToFrame,
             root_dir: var_rootDir,
             taken_names: var_takenNames,
@@ -8379,6 +8397,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbCompletedDownloa
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::download::FrbConcurrencyProfile {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Auto => 0.into_dart(),
+            Self::Conservative => 1.into_dart(),
+            Self::Single => 2.into_dart(),
+            _ => unreachable!(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::download::FrbConcurrencyProfile
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::download::FrbConcurrencyProfile>
+    for crate::api::download::FrbConcurrencyProfile
+{
+    fn into_into_dart(self) -> crate::api::download::FrbConcurrencyProfile {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDatabaseSource {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         match self {
@@ -8552,6 +8592,8 @@ impl flutter_rust_bridge::IntoDart for crate::api::download::FrbDownloadRequest 
             self.records.into_into_dart().into_dart(),
             self.options.into_into_dart().into_dart(),
             self.ncbi_api_key.into_into_dart().into_dart(),
+            self.concurrency.into_into_dart().into_dart(),
+            self.max_connections.into_into_dart().into_dart(),
             self.trims_to_frame.into_into_dart().into_dart(),
             self.root_dir.into_into_dart().into_dart(),
             self.taken_names.into_into_dart().into_dart(),
@@ -10554,6 +10596,23 @@ impl SseEncode for crate::api::download::FrbCompletedDownload {
     }
 }
 
+impl SseEncode for crate::api::download::FrbConcurrencyProfile {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::api::download::FrbConcurrencyProfile::Auto => 0,
+                crate::api::download::FrbConcurrencyProfile::Conservative => 1,
+                crate::api::download::FrbConcurrencyProfile::Single => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::api::download::FrbDatabaseSource {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -10652,6 +10711,8 @@ impl SseEncode for crate::api::download::FrbDownloadRequest {
         <Vec<crate::api::download::FrbDownloadRecord>>::sse_encode(self.records, serializer);
         <crate::api::download::FrbDownloadOptions>::sse_encode(self.options, serializer);
         <Option<String>>::sse_encode(self.ncbi_api_key, serializer);
+        <crate::api::download::FrbConcurrencyProfile>::sse_encode(self.concurrency, serializer);
+        <Option<u32>>::sse_encode(self.max_connections, serializer);
         <bool>::sse_encode(self.trims_to_frame, serializer);
         <String>::sse_encode(self.root_dir, serializer);
         <Vec<String>>::sse_encode(self.taken_names, serializer);
