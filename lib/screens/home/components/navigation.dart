@@ -46,34 +46,22 @@ const List<NavigationTarget> navigationTargets = [
 
 const List<NavigationDrawerDestination> navigationDrawerTargets = [
   NavigationDrawerDestination(
-    label: Text(
-      'Home',
-      overflow: TextOverflow.ellipsis,
-    ),
+    label: NavigationDrawerLabel('Home'),
     icon: Icon(Icons.home_outlined),
     selectedIcon: Icon(Icons.home),
   ),
   NavigationDrawerDestination(
-    label: Text(
-      'Genomics',
-      overflow: TextOverflow.ellipsis,
-    ),
+    label: NavigationDrawerLabel('Genomics'),
     icon: Icon(SeguiIcons.genomicsOutlined),
     selectedIcon: Icon(SeguiIcons.genomicsFilled),
   ),
   NavigationDrawerDestination(
-    label: Text(
-      'Alignments',
-      overflow: TextOverflow.ellipsis,
-    ),
+    label: NavigationDrawerLabel('Alignments'),
     icon: Icon(SeguiIcons.alignmentsOutlined),
     selectedIcon: Icon(SeguiIcons.alignmentsFilled),
   ),
   NavigationDrawerDestination(
-    label: Text(
-      'Sequences',
-      overflow: TextOverflow.ellipsis,
-    ),
+    label: NavigationDrawerLabel('Sequences'),
     icon: Icon(SeguiIcons.sequencesOutlined),
     selectedIcon: Icon(SeguiIcons.sequencesFilled),
   ),

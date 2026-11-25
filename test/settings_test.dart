@@ -293,5 +293,28 @@ void main() {
     await tester.tap(find.text('Databases'));
     await tester.pumpAndSettle();
     expect(find.widgetWithText(TextField, 'NCBI API key'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Large screen settings drawer renders all pages without overflow',
+      (tester) async {
+    setWindowSize(tester, const Size(1200, 900));
+    final ProviderContainer container = ProviderContainer(
+      overrides: [settingProvider.overrideWithValue(preferences)],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        theme: SeguiTheme.lightTheme(),
+        home: Scaffold(
+          body: LargeScreenSettings(pages: SettingsPage.values),
+        ),
+      ),
+    ));
+    await tester.pump();
+    expect(find.text('Folder access'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

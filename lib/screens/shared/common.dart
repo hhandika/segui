@@ -33,6 +33,25 @@ class DrawerDivider extends StatelessWidget {
   }
 }
 
+/// Ellipsized label bounded to the inner width of a navigation drawer row.
+class NavigationDrawerLabel extends StatelessWidget {
+  const NavigationDrawerLabel(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: navigationDrawerLabelWidth),
+      child: Text(
+        text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
 class TopDivider extends StatelessWidget {
   const TopDivider({super.key});
 

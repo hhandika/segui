@@ -49,6 +49,10 @@ enum WindowSizeClass {
 /// the 220 to 360 dp range of an expanded navigation rail.
 const double navigationDrawerWidth = 240;
 
+/// Widest label allowed inside a [NavigationDrawerDestination] row
+/// (`navigationDrawerWidth` minus tile/leading padding and trailing margin).
+const double navigationDrawerLabelWidth = 168;
+
 /// Widest content area for pages that lay out cards in a grid, so wide
 /// monitors fill with more columns instead of empty margins.
 const double maxGridContentWidth = 2400;

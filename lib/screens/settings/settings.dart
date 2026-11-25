@@ -136,7 +136,10 @@ enum SettingsPage {
 /// Settings laid out like the home screen: the pages in a drawer on the
 /// page background, and the open page in an outlined container.
 class LargeScreenSettings extends ConsumerStatefulWidget {
-  const LargeScreenSettings({super.key});
+  const LargeScreenSettings({super.key, this.pages});
+
+  /// Pages listed in the drawer, defaulting to [SettingsPage.available].
+  final List<SettingsPage>? pages;
 
   @override
   LargeScreenSettingsState createState() => LargeScreenSettingsState();
@@ -147,7 +150,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
 
   @override
   Widget build(BuildContext context) {
-    final List<SettingsPage> pages = SettingsPage.available;
+    final List<SettingsPage> pages = widget.pages ?? SettingsPage.available;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -166,7 +169,7 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
           children: [
             for (final SettingsPage page in pages)
               NavigationDrawerDestination(
-                label: Text(page.label),
+                label: NavigationDrawerLabel(page.label),
                 icon: Icon(page.icon),
                 selectedIcon: Icon(page.selectedIcon),
               ),
