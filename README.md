@@ -36,12 +36,9 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 
 Learn more about device requirements and GUI app installation in the [documentation](https://segul.app/docs/installation/install_gui/).
 
-## Coming Soon: SEGUI with SEGUL v0.24.0
+## What's New in SEGUI 1.2
 
-> [!NOTE]
-> This update is not released yet. The current app store versions do not include these features.
-
-The next release updates SEGUI to SEGUL v0.24.0 and redesigns the app.
+SEGUI 1.2 updates the app to SEGUL v0.25.0 and redesigns the app.
 
 New tools:
 

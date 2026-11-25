@@ -1,6 +1,6 @@
 # Release Notes
 
-## v1.2.1
+## v1.2.1 - 2026-11-11
 
 ### Improvements
 
@@ -10,7 +10,7 @@
 
 - Fix a bug where OS navigation buttons were covering the viewers.
 
-## v1.2.0
+## v1.2.0 - 2026-11-10
 
 ### New Features
 
@@ -33,7 +33,7 @@
 
 - Fix Android launch issues.
 
-## v1.1.3
+## v1.1.3 - 2026-08-31
 
 ### Bug Fixes
 
@@ -41,7 +41,7 @@
 - Fix menu drawer keeps opening after toggling the hamburger menu.
 - Fix window size buttons.
 
-## v1.1.2
+## v1.1.2 - 2024-05-18
 
 - Improve number formatting for tabular data.
 
@@ -49,7 +49,7 @@
 
 - Fix empty window help text not displayed properly.
 
-## v1.1.0
+## v1.1.0 - 2024-05-13
 
 ### New Features
 
@@ -60,11 +60,11 @@
 - Fix help text not displayed properly.
 - Improve help text description.
 
-## v1.0.1
+## v1.0.1 - 2024-05-13
 
 - Fix contig summary could not find the contig files
 - Fix quick action button label improperly displayed
 
-## v1.0.0
+## v1.0.0 - 2024-05-10
 
 - First stable release
