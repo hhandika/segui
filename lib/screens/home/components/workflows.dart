@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/screens/home/components/tool_catalog.dart';
 import 'package:segui/screens/shared/equal_height_grid.dart';
+import 'package:segui/screens/shared/info.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
@@ -54,13 +55,28 @@ class WorkflowList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDesktop = isDesktopScreen(context);
+    final Widget title = Text(
+      'Common workflows',
+      style: Theme.of(context).textTheme.titleMedium,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Common workflows',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        // Desktop has room for the note as a caption. Smaller screens
+        // keep it behind an info icon.
+        if (isDesktop) ...[
+          title,
+          const SizedBox(height: SeguiSpacing.xxs),
+          const WorkflowNoteCaption(),
+        ] else
+          Row(
+            children: [
+              title,
+              const SizedBox(width: SeguiSpacing.xs),
+              const WorkflowNoteIcon(),
+            ],
+          ),
         const SizedBox(height: SeguiSpacing.md),
         LayoutBuilder(builder: (context, constraints) {
           return EqualHeightGrid(

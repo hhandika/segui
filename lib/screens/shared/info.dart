@@ -62,3 +62,59 @@ class SharedInfoForm extends StatelessWidget {
     );
   }
 }
+
+/// Note that some workflow steps happen outside SEGUI.
+const String workflowExternalStepsNote =
+    'Some workflows may need steps outside SEGUI, such as alignment or '
+    'tree inference.';
+
+/// Info icon that shows [workflowExternalStepsNote] on hover or tap.
+class WorkflowNoteIcon extends StatelessWidget {
+  const WorkflowNoteIcon({super.key, this.size = SeguiControlSize.iconSmall});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: workflowExternalStepsNote,
+      // Tap opens it on touch screens, where there is no hover.
+      triggerMode: TooltipTriggerMode.tap,
+      child: Icon(
+        Icons.info_outline_rounded,
+        size: size,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        semanticLabel: workflowExternalStepsNote,
+      ),
+    );
+  }
+}
+
+/// [workflowExternalStepsNote] as a caption with a leading info icon.
+class WorkflowNoteCaption extends StatelessWidget {
+  const WorkflowNoteCaption({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          Icons.info_outline_rounded,
+          size: SeguiControlSize.iconSmall,
+          color: colors.onSurfaceVariant,
+        ),
+        const SizedBox(width: SeguiSpacing.xs),
+        Expanded(
+          child: Text(
+            workflowExternalStepsNote,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: colors.onSurfaceVariant,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+}

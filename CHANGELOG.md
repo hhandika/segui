@@ -1,5 +1,25 @@
 # Release Notes
 
+## Unreleased
+
+### New Features
+
+- Search GenBank and ENA from tools that read unaligned sequences, reads, or assemblies, and add the records as input. Downloads run in parallel, check free storage first, and have their own settings page.
+- Contig summary report with charts and tables.
+- Read summary reports compare all samples in one run.
+
+### Improvements
+
+- Data usage shows storage by data type, with a searchable file tree and multi-select.
+- Read reports show only the adapters found in the data.
+- Report table columns can be resized.
+- Workflows note that some steps may need tools outside SEGUI.
+
+### Bug Fixes
+
+- Fix the run button staying disabled after filling required fields.
+- Fix overflow in settings and navigation on narrow screens.
+
 ## v1.2.1 - 2026-11-11
 
 ### Improvements

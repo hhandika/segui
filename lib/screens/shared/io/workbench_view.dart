@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
+import 'package:segui/screens/shared/info.dart';
 import 'package:segui/screens/shared/io/inspector_view.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
@@ -50,6 +51,7 @@ class WorkbenchView extends ConsumerWidget {
           if (suggestions.workflows.isNotEmpty) ...[
             WorkbenchSectionTitle(
               title: 'Suggested workflows',
+              note: const WorkflowNoteIcon(),
               trailing: '${suggestions.workflows.length}',
             ),
             for (final (index, progress) in suggestions.workflows.indexed) ...[
@@ -72,9 +74,17 @@ class WorkbenchView extends ConsumerWidget {
 
 /// Section heading in the workbench, with an optional count.
 class WorkbenchSectionTitle extends StatelessWidget {
-  const WorkbenchSectionTitle({super.key, required this.title, this.trailing});
+  const WorkbenchSectionTitle({
+    super.key,
+    required this.title,
+    this.note,
+    this.trailing,
+  });
 
   final String title;
+
+  /// Widget shown right after the title, such as an info icon.
+  final Widget? note;
   final String? trailing;
 
   @override
@@ -89,7 +99,17 @@ class WorkbenchSectionTitle extends StatelessWidget {
           SeguiSpacing.xs, SeguiSpacing.xl, SeguiSpacing.xs, SeguiSpacing.md),
       child: Row(
         children: [
-          Expanded(child: Text(title, style: style)),
+          Expanded(
+            child: Row(
+              children: [
+                Flexible(child: Text(title, style: style)),
+                if (note != null) ...[
+                  const SizedBox(width: SeguiSpacing.xs),
+                  note!,
+                ],
+              ],
+            ),
+          ),
           if (trailing != null) Text(trailing!, style: style),
         ],
       ),
