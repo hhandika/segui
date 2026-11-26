@@ -24,9 +24,9 @@ class AlignmentCell {
   int get hashCode => Object.hash(row, site);
 }
 
-/// Sites shown by the grid: one chunk when paged, otherwise all sites.
-class AlignmentWindow {
-  const AlignmentWindow(this.start, this.end);
+/// Sites shown by the grid: one window when paged, otherwise all sites.
+class AlignmentSiteRange {
+  const AlignmentSiteRange(this.start, this.end);
 
   final int start;
   final int end;
@@ -35,7 +35,7 @@ class AlignmentWindow {
 
   @override
   bool operator ==(Object other) =>
-      other is AlignmentWindow && other.start == start && other.end == end;
+      other is AlignmentSiteRange && other.start == start && other.end == end;
 
   @override
   int get hashCode => Object.hash(start, end);
@@ -48,13 +48,13 @@ class AlignmentGrid extends StatelessWidget {
     required this.data,
     required this.rowOrder,
     required this.selectedRows,
-    required this.window,
+    required this.siteRange,
     required this.cellSize,
     required this.rowHeight,
     required this.colorMode,
     required this.showLetters,
-    required this.chunkSize,
-    required this.showChunkBoundaries,
+    required this.windowSize,
+    required this.showWindowBoundaries,
     required this.horizontalController,
     required this.verticalController,
     required this.hover,
@@ -71,13 +71,13 @@ class AlignmentGrid extends StatelessWidget {
 
   /// Sequences picked in the name panel, tinted across the grid.
   final Set<int> selectedRows;
-  final AlignmentWindow window;
+  final AlignmentSiteRange siteRange;
   final double cellSize;
   final double rowHeight;
   final AlignmentColorMode colorMode;
   final bool showLetters;
-  final int chunkSize;
-  final bool showChunkBoundaries;
+  final int windowSize;
+  final bool showWindowBoundaries;
   final ScrollController horizontalController;
   final ScrollController verticalController;
   final ValueNotifier<AlignmentCell?> hover;
@@ -148,13 +148,13 @@ class AlignmentGrid extends StatelessWidget {
                           data: data,
                           rowOrder: rowOrder,
                           selectedRows: selectedRows,
-                          window: window,
+                          siteRange: siteRange,
                           cellSize: cellSize,
                           rowHeight: rowHeight,
                           colorMode: colorMode,
                           showLetters: showLetters,
-                          chunkSize: chunkSize,
-                          showChunkBoundaries: showChunkBoundaries,
+                          windowSize: windowSize,
+                          showWindowBoundaries: showWindowBoundaries,
                           devicePixelRatio:
                               MediaQuery.devicePixelRatioOf(context),
                           style: _GridStyle.of(theme, data.isDna, colorMode),
@@ -173,10 +173,10 @@ class AlignmentGrid extends StatelessWidget {
   }
 
   AlignmentCell? _cellAt(Offset position, double dx, double dy) {
-    final int site = window.start + ((position.dx + dx) / cellSize).floor();
+    final int site = siteRange.start + ((position.dx + dx) / cellSize).floor();
     final int row = ((position.dy + dy) / rowHeight).floor();
     if (row < 0 || row >= rowOrder.length) return null;
-    if (site < window.start || site >= window.end) return null;
+    if (site < siteRange.start || site >= siteRange.end) return null;
     return AlignmentCell(rowOrder[row], site);
   }
 
@@ -305,13 +305,13 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
     required this.data,
     required this.rowOrder,
     required this.selectedRows,
-    required this.window,
+    required this.siteRange,
     required this.cellSize,
     required this.rowHeight,
     required this.colorMode,
     required this.showLetters,
-    required this.chunkSize,
-    required this.showChunkBoundaries,
+    required this.windowSize,
+    required this.showWindowBoundaries,
     required this.devicePixelRatio,
     required this.style,
     required this.selection,
@@ -322,13 +322,13 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
   final AlignmentViewData data;
   final List<int> rowOrder;
   final Set<int> selectedRows;
-  final AlignmentWindow window;
+  final AlignmentSiteRange siteRange;
   final double cellSize;
   final double rowHeight;
   final AlignmentColorMode colorMode;
   final bool showLetters;
-  final int chunkSize;
-  final bool showChunkBoundaries;
+  final int windowSize;
+  final bool showWindowBoundaries;
   final double devicePixelRatio;
   final _GridStyle style;
   final ValueNotifier<AlignmentCell?> selection;
@@ -341,13 +341,13 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
       data: data,
       rowOrder: rowOrder,
       selectedRows: selectedRows,
-      window: window,
+      siteRange: siteRange,
       cellSize: cellSize,
       rowHeight: rowHeight,
       colorMode: colorMode,
       showLetters: showLetters,
-      chunkSize: chunkSize,
-      showChunkBoundaries: showChunkBoundaries,
+      windowSize: windowSize,
+      showWindowBoundaries: showWindowBoundaries,
       devicePixelRatio: devicePixelRatio,
       style: style,
       selection: selection,
@@ -365,13 +365,13 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
       ..data = data
       ..rowOrder = rowOrder
       ..selectedRows = selectedRows
-      ..window = window
+      ..siteRange = siteRange
       ..cellSize = cellSize
       ..rowHeight = rowHeight
       ..colorMode = colorMode
       ..showLetters = showLetters
-      ..chunkSize = chunkSize
-      ..showChunkBoundaries = showChunkBoundaries
+      ..windowSize = windowSize
+      ..showWindowBoundaries = showWindowBoundaries
       ..devicePixelRatio = devicePixelRatio
       ..style = style
       ..selection = selection;
@@ -385,13 +385,13 @@ class _RenderAlignmentGrid extends RenderBox {
     required AlignmentViewData data,
     required List<int> rowOrder,
     required Set<int> selectedRows,
-    required AlignmentWindow window,
+    required AlignmentSiteRange siteRange,
     required double cellSize,
     required double rowHeight,
     required AlignmentColorMode colorMode,
     required bool showLetters,
-    required int chunkSize,
-    required bool showChunkBoundaries,
+    required int windowSize,
+    required bool showWindowBoundaries,
     required double devicePixelRatio,
     required _GridStyle style,
     required ValueNotifier<AlignmentCell?> selection,
@@ -400,13 +400,13 @@ class _RenderAlignmentGrid extends RenderBox {
         _data = data,
         _rowOrder = rowOrder,
         _selectedRows = selectedRows,
-        _window = window,
+        _siteRange = siteRange,
         _cellSize = cellSize,
         _rowHeight = rowHeight,
         _colorMode = colorMode,
         _showLetters = showLetters,
-        _chunkSize = chunkSize,
-        _showChunkBoundaries = showChunkBoundaries,
+        _windowSize = windowSize,
+        _showWindowBoundaries = showWindowBoundaries,
         _devicePixelRatio = devicePixelRatio,
         _style = style,
         _selection = selection;
@@ -452,10 +452,10 @@ class _RenderAlignmentGrid extends RenderBox {
     markNeedsPaint();
   }
 
-  AlignmentWindow _window;
-  set window(AlignmentWindow value) {
-    if (value == _window) return;
-    _window = value;
+  AlignmentSiteRange _siteRange;
+  set siteRange(AlignmentSiteRange value) {
+    if (value == _siteRange) return;
+    _siteRange = value;
     markNeedsLayout();
   }
 
@@ -487,17 +487,17 @@ class _RenderAlignmentGrid extends RenderBox {
     markNeedsPaint();
   }
 
-  int _chunkSize;
-  set chunkSize(int value) {
-    if (value == _chunkSize) return;
-    _chunkSize = value;
+  int _windowSize;
+  set windowSize(int value) {
+    if (value == _windowSize) return;
+    _windowSize = value;
     markNeedsPaint();
   }
 
-  bool _showChunkBoundaries;
-  set showChunkBoundaries(bool value) {
-    if (value == _showChunkBoundaries) return;
-    _showChunkBoundaries = value;
+  bool _showWindowBoundaries;
+  set showWindowBoundaries(bool value) {
+    if (value == _showWindowBoundaries) return;
+    _showWindowBoundaries = value;
     markNeedsPaint();
   }
 
@@ -566,7 +566,7 @@ class _RenderAlignmentGrid extends RenderBox {
 
   @override
   void performLayout() {
-    final double contentWidth = _window.length * _cellSize;
+    final double contentWidth = _siteRange.length * _cellSize;
     // A little room below the last row, so it clears the panel border.
     final double contentHeight =
         _rowOrder.length * _rowHeight + SeguiAlignmentLayout.gridBottomPadding;
@@ -591,7 +591,7 @@ class _RenderAlignmentGrid extends RenderBox {
       offset: dx,
       extent: size.width,
       itemSize: _cellSize,
-      count: _window.length,
+      count: _siteRange.length,
     );
     final VisibleRange visibleRows = VisibleRange.of(
       offset: dy,
@@ -605,7 +605,7 @@ class _RenderAlignmentGrid extends RenderBox {
     final _ResidueAtlas atlas = _atlasFor();
     _paintCells(canvas, atlas, cols, visibleRows, dx, dy);
     _paintSelectedRows(canvas, visibleRows, dy);
-    _paintChunkBoundaries(canvas, cols, dx);
+    _paintWindowBoundaries(canvas, cols, dx);
     _paintSelection(canvas, dx, dy);
     canvas.restore();
   }
@@ -661,7 +661,7 @@ class _RenderAlignmentGrid extends RenderBox {
       ResidueBlock? referenceBlock;
       int c = cols.first;
       while (c < cols.last) {
-        final int site = _window.start + c;
+        final int site = _siteRange.start + c;
         if (site >= length) break;
         if (block == null || site < block.start || site >= block.end) {
           block = residues.blockAt(row, site);
@@ -722,23 +722,25 @@ class _RenderAlignmentGrid extends RenderBox {
     }
   }
 
-  void _paintChunkBoundaries(Canvas canvas, VisibleRange cols, double dx) {
-    if (!_showChunkBoundaries || _chunkSize <= 0) return;
+  void _paintWindowBoundaries(Canvas canvas, VisibleRange cols, double dx) {
+    if (!_showWindowBoundaries || _windowSize <= 0) return;
     final Paint paint = Paint()
       ..color = _style.boundary
       ..strokeWidth = SeguiStroke.regular;
-    final int firstSite = _window.start + cols.first;
-    int boundary = (firstSite ~/ _chunkSize + 1) * _chunkSize;
-    while (boundary < _window.start + cols.last) {
-      final double x = (boundary - _window.start) * _cellSize - dx;
+    final int firstSite = _siteRange.start + cols.first;
+    int boundary = (firstSite ~/ _windowSize + 1) * _windowSize;
+    while (boundary < _siteRange.start + cols.last) {
+      final double x = (boundary - _siteRange.start) * _cellSize - dx;
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-      boundary += _chunkSize;
+      boundary += _windowSize;
     }
   }
 
   void _paintSelection(Canvas canvas, double dx, double dy) {
     final AlignmentCell? cell = _selection.value;
-    if (cell == null || cell.site < _window.start || cell.site >= _window.end) {
+    if (cell == null ||
+        cell.site < _siteRange.start ||
+        cell.site >= _siteRange.end) {
       return;
     }
     final Paint paint = Paint()
@@ -746,7 +748,7 @@ class _RenderAlignmentGrid extends RenderBox {
       ..style = PaintingStyle.stroke
       ..strokeWidth = SeguiStroke.regular;
     final int row = _rowOrder.indexOf(cell.row);
-    final double x = (cell.site - _window.start) * _cellSize - dx;
+    final double x = (cell.site - _siteRange.start) * _cellSize - dx;
     final double y = row * _rowHeight - dy;
     // Column and row guides, then the cell itself.
     canvas.drawRect(

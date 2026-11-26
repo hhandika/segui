@@ -16,12 +16,12 @@ class AlignmentRuler extends StatelessWidget {
   const AlignmentRuler({
     super.key,
     required this.controller,
-    required this.window,
+    required this.siteRange,
     required this.cellSize,
   });
 
   final ScrollController controller;
-  final AlignmentWindow window;
+  final AlignmentSiteRange siteRange;
   final double cellSize;
 
   @override
@@ -33,7 +33,7 @@ class AlignmentRuler extends StatelessWidget {
       child: CustomPaint(
         painter: _RulerPainter(
           controller: controller,
-          window: window,
+          siteRange: siteRange,
           cellSize: cellSize,
           color: theme.colorScheme.onSurfaceVariant,
           textStyle: theme.textTheme.labelSmall!.copyWith(
@@ -48,14 +48,14 @@ class AlignmentRuler extends StatelessWidget {
 class _RulerPainter extends CustomPainter {
   _RulerPainter({
     required this.controller,
-    required this.window,
+    required this.siteRange,
     required this.cellSize,
     required this.color,
     required this.textStyle,
   }) : super(repaint: controller);
 
   final ScrollController controller;
-  final AlignmentWindow window;
+  final AlignmentSiteRange siteRange;
   final double cellSize;
   final Color color;
   final TextStyle textStyle;
@@ -70,7 +70,7 @@ class _RulerPainter extends CustomPainter {
       offset: dx,
       extent: size.width,
       itemSize: cellSize,
-      count: window.length,
+      count: siteRange.length,
     );
     final int step = _tickSteps.firstWhere(
       (s) => s * cellSize >= _minTickGap,
@@ -80,9 +80,9 @@ class _RulerPainter extends CustomPainter {
       ..color = color
       ..strokeWidth = SeguiStroke.thin;
     // Label sites whose one-based number is a multiple of the step.
-    int site = ((window.start + cols.first) ~/ step + 1) * step;
-    while (site <= window.start + cols.last) {
-      final double x = (site - 1 - window.start + 0.5) * cellSize - dx;
+    int site = ((siteRange.start + cols.first) ~/ step + 1) * step;
+    while (site <= siteRange.start + cols.last) {
+      final double x = (site - 1 - siteRange.start + 0.5) * cellSize - dx;
       canvas.drawLine(
         Offset(x, size.height - SeguiSpacing.sm),
         Offset(x, size.height),
@@ -101,7 +101,7 @@ class _RulerPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RulerPainter oldDelegate) {
     return oldDelegate.controller != controller ||
-        oldDelegate.window != window ||
+        oldDelegate.siteRange != siteRange ||
         oldDelegate.cellSize != cellSize ||
         oldDelegate.color != color ||
         oldDelegate.textStyle != textStyle;

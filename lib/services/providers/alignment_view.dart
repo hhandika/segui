@@ -26,19 +26,19 @@ final alignmentDataProvider =
   },
 );
 
-/// Chunks summarized per request to Rust.
-const int chunkPageSize = 64;
+/// Windows summarized per request to Rust.
+const int windowPageSize = 64;
 
-/// Gap and variable-site shares of one page of [chunkPageSize] chunks.
+/// Gap and variable-site shares of one page of [windowPageSize] windows.
 /// Rust keeps the counts behind them, so a page scrolled back into view or
-/// another chunk size over the same sites is quick.
-final alignmentChunkPageProvider = FutureProvider.autoDispose.family<
-    List<AlignmentChunkStat>,
-    ({AlignmentViewData data, int chunkSize, int page})>(
-  (ref, args) => args.data.residues.chunkStats(
-    args.chunkSize,
-    args.page * chunkPageSize,
-    chunkPageSize,
+/// another window size over the same sites is quick.
+final alignmentWindowPageProvider = FutureProvider.autoDispose.family<
+    List<AlignmentWindowStat>,
+    ({AlignmentViewData data, int windowSize, int page})>(
+  (ref, args) => args.data.residues.windowStats(
+    args.windowSize,
+    args.page * windowPageSize,
+    windowPageSize,
   ),
 );
 
@@ -58,10 +58,10 @@ class AlignmentViewSettings {
     this.cellSize = SeguiAlignmentLayout.cellDefault,
     this.colorMode = AlignmentColorMode.base,
     this.showLetters = true,
-    this.chunkSize = defaultAlignmentChunkSize,
+    this.windowSize = defaultAlignmentWindowSize,
     this.isPaged = false,
-    this.chunk = 0,
-    this.showChunkList = true,
+    this.window = 0,
+    this.showWindowList = true,
     this.showSettings = true,
     this.nameWidth,
     this.showFileList = false,
@@ -72,14 +72,14 @@ class AlignmentViewSettings {
   final double cellSize;
   final AlignmentColorMode colorMode;
   final bool showLetters;
-  final int chunkSize;
+  final int windowSize;
 
-  /// Shows one chunk at a time instead of the whole alignment.
+  /// Shows one window at a time instead of the whole alignment.
   final bool isPaged;
 
-  /// Current chunk, zero-based.
-  final int chunk;
-  final bool showChunkList;
+  /// Current window, zero-based.
+  final int window;
+  final bool showWindowList;
 
   /// Shows the display settings, overview, and legend above the grid.
   /// Hiding them leaves more room for the grid.
@@ -102,10 +102,10 @@ class AlignmentViewSettings {
     double? cellSize,
     AlignmentColorMode? colorMode,
     bool? showLetters,
-    int? chunkSize,
+    int? windowSize,
     bool? isPaged,
-    int? chunk,
-    bool? showChunkList,
+    int? window,
+    bool? showWindowList,
     bool? showSettings,
     double? Function()? nameWidth,
     bool? showFileList,
@@ -116,10 +116,10 @@ class AlignmentViewSettings {
       cellSize: cellSize ?? this.cellSize,
       colorMode: colorMode ?? this.colorMode,
       showLetters: showLetters ?? this.showLetters,
-      chunkSize: chunkSize ?? this.chunkSize,
+      windowSize: windowSize ?? this.windowSize,
       isPaged: isPaged ?? this.isPaged,
-      chunk: chunk ?? this.chunk,
-      showChunkList: showChunkList ?? this.showChunkList,
+      window: window ?? this.window,
+      showWindowList: showWindowList ?? this.showWindowList,
       showSettings: showSettings ?? this.showSettings,
       nameWidth: nameWidth == null ? this.nameWidth : nameWidth(),
       showFileList: showFileList ?? this.showFileList,
@@ -175,26 +175,26 @@ class AlignmentViewSettingsNotifier extends Notifier<AlignmentViewSettings> {
     state = state.copyWith(showLetters: !state.showLetters);
   }
 
-  void toggleChunkList() {
-    state = state.copyWith(showChunkList: !state.showChunkList);
+  void toggleWindowList() {
+    state = state.copyWith(showWindowList: !state.showWindowList);
   }
 
   void toggleSettings() {
     state = state.copyWith(showSettings: !state.showSettings);
   }
 
-  /// Changes the chunk size, keeping the first site of the current chunk.
-  void setChunkSize(int size) {
-    final int site = state.chunk * state.chunkSize;
-    state = state.copyWith(chunkSize: size, chunk: site ~/ size);
+  /// Changes the window size, keeping the first site of the current window.
+  void setWindowSize(int size) {
+    final int site = state.window * state.windowSize;
+    state = state.copyWith(windowSize: size, window: site ~/ size);
   }
 
   void setPaged(bool isPaged) {
     state = state.copyWith(isPaged: isPaged);
   }
 
-  void setChunk(int chunk) {
-    state = state.copyWith(chunk: chunk < 0 ? 0 : chunk);
+  void setWindow(int window) {
+    state = state.copyWith(window: window < 0 ? 0 : window);
   }
 
   void setNameWidth(double width) {

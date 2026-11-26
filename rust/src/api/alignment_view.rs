@@ -25,7 +25,7 @@ pub struct AlignmentSummary {
 }
 
 /// Gap and variable-site share of a run of sites.
-pub struct AlignmentChunkStat {
+pub struct AlignmentWindowStat {
     /// Zero-based first site and exclusive last site.
     pub start: u32,
     pub end: u32,
@@ -84,14 +84,19 @@ impl AlignmentHandle {
         self.view.sample(&rows, width as usize)
     }
 
-    /// Gap and variable-site shares of up to `count` chunks of `chunk_size`
-    /// sites, from chunk `first`. Only the sites of those chunks are read;
-    /// their counts are kept, so later calls and other chunk sizes reuse them.
-    pub fn chunk_stats(&self, chunk_size: u32, first: u32, count: u32) -> Vec<AlignmentChunkStat> {
+    /// Gap and variable-site shares of up to `count` windows of `window_size`
+    /// sites, from window `first`. Only the sites of those windows are read;
+    /// their counts are kept, so later calls and other window sizes reuse them.
+    pub fn window_stats(
+        &self,
+        window_size: u32,
+        first: u32,
+        count: u32,
+    ) -> Vec<AlignmentWindowStat> {
         self.view
-            .chunk_stats(chunk_size as usize, first as usize, count as usize)
+            .window_stats(window_size as usize, first as usize, count as usize)
             .into_iter()
-            .map(|stat| AlignmentChunkStat {
+            .map(|stat| AlignmentWindowStat {
                 start: to_u32(stat.start),
                 end: to_u32(stat.end),
                 gap_fraction: stat.gap_fraction,
@@ -199,15 +204,15 @@ mod test {
     }
 
     #[test]
-    fn test_chunk_stats() {
+    fn test_window_stats() {
         let (handle, _file) = open("stats.fas", ">a\nACGT--\n>b\nATGTN-\n>c\nACGA\n");
-        // The viewer asks for every chunk with a count of u32::MAX.
-        let stats = handle.chunk_stats(2, 0, u32::MAX);
+        // The viewer asks for every window with a count of u32::MAX.
+        let stats = handle.window_stats(2, 0, u32::MAX);
         assert_eq!(stats.len(), 3);
         assert_eq!((stats[0].start, stats[0].end), (0, 2));
         assert_eq!(stats[0].variable_fraction, 0.5);
         assert_eq!(stats[2].gap_fraction, 5.0 / 6.0);
-        assert!(handle.chunk_stats(2, 999, 5).is_empty());
+        assert!(handle.window_stats(2, 999, 5).is_empty());
     }
 
     #[test]

@@ -82,7 +82,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => -1399392410;
+  int get rustContentHash => 52555838;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -94,13 +94,6 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<List<AlignmentChunkStat>>
-      crateApiAlignmentViewAlignmentHandleChunkStats(
-          {required AlignmentHandle that,
-          required int chunkSize,
-          required int first,
-          required int count});
-
   Future<String> crateApiAlignmentViewAlignmentHandleFasta(
       {required AlignmentHandle that, required List<int> rows});
 
@@ -124,6 +117,13 @@ abstract class RustLibApi extends BaseApi {
 
   int? crateApiAlignmentViewAlignmentHandleUngappedPosition(
       {required AlignmentHandle that, required int row, required int site});
+
+  Future<List<AlignmentWindowStat>>
+      crateApiAlignmentViewAlignmentHandleWindowStats(
+          {required AlignmentHandle that,
+          required int windowSize,
+          required int first,
+          required int count});
 
   Future<FrbCompletedDownload> crateApiDownloadDatabaseDownloadJobCommit(
       {required DatabaseDownloadJob that});
@@ -440,40 +440,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<List<AlignmentChunkStat>>
-      crateApiAlignmentViewAlignmentHandleChunkStats(
-          {required AlignmentHandle that,
-          required int chunkSize,
-          required int first,
-          required int count}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
-            that, serializer);
-        sse_encode_u_32(chunkSize, serializer);
-        sse_encode_u_32(first, serializer);
-        sse_encode_u_32(count, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 1, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_list_alignment_chunk_stat,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiAlignmentViewAlignmentHandleChunkStatsConstMeta,
-      argValues: [that, chunkSize, first, count],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiAlignmentViewAlignmentHandleChunkStatsConstMeta =>
-      const TaskConstMeta(
-        debugName: "AlignmentHandle_chunk_stats",
-        argNames: ["that", "chunkSize", "first", "count"],
-      );
-
-  @override
   Future<String> crateApiAlignmentViewAlignmentHandleFasta(
       {required AlignmentHandle that, required List<int> rows}) {
     return handler.executeNormal(NormalTask(
@@ -483,7 +449,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_list_prim_u_32_loose(rows, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 1, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -509,7 +475,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 2, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -541,7 +507,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_list_prim_u_32_loose(rows, serializer);
         sse_encode_u_32(width, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -567,7 +533,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
             that, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_alignment_summary,
@@ -602,7 +568,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_32(siteStart, serializer);
         sse_encode_u_32(siteCount, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 5, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -630,7 +596,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_u_32(row, serializer);
         sse_encode_u_32(site, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_opt_box_autoadd_u_32,
@@ -648,6 +614,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             debugName: "AlignmentHandle_ungapped_position",
             argNames: ["that", "row", "site"],
           );
+
+  @override
+  Future<List<AlignmentWindowStat>>
+      crateApiAlignmentViewAlignmentHandleWindowStats(
+          {required AlignmentHandle that,
+          required int windowSize,
+          required int first,
+          required int count}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAlignmentHandle(
+            that, serializer);
+        sse_encode_u_32(windowSize, serializer);
+        sse_encode_u_32(first, serializer);
+        sse_encode_u_32(count, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_alignment_window_stat,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiAlignmentViewAlignmentHandleWindowStatsConstMeta,
+      argValues: [that, windowSize, first, count],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiAlignmentViewAlignmentHandleWindowStatsConstMeta =>
+      const TaskConstMeta(
+        debugName: "AlignmentHandle_window_stats",
+        argNames: ["that", "windowSize", "first", "count"],
+      );
 
   @override
   Future<FrbCompletedDownload> crateApiDownloadDatabaseDownloadJobCommit(
@@ -3446,20 +3446,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  AlignmentChunkStat dco_decode_alignment_chunk_stat(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return AlignmentChunkStat(
-      start: dco_decode_u_32(arr[0]),
-      end: dco_decode_u_32(arr[1]),
-      gapFraction: dco_decode_f_64(arr[2]),
-      variableFraction: dco_decode_f_64(arr[3]),
-    );
-  }
-
-  @protected
   AlignmentDistanceServices dco_decode_alignment_distance_services(
       dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -3523,6 +3509,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       outputDir: dco_decode_String(arr[3]),
       outputFmt: dco_decode_String(arr[4]),
       params: dco_decode_trimming_params(arr[5]),
+    );
+  }
+
+  @protected
+  AlignmentWindowStat dco_decode_alignment_window_stat(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return AlignmentWindowStat(
+      start: dco_decode_u_32(arr[0]),
+      end: dco_decode_u_32(arr[1]),
+      gapFraction: dco_decode_f_64(arr[2]),
+      variableFraction: dco_decode_f_64(arr[3]),
     );
   }
 
@@ -3967,9 +3967,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const DistanceGroupingParams_Auto();
+        return DistanceGroupingParams_Auto();
       case 4:
-        return const DistanceGroupingParams_None();
+        return DistanceGroupingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4191,7 +4191,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_String(raw[1]),
         );
       case 8:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4431,9 +4431,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<AlignmentChunkStat> dco_decode_list_alignment_chunk_stat(dynamic raw) {
+  List<AlignmentWindowStat> dco_decode_list_alignment_window_stat(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_alignment_chunk_stat).toList();
+    return (raw as List<dynamic>)
+        .map(dco_decode_alignment_window_stat)
+        .toList();
   }
 
   @protected
@@ -5212,7 +5214,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5235,7 +5237,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_f_64(raw[1]),
         );
       case 3:
-        return const SequenceFilteringParams_None();
+        return SequenceFilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5320,7 +5322,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_bool(raw[3]),
         );
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5444,7 +5446,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_usize(raw[1]),
         );
       case 2:
-        return const TrimmingParams_None();
+        return TrimmingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5772,21 +5774,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  AlignmentChunkStat sse_decode_alignment_chunk_stat(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_start = sse_decode_u_32(deserializer);
-    var var_end = sse_decode_u_32(deserializer);
-    var var_gapFraction = sse_decode_f_64(deserializer);
-    var var_variableFraction = sse_decode_f_64(deserializer);
-    return AlignmentChunkStat(
-        start: var_start,
-        end: var_end,
-        gapFraction: var_gapFraction,
-        variableFraction: var_variableFraction);
-  }
-
-  @protected
   AlignmentDistanceServices sse_decode_alignment_distance_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -5861,6 +5848,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         outputDir: var_outputDir,
         outputFmt: var_outputFmt,
         params: var_params);
+  }
+
+  @protected
+  AlignmentWindowStat sse_decode_alignment_window_stat(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_start = sse_decode_u_32(deserializer);
+    var var_end = sse_decode_u_32(deserializer);
+    var var_gapFraction = sse_decode_f_64(deserializer);
+    var var_variableFraction = sse_decode_f_64(deserializer);
+    return AlignmentWindowStat(
+        start: var_start,
+        end: var_end,
+        gapFraction: var_gapFraction,
+        variableFraction: var_variableFraction);
   }
 
   @protected
@@ -6332,9 +6334,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return DistanceGroupingParams_MapFile(var_field0);
       case 3:
-        return const DistanceGroupingParams_Auto();
+        return DistanceGroupingParams_Auto();
       case 4:
-        return const DistanceGroupingParams_None();
+        return DistanceGroupingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6575,7 +6577,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
       case 8:
-        return const FilteringParams_None();
+        return FilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -6852,14 +6854,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<AlignmentChunkStat> sse_decode_list_alignment_chunk_stat(
+  List<AlignmentWindowStat> sse_decode_list_alignment_window_stat(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <AlignmentChunkStat>[];
+    var ans_ = <AlignmentWindowStat>[];
     for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_alignment_chunk_stat(deserializer));
+      ans_.add(sse_decode_alignment_window_stat(deserializer));
     }
     return ans_;
   }
@@ -7969,7 +7971,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return SequenceExtractionParams_Regex(var_field0);
       case 3:
-        return const SequenceExtractionParams_None();
+        return SequenceExtractionParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -7992,7 +7994,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_f_64(deserializer);
         return SequenceFilteringParams_MaxGap(var_field0);
       case 3:
-        return const SequenceFilteringParams_None();
+        return SequenceFilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -8083,7 +8085,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return SequenceRenamingParams_ReplaceRegex(
             var_field0, var_field1, var_field2);
       case 5:
-        return const SequenceRenamingParams_None();
+        return SequenceRenamingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -8229,7 +8231,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_usize(deserializer);
         return TrimmingParams_ParsInf(var_field0);
       case 2:
-        return const TrimmingParams_None();
+        return TrimmingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -8528,16 +8530,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_alignment_chunk_stat(
-      AlignmentChunkStat self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_u_32(self.start, serializer);
-    sse_encode_u_32(self.end, serializer);
-    sse_encode_f_64(self.gapFraction, serializer);
-    sse_encode_f_64(self.variableFraction, serializer);
-  }
-
-  @protected
   void sse_encode_alignment_distance_services(
       AlignmentDistanceServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -8584,6 +8576,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.outputDir, serializer);
     sse_encode_String(self.outputFmt, serializer);
     sse_encode_trimming_params(self.params, serializer);
+  }
+
+  @protected
+  void sse_encode_alignment_window_stat(
+      AlignmentWindowStat self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_32(self.start, serializer);
+    sse_encode_u_32(self.end, serializer);
+    sse_encode_f_64(self.gapFraction, serializer);
+    sse_encode_f_64(self.variableFraction, serializer);
   }
 
   @protected
@@ -9388,12 +9390,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_alignment_chunk_stat(
-      List<AlignmentChunkStat> self, SseSerializer serializer) {
+  void sse_encode_list_alignment_window_stat(
+      List<AlignmentWindowStat> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     for (final item in self) {
-      sse_encode_alignment_chunk_stat(item, serializer);
+      sse_encode_alignment_window_stat(item, serializer);
     }
   }
 
@@ -10429,14 +10431,6 @@ class AlignmentHandleImpl extends RustOpaque implements AlignmentHandle {
         RustLib.instance.api.rust_arc_decrement_strong_count_AlignmentHandlePtr,
   );
 
-  /// Gap and variable-site shares of up to `count` chunks of `chunk_size`
-  /// sites, from chunk `first`. Only the sites of those chunks are read;
-  /// their counts are kept, so later calls and other chunk sizes reuse them.
-  Future<List<AlignmentChunkStat>> chunkStats(
-          {required int chunkSize, required int first, required int count}) =>
-      RustLib.instance.api.crateApiAlignmentViewAlignmentHandleChunkStats(
-          that: this, chunkSize: chunkSize, first: first, count: count);
-
   /// Rows in FASTA format, in alignment order.
   Future<String> fasta({required List<int> rows}) => RustLib.instance.api
       .crateApiAlignmentViewAlignmentHandleFasta(that: this, rows: rows);
@@ -10470,6 +10464,14 @@ class AlignmentHandleImpl extends RustOpaque implements AlignmentHandle {
   int? ungappedPosition({required int row, required int site}) =>
       RustLib.instance.api.crateApiAlignmentViewAlignmentHandleUngappedPosition(
           that: this, row: row, site: site);
+
+  /// Gap and variable-site shares of up to `count` windows of `window_size`
+  /// sites, from window `first`. Only the sites of those windows are read;
+  /// their counts are kept, so later calls and other window sizes reuse them.
+  Future<List<AlignmentWindowStat>> windowStats(
+          {required int windowSize, required int first, required int count}) =>
+      RustLib.instance.api.crateApiAlignmentViewAlignmentHandleWindowStats(
+          that: this, windowSize: windowSize, first: first, count: count);
 }
 
 @sealed

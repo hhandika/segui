@@ -24,8 +24,8 @@
 // Pass --dart-define=SCREENSHOT_ALIGNMENTS=<folder> to show real alignments
 // instead of generated ones. The folder is copied, not changed. Add
 // --dart-define=SCREENSHOT_SITE=<site> to scroll the alignment viewer there
-// with its Go to site field, and --dart-define=SCREENSHOT_HIDE_CHUNKS=true
-// to hide its chunk list.
+// with its Go to site field, and --dart-define=SCREENSHOT_HIDE_WINDOWS=true
+// to hide its window list.
 //
 // Pass --dart-define=SCREENSHOT_REPORT=<file> to also capture a summary
 // report, such as `alignment-report.json`, as `viewer-report`, and
@@ -82,7 +82,7 @@ const String _viewerFile = String.fromEnvironment('SCREENSHOT_VIEWER_FILE');
 const int _viewerSite = int.fromEnvironment('SCREENSHOT_VIEWER_SITE');
 const bool _landscape = bool.fromEnvironment('SCREENSHOT_LANDSCAPE');
 const String _site = String.fromEnvironment('SCREENSHOT_SITE');
-const bool _hideChunks = bool.fromEnvironment('SCREENSHOT_HIDE_CHUNKS');
+const bool _hideWindows = bool.fromEnvironment('SCREENSHOT_HIDE_WINDOWS');
 const String _report = String.fromEnvironment('SCREENSHOT_REPORT');
 const String _reportTab = String.fromEnvironment('SCREENSHOT_REPORT_TAB');
 
@@ -490,7 +490,7 @@ Future<void> _captureViewer(
     final ScrollPosition position = grid.horizontalController.position;
     position.jumpTo(
       min(
-        (_viewerSite - 1 - grid.window.start) * grid.cellSize,
+        (_viewerSite - 1 - grid.siteRange.start) * grid.cellSize,
         position.maxScrollExtent,
       ),
     );
@@ -508,8 +508,8 @@ Future<void> _captureViewer(
     FocusManager.instance.primaryFocus?.unfocus();
     await _settle(tester);
   }
-  if (_hideChunks) {
-    await tester.tap(find.byTooltip('Hide chunk list'));
+  if (_hideWindows) {
+    await tester.tap(find.byTooltip('Hide window list'));
     await _settle(tester);
   }
   await _capture(tester, boundaryKey, target('viewer-alignment'));

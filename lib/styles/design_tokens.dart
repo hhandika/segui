@@ -173,8 +173,8 @@ abstract final class SeguiAlignmentLayout {
   /// Shorter overview on phones, which keeps the grid tall.
   static const double overviewCompact = 28;
 
-  /// Share of the screen height the chunk list sheet fills on phones.
-  static const double chunkSheetHeight = 0.7;
+  /// Share of the screen height the window list sheet fills on phones.
+  static const double windowSheetHeight = 0.7;
   static const double nameColumn = 160;
   static const double nameColumnCompact = 96;
 
@@ -184,7 +184,7 @@ abstract final class SeguiAlignmentLayout {
 
   /// Grab area of the divider between the names and the grid.
   static const double nameDivider = 8;
-  static const double chunkSidebar = 200;
+  static const double windowSidebar = 200;
 
   /// List of files to switch between, beside the viewer.
   static const double fileList = 240;

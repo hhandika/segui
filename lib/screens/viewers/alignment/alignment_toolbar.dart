@@ -31,7 +31,7 @@ String alignmentSummary(AlignmentViewData data) {
 }
 
 /// Top row of the viewer panel: [leading] (such as the file switcher) or
-/// the file name, the file summary, go to site, the chunk list toggle, and
+/// the file name, the file summary, go to site, the window list toggle, and
 /// the button that shows or hides the display settings. Stays visible when
 /// the settings are hidden.
 class AlignmentHeaderBar extends ConsumerWidget {
@@ -39,7 +39,7 @@ class AlignmentHeaderBar extends ConsumerWidget {
     super.key,
     required this.fileName,
     required this.data,
-    required this.canShowChunkList,
+    required this.canShowWindowList,
     required this.siteController,
     required this.onGoToSite,
     this.leading,
@@ -47,7 +47,7 @@ class AlignmentHeaderBar extends ConsumerWidget {
 
   final String fileName;
   final AlignmentViewData data;
-  final bool canShowChunkList;
+  final bool canShowWindowList;
   final TextEditingController siteController;
 
   /// Called with the submitted one-based site text.
@@ -93,14 +93,15 @@ class AlignmentHeaderBar extends ConsumerWidget {
             ],
           ),
         ),
-        if (canShowChunkList)
+        if (canShowWindowList)
           IconButton(
-            tooltip:
-                settings.showChunkList ? 'Hide chunk list' : 'Show chunk list',
-            isSelected: settings.showChunkList,
+            tooltip: settings.showWindowList
+                ? 'Hide window list'
+                : 'Show window list',
+            isSelected: settings.showWindowList,
             icon: const Icon(Icons.view_sidebar_outlined),
             selectedIcon: const Icon(Icons.view_sidebar_rounded),
-            onPressed: notifier.toggleChunkList,
+            onPressed: notifier.toggleWindowList,
           ),
         IconButton(
           tooltip: settings.showSettings
@@ -118,7 +119,7 @@ class AlignmentHeaderBar extends ConsumerWidget {
   }
 }
 
-/// Labeled groups of display controls: color, zoom, and chunk navigation.
+/// Labeled groups of display controls: color, zoom, and window navigation.
 /// Groups wrap onto more lines when narrow.
 class AlignmentToolbar extends StatelessWidget {
   const AlignmentToolbar({
@@ -145,8 +146,8 @@ class AlignmentToolbar extends StatelessWidget {
         ),
         const _ToolbarGroup(label: 'Zoom', child: AlignmentZoomControls()),
         _ToolbarGroup(
-          label: 'Chunk',
-          child: AlignmentChunkControls(
+          label: 'Window',
+          child: AlignmentWindowControls(
             data: data,
             onPrevious: onPrevious,
             onNext: onNext,
@@ -158,17 +159,17 @@ class AlignmentToolbar extends StatelessWidget {
 }
 
 /// Phone header: [leading], such as the file switcher, on its own row,
-/// then zoom beside buttons that open the chunk list and the display
+/// then zoom beside buttons that open the window list and the display
 /// settings as sheets. Without [leading], the app bar names the file.
 class AlignmentPhoneHeader extends StatelessWidget {
   const AlignmentPhoneHeader({
     super.key,
-    required this.onShowChunks,
+    required this.onShowWindows,
     required this.onShowSettings,
     this.leading,
   });
 
-  final VoidCallback onShowChunks;
+  final VoidCallback onShowWindows;
   final VoidCallback onShowSettings;
   final Widget? leading;
 
@@ -184,9 +185,9 @@ class AlignmentPhoneHeader extends StatelessWidget {
           children: [
             const Expanded(child: AlignmentZoomControls(expand: true)),
             IconButton(
-              tooltip: 'Chunks',
+              tooltip: 'Windows',
               icon: const Icon(Icons.view_agenda_outlined),
-              onPressed: onShowChunks,
+              onPressed: onShowWindows,
             ),
             ReportSettingsButton(onPressed: onShowSettings),
           ],
@@ -286,10 +287,10 @@ class AlignmentZoomControls extends ConsumerWidget {
   }
 }
 
-/// Chunk size, previous and next chunk with the current range, and the
+/// Window size, previous and next window with the current range, and the
 /// page toggle.
-class AlignmentChunkControls extends ConsumerWidget {
-  const AlignmentChunkControls({
+class AlignmentWindowControls extends ConsumerWidget {
+  const AlignmentWindowControls({
     super.key,
     required this.data,
     required this.onPrevious,
@@ -306,9 +307,9 @@ class AlignmentChunkControls extends ConsumerWidget {
         ref.watch(alignmentViewSettingsProvider);
     final AlignmentViewSettingsNotifier notifier =
         ref.read(alignmentViewSettingsProvider.notifier);
-    final AlignmentChunks chunks =
-        AlignmentChunks(length: data.length, size: settings.chunkSize);
-    final int chunk = chunks.clamp(settings.chunk);
+    final AlignmentWindows windows =
+        AlignmentWindows(length: data.length, size: settings.windowSize);
+    final int window = windows.clamp(settings.window);
     return Wrap(
       spacing: SeguiSpacing.sm,
       runSpacing: SeguiSpacing.xs,
@@ -316,29 +317,29 @@ class AlignmentChunkControls extends ConsumerWidget {
       children: [
         if (isPhoneScreen(context))
           ChoiceSheetButton<int>(
-            title: 'Chunk size',
-            value: settings.chunkSize,
+            title: 'Window size',
+            value: settings.windowSize,
             choices: [
-              for (final int size in alignmentChunkSizes)
+              for (final int size in alignmentWindowSizes)
                 (value: size, label: '${_siteFormat.format(size)} sites'),
             ],
-            onSelected: notifier.setChunkSize,
+            onSelected: notifier.setWindowSize,
           )
         else
           DropdownButton<int>(
-            value: settings.chunkSize,
+            value: settings.windowSize,
             isDense: true,
             underline: const SizedBox.shrink(),
             borderRadius: BorderRadius.circular(SeguiRadius.sm),
             items: [
-              for (final int size in alignmentChunkSizes)
+              for (final int size in alignmentWindowSizes)
                 DropdownMenuItem(
                   value: size,
                   child: Text('${_siteFormat.format(size)} sites'),
                 ),
             ],
             onChanged: (size) {
-              if (size != null) notifier.setChunkSize(size);
+              if (size != null) notifier.setWindowSize(size);
             },
           ),
         // Kept together, so the arrows never wrap away from the range.
@@ -346,31 +347,31 @@ class AlignmentChunkControls extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              tooltip: 'Previous chunk',
+              tooltip: 'Previous window',
               visualDensity: controlDensity(context),
               icon: const Icon(Icons.chevron_left_rounded),
-              onPressed: chunk > 0 ? onPrevious : null,
+              onPressed: window > 0 ? onPrevious : null,
             ),
             Flexible(
               child: Text(
-                '${_siteFormat.format(chunks.startOf(chunk) + 1)}–'
-                '${_siteFormat.format(chunks.endOf(chunk))} '
-                '(${chunk + 1} of ${chunks.count})',
+                '${_siteFormat.format(windows.startOf(window) + 1)}–'
+                '${_siteFormat.format(windows.endOf(window))} '
+                '(${window + 1} of ${windows.count})',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             IconButton(
-              tooltip: 'Next chunk',
+              tooltip: 'Next window',
               visualDensity: controlDensity(context),
               icon: const Icon(Icons.chevron_right_rounded),
-              onPressed: chunk < chunks.count - 1 ? onNext : null,
+              onPressed: window < windows.count - 1 ? onNext : null,
             ),
           ],
         ),
         FilterChip(
           label: const Text('Page'),
-          tooltip: 'Show one chunk at a time',
+          tooltip: 'Show one window at a time',
           visualDensity: controlDensity(context),
           selected: settings.isPaged,
           onSelected: notifier.setPaged,
@@ -380,7 +381,7 @@ class AlignmentChunkControls extends ConsumerWidget {
   }
 }
 
-/// Display settings in a sheet on phones: color, chunks, go to site, and
+/// Display settings in a sheet on phones: color, windows, go to site, and
 /// the legend.
 class AlignmentSettingsSheet extends StatelessWidget {
   const AlignmentSettingsSheet({
@@ -419,8 +420,8 @@ class AlignmentSettingsSheet extends StatelessWidget {
           child: AlignmentColorControls(expand: true),
         ),
         SheetSection(
-          label: 'Chunk',
-          child: AlignmentChunkControls(
+          label: 'Window',
+          child: AlignmentWindowControls(
             data: data,
             onPrevious: onPrevious,
             onNext: onNext,

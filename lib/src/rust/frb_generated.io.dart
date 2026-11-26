@@ -143,9 +143,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignTaxaData dco_decode_align_taxa_data(dynamic raw);
 
   @protected
-  AlignmentChunkStat dco_decode_alignment_chunk_stat(dynamic raw);
-
-  @protected
   AlignmentDistanceServices dco_decode_alignment_distance_services(dynamic raw);
 
   @protected
@@ -156,6 +153,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentTrimmingServices dco_decode_alignment_trimming_services(dynamic raw);
+
+  @protected
+  AlignmentWindowStat dco_decode_alignment_window_stat(dynamic raw);
 
   @protected
   ArchiveServices dco_decode_archive_services(dynamic raw);
@@ -436,7 +436,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<AdapterContentData> dco_decode_list_adapter_content_data(dynamic raw);
 
   @protected
-  List<AlignmentChunkStat> dco_decode_list_alignment_chunk_stat(dynamic raw);
+  List<AlignmentWindowStat> dco_decode_list_alignment_window_stat(dynamic raw);
 
   @protected
   List<ColorOption> dco_decode_list_color_option(dynamic raw);
@@ -793,10 +793,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignTaxaData sse_decode_align_taxa_data(SseDeserializer deserializer);
 
   @protected
-  AlignmentChunkStat sse_decode_alignment_chunk_stat(
-      SseDeserializer deserializer);
-
-  @protected
   AlignmentDistanceServices sse_decode_alignment_distance_services(
       SseDeserializer deserializer);
 
@@ -808,6 +804,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentTrimmingServices sse_decode_alignment_trimming_services(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignmentWindowStat sse_decode_alignment_window_stat(
       SseDeserializer deserializer);
 
   @protected
@@ -1141,7 +1141,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<AlignmentChunkStat> sse_decode_list_alignment_chunk_stat(
+  List<AlignmentWindowStat> sse_decode_list_alignment_window_stat(
       SseDeserializer deserializer);
 
   @protected
@@ -1537,10 +1537,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_align_taxa_data(AlignTaxaData self, SseSerializer serializer);
 
   @protected
-  void sse_encode_alignment_chunk_stat(
-      AlignmentChunkStat self, SseSerializer serializer);
-
-  @protected
   void sse_encode_alignment_distance_services(
       AlignmentDistanceServices self, SseSerializer serializer);
 
@@ -1555,6 +1551,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_alignment_trimming_services(
       AlignmentTrimmingServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_alignment_window_stat(
+      AlignmentWindowStat self, SseSerializer serializer);
 
   @protected
   void sse_encode_archive_services(
@@ -1899,8 +1899,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<AdapterContentData> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_alignment_chunk_stat(
-      List<AlignmentChunkStat> self, SseSerializer serializer);
+  void sse_encode_list_alignment_window_stat(
+      List<AlignmentWindowStat> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_color_option(

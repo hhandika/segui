@@ -14,7 +14,7 @@ import 'package:segui/screens/viewers/alignment/alignment_files.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
-import 'package:segui/screens/viewers/alignment/chunk_sidebar.dart';
+import 'package:segui/screens/viewers/alignment/window_sidebar.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/viewers/alignment.dart';
@@ -168,12 +168,12 @@ class _AlignmentFileViewState extends ConsumerState<AlignmentFileView> {
     );
   }
 
-  /// Opens the file at [index]. Sequence selections and the chunk belong
+  /// Opens the file at [index]. Sequence selections and the window belong
   /// to one file, so they reset.
   void _select(int index) {
     if (index == _index) return;
     ref.read(alignmentRowSelectionProvider.notifier).clear();
-    ref.read(alignmentViewSettingsProvider.notifier).setChunk(0);
+    ref.read(alignmentViewSettingsProvider.notifier).setWindow(0);
     setState(() => _index = index);
   }
 
@@ -247,7 +247,7 @@ class AlignmentViewBody extends ConsumerWidget {
   }
 }
 
-/// Toolbars, overview, chunk list, and grid of a loaded alignment.
+/// Toolbars, overview, window list, and grid of a loaded alignment.
 class AlignmentExplorer extends ConsumerStatefulWidget {
   const AlignmentExplorer({
     super.key,
@@ -282,7 +282,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   @override
   void initState() {
     super.initState();
-    _horizontal.addListener(_syncChunk);
+    _horizontal.addListener(_syncWindow);
   }
 
   @override
@@ -311,9 +311,9 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     final RowSelection rowSelection = ref.watch(alignmentRowSelectionProvider);
     final AlignmentViewData data = widget.data;
     final List<int> order = _orderOf(rowSelection);
-    final AlignmentWindow window = _windowOf(settings);
+    final AlignmentSiteRange siteRange = _siteRangeOf(settings);
     final bool isCompact = isPhoneScreen(context);
-    final bool showChunkList = settings.showChunkList && !isCompact;
+    final bool showWindowList = settings.showWindowList && !isCompact;
     final double nameWidth = settings.nameWidth ??
         (isCompact
             ? SeguiAlignmentLayout.nameColumnCompact
@@ -322,7 +322,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
       data: data,
       rowOrder: order,
       selectedRows: rowSelection.rows,
-      window: window,
+      siteRange: siteRange,
       cellSize: settings.cellSize,
       rowHeight: settings.rowHeight,
       horizontalController: _horizontal,
@@ -334,7 +334,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     );
     final AlignmentStatusBar status = AlignmentStatusBar(
       data: data,
-      window: window,
+      siteRange: siteRange,
       cellSize: settings.cellSize,
       horizontalController: _horizontal,
       hover: _hover,
@@ -347,12 +347,12 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (showChunkList) ...[
-            ChunkSidebar(
+          if (showWindowList) ...[
+            WindowSidebar(
               data: data,
-              chunkSize: settings.chunkSize,
-              currentChunk: settings.chunk,
-              onSelected: _goToChunk,
+              windowSize: settings.windowSize,
+              currentWindow: settings.window,
+              onSelected: _goToWindow,
             ),
             const VerticalDivider(width: SeguiStroke.thin),
           ],
@@ -367,7 +367,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                     Expanded(
                       child: AlignmentRuler(
                         controller: _horizontal,
-                        window: window,
+                        siteRange: siteRange,
                         cellSize: settings.cellSize,
                       ),
                     ),
@@ -413,13 +413,13 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                           data: data,
                           rowOrder: order,
                           selectedRows: rowSelection.rows,
-                          window: window,
+                          siteRange: siteRange,
                           cellSize: settings.cellSize,
                           rowHeight: settings.rowHeight,
                           colorMode: settings.colorMode,
                           showLetters: settings.showLetters,
-                          chunkSize: settings.chunkSize,
-                          showChunkBoundaries: !settings.isPaged,
+                          windowSize: settings.windowSize,
+                          showWindowBoundaries: !settings.isPaged,
                           horizontalController: _horizontal,
                           verticalController: _vertical,
                           hover: _hover,
@@ -458,7 +458,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
               children: [
                 AlignmentPhoneHeader(
                   leading: widget.leading,
-                  onShowChunks: _showChunkSheet,
+                  onShowWindows: _showWindowSheet,
                   onShowSettings: _showSettingsSheet,
                 ),
                 Padding(
@@ -497,7 +497,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
       );
     }
     return CustomScrollView(
-      // The grid and chunk list scroll on their own. This only scrolls the
+      // The grid and window list scroll on their own. This only scrolls the
       // header away when the window is too short for it and the grid, so it
       // draws no scrollbar over the grid's own.
       primary: false,
@@ -515,7 +515,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                   fileName: widget.fileName,
                   data: data,
                   leading: widget.leading,
-                  canShowChunkList: true,
+                  canShowWindowList: true,
                   siteController: _siteController,
                   onGoToSite: _goToSiteText,
                 ),
@@ -535,8 +535,9 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                             const SizedBox(height: SeguiSpacing.md),
                             AlignmentToolbar(
                               data: data,
-                              onPrevious: () => _goToChunk(settings.chunk - 1),
-                              onNext: () => _goToChunk(settings.chunk + 1),
+                              onPrevious: () =>
+                                  _goToWindow(settings.window - 1),
+                              onNext: () => _goToWindow(settings.window + 1),
                             ),
                             const SizedBox(height: SeguiSpacing.lg),
                             overview,
@@ -607,16 +608,16 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
         child: AlignmentSettingsSheet(
           data: widget.data,
           siteController: _siteController,
-          onPrevious: () => _goToChunk(_settings.chunk - 1),
-          onNext: () => _goToChunk(_settings.chunk + 1),
+          onPrevious: () => _goToWindow(_settings.window - 1),
+          onNext: () => _goToWindow(_settings.window + 1),
           onGoToSite: _goToSiteText,
         ),
       ),
     );
   }
 
-  /// Phones show the chunk list in a sheet that closes on a pick.
-  Future<void> _showChunkSheet() {
+  /// Phones show the window list in a sheet that closes on a pick.
+  Future<void> _showWindowSheet() {
     final AlignmentViewSettings settings = _settings;
     return showModalBottomSheet<void>(
       context: context,
@@ -624,7 +625,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
       showDragHandle: true,
       useSafeArea: true,
       builder: (sheetContext) => FractionallySizedBox(
-        heightFactor: SeguiAlignmentLayout.chunkSheetHeight,
+        heightFactor: SeguiAlignmentLayout.windowSheetHeight,
         child: SafeArea(
           top: false,
           child: Column(
@@ -638,19 +639,19 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                   SeguiSpacing.md,
                 ),
                 child: Text(
-                  'Chunks',
+                  'Windows',
                   style: Theme.of(sheetContext).textTheme.headlineSmall,
                 ),
               ),
               Expanded(
-                child: ChunkSidebar(
+                child: WindowSidebar(
                   data: widget.data,
                   width: double.infinity,
-                  chunkSize: settings.chunkSize,
-                  currentChunk: _chunksOf(settings).clamp(settings.chunk),
-                  onSelected: (chunk) {
+                  windowSize: settings.windowSize,
+                  currentWindow: _windowsOf(settings).clamp(settings.window),
+                  onSelected: (window) {
                     Navigator.of(sheetContext).pop();
-                    _goToChunk(chunk);
+                    _goToWindow(window);
                   },
                 ),
               ),
@@ -700,16 +701,16 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     return _order;
   }
 
-  AlignmentChunks _chunksOf(AlignmentViewSettings settings) {
-    return AlignmentChunks(
-        length: widget.data.length, size: settings.chunkSize);
+  AlignmentWindows _windowsOf(AlignmentViewSettings settings) {
+    return AlignmentWindows(
+        length: widget.data.length, size: settings.windowSize);
   }
 
-  AlignmentWindow _windowOf(AlignmentViewSettings settings) {
-    if (!settings.isPaged) return AlignmentWindow(0, widget.data.length);
-    final AlignmentChunks chunks = _chunksOf(settings);
-    final int chunk = chunks.clamp(settings.chunk);
-    return AlignmentWindow(chunks.startOf(chunk), chunks.endOf(chunk));
+  AlignmentSiteRange _siteRangeOf(AlignmentViewSettings settings) {
+    if (!settings.isPaged) return AlignmentSiteRange(0, widget.data.length);
+    final AlignmentWindows windows = _windowsOf(settings);
+    final int window = windows.clamp(settings.window);
+    return AlignmentSiteRange(windows.startOf(window), windows.endOf(window));
   }
 
   double _viewportOf(ScrollController controller) {
@@ -726,7 +727,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   /// Zero-based site at the middle of the grid.
   int _centerSite(AlignmentViewSettings settings) {
     final double x = _offsetOf(_horizontal) + _viewportOf(_horizontal) / 2;
-    return (_windowOf(settings).start + x ~/ settings.cellSize)
+    return (_siteRangeOf(settings).start + x ~/ settings.cellSize)
         .clamp(0, widget.data.length - 1);
   }
 
@@ -742,7 +743,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     if (previous == null) return;
     final bool resized = previous.cellSize != next.cellSize ||
         previous.isPaged != next.isPaged ||
-        (next.isPaged && previous.chunkSize != next.chunkSize);
+        (next.isPaged && previous.windowSize != next.windowSize);
     if (!resized) return;
     // A scroll still waiting for layout has not moved the grid yet.
     final _ScrollTarget? pending = _pending;
@@ -751,34 +752,34 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
         : pending.site;
     final int row = pending?.row ?? _centerRow(previous);
     if (next.isPaged && !previous.isPaged) {
-      _notifier.setChunk(_chunksOf(next).chunkOf(site));
+      _notifier.setWindow(_windowsOf(next).windowOf(site));
     }
     _scrollAfterLayout(site: site, row: row);
   }
 
-  // In continuous view, the chunk follows the middle of the grid.
-  void _syncChunk() {
+  // In continuous view, the window follows the middle of the grid.
+  void _syncWindow() {
     final AlignmentViewSettings settings = _settings;
     if (settings.isPaged) return;
-    final int chunk = _chunksOf(settings).chunkOf(_centerSite(settings));
-    if (chunk != settings.chunk) _notifier.setChunk(chunk);
+    final int window = _windowsOf(settings).windowOf(_centerSite(settings));
+    if (window != settings.window) _notifier.setWindow(window);
   }
 
   void _zoom(int direction) {
     direction > 0 ? _notifier.zoomIn() : _notifier.zoomOut();
   }
 
-  void _goToChunk(int chunk) {
-    final AlignmentChunks chunks = _chunksOf(_settings);
-    final int target = chunks.clamp(chunk);
-    _notifier.setChunk(target);
-    _scrollAfterLayout(site: chunks.startOf(target), alignStart: true);
+  void _goToWindow(int window) {
+    final AlignmentWindows windows = _windowsOf(_settings);
+    final int target = windows.clamp(window);
+    _notifier.setWindow(target);
+    _scrollAfterLayout(site: windows.startOf(target), alignStart: true);
   }
 
   void _goToSite(int site, {int? row}) {
     final AlignmentViewSettings settings = _settings;
     if (settings.isPaged) {
-      _notifier.setChunk(_chunksOf(settings).chunkOf(site));
+      _notifier.setWindow(_windowsOf(settings).windowOf(site));
     }
     final int dataRow = row != null && row < _order.length
         ? _order[row]
@@ -815,8 +816,8 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
       _pending = null;
       if (!mounted || target == null) return;
       final AlignmentViewSettings settings = _settings;
-      final AlignmentWindow window = _windowOf(settings);
-      final double cellX = (target.site - window.start) * settings.cellSize;
+      final AlignmentSiteRange siteRange = _siteRangeOf(settings);
+      final double cellX = (target.site - siteRange.start) * settings.cellSize;
       _jump(
         _horizontal,
         target.alignStart
@@ -972,7 +973,7 @@ class AlignmentStatusBar extends StatelessWidget {
   const AlignmentStatusBar({
     super.key,
     required this.data,
-    required this.window,
+    required this.siteRange,
     required this.cellSize,
     required this.horizontalController,
     required this.hover,
@@ -981,7 +982,7 @@ class AlignmentStatusBar extends StatelessWidget {
   });
 
   final AlignmentViewData data;
-  final AlignmentWindow window;
+  final AlignmentSiteRange siteRange;
   final double cellSize;
   final ScrollController horizontalController;
   final ValueNotifier<AlignmentCell?> hover;
@@ -1028,14 +1029,14 @@ class AlignmentStatusBar extends StatelessWidget {
       offset: offset,
       extent: extent,
       itemSize: cellSize,
-      count: window.length,
+      count: siteRange.length,
     );
     final String zoomHint = isTouch
         ? 'Pinch to zoom'
         : '${PlatformKeys.primaryLabel} + scroll to zoom';
     if (cols.length == 0) return zoomHint;
-    return 'Showing sites ${_siteFormat.format(window.start + cols.first + 1)}–'
-        '${_siteFormat.format(window.start + cols.last)} of '
+    return 'Showing sites ${_siteFormat.format(siteRange.start + cols.first + 1)}–'
+        '${_siteFormat.format(siteRange.start + cols.last)} of '
         '${_siteFormat.format(data.length)} · $zoomHint';
   }
 }

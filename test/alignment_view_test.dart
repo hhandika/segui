@@ -12,7 +12,7 @@ import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/alignment_view.dart';
-import 'package:segui/screens/viewers/alignment/chunk_sidebar.dart';
+import 'package:segui/screens/viewers/alignment/window_sidebar.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment.dart';
@@ -66,28 +66,28 @@ void main() {
     });
   });
 
-  group('AlignmentChunks', () {
-    const AlignmentChunks chunks = AlignmentChunks(length: 2500, size: 1000);
+  group('AlignmentWindows', () {
+    const AlignmentWindows windows = AlignmentWindows(length: 2500, size: 1000);
 
-    test('Counts a shorter last chunk', () {
-      expect(chunks.count, 3);
-      expect(chunks.startOf(2), 2000);
-      expect(chunks.endOf(2), 2500);
+    test('Counts a shorter last window', () {
+      expect(windows.count, 3);
+      expect(windows.startOf(2), 2000);
+      expect(windows.endOf(2), 2500);
     });
 
-    test('Maps sites to chunks and clamps', () {
-      expect(chunks.chunkOf(0), 0);
-      expect(chunks.chunkOf(999), 0);
-      expect(chunks.chunkOf(1000), 1);
-      expect(chunks.chunkOf(9999), 2);
-      expect(chunks.clamp(-1), 0);
-      expect(chunks.clamp(5), 2);
+    test('Maps sites to windows and clamps', () {
+      expect(windows.windowOf(0), 0);
+      expect(windows.windowOf(999), 0);
+      expect(windows.windowOf(1000), 1);
+      expect(windows.windowOf(9999), 2);
+      expect(windows.clamp(-1), 0);
+      expect(windows.clamp(5), 2);
     });
 
     test('Handles an empty alignment', () {
-      const AlignmentChunks empty = AlignmentChunks(length: 0, size: 500);
+      const AlignmentWindows empty = AlignmentWindows(length: 0, size: 500);
       expect(empty.count, 0);
-      expect(empty.chunkOf(10), 0);
+      expect(empty.windowOf(10), 0);
       expect(empty.clamp(3), 0);
     });
   });
@@ -144,14 +144,14 @@ void main() {
           SeguiAlignmentLayout.rowMin);
     });
 
-    test('Changing chunk size keeps the first site in view', () {
+    test('Changing window size keeps the first site in view', () {
       final ProviderContainer container = ProviderContainer();
       addTearDown(container.dispose);
       final AlignmentViewSettingsNotifier notifier =
           container.read(alignmentViewSettingsProvider.notifier);
-      notifier.setChunk(3); // Sites 3,001-4,000.
-      notifier.setChunkSize(500);
-      expect(container.read(alignmentViewSettingsProvider).chunk, 6);
+      notifier.setWindow(3); // Sites 3,001-4,000.
+      notifier.setWindowSize(500);
+      expect(container.read(alignmentViewSettingsProvider).window, 6);
     });
   });
 
@@ -229,7 +229,7 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('Shows the summary and first chunk', (tester) async {
+    testWidgets('Shows the summary and first window', (tester) async {
       await pumpExplorer(tester);
       expect(find.textContaining('20 taxa'), findsOneWidget);
       expect(find.textContaining('3,000 sites'), findsOneWidget);
@@ -237,9 +237,9 @@ void main() {
       expect(find.text('1–1,000 (1 of 3)'), findsOneWidget);
     });
 
-    testWidgets('Next chunk pages forward', (tester) async {
+    testWidgets('Next window pages forward', (tester) async {
       await pumpExplorer(tester);
-      await tester.tap(find.byTooltip('Next chunk'));
+      await tester.tap(find.byTooltip('Next window'));
       await tester.pump();
       await tester.pump();
       expect(find.text('1,001–2,000 (2 of 3)'), findsOneWidget);
@@ -501,7 +501,7 @@ void main() {
       await tester.pump();
     }
 
-    // Sheets have nothing that animates forever, but chunk stats load
+    // Sheets have nothing that animates forever, but window stats load
     // asynchronously, so pump past the sheet animation instead of settling.
     Future<void> pumpSheet(WidgetTester tester) async {
       await tester.pump();
@@ -538,7 +538,7 @@ void main() {
       await tester.tap(find.text('Letters'));
       await tester.pump();
       expect(settingsOf(tester).showLetters, isFalse);
-      await tester.tap(find.byTooltip('Next chunk'));
+      await tester.tap(find.byTooltip('Next window'));
       await tester.pump();
       expect(find.text('1,001–2,000 (2 of 3)'), findsOneWidget);
 
@@ -550,16 +550,16 @@ void main() {
       expect(find.textContaining('site 2,500'), findsOneWidget);
     });
 
-    testWidgets('The chunk list opens in a sheet', (tester) async {
+    testWidgets('The window list opens in a sheet', (tester) async {
       await pumpPhone(tester);
-      expect(find.byType(ChunkSidebar), findsNothing);
-      await tester.tap(find.byTooltip('Chunks'));
+      expect(find.byType(WindowSidebar), findsNothing);
+      await tester.tap(find.byTooltip('Windows'));
       await pumpSheet(tester);
-      expect(find.byType(ChunkSidebar), findsOneWidget);
+      expect(find.byType(WindowSidebar), findsOneWidget);
       await tester.tap(find.text('2,001–3,000'));
       await pumpSheet(tester);
-      expect(find.byType(ChunkSidebar), findsNothing);
-      expect(settingsOf(tester).chunk, 2);
+      expect(find.byType(WindowSidebar), findsNothing);
+      expect(settingsOf(tester).window, 2);
     });
 
     testWidgets('Tapping a cell shows its details', (tester) async {

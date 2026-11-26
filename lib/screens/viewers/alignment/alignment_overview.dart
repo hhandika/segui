@@ -19,7 +19,7 @@ class AlignmentOverview extends StatefulWidget {
     required this.data,
     required this.rowOrder,
     required this.selectedRows,
-    required this.window,
+    required this.siteRange,
     required this.cellSize,
     required this.rowHeight,
     required this.horizontalController,
@@ -35,7 +35,7 @@ class AlignmentOverview extends StatefulWidget {
 
   /// Selected sequences keep their colors; the rest are dimmed.
   final Set<int> selectedRows;
-  final AlignmentWindow window;
+  final AlignmentSiteRange siteRange;
   final double cellSize;
   final double rowHeight;
   final ScrollController horizontalController;
@@ -100,7 +100,7 @@ class _AlignmentOverviewState extends State<AlignmentOverview> {
                 image: _image,
                 data: widget.data,
                 rowCount: widget.rowOrder.length,
-                window: widget.window,
+                siteRange: widget.siteRange,
                 cellSize: widget.cellSize,
                 rowHeight: widget.rowHeight,
                 horizontalController: widget.horizontalController,
@@ -181,7 +181,7 @@ class _OverviewPainter extends CustomPainter {
     required this.image,
     required this.data,
     required this.rowCount,
-    required this.window,
+    required this.siteRange,
     required this.cellSize,
     required this.rowHeight,
     required this.horizontalController,
@@ -195,7 +195,7 @@ class _OverviewPainter extends CustomPainter {
   final ui.Image? image;
   final AlignmentViewData data;
   final int rowCount;
-  final AlignmentWindow window;
+  final AlignmentSiteRange siteRange;
   final double cellSize;
   final double rowHeight;
   final ScrollController horizontalController;
@@ -242,7 +242,7 @@ class _OverviewPainter extends CustomPainter {
   }
 
   double _firstSite() =>
-      window.start + _offsetOf(horizontalController) / cellSize;
+      siteRange.start + _offsetOf(horizontalController) / cellSize;
 
   double _offsetOf(ScrollController c) => c.hasClients ? c.offset : 0;
 
@@ -258,7 +258,7 @@ class _OverviewPainter extends CustomPainter {
     return oldDelegate.image != image ||
         oldDelegate.data != data ||
         oldDelegate.rowCount != rowCount ||
-        oldDelegate.window != window ||
+        oldDelegate.siteRange != siteRange ||
         oldDelegate.cellSize != cellSize ||
         oldDelegate.rowHeight != rowHeight ||
         oldDelegate.background != background ||

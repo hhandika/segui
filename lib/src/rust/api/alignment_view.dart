@@ -10,12 +10,6 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>>
 abstract class AlignmentHandle implements RustOpaqueInterface {
-  /// Gap and variable-site shares of up to `count` chunks of `chunk_size`
-  /// sites, from chunk `first`. Only the sites of those chunks are read;
-  /// their counts are kept, so later calls and other chunk sizes reuse them.
-  Future<List<AlignmentChunkStat>> chunkStats(
-      {required int chunkSize, required int first, required int count});
-
   /// Rows in FASTA format, in alignment order.
   Future<String> fasta({required List<int> rows});
 
@@ -39,43 +33,12 @@ abstract class AlignmentHandle implements RustOpaqueInterface {
 
   /// One-based position of `site` in `row` without gaps, or none on a gap.
   int? ungappedPosition({required int row, required int site});
-}
 
-/// Gap and variable-site share of a run of sites.
-class AlignmentChunkStat {
-  /// Zero-based first site and exclusive last site.
-  final int start;
-  final int end;
-
-  /// Share of cells that are gaps, missing data, or past a sequence's end.
-  final double gapFraction;
-
-  /// Share of sites with more than one residue, ignoring gaps and unknowns.
-  final double variableFraction;
-
-  const AlignmentChunkStat({
-    required this.start,
-    required this.end,
-    required this.gapFraction,
-    required this.variableFraction,
-  });
-
-  @override
-  int get hashCode =>
-      start.hashCode ^
-      end.hashCode ^
-      gapFraction.hashCode ^
-      variableFraction.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AlignmentChunkStat &&
-          runtimeType == other.runtimeType &&
-          start == other.start &&
-          end == other.end &&
-          gapFraction == other.gapFraction &&
-          variableFraction == other.variableFraction;
+  /// Gap and variable-site shares of up to `count` windows of `window_size`
+  /// sites, from window `first`. Only the sites of those windows are read;
+  /// their counts are kept, so later calls and other window sizes reuse them.
+  Future<List<AlignmentWindowStat>> windowStats(
+      {required int windowSize, required int first, required int count});
 }
 
 /// Names and shape of an open alignment.
@@ -120,4 +83,41 @@ class AlignmentSummary {
           length == other.length &&
           isAligned == other.isAligned &&
           isDna == other.isDna;
+}
+
+/// Gap and variable-site share of a run of sites.
+class AlignmentWindowStat {
+  /// Zero-based first site and exclusive last site.
+  final int start;
+  final int end;
+
+  /// Share of cells that are gaps, missing data, or past a sequence's end.
+  final double gapFraction;
+
+  /// Share of sites with more than one residue, ignoring gaps and unknowns.
+  final double variableFraction;
+
+  const AlignmentWindowStat({
+    required this.start,
+    required this.end,
+    required this.gapFraction,
+    required this.variableFraction,
+  });
+
+  @override
+  int get hashCode =>
+      start.hashCode ^
+      end.hashCode ^
+      gapFraction.hashCode ^
+      variableFraction.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlignmentWindowStat &&
+          runtimeType == other.runtimeType &&
+          start == other.start &&
+          end == other.end &&
+          gapFraction == other.gapFraction &&
+          variableFraction == other.variableFraction;
 }

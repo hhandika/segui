@@ -47,13 +47,13 @@ For the best efficiency, use FASTA format.
 
 From top to bottom, the viewer shows:
 
-1. **Toolbar**: the file name, the number of taxa and sites, the data type (DNA or amino acid), whether the sequences are unaligned, the color mode, the zoom level, and the current chunk.
+1. **Toolbar**: the file name, the number of taxa and sites, the data type (DNA or amino acid), whether the sequences are unaligned, the color mode, the zoom level, and the current window.
 2. **Overview**: a strip showing the whole alignment, with a line marking the sites in view. Click or drag on it to jump.
 3. **Legend**: the residue colors. DNA shows A, C, G, and T. Amino acids show the Clustal X groups: hydrophobic, positive, negative, polar, aromatic, glycine, proline, and cysteine.
-4. **Taxon names and residue grid**: the names on the left, a ruler with site numbers on top, and the colored residues. Chunk boundaries are marked on the ruler.
+4. **Taxon names and residue grid**: the names on the left, a ruler with site numbers on top, and the colored residues. Window boundaries are marked on the ruler.
 5. **Status bar**: the taxon, site, ungapped position, and residue under the cursor.
 
-Press `Ctrl+B` to show the chunk sidebar. It lists each chunk of sites with its share of gaps and variable sites.
+Press `Ctrl+B` to show the window sidebar. It lists each window of sites with its share of gaps and variable sites.
 
 ## Detailed usage
 
@@ -103,20 +103,20 @@ Press `F2` to cycle the color modes:
 - **Mono**: one color for residues and another for gaps.
 - **Diff to first**: residues that match the first sequence are shown as dots, so differences stand out.
 
-### Chunks
+### Windows
 
-The viewer splits the alignment into chunks of 1,000 sites by default. Use `--chunk` to pick 250, 500, 1000, or 2000 sites per chunk:
+The viewer splits the alignment into windows of 1,000 sites by default. Use `--window` to pick 250, 500, 1000, or 2000 sites per window:
 
 ```bash
-segul view align --input alignment.fasta --chunk 500
+segul view align --input alignment.fasta --window 500
 ```
 
-Use `[` and `]` to move between chunks. Press `Ctrl+K` then `P` to show one chunk at a time. Press `Ctrl+B` to list the chunks with their share of gaps and variable sites.
+Use `[` and `]` to move between windows. Press `Ctrl+K` then `P` to show one window at a time. Press `Ctrl+B` to list the windows with their share of gaps and variable sites.
 
 {% terminalshot
    src="cli/view-align-chunks.webp"
-   alt="SEGUL alignment viewer with the chunk sidebar open on the left"
-   caption="The chunk sidebar." /%}
+   alt="SEGUL alignment viewer with the window sidebar open on the left"
+   caption="The window sidebar." /%}
 
 ### Selecting and copying sequences
 
@@ -139,15 +139,15 @@ The key bindings follow Visual Studio Code. Press `F1` or `?` in the viewer to s
 | `Ctrl+Home` / `Ctrl+End`  | `Ctrl+fn+←` / `Ctrl+fn+→` | First / last taxon                            |
 | `PgUp` / `PgDn`           | `Option+↑` / `Option+↓`   | Page through taxa                             |
 | `Alt+PgUp` / `Alt+PgDn`   | `Option+Shift+←` / `→`    | Page through sites                            |
-| `[` / `]`                 | `[` / `]`                 | Previous / next chunk                         |
+| `[` / `]`                 | `[` / `]`                 | Previous / next window                        |
 | `Ctrl+G`                  | `Ctrl+G`                  | Go to a site (`120`), a taxon, or `taxon:120` |
 | `Ctrl+F`                  | `Ctrl+F`                  | Find a taxon by name                          |
 | `Enter` or `F3`           | `Enter` or `fn+F3`        | Next match (`Shift` for the previous one)     |
 | `+` / `-` / `Ctrl+0`      | `+` / `-` / `Ctrl+0`      | Zoom in / out / reset                         |
 | `F2` or `Ctrl+K` `C`      | `Ctrl+K` `C`              | Cycle color mode                              |
 | `F4` or `Ctrl+K` `L`      | `Ctrl+K` `L`              | Show or hide residue letters                  |
-| `Ctrl+K` `P`              | `Ctrl+K` `P`              | Show one chunk at a time                      |
-| `Ctrl+B`                  | `Ctrl+B`                  | Show or hide the chunk sidebar                |
+| `Ctrl+K` `P`              | `Ctrl+K` `P`              | Show one window at a time                     |
+| `Ctrl+B`                  | `Ctrl+B`                  | Show or hide the window sidebar               |
 | `<` / `>`                 | `<` / `>`                 | Narrow / widen the taxon names                |
 | `Space` / `Shift+↑` `↓`   | `Space` / `Shift+↑` `↓`   | Select a sequence / extend the selection      |
 | `Ctrl+A`                  | `Ctrl+A`                  | Select all sequences                          |
@@ -181,5 +181,5 @@ Some terminals use `Ctrl+=` or `Alt` shortcuts for their own features. If a shor
 | `--datatype`           | Data type: `ignore` (default, detects DNA or amino acids), `dna`, `aa` |
 | `--theme`              | Colors for a `dark` (default) or `light` terminal                      |
 | `--residue-colors`     | `clustal` (default) or `colorblind-safe` residue colors                |
-| `--chunk`              | Sites per chunk: `250`, `500`, `1000` (default), or `2000`             |
+| `--window`             | Sites per window: `250`, `500`, `1000` (default), or `2000`            |
 | `--log`                | Log file path. Default: `segul.log`                                    |

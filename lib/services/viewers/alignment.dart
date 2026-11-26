@@ -4,9 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:segui/src/rust/api/alignment_view.dart';
 
-/// Chunk sizes, in sites, offered in the alignment viewer.
-const List<int> alignmentChunkSizes = [250, 500, 1000, 2000];
-const int defaultAlignmentChunkSize = 1000;
+/// Window sizes, in sites, offered in the alignment viewer.
+const List<int> alignmentWindowSizes = [250, 500, 1000, 2000];
+const int defaultAlignmentWindowSize = 1000;
 
 const int _gap = 0x2D; // -
 const int _missing = 0x3F; // ?
@@ -121,10 +121,10 @@ abstract class AlignmentResidues extends ChangeNotifier {
   /// One-based position of [site] in [row] without gaps, or null on a gap.
   int? ungappedPosition(int row, int site);
 
-  /// Gap and variable-site shares of up to [count] chunks of [chunkSize]
-  /// sites from chunk [first], computed in Rust.
-  Future<List<AlignmentChunkStat>> chunkStats(
-    int chunkSize,
+  /// Gap and variable-site shares of up to [count] windows of [windowSize]
+  /// sites from window [first], computed in Rust.
+  Future<List<AlignmentWindowStat>> windowStats(
+    int windowSize,
     int first,
     int count,
   );
@@ -159,10 +159,10 @@ class MemoryResidues extends AlignmentResidues {
   @override
   int? ungappedPosition(int row, int site) => _ungapped.positionOf(row, site);
 
-  // Chunk statistics are computed only in Rust; rows held in Dart have none.
+  // Window statistics are computed only in Rust; rows held in Dart have none.
   @override
-  Future<List<AlignmentChunkStat>> chunkStats(
-    int chunkSize,
+  Future<List<AlignmentWindowStat>> windowStats(
+    int windowSize,
     int first,
     int count,
   ) async =>
@@ -231,13 +231,13 @@ class RustResidues extends AlignmentResidues {
   }
 
   @override
-  Future<List<AlignmentChunkStat>> chunkStats(
-    int chunkSize,
+  Future<List<AlignmentWindowStat>> windowStats(
+    int windowSize,
     int first,
     int count,
   ) {
-    return _handle.chunkStats(
-      chunkSize: chunkSize,
+    return _handle.windowStats(
+      windowSize: windowSize,
       first: first,
       count: count,
     );
@@ -328,24 +328,24 @@ class VisibleRange {
   int get hashCode => Object.hash(first, last);
 }
 
-/// Splits an alignment of [length] sites into chunks of [size] sites.
-class AlignmentChunks {
-  const AlignmentChunks({required this.length, required this.size});
+/// Splits an alignment of [length] sites into windows of [size] sites.
+class AlignmentWindows {
+  const AlignmentWindows({required this.length, required this.size});
 
   final int length;
   final int size;
 
   int get count => length <= 0 ? 0 : (length + size - 1) ~/ size;
 
-  /// Chunk that holds [site], a zero-based column.
-  int chunkOf(int site) => length <= 0 ? 0 : site.clamp(0, length - 1) ~/ size;
+  /// Window that holds [site], a zero-based column.
+  int windowOf(int site) => length <= 0 ? 0 : site.clamp(0, length - 1) ~/ size;
 
-  int startOf(int chunk) => (chunk * size).clamp(0, length);
+  int startOf(int window) => (window * size).clamp(0, length);
 
-  int endOf(int chunk) => ((chunk + 1) * size).clamp(0, length);
+  int endOf(int window) => ((window + 1) * size).clamp(0, length);
 
-  /// Keeps [chunk] inside the alignment.
-  int clamp(int chunk) => count == 0 ? 0 : chunk.clamp(0, count - 1);
+  /// Keeps [window] inside the alignment.
+  int clamp(int window) => count == 0 ? 0 : window.clamp(0, count - 1);
 }
 
 /// Maps alignment columns to ungapped positions, one row at a time.
