@@ -42,6 +42,18 @@ final alignmentWindowPageProvider = FutureProvider.autoDispose.family<
   ),
 );
 
+/// Gap and variable-site shares of one partition of an alignment.
+final alignmentPartitionStatsProvider = FutureProvider.autoDispose
+    .family<AlignmentWindowStat?, ({AlignmentViewData data, int index})>(
+  (ref, args) {
+    final AlignmentPartition partition = args.data.partitions[args.index];
+    return args.data.residues.rangeStats(partition.start, partition.end);
+  },
+);
+
+/// What the side list of the alignment viewer shows.
+enum AlignmentSideListKind { windows, partitions }
+
 /// How the viewer orders its file list: in Rust, unless overridden.
 final fileOrderProvider = Provider<FileOrder>((ref) => rustFileOrder);
 
@@ -62,6 +74,7 @@ class AlignmentViewSettings {
     this.isPaged = false,
     this.window = 0,
     this.showWindowList = true,
+    this.sideList = AlignmentSideListKind.partitions,
     this.showSettings = true,
     this.nameWidth,
     this.showFileList = false,
@@ -80,6 +93,10 @@ class AlignmentViewSettings {
   /// Current window, zero-based.
   final int window;
   final bool showWindowList;
+
+  /// List shown beside the grid when the alignment has partitions.
+  /// Alignments without partitions always list windows.
+  final AlignmentSideListKind sideList;
 
   /// Shows the display settings, overview, and legend above the grid.
   /// Hiding them leaves more room for the grid.
@@ -106,6 +123,7 @@ class AlignmentViewSettings {
     bool? isPaged,
     int? window,
     bool? showWindowList,
+    AlignmentSideListKind? sideList,
     bool? showSettings,
     double? Function()? nameWidth,
     bool? showFileList,
@@ -120,6 +138,7 @@ class AlignmentViewSettings {
       isPaged: isPaged ?? this.isPaged,
       window: window ?? this.window,
       showWindowList: showWindowList ?? this.showWindowList,
+      sideList: sideList ?? this.sideList,
       showSettings: showSettings ?? this.showSettings,
       nameWidth: nameWidth == null ? this.nameWidth : nameWidth(),
       showFileList: showFileList ?? this.showFileList,
@@ -177,6 +196,10 @@ class AlignmentViewSettingsNotifier extends Notifier<AlignmentViewSettings> {
 
   void toggleWindowList() {
     state = state.copyWith(showWindowList: !state.showWindowList);
+  }
+
+  void setSideList(AlignmentSideListKind list) {
+    state = state.copyWith(sideList: list);
   }
 
   void toggleSettings() {

@@ -10,6 +10,7 @@
 
 ### Improvements
 
+- The alignment viewer shows the partitions of concatenated alignments as a track above the ruler, lists them beside the grid, and steps between them.
 - Data usage shows storage by data type, with a searchable file tree and multi-select.
 - Read reports show only the adapters found in the data.
 - Report table columns can be resized.

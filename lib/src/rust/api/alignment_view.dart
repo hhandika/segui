@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `to_u32`
+// These functions are ignored because they are not marked as `pub`: `to_stat`, `to_u32`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>>
 abstract class AlignmentHandle implements RustOpaqueInterface {
@@ -16,6 +16,21 @@ abstract class AlignmentHandle implements RustOpaqueInterface {
   /// Opens FASTA, NEXUS, or PHYLIP, inferring the format from the extension.
   static Future<AlignmentHandle> open({required String path}) =>
       RustLib.instance.api.crateApiAlignmentViewAlignmentHandleOpen(path: path);
+
+  /// Name of the partition holding `site`, naming the exact codon subset.
+  String? partitionAt({required int site});
+
+  /// Why the partition file could not be read, when it exists but fails.
+  String? partitionError();
+
+  /// Partitions from a NEXUS sets block in the file or a `<name>_partition`
+  /// file next to it, or none.
+  AlignmentPartitions? partitions();
+
+  /// Gap and variable-site shares of sites `start..end`, such as one
+  /// partition.
+  Future<AlignmentWindowStat> rangeStats(
+      {required int start, required int end});
 
   /// Residues of `rows` at `width` evenly spaced sites, row after row, for
   /// the overview. Cells past a row's end are zero.
@@ -39,6 +54,80 @@ abstract class AlignmentHandle implements RustOpaqueInterface {
   /// their counts are kept, so later calls and other window sizes reuse them.
   Future<List<AlignmentWindowStat>> windowStats(
       {required int windowSize, required int first, required int count});
+}
+
+/// A band of sites in a concatenated alignment: one partition, or codon
+/// position subsets of a gene that interleave.
+class AlignmentPartition {
+  final String name;
+
+  /// Zero-based first site and exclusive last site.
+  final int start;
+  final int end;
+
+  /// Names of the subsets sharing the band; empty for a single partition.
+  final List<String> subsets;
+
+  /// Substitution model, when the partition file gives one.
+  final String? model;
+
+  const AlignmentPartition({
+    required this.name,
+    required this.start,
+    required this.end,
+    required this.subsets,
+    this.model,
+  });
+
+  @override
+  int get hashCode =>
+      name.hashCode ^
+      start.hashCode ^
+      end.hashCode ^
+      subsets.hashCode ^
+      model.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlignmentPartition &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          start == other.start &&
+          end == other.end &&
+          subsets == other.subsets &&
+          model == other.model;
+}
+
+/// Partitions found for an alignment.
+class AlignmentPartitions {
+  /// File the partitions were read from.
+  final String source;
+
+  /// Whether they came from the alignment file itself.
+  final bool isEmbedded;
+
+  /// Bands in site order.
+  final List<AlignmentPartition> partitions;
+
+  const AlignmentPartitions({
+    required this.source,
+    required this.isEmbedded,
+    required this.partitions,
+  });
+
+  @override
+  int get hashCode =>
+      source.hashCode ^ isEmbedded.hashCode ^ partitions.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlignmentPartitions &&
+          runtimeType == other.runtimeType &&
+          source == other.source &&
+          isEmbedded == other.isEmbedded &&
+          partitions == other.partitions;
 }
 
 /// Names and shape of an open alignment.

@@ -43,11 +43,15 @@ class AlignmentHeaderBar extends ConsumerWidget {
     required this.siteController,
     required this.onGoToSite,
     this.leading,
+    this.partitionNavigator,
   });
 
   final String fileName;
   final AlignmentViewData data;
   final bool canShowWindowList;
+
+  /// Steps between partitions, for concatenated alignments.
+  final Widget? partitionNavigator;
   final TextEditingController siteController;
 
   /// Called with the submitted one-based site text.
@@ -90,14 +94,15 @@ class AlignmentHeaderBar extends ConsumerWidget {
                 length: data.length,
                 onSubmitted: onGoToSite,
               ),
+              if (partitionNavigator != null) partitionNavigator!,
             ],
           ),
         ),
         if (canShowWindowList)
           IconButton(
             tooltip: settings.showWindowList
-                ? 'Hide window list'
-                : 'Show window list',
+                ? (data.hasPartitions ? 'Hide side list' : 'Hide window list')
+                : (data.hasPartitions ? 'Show side list' : 'Show window list'),
             isSelected: settings.showWindowList,
             icon: const Icon(Icons.view_sidebar_outlined),
             selectedIcon: const Icon(Icons.view_sidebar_rounded),

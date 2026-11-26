@@ -146,6 +146,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AlignmentDistanceServices dco_decode_alignment_distance_services(dynamic raw);
 
   @protected
+  AlignmentPartition dco_decode_alignment_partition(dynamic raw);
+
+  @protected
+  AlignmentPartitions dco_decode_alignment_partitions(dynamic raw);
+
+  @protected
   AlignmentServices dco_decode_alignment_services(dynamic raw);
 
   @protected
@@ -169,6 +175,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   AlignmentDistanceServices dco_decode_box_autoadd_alignment_distance_services(
       dynamic raw);
+
+  @protected
+  AlignmentPartitions dco_decode_box_autoadd_alignment_partitions(dynamic raw);
 
   @protected
   AlignmentServices dco_decode_box_autoadd_alignment_services(dynamic raw);
@@ -436,6 +445,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<AdapterContentData> dco_decode_list_adapter_content_data(dynamic raw);
 
   @protected
+  List<AlignmentPartition> dco_decode_list_alignment_partition(dynamic raw);
+
+  @protected
   List<AlignmentWindowStat> dco_decode_list_alignment_window_stat(dynamic raw);
 
   @protected
@@ -519,6 +531,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  AlignmentPartitions? dco_decode_opt_box_autoadd_alignment_partitions(
+      dynamic raw);
 
   @protected
   DistanceGroupsData? dco_decode_opt_box_autoadd_distance_groups_data(
@@ -797,6 +813,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  AlignmentPartition sse_decode_alignment_partition(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignmentPartitions sse_decode_alignment_partitions(
+      SseDeserializer deserializer);
+
+  @protected
   AlignmentServices sse_decode_alignment_services(SseDeserializer deserializer);
 
   @protected
@@ -822,6 +846,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   AlignmentDistanceServices sse_decode_box_autoadd_alignment_distance_services(
+      SseDeserializer deserializer);
+
+  @protected
+  AlignmentPartitions sse_decode_box_autoadd_alignment_partitions(
       SseDeserializer deserializer);
 
   @protected
@@ -1141,6 +1169,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<AlignmentPartition> sse_decode_list_alignment_partition(
+      SseDeserializer deserializer);
+
+  @protected
   List<AlignmentWindowStat> sse_decode_list_alignment_window_stat(
       SseDeserializer deserializer);
 
@@ -1241,6 +1273,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  AlignmentPartitions? sse_decode_opt_box_autoadd_alignment_partitions(
+      SseDeserializer deserializer);
 
   @protected
   DistanceGroupsData? sse_decode_opt_box_autoadd_distance_groups_data(
@@ -1541,6 +1577,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AlignmentDistanceServices self, SseSerializer serializer);
 
   @protected
+  void sse_encode_alignment_partition(
+      AlignmentPartition self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_alignment_partitions(
+      AlignmentPartitions self, SseSerializer serializer);
+
+  @protected
   void sse_encode_alignment_services(
       AlignmentServices self, SseSerializer serializer);
 
@@ -1570,6 +1614,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_alignment_distance_services(
       AlignmentDistanceServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_alignment_partitions(
+      AlignmentPartitions self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_alignment_services(
@@ -1899,6 +1947,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<AdapterContentData> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_alignment_partition(
+      List<AlignmentPartition> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_alignment_window_stat(
       List<AlignmentWindowStat> self, SseSerializer serializer);
 
@@ -2004,6 +2056,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_alignment_partitions(
+      AlignmentPartitions? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_distance_groups_data(

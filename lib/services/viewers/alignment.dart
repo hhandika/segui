@@ -27,6 +27,7 @@ enum AlignmentColorMode {
 Future<AlignmentViewData> loadAlignmentView(String path) async {
   final AlignmentHandle handle = await AlignmentHandle.open(path: path);
   final AlignmentSummary summary = handle.summary();
+  final AlignmentPartitions? partitions = handle.partitions();
   return AlignmentViewData(
     names: summary.names,
     lengths: summary.lengths,
@@ -34,6 +35,9 @@ Future<AlignmentViewData> loadAlignmentView(String path) async {
     isAligned: summary.isAligned,
     isDna: summary.isDna,
     residues: RustResidues(handle, rows: summary.names.length),
+    partitions: partitions?.partitions ?? const [],
+    partitionSource: partitions?.source,
+    partitionError: handle.partitionError(),
   );
 }
 
@@ -46,6 +50,9 @@ class AlignmentViewData {
     required this.isAligned,
     required this.isDna,
     required this.residues,
+    this.partitions = const [],
+    this.partitionSource,
+    this.partitionError,
   });
 
   /// Alignment held in Dart, such as in tests.
@@ -53,6 +60,7 @@ class AlignmentViewData {
     List<String> names,
     List<Uint8List> sequences, {
     bool isDna = true,
+    List<AlignmentPartition> partitions = const [],
   }) {
     final Uint32List lengths =
         Uint32List.fromList([for (final Uint8List s in sequences) s.length]);
@@ -64,6 +72,7 @@ class AlignmentViewData {
       isAligned: lengths.every((l) => l == length),
       isDna: isDna,
       residues: MemoryResidues(names, sequences, isDna: isDna),
+      partitions: partitions,
     );
   }
 
@@ -82,7 +91,30 @@ class AlignmentViewData {
   final bool isDna;
   final AlignmentResidues residues;
 
+  /// Partitions of a concatenated alignment, in site order, or empty.
+  final List<AlignmentPartition> partitions;
+
+  /// File the partitions were read from.
+  final String? partitionSource;
+
+  /// Why a partition file next to the alignment could not be read.
+  final String? partitionError;
+
+  late final AlignmentPartitionIndex partitionIndex =
+      AlignmentPartitionIndex(partitions);
+
+  bool get hasPartitions => partitions.isNotEmpty;
+
   int get rowCount => names.length;
+
+  /// Name of the partition at [site], naming the codon subset when several
+  /// share a band.
+  String? partitionNameAt(int site) {
+    final int? index = partitionIndex.indexAt(site);
+    if (index == null) return null;
+    if (partitions[index].subsets.isEmpty) return partitions[index].name;
+    return residues.partitionAt(site) ?? partitions[index].name;
+  }
 
   /// Residue at [site] of [row], or null past its end or while it loads.
   int? residueAt(int row, int site) {
@@ -129,6 +161,13 @@ abstract class AlignmentResidues extends ChangeNotifier {
     int count,
   );
 
+  /// Gap and variable-site shares of sites [start] to [end] (exclusive),
+  /// such as one partition, or null when not computed.
+  Future<AlignmentWindowStat?> rangeStats(int start, int end);
+
+  /// Name of the partition subset holding [site], when known.
+  String? partitionAt(int site);
+
   /// Residues of [rows] at [width] evenly spaced sites, row after row.
   /// Cells past a row's end are zero.
   Future<Uint8List> sample(List<int> rows, int width);
@@ -167,6 +206,12 @@ class MemoryResidues extends AlignmentResidues {
     int count,
   ) async =>
       const [];
+
+  @override
+  Future<AlignmentWindowStat?> rangeStats(int start, int end) async => null;
+
+  @override
+  String? partitionAt(int site) => null;
 
   @override
   Future<Uint8List> sample(List<int> rows, int width) async {
@@ -241,6 +286,17 @@ class RustResidues extends AlignmentResidues {
       first: first,
       count: count,
     );
+  }
+
+  @override
+  Future<AlignmentWindowStat?> rangeStats(int start, int end) {
+    return _handle.rangeStats(start: start, end: end);
+  }
+
+  @override
+  String? partitionAt(int site) {
+    if (_isDisposed) return null;
+    return _handle.partitionAt(site: site);
   }
 
   @override
@@ -346,6 +402,56 @@ class AlignmentWindows {
 
   /// Keeps [window] inside the alignment.
   int clamp(int window) => count == 0 ? 0 : window.clamp(0, count - 1);
+}
+
+/// Index of the first item of [sorted] that is at least [value].
+int lowerBoundOf(List<int> sorted, int value) {
+  int low = 0;
+  int high = sorted.length;
+  while (low < high) {
+    final int mid = (low + high) >> 1;
+    if (sorted[mid] < value) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+  return low;
+}
+
+/// Finds partitions by site. [partitions] are in site order without overlaps.
+class AlignmentPartitionIndex {
+  AlignmentPartitionIndex(this.partitions)
+      : starts = [for (final AlignmentPartition p in partitions) p.start];
+
+  final List<AlignmentPartition> partitions;
+
+  /// First site of each partition.
+  final List<int> starts;
+
+  int get length => partitions.length;
+
+  /// Partition holding [site], or null between partitions.
+  int? indexAt(int site) {
+    final int index = lowerBoundOf(starts, site + 1) - 1;
+    if (index < 0 || site >= partitions[index].end) return null;
+    return index;
+  }
+
+  /// First partition starting after [site].
+  int? nextAfter(int site) {
+    final int index = lowerBoundOf(starts, site + 1);
+    return index < length ? index : null;
+  }
+
+  /// Last partition starting before [site].
+  int? previousBefore(int site) {
+    final int index = lowerBoundOf(starts, site) - 1;
+    return index >= 0 ? index : null;
+  }
+
+  /// Partition at [site], or the last one before it.
+  int? nearest(int site) => indexAt(site) ?? previousBefore(site);
 }
 
 /// Maps alignment columns to ungapped positions, one row at a time.

@@ -13,12 +13,14 @@ import 'package:segui/screens/viewers/alignment/alignment_axes.dart';
 import 'package:segui/screens/viewers/alignment/alignment_files.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
+import 'package:segui/screens/viewers/alignment/alignment_partitions.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/window_sidebar.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/viewers/alignment.dart';
 import 'package:segui/services/viewers/alignment_files.dart';
+import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -272,6 +274,9 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   final ValueNotifier<AlignmentCell?> _hover = ValueNotifier(null);
   final ValueNotifier<AlignmentCell?> _selection = ValueNotifier(null);
   final TextEditingController _siteController = TextEditingController();
+
+  /// Partition at the left edge of the grid, or the last one before it.
+  final ValueNotifier<int?> _partition = ValueNotifier(null);
   _ScrollTarget? _pending;
   RowSelection? _orderSelection;
 
@@ -283,6 +288,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   void initState() {
     super.initState();
     _horizontal.addListener(_syncWindow);
+    if (widget.data.hasPartitions) _partition.value = 0;
   }
 
   @override
@@ -300,6 +306,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     _hover.dispose();
     _selection.dispose();
     _siteController.dispose();
+    _partition.dispose();
     super.dispose();
   }
 
@@ -341,6 +348,12 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
       selection: _selection,
       isTouch: isCompact,
     );
+    final WindowSidebar windowList = WindowSidebar(
+      data: data,
+      windowSize: settings.windowSize,
+      currentWindow: settings.window,
+      onSelected: _goToWindow,
+    );
     final Widget gridPanel = Container(
       decoration: getContainerDecoration(context),
       clipBehavior: Clip.antiAlias,
@@ -348,17 +361,55 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (showWindowList) ...[
-            WindowSidebar(
+            AlignmentSideList(
               data: data,
-              windowSize: settings.windowSize,
-              currentWindow: settings.window,
-              onSelected: _goToWindow,
+              windows: windowList,
+              partitions: PartitionSidebar(
+                data: data,
+                current: _partition,
+                onSelected: _goToPartition,
+              ),
             ),
             const VerticalDivider(width: SeguiStroke.thin),
           ],
           Expanded(
             child: Column(
               children: [
+                if (data.hasPartitions)
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: nameWidth + SeguiAlignmentLayout.nameDivider,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: SeguiSpacing.sm),
+                          child: Text(
+                            'Partitions',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall!
+                                .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: AlignmentPartitionTrack(
+                          index: data.partitionIndex,
+                          controller: _horizontal,
+                          siteRange: siteRange,
+                          cellSize: settings.cellSize,
+                          current: _partition,
+                          onSelected: _goToPartition,
+                        ),
+                      ),
+                      const SizedBox(width: SeguiControlSize.scrollbarGutter),
+                    ],
+                  ),
                 Row(
                   children: [
                     SizedBox(
@@ -420,6 +471,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                           showLetters: settings.showLetters,
                           windowSize: settings.windowSize,
                           showWindowBoundaries: !settings.isPaged,
+                          partitionStarts: data.partitionIndex.starts,
                           horizontalController: _horizontal,
                           verticalController: _vertical,
                           hover: _hover,
@@ -518,6 +570,13 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                   canShowWindowList: true,
                   siteController: _siteController,
                   onGoToSite: _goToSiteText,
+                  partitionNavigator: data.hasPartitions
+                      ? AlignmentPartitionNavigator(
+                          data: data,
+                          current: _partition,
+                          onSelected: _goToPartition,
+                        )
+                      : null,
                 ),
                 // Hiding the settings leaves the grid more room.
                 AnimatedSize(
@@ -639,20 +698,35 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                   SeguiSpacing.md,
                 ),
                 child: Text(
-                  'Windows',
+                  widget.data.hasPartitions
+                      ? 'Windows and partitions'
+                      : 'Windows',
                   style: Theme.of(sheetContext).textTheme.headlineSmall,
                 ),
               ),
               Expanded(
-                child: WindowSidebar(
+                child: AlignmentSideList(
                   data: widget.data,
                   width: double.infinity,
-                  windowSize: settings.windowSize,
-                  currentWindow: _windowsOf(settings).clamp(settings.window),
-                  onSelected: (window) {
-                    Navigator.of(sheetContext).pop();
-                    _goToWindow(window);
-                  },
+                  windows: WindowSidebar(
+                    data: widget.data,
+                    width: double.infinity,
+                    windowSize: settings.windowSize,
+                    currentWindow: _windowsOf(settings).clamp(settings.window),
+                    onSelected: (window) {
+                      Navigator.of(sheetContext).pop();
+                      _goToWindow(window);
+                    },
+                  ),
+                  partitions: PartitionSidebar(
+                    data: widget.data,
+                    width: double.infinity,
+                    current: _partition,
+                    onSelected: (index) {
+                      Navigator.of(sheetContext).pop();
+                      _goToPartition(index);
+                    },
+                  ),
                 ),
               ),
             ],
@@ -757,9 +831,15 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     _scrollAfterLayout(site: site, row: row);
   }
 
-  // In continuous view, the window follows the middle of the grid.
+  // In continuous view, the window follows the middle of the grid. The
+  // current partition follows its left edge.
   void _syncWindow() {
     final AlignmentViewSettings settings = _settings;
+    if (widget.data.hasPartitions) {
+      final int left = _siteRangeOf(settings).start +
+          _offsetOf(_horizontal) ~/ settings.cellSize;
+      _partition.value = widget.data.partitionIndex.nearest(left) ?? 0;
+    }
     if (settings.isPaged) return;
     final int window = _windowsOf(settings).windowOf(_centerSite(settings));
     if (window != settings.window) _notifier.setWindow(window);
@@ -774,6 +854,20 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     final int target = windows.clamp(window);
     _notifier.setWindow(target);
     _scrollAfterLayout(site: windows.startOf(target), alignStart: true);
+  }
+
+  /// Shows partition [index] from its first site.
+  void _goToPartition(int index) {
+    final List<AlignmentPartition> partitions = widget.data.partitions;
+    if (partitions.isEmpty) return;
+    final int target = index.clamp(0, partitions.length - 1);
+    final int site = partitions[target].start;
+    final AlignmentViewSettings settings = _settings;
+    if (settings.isPaged) {
+      _notifier.setWindow(_windowsOf(settings).windowOf(site));
+    }
+    _partition.value = target;
+    _scrollAfterLayout(site: site, alignStart: true);
   }
 
   void _goToSite(int site, {int? row}) {
@@ -967,8 +1061,8 @@ class _ScrollTarget {
   final bool alignStart;
 }
 
-/// Taxon, site, and residue under the pointer or selection, otherwise the
-/// sites in view.
+/// Taxon, site, residue, and partition under the pointer or selection,
+/// otherwise the sites in view.
 class AlignmentStatusBar extends StatelessWidget {
   const AlignmentStatusBar({
     super.key,
@@ -1017,7 +1111,8 @@ class AlignmentStatusBar extends StatelessWidget {
       final int? position = data.residues.ungappedPosition(cell.row, cell.site);
       return '${data.names[cell.row]} · site ${_siteFormat.format(cell.site + 1)}'
           ' · ${position == null ? 'gap' : 'ungapped ${_siteFormat.format(position)}'}'
-          '${residue.isEmpty ? '' : ' · $residue'}';
+          '${residue.isEmpty ? '' : ' · $residue'}'
+          '${_partitionStatus(cell.site)}';
     }
     final double offset =
         horizontalController.hasClients ? horizontalController.offset : 0;
@@ -1035,8 +1130,21 @@ class AlignmentStatusBar extends StatelessWidget {
         ? 'Pinch to zoom'
         : '${PlatformKeys.primaryLabel} + scroll to zoom';
     if (cols.length == 0) return zoomHint;
+    if (data.partitionError != null) return data.partitionError!;
     return 'Showing sites ${_siteFormat.format(siteRange.start + cols.first + 1)}–'
         '${_siteFormat.format(siteRange.start + cols.last)} of '
         '${_siteFormat.format(data.length)} · $zoomHint';
+  }
+
+  // Partition at [site] and the site within it, such as
+  // ` · locus_08 (8/42) site 13 of 650`.
+  String _partitionStatus(int site) {
+    final int? index = data.partitionIndex.indexAt(site);
+    if (index == null) return '';
+    final AlignmentPartition partition = data.partitions[index];
+    return ' · ${data.partitionNameAt(site)} '
+        '(${_siteFormat.format(index + 1)}/${_siteFormat.format(data.partitions.length)})'
+        ' site ${_siteFormat.format(site - partition.start + 1)} of '
+        '${_siteFormat.format(partition.end - partition.start)}';
   }
 }

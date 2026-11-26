@@ -55,6 +55,7 @@ class AlignmentGrid extends StatelessWidget {
     required this.showLetters,
     required this.windowSize,
     required this.showWindowBoundaries,
+    this.partitionStarts = const [],
     required this.horizontalController,
     required this.verticalController,
     required this.hover,
@@ -78,6 +79,10 @@ class AlignmentGrid extends StatelessWidget {
   final bool showLetters;
   final int windowSize;
   final bool showWindowBoundaries;
+
+  /// First sites of partitions, in order. When given, lines mark them in
+  /// place of window boundaries.
+  final List<int> partitionStarts;
   final ScrollController horizontalController;
   final ScrollController verticalController;
   final ValueNotifier<AlignmentCell?> hover;
@@ -155,6 +160,7 @@ class AlignmentGrid extends StatelessWidget {
                           showLetters: showLetters,
                           windowSize: windowSize,
                           showWindowBoundaries: showWindowBoundaries,
+                          partitionStarts: partitionStarts,
                           devicePixelRatio:
                               MediaQuery.devicePixelRatioOf(context),
                           style: _GridStyle.of(theme, data.isDna, colorMode),
@@ -312,6 +318,7 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
     required this.showLetters,
     required this.windowSize,
     required this.showWindowBoundaries,
+    required this.partitionStarts,
     required this.devicePixelRatio,
     required this.style,
     required this.selection,
@@ -329,6 +336,7 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
   final bool showLetters;
   final int windowSize;
   final bool showWindowBoundaries;
+  final List<int> partitionStarts;
   final double devicePixelRatio;
   final _GridStyle style;
   final ValueNotifier<AlignmentCell?> selection;
@@ -348,6 +356,7 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
       showLetters: showLetters,
       windowSize: windowSize,
       showWindowBoundaries: showWindowBoundaries,
+      partitionStarts: partitionStarts,
       devicePixelRatio: devicePixelRatio,
       style: style,
       selection: selection,
@@ -372,6 +381,7 @@ class _AlignmentGridViewport extends LeafRenderObjectWidget {
       ..showLetters = showLetters
       ..windowSize = windowSize
       ..showWindowBoundaries = showWindowBoundaries
+      ..partitionStarts = partitionStarts
       ..devicePixelRatio = devicePixelRatio
       ..style = style
       ..selection = selection;
@@ -392,6 +402,7 @@ class _RenderAlignmentGrid extends RenderBox {
     required bool showLetters,
     required int windowSize,
     required bool showWindowBoundaries,
+    required List<int> partitionStarts,
     required double devicePixelRatio,
     required _GridStyle style,
     required ValueNotifier<AlignmentCell?> selection,
@@ -407,6 +418,7 @@ class _RenderAlignmentGrid extends RenderBox {
         _showLetters = showLetters,
         _windowSize = windowSize,
         _showWindowBoundaries = showWindowBoundaries,
+        _partitionStarts = partitionStarts,
         _devicePixelRatio = devicePixelRatio,
         _style = style,
         _selection = selection;
@@ -498,6 +510,13 @@ class _RenderAlignmentGrid extends RenderBox {
   set showWindowBoundaries(bool value) {
     if (value == _showWindowBoundaries) return;
     _showWindowBoundaries = value;
+    markNeedsPaint();
+  }
+
+  List<int> _partitionStarts;
+  set partitionStarts(List<int> value) {
+    if (identical(value, _partitionStarts)) return;
+    _partitionStarts = value;
     markNeedsPaint();
   }
 
@@ -723,16 +742,37 @@ class _RenderAlignmentGrid extends RenderBox {
   }
 
   void _paintWindowBoundaries(Canvas canvas, VisibleRange cols, double dx) {
-    if (!_showWindowBoundaries || _windowSize <= 0) return;
     final Paint paint = Paint()
       ..color = _style.boundary
       ..strokeWidth = SeguiStroke.regular;
+    if (_partitionStarts.isNotEmpty) {
+      _paintPartitionBoundaries(canvas, cols, dx, paint);
+      return;
+    }
+    if (!_showWindowBoundaries || _windowSize <= 0) return;
     final int firstSite = _siteRange.start + cols.first;
     int boundary = (firstSite ~/ _windowSize + 1) * _windowSize;
     while (boundary < _siteRange.start + cols.last) {
       final double x = (boundary - _siteRange.start) * _cellSize - dx;
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
       boundary += _windowSize;
+    }
+  }
+
+  void _paintPartitionBoundaries(
+    Canvas canvas,
+    VisibleRange cols,
+    double dx,
+    Paint paint,
+  ) {
+    final int first = _siteRange.start + cols.first;
+    final int last = _siteRange.start + cols.last;
+    int i = lowerBoundOf(_partitionStarts, first + 1);
+    while (i < _partitionStarts.length && _partitionStarts[i] < last) {
+      final double x =
+          (_partitionStarts[i] - _siteRange.start) * _cellSize - dx;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+      i++;
     }
   }
 

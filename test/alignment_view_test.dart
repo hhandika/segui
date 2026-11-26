@@ -10,12 +10,14 @@ import 'package:flutter/services.dart';
 import 'package:segui/screens/viewers/alignment/alignment_axes.dart';
 import 'package:segui/screens/viewers/alignment/alignment_grid.dart';
 import 'package:segui/screens/viewers/alignment/alignment_overview.dart';
+import 'package:segui/screens/viewers/alignment/alignment_partitions.dart';
 import 'package:segui/screens/viewers/alignment/alignment_toolbar.dart';
 import 'package:segui/screens/viewers/alignment/alignment_view.dart';
 import 'package:segui/screens/viewers/alignment/window_sidebar.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment.dart';
+import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/design_tokens.dart';
 import 'package:segui/styles/themes.dart';
 
@@ -207,6 +209,102 @@ void main() {
       fastaOf(data.names, _rows(data), {2, 0}),
       '>taxon_0\nAC-T\n>taxon_2\nTTAA\n',
     );
+  });
+
+  group('AlignmentPartitionIndex', () {
+    const AlignmentPartition a =
+        AlignmentPartition(name: 'a', start: 0, end: 5, subsets: []);
+    const AlignmentPartition b =
+        AlignmentPartition(name: 'b', start: 5, end: 10, subsets: []);
+    const AlignmentPartition c =
+        AlignmentPartition(name: 'c', start: 20, end: 30, subsets: []);
+    final AlignmentPartitionIndex index = AlignmentPartitionIndex([a, b, c]);
+
+    test('Finds the partition holding a site', () {
+      expect(index.indexAt(0), 0);
+      expect(index.indexAt(4), 0);
+      expect(index.indexAt(5), 1);
+      expect(index.indexAt(15), isNull);
+      expect(index.indexAt(29), 2);
+      expect(index.indexAt(30), isNull);
+    });
+
+    test('Steps to neighbors', () {
+      expect(index.nextAfter(0), 1);
+      expect(index.nextAfter(15), 2);
+      expect(index.nextAfter(20), isNull);
+      expect(index.previousBefore(7), 1);
+      expect(index.previousBefore(5), 0);
+      expect(index.previousBefore(0), isNull);
+      expect(index.nearest(15), 1);
+    });
+  });
+
+  group('AlignmentExplorer with partitions', () {
+    final AlignmentViewData data = AlignmentViewData.fromSequences(
+      [for (int i = 0; i < 4; i++) 'taxon_$i'],
+      [for (int i = 0; i < 4; i++) _seq('ACGT' * 500)],
+      partitions: const [
+        AlignmentPartition(name: 'locus_1', start: 0, end: 800, subsets: []),
+        AlignmentPartition(
+            name: 'locus_2',
+            start: 800,
+            end: 1400,
+            subsets: [],
+            model: 'GTR+G'),
+        AlignmentPartition(
+            name: 'locus_3', start: 1400, end: 2000, subsets: []),
+      ],
+    );
+
+    Future<void> pumpExplorer(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1600, 1200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+          theme: SeguiTheme.lightTheme(),
+          home: Scaffold(
+            body: AlignmentExplorer(fileName: 'concat.fas', data: data),
+          ),
+        ),
+      ));
+      await tester.pump();
+    }
+
+    testWidgets('Shows the track, list, and current partition', (tester) async {
+      await pumpExplorer(tester);
+      expect(find.byType(AlignmentPartitionTrack), findsOneWidget);
+      expect(find.text('locus_1 · 1 of 3'), findsOneWidget);
+      expect(find.byType(PartitionSidebar), findsOneWidget);
+      expect(
+          find.textContaining('801–1,400 · 600 sites · GTR+G'), findsOneWidget);
+    });
+
+    testWidgets('Next partition scrolls to its first site', (tester) async {
+      await pumpExplorer(tester);
+      await tester.tap(find.byTooltip('Next partition'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('locus_2 · 2 of 3'), findsOneWidget);
+      expect(find.textContaining('Showing sites 801–'), findsOneWidget);
+    });
+
+    testWidgets('Tapping a partition in the list goes to it', (tester) async {
+      await pumpExplorer(tester);
+      await tester.tap(find.text('locus_3'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('locus_3 · 3 of 3'), findsOneWidget);
+    });
+
+    testWidgets('The side list switches to windows', (tester) async {
+      await pumpExplorer(tester);
+      await tester.tap(find.text('Windows'));
+      await tester.pump();
+      expect(find.byType(PartitionSidebar), findsNothing);
+      expect(find.byType(WindowSidebar), findsOneWidget);
+    });
   });
 
   group('AlignmentExplorer', () {

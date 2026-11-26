@@ -42,7 +42,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.13.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 52555838;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -862196346;
 
 // Section: executor
 
@@ -136,6 +136,209 @@ fn wire__crate__api__alignment_view__AlignmentHandle_open_impl(
                         std::result::Result::Ok(output_ok)
                     })(),
                 )
+            }
+        },
+    )
+}
+fn wire__crate__api__alignment_view__AlignmentHandle_partition_at_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AlignmentHandle_partition_at",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>,
+            >>::sse_decode(&mut deserializer);
+            let api_site = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok =
+                    Ok::<_, ()>(crate::api::alignment_view::AlignmentHandle::partition_at(
+                        &*api_that_guard,
+                        api_site,
+                    ))?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__alignment_view__AlignmentHandle_partition_error_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AlignmentHandle_partition_error",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>(
+                    crate::api::alignment_view::AlignmentHandle::partition_error(&*api_that_guard),
+                )?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__alignment_view__AlignmentHandle_partitions_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AlignmentHandle_partitions",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Ok::<_, ()>(
+                    crate::api::alignment_view::AlignmentHandle::partitions(&*api_that_guard),
+                )?;
+                std::result::Result::Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__alignment_view__AlignmentHandle_range_stats_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "AlignmentHandle_range_stats",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<AlignmentHandle>,
+            >>::sse_decode(&mut deserializer);
+            let api_start = <u32>::sse_decode(&mut deserializer);
+            let api_end = <u32>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, false,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let api_that_guard = api_that_guard.unwrap();
+                    let output_ok =
+                        Ok::<_, ()>(crate::api::alignment_view::AlignmentHandle::range_stats(
+                            &*api_that_guard,
+                            api_start,
+                            api_end,
+                        ))?;
+                    std::result::Result::Ok(output_ok)
+                })())
             }
         },
     )
@@ -4370,6 +4573,39 @@ impl SseDecode for crate::api::sequence::AlignmentDistanceServices {
     }
 }
 
+impl SseDecode for crate::api::alignment_view::AlignmentPartition {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_start = <u32>::sse_decode(deserializer);
+        let mut var_end = <u32>::sse_decode(deserializer);
+        let mut var_subsets = <Vec<String>>::sse_decode(deserializer);
+        let mut var_model = <Option<String>>::sse_decode(deserializer);
+        return crate::api::alignment_view::AlignmentPartition {
+            name: var_name,
+            start: var_start,
+            end: var_end,
+            subsets: var_subsets,
+            model: var_model,
+        };
+    }
+}
+
+impl SseDecode for crate::api::alignment_view::AlignmentPartitions {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_source = <String>::sse_decode(deserializer);
+        let mut var_isEmbedded = <bool>::sse_decode(deserializer);
+        let mut var_partitions =
+            <Vec<crate::api::alignment_view::AlignmentPartition>>::sse_decode(deserializer);
+        return crate::api::alignment_view::AlignmentPartitions {
+            source: var_source,
+            is_embedded: var_isEmbedded,
+            partitions: var_partitions,
+        };
+    }
+}
+
 impl SseDecode for crate::api::sequence::AlignmentServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -5317,6 +5553,18 @@ impl SseDecode for Vec<crate::api::reads::AdapterContentData> {
     }
 }
 
+impl SseDecode for Vec<crate::api::alignment_view::AlignmentPartition> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = Vec::with_capacity(len_ as usize);
+        for idx_ in 0..len_ {
+            ans_.push(<crate::api::alignment_view::AlignmentPartition>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::alignment_view::AlignmentWindowStat> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -5676,6 +5924,19 @@ impl SseDecode for Option<String> {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
             return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::api::alignment_view::AlignmentPartitions> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(
+                <crate::api::alignment_view::AlignmentPartitions>::sse_decode(deserializer),
+            );
         } else {
             return None;
         }
@@ -6883,290 +7144,296 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__alignment_view__AlignmentHandle_sample_impl(
+        6 => wire__crate__api__alignment_view__AlignmentHandle_range_stats_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__alignment_view__AlignmentHandle_tile_impl(
+        7 => wire__crate__api__alignment_view__AlignmentHandle_sample_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__alignment_view__AlignmentHandle_window_stats_impl(
+        9 => wire__crate__api__alignment_view__AlignmentHandle_tile_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__download__DatabaseDownloadJob_commit_impl(
+        11 => wire__crate__api__alignment_view__AlignmentHandle_window_stats_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        9 => wire__crate__api__download__DatabaseDownloadJob_discard_impl(
+        12 => wire__crate__api__download__DatabaseDownloadJob_commit_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        11 => wire__crate__api__download__DatabaseDownloadJob_run_impl(
+        13 => wire__crate__api__download__DatabaseDownloadJob_discard_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__download__DownloadMonitor_default_impl(
+        15 => wire__crate__api__download__DatabaseDownloadJob_run_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__download__DownloadMonitor_subscribe_impl(
+        18 => wire__crate__api__download__DownloadMonitor_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        22 => {
+        21 => wire__crate__api__download__DownloadMonitor_subscribe_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        26 => {
             wire__crate__api__progress__RunMonitor_subscribe_impl(port, ptr, rust_vec_len, data_len)
         }
-        23 => wire__crate__api__alignment_report__align_report_services_load_impl(
+        27 => wire__crate__api__alignment_report__align_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__alignment_report__align_report_services_new_impl(
+        28 => wire__crate__api__alignment_report__align_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        25 => wire__crate__api__sequence__alignment_distance_services_compute_distance_impl(
+        29 => wire__crate__api__sequence__alignment_distance_services_compute_distance_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        26 => wire__crate__api__sequence__alignment_distance_services_new_impl(
+        30 => wire__crate__api__sequence__alignment_distance_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        27 => wire__crate__api__sequence__alignment_distance_services_preview_groups_impl(
+        31 => wire__crate__api__sequence__alignment_distance_services_preview_groups_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        28 => wire__crate__api__sequence__alignment_services_concat_alignment_impl(
+        32 => wire__crate__api__sequence__alignment_services_concat_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        29 => wire__crate__api__sequence__alignment_services_new_impl(
+        33 => wire__crate__api__sequence__alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        30 => wire__crate__api__sequence__alignment_services_summarize_alignment_impl(
+        34 => wire__crate__api__sequence__alignment_services_summarize_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        31 => wire__crate__api__sequence__alignment_services_summarize_alignment_per_locus_impl(
+        35 => wire__crate__api__sequence__alignment_services_summarize_alignment_per_locus_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        32 => wire__crate__api__sequence__alignment_trimming_services_new_impl(
+        36 => wire__crate__api__sequence__alignment_trimming_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        33 => wire__crate__api__sequence__alignment_trimming_services_trim_impl(
+        37 => wire__crate__api__sequence__alignment_trimming_services_trim_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        34 => {
+        38 => {
             wire__crate__api__archive__archive_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        35 => {
+        39 => {
             wire__crate__api__archive__archive_services_zip_impl(port, ptr, rust_vec_len, data_len)
         }
-        39 => wire__crate__api__contig_report__contig_report_services_load_impl(
+        43 => wire__crate__api__contig_report__contig_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        40 => wire__crate__api__contig_report__contig_report_services_new_impl(
+        44 => wire__crate__api__contig_report__contig_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        41 => wire__crate__api__contig__contig_services_new_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__contig__contig_services_summarize_impl(
+        45 => wire__crate__api__contig__contig_services_new_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__contig__contig_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__api__csv__csv_summary_services_get_column_names_impl(
+        48 => wire__crate__api__csv__csv_summary_services_get_column_names_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        45 => wire__crate__api__csv__csv_summary_services_get_line_impl(
+        49 => wire__crate__api__csv__csv_summary_services_get_line_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        46 => {
+        50 => {
             wire__crate__api__csv__csv_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        47 => wire__crate__api__csv__csv_summary_services_parse_columns_impl(
+        51 => wire__crate__api__csv__csv_summary_services_parse_columns_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        49 => wire__crate__api__distance_report__distance_report_services_load_impl(
+        53 => wire__crate__api__distance_report__distance_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        50 => wire__crate__api__distance_report__distance_report_services_new_impl(
+        54 => wire__crate__api__distance_report__distance_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        52 => {
+        56 => {
             wire__crate__api__archive__export_services_write_impl(port, ptr, rust_vec_len, data_len)
         }
-        53 => wire__crate__api__archive__extract_services_extract_impl(
+        57 => wire__crate__api__archive__extract_services_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        54 => wire__crate__api__archive__extract_services_extract_with_monitor_impl(
+        58 => wire__crate__api__archive__extract_services_extract_with_monitor_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        57 => wire__crate__api__file_sort__file_list_services_sizes_impl(
+        61 => wire__crate__api__file_sort__file_list_services_sizes_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        58 => wire__crate__api__sequence__filtering_services_filter_impl(
+        62 => wire__crate__api__sequence__filtering_services_filter_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        59 => wire__crate__api__sequence__filtering_services_new_impl(
+        63 => wire__crate__api__sequence__filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        60 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
-        61 => wire__crate__api__common__get_available_space_impl(port, ptr, rust_vec_len, data_len),
-        62 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
+        64 => wire__crate__api__common__get_api_version_impl(port, ptr, rust_vec_len, data_len),
+        65 => wire__crate__api__common__get_available_space_impl(port, ptr, rust_vec_len, data_len),
+        66 => wire__crate__api__sequence__id_extraction_services_extract_id_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        63 => wire__crate__api__sequence__id_extraction_services_new_impl(
+        67 => wire__crate__api__sequence__id_extraction_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        64 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
-        65 => wire__crate__api__maf__maf_conversion_services_convert_impl(
+        68 => wire__crate__api__common__init_logger_impl(port, ptr, rust_vec_len, data_len),
+        69 => wire__crate__api__maf__maf_conversion_services_convert_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        66 => wire__crate__api__maf__maf_conversion_services_new_impl(
+        70 => wire__crate__api__maf__maf_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        67 => {
+        71 => {
             wire__crate__api__maf__maf_summary_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        68 => wire__crate__api__maf__maf_summary_services_summarize_impl(
+        72 => wire__crate__api__maf__maf_summary_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        71 => wire__crate__api__sequence__partition_services_convert_partition_impl(
+        75 => wire__crate__api__sequence__partition_services_convert_partition_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        72 => wire__crate__api__sequence__partition_services_new_impl(
+        76 => wire__crate__api__sequence__partition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        73 => {
+        77 => {
             wire__crate__api__reads__raw_read_services_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        74 => wire__crate__api__reads__raw_read_services_summarize_impl(
+        78 => wire__crate__api__reads__raw_read_services_summarize_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        75 => wire__crate__api__reads__read_report_services_load_impl(
+        79 => wire__crate__api__reads__read_report_services_load_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        76 => wire__crate__api__reads__read_report_services_new_impl(
+        80 => wire__crate__api__reads__read_report_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        79 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
+        83 => wire__crate__api__sequence__sequence_addition_services_add_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        80 => {
+        84 => {
             wire__crate__api__sequence__sequence_addition_services_add_sequence_to_single_file_impl(
                 port,
                 ptr,
@@ -7174,127 +7441,127 @@ fn pde_ffi_dispatcher_primary_impl(
                 data_len,
             )
         }
-        81 => wire__crate__api__sequence__sequence_addition_services_new_impl(
+        85 => wire__crate__api__sequence__sequence_addition_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        82 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
+        86 => wire__crate__api__sequence__sequence_conversion_services_convert_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        83 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
+        87 => wire__crate__api__sequence__sequence_conversion_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        84 => wire__crate__api__sequence__sequence_extraction_extract_impl(
+        88 => wire__crate__api__sequence__sequence_extraction_extract_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        85 => wire__crate__api__sequence__sequence_extraction_new_impl(
+        89 => wire__crate__api__sequence__sequence_extraction_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        86 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
+        90 => wire__crate__api__sequence__sequence_filtering_services_filter_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        87 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
+        91 => wire__crate__api__sequence__sequence_filtering_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        88 => {
+        92 => {
             wire__crate__api__sequence__sequence_removal_new_impl(port, ptr, rust_vec_len, data_len)
         }
-        89 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
+        93 => wire__crate__api__sequence__sequence_removal_remove_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        90 => wire__crate__api__sequence__sequence_renaming_new_impl(
+        94 => wire__crate__api__sequence__sequence_renaming_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        91 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
+        95 => wire__crate__api__sequence__sequence_renaming_rename_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        92 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
+        96 => wire__crate__api__sequence__sequence_transpose_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        93 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
+        97 => wire__crate__api__sequence__sequence_transpose_services_transpose_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        94 => {
+        98 => {
             wire__crate__api__sequence__show_dna_uppercase_impl(port, ptr, rust_vec_len, data_len)
         }
-        96 => wire__crate__api__sequence__split_alignment_services_new_impl(
+        100 => wire__crate__api__sequence__split_alignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        97 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
+        101 => wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        99 => wire__crate__api__progress__task_progress_default_impl(
+        103 => wire__crate__api__progress__task_progress_default_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        100 => wire__crate__api__sequence__translation_services_new_impl(
+        104 => wire__crate__api__sequence__translation_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        101 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
+        105 => wire__crate__api__sequence__translation_services_translate_sequence_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        102 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
+        106 => wire__crate__api__sequence__translation_services_translate_sequence_auto_frame_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        103 => wire__crate__api__sequence__unalignment_services_new_impl(
+        107 => wire__crate__api__sequence__unalignment_services_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        104 => wire__crate__api__sequence__unalignment_services_unalign_impl(
+        108 => wire__crate__api__sequence__unalignment_services_unalign_impl(
             port,
             ptr,
             rust_vec_len,
@@ -7312,45 +7579,60 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        4 => wire__crate__api__alignment_view__AlignmentHandle_summary_impl(
+        3 => wire__crate__api__alignment_view__AlignmentHandle_partition_at_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        6 => wire__crate__api__alignment_view__AlignmentHandle_ungapped_position_impl(
+        4 => wire__crate__api__alignment_view__AlignmentHandle_partition_error_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        10 => wire__crate__api__download__DatabaseDownloadJob_new_impl(ptr, rust_vec_len, data_len),
-        12 => wire__crate__api__download__DownloadMonitor_cancel_impl(ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__download__DownloadMonitor_close_impl(ptr, rust_vec_len, data_len),
-        15 => wire__crate__api__download__DownloadMonitor_is_cancelled_impl(
+        5 => wire__crate__api__alignment_view__AlignmentHandle_partitions_impl(
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__download__DownloadMonitor_new_impl(ptr, rust_vec_len, data_len),
-        18 => wire__crate__api__progress__RunMonitor_cancel_impl(ptr, rust_vec_len, data_len),
-        19 => wire__crate__api__progress__RunMonitor_close_impl(ptr, rust_vec_len, data_len),
-        20 => wire__crate__api__progress__RunMonitor_is_cancelled_impl(ptr, rust_vec_len, data_len),
-        21 => wire__crate__api__progress__RunMonitor_new_impl(ptr, rust_vec_len, data_len),
-        36 => wire__crate__api__colors__best_text_on_impl(ptr, rust_vec_len, data_len),
-        37 => wire__crate__api__colors__colormap_options_impl(ptr, rust_vec_len, data_len),
-        38 => wire__crate__api__colors__colormap_stops_impl(ptr, rust_vec_len, data_len),
-        43 => wire__crate__api__colors__contrast_ratio_impl(ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__colors__cvd_options_impl(ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__colors__ensure_contrast_impl(ptr, rust_vec_len, data_len),
-        55 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
-        56 => {
+        8 => wire__crate__api__alignment_view__AlignmentHandle_summary_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        10 => wire__crate__api__alignment_view__AlignmentHandle_ungapped_position_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        14 => wire__crate__api__download__DatabaseDownloadJob_new_impl(ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__download__DownloadMonitor_cancel_impl(ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__download__DownloadMonitor_close_impl(ptr, rust_vec_len, data_len),
+        19 => wire__crate__api__download__DownloadMonitor_is_cancelled_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        20 => wire__crate__api__download__DownloadMonitor_new_impl(ptr, rust_vec_len, data_len),
+        22 => wire__crate__api__progress__RunMonitor_cancel_impl(ptr, rust_vec_len, data_len),
+        23 => wire__crate__api__progress__RunMonitor_close_impl(ptr, rust_vec_len, data_len),
+        24 => wire__crate__api__progress__RunMonitor_is_cancelled_impl(ptr, rust_vec_len, data_len),
+        25 => wire__crate__api__progress__RunMonitor_new_impl(ptr, rust_vec_len, data_len),
+        40 => wire__crate__api__colors__best_text_on_impl(ptr, rust_vec_len, data_len),
+        41 => wire__crate__api__colors__colormap_options_impl(ptr, rust_vec_len, data_len),
+        42 => wire__crate__api__colors__colormap_stops_impl(ptr, rust_vec_len, data_len),
+        47 => wire__crate__api__colors__contrast_ratio_impl(ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__colors__cvd_options_impl(ptr, rust_vec_len, data_len),
+        55 => wire__crate__api__colors__ensure_contrast_impl(ptr, rust_vec_len, data_len),
+        59 => wire__crate__api__file_sort__file_list_services_new_impl(ptr, rust_vec_len, data_len),
+        60 => {
             wire__crate__api__file_sort__file_list_services_order_impl(ptr, rust_vec_len, data_len)
         }
-        69 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
-        70 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
-        77 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
-        78 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
-        95 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
-        98 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
+        73 => wire__crate__api__colors__palette_colors_impl(ptr, rust_vec_len, data_len),
+        74 => wire__crate__api__colors__palette_options_impl(ptr, rust_vec_len, data_len),
+        81 => wire__crate__api__colors__residue_colors_impl(ptr, rust_vec_len, data_len),
+        82 => wire__crate__api__colors__residue_scheme_options_impl(ptr, rust_vec_len, data_len),
+        99 => wire__crate__api__colors__simulate_cvd_impl(ptr, rust_vec_len, data_len),
+        102 => wire__crate__api__colors__status_colors_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -7603,6 +7885,52 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sequence::AlignmentDistanceSe
     for crate::api::sequence::AlignmentDistanceServices
 {
     fn into_into_dart(self) -> crate::api::sequence::AlignmentDistanceServices {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::alignment_view::AlignmentPartition {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.name.into_into_dart().into_dart(),
+            self.start.into_into_dart().into_dart(),
+            self.end.into_into_dart().into_dart(),
+            self.subsets.into_into_dart().into_dart(),
+            self.model.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::alignment_view::AlignmentPartition
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::alignment_view::AlignmentPartition>
+    for crate::api::alignment_view::AlignmentPartition
+{
+    fn into_into_dart(self) -> crate::api::alignment_view::AlignmentPartition {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::alignment_view::AlignmentPartitions {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.source.into_into_dart().into_dart(),
+            self.is_embedded.into_into_dart().into_dart(),
+            self.partitions.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::alignment_view::AlignmentPartitions
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::alignment_view::AlignmentPartitions>
+    for crate::api::alignment_view::AlignmentPartitions
+{
+    fn into_into_dart(self) -> crate::api::alignment_view::AlignmentPartitions {
         self
     }
 }
@@ -10145,6 +10473,29 @@ impl SseEncode for crate::api::sequence::AlignmentDistanceServices {
     }
 }
 
+impl SseEncode for crate::api::alignment_view::AlignmentPartition {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.name, serializer);
+        <u32>::sse_encode(self.start, serializer);
+        <u32>::sse_encode(self.end, serializer);
+        <Vec<String>>::sse_encode(self.subsets, serializer);
+        <Option<String>>::sse_encode(self.model, serializer);
+    }
+}
+
+impl SseEncode for crate::api::alignment_view::AlignmentPartitions {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.source, serializer);
+        <bool>::sse_encode(self.is_embedded, serializer);
+        <Vec<crate::api::alignment_view::AlignmentPartition>>::sse_encode(
+            self.partitions,
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::api::sequence::AlignmentServices {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -10856,6 +11207,16 @@ impl SseEncode for Vec<crate::api::reads::AdapterContentData> {
     }
 }
 
+impl SseEncode for Vec<crate::api::alignment_view::AlignmentPartition> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::api::alignment_view::AlignmentPartition>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::alignment_view::AlignmentWindowStat> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -11121,6 +11482,16 @@ impl SseEncode for Option<String> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::api::alignment_view::AlignmentPartitions> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::alignment_view::AlignmentPartitions>::sse_encode(value, serializer);
         }
     }
 }
