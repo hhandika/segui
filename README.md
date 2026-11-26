@@ -36,9 +36,9 @@ A GUI version of [segul](https://github.com/hhandika/segul), an ultrafast, memor
 
 Learn more about device requirements and GUI app installation in the [documentation](https://segul.app/docs/installation/install_gui/).
 
-## What's New in SEGUI 1.2
+## What's New in SEGUI 1.2.0
 
-SEGUI 1.2 updates the app to SEGUL v0.25.0 and redesigns the app.
+SEGUI 1.2.0 brings new tools available in SEGUL v0.25.0 and a redesigned GUI with improved usability and performance.
 
 New tools:
 
@@ -52,7 +52,7 @@ New tools:
 
 App improvements:
 
-- An alignment viewer that handles large alignments, plus a file inspector.
+- An alignment viewer that handles large alignments (tested with 5.4M sites), plus a file inspector.
 - A workbench that suggests the next tool to run on a task's output.
 - Multi-file input with a directory tree view.
 - Output export as ZIP or `.tar.gz` archives.
