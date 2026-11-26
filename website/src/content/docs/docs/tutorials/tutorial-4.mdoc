@@ -1,348 +1,427 @@
 ---
-title: "Tutorial 4: Clean alignments with Python"
-description: Use PySEGUL to summarize 4,040 UCE alignments, choose thresholds from the summary, and build a supermatrix in one Python script.
+title: "Tutorial 4: A phylogenomic workflow with a shell script"
+description: Run SEGUL, IQ-TREE, and ASTRAL from one Bash script, from 4,040 UCE alignments to concatenated and species trees.
 sidebar:
   order: 4
-  label: "4. Clean alignments with Python"
+  label: "4. Workflow with a shell script"
 ---
 
-This tutorial writes one Python script that takes a published set of alignments to a supermatrix. The script reads its own summary and chooses the thresholds from the data, which is the main reason to use Python instead of the command line. You will:
+This tutorial builds the same workflow as [Tutorial 3](/docs/tutorials/tutorial-3/), as one Bash script instead of a Snakemake workflow. It takes a published set of alignments to two phylogenetic trees with one command. You will:
 
-1. Install PySEGUL.
-2. Download and summarize the alignments.
-3. Find and remove poorly sampled taxa.
-4. Choose a taxon filter from the summary, then filter and trim.
-5. Concatenate the loci and compare the summaries.
+1. Install the software in one conda environment.
+2. Write the script, one step at a time.
+3. Run it and check the results.
+4. Change a setting and run it again.
+5. Submit it as a job on a cluster.
 
-The script uses only PySEGUL and the Python standard library.
+A script needs nothing beyond a shell, and every line is a command you could type yourself. It suits a short, linear analysis. For many samples, jobs spread over cluster nodes, or reruns that skip finished steps, use [Snakemake](/docs/tutorials/tutorial-3/).
+
+## The software
+
+| Software | Role in the workflow |
+| --- | --- |
+| [Bash](https://www.gnu.org/software/bash/) | Runs the steps in order and stops at the first error. |
+| [SEGUL](/docs/cli-usage/intro/) | Summarizes, filters, trims, and concatenates the alignments. |
+| [IQ-TREE](https://iqtree.github.io/) | Infers a maximum likelihood tree from the supermatrix, and one gene tree per locus. |
+| [ASTRAL](https://github.com/chaoszhang/ASTER) | Estimates a species tree from the gene trees. |
 
 ## Before you start
 
-- **A computer with Linux, macOS, or Windows.**
-- **Python 3.9 or newer.** Check with `python --version`. On some systems the command is `python3`.
-- **About 1 GB of free storage.**
-- **Basic Python**: functions, lists, and dictionaries.
+- **A computer with Linux or macOS.** On Windows, use [WSL](https://learn.microsoft.com/windows/wsl/install).
+- **Conda.** [Miniforge](https://conda-forge.org/download/) is a good way to get it. Check with `conda --version`.
+- **About 1 GB of free storage**, and an internet connection for the first run.
+- **Basic use of a terminal.** You do not need to know how to write shell scripts.
 
-The script runs in less than a minute after the download.
+With 8 cores, the whole workflow takes about 10 minutes.
 
 ## The dataset
 
 The data are the same shrew UCE alignments as in [Tutorial 1](/docs/tutorials/tutorial-1/), from [Esselstyn et al. 2021](https://doi.org/10.1206/0003-0090.454.1.1): 4,040 NEXUS alignments of 102 taxa, in a 14.6 MB archive on [Zenodo](https://zenodo.org/records/6459213). The script downloads it.
 
-## 1. Set up the project
+## The workflow
 
-Create a folder with a virtual environment, so PySEGUL stays apart from your other Python packages:
+| Step | Software | Output |
+| --- | --- | --- |
+| Download and unpack the alignments | curl, unzip | `data/loci` |
+| Summarize the raw alignments | SEGUL | `results/01-summary-raw` |
+| Keep loci with enough taxa | SEGUL | `results/02-filtered` |
+| Trim sites with missing data | SEGUL | `results/03-trimmed` |
+| Summarize the clean alignments | SEGUL | `results/04-summary-clean` |
+| Concatenate the loci | SEGUL | `results/05-supermatrix` |
+| Infer the concatenated tree | IQ-TREE | `results/06-concat-tree` |
+| Infer a tree per locus | IQ-TREE | `results/07-gene-trees` |
+| Estimate the species tree | ASTRAL | `results/08-species-tree` |
 
-```bash
-mkdir segul-python
-```
+## 1. Create the project
 
-```bash
-cd segul-python
-```
-
-```bash
-python -m venv .venv
-```
-
-Activate the environment:
-
-{% tabs syncKey="os" %}
-{% tabitem label="Linux and macOS" %}
-
-```bash
-source .venv/bin/activate
-```
-
-{% /tabitem %}
-{% tabitem label="Windows" %}
-
-```powershell
-.venv\Scripts\activate
-```
-
-{% /tabitem %}
-{% /tabs %}
-
-Install PySEGUL:
-
-```bash
-pip install pysegul
-```
-
-This tutorial was tested with PySEGUL 0.5.0. Check your version:
-
-```bash
-python -c "from importlib.metadata import version; print(version('pysegul'))"
-```
-
-## 2. Start the script
-
-Create a file named `clean_alignments.py` and add each block below, in order.
-
-The first block imports PySEGUL and sets the options. Keeping the thresholds at the top makes them easy to find and change.
-
-```python title="clean_alignments.py"
-#!/usr/bin/env python
-"""Clean a set of alignments with thresholds chosen from their summary."""
-import shutil
-import urllib.request
-import zipfile
-from pathlib import Path
-
-import pysegul
-
-DATASET_URL = (
-    "https://zenodo.org/records/6459213/files/"
-    "esselstyn_et_al_2021_uce_aln.zip?download=1"
-)
-DATA_DIR = Path("data")
-OUTPUT_DIR = Path("results")
-
-# Remove taxa found in fewer loci than this share of all loci.
-MIN_LOCUS_SHARE = 0.3
-# Use the strictest taxon filter that keeps at least this many loci.
-MIN_LOCI = 1000
-# Remove sites where more than this share of the taxa is missing.
-MAX_MISSING = 0.5
-```
-
-## 3. Download the alignments
-
-```python title="clean_alignments.py"
-def download_alignments() -> Path:
-    """Download and unpack the alignments, unless they are already there."""
-    loci_dir = DATA_DIR / "loci"
-    if loci_dir.exists():
-        return loci_dir
-    DATA_DIR.mkdir(exist_ok=True)
-    archive = DATA_DIR / "alignments.zip"
-    urllib.request.urlretrieve(DATASET_URL, archive)
-    loci_dir.mkdir()
-    with zipfile.ZipFile(archive) as zip_file:
-        for member in zip_file.namelist():
-            if member.endswith(".nex"):
-                target = loci_dir / Path(member).name
-                target.write_bytes(zip_file.read(member))
-    return loci_dir
-```
-
-The function skips the download when the `data/loci` folder exists, so you can run the script many times.
-
-## 4. Summarize the alignments
-
-```python title="clean_alignments.py"
-def summarize(input_dir: Path, name: str) -> dict:
-    """Summarize the alignments in a folder and load the report."""
-    summary = pysegul.AlignmentSummary(
-        input_fmt="nexus",
-        datatype="dna",
-        output_path=str(OUTPUT_DIR / f"summary-{name}"),
-        output_prefix=name,
-        plot=pysegul.PlotOptions(format="svg"),
-    )
-    outputs = summary.from_dir(str(input_dir))
-    return pysegul.load_align_report(outputs["report"])
-```
-
-Each PySEGUL task is a class. You create it with its options, then call `from_dir` with the input folder. `AlignmentSummary` returns the paths of the files it wrote, and `load_align_report` loads its JSON report as a dictionary:
-
-| Key | Content |
-| --- | --- |
-| `summary` | Totals, such as `taxa`, `loci`, `sites`, and `prop_missing` |
-| `completeness` | Loci kept at each share of taxa, from 100% down |
-| `loci` | Statistics of each locus |
-| `taxa` | Statistics of each taxon, such as `loci` and `prop_missing` |
-
-`PlotOptions` also writes ten charts to a `plots` folder. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for samples and options.
-
-## 5. Remove poorly sampled taxa
-
-A taxon that is missing from most loci adds little data and a lot of gaps. The report lists the number of loci of each taxon, so the script can find these taxa itself.
-
-```python title="clean_alignments.py"
-def find_sparse_taxa(report: dict) -> list[str]:
-    """Taxa found in too few loci."""
-    min_loci = MIN_LOCUS_SHARE * report["summary"]["loci"]
-    return [taxon["name"] for taxon in report["taxa"] if taxon["loci"] < min_loci]
-
-
-def remove_taxa(input_dir: Path, taxa: list[str]) -> Path:
-    """Remove the taxa from every alignment."""
-    output_dir = OUTPUT_DIR / "01-taxa-removed"
-    removal = pysegul.SequenceRemoval(
-        input_fmt="nexus",
-        datatype="dna",
-        output_path=str(output_dir),
-        output_format="nexus",
-    )
-    removal.input_dir = str(input_dir)
-    removal.remove_id_list(taxa)
-    return output_dir
-```
-
-`find_sparse_taxa` returns the taxa found in fewer than 30% of the loci. `SequenceRemoval` then writes every alignment without them. Classes with several methods, such as this one, take the input from `input_dir` and run when you call a method.
-
-## 6. Choose the filter and apply it
-
-The best taxon filter depends on the dataset. Instead of a fixed number, the script takes the strictest filter that still keeps 1,000 loci.
-
-```python title="clean_alignments.py"
-def choose_taxon_filter(report: dict) -> float:
-    """The strictest share of taxa that keeps enough loci."""
-    for level in report["completeness"]:
-        if level["loci"] >= MIN_LOCI:
-            return level["percent"] / 100
-    raise ValueError(f"No taxon filter keeps {MIN_LOCI} loci")
-
-
-def filter_alignments(input_dir: Path, min_taxa: float) -> Path:
-    """Keep the alignments with enough taxa."""
-    output_dir = OUTPUT_DIR / "02-filtered"
-    filtering = pysegul.AlignmentFiltering(
-        input_fmt="nexus",
-        datatype="dna",
-        output_path=str(output_dir),
-        output_fmt="nexus",
-    )
-    filtering.input_dir = str(input_dir)
-    filtering.minimal_taxa(min_taxa)
-    return output_dir
-```
-
-The `completeness` list starts at 100% of taxa, so the first level with enough loci is the strictest one.
-
-## 7. Trim and concatenate
-
-```python title="clean_alignments.py"
-def trim_alignments(input_dir: Path) -> Path:
-    """Remove sites with too much missing data."""
-    output_dir = OUTPUT_DIR / "03-trimmed"
-    trimming = pysegul.AlignmentTrimming(
-        input_fmt="nexus",
-        datatype="dna",
-        output_path=str(output_dir),
-        output_fmt="nexus",
-    )
-    trimming.input_dir = str(input_dir)
-    trimming.missing_data(MAX_MISSING)
-    return output_dir / "trimmed_alignments"
-
-
-def concatenate(input_dir: Path) -> None:
-    """Join the alignments into a supermatrix with a partition file."""
-    concat = pysegul.AlignmentConcatenation(
-        input_fmt="nexus",
-        datatype="dna",
-        output_dir=str(OUTPUT_DIR / "04-supermatrix"),
-        output_fmt="phylip",
-        partition_fmt="raxml",
-        output_prefix="shrews",
-    )
-    concat.from_dir(str(input_dir))
-```
-
-`AlignmentTrimming` writes the alignments to a `trimmed_alignments` folder inside its output folder, so `trim_alignments` returns that path.
-
-## 8. Put the steps together
-
-```python title="clean_alignments.py"
-def print_comparison(reports: dict[str, dict]) -> None:
-    """Print the main statistics of each summary side by side."""
-    print(f"{'':10}{'Taxa':>6}{'Loci':>8}{'Sites':>12}{'Missing':>10}")
-    for name, report in reports.items():
-        stats = report["summary"]
-        print(
-            f"{name:10}{stats['taxa']:>6}{stats['loci']:>8,}"
-            f"{stats['sites']:>12,}{stats['prop_missing']:>10.2%}"
-        )
-
-
-def main() -> None:
-    # PySEGUL does not overwrite files, so start from an empty output folder.
-    shutil.rmtree(OUTPUT_DIR, ignore_errors=True)
-
-    loci_dir = download_alignments()
-    raw = summarize(loci_dir, "raw")
-
-    sparse_taxa = find_sparse_taxa(raw)
-    print(f"Removing {len(sparse_taxa)} taxa:")
-    for taxon in sparse_taxa:
-        print(f"  {taxon}")
-    removed_dir = remove_taxa(loci_dir, sparse_taxa)
-    removed = summarize(removed_dir, "removed")
-
-    min_taxa = choose_taxon_filter(removed)
-    print(f"Taxon filter: {min_taxa:.0%}")
-    filtered_dir = filter_alignments(removed_dir, min_taxa)
-    trimmed_dir = trim_alignments(filtered_dir)
-    concatenate(trimmed_dir)
-    clean = summarize(trimmed_dir, "clean")
-
-    print_comparison({"Raw": raw, "Removed": removed, "Clean": clean})
-
-
-if __name__ == "__main__":
-    main()
-```
-
-`main` runs the steps in order and summarizes the data three times: raw, after removing taxa, and clean.
-
-{% aside type="note" title="Output folders" %}
-PySEGUL stops when an output file already exists. The script deletes the `results` folder first, so every run starts clean. Keep results you need under another name.
-{% /aside %}
-
-## 9. Run the script
-
-```bash
-python clean_alignments.py
-```
-
-PySEGUL prints the log of each step. Among it, the script prints its decisions and the comparison:
+The project is a folder with the script and a file that lists the software:
 
 ```plaintext
-Removing 10 taxa:
-  Crocidura_australis_Bawakaraeng_MVZ237610_NMV_Z57224
-  Crocidura_australis_Bawakaraeng_MZB40991_NMV_Z57198
-  Crocidura_australis_Bawakaraeng_NMV_Z57223_KCR2954
-  Crocidura_caudipilosa_Bawakaraeng_NMV_Z57044_KCR2849
-  Crocidura_musseri_Rorekatimbo_FMNH213263
-  Crocidura_normalis_Latimojong_FMNH213011
-  Crocidura_normalis_Rorekatimbo_FMNH213184
-  Crocidura_parva_Bawakaraeng_MVZ237603_NMV_Z56998
-  Crocidura_parva_Bawakaraeng_NMV_Z56314_HH925
-  DIPLOPULCHELLUM_MVZ179157
-Taxon filter: 80%
-            Taxa    Loci       Sites   Missing
-Raw          102   4,040   5,398,947    49.43%
-Removed       92   4,040   5,387,970    48.61%
-Clean         92   1,019     806,165    12.91%
+segul-phylo/
+├── environment.yaml
+├── run.sh
+└── submit.sh      for a cluster run only (step 8)
 ```
 
-The ten removed taxa are each in 781 to 1,043 of the 4,040 loci. The next taxon is in 1,458. With them gone, an 80% filter keeps 1,019 loci. On all 102 taxa, the same filter keeps only 308.
+```bash
+mkdir segul-phylo
+```
 
-The `results` folder holds:
+```bash
+cd segul-phylo
+```
+
+Create the files in the next sections with any text editor.
+
+## 2. Install the software
+
+`environment.yaml` lists the conda channels and each package with its version. Fixed versions give the same results on another computer or a year from now. The `aster` package contains ASTRAL.
+
+```yaml title="environment.yaml"
+name: segul-phylo
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - segul=0.25.0
+  - iqtree=3.1.4
+  - aster=1.25
+  - curl
+  - unzip
+```
+
+Create the environment and activate it:
+
+```bash
+conda env create --file environment.yaml
+```
+
+```bash
+conda activate segul-phylo
+```
+
+Check that each program runs:
+
+```bash
+segul --version
+```
+
+```bash
+iqtree --version
+```
+
+## 3. Write the script
+
+Add each block below to `run.sh`, in order.
+
+### Settings
+
+The first lines make the script stop at the first error, so a failed step never feeds an empty file to the next one. The settings you may want to change come next, so you never edit the commands themselves.
+
+```bash title="run.sh"
+#!/usr/bin/env bash
+# From UCE alignments to concatenated and species trees with SEGUL, IQ-TREE, and ASTRAL.
+
+# Stop at the first error, unset variable, or failed command in a pipe.
+set -euo pipefail
+
+# Settings
+DATASET_URL="https://zenodo.org/records/6459213/files/esselstyn_et_al_2021_uce_aln.zip?download=1"
+PREFIX="shrews"      # Name of the supermatrix and the trees.
+MIN_TAXA=0.75        # Keep loci with at least this proportion of the taxa.
+MAX_MISSING=0.5      # Remove sites where more than this proportion of the taxa is missing.
+MODEL="GTR+G"        # Substitution model for IQ-TREE.
+IQTREE_OPTIONS="--fast"  # Extra IQ-TREE options. Set to "" for a full search.
+THREADS="${THREADS:-8}"  # Cores for IQ-TREE and ASTRAL. 8 unless set when running.
+
+TRIMMED="results/03-trimmed/trimmed_alignments"
+
+step() {
+    echo "[$(date +%H:%M:%S)] $1"
+}
+
+# Each run starts fresh, so results always match the settings above.
+rm -rf results logs
+mkdir -p data results logs
+```
+
+`THREADS` is 8 unless you set it when you run the script, as in `THREADS=16 ./run.sh`. A cluster job uses this to match the cores it was given. `step` prints the time and the name of each step, so you can follow the run. The script deletes `results` and `logs` when it starts. Keep nothing of your own in them.
+
+### Get the data
+
+```bash title="run.sh"
+# 1. Get the data. Skipped when the alignments are already there.
+if [ ! -d data/loci ]; then
+    step "Downloading the alignments"
+    curl --location --silent --show-error --output data/alignments.zip "$DATASET_URL"
+    unzip -q -j data/alignments.zip '*.nex' -d data/loci
+fi
+```
+
+`unzip -j` leaves out the folder inside the archive, so the alignments land in `data/loci`. The download runs once. Later runs reuse the alignments.
+
+### Summarize and filter with SEGUL
+
+```bash title="run.sh"
+# 2. Summarize the raw alignments.
+step "Summarizing the raw alignments"
+segul align summary --dir data/loci --input-format nexus \
+    --output results/01-summary-raw --prefix raw --log logs/summary-raw.log
+
+# 3. Keep loci with enough taxa.
+step "Filtering loci"
+segul align filter --dir data/loci --input-format nexus \
+    --percent "$MIN_TAXA" --output results/02-filtered --log logs/filter.log
+# SEGUL adds the threshold to the folder name, such as `_75p`.
+mv results/02-filtered_*p results/02-filtered
+```
+
+- **`--log`** sends SEGUL's log file to the `logs` folder. Without it, every step writes `segul.log` in the project folder.
+- **`"$MIN_TAXA"`** passes a setting to the command. Quote variables so a value with spaces stays one argument.
+
+`segul align filter` adds the threshold to the name of its output folder, such as `02-filtered_75p`. The `mv` command gives it a fixed name, so the next step does not depend on the threshold.
+
+### Trim, summarize again, and concatenate
+
+```bash title="run.sh"
+# 4. Trim sites with missing data.
+step "Trimming sites"
+segul align trim --dir results/02-filtered --input-format nexus \
+    --missing-data "$MAX_MISSING" --output results/03-trimmed --log logs/trim.log
+
+# 5. Summarize the clean alignments.
+step "Summarizing the clean alignments"
+segul align summary --dir "$TRIMMED" --input-format nexus \
+    --output results/04-summary-clean --prefix clean --log logs/summary-clean.log
+
+# 6. Concatenate the loci.
+step "Concatenating loci"
+segul align concat --dir "$TRIMMED" --input-format nexus \
+    --output-format phylip --partition-format raxml \
+    --output results/05-supermatrix --prefix "$PREFIX" --log logs/concat.log
+```
+
+`segul align trim` writes the alignments to a `trimmed_alignments` folder inside its output folder, next to `trimming_summary.csv`. The variable `TRIMMED` points to that folder.
+
+### Infer the concatenated tree
+
+```bash title="run.sh"
+# 7. Infer the concatenated tree.
+step "Inferring the concatenated tree"
+mkdir -p results/06-concat-tree
+iqtree -s "results/05-supermatrix/$PREFIX.phy" -m "$MODEL" $IQTREE_OPTIONS -T "$THREADS" \
+    --prefix "results/06-concat-tree/$PREFIX" --quiet
+```
+
+IQ-TREE writes its files with the `--prefix` path but does not create the folder, hence the `mkdir`. `$IQTREE_OPTIONS` has no quotes, so several options split into separate arguments, and an empty value adds none.
+
+### Infer gene trees in parallel
+
+```bash title="run.sh"
+# 8. Infer one tree per locus, several at a time.
+step "Inferring gene trees"
+mkdir -p results/07-gene-trees
+gene_tree() {
+    local locus
+    locus=$(basename "$1" .nex)
+    iqtree -s "$1" -m "$MODEL" $IQTREE_OPTIONS -T 1 \
+        --prefix "results/07-gene-trees/$locus" --quiet
+}
+export -f gene_tree
+export MODEL IQTREE_OPTIONS
+find "$TRIMMED" -name '*.nex' | xargs -P "$THREADS" -I {} bash -c 'gene_tree "$1"' _ {}
+```
+
+A `for` loop would infer one gene tree at a time. Instead, `find` lists the trimmed alignments and `xargs -P` runs `gene_tree` on up to `THREADS` of them at once, each with one core. `export` makes the function and the settings visible to the shells that `xargs` starts. If any gene tree fails, `xargs` reports it and the script stops.
+
+### Estimate the species tree
+
+```bash title="run.sh"
+# 9. Estimate the species tree from the gene trees.
+step "Estimating the species tree"
+mkdir -p results/08-species-tree
+cat results/07-gene-trees/*.treefile > results/08-species-tree/gene-trees.tre
+astral4 -t "$THREADS" -i results/08-species-tree/gene-trees.tre \
+    -o "results/08-species-tree/$PREFIX.tre" 2> logs/species-tree.log
+
+step "Done"
+```
+
+`cat` joins the gene trees into one file, the input that ASTRAL needs. ASTRAL writes its progress to the error stream, which `2>` sends to the log.
+
+## 4. Check the script
+
+Make the script executable, and let Bash check it for syntax errors without running it:
+
+```bash
+chmod +x run.sh
+```
+
+```bash
+bash -n run.sh
+```
+
+No output means no errors. Otherwise, Bash names the line.
+
+## 5. Run the workflow
+
+```bash
+./run.sh
+```
+
+The script prints each step as it starts, followed by SEGUL's report for that step. The step lines look like this. The SEGUL steps take seconds, and IQ-TREE takes most of the time:
+
+```plaintext
+[13:37:31] Downloading the alignments
+[13:37:52] Summarizing the raw alignments
+[13:37:53] Filtering loci
+[13:37:53] Trimming sites
+[13:37:54] Summarizing the clean alignments
+[13:37:54] Concatenating loci
+[13:37:54] Inferring the concatenated tree
+[13:43:58] Inferring gene trees
+[13:44:43] Estimating the species tree
+[13:45:10] Done
+```
+
+To keep the run going after you close the terminal, and save its messages, run it with `nohup ./run.sh > run.log 2>&1 &` instead.
+
+{% aside type="tip" title="When a step fails" %}
+The script stops at the failed step, and the last line printed names it. SEGUL's own messages are in the `logs` folder. Fix the cause and run the script again. It starts over from the first step, but reuses the downloaded alignments.
+{% /aside %}
+
+## 6. Check the results
 
 ```plaintext
 results/
-├── summary-raw/         report, tables, and plots/
-├── 01-taxa-removed/     4,040 alignments without the ten taxa
-├── summary-removed/
-├── 02-filtered/         1,019 alignments
+├── 01-summary-raw/      raw_alignment_summary.txt, locus and taxon tables
+├── 02-filtered/         983 alignments
 ├── 03-trimmed/          trimmed_alignments/, trimming_summary.csv
-├── 04-supermatrix/      shrews.phy, shrews_partition.txt
-└── summary-clean/
+├── 04-summary-clean/    clean_alignment_summary.txt, locus and taxon tables
+├── 05-supermatrix/      shrews.phy, shrews_partition.txt
+├── 06-concat-tree/      shrews.treefile
+├── 07-gene-trees/       983 gene trees
+└── 08-species-tree/     gene-trees.tre, shrews.tre
 ```
 
-`shrews.phy` has 92 taxa and 806,165 sites. Open it with `segul view align` or in the [SEGUI alignment viewer](/docs/gui-usage/viewer/).
+Compare the two summaries:
 
-{% aside type="caution" title="Thresholds are decisions" %}
-A script applies a rule the same way every time, but the rule is still yours. Removing a taxon removes it from the study. Check the list the script prints, and set `MIN_LOCUS_SHARE`, `MIN_LOCI`, and `MAX_MISSING` for your own data.
+```bash
+head -n 7 results/01-summary-raw/raw_alignment_summary.txt results/04-summary-clean/clean_alignment_summary.txt
+```
+
+| | Raw | Clean |
+| --- | --- | --- |
+| Taxa | 102 | 102 |
+| Loci | 4,040 | 983 |
+| Sites | 5,398,947 | 756,449 |
+| Missing data | 49.43% | 13.55% |
+
+These match [Tutorial 1](/docs/tutorials/tutorial-1/#what-you-did) and [Tutorial 3](/docs/tutorials/tutorial-3/#8-check-the-results). To browse a summary in the terminal, run `segul view summary` on its `alignment-report.json` file. See [viewing summaries](/docs/cli-usage/view-summary/).
+
+The two trees are in Newick format, each with 102 taxa:
+
+- `results/06-concat-tree/shrews.treefile`: the maximum likelihood tree of the supermatrix.
+- `results/08-species-tree/shrews.tre`: the ASTRAL species tree, with support values on its branches.
+
+Open them in a tree viewer such as [FigTree](https://github.com/rambaut/figtree/releases) or [iTOL](https://itol.embl.de/).
+
+## 7. Change a setting and rerun
+
+{% steps %}
+
+1. In `run.sh`, change `MIN_TAXA` to `0.8`.
+2. Run the script again:
+
+   ```bash
+   ./run.sh
+   ```
+
+{% /steps %}
+
+The script skips the download and reruns every other step. The stricter filter keeps 308 loci, so this run is faster. Unlike [Snakemake](/docs/tutorials/tutorial-3/#9-change-a-setting-and-rerun), the script does not know which steps a setting affects, so it reruns the raw summary too.
+
+## 8. Run on a cluster
+
+On a cluster with [Slurm](https://slurm.schedmd.com/), submit the script as one job. Add `submit.sh` to the project folder:
+
+```bash title="submit.sh"
+#!/usr/bin/env bash
+#SBATCH --job-name=segul-phylo
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=8G
+#SBATCH --time=02:00:00
+#SBATCH --output=segul-phylo_%j.log
+
+set -euo pipefail
+
+# Make conda available in the job. Clusters set this up differently,
+# such as with `module load conda`. Check your cluster's documentation.
+eval "$(conda shell.bash hook)"
+conda activate segul-phylo
+
+# Use the cores that Slurm gave the job.
+THREADS="$SLURM_CPUS_PER_TASK" ./run.sh
+```
+
+- **`--cpus-per-task`** is the number of cores. The script reads it from `SLURM_CPUS_PER_TASK`, so change it in one place only.
+- **`--mem`** is the memory for the whole job. The concatenated tree needs about 4 GB.
+- **`--time`** is the longest the job may run. Slurm stops it after that.
+- **`--output`** saves all messages to a log file. `%j` becomes the job number.
+
+### Settings for your cluster
+
+The header above works on many clusters, but most university HPC centers add their own rules. Common ones are an account or allocation to charge the job to (`--account`), a partition or queue (`--partition`), and limits on memory and time. Check your center's documentation, or ask its support team, before you submit.
+
+For example, [LSU HPC](https://www.hpc.lsu.edu/documentation/job-submission/) requires an allocation, uses the `single` partition for jobs on part of one node, and gives each core 4 GB of memory instead of taking `--mem`:
+
+```bash title="submit.sh (LSU HPC)"
+#!/usr/bin/env bash
+#SBATCH --job-name=segul-phylo
+#SBATCH --account=your_allocation_name
+#SBATCH --partition=single
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --time=02:00:00
+#SBATCH --output=segul-phylo_%j.log
+```
+
+Replace `your_allocation_name` with your allocation. The rest of `submit.sh` stays the same. To see the partitions and their time limits, run `sinfo` on a login node.
+
+### Submit the job
+
+Submit the job from the project folder, then check its state:
+
+```bash
+sbatch submit.sh
+```
+
+```bash
+squeue --me
+```
+
+When the job ends, read `segul-phylo_<job number>.log` and the `results` folder as in [step 6](#6-check-the-results).
+
+{% aside type="note" title="No internet on compute nodes" %}
+Many clusters block downloads from compute nodes. Download the data first on a login node, from the project folder, then submit the job. The script skips the download when `data/loci` exists.
 {% /aside %}
+
+```bash
+mkdir -p data && curl --location --output data/alignments.zip "https://zenodo.org/records/6459213/files/esselstyn_et_al_2021_uce_aln.zip?download=1"
+```
+
+```bash
+unzip -q -j data/alignments.zip '*.nex' -d data/loci
+```
 
 ## Where to go next
 
-- **Change the rules.** Set `MIN_LOCI` to `2000` and run the script again. It picks a looser filter by itself.
-- **Use other statistics.** Each locus in `report["loci"]` has `sites`, `informative`, and `prop_missing`. Build a list of paths and pass it to `from_files` to keep any loci you choose.
-- **Add other programs.** [Tutorial 5](/docs/tutorials/tutorial-5/) runs fastp and SPAdes from Python, with PySEGUL checking each step.
-- **Read the reference.** Every class and its options are in the [Python guides](/docs/api-usage/python/intro/).
+{% aside type="caution" title="A first look, not a final analysis" %}
+The settings favor speed. `--fast` shortens the tree search, one model is used for all loci, and the concatenated tree has no support values. For a study, set `IQTREE_OPTIONS` to `""` or to the options you need, such as `-B 1000` for ultrafast bootstrap, and choose thresholds from your own summaries.
+{% /aside %}
+
+- **Use your own data.** Put your alignments in `data/loci`, and the script skips the download. Change `--input-format` if they are not NEXUS.
+- **Add a step.** Add the command where it belongs, with its input from the step before. Every SEGUL command works the same way. See the [CLI guides](/docs/cli-usage/intro/).
+- **Use a partitioned model.** The concatenation step already writes `shrews_partition.txt`. Pass it to IQ-TREE with `-p`.
+- **Run many jobs on a cluster.** To spread the gene trees over several nodes, use a workflow manager. [Snakemake](/docs/tutorials/tutorial-3/) can submit each step as its own Slurm job.
+- **Share the workflow.** `run.sh`, `submit.sh`, and `environment.yaml` are all someone needs to repeat the analysis. Keep them under version control, without `data`, `results`, and `logs`.

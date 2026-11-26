@@ -30,6 +30,8 @@ export default defineConfig({
     "/docs/installation/install_cargo": "/docs/installation/install_cli/#cargo",
     "/docs/installation/install_source": "/docs/installation/install_cli/#source-code",
     "/docs/installation/install_dev": "/docs/installation/install_cli/#source-code",
+    // Pipeline integration moved to the command line tutorials.
+    "/docs/advance-guides/pipeline": "/docs/tutorials/intro/#command-line",
   },
   integrations: [
     starlight({
@@ -111,11 +113,11 @@ export default defineConfig({
             },
             {
               label: "Command line",
-              items: ["docs/tutorials/tutorial-3"],
+              items: ["docs/tutorials/tutorial-3", "docs/tutorials/tutorial-4"],
             },
             {
               label: "Python",
-              items: ["docs/tutorials/tutorial-4", "docs/tutorials/tutorial-5"],
+              items: ["docs/tutorials/tutorial-5", "docs/tutorials/tutorial-6"],
             },
           ],
         },
