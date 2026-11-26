@@ -34,6 +34,6 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
 
 # SEGUL main until a segul-core release has the read quality checks and downloader.
 [patch.crates-io]
-segul-core = { git = "https://github.com/hhandika/segul", branch = "partition" }
+segul-core = { git = "https://github.com/hhandika/segul", branch = "dev" }
 # Local segul checkout until the concurrent downloader changes are pushed:
 # segul-core = { path = "../../../Rust/segul/crates/segul-core" }

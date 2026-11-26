@@ -19,9 +19,9 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "ahash"
-version = "0.8.13"
+version = "0.8.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0fca89247609239eeb6915e6991111866b92d7b31025e69302bbf430cc4d2c38"
+checksum = "54dae3d1d7b8956f3506c4e999a74e77f932a59153ccf38ab8cf96db74bb9dc0"
 dependencies = [
  "cfg-if",
  "getrandom 0.4.3",
@@ -53,9 +53,9 @@ dependencies = [
 
 [[package]]
 name = "allocator-api2"
-version = "0.2.21"
+version = "0.2.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
+checksum = "57b212daf2e827b1ccdd778b7eb48ba433e58cb0e4f27b43cd6b7a608425a014"
 
 [[package]]
 name = "alphanumeric-sort"
@@ -272,14 +272,14 @@ dependencies = [
 
 [[package]]
 name = "blake3"
-version = "1.8.7"
+version = "1.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d9e454fc11f76977dc803893aff6304ed33d6a26efae8696573bea74baa27ae"
+checksum = "64c0e36294adc8db531500e3f2b8ec75c4af9177271e9c6d33f93609d56e57cd"
 dependencies = [
  "arrayvec",
  "cc",
  "cfg-if",
- "constant_time_eq 0.4.2",
+ "constant_time_eq",
  "cpufeatures",
 ]
 
@@ -508,15 +508,9 @@ checksum = "be95d4a884358a21a199689323c29e9256b4a1b315e22f183d155422041d3a9a"
 
 [[package]]
 name = "constant_time_eq"
-version = "0.4.2"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d52eff69cd5e647efe296129160853a42795992097e8af39800e1060caeea9b"
-
-[[package]]
-name = "constant_time_eq"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9eb6feb175df65d0a3ccd3e73484e940d0ac664e8034f0519fd49a93db3071d9"
+checksum = "144e7f1de087984240b7816d47f698b414979faa6f40839c5b86d6bd47db57b7"
 dependencies = [
  "rustversion",
 ]
@@ -3110,7 +3104,7 @@ dependencies = [
 [[package]]
 name = "segul-core"
 version = "0.25.0"
-source = "git+https://github.com/hhandika/segul?branch=partition#b0cfa25e5792257818536bd8752a8f717de0c5ce"
+source = "git+https://github.com/hhandika/segul?branch=dev#bdfc524ac3baf81b4af64fcdc13182a6a3e613d8"
 dependencies = [
  "ahash",
  "alphanumeric-sort",
@@ -3242,9 +3236,9 @@ dependencies = [
 
 [[package]]
 name = "sha2"
-version = "0.11.1"
+version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47d7069beb7d6ac7b9acd1039986e73443f24234f41074da099d6f994ac9ad19"
+checksum = "5b0e5c7d67bc53f435386b2130fdc900488c5703770f6d8a4633060e34288a27"
 dependencies = [
  "cfg-if",
  "cpufeatures",
@@ -4220,18 +4214,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.65"
+version = "0.8.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32bc8a75f879cd6fe53a6bedf3c28f0e1b914c77424fc2be9e2ec85d7d25aff5"
+checksum = "cba8a86aee14fc8cc6c208af60854b3d4ab7185a9a369a12c648faa2716ff42a"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.65"
+version = "0.8.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8bfd2644ea1681f60cf95029ff18aa8ad1cc3f7b8fe37286f8e473bb29f816b"
+checksum = "f89bca3b96ceb3cfcb4572790402f977442270d252b9a8504ebc258760c55f94"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4318,7 +4312,7 @@ version = "9.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d8dbe089cf6b0448b78f5fc50139ab5aaa40d08ac07cdc1baf2c13add35fcce"
 dependencies = [
- "constant_time_eq 0.6.1",
+ "constant_time_eq",
  "crc32fast",
  "flate2",
  "getrandom 0.4.3",
