@@ -38,7 +38,8 @@ class PartitionConversionPageState
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String? _partitionFormatController;
-  bool _isUnchecked = false;
+  bool _checkPartition = true;
+  bool _isCodonModel = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -108,13 +109,23 @@ class PartitionConversionPageState
             },
           ),
           SwitchForm(
-              label: 'Check partition for errors',
-              value: _isUnchecked,
-              onPressed: (value) {
-                setState(() {
-                  _isUnchecked = value;
-                });
-              }),
+            label: 'Convert to codon model',
+            value: _isCodonModel,
+            onPressed: (value) {
+              setState(() {
+                _isCodonModel = value;
+              });
+            },
+          ),
+          SwitchForm(
+            label: 'Check partition for errors',
+            value: _checkPartition,
+            onPressed: (value) {
+              setState(() {
+                _checkPartition = value;
+              });
+            },
+          ),
         ]),
       ],
       action: ref.watch(fileInputProvider).when(
@@ -172,8 +183,12 @@ class PartitionConversionPageState
         RunParameter('Data type', _ctr.dataTypeController),
         RunParameter('Output format', _ctr.outputFormatController ?? ''),
         RunParameter(
+          'Convert to codon model',
+          _isCodonModel ? 'Yes' : 'No',
+        ),
+        RunParameter(
           'Check partition for errors',
-          _isUnchecked ? 'Yes' : 'No',
+          _checkPartition ? 'Yes' : 'No',
         ),
       ];
 
@@ -204,11 +219,12 @@ class PartitionConversionPageState
       _setRunning();
       await PartConversionRunnerServices(
         inputFiles: inputFiles,
-        inputFormat: _ctr.inputFormatController!,
+        inputFormat: _partitionFormatController!,
         outputDir: directory,
         outputFormat: _ctr.outputFormatController!,
         datatype: _ctr.dataTypeController,
-        isUnchecked: _isUnchecked,
+        isUnchecked: !_checkPartition,
+        isCodonModel: _isCodonModel,
       ).run();
       _setSuccess(directory);
     } catch (e) {
@@ -238,6 +254,9 @@ class PartitionConversionPageState
     setState(() {
       _ctr.reset();
       _ctr.isSuccess = false;
+      _partitionFormatController = null;
+      _checkPartition = true;
+      _isCodonModel = false;
       ref.invalidate(fileInputProvider);
       ref.invalidate(fileOutputProvider);
     });
@@ -245,15 +264,16 @@ class PartitionConversionPageState
 
   void _setRunning() {
     setState(() {
-      _ctr.isRunning = false;
-    });
-    setState(() {
       _ctr.isRunning = true;
     });
   }
 
   void _showError(String message) {
     if (mounted) {
+      setState(() {
+        _ctr.isRunning = false;
+        _ctr.isSuccess = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,

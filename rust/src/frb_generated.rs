@@ -2886,12 +2886,13 @@ fn wire__crate__api__sequence__partition_services_convert_partition_impl(
             let api_that = <crate::api::sequence::PartitionServices>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Ok::<_, ()>({
-                        crate::api::sequence::PartitionServices::convert_partition(&api_that);
-                    })?;
-                    std::result::Result::Ok(output_ok)
-                })())
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok =
+                            crate::api::sequence::PartitionServices::convert_partition(&api_that)?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
             }
         },
     )
@@ -3804,12 +3805,15 @@ fn wire__crate__api__sequence__split_alignment_services_split_alignment_impl(
                 <crate::api::sequence::SplitAlignmentServices>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
-                transform_result_sse::<_, ()>((move || {
-                    let output_ok = Ok::<_, ()>({
-                        crate::api::sequence::SplitAlignmentServices::split_alignment(&api_that);
-                    })?;
-                    std::result::Result::Ok(output_ok)
-                })())
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok =
+                            crate::api::sequence::SplitAlignmentServices::split_alignment(
+                                &api_that,
+                            )?;
+                        std::result::Result::Ok(output_ok)
+                    })(),
+                )
             }
         },
     )

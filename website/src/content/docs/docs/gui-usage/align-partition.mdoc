@@ -22,27 +22,34 @@ the App Store for iPhone, iPad, and Mac. Earlier
 versions look different. Features marked **Beta** may still change.
 {% /aside %}
 
-Convert partition from one format to another.
+Convert partitions between formats, including merged PartitionFinder and IQ-TREE schemes and strided codon partitions.
 
 ## Steps
 
 1. Select `Alignments` in the navigation bar {% ref id="A" /%}.
 2. Open `Convert partition` from the tool picker {% ref id="B" /%}: the tool list on wide windows, or the tool name at the top of the page on phones.
 3. Add the input files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for files that match the tool's input format. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
-4. Select input partition format.
+4. Select input partition format and data type.
 5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
-6. Select output partition format.
+6. Select the output partition format and toggle `Convert to codon model` or `Check partition for errors` as needed.
 7. Select the run button {% ref id="D" /%}, labeled `Convert`, to start the task.
 
 ## Partition Format
 
-The app supports input and output partition formats. The input partition format is the format of the partition file you want to convert. The output partition format is the format of the partition file you want to generate. Partition options include:
+The app supports input and output partition formats:
 
 - **Charset**: partition embedded in NEXUS sequence files
-- **Nexus**: partition file in NEXUS format
-- **Raxml**: partition file in RAxML format
+- **Nexus**: partition file in NEXUS format (supports `sets`, `assumptions`, merged charsets, and `charpartition` model blocks)
+- **Raxml**: partition file in RAxML format (supports merged ranges, `\3` strides, and substitution model prefixes)
 
-For DNA sequences, we recommend using the `--datatype dna` option when converting to RAxML partition format. The partition format will include the datatype as below:
+Merged multi-range schemes, codon strides, and substitution models (such as `GTR+I+G` from PartitionFinder or IQ-TREE `best_scheme.nex`) are preserved during conversion:
+
+```text
+GTR+I+G, Subset1 = 1-100, 201-300
+HKY+G, Subset2 = 101-200
+```
+
+When converting unstrided DNA partitions to RAxML without per-partition models, `DNA` is used as the label:
 
 ```text
 DNA, locus_1 = 1-100
