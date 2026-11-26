@@ -131,6 +131,39 @@ void main() {
     expect(suggestions.tools, isEmpty);
   });
 
+  test('Next steps can take the input of a run that wrote data', () {
+    final WorkbenchSuggestions suggestions = WorkbenchSuggestions.after(
+      tool: filterTool,
+      inputFiles: writeFiles(['a.nex', 'b.nex', 'c.nex']),
+      outputFiles: writeFiles(['a_out.fas', 'b_out.fas']),
+      source: WorkbenchSource.input,
+    );
+
+    final WorkbenchStep next = suggestions.workflows
+        .firstWhere((progress) => progress.next?.tool == concatenationTool)
+        .next!;
+    expect(next.isFromOutput, false);
+    expect(names(next.inputs.single.files), ['a.nex', 'b.nex', 'c.nex']);
+    final WorkbenchStep summary = suggestions.tools
+        .firstWhere((step) => step.tool == alignmentSummaryTool);
+    expect(stepInputCaption(summary), 'Uses 3 input files');
+  });
+
+  test('Before a run, tools take the input', () {
+    final WorkbenchSuggestions suggestions = WorkbenchSuggestions.before(
+      tool: filterTool,
+      inputFiles: writeFiles(['a.nex', 'b.nex']),
+    );
+
+    expect(suggestions.workflows, isEmpty);
+    final List<HomeTool> tools = [
+      for (final step in suggestions.tools) step.tool,
+    ];
+    expect(tools, isNot(contains(filterTool)));
+    expect(tools, containsAll([concatenationTool, alignmentSummaryTool]));
+    expect(suggestions.tools.every((step) => !step.isFromOutput), true);
+  });
+
   group('Last run', () {
     late ProviderContainer container;
 
@@ -155,7 +188,12 @@ void main() {
       await container.read(fileInputProvider.notifier).addFiles([
         XFile(writeFiles(['a.nex']).single.path)
       ], sequenceTypeGroup);
-      expect(container.read(workbenchSuggestionsProvider), isNull);
+      // Before a run, only the input is passed on.
+      final WorkbenchSuggestions before =
+          container.read(workbenchSuggestionsProvider)!;
+      expect(before.workflows, isEmpty);
+      expect(before.tools.first.isFromOutput, false);
+      expect(container.read(workbenchSourceProvider), WorkbenchSource.input);
 
       container.read(lastRunProvider.notifier).record(const [
         RunParameter('Filter by', 'Minimum length'),
@@ -169,10 +207,13 @@ void main() {
       final File report = File(p.join(dir.path, 'read-report.json'));
       container.read(lastRunProvider.notifier).record(const [], report: report);
       expect(container.read(lastRunProvider)!.report?.path, report.path);
-      expect(container.read(workbenchSuggestionsProvider), isNotNull);
+      expect(
+          container.read(workbenchSuggestionsProvider)!.workflows, isNotEmpty);
+      expect(container.read(workbenchSourceProvider), WorkbenchSource.output);
 
       await container.read(fileInputProvider.notifier).clearAll();
       expect(container.read(lastRunProvider), isNull);
+      expect(container.read(workbenchSuggestionsProvider), isNull);
 
       container.read(lastRunProvider.notifier).record(const []);
       container
@@ -268,7 +309,21 @@ void main() {
     expect(find.text('Next: Concatenate alignments'), findsOneWidget);
     expect(find.text('Uses 2 output files'), findsWidgets);
     expect(find.text('Other compatible tools'), findsOneWidget);
+    expect(find.text('Send files from'), findsOneWidget);
     expect(tester.takeException(), isNull);
+
+    // Sending the input instead updates the next steps.
+    await tester.tap(find.text('Output · 2 files'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Input · 2 files').last);
+    await tester.pumpAndSettle();
+    expect(container.read(workbenchSourceProvider), WorkbenchSource.input);
+    expect(find.text('Uses 2 input files'), findsWidgets);
+    expect(find.text('Uses 2 output files'), findsNothing);
+    await tester.tap(find.text('Input · 2 files'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Output · 2 files').last);
+    await tester.pumpAndSettle();
 
     await tester.runAsync(() async {
       await tester.tap(find.text('Continue'));
@@ -285,8 +340,12 @@ void main() {
           .map((e) => p.basename(e.file.path)),
       unorderedEquals(['a.fas', 'b.fas']),
     );
-    // The new tool has not run yet.
-    expect(find.byType(NextStepsHint), findsOneWidget);
+    // The new tool has not run yet, so its tools take the input.
+    expect(find.byType(NextStepsHint), findsNothing);
+    expect(find.text('Send files from'), findsNothing);
+    expect(find.text('Suggested workflows'), findsNothing);
+    expect(find.text('Compatible tools'), findsOneWidget);
+    expect(find.text('Uses 2 input files'), findsWidgets);
   });
 
   testWidgets('Report card names the report and opens it', (tester) async {

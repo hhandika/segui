@@ -241,6 +241,17 @@ class WorkflowProgress {
   bool get isComplete => next == null;
 }
 
+/// Files a next step receives from the current tool page.
+enum WorkbenchSource { input, output }
+
+/// Source of the files passed on after a run of [tool]: its output, or its
+/// input when it writes only reports.
+WorkbenchSource defaultWorkbenchSource(HomeTool tool) {
+  return dataFlowFor(tool).produces == ToolData.report
+      ? WorkbenchSource.input
+      : WorkbenchSource.output;
+}
+
 /// Next steps after a run: workflow steps and other tools that take the
 /// run's data.
 class WorkbenchSuggestions {
@@ -252,21 +263,27 @@ class WorkbenchSuggestions {
   final List<WorkbenchStep> tools;
 
   /// Builds the next steps after a run of [tool] that read [inputFiles] and
-  /// wrote [outputFiles].
+  /// wrote [outputFiles], passing on the files from [source]. Without a
+  /// [source], the files come from [defaultWorkbenchSource].
   factory WorkbenchSuggestions.after({
     required HomeTool tool,
     required List<File> inputFiles,
     required List<File> outputFiles,
+    WorkbenchSource? source,
   }) {
-    final _ChainSource source = _ChainSource(
+    final WorkbenchSource chosen = source ?? defaultWorkbenchSource(tool);
+    final _ChainSource chain = _ChainSource(
       tool: tool,
-      inputFiles: inputFiles,
-      outputFiles: outputFiles,
+      source: chosen,
+      files: switch (chosen) {
+        WorkbenchSource.input => inputFiles,
+        WorkbenchSource.output => outputFiles,
+      },
     );
     final List<WorkflowProgress> workflows = [
       for (final workflow in homeWorkflows)
         if (workflow.steps.contains(tool))
-          _progress(workflow, workflow.steps.indexOf(tool), source),
+          _progress(workflow, workflow.steps.indexOf(tool), chain),
     ];
     final Set<HomeTool> nextSteps = {
       for (final progress in workflows)
@@ -276,10 +293,31 @@ class WorkbenchSuggestions {
       for (final candidate in homeTools)
         if (candidate != tool &&
             !nextSteps.contains(candidate) &&
-            dataFlowFor(candidate).accepts.contains(source.data))
-          source.stepFor(candidate),
+            dataFlowFor(candidate).accepts.contains(chain.data))
+          chain.stepFor(candidate),
     ];
     return WorkbenchSuggestions(workflows: workflows, tools: tools);
+  }
+
+  /// Builds the tools that take [inputFiles] of [tool] before it runs.
+  factory WorkbenchSuggestions.before({
+    required HomeTool tool,
+    required List<File> inputFiles,
+  }) {
+    final _ChainSource chain = _ChainSource(
+      tool: tool,
+      source: WorkbenchSource.input,
+      files: inputFiles,
+    );
+    return WorkbenchSuggestions(
+      workflows: const [],
+      tools: [
+        for (final candidate in homeTools)
+          if (candidate != tool &&
+              dataFlowFor(candidate).accepts.contains(chain.data))
+            chain.stepFor(candidate),
+      ],
+    );
   }
 
   static WorkflowProgress _progress(
@@ -296,23 +334,20 @@ class WorkbenchSuggestions {
   }
 }
 
-/// Files a run passes on: its output, or its input when it writes only
-/// reports.
+/// Files a tool page passes on to the next steps, from its input or output.
 class _ChainSource {
   _ChainSource({
     required HomeTool tool,
-    required List<File> inputFiles,
-    required List<File> outputFiles,
-  }) {
-    final ToolDataFlow flow = dataFlowFor(tool);
-    isFromOutput = flow.produces != ToolData.report;
-    data = isFromOutput ? flow.produces : flow.input;
-    files = isFromOutput ? outputFiles : inputFiles;
-  }
+    required WorkbenchSource source,
+    required this.files,
+  })  : isFromOutput = source == WorkbenchSource.output,
+        data = source == WorkbenchSource.output
+            ? dataFlowFor(tool).produces
+            : dataFlowFor(tool).input;
 
-  late final bool isFromOutput;
-  late final ToolData data;
-  late final List<File> files;
+  final bool isFromOutput;
+  final ToolData data;
+  final List<File> files;
 
   /// Step for [target] with the files it can take. The files are left out
   /// when they do not match the target or a single-file picker gets many.
@@ -348,21 +383,49 @@ class _ChainSource {
   }
 }
 
-/// Next steps after the last successful run, or null before a run.
+final workbenchSourceProvider =
+    NotifierProvider<WorkbenchSourceSelection, WorkbenchSource>(
+        WorkbenchSourceSelection.new);
+
+/// Where next steps take their files from. Only the input exists before a
+/// run; each run resets the choice to its default.
+class WorkbenchSourceSelection extends Notifier<WorkbenchSource> {
+  @override
+  WorkbenchSource build() {
+    final ToolRun? run = ref.watch(lastRunProvider);
+    return run == null
+        ? WorkbenchSource.input
+        : defaultWorkbenchSource(run.tool);
+  }
+
+  void select(WorkbenchSource source) {
+    state = source;
+  }
+}
+
+/// Next steps for the current tool page: after a run, workflow steps and
+/// tools that take the chosen files; before a run, tools that take the
+/// input. Null before a run without input files.
 final workbenchSuggestionsProvider = Provider<WorkbenchSuggestions?>((ref) {
   final ToolRun? run = ref.watch(lastRunProvider);
-  if (run == null) {
-    return null;
-  }
   final List<SegulInputFile> inputs = ref.watch(fileInputProvider).value ?? [];
+  final List<File> inputFiles = [for (final input in inputs) input.file];
+  if (run == null) {
+    final HomeTool? tool = ref.watch(currentToolProvider);
+    if (tool == null || inputFiles.isEmpty) {
+      return null;
+    }
+    return WorkbenchSuggestions.before(tool: tool, inputFiles: inputFiles);
+  }
   final SegulOutputFile? output = ref.watch(fileOutputProvider).value;
   return WorkbenchSuggestions.after(
     tool: run.tool,
-    inputFiles: [for (final input in inputs) input.file],
+    inputFiles: inputFiles,
     outputFiles: [
       for (final file in output?.files ?? const [])
         if (file.isNew) file.file,
     ],
+    source: ref.watch(workbenchSourceProvider),
   );
 });
 

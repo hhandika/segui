@@ -8,7 +8,10 @@ import 'package:segui/screens/shared/io/inspector_view.dart';
 import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/viewers/common.dart';
+import 'package:segui/screens/viewers/report/sheet_controls.dart';
+import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/workbench.dart';
+import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
 /// Compatible tools listed before the rest are folded away.
@@ -48,6 +51,7 @@ class WorkbenchView extends ConsumerWidget {
           const SizedBox(height: SeguiSpacing.xl),
           const NextStepsHint(),
         ] else ...[
+          if (run != null) const WorkbenchSourcePicker(),
           if (suggestions.workflows.isNotEmpty) ...[
             WorkbenchSectionTitle(
               title: 'Suggested workflows',
@@ -60,7 +64,9 @@ class WorkbenchView extends ConsumerWidget {
             ],
           ],
           WorkbenchSectionTitle(
-            title: 'Other compatible tools',
+            title: suggestions.workflows.isEmpty
+                ? 'Compatible tools'
+                : 'Other compatible tools',
             trailing: suggestions.tools.isEmpty
                 ? null
                 : '${suggestions.tools.length}',
@@ -117,7 +123,71 @@ class WorkbenchSectionTitle extends StatelessWidget {
   }
 }
 
-/// Explains that next steps appear once the tool has run.
+/// Chooses whether next steps receive the input or the output files.
+class WorkbenchSourcePicker extends ConsumerWidget {
+  const WorkbenchSourcePicker({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final TextStyle? style = Theme.of(context)
+        .textTheme
+        .labelLarge
+        ?.copyWith(color: colors.onSurfaceVariant);
+    final WorkbenchSource source = ref.watch(workbenchSourceProvider);
+    final int inputCount = ref.watch(fileInputProvider).value?.length ?? 0;
+    final int outputCount = [
+      for (final file in ref.watch(fileOutputProvider).value?.files ?? const [])
+        if (file.isNew) file,
+    ].length;
+    final List<SheetChoice<WorkbenchSource>> choices = [
+      (value: WorkbenchSource.input, label: 'Input · ${_files(inputCount)}'),
+      (value: WorkbenchSource.output, label: 'Output · ${_files(outputCount)}'),
+    ];
+    void select(WorkbenchSource? value) {
+      if (value != null) {
+        ref.read(workbenchSourceProvider.notifier).select(value);
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+          SeguiSpacing.xs, SeguiSpacing.xl, SeguiSpacing.xs, 0),
+      child: Row(
+        children: [
+          Expanded(child: Text('Send files from', style: style)),
+          if (isPhoneScreen(context))
+            ChoiceSheetButton<WorkbenchSource>(
+              title: 'Send files from',
+              value: source,
+              isDense: true,
+              choices: choices,
+              onSelected: select,
+            )
+          else
+            DropdownButton<WorkbenchSource>(
+              value: source,
+              isDense: true,
+              underline: const SizedBox.shrink(),
+              style: Theme.of(context).textTheme.bodyMedium,
+              items: [
+                for (final choice in choices)
+                  DropdownMenuItem(
+                    value: choice.value,
+                    child: Text(choice.label),
+                  ),
+              ],
+              onChanged: select,
+            ),
+        ],
+      ),
+    );
+  }
+
+  static String _files(int count) => '$count ${count == 1 ? 'file' : 'files'}';
+}
+
+/// Explains that next steps appear once the tool has input files.
 class NextStepsHint extends StatelessWidget {
   const NextStepsHint({super.key});
 
@@ -136,8 +206,8 @@ class NextStepsHint extends StatelessWidget {
         const SizedBox(width: SeguiSpacing.md),
         Expanded(
           child: Text(
-            'Run the tool to see suggested workflows and tools that can '
-            'use its output.',
+            'Add input files to see compatible tools. Workflows appear '
+            'after a run.',
             style: textTheme.bodySmall?.copyWith(
               color: colors.onSurfaceVariant,
             ),
