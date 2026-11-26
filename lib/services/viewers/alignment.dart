@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart' show NumberFormat;
 import 'package:segui/src/rust/api/alignment_view.dart';
 
 /// Window sizes, in sites, offered in the alignment viewer.
@@ -452,6 +453,109 @@ class AlignmentPartitionIndex {
 
   /// Partition at [site], or the last one before it.
   int? nearest(int site) => indexAt(site) ?? previousBefore(site);
+}
+
+/// Where go-to text points: a site, a taxon row, or a partition, or why
+/// it points nowhere.
+class GoToTarget {
+  const GoToTarget({this.site, this.row, this.partition, this.error});
+
+  /// Zero-based site.
+  final int? site;
+
+  /// Loaded sequence index.
+  final int? row;
+
+  /// Partition to show from its first site.
+  final int? partition;
+  final String? error;
+}
+
+/// Partitions suggested for go-to [text]: those whose name holds the text
+/// before any `:`, exact and prefix matches first.
+List<int> goToMatches(AlignmentViewData data, String text) {
+  final String name = text.split(':').first.trim().toLowerCase();
+  if (name.isEmpty || int.tryParse(name.replaceAll(',', '')) != null) {
+    return const [];
+  }
+  final List<(int, int)> ranked = [];
+  for (int i = 0; i < data.partitions.length; i++) {
+    final String partition = data.partitions[i].name.toLowerCase();
+    if (partition == name) {
+      ranked.add((0, i));
+    } else if (partition.startsWith(name)) {
+      ranked.add((1, i));
+    } else if (partition.contains(name)) {
+      ranked.add((2, i));
+    }
+  }
+  ranked.sort((a, b) => a.$1 != b.$1 ? a.$1 - b.$1 : a.$2 - b.$2);
+  return [for (final (int, int) r in ranked) r.$2];
+}
+
+/// Reads go-to [text]: `123` (a site), a partition, `partition:12` (a site
+/// within it), a taxon, or `taxon:123`. Partitions win over taxa of the same
+/// name; part of a partition name goes to the first match when no taxon
+/// matches.
+GoToTarget parseGoTo(AlignmentViewData data, String text) {
+  final NumberFormat format = NumberFormat('#,###');
+  final String input = text.trim();
+  if (input.isEmpty) {
+    return const GoToTarget(error: 'Enter a site, partition, or taxon.');
+  }
+  final int colon = input.lastIndexOf(':');
+  final String name = (colon < 0 ? input : input.substring(0, colon)).trim();
+  final String? siteText =
+      colon < 0 ? null : input.substring(colon + 1).replaceAll(',', '').trim();
+  final int? partition = _partitionNamed(data, name);
+  if (partition != null) {
+    if (siteText == null) return GoToTarget(partition: partition);
+    final AlignmentPartition p = data.partitions[partition];
+    final int sites = p.end - p.start;
+    final int? site = int.tryParse(siteText);
+    if (site == null || site < 1 || site > sites) {
+      return GoToTarget(
+        error: 'Enter a site from 1 to ${format.format(sites)} in ${p.name}.',
+      );
+    }
+    return GoToTarget(site: p.start + site - 1);
+  }
+  final String siteError =
+      'Enter a site from 1 to ${format.format(data.length)}.';
+  final int? number = int.tryParse(input.replaceAll(',', ''));
+  if (colon < 0 && number != null) {
+    if (number < 1 || number > data.length) {
+      return GoToTarget(error: siteError);
+    }
+    return GoToTarget(site: number - 1);
+  }
+  int? row;
+  if (name.isNotEmpty) {
+    final String lower = name.toLowerCase();
+    final int index =
+        data.names.indexWhere((n) => n.toLowerCase().contains(lower));
+    if (index < 0) {
+      final List<int> matches = goToMatches(data, name);
+      if (siteText == null && matches.isNotEmpty) {
+        return GoToTarget(partition: matches.first);
+      }
+      return GoToTarget(error: 'No taxon or partition matches "$name".');
+    }
+    row = index;
+  }
+  if (siteText == null) return GoToTarget(row: row);
+  final int? site = int.tryParse(siteText);
+  if (site == null || site < 1 || site > data.length) {
+    return GoToTarget(error: siteError);
+  }
+  return GoToTarget(site: site - 1, row: row);
+}
+
+int? _partitionNamed(AlignmentViewData data, String name) {
+  final String lower = name.toLowerCase();
+  final int index =
+      data.partitions.indexWhere((p) => p.name.toLowerCase() == lower);
+  return index < 0 ? null : index;
 }
 
 /// Maps alignment columns to ungapped positions, one row at a time.

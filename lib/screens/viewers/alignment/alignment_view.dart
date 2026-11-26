@@ -470,7 +470,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                           colorMode: settings.colorMode,
                           showLetters: settings.showLetters,
                           windowSize: settings.windowSize,
-                          showWindowBoundaries: !settings.isPaged,
+                          showWindowBoundaries: true,
                           partitionStarts: data.partitionIndex.starts,
                           horizontalController: _horizontal,
                           verticalController: _vertical,
@@ -569,7 +569,8 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
                   leading: widget.leading,
                   canShowWindowList: true,
                   siteController: _siteController,
-                  onGoToSite: _goToSiteText,
+                  onGoToSite: _goToText,
+                  onGoToPartition: _goToPartition,
                   partitionNavigator: data.hasPartitions
                       ? AlignmentPartitionNavigator(
                           data: data,
@@ -669,7 +670,8 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
           siteController: _siteController,
           onPrevious: () => _goToWindow(_settings.window - 1),
           onNext: () => _goToWindow(_settings.window + 1),
-          onGoToSite: _goToSiteText,
+          onGoToSite: _goToText,
+          onGoToPartition: _goToPartition,
         ),
       ),
     );
@@ -781,10 +783,7 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
   }
 
   AlignmentSiteRange _siteRangeOf(AlignmentViewSettings settings) {
-    if (!settings.isPaged) return AlignmentSiteRange(0, widget.data.length);
-    final AlignmentWindows windows = _windowsOf(settings);
-    final int window = windows.clamp(settings.window);
-    return AlignmentSiteRange(windows.startOf(window), windows.endOf(window));
+    return AlignmentSiteRange(0, widget.data.length);
   }
 
   double _viewportOf(ScrollController controller) {
@@ -811,28 +810,22 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     return (y ~/ settings.rowHeight).clamp(0, rows - 1);
   }
 
-  // Zoom and paging change the grid size; keep the same site in the middle.
+  // Zoom changes the grid size; keep the same site in the middle.
   void _keepCenter(
       AlignmentViewSettings? previous, AlignmentViewSettings next) {
     if (previous == null) return;
-    final bool resized = previous.cellSize != next.cellSize ||
-        previous.isPaged != next.isPaged ||
-        (next.isPaged && previous.windowSize != next.windowSize);
-    if (!resized) return;
+    if (previous.cellSize == next.cellSize) return;
     // A scroll still waiting for layout has not moved the grid yet.
     final _ScrollTarget? pending = _pending;
     final int site = pending == null || pending.alignStart
         ? _centerSite(previous)
         : pending.site;
     final int row = pending?.row ?? _centerRow(previous);
-    if (next.isPaged && !previous.isPaged) {
-      _notifier.setWindow(_windowsOf(next).windowOf(site));
-    }
     _scrollAfterLayout(site: site, row: row);
   }
 
-  // In continuous view, the window follows the middle of the grid. The
-  // current partition follows its left edge.
+  // The window follows the middle of the grid, and the current partition
+  // its left edge.
   void _syncWindow() {
     final AlignmentViewSettings settings = _settings;
     if (widget.data.hasPartitions) {
@@ -840,7 +833,6 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
           _offsetOf(_horizontal) ~/ settings.cellSize;
       _partition.value = widget.data.partitionIndex.nearest(left) ?? 0;
     }
-    if (settings.isPaged) return;
     final int window = _windowsOf(settings).windowOf(_centerSite(settings));
     if (window != settings.window) _notifier.setWindow(window);
   }
@@ -862,19 +854,11 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     if (partitions.isEmpty) return;
     final int target = index.clamp(0, partitions.length - 1);
     final int site = partitions[target].start;
-    final AlignmentViewSettings settings = _settings;
-    if (settings.isPaged) {
-      _notifier.setWindow(_windowsOf(settings).windowOf(site));
-    }
     _partition.value = target;
     _scrollAfterLayout(site: site, alignStart: true);
   }
 
   void _goToSite(int site, {int? row}) {
-    final AlignmentViewSettings settings = _settings;
-    if (settings.isPaged) {
-      _notifier.setWindow(_windowsOf(settings).windowOf(site));
-    }
     final int dataRow = row != null && row < _order.length
         ? _order[row]
         : _selection.value?.row ?? _order.first;
@@ -882,16 +866,26 @@ class _AlignmentExplorerState extends ConsumerState<AlignmentExplorer> {
     _scrollAfterLayout(site: site, row: row);
   }
 
-  void _goToSiteText(String text) {
-    final int? site = int.tryParse(text.replaceAll(',', '').trim());
-    final int length = widget.data.length;
-    if (site == null || site < 1 || site > length) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Enter a site from 1 to ${_siteFormat.format(length)}.'),
-      ));
+  /// Goes to a site, partition, `partition:site`, or taxon.
+  void _goToText(String text) {
+    final GoToTarget target = parseGoTo(widget.data, text);
+    final String? error = target.error;
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error)),
+      );
       return;
     }
-    _goToSite(site - 1);
+    final int? partition = target.partition;
+    if (partition != null) {
+      _goToPartition(partition);
+      return;
+    }
+    final int? dataRow = target.row;
+    // A hidden sequence keeps the current row.
+    final int? row = dataRow == null ? null : _order.indexOf(dataRow);
+    final int site = target.site ?? _selection.value?.site ?? 0;
+    _goToSite(site, row: row == null || row < 0 ? null : row);
   }
 
   /// Scrolls to [site] and [row] once the grid has laid out with the latest

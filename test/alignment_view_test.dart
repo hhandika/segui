@@ -240,6 +240,43 @@ void main() {
     });
   });
 
+  group('parseGoTo', () {
+    final AlignmentViewData data = AlignmentViewData.fromSequences(
+      ['alpha', 'locus_beta'],
+      [_seq('ACGT' * 5), _seq('ACGT' * 5)],
+      partitions: const [
+        AlignmentPartition(name: 'locus_1', start: 0, end: 10, subsets: []),
+        AlignmentPartition(name: 'locus_2', start: 10, end: 20, subsets: []),
+      ],
+    );
+
+    test('Reads sites, partitions, and taxa', () {
+      expect(parseGoTo(data, '1,2').site, 11);
+      expect(parseGoTo(data, 'LOCUS_2').partition, 1);
+      expect(parseGoTo(data, 'locus_2:3').site, 12);
+      expect(parseGoTo(data, 'alpha').row, 0);
+      expect(parseGoTo(data, 'alpha:4').site, 3);
+      // A taxon wins over part of a partition name.
+      expect(parseGoTo(data, 'beta').row, 1);
+      expect(parseGoTo(data, 'cus_1').partition, 0);
+    });
+
+    test('Explains what it cannot read', () {
+      expect(parseGoTo(data, '').error, 'Enter a site, partition, or taxon.');
+      expect(parseGoTo(data, '21').error, 'Enter a site from 1 to 20.');
+      expect(parseGoTo(data, 'locus_1:11').error,
+          'Enter a site from 1 to 10 in locus_1.');
+      expect(
+          parseGoTo(data, 'zzz').error, 'No taxon or partition matches "zzz".');
+    });
+
+    test('Suggests exact and prefix matches first', () {
+      expect(goToMatches(data, 'locus_2'), [1]);
+      expect(goToMatches(data, 'cus'), [0, 1]);
+      expect(goToMatches(data, '12'), isEmpty);
+    });
+  });
+
   group('AlignmentExplorer with partitions', () {
     final AlignmentViewData data = AlignmentViewData.fromSequences(
       [for (int i = 0; i < 4; i++) 'taxon_$i'],
@@ -296,6 +333,33 @@ void main() {
       await tester.pump();
       await tester.pump();
       expect(find.text('locus_3 · 3 of 3'), findsOneWidget);
+    });
+
+    testWidgets('Go to takes a partition or a site within it', (tester) async {
+      await pumpExplorer(tester);
+      final Finder field = find.widgetWithText(TextField, 'Go to');
+      await tester.enterText(field, 'cus_3');
+      await tester.pump();
+      // Suggestions list matching partitions.
+      expect(find.widgetWithText(ListTile, 'locus_3'), findsOneWidget);
+      await tester.testTextInput.receiveAction(TextInputAction.go);
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('locus_3 · 3 of 3'), findsOneWidget);
+
+      await tester.enterText(field, 'locus_2:5');
+      await tester.testTextInput.receiveAction(TextInputAction.go);
+      await tester.pump();
+      await tester.pump();
+      expect(find.textContaining('site 805'), findsOneWidget);
+      expect(
+          find.textContaining('locus_2 (2/3) site 5 of 600'), findsOneWidget);
+
+      await tester.enterText(field, 'locus_2:900');
+      await tester.testTextInput.receiveAction(TextInputAction.go);
+      await tester.pump();
+      expect(
+          find.text('Enter a site from 1 to 600 in locus_2.'), findsOneWidget);
     });
 
     testWidgets('The side list switches to windows', (tester) async {
@@ -458,10 +522,10 @@ void main() {
       await tester.pump(kDoubleTapTimeout);
     });
 
-    testWidgets('Go to site matches tool form fields and fits its text',
+    testWidgets('Go to matches tool form fields and fits its text',
         (tester) async {
       await pumpExplorer(tester);
-      final Finder field = find.widgetWithText(TextField, 'Go to site');
+      final Finder field = find.widgetWithText(TextField, 'Go to');
       final InputDecorator decorator = tester.widget(
         find.descendant(of: field, matching: find.byType(InputDecorator)),
       );
@@ -471,7 +535,7 @@ void main() {
         BorderRadius.circular(SeguiFormLayout.fieldRadius),
       );
       final double width = tester.getSize(field).width;
-      final double label = tester.getSize(find.text('Go to site')).width;
+      final double label = tester.getSize(find.text('Go to')).width;
       expect(width, greaterThan(label));
       expect(width, lessThanOrEqualTo(SeguiAlignmentLayout.siteFieldMax));
     });
@@ -486,9 +550,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(AlignmentToolbar), findsNothing);
       expect(find.byType(AlignmentOverview), findsNothing);
-      // The summary and go to site stay in view.
+      // The summary and go to stay in view.
       expect(find.textContaining('20 taxa'), findsOneWidget);
-      expect(find.widgetWithText(TextField, 'Go to site'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Go to'), findsOneWidget);
       expect(gridHeight(), greaterThan(start));
 
       await tester.tap(find.byTooltip(RegExp('^Show settings')));
@@ -571,8 +635,7 @@ void main() {
 
     testWidgets('Rejects a site outside the alignment', (tester) async {
       await pumpExplorer(tester);
-      await tester.enterText(
-          find.widgetWithText(TextField, 'Go to site'), '99999');
+      await tester.enterText(find.widgetWithText(TextField, 'Go to'), '99999');
       await tester.testTextInput.receiveAction(TextInputAction.go);
       await tester.pump();
       expect(find.text('Enter a site from 1 to 3,000.'), findsOneWidget);
@@ -640,8 +703,7 @@ void main() {
       await tester.pump();
       expect(find.text('1,001–2,000 (2 of 3)'), findsOneWidget);
 
-      await tester.enterText(
-          find.widgetWithText(TextField, 'Go to site'), '2500');
+      await tester.enterText(find.widgetWithText(TextField, 'Go to'), '2500');
       await tester.testTextInput.receiveAction(TextInputAction.go);
       await pumpSheet(tester);
       expect(find.byType(AlignmentSettingsSheet), findsNothing);

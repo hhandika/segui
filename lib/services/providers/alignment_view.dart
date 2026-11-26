@@ -71,7 +71,6 @@ class AlignmentViewSettings {
     this.colorMode = AlignmentColorMode.base,
     this.showLetters = true,
     this.windowSize = defaultAlignmentWindowSize,
-    this.isPaged = false,
     this.window = 0,
     this.showWindowList = true,
     this.sideList = AlignmentSideListKind.partitions,
@@ -86,9 +85,6 @@ class AlignmentViewSettings {
   final AlignmentColorMode colorMode;
   final bool showLetters;
   final int windowSize;
-
-  /// Shows one window at a time instead of the whole alignment.
-  final bool isPaged;
 
   /// Current window, zero-based.
   final int window;
@@ -120,7 +116,6 @@ class AlignmentViewSettings {
     AlignmentColorMode? colorMode,
     bool? showLetters,
     int? windowSize,
-    bool? isPaged,
     int? window,
     bool? showWindowList,
     AlignmentSideListKind? sideList,
@@ -135,7 +130,6 @@ class AlignmentViewSettings {
       colorMode: colorMode ?? this.colorMode,
       showLetters: showLetters ?? this.showLetters,
       windowSize: windowSize ?? this.windowSize,
-      isPaged: isPaged ?? this.isPaged,
       window: window ?? this.window,
       showWindowList: showWindowList ?? this.showWindowList,
       sideList: sideList ?? this.sideList,
@@ -210,10 +204,6 @@ class AlignmentViewSettingsNotifier extends Notifier<AlignmentViewSettings> {
   void setWindowSize(int size) {
     final int site = state.window * state.windowSize;
     state = state.copyWith(windowSize: size, window: site ~/ size);
-  }
-
-  void setPaged(bool isPaged) {
-    state = state.copyWith(isPaged: isPaged);
   }
 
   void setWindow(int window) {

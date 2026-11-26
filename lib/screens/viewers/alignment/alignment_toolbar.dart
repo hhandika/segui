@@ -9,6 +9,7 @@ import 'package:segui/screens/viewers/report/sheet_controls.dart';
 import 'package:segui/services/keyboard.dart';
 import 'package:segui/services/providers/alignment_view.dart';
 import 'package:segui/services/viewers/alignment.dart';
+import 'package:segui/src/rust/api/alignment_view.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -42,6 +43,7 @@ class AlignmentHeaderBar extends ConsumerWidget {
     required this.canShowWindowList,
     required this.siteController,
     required this.onGoToSite,
+    required this.onGoToPartition,
     this.leading,
     this.partitionNavigator,
   });
@@ -54,8 +56,11 @@ class AlignmentHeaderBar extends ConsumerWidget {
   final Widget? partitionNavigator;
   final TextEditingController siteController;
 
-  /// Called with the submitted one-based site text.
+  /// Called with the submitted go-to text.
   final ValueChanged<String> onGoToSite;
+
+  /// Called with a partition picked from the go-to suggestions.
+  final ValueChanged<int> onGoToPartition;
 
   /// Shown in place of the file name, such as the file switcher.
   final Widget? leading;
@@ -89,10 +94,11 @@ class AlignmentHeaderBar extends ConsumerWidget {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              AlignmentSiteField(
+              AlignmentGoToField(
                 controller: siteController,
-                length: data.length,
+                data: data,
                 onSubmitted: onGoToSite,
+                onPartition: onGoToPartition,
               ),
               if (partitionNavigator != null) partitionNavigator!,
             ],
@@ -292,8 +298,7 @@ class AlignmentZoomControls extends ConsumerWidget {
   }
 }
 
-/// Window size, previous and next window with the current range, and the
-/// page toggle.
+/// Window size, and previous and next window with the current range.
 class AlignmentWindowControls extends ConsumerWidget {
   const AlignmentWindowControls({
     super.key,
@@ -374,13 +379,6 @@ class AlignmentWindowControls extends ConsumerWidget {
             ),
           ],
         ),
-        FilterChip(
-          label: const Text('Page'),
-          tooltip: 'Show one window at a time',
-          visualDensity: controlDensity(context),
-          selected: settings.isPaged,
-          onSelected: notifier.setPaged,
-        ),
       ],
     );
   }
@@ -396,6 +394,7 @@ class AlignmentSettingsSheet extends StatelessWidget {
     required this.onPrevious,
     required this.onNext,
     required this.onGoToSite,
+    required this.onGoToPartition,
   });
 
   final AlignmentViewData data;
@@ -403,8 +402,11 @@ class AlignmentSettingsSheet extends StatelessWidget {
   final VoidCallback onPrevious;
   final VoidCallback onNext;
 
-  /// Called with the submitted one-based site text, after the sheet closes.
+  /// Called with the submitted go-to text, after the sheet closes.
   final ValueChanged<String> onGoToSite;
+
+  /// Called with a suggested partition, after the sheet closes.
+  final ValueChanged<int> onGoToPartition;
 
   @override
   Widget build(BuildContext context) {
@@ -432,12 +434,16 @@ class AlignmentSettingsSheet extends StatelessWidget {
             onNext: onNext,
           ),
         ),
-        AlignmentSiteField(
+        AlignmentGoToField(
           controller: siteController,
-          length: data.length,
+          data: data,
           onSubmitted: (text) {
             Navigator.of(context).pop();
             onGoToSite(text);
+          },
+          onPartition: (index) {
+            Navigator.of(context).pop();
+            onGoToPartition(index);
           },
         ),
         SheetSection(
@@ -449,49 +455,125 @@ class AlignmentSettingsSheet extends StatelessWidget {
   }
 }
 
-/// Go-to-site field, sized to its label or hint, whichever is wider.
-class AlignmentSiteField extends StatelessWidget {
-  const AlignmentSiteField({
+/// Go-to field for a site, partition, `partition:site`, or taxon, sized to
+/// its label or hint. Partitions matching the text are suggested as you type.
+class AlignmentGoToField extends StatefulWidget {
+  const AlignmentGoToField({
     super.key,
     required this.controller,
-    required this.length,
+    required this.data,
     required this.onSubmitted,
+    required this.onPartition,
   });
 
   final TextEditingController controller;
-  final int length;
+  final AlignmentViewData data;
+
+  /// Called with the submitted text when no suggestion is chosen.
   final ValueChanged<String> onSubmitted;
+
+  /// Called with a chosen partition.
+  final ValueChanged<int> onPartition;
+
+  @override
+  State<AlignmentGoToField> createState() => _AlignmentGoToFieldState();
+}
+
+class _AlignmentGoToFieldState extends State<AlignmentGoToField> {
+  final FocusNode _focus = FocusNode();
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxWidth: SeguiAlignmentLayout.siteFieldMax,
-      ),
-      child: IntrinsicWidth(
-        child: FormFieldTheme(
-          child: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.go,
-            decoration: InputDecoration(
-              isDense: true,
-              maintainLabelSize: true,
-              maintainHintSize: true,
-              labelText: 'Go to site',
-              hintText: '1–${_siteFormat.format(length)}',
-              prefixIcon: const Icon(
-                Icons.search_rounded,
-                size: SeguiControlSize.iconSmall,
-              ),
-              prefixIconConstraints: const BoxConstraints(
-                minWidth: SeguiControlSize.badge,
+    final AlignmentViewData data = widget.data;
+    final ThemeData theme = Theme.of(context);
+    return RawAutocomplete<int>(
+      textEditingController: widget.controller,
+      focusNode: _focus,
+      optionsBuilder: (value) => goToMatches(data, value.text),
+      displayStringForOption: (index) => data.partitions[index].name,
+      onSelected: widget.onPartition,
+      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+        return ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: SeguiAlignmentLayout.siteFieldMax,
+          ),
+          child: IntrinsicWidth(
+            child: FormFieldTheme(
+              child: TextField(
+                controller: controller,
+                focusNode: focusNode,
+                textInputAction: TextInputAction.go,
+                decoration: InputDecoration(
+                  isDense: true,
+                  maintainLabelSize: true,
+                  maintainHintSize: true,
+                  labelText: 'Go to',
+                  hintText: data.hasPartitions
+                      ? 'Site or partition'
+                      : '1–${_siteFormat.format(data.length)}',
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    size: SeguiControlSize.iconSmall,
+                  ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: SeguiControlSize.badge,
+                  ),
+                ),
+                onSubmitted: (text) {
+                  // A highlighted suggestion wins, unless a site is given.
+                  if (!text.contains(':') &&
+                      goToMatches(data, text).isNotEmpty) {
+                    onFieldSubmitted();
+                  } else {
+                    widget.onSubmitted(text);
+                  }
+                },
               ),
             ),
-            onSubmitted: onSubmitted,
           ),
-        ),
-      ),
+        );
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        final int highlighted = AutocompleteHighlightedOption.of(context);
+        final List<int> items = options.toList();
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(SeguiRadius.md),
+            clipBehavior: Clip.antiAlias,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 280, maxWidth: 360),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: items.length,
+                itemBuilder: (context, i) {
+                  final AlignmentPartition partition =
+                      data.partitions[items[i]];
+                  return ListTile(
+                    dense: true,
+                    selected: i == highlighted,
+                    title: Text(partition.name),
+                    trailing: Text(
+                      '${_siteFormat.format(partition.start + 1)}–'
+                      '${_siteFormat.format(partition.end)}',
+                      style: theme.textTheme.labelSmall,
+                    ),
+                    onTap: () => onSelected(items[i]),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
