@@ -207,6 +207,7 @@ class PartConversionRunnerServices {
     required this.outputDir,
     required this.outputFormat,
     required this.isUnchecked,
+    this.isCodonModel = false,
   });
 
   final List<SegulInputFile> inputFiles;
@@ -215,6 +216,7 @@ class PartConversionRunnerServices {
   final Directory outputDir;
   final String outputFormat;
   final bool isUnchecked;
+  final bool isCodonModel;
 
   Future<void> run() async {
     final inputPartitions = inputFiles
@@ -229,7 +231,7 @@ class PartConversionRunnerServices {
       inputPartFmt: inputFormat,
       datatype: datatype,
       output: outputDir.path,
-      outputPartFmt: outputFormat,
+      outputPartFmt: getPartitionFmt(outputFormat, isCodonModel),
       isUncheck: isUnchecked,
     ).convertPartition();
   }
@@ -251,7 +253,7 @@ class SplitAlignmentRunner {
   final String inputFile;
   final String inputFmt;
   final String inputPartitionFmt;
-  final String inputPartition;
+  final String? inputPartition;
   final String datatype;
   final String outputDir;
   final String prefix;

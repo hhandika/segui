@@ -12,13 +12,15 @@ sidebar:
    option="--output-partition raxml"
    optionSub="output format" /%}
 
-SEGUL CLI can convert single and multiple partition files. It can also extract partitions embedded in NEXUS sequence files.
+SEGUL CLI converts single or multiple partition files between RAxML, NEXUS, and embedded NEXUS `charset` formats, including merged PartitionFinder and IQ-TREE `charpartition` schemes and strided codon models.
 
 ```bash
-segul partition convert --input <a-path/wildcard-to-partition> --input-partition <input-partition-format> --output-partition <output-partition-format>
+segul partition convert --input <a-path/wildcard-to-partition> --output-partition <output-partition-format>
 ```
 
-If you output to RaXML partition and it is a DNA sequence, we recommend using the `--datatype dna` option. The partition format will include the datatype as below:
+When `-p` / `--input-partition` is omitted, SEGUL infers the input partition format from the file extension and contents.
+
+If you output to RAxML partition and no per-partition substitution model is present, SEGUL labels DNA partitions with `--datatype dna`:
 
 ```text
 DNA, locus_1 = 1-100
@@ -26,37 +28,44 @@ DNA, locus_2 = 101-150
 DNA, locus_3 = 151-200
 ```
 
-By default, `segul` checks the partition format:
+Merged partitions (comma- or space-separated ranges), strided ranges (`start-end\step`), and substitution models (such as `GTR+I+G` from PartitionFinder or IQ-TREE `charpartition` blocks) are preserved across RAxML and NEXUS conversions:
 
-1. The first partition position starts with 1.
-2. The next partition is the next number after the previous partition's end. If using the codon model, the next locus applies the rule.
+```text
+GTR+I+G, Subset1 = 1-100\3, 201-300\3
+HKY+G, Subset2 = 101-200
+```
 
-Passing the `--skip-checking` flag allows you to ignore format checking. For example, to extract nexus in-file partitions (called charset format in `segul`):
+By default, `segul` checks the partition positions:
+
+1. No duplicate partition names exist.
+2. Sites cover `1..=max_end` continuously with no overlaps or gaps (including across merged and strided ranges).
+
+Passing the `--skip-checking` flag ignores coverage and overlap checking. For example, to extract NEXUS in-file partitions (called `charset` format in `segul`):
 
 ```bash
 segul partition convert --input concatenated_alignment.nex --input-partition charset --output-partition nexus
 ```
 
-You can also use wildcard to convert multiple concatenated alignment partitions at once:
+You can also use a wildcard to convert multiple concatenated alignment partitions at once:
 
 ```bash
 segul partition convert --input ./*/concatenated_alignment.nex --input-partition charset --output-partition nexus
 ```
 
-By default, SEGUL will save the resulting partitions in the parent directory of the input partition (or alignment if the partition is charset).
+By default, SEGUL saves each converted partition next to its input file. Pass `-o` / `--output` to write converted files into a target directory instead.
 
 ## All options
 
-| Option                     | Description                                                                         |
-| -------------------------- | ----------------------------------------------------------------------------------- |
-| `-i`, `--input`            | Partition files, or alignments with an embedded partition. Allows wildcards         |
-| `-p`, `--input-partition`  | Input partition format: `charset`, `nexus`, or `raxml`                              |
-| `-P`, `--output-partition` | Output partition format: `nexus` (default), `charset`, or `raxml`                   |
-| `--codon`                  | Write the partition as a codon model                                                |
-| `--datatype`               | Data type: `dna` (default), `aa`, or `ignore`. Sets the RAxML datatype label        |
-| `--skip-checking`          | Skip checking the partition positions                                               |
+| Option                     | Description                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `-i`, `--input`            | Partition files, or alignments with an embedded partition. Allows wildcards                      |
+| `-p`, `--input-partition`  | Input partition format: `charset`, `nexus`, or `raxml` (auto-inferred when omitted)              |
+| `-P`, `--output-partition` | Output partition format: `nexus` (default), `charset`, or `raxml`                                |
+| `--codon`                  | Expand unstrided partitions into codon-position subsets (`\3`); existing strides are preserved   |
+| `--datatype`               | Data type: `dna` (default), `aa`, or `ignore`. Sets the fallback RAxML/NEXUS label               |
+| `--skip-checking`          | Skip checking partition coverage and overlaps                                                    |
 | `-f`, `--input-format`     | Format of an alignment with an embedded partition: `auto` (default), `fasta`, `nexus`, or `phylip` |
 | `-F`, `--output-format`    | Output sequence format: `nexus` (default), `phylip`, `fasta`, `nexus-int`, `phylip-int`, or `fasta-int` |
-| `-o`, `--output`           | Output directory. Default: `Partition-Convert`                                      |
-| `--force`                  | Overwrite an existing output directory                                              |
-| `--log`                    | Log file path. Default: `segul.log`                                                 |
+| `-o`, `--output`           | Output directory (defaults to each input file's directory)                                       |
+| `--force`                  | Overwrite existing output files                                                                  |
+| `--log`                    | Log file path. Default: `segul.log`                                                              |

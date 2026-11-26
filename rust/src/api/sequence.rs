@@ -377,7 +377,7 @@ impl SplitAlignmentServices {
         }
     }
 
-    pub fn split_alignment(&self) {
+    pub fn split_alignment(&self) -> anyhow::Result<()> {
         let time = Instant::now();
         let output_path = Path::new(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
@@ -390,14 +390,15 @@ impl SplitAlignmentServices {
         let input_partition_path = self.generate_input_partition_path();
         let split =
             AlignmentSplitting::new(input_path, &datatype, &input_fmt, output_path, &output_fmt);
-        split.split(
+        split.try_split(
             &input_partition_path,
             &partition_fmt,
             &self.prefix,
             self.is_uncheck,
-        );
+        )?;
         let duration = time.elapsed();
         utils::print_execution_time(duration);
+        Ok(())
     }
 
     // Assume the partition in the input file if none supplied.
@@ -566,7 +567,7 @@ impl PartitionServices {
         }
     }
 
-    pub fn convert_partition(&self) {
+    pub fn convert_partition(&self) -> anyhow::Result<()> {
         let time = Instant::now();
         let input_dir = None::<PathBuf>;
         let output = Path::new(&self.output);
@@ -575,16 +576,17 @@ impl PartitionServices {
         let out_part_fmt = self.match_partition_fmt(&self.output_part_fmt);
 
         log_input_partition(input_dir.as_deref(), self.input_files.len());
-        self.input_files.iter().map(Path::new).for_each(|input| {
+        for input in self.input_files.iter().map(Path::new) {
             log_input_partition(Some(input), self.input_files.len());
             let file_stem = self.extract_partition_fname(input);
             let output_path = self.create_final_output_path(output, &file_stem);
             let final_path = construct_partition_path(&output_path, &out_part_fmt);
             let converter = PartitionConverter::new(input, &input_fmt, &final_path, &out_part_fmt);
-            converter.convert(&datatype, self.is_uncheck);
-        });
+            converter.try_convert(&datatype, self.is_uncheck)?;
+        }
         let duration = time.elapsed();
         utils::print_execution_time(duration);
+        Ok(())
     }
 
     fn extract_partition_fname(&self, input: &Path) -> String {

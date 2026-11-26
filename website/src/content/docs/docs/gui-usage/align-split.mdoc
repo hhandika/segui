@@ -37,34 +37,42 @@ Split alignments into multiple files based on the partition.
 
 ## Input Partition
 
-The app supports input partition formats. The input partition format is the format of the partition file you want to split. Partition options include:
+The app supports standard, codon/strided (`\3`), merged multi-range, PartitionFinder, and IQ-TREE `charpartition` schemes. Partition options include:
 
 - **Charset**: partition embedded in NEXUS sequence files
-- **Nexus**: partition file in NEXUS format
-- **Raxml**: partition file in RAxML format
+- **Nexus**: partition file in NEXUS format (including merged charsets and `charpartition` blocks)
+- **Raxml**: partition file in RAxML format (including merged ranges, strides, and substitution model prefixes)
 
-It supports standard and codon model partitions. However, merged partitions are not supported. The partition format will include the datatype as below:
-
-```text
-DNA, locus_1 = 1-100
-DNA, locus_2 = 101-150
-DNA, locus_3 = 151-200
-```
-
-Unsupported partition format examples:
+Example merged RAxML partition:
 
 ```text
-DNA, part1 = 1-100, 201-300
-DNA, part2 = 101-200
+GTR+I+G, part1 = 1-100, 201-300
+HKY+G, part2 = 101-200
 ```
+
+Example IQ-TREE `charpartition` NEXUS file:
+
+```text
+#nexus
+begin sets;
+  charset locus1 = 1-100;
+  charset locus2 = 101-200;
+  charset locus3 = 201-300;
+  charpartition mymodels =
+    GTR+F+I+G4: locus1 locus3,
+    HKY+F+G4: locus2;
+end;
+```
+
+When splitting merged or strided partitions, SEGUI extracts sites in ascending alignment column order.
 
 ## Check Partition for Errors
 
-The app checks for the following rules:
+When enabled (default), SEGUI checks that:
 
-1. First partition position starts with 1.
-2. The next partition is next number after the end of the previous partition. If codon model, it will check the next locus applies the rule.
+1. Partition names are unique and site positions fit within the alignment length.
+2. Sites cover `1..=max_end` continuously without overlaps or gaps across all ranges and strides.
 
 ## Prefix
 
-The prefix is the name of the output files.  For example, if the prefix is `output`, the app will generate `output_locus1`, `output_locus2`, and so on.
+The prefix is added to the beginning of each output file name. For example, if the prefix is `output`, the app generates `output_locus1`, `output_locus2`, and so on.

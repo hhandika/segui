@@ -16,7 +16,7 @@ import 'package:segui/services/io/io.dart';
 import 'package:segui/services/types.dart';
 import 'package:segui/services/workbench.dart';
 
-const SupportedTask task = SupportedTask.alignmentConversion;
+const SupportedTask task = SupportedTask.alignmentSplitting;
 
 class SplitAlignmentView extends StatelessWidget {
   const SplitAlignmentView({super.key});
@@ -38,7 +38,7 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     with AutomaticKeepAliveClientMixin {
   final IOController _ctr = IOController.empty();
   String? _partitionFormatController = partitionFormat[1];
-  bool _isUnchecked = false;
+  bool _checkPartition = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -110,13 +110,14 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
             },
           ),
           SwitchForm(
-              label: 'Check partition for errors',
-              value: _isUnchecked,
-              onPressed: (value) {
-                setState(() {
-                  _isUnchecked = value;
-                });
-              }),
+            label: 'Check partition for errors',
+            value: _checkPartition,
+            onPressed: (value) {
+              setState(() {
+                _checkPartition = value;
+              });
+            },
+          ),
         ]),
       ],
       action: ref.watch(fileInputProvider).when(
@@ -170,14 +171,14 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
         RunParameter('Output format', _ctr.outputFormatController ?? ''),
         RunParameter(
           'Check partition for errors',
-          _isUnchecked ? 'Yes' : 'No',
+          _checkPartition ? 'Yes' : 'No',
         ),
       ];
 
   bool _isValid(List<SegulInputFile> value) {
     // Find files contain sequence and partition
     final hasSequence = value.any((e) => e.type == SegulType.standardSequence);
-    final hasPartition =
+    final hasPartition = _partitionFormatController == 'Charset' ||
         value.any((e) => e.type == SegulType.alignmentPartition);
     final hasOutputFormat = _ctr.outputFormatController != null;
 
@@ -209,26 +210,26 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
       _setRunning();
       final inputSequence =
           inputFile.firstWhere((e) => e.type == SegulType.standardSequence);
-      final inputPartition =
-          inputFile.firstWhere((e) => e.type == SegulType.alignmentPartition);
+      final String? inputPartitionPath = _partitionFormatController == 'Charset'
+          ? null
+          : inputFile
+              .firstWhere((e) => e.type == SegulType.alignmentPartition)
+              .file
+              .path;
       await SplitAlignmentRunner(
         inputFile: inputSequence.file.path,
         inputFmt: _ctr.inputFormatController!,
         inputPartitionFmt: _partitionFormatController!,
-        inputPartition: inputPartition.file.path,
+        inputPartition: inputPartitionPath,
         datatype: _ctr.dataTypeController,
         outputDir: outputDir.path,
         prefix: _ctr.prefixController.text,
         outputFmt: _ctr.outputFormatController!,
-        isUncheck: _isUnchecked,
+        isUncheck: !_checkPartition,
       ).run();
       _setSuccess(outputDir);
     } catch (e) {
       _showError(e.toString());
-      setState(() {
-        _ctr.isRunning = false;
-        _ctr.isSuccess = false;
-      });
     }
   }
 
@@ -260,16 +261,19 @@ class SplitAlignmentPageState extends ConsumerState<SplitAlignmentPage>
     setState(() {
       _ctr.reset();
       _ctr.isSuccess = false;
+      _partitionFormatController = partitionFormat[1];
+      _checkPartition = true;
       ref.invalidate(fileInputProvider);
       ref.invalidate(fileOutputProvider);
     });
   }
 
   void _showError(String message) {
-    setState(() {
-      _ctr.isRunning = false;
-    });
     if (mounted) {
+      setState(() {
+        _ctr.isRunning = false;
+        _ctr.isSuccess = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         showSharedSnackBar(
           context,
