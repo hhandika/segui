@@ -1,376 +1,348 @@
 ---
-title: "Tutorial 5: From reads to contigs with Python"
-description: Run fastp and SPAdes from a Python script, with PySEGUL checking the reads before and after cleaning and summarizing the assembly.
+title: "Tutorial 5: Clean alignments with Python"
+description: Use PySEGUL to summarize 4,040 UCE alignments, choose thresholds from the summary, and build a supermatrix in one Python script.
 sidebar:
   order: 5
-  label: "5. Reads to contigs with Python"
+  label: "5. Clean alignments with Python"
 ---
 
-This tutorial writes one Python script that takes the raw reads of a sample to assembled contigs. PySEGUL checks the data at each step, and Python runs the other programs in between. You will:
+This tutorial writes one Python script that takes a published set of alignments to a supermatrix. The script reads its own summary and chooses the thresholds from the data, which is the main reason to use Python instead of the command line. You will:
 
-1. Install fastp, SPAdes, and PySEGUL.
-2. Download a sequencing run and check its quality.
-3. Clean the reads with fastp and compare them with the raw reads.
-4. Assemble the clean reads with SPAdes.
-5. Summarize the contigs.
+1. Install PySEGUL.
+2. Download and summarize the alignments.
+3. Find and remove poorly sampled taxa.
+4. Choose a taxon filter from the summary, then filter and trim.
+5. Concatenate the loci and compare the summaries.
 
-## The software
-
-| Software | Role in the script |
-| --- | --- |
-| [PySEGUL](/docs/api-usage/python/intro/) | Summarizes the reads and the contigs, and loads the reports as Python dictionaries. |
-| [fastp](https://github.com/OpenGene/fastp) | Trims adapters and low quality ends, and drops poor reads. |
-| [SPAdes](https://github.com/ablab/spades) | Assembles the reads into contigs. |
-
-[Tutorial 4](/docs/tutorials/tutorial-4/) covers PySEGUL on its own. This one adds the pattern for any other program: run it with `subprocess`, then check its output with PySEGUL.
+The script uses only PySEGUL and the Python standard library.
 
 ## Before you start
 
-- **A computer with Linux or macOS.** On Windows, use [WSL](https://learn.microsoft.com/windows/wsl/install), since SPAdes does not run on Windows.
-- **Conda.** [Miniforge](https://conda-forge.org/download/) is a good way to get it.
-- **About 1 GB of free storage** and 8 GB of memory.
+- **A computer with Linux, macOS, or Windows.**
+- **Python 3.9 or newer.** Check with `python --version`. On some systems the command is `python3`.
+- **About 1 GB of free storage.**
 - **Basic Python**: functions, lists, and dictionaries.
 
-With 8 cores, the script takes about 5 minutes after the download. The download is 238 MB and can take 10 minutes or more.
+The script runs in less than a minute after the download.
 
 ## The dataset
 
-The data are the raw reads of [Tutorial 2](/docs/tutorials/tutorial-2/): run [SRR6053059](https://www.ncbi.nlm.nih.gov/sra/?term=SRR6053059), a UCE target enrichment library of a short-tailed gymnure, *Hylomys suillus*, from [Esselstyn et al. 2017](https://doi.org/10.1093/gbe/evx168). It has 1,761,846 read pairs of 125 bp. The script downloads the two FASTQ files from the European Nucleotide Archive, which keeps the quality scores from the sequencer.
+The data are the same shrew UCE alignments as in [Tutorial 1](/docs/tutorials/tutorial-1/), from [Esselstyn et al. 2021](https://doi.org/10.1206/0003-0090.454.1.1): 4,040 NEXUS alignments of 102 taxa, in a 14.6 MB archive on [Zenodo](https://zenodo.org/records/6459213). The script downloads it.
 
 ## 1. Set up the project
 
-Create a conda environment with Python and the two programs, then activate it:
+Create a folder with a virtual environment, so PySEGUL stays apart from your other Python packages:
 
 ```bash
-conda create --name reads --channel conda-forge --channel bioconda python=3.12 fastp spades
+mkdir segul-python
 ```
 
 ```bash
-conda activate reads
+cd segul-python
 ```
 
-Install PySEGUL in the same environment:
+```bash
+python -m venv .venv
+```
+
+Activate the environment:
+
+{% tabs syncKey="os" %}
+{% tabitem label="Linux and macOS" %}
+
+```bash
+source .venv/bin/activate
+```
+
+{% /tabitem %}
+{% tabitem label="Windows" %}
+
+```powershell
+.venv\Scripts\activate
+```
+
+{% /tabitem %}
+{% /tabs %}
+
+Install PySEGUL:
 
 ```bash
 pip install pysegul
 ```
 
-Check that everything is in place:
+This tutorial was tested with PySEGUL 0.5.0. Check your version:
 
 ```bash
-fastp --version
-```
-
-```bash
-spades.py --version
-```
-
-This tutorial was tested with PySEGUL 0.5.0, fastp 1.4.0, and SPAdes 4.0.0.
-
-Create a folder for the project:
-
-```bash
-mkdir segul-reads
-```
-
-```bash
-cd segul-reads
+python -c "from importlib.metadata import version; print(version('pysegul'))"
 ```
 
 ## 2. Start the script
 
-Create a file named `reads_to_contigs.py` and add each block below, in order.
+Create a file named `clean_alignments.py` and add each block below, in order.
 
-```python title="reads_to_contigs.py"
+The first block imports PySEGUL and sets the options. Keeping the thresholds at the top makes them easy to find and change.
+
+```python title="clean_alignments.py"
 #!/usr/bin/env python
-"""Check raw reads, clean them with fastp, and assemble them with SPAdes."""
+"""Clean a set of alignments with thresholds chosen from their summary."""
 import shutil
-import subprocess
-import sys
 import urllib.request
+import zipfile
 from pathlib import Path
 
 import pysegul
 
-RUN = "SRR6053059"
-READ_URL = "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR605/009/SRR6053059"
+DATASET_URL = (
+    "https://zenodo.org/records/6459213/files/"
+    "esselstyn_et_al_2021_uce_aln.zip?download=1"
+)
 DATA_DIR = Path("data")
 OUTPUT_DIR = Path("results")
-LOG_DIR = Path("logs")
-THREADS = 8
+
+# Remove taxa found in fewer loci than this share of all loci.
+MIN_LOCUS_SHARE = 0.3
+# Use the strictest taxon filter that keeps at least this many loci.
+MIN_LOCI = 1000
+# Remove sites where more than this share of the taxa is missing.
+MAX_MISSING = 0.5
 ```
 
-Set `THREADS` to the number of cores you want fastp and SPAdes to use.
+## 3. Download the alignments
 
-## 3. Run other programs from Python
-
-```python title="reads_to_contigs.py"
-def check_programs() -> None:
-    """Stop early if fastp or SPAdes is not installed."""
-    for program in ("fastp", "spades.py"):
-        if shutil.which(program) is None:
-            sys.exit(f"{program} not found. Activate the environment that has it.")
-
-
-def run_program(command: list[str], log_name: str) -> None:
-    """Run another program, with its messages saved to a log file."""
-    LOG_DIR.mkdir(exist_ok=True)
-    print(f"Running {command[0]}...")
-    with open(LOG_DIR / log_name, "w") as log:
-        subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=True)
-```
-
-These two functions are all the script needs to work with other programs:
-
-- `check_programs` looks for each program before anything runs. A missing program then stops the script at once, not after ten minutes of work.
-- `run_program` runs a command given as a list, one item per word. `check=True` stops the script if the program fails, and the program's messages go to a file in `logs`.
-
-## 4. Download the reads
-
-```python title="reads_to_contigs.py"
-def download_reads() -> list[Path]:
-    """Download both read files, unless they are already there."""
+```python title="clean_alignments.py"
+def download_alignments() -> Path:
+    """Download and unpack the alignments, unless they are already there."""
+    loci_dir = DATA_DIR / "loci"
+    if loci_dir.exists():
+        return loci_dir
     DATA_DIR.mkdir(exist_ok=True)
-    reads = [DATA_DIR / f"{RUN}_{pair}.fastq.gz" for pair in (1, 2)]
-    for read in reads:
-        if not read.exists():
-            print(f"Downloading {read.name}...")
-            urllib.request.urlretrieve(f"{READ_URL}/{read.name}", read)
-    return reads
+    archive = DATA_DIR / "alignments.zip"
+    urllib.request.urlretrieve(DATASET_URL, archive)
+    loci_dir.mkdir()
+    with zipfile.ZipFile(archive) as zip_file:
+        for member in zip_file.namelist():
+            if member.endswith(".nex"):
+                target = loci_dir / Path(member).name
+                target.write_bytes(zip_file.read(member))
+    return loci_dir
 ```
 
-The function skips the files that are already in `data`. If you did Tutorial 2 on a computer, copy the two files there.
+The function skips the download when the `data/loci` folder exists, so you can run the script many times.
 
-## 5. Check the reads
+## 4. Summarize the alignments
 
-```python title="reads_to_contigs.py"
-def summarize_reads(reads: list[Path], name: str) -> dict:
-    """Summarize read files in complete mode and load the report."""
-    summary = pysegul.ReadSummary(
-        input_fmt="auto",
-        mode="complete",
-        output_path=str(OUTPUT_DIR / f"reads-{name}"),
+```python title="clean_alignments.py"
+def summarize(input_dir: Path, name: str) -> dict:
+    """Summarize the alignments in a folder and load the report."""
+    summary = pysegul.AlignmentSummary(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(OUTPUT_DIR / f"summary-{name}"),
         output_prefix=name,
         plot=pysegul.PlotOptions(format="svg"),
     )
-    outputs = summary.from_files([str(read) for read in reads])
-    return pysegul.load_read_report(outputs["report"])
-
-
-def print_checks(report: dict) -> None:
-    """Print the quality checks of each read file."""
-    for sample in report["samples"]:
-        print(f"{sample['sample']}: {sample['qc_status']}")
-        for check in sample["qc"]:
-            value = f"{check['value']:.1f}{check['unit']}"
-            print(f"  {check['name']:16}{value:>8}  {check['status']}")
+    outputs = summary.from_dir(str(input_dir))
+    return pysegul.load_align_report(outputs["report"])
 ```
 
-`ReadSummary` in `complete` mode writes a JSON report, which `load_read_report` loads as a dictionary. Each sample in it has:
+Each PySEGUL task is a class. You create it with its options, then call `from_dir` with the input folder. `AlignmentSummary` returns the paths of the files it wrote, and `load_align_report` loads its JSON report as a dictionary:
 
 | Key | Content |
 | --- | --- |
-| `metrics` | Statistics such as `read_count`, `q30_pct`, and `adapter_reads_pct` |
-| `qc` | The quality checks, each with a `name`, `value`, and `status` |
-| `qc_status` | The worst status among the checks: `Pass`, `Warn`, or `Fail` |
+| `summary` | Totals, such as `taxa`, `loci`, `sites`, and `prop_missing` |
+| `completeness` | Loci kept at each share of taxa, from 100% down |
+| `loci` | Statistics of each locus |
+| `taxa` | Statistics of each taxon, such as `loci` and `prop_missing` |
 
-These are the checks that the [SEGUI read report](/docs/gui-usage/read-summary/#read-report) shows. `summarize_reads` takes a name, so the script can use it twice: on the raw reads and on the clean reads.
+`PlotOptions` also writes ten charts to a `plots` folder. See [Charts and Reports](/docs/api-usage/python/plots_reports/) for samples and options.
 
-## 6. Clean the reads with fastp
+## 5. Remove poorly sampled taxa
 
-```python title="reads_to_contigs.py"
-def clean_reads(reads: list[Path]) -> list[Path]:
-    """Trim adapters and low quality ends with fastp."""
-    output_dir = OUTPUT_DIR / "01-clean-reads"
-    output_dir.mkdir(parents=True)
-    cleaned = [output_dir / read.name for read in reads]
-    run_program(
-        [
-            "fastp",
-            "--in1", str(reads[0]),
-            "--in2", str(reads[1]),
-            "--out1", str(cleaned[0]),
-            "--out2", str(cleaned[1]),
-            "--detect_adapter_for_pe",
-            "--cut_right",
-            "--thread", str(THREADS),
-            "--json", str(output_dir / "fastp.json"),
-            "--html", str(output_dir / "fastp.html"),
-        ],
-        "fastp.log",
+A taxon that is missing from most loci adds little data and a lot of gaps. The report lists the number of loci of each taxon, so the script can find these taxa itself.
+
+```python title="clean_alignments.py"
+def find_sparse_taxa(report: dict) -> list[str]:
+    """Taxa found in too few loci."""
+    min_loci = MIN_LOCUS_SHARE * report["summary"]["loci"]
+    return [taxon["name"] for taxon in report["taxa"] if taxon["loci"] < min_loci]
+
+
+def remove_taxa(input_dir: Path, taxa: list[str]) -> Path:
+    """Remove the taxa from every alignment."""
+    output_dir = OUTPUT_DIR / "01-taxa-removed"
+    removal = pysegul.SequenceRemoval(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(output_dir),
+        output_format="nexus",
     )
-    return cleaned
+    removal.input_dir = str(input_dir)
+    removal.remove_id_list(taxa)
+    return output_dir
 ```
 
-The options tell fastp to find the adapters of paired-end reads (`--detect_adapter_for_pe`) and to cut each read where its quality drops (`--cut_right`). fastp also drops reads that are poor or too short. It writes its own report to `fastp.html`.
+`find_sparse_taxa` returns the taxa found in fewer than 30% of the loci. `SequenceRemoval` then writes every alignment without them. Classes with several methods, such as this one, take the input from `input_dir` and run when you call a method.
 
-## 7. Assemble and summarize the contigs
+## 6. Choose the filter and apply it
 
-```python title="reads_to_contigs.py"
-def assemble(reads: list[Path]) -> Path:
-    """Assemble the reads into contigs with SPAdes."""
-    output_dir = OUTPUT_DIR / "02-assembly"
-    run_program(
-        [
-            "spades.py",
-            "-1", str(reads[0]),
-            "-2", str(reads[1]),
-            "-o", str(output_dir),
-            "--threads", str(THREADS),
-        ],
-        "spades.log",
+The best taxon filter depends on the dataset. Instead of a fixed number, the script takes the strictest filter that still keeps 1,000 loci.
+
+```python title="clean_alignments.py"
+def choose_taxon_filter(report: dict) -> float:
+    """The strictest share of taxa that keeps enough loci."""
+    for level in report["completeness"]:
+        if level["loci"] >= MIN_LOCI:
+            return level["percent"] / 100
+    raise ValueError(f"No taxon filter keeps {MIN_LOCI} loci")
+
+
+def filter_alignments(input_dir: Path, min_taxa: float) -> Path:
+    """Keep the alignments with enough taxa."""
+    output_dir = OUTPUT_DIR / "02-filtered"
+    filtering = pysegul.AlignmentFiltering(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(output_dir),
+        output_fmt="nexus",
     )
-    return output_dir / "contigs.fasta"
-
-
-def summarize_contigs(contigs: Path) -> dict:
-    """Summarize the assembly and load the report."""
-    summary = pysegul.ContigSummary(
-        input_fmt="fasta",
-        output_dir=str(OUTPUT_DIR / "03-contig-summary"),
-        output_prefix=RUN,
-        plot=pysegul.PlotOptions(format="svg"),
-    )
-    outputs = summary.from_files([str(contigs)])
-    return pysegul.load_contig_report(outputs["report"])
+    filtering.input_dir = str(input_dir)
+    filtering.minimal_taxa(min_taxa)
+    return output_dir
 ```
 
-`assemble` returns the path of `contigs.fasta`, which goes straight to `ContigSummary`. The contig report has one entry per assembly in `samples`.
+The `completeness` list starts at 100% of taxa, so the first level with enough loci is the strictest one.
+
+## 7. Trim and concatenate
+
+```python title="clean_alignments.py"
+def trim_alignments(input_dir: Path) -> Path:
+    """Remove sites with too much missing data."""
+    output_dir = OUTPUT_DIR / "03-trimmed"
+    trimming = pysegul.AlignmentTrimming(
+        input_fmt="nexus",
+        datatype="dna",
+        output_path=str(output_dir),
+        output_fmt="nexus",
+    )
+    trimming.input_dir = str(input_dir)
+    trimming.missing_data(MAX_MISSING)
+    return output_dir / "trimmed_alignments"
+
+
+def concatenate(input_dir: Path) -> None:
+    """Join the alignments into a supermatrix with a partition file."""
+    concat = pysegul.AlignmentConcatenation(
+        input_fmt="nexus",
+        datatype="dna",
+        output_dir=str(OUTPUT_DIR / "04-supermatrix"),
+        output_fmt="phylip",
+        partition_fmt="raxml",
+        output_prefix="shrews",
+    )
+    concat.from_dir(str(input_dir))
+```
+
+`AlignmentTrimming` writes the alignments to a `trimmed_alignments` folder inside its output folder, so `trim_alignments` returns that path.
 
 ## 8. Put the steps together
 
-```python title="reads_to_contigs.py"
-def print_read_comparison(raw: dict, clean: dict) -> None:
-    """Print the main read statistics before and after cleaning."""
-    rows = [
-        ("Reads", "read_count", ",.0f"),
-        ("Mean length", "mean_read_length", ".1f"),
-        ("Q30 bases (%)", "q30_pct", ".1f"),
-        ("Low quality reads", "low_quality_reads", ",.0f"),
-        ("Adapters (%)", "adapter_reads_pct", ".2f"),
-    ]
-    for before, after in zip(raw["samples"], clean["samples"]):
-        print(f"{before['sample']:22}{'Raw':>12}{'Clean':>12}")
-        for label, key, fmt in rows:
-            old, new = before["metrics"][key], after["metrics"][key]
-            print(f"  {label:20}{old:>12{fmt}}{new:>12{fmt}}")
-
-
-def print_contig_summary(report: dict) -> None:
-    """Print the main statistics of the assembly."""
-    stats = report["samples"][0]
-    print(f"Contigs: {stats['contigs']:,}")
-    print(f"Bases: {stats['bases']:,}")
-    print(f"N50: {stats['n50']:,} bp")
-    print(f"Longest contig: {stats['max']:,} bp")
-    for level in stats["long_contigs"]:
-        print(f"Contigs longer than {level['length']:,} bp: {level['contigs']:,}")
+```python title="clean_alignments.py"
+def print_comparison(reports: dict[str, dict]) -> None:
+    """Print the main statistics of each summary side by side."""
+    print(f"{'':10}{'Taxa':>6}{'Loci':>8}{'Sites':>12}{'Missing':>10}")
+    for name, report in reports.items():
+        stats = report["summary"]
+        print(
+            f"{name:10}{stats['taxa']:>6}{stats['loci']:>8,}"
+            f"{stats['sites']:>12,}{stats['prop_missing']:>10.2%}"
+        )
 
 
 def main() -> None:
-    check_programs()
-    # PySEGUL and SPAdes do not overwrite files, so start from an empty folder.
+    # PySEGUL does not overwrite files, so start from an empty output folder.
     shutil.rmtree(OUTPUT_DIR, ignore_errors=True)
 
-    reads = download_reads()
-    raw = summarize_reads(reads, "raw")
-    print_checks(raw)
+    loci_dir = download_alignments()
+    raw = summarize(loci_dir, "raw")
 
-    cleaned = clean_reads(reads)
-    clean = summarize_reads(cleaned, "clean")
-    print_read_comparison(raw, clean)
+    sparse_taxa = find_sparse_taxa(raw)
+    print(f"Removing {len(sparse_taxa)} taxa:")
+    for taxon in sparse_taxa:
+        print(f"  {taxon}")
+    removed_dir = remove_taxa(loci_dir, sparse_taxa)
+    removed = summarize(removed_dir, "removed")
 
-    contigs = assemble(cleaned)
-    report = summarize_contigs(contigs)
-    print_contig_summary(report)
+    min_taxa = choose_taxon_filter(removed)
+    print(f"Taxon filter: {min_taxa:.0%}")
+    filtered_dir = filter_alignments(removed_dir, min_taxa)
+    trimmed_dir = trim_alignments(filtered_dir)
+    concatenate(trimmed_dir)
+    clean = summarize(trimmed_dir, "clean")
+
+    print_comparison({"Raw": raw, "Removed": removed, "Clean": clean})
 
 
 if __name__ == "__main__":
     main()
 ```
 
-`main` reads like the plan of the analysis: check, clean, check again, assemble, summarize.
+`main` runs the steps in order and summarizes the data three times: raw, after removing taxa, and clean.
+
+{% aside type="note" title="Output folders" %}
+PySEGUL stops when an output file already exists. The script deletes the `results` folder first, so every run starts clean. Keep results you need under another name.
+{% /aside %}
 
 ## 9. Run the script
 
 ```bash
-python reads_to_contigs.py
+python clean_alignments.py
 ```
 
-PySEGUL prints the log of each step. Among it, the script prints three results.
-
-### The quality checks of the raw reads
+PySEGUL prints the log of each step. Among it, the script prints its decisions and the comparison:
 
 ```plaintext
-SRR6053059_1.fastq: Fail
-  Q30 bases          85.7%  Pass
-  Mean quality        33.3  Pass
-  N content           0.0%  Pass
-  Duplication        76.0%  Fail
-  Adapters            0.4%  Pass
-  Poly-G              0.1%  Pass
-  Overrepresented     0.2%  Warn
-SRR6053059_2.fastq: Fail
-  Q30 bases          83.2%  Pass
-  Mean quality        32.6  Pass
-  N content           0.1%  Pass
-  Duplication        73.7%  Fail
-  Adapters            0.4%  Pass
-  Poly-G              0.1%  Pass
-  Overrepresented     0.2%  Warn
+Removing 10 taxa:
+  Crocidura_australis_Bawakaraeng_MVZ237610_NMV_Z57224
+  Crocidura_australis_Bawakaraeng_MZB40991_NMV_Z57198
+  Crocidura_australis_Bawakaraeng_NMV_Z57223_KCR2954
+  Crocidura_caudipilosa_Bawakaraeng_NMV_Z57044_KCR2849
+  Crocidura_musseri_Rorekatimbo_FMNH213263
+  Crocidura_normalis_Latimojong_FMNH213011
+  Crocidura_normalis_Rorekatimbo_FMNH213184
+  Crocidura_parva_Bawakaraeng_MVZ237603_NMV_Z56998
+  Crocidura_parva_Bawakaraeng_NMV_Z56314_HH925
+  DIPLOPULCHELLUM_MVZ179157
+Taxon filter: 80%
+            Taxa    Loci       Sites   Missing
+Raw          102   4,040   5,398,947    49.43%
+Removed       92   4,040   5,387,970    48.61%
+Clean         92   1,019     806,165    12.91%
 ```
 
-These match the report in [Tutorial 2](/docs/tutorials/tutorial-2/#start-with-the-checks), which explains each check. The duplication is expected for a target enrichment library.
-
-### The reads before and after fastp
-
-```plaintext
-SRR6053059_1.fastq             Raw       Clean
-  Reads                  1,761,846   1,560,875
-  Mean length                125.0       114.5
-  Q30 bases (%)               85.7        94.7
-  Low quality reads         82,824           0
-  Adapters (%)                0.43        0.00
-SRR6053059_2.fastq             Raw       Clean
-  Reads                  1,761,846   1,560,875
-  Mean length                125.0       112.4
-  Q30 bases (%)               83.2        94.4
-  Low quality reads        118,992           0
-  Adapters (%)                0.43        0.00
-```
-
-fastp kept 89% of the read pairs. The clean reads are shorter, because their poor ends are gone, and more than 94% of their bases reach Q30. No read has a mean quality below 20, and the adapters are gone. Both files still have the same number of reads, which the assembler needs.
-
-### The assembly
-
-```plaintext
-Contigs: 10,653
-Bases: 2,610,251
-N50: 283 bp
-Longest contig: 3,334 bp
-Contigs longer than 750 bp: 40
-Contigs longer than 1,000 bp: 12
-Contigs longer than 1,500 bp: 2
-```
-
-Most contigs are short, which is common for a target enrichment library: reads pile up on the targeted loci and thin out away from them. The next step of a UCE study matches the contigs to the probes and keeps the ones that hit.
+The ten removed taxa are each in 781 to 1,043 of the 4,040 loci. The next taxon is in 1,458. With them gone, an 80% filter keeps 1,019 loci. On all 102 taxa, the same filter keeps only 308.
 
 The `results` folder holds:
 
 ```plaintext
 results/
-├── reads-raw/            summary table, report, and plots/
-├── 01-clean-reads/       two FASTQ files, fastp.html, fastp.json
-├── reads-clean/          summary table, report, and plots/
-├── 02-assembly/          contigs.fasta and other SPAdes files
-└── 03-contig-summary/    summary table, report, and plots/
+├── summary-raw/         report, tables, and plots/
+├── 01-taxa-removed/     4,040 alignments without the ten taxa
+├── summary-removed/
+├── 02-filtered/         1,019 alignments
+├── 03-trimmed/          trimmed_alignments/, trimming_summary.csv
+├── 04-supermatrix/      shrews.phy, shrews_partition.txt
+└── summary-clean/
 ```
 
-To browse a read report, open its `read-report.json` file in SEGUI or with `segul view summary`.
+`shrews.phy` has 92 taxa and 806,165 sites. Open it with `segul view align` or in the [SEGUI alignment viewer](/docs/gui-usage/viewer/).
+
+{% aside type="caution" title="Thresholds are decisions" %}
+A script applies a rule the same way every time, but the rule is still yours. Removing a taxon removes it from the study. Check the list the script prints, and set `MIN_LOCUS_SHARE`, `MIN_LOCI`, and `MAX_MISSING` for your own data.
+{% /aside %}
 
 ## Where to go next
 
-- **Process many samples.** Put the steps of `main` in a loop over your samples. `ReadSummary` and `ContigSummary` also take a whole folder with `from_dir`, and their reports then have one entry per file.
-- **Act on the checks.** The report is a dictionary, so the script can decide: skip the assembly of a sample whose clean reads fail a check, or list the samples that need a second look.
-- **Change the programs.** `run_program` works with any command. Swap SPAdes for another assembler, or add a step after the assembly.
-- **Scale up.** For many samples and steps, a workflow manager reruns only what changed and runs jobs in parallel. See [Tutorial 3](/docs/tutorials/tutorial-3/).
+- **Change the rules.** Set `MIN_LOCI` to `2000` and run the script again. It picks a looser filter by itself.
+- **Use other statistics.** Each locus in `report["loci"]` has `sites`, `informative`, and `prop_missing`. Build a list of paths and pass it to `from_files` to keep any loci you choose.
+- **Add other programs.** [Tutorial 6](/docs/tutorials/tutorial-6/) runs fastp and SPAdes from Python, with PySEGUL checking each step.
+- **Read the reference.** Every class and its options are in the [Python guides](/docs/api-usage/python/intro/).
