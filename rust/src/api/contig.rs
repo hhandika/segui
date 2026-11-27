@@ -7,6 +7,7 @@ use segul_core::helper::types::ContigFmt;
 use segul_core::helper::utils;
 
 use crate::api::progress::RunMonitor;
+use crate::api::report::current_report_context;
 
 pub struct ContigServices {
     pub files: Vec<String>,
@@ -39,6 +40,7 @@ impl ContigServices {
 
         let outputs = ContigSummaryHandler::new(&files, &input_fmt, output_path, prefix.as_deref())
             .with_progress(monitor)
+            .with_report_context(current_report_context())
             .try_summarize()?;
         let duration = time.elapsed();
         utils::print_execution_time(duration);

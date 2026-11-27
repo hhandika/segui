@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
@@ -54,6 +55,16 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyPendingReplay();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _customDupSketchSize.dispose();
     super.dispose();
@@ -62,6 +73,11 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen<PendingReplay?>(pendingReplayProvider, (_, next) {
+      if (next != null && next.taskKind == 'read.summary') {
+        _applyPendingReplay();
+      }
+    });
     return ToolFormLayout(
       form: [
         const CardTitle(step: 1, title: 'Input'),
@@ -238,6 +254,52 @@ class ReadSummaryPageState extends ConsumerState<ReadSummaryPage>
           RunParameter(
               'Duplication sketch size', '${_dupSketchSizeValue ?? ''}'),
       ];
+
+  void _applyPendingReplay() {
+    final PendingReplay? replay =
+        ref.read(pendingReplayProvider.notifier).consumeFor('read.summary');
+    if (replay == null) {
+      return;
+    }
+    setState(() {
+      replay.applyIoDefaults(_ctr, inputFormats: sequenceReadFormat);
+      final String? matchedMode =
+          replay.matchOption('mode', sequenceReadSummaryMode);
+      if (matchedMode != null) {
+        mode = matchedMode;
+      }
+      final String? matchedPhred =
+          replay.matchOption('phred', sequenceReadPhredOffset);
+      if (matchedPhred != null) {
+        phred = matchedPhred;
+      }
+      final String? rawProfile = replay.stringParam('qc_profile');
+      if (rawProfile != null) {
+        for (final key in sequenceReadQcProfiles.keys) {
+          if (key.toLowerCase() == rawProfile.toLowerCase()) {
+            qcProfile = key;
+            break;
+          }
+        }
+      }
+      final int? sketchSize = replay.intParam('dup_sketch_size');
+      if (sketchSize != null) {
+        String? presetKey;
+        for (final entry in sequenceReadDupSketchSizes.entries) {
+          if (entry.value == sketchSize) {
+            presetKey = entry.key;
+            break;
+          }
+        }
+        if (presetKey != null) {
+          dupSketchSize = presetKey;
+        } else {
+          dupSketchSize = customDupSketchSize;
+          _customDupSketchSize.text = sketchSize.toString();
+        }
+      }
+    });
+  }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {

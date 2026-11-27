@@ -6,9 +6,11 @@ import 'package:path/path.dart' as p;
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
+import 'package:segui/services/io/io.dart';
 import 'package:segui/services/io/output.dart';
 import 'package:segui/services/providers/io.dart';
 import 'package:segui/services/types.dart';
+import 'package:segui/services/viewers/run_report.dart';
 
 /// Kind of data a tool reads or writes, used to match a run's output with
 /// the tools that can take it as input.
@@ -166,6 +168,27 @@ class ToolRun {
   final File? report;
 }
 
+final workbenchRunHistoryProvider =
+    NotifierProvider<WorkbenchRunHistory, List<File>>(WorkbenchRunHistory.new);
+
+/// Ordered, deduplicated `report.json` files produced in this session.
+class WorkbenchRunHistory extends Notifier<List<File>> {
+  @override
+  List<File> build() => const <File>[];
+
+  void add(File report) {
+    final String normalized = p.normalize(report.absolute.path);
+    if (state.any((item) => p.normalize(item.absolute.path) == normalized)) {
+      return;
+    }
+    state = [...state, report];
+  }
+
+  void clear() {
+    state = const <File>[];
+  }
+}
+
 final lastRunProvider = NotifierProvider<LastRun, ToolRun?>(LastRun.new);
 
 /// Keeps the last successful run until the tool or its input changes.
@@ -184,14 +207,36 @@ class LastRun extends Notifier<ToolRun?> {
     if (tool == null) {
       return;
     }
+    File? resolvedReport = report;
+    if (resolvedReport == null) {
+      final SegulOutputFile? output =
+          ref.read(fileOutputProvider).asData?.value;
+      if (output != null) {
+        final List<File> candidateNew = getNewFilesFromOutput(output);
+        resolvedReport = _findReportFile(candidateNew) ??
+            _findReportFile(output.files.map((e) => e.file).toList());
+      }
+    }
     state = ToolRun(
       tool: tool,
       parameters: [
         for (final parameter in parameters)
           if (parameter.value.trim().isNotEmpty) parameter,
       ],
-      report: report,
+      report: resolvedReport,
     );
+    if (resolvedReport != null && isRunReportFile(resolvedReport)) {
+      ref.read(workbenchRunHistoryProvider.notifier).add(resolvedReport);
+    }
+  }
+
+  File? _findReportFile(List<File> files) {
+    for (final file in files) {
+      if (isRunReportFile(file)) {
+        return file;
+      }
+    }
+    return null;
   }
 }
 

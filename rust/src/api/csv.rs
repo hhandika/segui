@@ -9,12 +9,7 @@ use std::{
 
 use flutter_rust_bridge::frb;
 
-use polars::{
-    error::PolarsResult,
-    frame::DataFrame,
-    io::SerReader,
-    prelude::CsvReadOptions,
-};
+use polars::{error::PolarsResult, frame::DataFrame, io::SerReader, prelude::CsvReadOptions};
 
 pub enum CsvSegulType {
     /// Locus summary from alignment summary

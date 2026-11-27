@@ -16,4 +16,5 @@ pub mod file_sort;
 pub mod maf;
 pub mod progress;
 pub mod reads;
+pub mod report;
 pub mod sequence;

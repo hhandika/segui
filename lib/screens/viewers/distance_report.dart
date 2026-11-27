@@ -12,6 +12,7 @@ import 'package:segui/screens/viewers/alignment_report/items.dart';
 import 'package:segui/screens/viewers/distance_report/matrix.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/report/layout.dart';
+import 'package:segui/screens/viewers/run_report.dart';
 import 'package:segui/services/providers/distance_report.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
 import 'package:segui/services/viewers/distance_report.dart';
@@ -41,7 +42,10 @@ class DistanceReportView extends StatelessWidget {
       appBar: AppBar(
         title: BetaTitle(text: p.basename(file.path), isBeta: true),
         backgroundColor: getSEGULBackgroundColor(context),
-        actions: [InfoButton(file: file)],
+        actions: [
+          RunReportActionButton(file: file),
+          InfoButton(file: file),
+        ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: SafeArea(child: DistanceReportBody(path: file.path)),

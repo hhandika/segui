@@ -7,6 +7,7 @@ import 'package:segui/screens/settings/data_usage.dart';
 import 'package:segui/screens/settings/databases.dart';
 import 'package:segui/screens/settings/folder_access.dart';
 import 'package:segui/screens/settings/logs.dart';
+import 'package:segui/screens/settings/reproducibility.dart';
 import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/styles/decoration.dart';
@@ -117,6 +118,11 @@ enum SettingsPage {
     Icons.travel_explore_outlined,
     Icons.travel_explore_rounded,
   ),
+  reproducibility(
+    'Reproducibility',
+    Icons.verified_outlined,
+    Icons.verified_rounded,
+  ),
   folderAccess('Folder access', Icons.folder_outlined, Icons.folder_rounded);
 
   const SettingsPage(this.label, this.icon, this.selectedIcon);
@@ -185,6 +191,8 @@ class LargeScreenSettingsState extends ConsumerState<LargeScreenSettings> {
                 SettingsPage.colors => const ColorSettingView(),
                 SettingsPage.dataUsage => const DataUsageView(),
                 SettingsPage.databases => const DatabaseSettingsView(),
+                SettingsPage.reproducibility =>
+                  const ReproducibilitySettingsView(),
                 SettingsPage.folderAccess => const FolderAccessView(),
               },
             ),
@@ -335,6 +343,19 @@ class MainSettings extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const DatabaseSettings(),
+                ),
+              );
+            },
+          ),
+          SettingTile(
+            title: 'Reproducibility',
+            subtitle: 'Report SHA-256 checksums for verification',
+            icon: Icons.verified_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ReproducibilitySettings(),
                 ),
               );
             },

@@ -212,6 +212,7 @@ const List<String> tabularExtensions = [
 const List<String> plainTextExtensions = [
   'txt',
   'text',
+  'json',
   'log',
   'conf',
   'toml',

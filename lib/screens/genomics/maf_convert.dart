@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -53,6 +54,16 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyPendingReplay();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _ctr.dispose();
     _refSpecies.dispose();
@@ -66,6 +77,11 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen<PendingReplay?>(pendingReplayProvider, (_, next) {
+      if (next != null && next.taskKind == 'maf.convert') {
+        _applyPendingReplay();
+      }
+    });
     final bool hasBed = (ref.watch(fileInputProvider).value ?? [])
         .any((e) => e.type == SegulType.bed);
     return ToolFormLayout(
@@ -269,6 +285,54 @@ class MafConversionPageState extends ConsumerState<MafConversionPage>
       RunParameter('Output format', _ctr.outputFormatController ?? ''),
       RunParameter('Interleaved format', _isInterleave ? 'Yes' : 'No'),
     ];
+  }
+
+  void _applyPendingReplay() {
+    final PendingReplay? replay =
+        ref.read(pendingReplayProvider.notifier).consumeFor('maf.convert');
+    if (replay == null) {
+      return;
+    }
+    setState(() {
+      replay.applyIoDefaults(_ctr, outputFormats: mafOutputFormat);
+      final String? rawOut = replay.stringParam('output_format');
+      if (rawOut != null) {
+        _isInterleave = rawOut.toLowerCase().endsWith('-int');
+      }
+      final String? groupBy = replay.stringParam('group_by');
+      if (groupBy != null && mafGroupingOptions.containsKey(groupBy)) {
+        _groupBy = groupBy;
+      }
+      final bool? clipVal = replay.boolParam('clip');
+      if (clipVal != null) {
+        _isClipped = clipVal;
+      }
+      final bool? strandVal = replay.boolParam('strand_aware');
+      if (strandVal != null) {
+        _isStrandAware = strandVal;
+      }
+      final String? refSp = replay.stringParam('ref_species') ??
+          replay.stringParam('resolved_ref_species');
+      if (refSp != null) {
+        _refSpecies.text = refSp;
+      }
+      final Object? speciesList = replay.parameters['species'];
+      if (speciesList is List && speciesList.isNotEmpty) {
+        _species.text = speciesList.join(', ');
+      }
+      final int? minLen = replay.intParam('min_block_len');
+      if (minLen != null) {
+        _minBlockLength.text = minLen.toString();
+      }
+      final int? minSp = replay.intParam('min_species');
+      if (minSp != null) {
+        _minSpecies.text = minSp.toString();
+      }
+      final double? minSc = replay.doubleParam('min_score');
+      if (minSc != null) {
+        _minScore.text = minSc.toString();
+      }
+    });
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {

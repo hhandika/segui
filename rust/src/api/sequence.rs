@@ -27,7 +27,16 @@ use segul_core::helper::types::{DataType, GeneticCodes, InputFmt};
 use segul_core::helper::types::{OutputFmt, PartitionFmt};
 use segul_core::helper::{alphabet, utils};
 use segul_core::parser::{delimited, txt};
+use segul_core::report::paths::to_posix_string;
+use segul_core::report::spec::{
+    canonical, AlignFilterCriterion, AlignFilterParams, DistanceGroupingSpec,
+    PartitionConvertParams, SequenceExtractParams, SequenceRenameParams,
+};
+use segul_core::report::stats::TaskCounts;
+use segul_core::report::{write_task_report, TaskKind};
 use segul_core::stats::distance::DistanceModel;
+
+use crate::api::report::current_report_context;
 
 const INPUT_DIRECTORY: Option<&str> = None;
 
@@ -144,8 +153,11 @@ impl TranslationServices {
         let task = "Sequence Translation";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let translate =
-            SequenceTranslation::new(&input_fmt, &translation_table, &datatype, &output_fmt);
-        translate.translate(&mut input_files, self.reading_frame, &output_path);
+            SequenceTranslation::new(&input_fmt, &translation_table, &datatype, &output_fmt)
+                .with_report_context(current_report_context());
+        translate
+            .translate_with_report(&mut input_files, self.reading_frame, output_path)
+            .expect("Failed writing sequence translation report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -164,8 +176,11 @@ impl TranslationServices {
         let task = "Sequence Translation (auto reading frame)";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let translate =
-            SequenceTranslation::new(&input_fmt, &translation_table, &datatype, &output_fmt);
-        translate.translate_all_autoframe(&input_files, output_path);
+            SequenceTranslation::new(&input_fmt, &translation_table, &datatype, &output_fmt)
+                .with_report_context(current_report_context());
+        translate
+            .translate_all_autoframe_with_report(&input_files, output_path)
+            .expect("Failed writing sequence translation report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -210,8 +225,11 @@ impl SequenceConversionServices {
         let output_fmt = self.match_output_fmt(&self.output_fmt);
         let task = "Sequence Conversion";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let concat = AlignmentConversion::new(&input_fmt, &output_fmt, &datatype, self.sort);
-        concat.convert(&input_files, output_path);
+        let convert = AlignmentConversion::new(&input_fmt, &output_fmt, &datatype, self.sort)
+            .with_report_context(current_report_context());
+        convert
+            .convert_with_report(&input_files, output_path)
+            .expect("Failed writing conversion report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -255,12 +273,10 @@ impl IDExtractionServices {
             &datatype,
             output_path,
             self.prefix.as_deref(),
-        );
-        if self.is_map {
-            id.map_id();
-        } else {
-            id.get_unique();
-        }
+        )
+        .with_report_context(current_report_context());
+        id.run_with_report(self.is_map)
+            .expect("Failed writing sequence ID report");
 
         let duration = time.elapsed();
         utils::print_execution_time(duration);
@@ -299,14 +315,18 @@ impl AlignmentServices {
         let partition_fmt = self.match_partition_fmt(&partition_fmt);
         let task = "Alignment Concatenation";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
+        let prefix_name = output_prefix.file_name().and_then(|s| s.to_str());
         let mut concat = AlignmentConcatenation::new(
             &input_fmt,
             &output_dir,
             &output_fmt,
             &partition_fmt,
             output_prefix,
-        );
-        concat.concat(&mut input_files, &datatype);
+        )
+        .with_report_context(current_report_context());
+        concat
+            .concat_with_report(&mut input_files, &datatype, prefix_name)
+            .expect("Failed writing concatenation report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -318,11 +338,12 @@ impl AlignmentServices {
         let output_path = PathBuf::from(&self.output_dir);
         let input_fmt = self.match_input_fmt(&self.input_fmt);
         let datatype = self.match_datatype(&self.datatype);
-        let mut input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
+        let input_files = self.find_input_input_files(&self.input_files, None, &input_fmt);
         let task = "Alignment Summary";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
-        let mut summary = AlignmentSummary::new(&input_fmt, &output_path, interval, &datatype);
-        let outputs = summary.summarize_all(&mut input_files, Some(output_prefix).as_deref());
+        let mut summary = AlignmentSummary::new(&input_fmt, &output_path, interval, &datatype)
+            .with_report_context(current_report_context());
+        let outputs = summary.summarize_all(&input_files, Some(output_prefix).as_deref());
         let duration = time.elapsed();
         utils::print_execution_time(duration);
         outputs.report.display().to_string()
@@ -338,8 +359,11 @@ impl AlignmentServices {
         let task = "Per Locus Alignment Summary";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         // The interval only applies to the combined summary.
-        let mut summary = AlignmentSummary::new(&input_fmt, &output_path, 5, &datatype);
-        summary.summarize_locus(&input_files, output_prefix.as_deref());
+        let mut summary = AlignmentSummary::new(&input_fmt, &output_path, 5, &datatype)
+            .with_report_context(current_report_context());
+        summary
+            .summarize_locus_with_report(&input_files, output_prefix.as_deref())
+            .expect("Failed writing locus summary report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -389,8 +413,9 @@ impl SplitAlignmentServices {
         AlignSeqLogger::new(None, &input_fmt, &datatype, 1).log(task);
         let input_partition_path = self.generate_input_partition_path();
         let split =
-            AlignmentSplitting::new(input_path, &datatype, &input_fmt, output_path, &output_fmt);
-        split.try_split(
+            AlignmentSplitting::new(input_path, &datatype, &input_fmt, output_path, &output_fmt)
+                .with_report_context(current_report_context());
+        split.try_split_with_report(
             &input_partition_path,
             &partition_fmt,
             &self.prefix,
@@ -467,8 +492,46 @@ impl FilteringServices {
         let task = "Alignment Filtering";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let params = self.match_parameters(&input_files, &input_fmt, &datatype);
+        let criterion = match (&self.params, &params) {
+            (FilteringParams::MinTax(percent), FilteringParameters::MinTax(min_taxa)) => {
+                AlignFilterCriterion::MinTaxPercent {
+                    percent: *percent,
+                    resolved_min_taxa: Some(*min_taxa),
+                }
+            }
+            (_, FilteringParameters::MinLen(min_len)) => {
+                AlignFilterCriterion::MinLen { min_len: *min_len }
+            }
+            (_, FilteringParameters::MaxLen(max_len)) => {
+                AlignFilterCriterion::MaxLen { max_len: *max_len }
+            }
+            (_, FilteringParameters::MinParsInf(min_pars_inf)) => {
+                AlignFilterCriterion::MinParsInf {
+                    min_pars_inf: *min_pars_inf,
+                }
+            }
+            (_, FilteringParameters::MaxParsInf(max_pars_inf)) => {
+                AlignFilterCriterion::MaxParsInf {
+                    max_pars_inf: *max_pars_inf,
+                }
+            }
+            (_, FilteringParameters::MissingData(max_missing)) => {
+                AlignFilterCriterion::MissingData {
+                    max_missing: *max_missing,
+                }
+            }
+            (_, FilteringParameters::PercInf(percent_inf)) => AlignFilterCriterion::PercentInf {
+                percent_inf: *percent_inf,
+                resolved_min_pinf: None,
+            },
+            (_, FilteringParameters::TaxonAll(taxa)) => {
+                AlignFilterCriterion::TaxonAll { taxa: taxa.clone() }
+            }
+            _ => unreachable!("Invalid params"),
+        };
         let mut filter =
-            AlignmentFiltering::new(&input_files, &input_fmt, &datatype, &output_path, &params);
+            AlignmentFiltering::new(&input_files, &input_fmt, &datatype, &output_path, &params)
+                .with_report_context(current_report_context());
 
         if self.is_concat {
             let output_fmt =
@@ -477,10 +540,36 @@ impl FilteringServices {
                 .match_partition_fmt(&self.partition_fmt.as_ref().expect("No partition format"));
 
             let prefix = Path::new(self.prefix.as_ref().expect("No prefix"));
+            let prefix_name = prefix
+                .file_name()
+                .and_then(|s| s.to_str())
+                .map(str::to_string);
+            let report_params = AlignFilterParams {
+                input_format: canonical::input_fmt(&input_fmt).to_string(),
+                datatype: canonical::datatype(&datatype).to_string(),
+                criterion,
+                concat: true,
+                output_format: Some(canonical::output_fmt(&output_fmt).to_string()),
+                partition_format: Some(canonical::partition_fmt(&partition_fmt).to_string()),
+                prefix: prefix_name,
+            };
             filter.set_concat(&output_fmt, &partition_fmt, prefix);
-            filter.filter();
+            filter
+                .filter_with_report(report_params, &[])
+                .expect("Failed writing alignment filter report");
         } else {
-            filter.filter();
+            let report_params = AlignFilterParams {
+                input_format: canonical::input_fmt(&input_fmt).to_string(),
+                datatype: canonical::datatype(&datatype).to_string(),
+                criterion,
+                concat: false,
+                output_format: None,
+                partition_format: None,
+                prefix: None,
+            };
+            filter
+                .filter_with_report(report_params, &[])
+                .expect("Failed writing alignment filter report");
         }
 
         let duration = time.elapsed();
@@ -576,13 +665,41 @@ impl PartitionServices {
         let out_part_fmt = self.match_partition_fmt(&self.output_part_fmt);
 
         log_input_partition(input_dir.as_deref(), self.input_files.len());
-        for input in self.input_files.iter().map(Path::new) {
+        let primary_inputs: Vec<PathBuf> = self.input_files.iter().map(PathBuf::from).collect();
+        let mut outputs: Vec<(&str, PathBuf)> = Vec::with_capacity(primary_inputs.len());
+        for input in &primary_inputs {
             log_input_partition(Some(input), self.input_files.len());
             let file_stem = self.extract_partition_fname(input);
             let output_path = self.create_final_output_path(output, &file_stem);
             let final_path = construct_partition_path(&output_path, &out_part_fmt);
             let converter = PartitionConverter::new(input, &input_fmt, &final_path, &out_part_fmt);
             converter.try_convert(&datatype, self.is_uncheck)?;
+            outputs.push(("partition", final_path));
+        }
+        if !primary_inputs.is_empty() {
+            let report_params = PartitionConvertParams {
+                datatype: canonical::datatype(&datatype).to_string(),
+                input_partition_format: canonical::partition_fmt(&input_fmt).to_string(),
+                output_partition_format: canonical::partition_fmt(&out_part_fmt).to_string(),
+                skip_checking: self.is_uncheck,
+            };
+            let counts = TaskCounts {
+                files_read: primary_inputs.len(),
+                files_written: outputs.len(),
+                items_processed: Some(outputs.len()),
+                items_skipped: None,
+            };
+            write_task_report(
+                &current_report_context(),
+                TaskKind::PartitionConvert,
+                &primary_inputs,
+                Vec::new(),
+                &report_params,
+                output,
+                outputs,
+                Some(&counts),
+                None,
+            )?;
         }
         let duration = time.elapsed();
         utils::print_execution_time(duration);
@@ -645,8 +762,11 @@ impl SequenceRemoval {
             output_path,
             &output_fmt,
             &remove_opts,
-        );
-        remove_handle.remove(&input_files);
+        )
+        .with_report_context(current_report_context());
+        remove_handle
+            .remove_with_report(&input_files)
+            .expect("Failed writing sequence removal report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -720,9 +840,60 @@ impl SequenceRenaming {
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let params = self.match_params();
+        let (mode, from, to, all_matches, auxiliary) = match &self.params {
+            SequenceRenamingParams::RenameId(path) => (
+                String::from("replace_id"),
+                None,
+                None,
+                false,
+                vec![(String::from("rename_map"), PathBuf::from(path))],
+            ),
+            SequenceRenamingParams::RemoveStr(s) => (
+                String::from("remove_str"),
+                Some(s.clone()),
+                None,
+                false,
+                Vec::new(),
+            ),
+            SequenceRenamingParams::RemoveRegex(re, all) => (
+                String::from("remove_regex"),
+                Some(re.clone()),
+                None,
+                *all,
+                Vec::new(),
+            ),
+            SequenceRenamingParams::ReplaceStr(f, t) => (
+                String::from("replace_str"),
+                Some(f.clone()),
+                Some(t.clone()),
+                false,
+                Vec::new(),
+            ),
+            SequenceRenamingParams::ReplaceRegex(f, t, all) => (
+                String::from("replace_regex"),
+                Some(f.clone()),
+                Some(t.clone()),
+                *all,
+                Vec::new(),
+            ),
+            SequenceRenamingParams::None => (String::from("none"), None, None, false, Vec::new()),
+        };
+        let report_params = SequenceRenameParams {
+            input_format: canonical::input_fmt(&input_fmt).to_string(),
+            datatype: canonical::datatype(&datatype).to_string(),
+            output_format: canonical::output_fmt(&output_fmt).to_string(),
+            dry_run: false,
+            mode,
+            from,
+            to,
+            all_matches,
+        };
         let rename_handle =
-            rename::SequenceRenaming::new(&input_fmt, &datatype, output_path, &output_fmt, &params);
-        rename_handle.rename(&input_files);
+            rename::SequenceRenaming::new(&input_fmt, &datatype, output_path, &output_fmt, &params)
+                .with_report_context(current_report_context());
+        rename_handle
+            .rename_with_report(&input_files, report_params, &auxiliary)
+            .expect("Failed writing sequence renaming report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -806,14 +977,40 @@ impl SequenceExtraction {
 
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         let params = self.match_params();
+        let (mode, ids, regex, auxiliary) = match (&self.params, &params) {
+            (SequenceExtractionParams::Regex(re), _) => {
+                (String::from("regex"), None, Some(re.clone()), Vec::new())
+            }
+            (SequenceExtractionParams::File(file), SeqExtractionParameters::Id(list)) => (
+                String::from("id"),
+                Some(list.clone()),
+                None,
+                vec![(String::from("ids"), PathBuf::from(file))],
+            ),
+            (SequenceExtractionParams::Id(list), _) => {
+                (String::from("id"), Some(list.clone()), None, Vec::new())
+            }
+            _ => (String::from("none"), None, None, Vec::new()),
+        };
+        let report_params = SequenceExtractParams {
+            input_format: canonical::input_fmt(&input_fmt).to_string(),
+            datatype: canonical::datatype(&datatype).to_string(),
+            output_format: canonical::output_fmt(&output_fmt).to_string(),
+            mode,
+            ids,
+            regex,
+        };
         let extract_handle = extract::SequenceExtraction::new(
             &input_fmt,
             &datatype,
             &params,
             output_path,
             &output_fmt,
-        );
-        extract_handle.extract(&input_files);
+        )
+        .with_report_context(current_report_context());
+        extract_handle
+            .extract_with_report(&input_files, report_params, &auxiliary)
+            .expect("Failed writing sequence extraction report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -909,12 +1106,48 @@ impl AlignmentDistanceServices {
         let grouping = self
             .match_grouping(&input_files, &input_fmt, &datatype)
             .unwrap_or_else(|e| panic!("{:#}", e));
+        let (requested_spec, resolved_spec) = match &self.grouping {
+            DistanceGroupingParams::Delimiter { delimiter, fields } => {
+                let spec = DistanceGroupingSpec::Delimiter {
+                    delimiter: delimiter.clone(),
+                    fields: *fields,
+                };
+                (Some(spec.clone()), Some(spec))
+            }
+            DistanceGroupingParams::Regex(pattern) => {
+                let spec = DistanceGroupingSpec::Regex {
+                    pattern: pattern.clone(),
+                };
+                (Some(spec.clone()), Some(spec))
+            }
+            DistanceGroupingParams::MapFile(path) => {
+                let spec = DistanceGroupingSpec::MapFile {
+                    path: to_posix_string(Path::new(path)),
+                };
+                (Some(spec.clone()), Some(spec))
+            }
+            DistanceGroupingParams::Auto => {
+                let ids = self.find_ids(&input_files, &input_fmt, &datatype);
+                let resolved =
+                    SampleGrouping::detect(&ids).map(|s| DistanceGroupingSpec::Delimiter {
+                        delimiter: s.delimiter.to_string(),
+                        fields: s.fields,
+                    });
+                (Some(DistanceGroupingSpec::Auto), resolved)
+            }
+            DistanceGroupingParams::None => (None, None),
+        };
         if diagonal.is_some_and(|d| d.requires_grouping()) && grouping.is_none() {
             panic!("The mean and max diagonals require grouping.");
         }
         let mut handle = AlignmentDistance::new(&input_fmt, &datatype, &model, output_path)
             .with_triangle(triangle)
-            .with_long_format(self.long_format);
+            .with_long_format(self.long_format)
+            .with_report_context(current_report_context())
+            .with_grouping_specs(requested_spec, resolved_spec);
+        if let DistanceGroupingParams::MapFile(path) = &self.grouping {
+            handle = handle.with_group_map_path(PathBuf::from(path));
+        }
         if let Some(diagonal) = diagonal {
             handle = handle.with_diagonal(diagonal);
         }
@@ -1098,8 +1331,10 @@ impl AlignmentTrimmingServices {
             output_path,
             &output_fmt,
             &params,
-        );
-        trim.trim();
+        )
+        .with_report_context(current_report_context());
+        trim.trim_with_report()
+            .expect("Failed writing alignment trimming report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -1157,8 +1392,11 @@ impl UnalignmentServices {
             &datatype,
             output_path,
             &output_fmt,
-        );
-        unalign.unalign();
+        )
+        .with_report_context(current_report_context());
+        unalign
+            .unalign_with_report()
+            .expect("Failed writing unalignment report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -1216,8 +1454,10 @@ impl SequenceAdditionServices {
             output_path,
             &output_fmt,
             self.is_added_only,
-        );
-        add.add(&dest_files, &dest_fmt);
+        )
+        .with_report_context(current_report_context());
+        add.add_with_report(&dest_files, &dest_fmt, false, false)
+            .expect("Failed writing sequence addition report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -1243,8 +1483,10 @@ impl SequenceAdditionServices {
             output_path,
             &output_fmt,
             self.is_added_only,
-        );
-        add.add_single(&dest_file, include_filename);
+        )
+        .with_report_context(current_report_context());
+        add.add_with_report(&[dest_file], &input_fmt, true, include_filename)
+            .expect("Failed writing sequence addition report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -1302,8 +1544,11 @@ impl SequenceFilteringServices {
             output_path,
             &output_fmt,
             &params,
-        );
-        filter.filter();
+        )
+        .with_report_context(current_report_context());
+        filter
+            .filter_with_report()
+            .expect("Failed writing sequence filtering report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -1360,7 +1605,9 @@ impl SequenceTransposeServices {
         let task = "Sequence Transposition";
         AlignSeqLogger::new(None, &input_fmt, &datatype, input_files.len()).log(task);
         SequenceTranspose::new(&input_fmt, &datatype, output_path, &output_fmt)
-            .transpose(&input_files);
+            .with_report_context(current_report_context())
+            .transpose_with_report(&input_files)
+            .expect("Failed writing sequence transposition report");
         let duration = time.elapsed();
         utils::print_execution_time(duration);
     }
@@ -1547,8 +1794,9 @@ mod test {
         services.output_fmt = String::from("fasta");
         services.params = TrimmingParams::MissingData(0.2);
         services.trim();
-        // Two trimmed alignments and a trimming summary.
-        assert_eq!(count_files(&output), 3);
+        // Two trimmed alignments, a trimming summary, and report.json.
+        assert_eq!(count_files(&output), 4);
+        assert!(output.join("report.json").is_file());
         clean(&output);
     }
 
@@ -1562,8 +1810,12 @@ mod test {
         services.output_dir = output.to_string_lossy().into_owned();
         services.output_fmt = String::from("fasta");
         services.unalign();
-        let files = walk(&output);
+        let files: Vec<PathBuf> = walk(&output)
+            .into_iter()
+            .filter(|f| f.extension().and_then(|e| e.to_str()) == Some("fas"))
+            .collect();
         assert_eq!(files.len(), 2);
+        assert!(output.join("report.json").is_file());
         let content: String = files
             .iter()
             .map(|file| fs::read_to_string(file).expect("Failed reading output"))
@@ -1595,13 +1847,15 @@ mod test {
         services.params = SequenceFilteringParams::MaxGap(0.2);
         services.filter_sequence();
         let content: String = walk(&output)
-            .iter()
+            .into_iter()
+            .filter(|f| f.extension().and_then(|e| e.to_str()) == Some("fas"))
             .map(|file| fs::read_to_string(file).expect("Failed reading output"))
             .collect();
         // sample_c and sample_d have more than 20% gaps.
         assert!(content.contains("sample_a"));
         assert!(!content.contains("sample_c"));
         assert!(!content.contains("sample_d"));
+        assert!(output.join("report.json").is_file());
         clean(&output);
     }
 
@@ -1615,8 +1869,9 @@ mod test {
         services.output_dir = output.to_string_lossy().into_owned();
         services.output_fmt = String::from("fasta");
         services.transpose();
-        // One file per sample: sample_a, sample_b, sample_c, and sample_d.
-        assert_eq!(count_files(&output), 4);
+        // One file per sample (sample_a..sample_d) plus report.json.
+        assert_eq!(count_files(&output), 5);
+        assert!(output.join("report.json").is_file());
         clean(&output);
     }
 
@@ -1634,8 +1889,12 @@ mod test {
         services.output_fmt = String::from("fasta");
         services.is_added_only = true;
         services.add_sequence();
-        let files = walk(&output);
+        let files: Vec<PathBuf> = walk(&output)
+            .into_iter()
+            .filter(|f| f.extension().and_then(|e| e.to_str()) == Some("fas"))
+            .collect();
         assert_eq!(files.len(), 1);
+        assert!(output.join("report.json").is_file());
         let content = fs::read_to_string(&files[0]).expect("Failed reading output");
         assert!(content.contains("sample_x"));
         assert!(content.contains("sample_a"));
@@ -1652,10 +1911,14 @@ mod test {
         services.output_dir = output.to_string_lossy().into_owned();
         services.params = FilteringParams::MaxAlnLen(12);
         services.filter();
-        let files = walk(&output);
+        let files: Vec<PathBuf> = walk(&output)
+            .into_iter()
+            .filter(|f| f.extension().and_then(|e| e.to_str()) == Some("fas"))
+            .collect();
         // Only gene_2 (12 bp) is at most 12 bp long.
         assert_eq!(files.len(), 1);
         assert!(files[0].to_string_lossy().contains("gene_2"));
+        assert!(output.join("report.json").is_file());
         clean(&output);
     }
 }

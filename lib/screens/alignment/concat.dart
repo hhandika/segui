@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
@@ -44,6 +45,16 @@ class ConcatPageState extends ConsumerState<ConcatPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyPendingReplay();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _ctr.dispose();
     super.dispose();
@@ -52,6 +63,11 @@ class ConcatPageState extends ConsumerState<ConcatPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen<PendingReplay?>(pendingReplayProvider, (_, next) {
+      if (next != null && next.taskKind == 'align.concat') {
+        _applyPendingReplay();
+      }
+    });
     return ToolFormLayout(
       form: [
         const CardTitle(step: 1, title: 'Input'),
@@ -183,6 +199,34 @@ class ConcatPageState extends ConsumerState<ConcatPage>
         RunParameter('Partition format', _partitionFormatController),
         RunParameter('Codon model partition', isCodon ? 'Yes' : 'No'),
       ];
+
+  void _applyPendingReplay() {
+    final PendingReplay? replay =
+        ref.read(pendingReplayProvider.notifier).consumeFor('align.concat');
+    if (replay == null) {
+      return;
+    }
+    setState(() {
+      replay.applyIoDefaults(_ctr, outputFormats: outputFormat);
+      final String? rawOut = replay.stringParam('output_format');
+      if (rawOut != null) {
+        isInterleave = rawOut.toLowerCase().endsWith('-int');
+      }
+      final String? rawPart = replay.stringParam('partition_format');
+      if (rawPart != null) {
+        final bool codon = rawPart.toLowerCase().endsWith('-codon');
+        final String basePart =
+            codon ? rawPart.substring(0, rawPart.length - 6) : rawPart;
+        for (final option in partitionFormat) {
+          if (option.toLowerCase() == basePart.toLowerCase()) {
+            _partitionFormatController = option;
+            break;
+          }
+        }
+        isCodon = codon;
+      }
+    });
+  }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {

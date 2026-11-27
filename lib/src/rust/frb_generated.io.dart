@@ -17,6 +17,7 @@ import 'api/file_sort.dart';
 import 'api/maf.dart';
 import 'api/progress.dart';
 import 'api/reads.dart';
+import 'api/report.dart';
 import 'api/sequence.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -485,6 +486,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<PaletteOption> dco_decode_list_palette_option(dynamic raw);
 
   @protected
+  List<ParentReportDto> dco_decode_list_parent_report_dto(dynamic raw);
+
+  @protected
   Float64List dco_decode_list_prim_f_64_strict(dynamic raw);
 
   @protected
@@ -522,6 +526,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
+
+  @protected
+  List<ReportAuxFileDto> dco_decode_list_report_aux_file_dto(dynamic raw);
+
+  @protected
+  List<ReportFileDto> dco_decode_list_report_file_dto(dynamic raw);
+
+  @protected
+  List<ReportOutputFileDto> dco_decode_list_report_output_file_dto(dynamic raw);
+
+  @protected
+  List<VerifyFileDto> dco_decode_list_verify_file_dto(dynamic raw);
 
   @protected
   MafConversionServices dco_decode_maf_conversion_services(dynamic raw);
@@ -582,6 +598,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   PaletteOption dco_decode_palette_option(dynamic raw);
 
   @protected
+  ParentReportDto dco_decode_parent_report_dto(dynamic raw);
+
+  @protected
   PartitionServices dco_decode_partition_services(dynamic raw);
 
   @protected
@@ -639,7 +658,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (String, String) dco_decode_record_string_string(dynamic raw);
 
   @protected
+  ReplaySpecDto dco_decode_replay_spec_dto(dynamic raw);
+
+  @protected
+  ReportAuxFileDto dco_decode_report_aux_file_dto(dynamic raw);
+
+  @protected
+  ReportFileDto dco_decode_report_file_dto(dynamic raw);
+
+  @protected
+  ReportOutputFileDto dco_decode_report_output_file_dto(dynamic raw);
+
+  @protected
   ResidueColors dco_decode_residue_colors(dynamic raw);
+
+  @protected
+  RunReportServices dco_decode_run_report_services(dynamic raw);
+
+  @protected
+  RunReportSummary dco_decode_run_report_summary(dynamic raw);
 
   @protected
   SequenceAdditionServices dco_decode_sequence_addition_services(dynamic raw);
@@ -707,6 +744,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
+
+  @protected
+  VerifyFileDto dco_decode_verify_file_dto(dynamic raw);
+
+  @protected
+  VerifyReportDto dco_decode_verify_report_dto(dynamic raw);
 
   @protected
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
@@ -1220,6 +1263,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<ParentReportDto> sse_decode_list_parent_report_dto(
+      SseDeserializer deserializer);
+
+  @protected
   Float64List sse_decode_list_prim_f_64_strict(SseDeserializer deserializer);
 
   @protected
@@ -1261,6 +1308,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<(String, String)> sse_decode_list_record_string_string(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ReportAuxFileDto> sse_decode_list_report_aux_file_dto(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ReportFileDto> sse_decode_list_report_file_dto(
+      SseDeserializer deserializer);
+
+  @protected
+  List<ReportOutputFileDto> sse_decode_list_report_output_file_dto(
+      SseDeserializer deserializer);
+
+  @protected
+  List<VerifyFileDto> sse_decode_list_verify_file_dto(
       SseDeserializer deserializer);
 
   @protected
@@ -1325,6 +1388,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   PaletteOption sse_decode_palette_option(SseDeserializer deserializer);
+
+  @protected
+  ParentReportDto sse_decode_parent_report_dto(SseDeserializer deserializer);
 
   @protected
   PartitionServices sse_decode_partition_services(SseDeserializer deserializer);
@@ -1392,7 +1458,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  ReplaySpecDto sse_decode_replay_spec_dto(SseDeserializer deserializer);
+
+  @protected
+  ReportAuxFileDto sse_decode_report_aux_file_dto(SseDeserializer deserializer);
+
+  @protected
+  ReportFileDto sse_decode_report_file_dto(SseDeserializer deserializer);
+
+  @protected
+  ReportOutputFileDto sse_decode_report_output_file_dto(
+      SseDeserializer deserializer);
+
+  @protected
   ResidueColors sse_decode_residue_colors(SseDeserializer deserializer);
+
+  @protected
+  RunReportServices sse_decode_run_report_services(
+      SseDeserializer deserializer);
+
+  @protected
+  RunReportSummary sse_decode_run_report_summary(SseDeserializer deserializer);
 
   @protected
   SequenceAdditionServices sse_decode_sequence_addition_services(
@@ -1470,6 +1556,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
+
+  @protected
+  VerifyFileDto sse_decode_verify_file_dto(SseDeserializer deserializer);
+
+  @protected
+  VerifyReportDto sse_decode_verify_report_dto(SseDeserializer deserializer);
 
   @protected
   void sse_encode_AnyhowException(
@@ -1999,6 +2091,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<PaletteOption> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_parent_report_dto(
+      List<ParentReportDto> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_f_64_strict(
       Float64List self, SseSerializer serializer);
 
@@ -2045,6 +2141,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_record_string_string(
       List<(String, String)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_report_aux_file_dto(
+      List<ReportAuxFileDto> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_report_file_dto(
+      List<ReportFileDto> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_report_output_file_dto(
+      List<ReportOutputFileDto> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_verify_file_dto(
+      List<VerifyFileDto> self, SseSerializer serializer);
 
   @protected
   void sse_encode_maf_conversion_services(
@@ -2109,6 +2221,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_palette_option(PaletteOption self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_parent_report_dto(
+      ParentReportDto self, SseSerializer serializer);
 
   @protected
   void sse_encode_partition_services(
@@ -2185,7 +2301,29 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (String, String) self, SseSerializer serializer);
 
   @protected
+  void sse_encode_replay_spec_dto(ReplaySpecDto self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_report_aux_file_dto(
+      ReportAuxFileDto self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_report_file_dto(ReportFileDto self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_report_output_file_dto(
+      ReportOutputFileDto self, SseSerializer serializer);
+
+  @protected
   void sse_encode_residue_colors(ResidueColors self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_run_report_services(
+      RunReportServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_run_report_summary(
+      RunReportSummary self, SseSerializer serializer);
 
   @protected
   void sse_encode_sequence_addition_services(
@@ -2267,6 +2405,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_verify_file_dto(VerifyFileDto self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_verify_report_dto(
+      VerifyReportDto self, SseSerializer serializer);
 }
 
 // Section: wire_class

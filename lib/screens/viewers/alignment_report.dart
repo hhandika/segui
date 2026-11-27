@@ -11,6 +11,7 @@ import 'package:segui/screens/shared/pages.dart';
 import 'package:segui/screens/viewers/alignment_report/items.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
 import 'package:segui/screens/viewers/report/layout.dart';
+import 'package:segui/screens/viewers/run_report.dart';
 import 'package:segui/services/providers/alignment_report.dart';
 import 'package:segui/services/viewers/alignment_report.dart';
 import 'package:segui/src/rust/api/alignment_report.dart';
@@ -36,7 +37,10 @@ class AlignmentReportView extends StatelessWidget {
       appBar: AppBar(
         title: Text(p.basename(file.path)),
         backgroundColor: getSEGULBackgroundColor(context),
-        actions: [InfoButton(file: file)],
+        actions: [
+          RunReportActionButton(file: file),
+          InfoButton(file: file),
+        ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: SafeArea(child: AlignmentReportBody(path: file.path)),

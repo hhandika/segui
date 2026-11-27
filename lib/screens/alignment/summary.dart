@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/io/file.dart';
 import 'package:segui/services/io/input.dart';
@@ -45,6 +46,16 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyPendingReplay();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _ctr.dispose();
     super.dispose();
@@ -53,6 +64,11 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen<PendingReplay?>(pendingReplayProvider, (_, next) {
+      if (next != null && next.taskKind == 'align.summary') {
+        _applyPendingReplay();
+      }
+    });
     return ToolFormLayout(
       form: [
         const CardTitle(step: 1, title: 'Input'),
@@ -156,6 +172,25 @@ class AlignmentSummaryPageState extends ConsumerState<AlignmentSummaryPage>
         ),
         if (!_isPerLocus) RunParameter('Summary interval', _interval ?? '5'),
       ];
+
+  void _applyPendingReplay() {
+    final PendingReplay? replay =
+        ref.read(pendingReplayProvider.notifier).consumeFor('align.summary');
+    if (replay == null) {
+      return;
+    }
+    setState(() {
+      replay.applyIoDefaults(_ctr);
+      final int? intervalVal = replay.intParam('interval');
+      if (intervalVal != null && summaryInt.contains(intervalVal.toString())) {
+        _interval = intervalVal.toString();
+      }
+      final bool? perLocus = replay.boolParam('per_locus');
+      if (perLocus != null) {
+        _isPerLocus = perLocus;
+      }
+    });
+  }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {

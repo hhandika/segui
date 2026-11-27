@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/screens/home/home.dart';
 import 'package:segui/screens/shared/motion.dart';
@@ -19,6 +20,15 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final logDir = await getSeguiDirectory();
   await RustLib.init();
+  String appVersion = '';
+  try {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    appVersion = info.version;
+  } catch (_) {}
+  final ChecksumModeSetting savedChecksumMode = ChecksumModeSetting.fromWire(
+    prefs.getString(ChecksumModeSettingNotifier.prefsKey),
+  );
+  await syncReportConfig(savedChecksumMode, appVersion: appVersion);
   try {
     await initLogger(logDir: logDir.path);
   } catch (e) {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/forms.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
@@ -89,6 +90,16 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyPendingReplay();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _ctr.dispose();
     _valueController.dispose();
@@ -99,6 +110,11 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen<PendingReplay?>(pendingReplayProvider, (_, next) {
+      if (next != null && next.taskKind == 'align.filter') {
+        _applyPendingReplay();
+      }
+    });
     return ToolFormLayout(
       form: [
         const CardTitle(step: 1, title: 'Input'),
@@ -260,6 +276,55 @@ class AlignmentFilteringPageState extends ConsumerState<AlignmentFilteringPage>
           RunParameter('Partition format', _outputPartitionFmtController ?? ''),
         ],
       ];
+
+  void _applyPendingReplay() {
+    final PendingReplay? replay =
+        ref.read(pendingReplayProvider.notifier).consumeFor('align.filter');
+    if (replay == null) {
+      return;
+    }
+    setState(() {
+      replay.applyIoDefaults(_ctr, outputFormats: outputFormat);
+      final bool? concatVal = replay.boolParam('concat');
+      if (concatVal != null) {
+        _isConcatenated = concatVal;
+      }
+      final String? prefixVal = replay.stringParam('prefix');
+      if (prefixVal != null) {
+        _prefixController.text = prefixVal;
+      }
+      final String? matchedPart =
+          replay.matchOption('partition_format', partitionFormat);
+      if (matchedPart != null) {
+        _outputPartitionFmtController = matchedPart;
+      }
+      final Object? rawCriterion = replay.parameters['criterion'];
+      if (rawCriterion is Map) {
+        if (rawCriterion['MinTaxPercent'] case final Map m) {
+          _filteringOptionsController = FilteringOptions.minimalTaxa;
+          _valueController.text = '${m['percent'] ?? ''}';
+        } else if (rawCriterion['MinLen'] case final Map m) {
+          _filteringOptionsController = FilteringOptions.minimalLength;
+          _valueController.text = '${m['min_len'] ?? ''}';
+        } else if (rawCriterion['MaxLen'] case final Map m) {
+          _filteringOptionsController = FilteringOptions.maximalLength;
+          _valueController.text = '${m['max_len'] ?? ''}';
+        } else if (rawCriterion['MinParsInf'] case final Map m) {
+          _filteringOptionsController = FilteringOptions.parsimonyInf;
+          _valueController.text = '${m['min_pars_inf'] ?? ''}';
+        } else if (rawCriterion['MaxParsInf'] case final Map m) {
+          _filteringOptionsController = FilteringOptions.maximalParsimonyInf;
+          _valueController.text = '${m['max_pars_inf'] ?? ''}';
+        } else if (rawCriterion['PercentInf'] case final Map m) {
+          _filteringOptionsController = FilteringOptions.percentParsimonyInf;
+          _valueController.text = '${m['percent_inf'] ?? ''}';
+        } else if (rawCriterion['MissingData'] case final Map m) {
+          _filteringOptionsController = FilteringOptions.missingData;
+          _valueController.text = '${m['max_missing'] ?? ''}';
+        }
+      }
+    });
+  }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {
     if (runningPlatform == PlatformType.isMobile) {

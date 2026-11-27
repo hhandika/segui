@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -45,6 +46,16 @@ class MafSummaryPageState extends ConsumerState<MafSummaryPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyPendingReplay();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _ctr.dispose();
     _refSpecies.dispose();
@@ -55,6 +66,11 @@ class MafSummaryPageState extends ConsumerState<MafSummaryPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen<PendingReplay?>(pendingReplayProvider, (_, next) {
+      if (next != null && next.taskKind == 'maf.summary') {
+        _applyPendingReplay();
+      }
+    });
     return ToolFormLayout(
       form: [
         const CardTitle(step: 1, title: 'Input'),
@@ -145,6 +161,26 @@ class MafSummaryPageState extends ConsumerState<MafSummaryPage>
   bool _isValid(List<SegulInputFile> value) {
     final hasMaf = value.any((e) => e.type == SegulType.multipleAlignment);
     return _ctr.isValid && hasMaf;
+  }
+
+  void _applyPendingReplay() {
+    final PendingReplay? replay =
+        ref.read(pendingReplayProvider.notifier).consumeFor('maf.summary');
+    if (replay == null) {
+      return;
+    }
+    setState(() {
+      replay.applyIoDefaults(_ctr);
+      final String? refSp = replay.stringParam('ref_species') ??
+          replay.stringParam('resolved_ref_species');
+      if (refSp != null) {
+        _refSpecies.text = refSp;
+      }
+      final Object? speciesList = replay.parameters['species'];
+      if (speciesList is List && speciesList.isNotEmpty) {
+        _species.text = speciesList.join(', ');
+      }
+    });
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {

@@ -6,6 +6,7 @@ import 'package:segui/screens/viewers/alignment_report.dart';
 import 'package:segui/screens/viewers/contig_report.dart';
 import 'package:segui/screens/viewers/distance_report.dart';
 import 'package:segui/screens/viewers/read_report.dart';
+import 'package:segui/screens/viewers/run_report.dart';
 import 'package:segui/screens/viewers/tabulated.dart';
 import 'package:segui/screens/viewers/text.dart';
 import 'package:segui/screens/viewers/unknown.dart';
@@ -47,6 +48,8 @@ class FileView extends StatelessWidget {
         return DistanceReportView(file: file);
       case FileContentKind.contigReport:
         return ContigReportView(file: file);
+      case FileContentKind.runReport:
+        return RunReportView(file: file);
       case FileContentKind.other:
         return UnknownFileView(file: file);
     }

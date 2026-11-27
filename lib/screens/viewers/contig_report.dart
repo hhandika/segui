@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/shared/pages.dart';
+import 'package:segui/screens/viewers/run_report.dart';
 import 'package:segui/screens/viewers/alignment_report.dart';
 import 'package:segui/screens/viewers/alignment_report/items.dart';
 import 'package:segui/screens/viewers/read_report/charts.dart';
@@ -37,10 +38,13 @@ class ContigReportView extends StatelessWidget {
       appBar: AppBar(
         title: Text(p.basename(file.path)),
         backgroundColor: getSEGULBackgroundColor(context),
-        actions: [InfoButton(file: file)],
+        actions: [
+          RunReportActionButton(file: file),
+          InfoButton(file: file),
+        ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
-      body: ContigReportBody(path: file.path),
+      body: SafeArea(child: ContigReportBody(path: file.path)),
     );
   }
 }

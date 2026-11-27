@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/colors.dart';
 import 'package:segui/services/viewers/alignment.dart';
+import 'package:segui/src/rust/api/report.dart';
 import 'package:segui/styles/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -133,6 +134,64 @@ class NcbiApiKeySetting extends Notifier<String> {
   }
 
   Future<void> clear() => set('');
+}
+
+/// SHA-256 checksum mode recorded inside `report.json` manifests.
+enum ChecksumModeSetting {
+  none('none', 'None', 'Fastest; skip SHA-256 digests'),
+  outputs('outputs', 'Outputs', 'Hash generated output files'),
+  inputs('inputs', 'Inputs', 'Hash input files only'),
+  all('all', 'All', 'Hash both inputs and outputs');
+
+  const ChecksumModeSetting(this.wireValue, this.label, this.description);
+
+  final String wireValue;
+  final String label;
+  final String description;
+
+  static ChecksumModeSetting fromWire(String? value) {
+    return ChecksumModeSetting.values.firstWhere(
+      (mode) => mode.wireValue == value || mode.name == value,
+      orElse: () => ChecksumModeSetting.none,
+    );
+  }
+}
+
+/// Sync the active checksum mode and optional SEGUI app version to Rust.
+Future<void> syncReportConfig(
+  ChecksumModeSetting mode, {
+  String appVersion = '',
+}) async {
+  try {
+    await setReportConfig(
+      checksumMode: mode.wireValue,
+      appVersion: appVersion,
+    );
+  } catch (_) {
+    // Allow unit and widget tests without a loaded native Rust library.
+  }
+}
+
+final checksumModeProvider =
+    NotifierProvider<ChecksumModeSettingNotifier, ChecksumModeSetting>(
+  ChecksumModeSettingNotifier.new,
+);
+
+/// Controls SHA-256 checksum calculation for run reports.
+class ChecksumModeSettingNotifier extends Notifier<ChecksumModeSetting> {
+  static const String prefsKey = 'reportChecksumMode';
+
+  @override
+  ChecksumModeSetting build() {
+    final String? saved = ref.watch(settingProvider).getString(prefsKey);
+    return ChecksumModeSetting.fromWire(saved);
+  }
+
+  Future<void> setMode(ChecksumModeSetting mode) async {
+    state = mode;
+    await ref.read(settingProvider).setString(prefsKey, mode.wireValue);
+    await syncReportConfig(mode);
+  }
 }
 
 /// Parallel connection mode for GenBank and ENA downloads.

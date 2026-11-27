@@ -8,6 +8,7 @@ use segul_core::helper::types::OutputFmt;
 use segul_core::helper::utils;
 
 use crate::api::progress::RunMonitor;
+use crate::api::report::current_report_context;
 
 pub struct MafConversionServices {
     pub input_files: Vec<String>,
@@ -78,11 +79,14 @@ impl MafConversionServices {
             .with_strand_aware(self.strand_aware)
             .with_ref_species(self.ref_species.clone())
             .with_filter(filter)
-            .with_progress(monitor);
+            .with_progress(monitor)
+            .with_report_context(current_report_context());
+        let mut aux: Vec<(String, PathBuf)> = Vec::new();
         if let Some(bed) = &self.bed_file {
             converter = converter.with_bed(Path::new(bed));
+            aux.push((String::from("bed"), PathBuf::from(bed)));
         }
-        converter.convert()?;
+        converter.convert_with_report(&aux)?;
         utils::print_execution_time(time.elapsed());
         Ok(())
     }
@@ -136,7 +140,8 @@ impl MafSummaryServices {
         .with_ref_species(self.ref_species.clone())
         .with_species(species_list(&self.species))
         .with_progress(monitor)
-        .summarize()?;
+        .with_report_context(current_report_context())
+        .try_summarize_with_report()?;
         utils::print_execution_time(time.elapsed());
         Ok(())
     }
@@ -193,7 +198,8 @@ mod test {
     fn test_convert_maf_without_bed() {
         let output = output_dir("maf-blocks");
         services(&output).convert(&RunMonitor::new()).unwrap();
-        assert_eq!(file_names(&output).len(), 3);
+        assert_eq!(file_names(&output).len(), 4);
+        assert!(output.join("report.json").is_file());
         fs::remove_dir_all(&output).unwrap();
     }
 
@@ -211,7 +217,8 @@ mod test {
                 "gapIns-chr7-27578848-27578852.fas",
                 "locA-chr7-27578828-27578866.fas",
                 "locMerge-chr7-27699739-27707234.fas",
-                "maf_convert.csv"
+                "maf_convert.csv",
+                "report.json"
             ]
         );
         fs::remove_dir_all(&output).unwrap();
@@ -225,7 +232,7 @@ mod test {
         let bed = fixtures().join("simple.bed");
         services.bed_file = Some(bed.to_string_lossy().into_owned());
         services.convert(&RunMonitor::new()).unwrap();
-        assert_eq!(file_names(&output), ["maf_convert.csv"]);
+        assert_eq!(file_names(&output), ["maf_convert.csv", "report.json"]);
         fs::remove_dir_all(&output).unwrap();
     }
 

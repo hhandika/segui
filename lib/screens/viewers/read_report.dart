@@ -16,6 +16,7 @@ import 'package:segui/screens/viewers/read_report/spread.dart';
 import 'package:segui/screens/viewers/read_report/summary.dart';
 import 'package:segui/screens/viewers/report/layout.dart';
 import 'package:segui/screens/viewers/report/paged_table.dart';
+import 'package:segui/screens/viewers/run_report.dart';
 import 'package:segui/services/providers/read_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
 import 'package:segui/src/rust/api/reads.dart';
@@ -40,7 +41,10 @@ class ReadReportView extends StatelessWidget {
       appBar: AppBar(
         title: Text(p.basename(file.path)),
         backgroundColor: getSEGULBackgroundColor(context),
-        actions: [InfoButton(file: file)],
+        actions: [
+          RunReportActionButton(file: file),
+          InfoButton(file: file),
+        ],
       ),
       backgroundColor: getSEGULBackgroundColor(context),
       body: SafeArea(child: ReadReportBody(path: file.path)),

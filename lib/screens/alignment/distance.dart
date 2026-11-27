@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/services/controllers.dart';
 import 'package:segui/screens/shared/forms.dart';
@@ -55,6 +56,16 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _applyPendingReplay();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _ctr.dispose();
     _groupDelimiter.dispose();
@@ -66,6 +77,11 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen<PendingReplay?>(pendingReplayProvider, (_, next) {
+      if (next != null && next.taskKind == 'align.distance') {
+        _applyPendingReplay();
+      }
+    });
     return ToolFormLayout(
       form: [
         const CardTitle(step: 1, title: 'Input'),
@@ -361,6 +377,55 @@ class AlignmentDistancePageState extends ConsumerState<AlignmentDistancePage>
 
   bool _isValid(List<SegulInputFile> value) {
     return _ctr.isValid && _groupingParams.isValid(value);
+  }
+
+  void _applyPendingReplay() {
+    final PendingReplay? replay =
+        ref.read(pendingReplayProvider.notifier).consumeFor('align.distance');
+    if (replay == null) {
+      return;
+    }
+    setState(() {
+      replay.applyIoDefaults(_ctr);
+      final String? model = replay.stringParam('model')?.toLowerCase();
+      if (model != null && distanceModels.containsKey(model)) {
+        _model = model;
+      }
+      final String? triangle = replay.stringParam('triangle')?.toLowerCase();
+      if (triangle != null && distanceMatrixTriangles.containsKey(triangle)) {
+        _triangle = triangle;
+      }
+      final bool? longFmt = replay.boolParam('long_format');
+      if (longFmt != null) {
+        _isLongFormat = longFmt;
+      }
+      final Object? rawGroup = replay.parameters['grouping'] ??
+          replay.parameters['resolved_grouping'];
+      if (rawGroup is Map) {
+        final String? method = rawGroup['method']?.toString();
+        if (method == 'delimiter') {
+          _grouping = 'delimiter';
+          _groupDelimiter.text = '${rawGroup['delimiter'] ?? ''}';
+          _groupFields.text = '${rawGroup['fields'] ?? ''}';
+        } else if (method == 'regex') {
+          _grouping = 'regex';
+          _groupPattern.text = '${rawGroup['pattern'] ?? ''}';
+        } else if (method == 'map_file') {
+          _grouping = 'file';
+        } else if (method == 'auto') {
+          _grouping = 'auto';
+        }
+      } else {
+        _grouping = 'none';
+      }
+      final Map<String, String> allowedDiagonals =
+          _isGrouped ? distanceGroupMatrixDiagonals : distanceMatrixDiagonals;
+      final String? diagonal = replay.stringParam('diagonal')?.toLowerCase();
+      if (diagonal != null && allowedDiagonals.containsKey(diagonal)) {
+        _diagonal = diagonal;
+        _isDiagonalChosen = true;
+      }
+    });
   }
 
   Future<void> _execute(List<SegulInputFile> inputFiles) async {

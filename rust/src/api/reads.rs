@@ -13,6 +13,7 @@ use segul_core::stats::fastq::report::{
 use segul_core::stats::fastq::DEFAULT_DUP_SKETCH_SIZE;
 
 use crate::api::progress::RunMonitor;
+use crate::api::report::current_report_context;
 
 pub struct RawReadServices {
     pub files: Vec<String>,
@@ -71,6 +72,7 @@ impl RawReadServices {
         .with_dup_sketch_size(dup_sketch_size.map_or(DEFAULT_DUP_SKETCH_SIZE, |size| size as usize))
         .with_qc_profile(qc_profile)
         .with_progress(monitor)
+        .with_report_context(current_report_context())
         .try_summarize()?;
         let duration = time.elapsed();
         utils::print_execution_time(duration);
@@ -679,12 +681,10 @@ impl From<&SampleReadReport> for ReadPositionData {
 impl From<&SampleReadReport> for ReadRelativePositionData {
     fn from(report: &SampleReadReport) -> Self {
         let rel = &report.relative_positions;
-        let column = |f: &dyn Fn(&RelativePositionSummary) -> f64| {
-            rel.iter().map(f).collect::<Vec<f64>>()
-        };
-        let total = |p: &RelativePositionSummary| {
-            p.a_count + p.c_count + p.g_count + p.t_count + p.n_count
-        };
+        let column =
+            |f: &dyn Fn(&RelativePositionSummary) -> f64| rel.iter().map(f).collect::<Vec<f64>>();
+        let total =
+            |p: &RelativePositionSummary| p.a_count + p.c_count + p.g_count + p.t_count + p.n_count;
         let share = |count: u64, total: u64| {
             if total == 0 {
                 0.0

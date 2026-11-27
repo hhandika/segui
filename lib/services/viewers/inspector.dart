@@ -11,6 +11,7 @@ import 'package:segui/services/viewers/contig_report.dart';
 import 'package:segui/services/viewers/csv.dart';
 import 'package:segui/services/viewers/distance_report.dart';
 import 'package:segui/services/viewers/read_report.dart';
+import 'package:segui/services/viewers/run_report.dart';
 
 /// Bytes read from the start of a NEXUS file to tell its blocks apart.
 const int _nexusHeaderBytes = 16 * 1024;
@@ -34,6 +35,7 @@ enum FileContentKind {
   alignmentReport('Alignment report'),
   distanceReport('Distance report'),
   contigReport('Contig report'),
+  runReport('Run report'),
   text('Text'),
   other('Other');
 
@@ -100,6 +102,18 @@ Future<FileContentKind> contentKindOf(File file) async {
   }
   if (isContigReport(file)) {
     return FileContentKind.contigReport;
+  }
+  final RunReportHeader? v2 = readRunReportHeader(file);
+  if (v2 != null) {
+    return switch (v2.summaryKind) {
+      RunReportSummaryKind.alignSummary => FileContentKind.alignmentReport,
+      RunReportSummaryKind.alignDistance => FileContentKind.distanceReport,
+      RunReportSummaryKind.contigSummary => FileContentKind.contigReport,
+      RunReportSummaryKind.readSummary => v2.hasStatistics
+          ? FileContentKind.readReport
+          : FileContentKind.runReport,
+      RunReportSummaryKind.other => FileContentKind.runReport,
+    };
   }
   if (plainTextExtensions.contains(ext)) {
     if (p.basenameWithoutExtension(file.path).endsWith('_partition')) {
@@ -302,17 +316,17 @@ class FileInspector {
           ),
         ];
       case FileContentKind.readReport:
-        final Object? report = jsonDecode(await file.readAsString());
-        final List<dynamic> samples = report is Map<String, dynamic>
-            ? report['samples'] as List<dynamic>? ?? const []
-            : const [];
+        final Map<String, dynamic>? report =
+            await readReportStatisticsOrLegacy(file);
+        final List<dynamic> samples =
+            report?['samples'] as List<dynamic>? ?? const [];
         return [
           InspectionDetail('Samples', _countFormat.format(samples.length)),
         ];
       case FileContentKind.alignmentReport:
-        final Object? report = jsonDecode(await file.readAsString());
-        final Object? summary =
-            report is Map<String, dynamic> ? report['summary'] : null;
+        final Map<String, dynamic>? report =
+            await readReportStatisticsOrLegacy(file);
+        final Object? summary = report?['summary'];
         return [
           if (summary is Map<String, dynamic>) ...[
             InspectionDetail(
@@ -326,9 +340,9 @@ class FileInspector {
           ],
         ];
       case FileContentKind.distanceReport:
-        final Object? report = jsonDecode(await file.readAsString());
-        final Object? summary =
-            report is Map<String, dynamic> ? report['summary'] : null;
+        final Map<String, dynamic>? report =
+            await readReportStatisticsOrLegacy(file);
+        final Object? summary = report?['summary'];
         return [
           if (summary is Map<String, dynamic>) ...[
             InspectionDetail(
@@ -342,9 +356,9 @@ class FileInspector {
           ],
         ];
       case FileContentKind.contigReport:
-        final Object? report = jsonDecode(await file.readAsString());
-        final Object? summary =
-            report is Map<String, dynamic> ? report['summary'] : null;
+        final Map<String, dynamic>? report =
+            await readReportStatisticsOrLegacy(file);
+        final Object? summary = report?['summary'];
         return [
           if (summary is Map<String, dynamic>) ...[
             InspectionDetail(
@@ -355,6 +369,21 @@ class FileInspector {
               'Contigs',
               _countFormat.format(summary['contigs'] as num? ?? 0),
             ),
+          ],
+        ];
+      case FileContentKind.runReport:
+        final RunReportHeader? header = readRunReportHeader(file);
+        return [
+          if (header != null) ...[
+            InspectionDetail('Task', header.kind),
+            InspectionDetail(
+              'Frontend',
+              '${header.frontendName} ${header.frontendVersion}'.trim(),
+            ),
+            InspectionDetail('Inputs', _countFormat.format(header.inputCount)),
+            InspectionDetail(
+                'Outputs', _countFormat.format(header.outputCount)),
+            InspectionDetail('Checksums', header.checksumMode),
           ],
         ];
       case FileContentKind.text:

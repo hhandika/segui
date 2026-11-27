@@ -9,8 +9,12 @@ import 'package:segui/screens/shared/io/summary_view.dart';
 import 'package:segui/screens/shared/tool_layout.dart';
 import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/screens/viewers/report/sheet_controls.dart';
+import 'package:segui/screens/viewers/run_report.dart';
 import 'package:segui/services/providers/io.dart';
+import 'package:segui/services/providers/replay.dart';
+import 'package:segui/services/viewers/run_report.dart';
 import 'package:segui/services/workbench.dart';
+import 'package:segui/src/rust/api/report.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
 
@@ -228,6 +232,11 @@ class RunReportCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final bool isRunReport = isRunReportFile(report);
+    final bool hasProviderScope =
+        context.findAncestorWidgetOfExactType<UncontrolledProviderScope>() !=
+                null ||
+            context.findAncestorWidgetOfExactType<ProviderScope>() != null;
     return WorkbenchCard(
       isHighlighted: true,
       child: Column(
@@ -241,7 +250,9 @@ class RunReportCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Interactive charts of the run',
+                      isRunReport
+                          ? 'Run report and verification'
+                          : 'Interactive charts of the run',
                       style: textTheme.bodyMedium,
                     ),
                     Text(
@@ -263,9 +274,116 @@ class RunReportCard extends StatelessWidget {
               ),
             ],
           ),
+          if (isRunReport && !hasProviderScope) ...[
+            const SizedBox(height: SeguiSpacing.sm),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => RunReportView(file: report),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.verified_outlined),
+                label: const Text('Provenance & verify'),
+              ),
+            ),
+          ] else if (hasProviderScope)
+            _WorkbenchRunReportActions(
+              report: report,
+              isRunReport: isRunReport,
+            ),
         ],
       ),
     );
+  }
+}
+
+class _WorkbenchRunReportActions extends ConsumerWidget {
+  const _WorkbenchRunReportActions({
+    required this.report,
+    required this.isRunReport,
+  });
+
+  final File report;
+  final bool isRunReport;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<File> history = ref.watch(workbenchRunHistoryProvider);
+    if (!isRunReport && history.length < 2) {
+      return const SizedBox.shrink();
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: SeguiSpacing.sm),
+      child: Wrap(
+        spacing: SeguiSpacing.sm,
+        runSpacing: SeguiSpacing.xs,
+        children: [
+          if (isRunReport)
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => RunReportView(file: report),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.verified_outlined),
+              label: const Text('Provenance & verify'),
+            ),
+          if (history.length >= 2)
+            TextButton.icon(
+              onPressed: () => _exportSessionWorkflow(context, history),
+              icon: const Icon(Icons.account_tree_outlined),
+              label: const Text('Export workflow'),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _exportSessionWorkflow(
+    BuildContext context,
+    List<File> history,
+  ) async {
+    try {
+      final Directory tempDir =
+          await Directory.systemTemp.createTemp('segui-wf-');
+      try {
+        final String tempOut = p.join(tempDir.path, 'segul-workflow.json');
+        await RunReportServices.exportWorkflowFromReports(
+          reportPaths: [for (final item in history) item.path],
+          outputPath: tempOut,
+        );
+        final String jsonText = await File(tempOut).readAsString();
+        final String? saved = await saveGeneratedTextFile(
+          suggestedName: 'segul-workflow.json',
+          contents: jsonText,
+          extensions: const <String>['json'],
+          label: 'SEGUL workflow JSON',
+        );
+        if (!context.mounted || saved == null) {
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Saved ${p.basename(saved)}')),
+        );
+      } finally {
+        await tempDir.delete(recursive: true);
+      }
+    } catch (e) {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Workflow export failed: $e')),
+      );
+    }
   }
 }
 
