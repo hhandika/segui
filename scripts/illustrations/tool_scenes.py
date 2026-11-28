@@ -1,8 +1,10 @@
 """Generate the gull scenes drawn along the bottom of each SEGUI tool page.
 
-Every scene shares the field sketch of the home illustration and shows the
-SEGUL gull with a prop for its tool: stacking blocks to concatenate, a funnel
-to filter, scissors to trim, and so on. Colors are the placeholder keys that
+Every scene shares the field sketch of the home illustration. The left
+ornament marks the tool group (a DNA vine for genomics, a stone wall for
+alignments, bunting for sequences, a tree for trees), and the SEGUL gull stands
+by a prop for its tool: stacking blocks to concatenate, a funnel to filter,
+scissors to trim, and so on. Colors are the placeholder keys that
 `HomeIllustrationColors` swaps for theme colors.
 
 Run from the repository root:
@@ -15,6 +17,7 @@ Writes `assets/images/tools/<tool>.svg`, named after `HomeTool.scene` in
 """
 
 import math
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -45,8 +48,10 @@ SCALE = 1.4
 
 def main() -> None:
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    for name, (pose, prop) in SCENES.items():
-        svg = scene(pose, prop())
+    for name, (group, pose, prop) in SCENES.items():
+        drawn = prop()
+        check_prop_box(name, drawn)
+        svg = scene(group, pose, drawn)
         (OUTPUT / f"{name}.svg").write_text(svg, encoding="utf-8")
     gull_svg = (
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="30 28 60 46">'
@@ -58,30 +63,117 @@ def main() -> None:
     print(f"Wrote {len(SCENES)} scenes to {OUTPUT.relative_to(ROOT)}")
 
 
-def scene(pose: str, prop: str) -> str:
+def scene(group: str, pose: str, prop: str) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}">'
         f'<g fill="none" stroke="{LINE}" stroke-width="3" '
         'stroke-linecap="round" stroke-linejoin="round">'
-        f"{field()}{prop}{gull(pose)}</g></svg>\n"
+        f"{field()}{GROUP_ORNAMENTS[group]()}{prop}{gull(pose)}</g></svg>\n"
     )
 
 
 def field() -> str:
-    """Rolling ground, a horizon, grass, a small tree, and a cloud."""
+    """Rolling ground, a horizon, grass, and a cloud."""
     return (
         '<path d="M0,140 C150,126 260,132 400,136 C560,140 640,124 800,130 '
         'C960,136 1060,126 1200,132"/>'
         '<path d="M0,156 H1200"/>'
         '<path d="M300,152 l6,-4 M320,148 l6,-4 M340,152 l6,-4 '
         'M620,150 l6,-4 M640,146 l6,-4" stroke-width="2.5"/>'
+        f'<path d="M420,40 H460 C465,40 466,32 460,31 C459,24 448,22 445,29 '
+        f'C442,24 432,26 432,33 C426,33 420,36 420,40 Z" fill="{FILL}" stroke-width="2.5"/>'
+    )
+
+
+# Group ornaments stand on the left of the field, around x = 150, and rise
+# about as high as the tree (y = 66).
+OX = 150
+OGROUND = 138
+
+
+def small_tree() -> str:
+    """Trees: a tree with square branches, like a cladogram, and yellow tips."""
+    return (
         '<path d="M150,138 V110 M150,110 H128 V92 M150,110 H174 V86 '
         'M128,92 H118 V80 M128,92 H138 V76 M174,86 H164 V72 M174,86 H186 V74"/>'
         f'<g fill="{ACCENT}" stroke-width="2.5"><circle cx="118" cy="76" r="5"/>'
         '<circle cx="138" cy="72" r="5"/><circle cx="164" cy="68" r="5"/>'
         '<circle cx="186" cy="70" r="5"/></g>'
-        f'<path d="M420,40 H460 C465,40 466,32 460,31 C459,24 448,22 445,29 '
-        f'C442,24 432,26 432,33 C426,33 420,36 420,40 Z" fill="{FILL}" stroke-width="2.5"/>'
+    )
+
+
+def dna_vine() -> str:
+    """Genomics: a DNA helix growing out of the ground like a vine."""
+    return (
+        helix(OX, OGROUND, h=72, radius=16, pitch=72)
+        + f'<path d="M{OX - 14},{OGROUND} C{OX - 24},{OGROUND - 4} {OX - 30},{OGROUND - 12} '
+        f'{OX - 28},{OGROUND - 18} C{OX - 20},{OGROUND - 16} {OX - 14},{OGROUND - 8} '
+        f'{OX - 12},{OGROUND - 2}" fill="{ACCENT}" stroke-width="2.5"/>'
+        f'<path d="M{OX + 12},{OGROUND - 2} C{OX + 18},{OGROUND - 10} {OX + 26},{OGROUND - 14} '
+        f'{OX + 32},{OGROUND - 12} C{OX + 30},{OGROUND - 4} {OX + 22},{OGROUND} '
+        f'{OX + 14},{OGROUND}" fill="{FILL}" stroke-width="2.5"/>'
+    )
+
+
+def stone_wall() -> str:
+    """Alignments: a dry-stone wall, rows of stones like an alignment matrix."""
+    width = 84
+    left = OX - width // 2
+    h = 12
+    # Each row: stone widths, with 0 for a gap. Rows are offset like bricks.
+    layout = [
+        [16, 22, 18, 28],
+        [24, 18, 0, 26],
+        [14, 26, 20, 24],
+        [22, 0, 24, 22],
+        [18, 24, 26, 16],
+    ]
+    accents = {(0, 1), (1, 3), (2, 0), (2, 2), (3, 2), (4, 1)}
+    stones = ""
+    for r, row in enumerate(layout):
+        y = OGROUND - (r + 1) * h
+        x = left
+        for c, w in enumerate(row):
+            if w:
+                fill = ACCENT if (r, c) in accents else FILL
+                stones += (
+                    f'<rect x="{x}" y="{y}" width="{w - 2}" height="{h - 2}" rx="3" '
+                    f'fill="{fill}" stroke-width="2.5"/>'
+                )
+            else:
+                w = 18
+            x += w
+    return stones
+
+
+def bunting() -> str:
+    """Sequences: a line of flags between two posts, one flag per sample."""
+    x1, x2 = OX - 42, OX + 42
+    top = OGROUND - 64
+    sag = 18
+    flags = ""
+    count = 5
+    for i in range(count):
+        t = (i + 0.5) / count
+        tn = t + 0.5 / count * 0.9
+        t0 = t - 0.5 / count * 0.9
+
+        def point(u):
+            # Quadratic curve from (x1, top) through control (OX, top + 2 * sag).
+            x = (1 - u) ** 2 * x1 + 2 * (1 - u) * u * OX + u ** 2 * x2
+            y = (1 - u) ** 2 * top + 2 * (1 - u) * u * (top + 2 * sag) + u ** 2 * top
+            return x, y
+
+        a, b, m = point(t0), point(tn), point(t)
+        fill = ACCENT if i % 2 == 0 else FILL
+        flags += (
+            f'<path d="M{a[0]:.1f},{a[1]:.1f} L{b[0]:.1f},{b[1]:.1f} '
+            f'L{m[0]:.1f},{m[1] + 18:.1f} Z" fill="{fill}" stroke-width="2.5"/>'
+        )
+    return (
+        f'<path d="M{x1},{OGROUND} V{top - 6} M{x2},{OGROUND} V{top - 6}"/>'
+        f'<path d="M{x1},{top} Q{OX},{top + 2 * sag} {x2},{top}" stroke-width="2"/>'
+        f"{flags}"
     )
 
 
@@ -121,8 +213,10 @@ def gull_figure(pose: str) -> str:
     )
 
 
-# Props sit to the right of the gull, on the ground at GROUND.
+# Props sit to the right of the gull, on the ground at GROUND, inside one box
+# so every tool's prop reads at the same size.
 PX = 1000
+PROP_BOX = (PX - 14, GROUND - 62, PX + 96, GROUND + 6)
 
 
 def block(x, y, w=26, h=14, fill=FILL):
@@ -144,8 +238,6 @@ def sheet(x, y, w=34, h=42, lines=True):
 
 
 def arrow(x1, y1, x2, y2):
-    import math
-
     angle = math.atan2(y2 - y1, x2 - x1)
     left = (x2 - 8 * math.cos(angle - 0.5), y2 - 8 * math.sin(angle - 0.5))
     right = (x2 - 8 * math.cos(angle + 0.5), y2 - 8 * math.sin(angle + 0.5))
@@ -155,10 +247,16 @@ def arrow(x1, y1, x2, y2):
     )
 
 
-def rows(x, y, lengths, gap=10):
+def rows(x, y, lengths, gap=10, width=2.5):
     return "".join(
-        f'<path d="M{x},{y + i * gap} H{x + n}" stroke-width="2.5"/>' for i, n in enumerate(lengths)
+        f'<path d="M{x},{y + i * gap} H{x + n}" stroke-width="{width}"/>'
+        for i, n in enumerate(lengths)
     )
+
+
+def card(x, y, w, h):
+    """A plain backing card so thin rows stand out from the grass."""
+    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="4" fill="{FILL}" stroke-width="2.5"/>'
 
 
 def bars(x, heights, width=10, gap=6, fill=ACCENT):
@@ -210,11 +308,11 @@ def funnel(x, y, w=44):
 
 def filter_alignments():
     return (
-        block(PX - 4, GROUND - 74, w=18, fill=ACCENT)
-        + block(PX + 22, GROUND - 78, w=18)
-        + block(PX + 46, GROUND - 74, w=18, fill=ACCENT)
-        + funnel(PX, GROUND - 52, w=62)
-        + f'<circle cx="{PX + 31}" cy="{GROUND - 4}" r="3" fill="{ACCENT}"/>'
+        block(PX + 2, GROUND - 60, w=16, h=10, fill=ACCENT)
+        + block(PX + 23, GROUND - 60, w=16, h=10)
+        + block(PX + 44, GROUND - 60, w=16, h=10, fill=ACCENT)
+        + funnel(PX, GROUND - 46, w=62)
+        + f'<circle cx="{PX + 31}" cy="{GROUND}" r="3" fill="{ACCENT}"/>'
     )
 
 
@@ -247,7 +345,11 @@ def magnifier(x, y, r=13):
 
 
 def summary():
-    return rows(PX - 4, GROUND - 44, [64, 44, 56, 30]) + magnifier(PX + 50, GROUND - 26)
+    return (
+        card(PX - 12, GROUND - 54, 76, 54)
+        + rows(PX - 2, GROUND - 42, [56, 38, 48, 26], width=3)
+        + magnifier(PX + 58, GROUND - 22)
+    )
 
 
 def trim():
@@ -284,7 +386,9 @@ def read_summary():
 
 
 def contig_summary():
-    return rows(PX - 4, GROUND - 40, [80, 62, 46, 28, 14], gap=9)
+    return card(PX - 12, GROUND - 56, 100, 56) + rows(
+        PX - 2, GROUND - 46, [80, 62, 46, 28, 14], gap=9, width=3
+    )
 
 
 def maf_blocks(x, y):
@@ -307,10 +411,10 @@ def maf_summary():
 
 
 def add():
-    return sheet(PX, GROUND - 44, w=40, h=44) + (
-        f'<circle cx="{PX + 58}" cy="{GROUND - 54}" r="11" fill="{ACCENT}"/>'
-        f'<path d="M{PX + 58},{GROUND - 60} V{GROUND - 48} M{PX + 52},{GROUND - 54} '
-        f'H{PX + 64}" stroke-width="2.5"/>'
+    return sheet(PX + 4, GROUND - 44, w=40, h=44) + (
+        f'<circle cx="{PX + 46}" cy="{GROUND - 44}" r="11" fill="{ACCENT}"/>'
+        f'<path d="M{PX + 46},{GROUND - 50} V{GROUND - 38} M{PX + 40},{GROUND - 44} '
+        f'H{PX + 52}" stroke-width="2.5"/>'
     )
 
 
@@ -335,12 +439,18 @@ def extract_id():
 
 
 def sequence_filter():
-    return rows(PX - 6, GROUND - 46, [30, 30, 30], gap=10) + funnel(PX + 32, GROUND - 52, w=40)
+    return (
+        card(PX - 12, GROUND - 52, 44, 40)
+        + rows(PX - 4, GROUND - 42, [28, 28, 28], gap=10, width=3)
+        + funnel(PX + 40, GROUND - 46, w=44)
+    )
 
 
 def remove():
-    return rows(PX - 6, GROUND - 44, [70, 40, 70], gap=14) + (
-        f'<path d="M{PX + 46},{GROUND - 36} l14,14 M{PX + 60},{GROUND - 36} l-14,14" '
+    return (
+        card(PX - 12, GROUND - 52, 90, 52)
+        + rows(PX - 2, GROUND - 40, [70, 30, 70], gap=14, width=3)
+        + f'<path d="M{PX + 42},{GROUND - 33} l12,12 M{PX + 54},{GROUND - 33} l-12,12" '
         'stroke-width="3"/>'
     )
 
@@ -402,10 +512,16 @@ def helix(x, base, h=60, radius=12, pitch=60, offset=135):
 
 
 def translate():
+    # Three nucleotides make a codon, which becomes one amino acid.
+    codon = "".join(
+        block(PX - 10 + i * 13, GROUND - 40, w=12, h=16, fill=ACCENT if i == 1 else FILL)
+        for i in range(3)
+    )
     return (
-        helix(PX + 4, GROUND - 2)
-        + arrow(PX + 24, GROUND - 32, PX + 42, GROUND - 32)
-        + beads(PX + 52, GROUND - 32, 3, step=13)
+        codon
+        + f'<path d="M{PX - 10},{GROUND - 18} H{PX + 28}" stroke-width="2"/>'
+        + arrow(PX + 36, GROUND - 32, PX + 52, GROUND - 32)
+        + beads(PX + 62, GROUND - 32, 3, step=13)
     )
 
 
@@ -438,32 +554,85 @@ def tree_convert():
     )
 
 
-# Tool key: (gull pose, prop). Keys match `lib/services/tool_scenes.dart`.
+# Tool key: (group, gull pose, prop). Keys match `HomeTool.scene` in
+# `lib/services/home_features.dart`.
 SCENES = {
-    "read_summary": ("stand", read_summary),
-    "contig_summary": ("post", contig_summary),
-    "maf_conversion": ("fly", maf_convert),
-    "maf_summary": ("stand", maf_summary),
-    "concatenation": ("stand", concatenate),
-    "conversion": ("post", convert),
-    "distance": ("stand", distance),
-    "filter": ("fly", filter_alignments),
-    "partition": ("post", partition),
-    "split": ("stand", split),
-    "summary": ("post", summary),
-    "trimming": ("stand", trim),
-    "unalignment": ("fly", unalign),
-    "addition": ("fly", add),
-    "extraction": ("stand", extract),
-    "id_extraction": ("post", extract_id),
-    "sequence_filtering": ("stand", sequence_filter),
-    "removal": ("post", remove),
-    "renaming": ("stand", rename),
-    "translation": ("post", translate),
-    "transposition": ("stand", transpose),
-    "tree_conversion": ("post", tree_convert),
+    "read_summary": ("genomics", "stand", read_summary),
+    "contig_summary": ("genomics", "post", contig_summary),
+    "maf_conversion": ("genomics", "fly", maf_convert),
+    "maf_summary": ("genomics", "stand", maf_summary),
+    "concatenation": ("alignment", "stand", concatenate),
+    "conversion": ("alignment", "post", convert),
+    "distance": ("alignment", "stand", distance),
+    "filter": ("alignment", "fly", filter_alignments),
+    "partition": ("alignment", "post", partition),
+    "split": ("alignment", "stand", split),
+    "summary": ("alignment", "post", summary),
+    "trimming": ("alignment", "stand", trim),
+    "unalignment": ("alignment", "fly", unalign),
+    "addition": ("sequence", "fly", add),
+    "extraction": ("sequence", "stand", extract),
+    "id_extraction": ("sequence", "post", extract_id),
+    "sequence_filtering": ("sequence", "stand", sequence_filter),
+    "removal": ("sequence", "post", remove),
+    "renaming": ("sequence", "stand", rename),
+    "translation": ("sequence", "post", translate),
+    "transposition": ("sequence", "stand", transpose),
+    "tree_conversion": ("tree", "post", tree_convert),
 }
 
+GROUP_ORNAMENTS = {
+    "genomics": dna_vine,
+    "alignment": stone_wall,
+    "sequence": bunting,
+    "tree": small_tree,
+}
+
+
+def prop_points(svg: str):
+    """Yield the (x, y) points a prop draws, enough to check its bounds."""
+    for match in re.finditer(r"<(rect|circle|path)([^>]*)/>", svg):
+        kind, attrs = match.groups()
+        values = dict(re.findall(r'([\w-]+)="([^"]*)"', attrs))
+        if kind == "rect":
+            x, y = float(values["x"]), float(values["y"])
+            yield x, y
+            yield x + float(values["width"]), y + float(values["height"])
+        elif kind == "circle":
+            cx, cy, r = (float(values[k]) for k in ("cx", "cy", "r"))
+            yield cx - r, cy - r
+            yield cx + r, cy + r
+        else:
+            x = y = 0.0
+            for command, args in re.findall(r"([MLHVCQZmlhvcqz])([^MLHVCQZmlhvcqz]*)", values["d"]):
+                nums = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", args)]
+                if command in "HhVv":
+                    for n in nums:
+                        if command == "H":
+                            x = n
+                        elif command == "h":
+                            x += n
+                        elif command == "V":
+                            y = n
+                        else:
+                            y += n
+                        yield x, y
+                    continue
+                for i in range(0, len(nums) - 1, 2):
+                    if command.isupper():
+                        x, y = nums[i], nums[i + 1]
+                    else:
+                        x, y = x + nums[i], y + nums[i + 1]
+                    yield x, y
+
+
+def check_prop_box(name: str, prop: str) -> None:
+    """Warn when a prop draws outside `PROP_BOX`."""
+    left, top, right, bottom = PROP_BOX
+    for x, y in prop_points(prop):
+        if not (left <= x <= right and top <= y <= bottom):
+            print(f"warning: {name} prop reaches ({x:.0f}, {y:.0f}) outside {PROP_BOX}")
+            return
 
 if __name__ == "__main__":
     main()
