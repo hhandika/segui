@@ -21,8 +21,8 @@ class SharedOperationPage extends StatelessWidget {
     required this.child,
   });
 
-  /// Selected [GenomicOperationType], [AlignmentOperationType], or
-  /// [SequenceOperationType].
+  /// Selected [GenomicOperationType], [AlignmentOperationType],
+  /// [SequenceOperationType], or [TreeOperationType].
   final Enum operation;
   final Widget child;
 

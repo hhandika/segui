@@ -178,6 +178,8 @@ HomeTool? toolForTaskKind(String taskKind) {
       return translationTool;
     case 'sequence.transpose':
       return transpositionTool;
+    case 'tree.convert':
+      return treeConversionTool;
     default:
       return null;
   }
@@ -194,6 +196,8 @@ XTypeGroup _primaryTypeGroupFor(String taskKind) {
       return mafTypeGroup;
     case 'partition.convert':
       return partitionTypeGroup;
+    case 'tree.convert':
+      return treeTypeGroup;
     default:
       return sequenceTypeGroup;
   }

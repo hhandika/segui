@@ -1,0 +1,44 @@
+---
+title: Tree Conversion
+sidebar:
+  order: 17
+  badge:
+    text: Beta
+    variant: caution
+---
+
+{% screenshots
+   large="gui/tree-convert-large.webp"
+   largeAlt="SEGUI Convert tree formats page on a desktop with the tool form and file panel"
+   small="gui/tree-convert-small.webp"
+   smallAlt="SEGUI Convert tree formats page on a phone with the tool form" %}
+{% pin id="A" label="Trees tab" large=[3.3, 43.1] small=[90, 92.8] /%}
+{% pin id="B" label="Tool picker" large=[18, 23.8] small=[68.1, 12.3] /%}
+{% pin id="C" label="Input files" large=[50.8, 33.9] small=[50, 28.6] /%}
+{% pin id="D" label="Run button" large=[65.1, 94.8] small=[80, 84.5] /%}
+{% pin id="E" label="File panel" large=[86, 12] small=[93.1, 12.3] /%}
+{% /screenshots %}
+
+Convert phylogenetic trees between Newick, extended Newick, NEXUS, PhyloXML, and NeXML.
+
+## Steps
+
+1. Select `Trees` in the navigation rail {% ref id="A" /%}. On phones, open `More`, then select `Trees`.
+2. Open `Convert tree formats` from the tool picker {% ref id="B" /%}: the tool list on wide windows, or the tool name at the top of the page on phones.
+3. Add the tree files {% ref id="C" /%} with `Browse files`, `Browse folder`, or `Open archive`. SEGUI searches a folder and its subfolders for tree files, plain or gzipped. See [file input](/docs/gui-usage/intro/#file-input) for mobile options.
+4. Select the input format. `Auto` detects the format of each file.
+5. Select `Browse` under `Select output directory` to choose the output folder. On phones and tablets, enter a `Directory name` instead; SEGUI saves it in the app's own folder.
+6. Select the output format and options. See [Output options](#output-options).
+7. Select the run button {% ref id="D" /%}, labeled `Convert`, to start the task.
+
+## Output options
+
+| Option               | Description                                                       |
+| -------------------- | ----------------------------------------------------------------- |
+| Strip annotations    | Drop bracket annotations and comments, such as BEAST metadata      |
+| Skip TRANSLATE block | Write NEXUS trees with taxon names instead of numbers              |
+| Compress with gzip   | Write gzipped output files                                         |
+
+Output files keep the input name with the extension of the output format: `.nwk`, `.enwk`, `.nex`, `.phyloxml`, or `.nexml`. For example, `species.nwk` converted to NEXUS becomes `species.nex`. The app also writes a `report.json` that records the run.
+
+See the [CLI guide](/docs/cli-usage/tree-convert/) for examples of each format.

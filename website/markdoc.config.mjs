@@ -186,6 +186,10 @@ export default defineMarkdocConfig({
       render: component("./src/components/features/MafSummary.astro"),
       selfClosing: true,
     },
+    treeconversion: {
+      render: component("./src/components/features/TreeConversion.astro"),
+      selfClosing: true,
+    },
     partitionconversion: {
       render: component("./src/components/features/PartitionConversion.astro"),
       selfClosing: true,

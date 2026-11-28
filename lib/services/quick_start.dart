@@ -21,7 +21,7 @@ const List<QuickStartStep> quickStartSteps = [
   QuickStartStep(
     title: 'Pick a tool',
     description: 'Choose a tool on the home screen, or from Genomics, '
-        'Alignments, or Sequences in the navigation.',
+        'Alignments, Sequences, or Trees in the navigation.',
     icon: Icons.apps,
   ),
   QuickStartStep(

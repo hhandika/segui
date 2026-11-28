@@ -111,6 +111,7 @@ void main() {
       SupportedTask.partitionConversion: null,
       SupportedTask.genomicMafConversion: null,
       SupportedTask.genomicMafSummary: null,
+      SupportedTask.treeConversion: null,
     };
 
     XTypeGroup mainGroup(SupportedTask task) => switch (task) {
@@ -120,6 +121,7 @@ void main() {
           SupportedTask.genomicMafSummary =>
             mafTypeGroup,
           SupportedTask.partitionConversion => partitionTypeGroup,
+          SupportedTask.treeConversion => treeTypeGroup,
           _ => sequenceTypeGroup,
         };
 

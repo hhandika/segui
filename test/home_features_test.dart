@@ -35,6 +35,7 @@ void main() {
       ...GenomicOperationType.values,
       ...AlignmentOperationType.values,
       ...SequenceOperationType.values,
+      ...TreeOperationType.values,
     });
     expect(operations.length, homeTools.length);
   });

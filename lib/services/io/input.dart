@@ -24,6 +24,7 @@ enum SegulType {
   multipleAlignment,
   bed,
   sampleGroup,
+  phylogeneticTree,
 }
 
 class SegulInputFile {
@@ -70,6 +71,8 @@ SegulType matchTypeByXTypeGroup(XTypeGroup xTypeGroup) {
       return SegulType.bed;
     case sampleGroupTypeGroup:
       return SegulType.sampleGroup;
+    case treeTypeGroup:
+      return SegulType.phylogeneticTree;
     default:
       return SegulType.standardSequence;
   }

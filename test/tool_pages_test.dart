@@ -6,6 +6,7 @@ import 'package:segui/screens/genomics/entry_page.dart';
 import 'package:segui/screens/sequence/entry_page.dart';
 import 'package:segui/screens/shared/buttons.dart';
 import 'package:segui/screens/shared/illustrations.dart';
+import 'package:segui/screens/tree/entry_page.dart';
 import 'package:segui/services/home_features.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/styles/themes.dart';
@@ -27,6 +28,8 @@ void main() {
         return const AlignmentPage();
       case ToolCategory.sequence:
         return const SequencePage();
+      case ToolCategory.tree:
+        return const TreePage();
     }
   }
 

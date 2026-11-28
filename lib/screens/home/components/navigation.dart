@@ -42,7 +42,16 @@ const List<NavigationTarget> navigationTargets = [
     icon: Icon(SeguiIcons.sequencesOutlined),
     selectedIcon: Icon(SeguiIcons.sequencesFilled),
   ),
+  NavigationTarget(
+    label: 'Trees',
+    icon: Icon(SeguiIcons.treesOutlined),
+    selectedIcon: Icon(SeguiIcons.treesFilled),
+  ),
 ];
+
+/// Bottom bar targets on phones. Trees opens from More.
+final List<NavigationTarget> compactNavigationTargets =
+    navigationTargets.sublist(0, treeTab);
 
 const List<NavigationDrawerDestination> navigationDrawerTargets = [
   NavigationDrawerDestination(
@@ -64,6 +73,11 @@ const List<NavigationDrawerDestination> navigationDrawerTargets = [
     label: NavigationDrawerLabel('Sequences'),
     icon: Icon(SeguiIcons.sequencesOutlined),
     selectedIcon: Icon(SeguiIcons.sequencesFilled),
+  ),
+  NavigationDrawerDestination(
+    label: NavigationDrawerLabel('Trees'),
+    icon: Icon(SeguiIcons.treesOutlined),
+    selectedIcon: Icon(SeguiIcons.treesFilled),
   ),
 ];
 
@@ -140,7 +154,7 @@ class CompactScreenNavBar extends ConsumerWidget {
       indicatorColor: getIndicatorColor(context),
       elevation: SeguiElevation.medium,
       destinations: [
-        ...navigationTargets.map((e) => NavigationDestination(
+        ...compactNavigationTargets.map((e) => NavigationDestination(
               icon: e.icon,
               selectedIcon: e.selectedIcon,
               label: e.label,
@@ -150,13 +164,19 @@ class CompactScreenNavBar extends ConsumerWidget {
           label: 'More',
         ),
       ],
-      selectedIndex: ref.watch(tabSelectionProvider),
+      // Trees opens from More, so More stays selected on its page.
+      selectedIndex: compactBarIndex(ref.watch(tabSelectionProvider)),
       onDestinationSelected: (value) {
-        ref.read(tabSelectionProvider.notifier).setTab(value);
+        ref
+            .read(tabSelectionProvider.notifier)
+            .setTab(value < treeTab ? value : moreTab);
       },
     );
   }
 }
+
+/// Bottom bar index for [tab]. Tabs after the bar's tool tabs select More.
+int compactBarIndex(int tab) => tab < treeTab ? tab : treeTab;
 
 /// Drawer entry that opens the viewer.
 class ViewerMenuTile extends StatelessWidget {

@@ -18,3 +18,4 @@ pub mod progress;
 pub mod reads;
 pub mod report;
 pub mod sequence;
+pub mod tree;

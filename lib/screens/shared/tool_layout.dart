@@ -70,7 +70,7 @@ class ToolListPanel extends StatelessWidget {
     return SidePanel(
       width: toolListWidth,
       title: category.label,
-      subtitle: '${tools.length} tools',
+      subtitle: tools.length == 1 ? '1 tool' : '${tools.length} tools',
       children: [
         for (final tool in tools)
           ToolListTile(tool: tool, isSelected: tool == selected),

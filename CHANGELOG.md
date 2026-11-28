@@ -7,6 +7,7 @@
 - Search GenBank and ENA from tools that read unaligned sequences, reads, or assemblies, and add the records as input. Downloads run in parallel, check free storage first, and have their own settings page.
 - Contig summary report with charts and tables.
 - Read summary reports compare all samples in one run.
+- New Trees group with tree format conversion between Newick, extended Newick, NEXUS, PhyloXML, and NeXML. It sits after Sequences in the navigation rail and drawer, and opens from More on phones.
 
 ### Improvements
 

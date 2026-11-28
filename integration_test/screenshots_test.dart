@@ -113,7 +113,7 @@ class _Shot {
   final _Input? input;
 }
 
-enum _Input { alignments, sequences, reads, contigs, maf }
+enum _Input { alignments, sequences, reads, contigs, maf, trees }
 
 const List<_Shot> _shots = [
   _Shot('home'),
@@ -228,6 +228,12 @@ const List<_Shot> _shots = [
     tool: SequenceOperationType.transposition,
     input: _Input.sequences,
   ),
+  _Shot(
+    'tree-convert',
+    tab: 4,
+    tool: TreeOperationType.conversion,
+    input: _Input.trees,
+  ),
 ];
 
 void main() {
@@ -316,6 +322,10 @@ void main() {
       } else if (tool is SequenceOperationType) {
         container
             .read(sequenceOperationSelectionProvider.notifier)
+            .setOperation(tool);
+      } else if (tool is TreeOperationType) {
+        container
+            .read(treeOperationSelectionProvider.notifier)
             .setOperation(tool);
       }
       await _settle(tester);
@@ -548,6 +558,7 @@ const Map<_Input, XTypeGroup> _typeGroups = {
   _Input.reads: genomicRawReadTypeGroup,
   _Input.contigs: genomicContigTypeGroup,
   _Input.maf: mafTypeGroup,
+  _Input.trees: treeTypeGroup,
 };
 
 /// Pumps frames until animations end, with a cap for looping animations.
@@ -662,11 +673,21 @@ Future<Map<_Input, List<XFile>>> _writeInputs(Directory dir) async {
     );
     maf.add(XFile(file.path));
   }
+  final List<XFile> trees = [];
+  for (final String name in ['uce-1', 'uce-2', 'uce-3']) {
+    final File file = File(p.join(dir.path, '$name.nwk'));
+    final String tips = [
+      for (final String taxon in _taxa) '$taxon:0.0${random.nextInt(9) + 1}',
+    ].join(',');
+    await file.writeAsString('($tips);\n');
+    trees.add(XFile(file.path));
+  }
   return {
     _Input.alignments: alignments,
     _Input.sequences: alignments,
     _Input.reads: reads,
     _Input.contigs: contigs,
     _Input.maf: maf,
+    _Input.trees: trees,
   };
 }

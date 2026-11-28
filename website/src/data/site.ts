@@ -21,9 +21,11 @@ import sequenceFilter from "../assets/icons/sequence_filter_outlined.svg";
 import transpose from "../assets/icons/transpose_outlined.svg";
 import mafConvert from "../assets/icons/maf_convert_outlined.svg";
 import mafSummary from "../assets/icons/maf_summary_outlined.svg";
+import treeConvert from "../assets/icons/tree_convert_outlined.svg";
 import genomics from "../assets/icons/genomics_outlined.svg";
 import alignments from "../assets/icons/alignments_outlined.svg";
 import sequences from "../assets/icons/sequences_outlined.svg";
+import trees from "../assets/icons/trees_outlined.svg";
 import readQualityScreenshot from "../assets/news/segui-android-read-quality.webp";
 import desktopViewerScreenshot from "../assets/showcase/segui-desktop-alignment.webp";
 import cliViewerScreenshot from "../assets/showcase/segul-cli-alignment.webp";
@@ -72,6 +74,13 @@ export const categories = [
     description: "Raw reads and assemblies",
     icon: genomics,
     docs: "/docs/gui-usage/read-summary/",
+  },
+  {
+    key: "tree",
+    label: "Trees",
+    description: "Phylogenetic trees",
+    icon: trees,
+    docs: "/docs/gui-usage/tree-convert/",
   },
 ] as const;
 
@@ -230,6 +239,13 @@ export const tools: {
       description: "Blocks, species, reference coverage, and gaps in MAF files.",
       icon: mafSummary,
       docs: "/docs/gui-usage/maf-summary/",
+    },
+    {
+      category: "tree",
+      title: "Convert tree formats",
+      description: "Move trees between Newick, NEXUS, PhyloXML, and NeXML.",
+      icon: treeConvert,
+      docs: "/docs/gui-usage/tree-convert/",
     },
   ];
 

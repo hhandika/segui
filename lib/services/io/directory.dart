@@ -32,6 +32,7 @@ const Map<SupportedTask, String> defaultOutputDir = {
   SupportedTask.sequenceAddition: 'segui-sequence-addition',
   SupportedTask.sequenceFiltering: 'segui-sequence-filtering',
   SupportedTask.sequenceTransposition: 'segui-sequence-transposition',
+  SupportedTask.treeConversion: 'segui-tree-conversion',
 };
 
 class DirectorySelectionServices {

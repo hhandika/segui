@@ -1,0 +1,75 @@
+---
+title: Tree Conversion
+sidebar:
+  order: 20.5
+---
+
+{% commandanatomy
+   command="tree"
+   subcommand="convert"
+   input="--input species.nwk"
+   inputSub="file"
+   option="--output-format nexus"
+   optionSub="output format" /%}
+
+SEGUL converts phylogenetic trees between Newick, extended Newick, NEXUS, PhyloXML, and NeXML. Each input file becomes one output file that keeps every tree it holds, with branch lengths, support values, and annotations.
+
+## Quick example
+
+Assume we have a Newick file named `species.nwk`:
+
+```plaintext
+((Taxon_A:0.12,Taxon_B:0.34)98:0.56,(Taxon_C:0.1,Taxon_D:0.2,Taxon_E:0.3)85:0.4);
+```
+
+To convert it to NEXUS, run:
+
+```bash
+segul tree convert --input species.nwk --output-format nexus
+```
+
+SEGUL writes `Tree-Convert/species.nex`:
+
+```plaintext
+#NEXUS
+BEGIN TREES;
+  TRANSLATE
+    1 Taxon_A,
+    2 Taxon_B,
+    3 Taxon_C,
+    4 Taxon_D,
+    5 Taxon_E
+  ;
+  TREE tree_1 = ((1:0.12,2:0.34)98:0.56,(3:0.1,4:0.2,5:0.3)85:0.4);
+END;
+```
+
+## Converting many files
+
+Use `--dir` or `-d` to convert every tree file in a directory:
+
+```bash
+segul tree convert --dir trees/ --output-format phyloxml
+```
+
+## Formats
+
+| Format           | Input name | Extensions                                     |
+| ---------------- | ---------- | ---------------------------------------------- |
+| Newick           | `newick`   | `.nwk`, `.newick`, `.tre`, `.tree`, `.treefile` |
+| Extended Newick  | `enewick`  | `.enwk`, `.enewick`, `.net`                     |
+| NEXUS            | `nexus`    | `.nex`, `.nexus`, `.nxs`, `.trees`              |
+| PhyloXML         | `phyloxml` | `.phyloxml`, `.pxml`, `.xml`                    |
+| NeXML            | `nexml`    | `.nexml`, `.xml`                                |
+
+The input format defaults to `auto`, which detects the format of each file. Use `--input-format` or `-f` to set it. The output format defaults to `newick`. Gzipped input files (`.gz`) are read directly.
+
+## Options
+
+| Option                | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| `--output` or `-o`    | Output directory. Default: `Tree-Convert`                    |
+| `--no-translate`      | Write NEXUS trees with taxon names instead of a TRANSLATE block |
+| `--strip-annotations` | Drop bracket annotations and comments from the trees         |
+| `--gzip`              | Write gzipped output files                                   |
+| `--force`             | Overwrite an existing output directory                       |

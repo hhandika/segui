@@ -10,6 +10,7 @@ import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/home/large_screen.dart';
 import 'package:segui/screens/home/more_page.dart';
 import 'package:segui/screens/settings/settings.dart';
+import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/common.dart';
 import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/providers/alignment_view.dart';
@@ -135,7 +136,7 @@ void main() {
         (tester) async {
       await pump(tester, const CompactScreenView());
       final NavigationBar bar = tester.widget(find.byType(NavigationBar));
-      expect(bar.destinations, hasLength(navigationTargets.length + 1));
+      expect(bar.destinations, hasLength(compactNavigationTargets.length + 1));
       // Settings left the app bar for More.
       expect(find.byType(SettingButtons), findsNothing);
 
@@ -166,6 +167,57 @@ void main() {
       await tester.tap(find.byType(ViewerButton));
       await tester.pumpAndSettle();
       expect(find.byType(ViewerPage), findsOneWidget);
+    });
+
+    testWidgets('Phones open Trees from a full-width tile in More',
+        (tester) async {
+      await pump(tester, const CompactScreenView());
+      expect(find.text('Trees'), findsNothing);
+
+      await tester.tap(find.text('More'));
+      await tester.pumpAndSettle();
+      final Finder trees = find.byType(TreesShortcutTile);
+      final Finder viewer = find.widgetWithText(MoreShortcutTile, 'Viewer');
+      expect(tester.getSize(trees).width,
+          greaterThan(tester.getSize(viewer).width * 1.5));
+      expect(tester.getBottomLeft(trees).dy,
+          lessThanOrEqualTo(tester.getTopLeft(viewer).dy));
+
+      await tester.tap(trees);
+      await tester.pumpAndSettle();
+      expect(container.read(tabSelectionProvider), treeTab);
+      expect(find.text('Tree Tools'), findsOneWidget);
+      final NavigationBar bar = tester.widget(find.byType(NavigationBar));
+      expect(bar.selectedIndex, compactNavigationTargets.length);
+
+      await tester.tap(find.byType(BackButton));
+      await tester.pumpAndSettle();
+      expect(container.read(tabSelectionProvider), moreTab);
+    });
+
+    testWidgets('The rail lists Trees after Sequences', (tester) async {
+      await pump(tester, const LargeScreenView(), width: 1200);
+      await tester.pumpAndSettle();
+      final NavigationRail rail = tester.widget(find.byType(NavigationRail));
+      final List<String> labels = [
+        for (final destination in rail.destinations)
+          (destination.label as Text).data!,
+      ];
+      expect(labels.indexOf('Trees'), labels.indexOf('Sequences') + 1);
+      expect(labels.last, 'Trees');
+    });
+
+    testWidgets('The drawer lists Trees before the divider', (tester) async {
+      await pump(tester, const LargeScreenView(), width: 1600);
+      await tester.pumpAndSettle();
+      expect(
+        tester.getTopLeft(find.text('Trees')).dy,
+        greaterThan(tester.getTopLeft(find.text('Sequences')).dy),
+      );
+      expect(
+        tester.getTopLeft(find.text('Trees')).dy,
+        lessThan(tester.getTopLeft(find.byType(DrawerDivider)).dy),
+      );
     });
 
     testWidgets('The drawer has a viewer entry', (tester) async {

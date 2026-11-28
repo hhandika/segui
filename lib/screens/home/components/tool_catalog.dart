@@ -224,6 +224,10 @@ class ToolCategoryIcon extends StatelessWidget {
           colors.secondaryContainer,
           colors.onSecondaryContainer
         ),
+      ToolCategory.tree => (
+          colors.surfaceContainerHighest,
+          colors.primary,
+        ),
     };
     return Container(
       width: size,

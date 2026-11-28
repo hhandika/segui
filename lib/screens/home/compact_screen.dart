@@ -18,6 +18,13 @@ class CompactScreenView extends ConsumerWidget {
     final bool isMore = tab == moreTab;
     return Scaffold(
         appBar: AppBar(
+          // Trees opens from More, so its back button returns there.
+          leading: tab == treeTab
+              ? BackButton(
+                  onPressed: () =>
+                      ref.read(tabSelectionProvider.notifier).setTab(moreTab),
+                )
+              : null,
           title: Text(isMore ? 'More' : pageTitles[tab]),
           elevation: SeguiElevation.none,
           backgroundColor: tab == 0 ? null : mainColor,

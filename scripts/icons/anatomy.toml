@@ -144,3 +144,13 @@ wings = 0
 legs = 0
 antennae = 0
 wings = 0
+
+[tree_convert]
+legs = 0
+antennae = 0
+wings = 0
+
+[trees]
+legs = 0
+antennae = 0
+wings = 0

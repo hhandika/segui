@@ -6,13 +6,14 @@ import 'package:segui/screens/shared/badges.dart';
 import 'package:segui/services/home_features.dart';
 
 void main() {
-  test('Only MAF and genetic distance tools are in beta', () {
+  test('Only MAF, genetic distance, and tree tools are in beta', () {
     expect(
       homeTools.where((tool) => tool.isBeta).toSet(),
       {
         mafConversionTool,
         mafSummaryTool,
         distanceTool,
+        treeConversionTool,
       },
     );
   });

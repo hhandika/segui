@@ -1,0 +1,36 @@
+---
+import Arrow from "./Arrow.astro";
+import FileCard from "./FileCard.astro";
+import Figure from "./Figure.astro";
+
+// A rooted tree with tips A, B, and C, drawn above the input file.
+const tree = "M70,24 H96 M70,24 V44 M70,44 H96 M58,34 H70 M58,34 V60 M58,60 H96 M46,47 H58";
+const tips = [
+  { y: 24, label: "A" },
+  { y: 44, label: "B" },
+  { y: 60, label: "C" },
+];
+---
+
+<Figure
+  id="tree-conversion"
+  viewBox="0 0 540 210"
+  title="Tree conversion"
+  desc="A Newick tree file, species.nwk, holding the tree ((A,B),C) is converted to NEXUS as species.nex or to PhyloXML as species.phyloxml. File names stay the same; only the format and extension change."
+  caption="Converts trees between Newick, extended Newick, NEXUS, PhyloXML, and NeXML. Each file keeps every tree it holds."
+>
+  <path d={tree} class="fx-line-accent" />
+  {
+    tips.map((tip) => (
+      <text x="104" y={tip.y + 4} class="fx-mono fx-small">
+        {tip.label}
+      </text>
+    ))
+  }
+  <FileCard x={30} y={96} w={150} name="species.nwk" sub="((A,B),C);" stack />
+  <Arrow x1={196} y1={128} x2={330} y2={56} />
+  <Arrow x1={196} y1={128} x2={330} y2={168} />
+  <text x="262" y="122" text-anchor="middle" class="fx-muted">convert</text>
+  <FileCard x={350} y={22} w={150} name="species.nex" sub="NEXUS" accent />
+  <FileCard x={350} y={136} w={150} name="species.phyloxml" sub="PhyloXML" accent />
+</Figure>

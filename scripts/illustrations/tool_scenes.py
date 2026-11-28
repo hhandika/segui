@@ -419,6 +419,25 @@ def transpose():
     )
 
 
+def cladogram(x, y):
+    """A small rooted tree with three tips."""
+    return (
+        f'<path d="M{x + 30},{y} H{x + 18} V{y + 16} H{x + 30} '
+        f'M{x + 18},{y + 8} H{x + 6} V{y + 32} H{x + 30} M{x},{y + 20} H{x + 6}" '
+        'stroke-width="2.5"/>'
+        + "".join(
+            f'<circle cx="{x + 34}" cy="{y + dy}" r="4" fill="{ACCENT}" stroke-width="2.5"/>'
+            for dy in (0, 16, 32)
+        )
+    )
+
+
+def tree_convert():
+    return cladogram(PX - 10, GROUND - 40) + arrow(PX + 34, GROUND - 22, PX + 54, GROUND - 22) + sheet(
+        PX + 60, GROUND - 44
+    )
+
+
 # Tool key: (gull pose, prop). Keys match `lib/services/tool_scenes.dart`.
 SCENES = {
     "read_summary": ("stand", read_summary),
@@ -442,6 +461,7 @@ SCENES = {
     "renaming": ("stand", rename),
     "translation": ("post", translate),
     "transposition": ("stand", transpose),
+    "tree_conversion": ("post", tree_convert),
 }
 
 

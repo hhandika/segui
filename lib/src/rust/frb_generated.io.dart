@@ -19,6 +19,7 @@ import 'api/progress.dart';
 import 'api/reads.dart';
 import 'api/report.dart';
 import 'api/sequence.dart';
+import 'api/tree.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
@@ -288,6 +289,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TranslationServices dco_decode_box_autoadd_translation_services(dynamic raw);
+
+  @protected
+  TreeConversionServices dco_decode_box_autoadd_tree_conversion_services(
+      dynamic raw);
 
   @protected
   int dco_decode_box_autoadd_u_32(dynamic raw);
@@ -725,6 +730,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TranslationServices dco_decode_translation_services(dynamic raw);
 
   @protected
+  TreeConversionServices dco_decode_tree_conversion_services(dynamic raw);
+
+  @protected
   TrimmingParams dco_decode_trimming_params(dynamic raw);
 
   @protected
@@ -1024,6 +1032,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   TranslationServices sse_decode_box_autoadd_translation_services(
+      SseDeserializer deserializer);
+
+  @protected
+  TreeConversionServices sse_decode_box_autoadd_tree_conversion_services(
       SseDeserializer deserializer);
 
   @protected
@@ -1536,6 +1548,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  TreeConversionServices sse_decode_tree_conversion_services(
+      SseDeserializer deserializer);
+
+  @protected
   TrimmingParams sse_decode_trimming_params(SseDeserializer deserializer);
 
   @protected
@@ -1841,6 +1857,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_translation_services(
       TranslationServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_tree_conversion_services(
+      TreeConversionServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
@@ -2382,6 +2402,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_translation_services(
       TranslationServices self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tree_conversion_services(
+      TreeConversionServices self, SseSerializer serializer);
 
   @protected
   void sse_encode_trimming_params(

@@ -111,6 +111,19 @@ const XTypeGroup sampleGroupTypeGroup = XTypeGroup(
   ],
 );
 
+/// Phylogenetic tree files, plain or gzipped. Use [isTreePath] to check the
+/// full extension.
+const XTypeGroup treeTypeGroup = XTypeGroup(
+  label: 'Tree',
+  extensions: [...treeExtensions, ...gunzipExtensions],
+  uniformTypeIdentifiers: [
+    'public.plain-text',
+    'public.xml',
+    'com.segui.nexus',
+    'org.gnu.gnu-zip-archive',
+  ],
+);
+
 const XTypeGroup genomicContigTypeGroup = XTypeGroup(
   label: 'Contig',
   extensions: fastaExtensions,
@@ -147,13 +160,39 @@ const List<String> bedExtensions = [
   'bed',
 ];
 
+/// Tree files that open as plain text.
+const List<String> treeTextExtensions = [
+  'nwk',
+  'newick',
+  'tre',
+  'tree',
+  'trees',
+  'treefile',
+  'nhx',
+  'enwk',
+  'enewick',
+  'net',
+  'phyloxml',
+  'pxml',
+  'nexml',
+  'xml',
+];
+
+const List<String> treeExtensions = [
+  ...treeTextExtensions,
+  ...nexusExtensions,
+];
+
+/// Whether [path] is a tree file, such as `species.nwk` or `species.nwk.gz`.
+bool isTreePath(String path) => _hasExtension(path, treeExtensions);
+
 /// Whether [path] is a MAF file, such as `genome.maf` or `genome.maf.gz`.
 bool isMafPath(String path) => _hasExtension(path, mafExtensions);
 
 /// Whether [path] is a BED file, such as `loci.bed` or `loci.bed.gz`.
 bool isBedPath(String path) => _hasExtension(path, bedExtensions);
 
-/// Whether [file] belongs to [type]. MAF and BED files match by their full
+/// Whether [file] belongs to [type]. MAF, BED, and tree files match by their full
 /// extension, so gzipped reads are not mistaken for gzipped MAF files.
 bool matchesTypeGroup(File file, XTypeGroup type) {
   if (type == mafTypeGroup) {
@@ -161,6 +200,9 @@ bool matchesTypeGroup(File file, XTypeGroup type) {
   }
   if (type == bedTypeGroup) {
     return isBedPath(file.path);
+  }
+  if (type == treeTypeGroup) {
+    return isTreePath(file.path);
   }
   return type.extensions?.contains(file.fileExtension) ?? false;
 }
@@ -220,6 +262,7 @@ const List<String> plainTextExtensions = [
   'nex',
   ...mafExtensions,
   ...bedExtensions,
+  ...treeTextExtensions,
 ];
 
 const List<String> compressionExtensions = [

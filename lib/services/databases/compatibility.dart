@@ -97,7 +97,8 @@ DatabaseSupport databaseSupportFor(SupportedTask task, XTypeGroup group) {
       group == sequenceTypeGroup ? needsAlignment : _notOffered,
     SupportedTask.partitionConversion ||
     SupportedTask.genomicMafConversion ||
-    SupportedTask.genomicMafSummary =>
+    SupportedTask.genomicMafSummary ||
+    SupportedTask.treeConversion =>
       _notOffered,
   };
 }

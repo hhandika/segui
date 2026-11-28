@@ -44,14 +44,23 @@ enum FileContentKind {
   final String label;
 }
 
+/// Lowercase NEXUS [header] without comments.
+String _nexusText(String header) {
+  return header.replaceAll(RegExp(r'\[[^\]]*\]'), ' ').toLowerCase();
+}
+
+/// Names of the NEXUS blocks that start in [text].
+Iterable<String> _nexusBlocks(String text) {
+  return RegExp(r'\bbegin\s+(\w+)\s*;')
+      .allMatches(text)
+      .map((match) => match.group(1)!);
+}
+
 /// Whether the start of a NEXUS file, [header], has a sets block and no
 /// sequence block, as in a partition written by SEGUL.
 bool isNexusPartitionHeader(String header) {
-  final String text =
-      header.replaceAll(RegExp(r'\[[^\]]*\]'), ' ').toLowerCase();
-  final Iterable<String> blocks = RegExp(r'\bbegin\s+(\w+)\s*;')
-      .allMatches(text)
-      .map((match) => match.group(1)!);
+  final String text = _nexusText(header);
+  final Iterable<String> blocks = _nexusBlocks(text);
   if (blocks.any(_nexusSequenceBlocks.contains) ||
       RegExp(r'\bmatrix\b').hasMatch(text)) {
     return false;
@@ -59,20 +68,37 @@ bool isNexusPartitionHeader(String header) {
   return blocks.contains('sets') || RegExp(r'\bcharset\b').hasMatch(text);
 }
 
+/// Whether the start of a NEXUS file, [header], has a trees block and no
+/// sequence block.
+bool isNexusTreeHeader(String header) {
+  final Iterable<String> blocks = _nexusBlocks(_nexusText(header));
+  return blocks.contains('trees') && !blocks.any(_nexusSequenceBlocks.contains);
+}
+
 /// Whether [file] is a NEXUS partition rather than a NEXUS alignment.
 Future<bool> isNexusPartition(File file) async {
+  final String? header = await _readNexusHeader(file);
+  return header != null && isNexusPartitionHeader(header);
+}
+
+/// Whether [file] is a NEXUS tree file rather than a NEXUS alignment.
+Future<bool> isNexusTree(File file) async {
+  final String? header = await _readNexusHeader(file);
+  return header != null && isNexusTreeHeader(header);
+}
+
+// The start of a NEXUS [file], or null for other files.
+Future<String?> _readNexusHeader(File file) async {
   if (!nexusExtensions.contains(file.fileExtension.toLowerCase())) {
-    return false;
+    return null;
   }
   try {
     final List<int> bytes = await file
         .openRead(0, _nexusHeaderBytes)
         .fold<List<int>>([], (all, chunk) => all..addAll(chunk));
-    return isNexusPartitionHeader(
-      utf8.decode(bytes, allowMalformed: true),
-    );
+    return utf8.decode(bytes, allowMalformed: true);
   } on FileSystemException {
-    return false;
+    return null;
   }
 }
 
@@ -84,9 +110,14 @@ Future<FileContentKind> contentKindOf(File file) async {
     return FileContentKind.partition;
   }
   if (isAlignmentViewable(file)) {
-    return await isNexusPartition(file)
-        ? FileContentKind.partition
-        : FileContentKind.alignment;
+    final String? header = await _readNexusHeader(file);
+    if (header != null && isNexusTreeHeader(header)) {
+      return FileContentKind.text;
+    }
+    if (header != null && isNexusPartitionHeader(header)) {
+      return FileContentKind.partition;
+    }
+    return FileContentKind.alignment;
   }
   if (tabularExtensions.contains(ext)) {
     return FileContentKind.table;
@@ -125,11 +156,12 @@ Future<FileContentKind> contentKindOf(File file) async {
 }
 
 /// Files in [files] the alignment viewer can open, leaving out NEXUS
-/// partitions.
+/// partitions and trees.
 Future<List<File>> alignmentFilesOf(Iterable<File> files) async {
   final List<File> alignments = [];
   for (final File file in files) {
-    if (isAlignmentViewable(file) && !await isNexusPartition(file)) {
+    if (isAlignmentViewable(file) &&
+        await contentKindOf(file) == FileContentKind.alignment) {
       alignments.add(file);
     }
   }

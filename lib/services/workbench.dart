@@ -23,6 +23,7 @@ enum ToolData {
   /// Unaligned sequences, such as after removing gaps.
   sequences,
   partition,
+  tree,
 
   /// Tables or text, such as summaries, that no tool takes as input.
   report,
@@ -122,6 +123,15 @@ ToolDataFlow dataFlowFor(HomeTool tool) {
           accepts: {ToolData.alignment},
           produces: ToolData.sequences,
           inputGroup: sequenceTypeGroup,
+        ),
+    };
+  }
+  if (operation is TreeOperationType) {
+    return switch (operation) {
+      TreeOperationType.conversion => const ToolDataFlow(
+          accepts: {ToolData.tree},
+          produces: ToolData.tree,
+          inputGroup: treeTypeGroup,
         ),
     };
   }

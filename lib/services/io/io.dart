@@ -33,6 +33,7 @@ enum SupportedTask {
   sequenceAddition,
   sequenceFiltering,
   sequenceTransposition,
+  treeConversion,
 }
 
 class ArchiveRunner {

@@ -19,6 +19,7 @@ import 'api/progress.dart';
 import 'api/reads.dart';
 import 'api/report.dart';
 import 'api/sequence.dart';
+import 'api/tree.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -83,7 +84,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1534628820;
+  int get rustContentHash => -1568192712;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -438,6 +439,13 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiSequenceTranslationServicesTranslateSequenceAutoFrame(
       {required TranslationServices that});
+
+  Future<void> crateApiTreeTreeConversionServicesConvert(
+      {required TreeConversionServices that, required RunMonitor monitor});
+
+  Future<TreeConversionServices> crateApiTreeTreeConversionServicesDefault();
+
+  Future<TreeConversionServices> crateApiTreeTreeConversionServicesNew();
 
   Future<UnalignmentServices> crateApiSequenceUnalignmentServicesNew();
 
@@ -3530,12 +3538,88 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
 
   @override
+  Future<void> crateApiTreeTreeConversionServicesConvert(
+      {required TreeConversionServices that, required RunMonitor monitor}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_tree_conversion_services(that, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRunMonitor(
+            monitor, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 115, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiTreeTreeConversionServicesConvertConstMeta,
+      argValues: [that, monitor],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTreeTreeConversionServicesConvertConstMeta =>
+      const TaskConstMeta(
+        debugName: "tree_conversion_services_convert",
+        argNames: ["that", "monitor"],
+      );
+
+  @override
+  Future<TreeConversionServices> crateApiTreeTreeConversionServicesDefault() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 116, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tree_conversion_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiTreeTreeConversionServicesDefaultConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTreeTreeConversionServicesDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "tree_conversion_services_default",
+        argNames: [],
+      );
+
+  @override
+  Future<TreeConversionServices> crateApiTreeTreeConversionServicesNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 117, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tree_conversion_services,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiTreeTreeConversionServicesNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiTreeTreeConversionServicesNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "tree_conversion_services_new",
+        argNames: [],
+      );
+
+  @override
   Future<UnalignmentServices> crateApiSequenceUnalignmentServicesNew() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 115, port: port_);
+            funcId: 118, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unalignment_services,
@@ -3561,7 +3645,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_box_autoadd_unalignment_services(that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 116, port: port_);
+            funcId: 119, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -4203,6 +4287,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TreeConversionServices dco_decode_box_autoadd_tree_conversion_services(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_tree_conversion_services(raw);
+  }
+
+  @protected
   int dco_decode_box_autoadd_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -4402,9 +4493,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return DistanceGroupingParams_Auto();
+        return const DistanceGroupingParams_Auto();
       case 4:
-        return DistanceGroupingParams_None();
+        return const DistanceGroupingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -4626,7 +4717,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_list_String(raw[1]),
         );
       case 8:
-        return FilteringParams_None();
+        return const FilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5707,7 +5798,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     final arr = raw as List<dynamic>;
     if (arr.isNotEmpty)
       throw Exception('unexpected arr length: expect 0 but see ${arr.length}');
-    return RunReportServices();
+    return const RunReportServices();
   }
 
   @protected
@@ -5809,7 +5900,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_String(raw[1]),
         );
       case 3:
-        return SequenceExtractionParams_None();
+        return const SequenceExtractionParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5832,7 +5923,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_f_64(raw[1]),
         );
       case 3:
-        return SequenceFilteringParams_None();
+        return const SequenceFilteringParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -5917,7 +6008,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_bool(raw[3]),
         );
       case 5:
-        return SequenceRenamingParams_None();
+        return const SequenceRenamingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -6029,6 +6120,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TreeConversionServices dco_decode_tree_conversion_services(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return TreeConversionServices(
+      inputFiles: dco_decode_list_String(arr[0]),
+      inputFmt: dco_decode_String(arr[1]),
+      outputDir: dco_decode_String(arr[2]),
+      outputFmt: dco_decode_String(arr[3]),
+      noTranslate: dco_decode_bool(arr[4]),
+      stripAnnotations: dco_decode_bool(arr[5]),
+      gzip: dco_decode_bool(arr[6]),
+    );
+  }
+
+  @protected
   TrimmingParams dco_decode_trimming_params(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     switch (raw[0]) {
@@ -6041,7 +6149,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           dco_decode_usize(raw[1]),
         );
       case 2:
-        return TrimmingParams_None();
+        return const TrimmingParams_None();
       default:
         throw Exception("unreachable");
     }
@@ -6796,6 +6904,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TreeConversionServices sse_decode_box_autoadd_tree_conversion_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_tree_conversion_services(deserializer));
+  }
+
+  @protected
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_32(deserializer));
@@ -7005,9 +7120,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return DistanceGroupingParams_MapFile(var_field0);
       case 3:
-        return DistanceGroupingParams_Auto();
+        return const DistanceGroupingParams_Auto();
       case 4:
-        return DistanceGroupingParams_None();
+        return const DistanceGroupingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -7248,7 +7363,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_list_String(deserializer);
         return FilteringParams_TaxonAll(var_field0);
       case 8:
-        return FilteringParams_None();
+        return const FilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -8732,7 +8847,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RunReportServices sse_decode_run_report_services(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return RunReportServices();
+    return const RunReportServices();
   }
 
   @protected
@@ -8861,7 +8976,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_String(deserializer);
         return SequenceExtractionParams_Regex(var_field0);
       case 3:
-        return SequenceExtractionParams_None();
+        return const SequenceExtractionParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -8884,7 +8999,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_f_64(deserializer);
         return SequenceFilteringParams_MaxGap(var_field0);
       case 3:
-        return SequenceFilteringParams_None();
+        return const SequenceFilteringParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -8975,7 +9090,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         return SequenceRenamingParams_ReplaceRegex(
             var_field0, var_field1, var_field2);
       case 5:
-        return SequenceRenamingParams_None();
+        return const SequenceRenamingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -9109,6 +9224,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  TreeConversionServices sse_decode_tree_conversion_services(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_inputFiles = sse_decode_list_String(deserializer);
+    var var_inputFmt = sse_decode_String(deserializer);
+    var var_outputDir = sse_decode_String(deserializer);
+    var var_outputFmt = sse_decode_String(deserializer);
+    var var_noTranslate = sse_decode_bool(deserializer);
+    var var_stripAnnotations = sse_decode_bool(deserializer);
+    var var_gzip = sse_decode_bool(deserializer);
+    return TreeConversionServices(
+        inputFiles: var_inputFiles,
+        inputFmt: var_inputFmt,
+        outputDir: var_outputDir,
+        outputFmt: var_outputFmt,
+        noTranslate: var_noTranslate,
+        stripAnnotations: var_stripAnnotations,
+        gzip: var_gzip);
+  }
+
+  @protected
   TrimmingParams sse_decode_trimming_params(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -9121,7 +9257,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_field0 = sse_decode_usize(deserializer);
         return TrimmingParams_ParsInf(var_field0);
       case 2:
-        return TrimmingParams_None();
+        return const TrimmingParams_None();
       default:
         throw UnimplementedError('');
     }
@@ -9811,6 +9947,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       TranslationServices self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_translation_services(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_tree_conversion_services(
+      TreeConversionServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_tree_conversion_services(self, serializer);
   }
 
   @protected
@@ -11476,6 +11619,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.outputFmt, serializer);
     sse_encode_String(self.table, serializer);
     sse_encode_usize(self.readingFrame, serializer);
+  }
+
+  @protected
+  void sse_encode_tree_conversion_services(
+      TreeConversionServices self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_String(self.inputFiles, serializer);
+    sse_encode_String(self.inputFmt, serializer);
+    sse_encode_String(self.outputDir, serializer);
+    sse_encode_String(self.outputFmt, serializer);
+    sse_encode_bool(self.noTranslate, serializer);
+    sse_encode_bool(self.stripAnnotations, serializer);
+    sse_encode_bool(self.gzip, serializer);
   }
 
   @protected

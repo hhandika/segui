@@ -53,7 +53,7 @@ void main() {
   });
 
   group('toolForTaskKind & PendingReplayNotifier', () {
-    test('maps all 21 TaskKind values and rejects unknown kinds', () {
+    test('maps all 22 TaskKind values and rejects unknown kinds', () {
       const List<String> allKinds = [
         'align.summary',
         'align.distance',
@@ -76,6 +76,7 @@ void main() {
         'sequence.rename',
         'sequence.translate',
         'sequence.transpose',
+        'tree.convert',
       ];
       for (final kind in allKinds) {
         expect(toolForTaskKind(kind), isNotNull, reason: 'Missing $kind');

@@ -35,7 +35,7 @@ void main() {
       );
       expect(tester.getTopLeft(title).dy, greaterThanOrEqualTo(24));
       final nav = find.byType(CompactScreenNavBar);
-      for (final target in navigationTargets) {
+      for (final target in compactNavigationTargets) {
         final label = find.descendant(
           of: nav,
           matching: find.text(target.label),

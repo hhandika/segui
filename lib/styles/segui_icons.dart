@@ -103,11 +103,18 @@ class SeguiIcons {
       IconData(0xe02e, fontFamily: _fontFamily);
   static const IconData transposeOutlined =
       IconData(0xe02f, fontFamily: _fontFamily);
-  static const IconData trimFilled = IconData(0xe030, fontFamily: _fontFamily);
-  static const IconData trimOutlined =
+  static const IconData treeConvertFilled =
+      IconData(0xe030, fontFamily: _fontFamily);
+  static const IconData treeConvertOutlined =
       IconData(0xe031, fontFamily: _fontFamily);
-  static const IconData unalignFilled =
-      IconData(0xe032, fontFamily: _fontFamily);
-  static const IconData unalignOutlined =
+  static const IconData treesFilled = IconData(0xe032, fontFamily: _fontFamily);
+  static const IconData treesOutlined =
       IconData(0xe033, fontFamily: _fontFamily);
+  static const IconData trimFilled = IconData(0xe034, fontFamily: _fontFamily);
+  static const IconData trimOutlined =
+      IconData(0xe035, fontFamily: _fontFamily);
+  static const IconData unalignFilled =
+      IconData(0xe036, fontFamily: _fontFamily);
+  static const IconData unalignOutlined =
+      IconData(0xe037, fontFamily: _fontFamily);
 }

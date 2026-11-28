@@ -105,6 +105,31 @@ const Map<SequenceOperationType, String> sequenceOperationMap = {
   SequenceOperationType.transposition: 'Transpose sequences',
 };
 
+enum TreeOperationType { conversion }
+
+const Map<TreeOperationType, String> treeOperationMap = {
+  TreeOperationType.conversion: 'Convert tree formats',
+};
+
+/// Tree input formats, keyed by the SEGUL format name.
+const Map<String, String> treeInputFormat = {
+  'auto': 'Auto',
+  'newick': 'Newick',
+  'enewick': 'Extended Newick',
+  'nexus': 'NEXUS',
+  'phyloxml': 'PhyloXML',
+  'nexml': 'NeXML',
+};
+
+/// Tree output formats, keyed by the SEGUL format name.
+const Map<String, String> treeOutputFormat = {
+  'newick': 'Newick',
+  'enewick': 'Extended Newick',
+  'nexus': 'NEXUS',
+  'phyloxml': 'PhyloXML',
+  'nexml': 'NeXML',
+};
+
 const List<String> inputFormat = [
   'Auto',
   'FASTA',

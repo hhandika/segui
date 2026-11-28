@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:segui/screens/home/components/pages.dart';
 import 'package:segui/screens/settings/about.dart';
 import 'package:segui/screens/settings/colors.dart';
 import 'package:segui/screens/settings/data_usage.dart';
@@ -10,18 +11,21 @@ import 'package:segui/screens/settings/themes.dart';
 import 'package:segui/screens/shared/common.dart';
 import 'package:segui/screens/viewers/viewer_page.dart';
 import 'package:segui/services/io/folder_access.dart';
+import 'package:segui/services/providers/navigation.dart';
 import 'package:segui/services/providers/settings.dart';
 import 'package:segui/services/providers/viewer.dart';
 import 'package:segui/services/utils.dart';
 import 'package:segui/styles/decoration.dart';
 import 'package:segui/styles/design_tokens.dart';
+import 'package:segui/styles/segui_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// GUI guide on the documentation website.
 const String _guideUrl = '${segulDocUrl}docs/gui-usage/intro/';
 
-/// Phone tab with shortcuts to the viewer, colors, logs, and guide, then
-/// settings: common ones change here, the rest open their pages.
+/// Phone tab with the Trees tools, shortcuts to the viewer, colors, logs,
+/// and guide, then settings: common ones change here, the rest open their
+/// pages.
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
 
@@ -34,6 +38,8 @@ class MorePage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(SeguiSpacing.lg),
           children: const [
+            TreesShortcutTile(),
+            SizedBox(height: SeguiSpacing.md),
             MoreShortcutGrid(),
             SettingTitle(title: 'Quick settings'),
             OutlinedPanel(
@@ -49,6 +55,23 @@ class MorePage extends StatelessWidget {
             MoreSettingsList(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Full-width tile that opens the Trees tools, which have no bottom bar tab.
+class TreesShortcutTile extends ConsumerWidget {
+  const TreesShortcutTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MoreShortcutTile(
+      shortcut: MoreShortcut(
+        icon: SeguiIcons.treesOutlined,
+        title: 'Trees',
+        subtitle: 'Convert tree formats',
+        onTap: () => ref.read(tabSelectionProvider.notifier).setTab(treeTab),
       ),
     );
   }

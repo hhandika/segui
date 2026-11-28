@@ -9,7 +9,8 @@ import 'package:segui/styles/segui_icons.dart';
 enum ToolCategory {
   genomics('Genomics', 'Raw reads and assemblies', 1),
   alignment('Alignments', 'Multi-locus alignment matrices', 2),
-  sequence('Sequences', 'Samples and IDs inside alignments', 3);
+  sequence('Sequences', 'Samples and IDs inside alignments', 3),
+  tree('Trees', 'Phylogenetic trees', 4);
 
   const ToolCategory(this.label, this.description, this.tabIndex);
 
@@ -22,8 +23,8 @@ enum ToolCategory {
 
 /// A SEGUI tool listed on the home screen.
 ///
-/// [operation] is a [GenomicOperationType], [AlignmentOperationType], or
-/// [SequenceOperationType] that matches [category].
+/// [operation] is a [GenomicOperationType], [AlignmentOperationType],
+/// [SequenceOperationType], or [TreeOperationType] that matches [category].
 class HomeTool {
   const HomeTool({
     required this.category,
@@ -435,6 +436,22 @@ const HomeTool transpositionTool = HomeTool(
   diagrams: ['sequence-transpose'],
 );
 
+const HomeTool treeConversionTool = HomeTool(
+  category: ToolCategory.tree,
+  operation: TreeOperationType.conversion,
+  guide: 'tree-convert',
+  title: 'Convert tree formats',
+  description: 'Move trees between Newick, NEXUS, PhyloXML, and NeXML.',
+  about: 'Convert phylogenetic trees between Newick, extended Newick, NEXUS, '
+      'PhyloXML, and NeXML.',
+  icon: SeguiIcons.treeConvertOutlined,
+  filledIcon: SeguiIcons.treeConvertFilled,
+  svgAsset: 'assets/icons/tree_convert_outlined.svg',
+  scene: 'tree_conversion',
+  diagrams: ['tree-conversion'],
+  isBeta: true,
+);
+
 /// Every tool available in SEGUI, grouped by category.
 const List<HomeTool> homeTools = [
   readSummaryTool,
@@ -458,6 +475,7 @@ const List<HomeTool> homeTools = [
   renamingTool,
   translationTool,
   transpositionTool,
+  treeConversionTool,
 ];
 
 const List<HomeWorkflow> homeWorkflows = [
@@ -532,6 +550,7 @@ final currentToolProvider = Provider<HomeTool?>((ref) {
     1 => homeToolFor(ref.watch(genomicOperationSelectionProvider)),
     2 => homeToolFor(ref.watch(alignmentOperationSelectionProvider)),
     3 => homeToolFor(ref.watch(sequenceOperationSelectionProvider)),
+    4 => homeToolFor(ref.watch(treeOperationSelectionProvider)),
     _ => null,
   };
 });
@@ -565,6 +584,10 @@ class HomeToolNavigator {
     } else if (operation is SequenceOperationType) {
       _ref
           .read(sequenceOperationSelectionProvider.notifier)
+          .setOperation(operation);
+    } else if (operation is TreeOperationType) {
+      _ref
+          .read(treeOperationSelectionProvider.notifier)
           .setOperation(operation);
     }
   }

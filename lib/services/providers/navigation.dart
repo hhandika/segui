@@ -62,3 +62,18 @@ class SequenceOperationSelection extends Notifier<SequenceOperationType> {
     state = operation;
   }
 }
+
+final treeOperationSelectionProvider =
+    NotifierProvider<TreeOperationSelection, TreeOperationType>(
+        TreeOperationSelection.new);
+
+class TreeOperationSelection extends Notifier<TreeOperationType> {
+  @override
+  TreeOperationType build() {
+    return TreeOperationType.conversion;
+  }
+
+  void setOperation(TreeOperationType operation) {
+    state = operation;
+  }
+}

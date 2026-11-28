@@ -22,7 +22,7 @@ const groups = [
     name: "Genomic",
     input: "Reads, contigs, or MAF",
     command: "segul read|contig|maf …",
-    tools: ["Sequence read summary", "Contig summary", "MAF conversion", "MAF summary"],
+    tools: ["Read summary", "Contig summary", "MAF conversion", "MAF summary"],
   },
   {
     name: "Sequences",
@@ -40,8 +40,16 @@ const groups = [
       "Transposition",
     ],
   },
+  {
+    name: "Trees",
+    input: "Newick, NEXUS, or XML trees",
+    command: "segul tree …",
+    tools: ["Conversion"],
+  },
 ];
-const width = 212;
+const width = 190;
+const gap = 12;
+const totalWidth = groups.length * (width + gap) - gap + 4;
 const toolStep = 25;
 const mostTools = Math.max(...groups.map((group) => group.tools.length));
 // Room for the header, every tool, and the command at the bottom.
@@ -50,14 +58,14 @@ const height = 108 + (mostTools - 1) * toolStep + 44;
 
 <Figure
   id="task-groups"
-  viewBox={`0 0 660 ${height + 4}`}
+  viewBox={`0 0 ${totalWidth} ${height + 4}`}
   title="SEGUL task groups"
-  desc="Three task groups. Alignments takes aligned files or partitions and offers concatenation, conversion, distance, filtering, partition conversion, splitting, summary, trimming, and unalignment. Genomic takes FASTQ reads, FASTA contigs, or MAF whole-genome alignments and offers read and contig summaries plus MAF conversion and summary. Sequences takes aligned or unaligned files and offers addition, ID extraction, mapping, renaming, sequence extraction, filtering, removal, translation, and transposition."
+  desc="Four task groups. Alignments takes aligned files or partitions and offers concatenation, conversion, distance, filtering, partition conversion, splitting, summary, trimming, and unalignment. Genomic takes FASTQ reads, FASTA contigs, or MAF whole-genome alignments and offers read and contig summaries plus MAF conversion and summary. Sequences takes aligned or unaligned files and offers addition, ID extraction, mapping, renaming, sequence extraction, filtering, removal, translation, and transposition. Trees takes Newick, NEXUS, PhyloXML, or NeXML trees and offers conversion."
   caption="Each task group is a button in the GUI navigation and a command group in the CLI."
 >
   {
     groups.map((group, i) => {
-      const x = 2 + i * (width + 12);
+      const x = 2 + i * (width + gap);
       return (
         <g>
           <rect x={x} y="2" width={width} height={height} rx="12" class="fx-panel" />

@@ -28,6 +28,7 @@ segul-core = { version = "0.25.0", default-features = false, features = [
     "contig",
     "maf",
     "download",
+    "tree",
 ] }
 
 [lints.rust]
