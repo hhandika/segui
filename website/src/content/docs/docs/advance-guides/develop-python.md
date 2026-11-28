@@ -1,7 +1,7 @@
 ---
 title: Developing Python Library using SEGUL API
 sidebar:
-  order: 4
+  order: 6
 ---
 
 We recommend to use [`PyO3`](https://pyo3.rs/) and [Maturin](https://www.maturin.rs/) to develop python library using SEGUL API. The PyO3 and Maturin documentation provides a comprehensive guide on how to use the tools. You can also checkout [pysegul](https://github.com/hhandika/pysegul) to see how we use SEGUL API in Python.

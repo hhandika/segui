@@ -22,7 +22,7 @@ The `summary` function produces three summary statistics:
 1. Summary statistics for all the alignments printed in the terminal and written to the log file (`segul.log`).
 2. Summary statistics for each alignment (assuming locus) written to a CSV file (default name: `locus_summary.csv`).
 3. Summary statistics for each taxon written to a CSV file (default name: `taxon_summary.csv`).
-4. Every statistic in one JSON report (`alignment-report.json`), for apps that draw their own charts. SEGUI opens it as an interactive report, and [`segul view summary`](/docs/cli-usage/view-summary/) opens it in the terminal. Requires SEGUL v0.25.0 or later.
+4. Every statistic and run manifest in one JSON report (`report.json`), for verification, replay, and charts. SEGUI opens it as an interactive report, and [`segul view summary`](/docs/cli-usage/view-summary/) opens it in the terminal. See [Reproducibility, Replay & Reports](/docs/cli-usage/reproducibility/).
 
 Learn more about specifying the output directory and filenames [here](/docs/cli-usage/align-summary/#specifying-the-output-directory-and-filenames).
 
@@ -194,14 +194,14 @@ You can also add a prefix to the CSV filenames using the `--prefix` option. For 
 segul align summary -d alignments/ -f nexus -o alignment_stats --prefix my_samples
 ```
 
-The command above will create a directory named `alignment_stats/` and write the output files. Using the `--prefix` option, the taxon summary is `my_samples_taxon_summary.csv`, the locus summary is `my_samples_locus_summary.csv`, the alignment summary is `my_samples_alignment_summary.txt`, and the report is `my_samples_alignment-report.json`.
+The command above will create a directory named `alignment_stats/` and write the output files. Using the `--prefix` option, the taxon summary is `my_samples_taxon_summary.csv`, the locus summary is `my_samples_locus_summary.csv`, the alignment summary is `my_samples_alignment_summary.txt`, and the report is `my_samples_report.json`.
 
 ### Exploring the results in the terminal
 
 Open the report in the terminal viewer to sort loci and taxa by any statistic, or plot them as bars or a histogram:
 
 ```bash
-segul view summary --input Align-Summary/alignment-report.json
+segul view summary --input Align-Summary/report.json
 ```
 
 See [View Summary Reports](/docs/cli-usage/view-summary/) for the key bindings.

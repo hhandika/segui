@@ -107,7 +107,44 @@ if let Some(dup) = &report.duplication {
 }
 ```
 
-To summarize many files and write the CSV, archive, and `read-report.json` outputs, use `GenomicReadSummary` with `SummaryMode::Complete` and call `try_summarize`. Read a report back with `segul_core::stats::fastq::report::ReadReport::from_path`.
+To summarize many files and write the CSV, archive, and `report.json` outputs, use `GenomicReadSummary` with `SummaryMode::Complete` and call `try_summarize`. Read statistics back with `segul_core::stats::fastq::report::ReadReport::from_path` (which supports both unified Schema v2 `report.json` and legacy `read-report.json` files).
+
+### Run reports and reproducibility
+
+The `segul_core::report` module provides the Schema v2 `report.json` envelope, opt-in SHA-256 hashing, verification, cross-frontend replay, workflow recipes, and publication Methods rendering:
+
+```rust
+use std::path::Path;
+
+use segul_core::report::{
+    ChecksumMode, FrontendInfo, RunReport,
+    methods::{MethodsFormat, render_methods_from_path},
+    replay::{ReplayOptions, replay_report, replay_workflow},
+    verify::{VerifyScope, verify_report},
+    workflow::WorkflowRecipe,
+};
+
+let report_path = Path::new("Align-Summary/report.json");
+let report = RunReport::from_path(report_path)?;
+
+let check = verify_report(report_path, None, None, VerifyScope::All)?;
+assert!(check.passed);
+
+let opts = ReplayOptions {
+    output_dir: Some(Path::new("Align-Summary-Rerun").to_path_buf()),
+    verify_inputs: true,
+    checksum_mode: Some(ChecksumMode::Outputs),
+    frontend: FrontendInfo::core(),
+    ..Default::default()
+};
+let replayed = replay_report(report_path, &opts)?;
+
+let recipe = WorkflowRecipe::from_report_chain(Path::new("Align-Concat/report.json"), Some("my-pipeline"))?;
+recipe.write(Path::new("segul-workflow.json"))?;
+let workflow_reports = replay_workflow(Path::new("segul-workflow.json"), &opts)?;
+
+let methods = render_methods_from_path(report_path, true, MethodsFormat::Markdown)?;
+```
 
 ### Migrating from SEGUL v0.23 and earlier
 

@@ -63,6 +63,9 @@ Most classes share these options. Each page lists the options of its class.
 | `datatype` | `'dna'`, `'aa'`, `'ignore'` |
 | `output_fmt` / `output_format` | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
 | `partition_fmt` | `'charset'`, `'nexus'`, `'raxml'`. Add `-codon` for codon partitions, e.g. `'raxml-codon'` |
+| `checksum` | `None` (inherits `SEGUL_CHECKSUM` or `'none'`), `'none'`, `'outputs'`, `'inputs'`, or `'all'` |
+
+Every task writes `report.json` (`<output_prefix>_report.json` when using a prefix) and exposes its path via the `.report_path` property after running.
 
 ## Input files
 
@@ -97,6 +100,7 @@ Classes take input in one of two ways:
 | `segul sequence translate` | [`SequenceTranslation`](/docs/api-usage/python/sequence_translation/) |
 | `segul sequence transpose` | [`SequenceTranspose`](/docs/api-usage/python/sequence_transpose/) *(beta)* |
 | `--plot` and report viewers | [`PlotOptions` and report loaders](/docs/api-usage/python/plots_reports/) *(beta)* |
+| `segul run` and `segul report` | [`load_report`, `verify_report`, `run_report`, `run_workflow`, `export_workflow`, `export_methods`](/docs/api-usage/python/plots_reports/#reproducibility) |
 
 ## Beta features
 

@@ -39,6 +39,8 @@ concat.from_files(['tests/data/alignment1.nex', 'tests/data/alignment2.nex'])
 | `output_fmt` | Required | `'fasta'`, `'nexus'`, `'phylip'`, or interleaved `'fasta-int'`, `'nexus-int'`, `'phylip-int'` |
 | `partition_fmt` | Required | `'charset'`, `'nexus'`, `'raxml'`. Add `-codon` for codon partitions, e.g. `'raxml-codon'` |
 | `output_prefix` | `None` | Name of the output files |
+| `sort_sequence` | `False` | Sort concatenated sequences alphabetically by taxon ID |
+| `checksum` | `None` | SHA-256 checksum mode in `report.json`: `'none'`, `'outputs'`, `'inputs'`, `'all'`, or `None` (`SEGUL_CHECKSUM`) |
 
 `'charset'` writes the partitions into the alignment file, so it needs NEXUS output.
 

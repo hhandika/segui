@@ -167,14 +167,27 @@ The `Workbench` tab in the file panel summarizes the input and output files.
 
 Use the **Inspector** card to check a single file without leaving the tool. Choose `Input` or `Output`, then pick a file from the searchable list. The inspector shows the file's format, content, and size, plus counts that match its content: sequences, sites, and data type for alignments; the number of partitions for partition files; rows and columns for tables; loci and taxa for alignment reports; loci and samples for distance reports; samples for read reports; and lines for text files. Select `Open` to view the file, or `View all sequences` to open the alignment viewer on every FASTA, NEXUS, and PHYLIP file in the list, so you can step through them without picking each one. Before a run, the inspector lists the input files; after a run, it lists the new output files.
 
+Every task also writes a unified `report.json` (`<prefix>_report.json` when using an output prefix) to the output directory with inputs, parameters, outputs, optional SHA-256 checksums, and upstream lineage links.
+
 After a run finishes, the workbench also lists:
 
-- **Report**: tools that write an interactive report show this card first: `Summarize alignments`, `Compute genetic distances`, and the Complete mode of `Summarize genomic reads`. Select `View report` to open it. See [summary reports](/docs/gui-usage/viewer/#summary-reports).
+- **Report**: tools that write a report show this card first (`report.json` or `<prefix>_report.json`). Select `View report` to open interactive summary charts, `Provenance & verify` to inspect inputs, parameters, outputs, checksum verification, replay, or Methods export, or `Export workflow` after running two or more steps in the session. See [summary reports](/docs/gui-usage/viewer/#summary-reports) and [run reports](/docs/gui-usage/viewer/#run-reports).
 - **Parameters**: the settings used by the run.
 - **Suggested workflows**: each common workflow from the home screen that includes the tool, with its progress. Select `Continue` to open the next step.
 - **Other compatible tools**: tools that can take the run's data.
 
 Opening a next step or compatible tool passes the run's output files to it as input, so you can chain analyses without returning to the home screen. Tools that write only summaries, such as `Summarize alignments`, pass on their input files instead. Choose an output folder for each new step.
+
+## Reproducibility settings
+
+To record SHA-256 digests in newly written `report.json` files, open **Settings › Reproducibility** and select a **Report checksums** mode:
+
+- **None** (default): fastest; skips SHA-256 digests and records byte sizes only.
+- **Outputs**: hashes generated output files.
+- **Inputs**: hashes input files only.
+- **All**: hashes both inputs and outputs.
+
+See [Reproducibility and Run Reports](/docs/advance-guides/reproducibility/) for cross-frontend verification and replay.
 
 ## Exporting Output
 

@@ -56,6 +56,7 @@ print(counts['loci_written'])
 | `min_score` | `None` | Skip blocks with a lower score. Blocks without a score pass |
 | `write_unmatched` | `False` | Write blocks that match no locus to the unmatched directory. Requires `bed` |
 | `output_prefix` | `None` | Name of the locus report CSV written with `bed` |
+| `checksum` | `None` | SHA-256 checksum mode in `report.json`: `'none'`, `'outputs'`, `'inputs'`, `'all'`, or `None` (`SEGUL_CHECKSUM`) |
 
 Errors, such as an unreadable BED file, raise a `ValueError`.
 
@@ -105,6 +106,7 @@ def summarize_maf():
 | `ref_species` | `None` | Reference species. Defaults to the first species in the first block |
 | `species` | `None` | List of species to report |
 | `plot` | `None` | Chart options. See [Charts and Reports](/docs/api-usage/python/plots_reports/) |
+| `checksum` | `None` | SHA-256 checksum mode in `report.json`: `'none'`, `'outputs'`, `'inputs'`, `'all'`, or `None` (`SEGUL_CHECKSUM`) |
 
 ### Methods
 
@@ -113,7 +115,7 @@ def summarize_maf():
 | `from_dir(input_dir)` | Summarize the MAF files in a directory |
 | `from_files(input_files)` | Summarize a list of MAF files |
 
-Both return a dictionary of output paths: `per_file`, `per_species`, and `plots`.
+Both return a dictionary of output paths: `per_file`, `per_species`, `report`, and `plots`.
 
 ```python
 summary = pysegul.MafSummary('tests/output', plot=pysegul.PlotOptions(format='svg'))

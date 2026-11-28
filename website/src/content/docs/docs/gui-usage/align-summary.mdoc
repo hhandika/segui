@@ -37,7 +37,7 @@ Summary statistics for many alignments.
 5. Add prefix for the output files.
 6. Turn on `Summarize each locus separately` to write a summary file for each alignment instead (optional).
 7. Select the run button {% ref id="D" /%}, labeled `Summarize`, to start the task.
-8. When the task finishes, the `Workbench` tab of the file panel {% ref id="E" /%} shows a `Report` card. Select `View report` to open the [alignment report](#alignment-report). You can also open `alignment-report.json` from the `Output` tab later.
+8. When the task finishes, the `Workbench` tab of the file panel {% ref id="E" /%} shows a `Report` card. Select `View report` to open the [alignment report](#alignment-report), or `Provenance & verify` to inspect and verify the run. You can also open `report.json` from the `Output` tab later.
 9. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
 
 ## Output
@@ -47,7 +47,7 @@ The app writes four output files:
 1. **Alignment summary**: A summary of the input alignments written to a text file (default name: `alignment_summary.txt`).
 2. **Locus summary**: A summary of each alignment/locus written to a csv file (default name: `locus_summary.csv`).
 3. **Taxon summary**: A summary of each taxon written to a csv file (default name: `taxon_summary.csv`).
-4. **Alignment report**: every statistic in one file (default name: `alignment-report.json`), which opens as the interactive [alignment report](#alignment-report).
+4. **Alignment report**: every statistic and run manifest in one file (default name: `report.json`), which opens as the interactive [alignment report](#alignment-report).
 
 The CSV files open in the [table viewer](/docs/gui-usage/viewer/#table-viewer), where you can sort and page through them.
 
@@ -72,4 +72,4 @@ With `Summarize each locus separately` on, the app writes a taxon summary for ea
 
 ## Prefix
 
-The prefix is the name of the output files. For example, if the prefix is `output`, the app will generate `output_locus_summary.csv`, `output_taxon_summary.csv`, `output_alignment_summary.txt`, and `output_alignment-report.json`.
+The prefix is the name of the output files. For example, if the prefix is `output`, the app will generate `output_locus_summary.csv`, `output_taxon_summary.csv`, `output_alignment_summary.txt`, and `output_report.json`.

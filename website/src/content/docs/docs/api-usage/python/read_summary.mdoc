@@ -39,6 +39,7 @@ summary.from_files(['tests/raw-data/read1.fastq', 'tests/raw-data/read2.fastq'])
 | `dup_sketch_size` *(beta)* | `100000` | Distinct sequences kept to estimate duplication in `complete` mode |
 | `plot` *(beta)* | `None` | Chart options. See [Charts and Reports](/docs/api-usage/python/plots_reports/) |
 | `qc_profile` *(beta)* | `'auto'` | QC profile: `'auto'`, `'short-wgs'`, `'amplicon'`, `'long-ont'`, `'long-hifi'` |
+| `checksum` | `None` | SHA-256 checksum mode in `report.json`: `'none'`, `'outputs'`, `'inputs'`, `'all'`, or `None` (`SEGUL_CHECKSUM`) |
 
 ## Methods
 
@@ -47,15 +48,15 @@ summary.from_files(['tests/raw-data/read1.fastq', 'tests/raw-data/read2.fastq'])
 | `from_dir(input_dir)` | Summarize the read files in a directory |
 | `from_files(input_files)` | Summarize a list of read files |
 
-Both return a dictionary of output paths: `summary`, `positions`, `distributions`, `report`, and `plots`. `positions`, `distributions`, and `report` are written in `complete` mode only.
+Both return a dictionary of output paths: `summary`, `positions`, `distributions`, `report`, and `plots`. `positions`, `distributions`, and full per-sample profiles/QC inside `report.json` are written in `complete` mode only.
 
 ## Summary modes
 
 | Mode | Output |
 | --- | --- |
-| `'minimal'` | Read count only |
-| `'basic'` | Per-file and per-read statistics in `read-summary.csv`. See the [CLI guideline](/docs/cli-usage/read-summary/#statistics) |
-| `'complete'` | Basic statistics, plus per-position and relative-position profiles (`read-pos-summary.zip`), distributions (`read-dist-summary.zip`), paired-end and cohort summaries, and all statistics as JSON (`read-report.json`) |
+| `'minimal'` | Read count only and provenance `report.json` |
+| `'basic'` | Per-file and per-read statistics in `read-summary.csv` plus provenance `report.json`. See the [CLI guideline](/docs/cli-usage/read-summary/#statistics) |
+| `'complete'` | Basic statistics, plus per-position and relative-position profiles (`read-pos-summary.zip`), distributions (`read-dist-summary.zip`), paired-end and cohort summaries, and full statistics in `report.json` |
 
 Complete mode covers the read quality checks of [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [fastp](https://github.com/OpenGene/fastp), [NanoPlot](https://github.com/wdecoster/NanoPlot), and [SeqKit](https://bioinf.shenwei.me/seqkit/), and adds multi-sample and error-probability diagnostics unique to SEGUL. See [how SEGUL compares](/docs/cli-usage/read-summary/#comparison-with-other-tools).
 

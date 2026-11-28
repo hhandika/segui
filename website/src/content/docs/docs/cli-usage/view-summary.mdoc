@@ -7,7 +7,7 @@ sidebar:
 {% commandanatomy
    command="view"
    subcommand="summary"
-   input="--input alignment-report.json"
+   input="--input Align-Summary/report.json"
    inputSub="file" /%}
 
 {% aside type="note" %}
@@ -24,21 +24,21 @@ Check the [Installation Guide](/docs/installation/update/#segul-cli) to update S
 
 Explore a summary report in your terminal, as tables or plots. It shows the same report SEGUI opens after a summary, so you can check results on a remote server or in a terminal session where a GUI is not available.
 
-The viewer opens four reports:
+The viewer opens unified `report.json` reports (`<PREFIX>_report.json` with `--prefix`) for four summary tasks:
 
-- `alignment-report.json`, written by [`segul align summary`](/docs/cli-usage/align-summary/).
-- `read-report.json`, written by [`segul read summary --mode complete`](/docs/cli-usage/read-summary/).
-- `distance-report.json`, written by [`segul align distance`](/docs/cli-usage/align-distance/).
-- `contig-report.json`, written by [`segul contig summary`](/docs/cli-usage/contig-summary/).
+- [`segul align summary`](/docs/cli-usage/align-summary/) (`Align-Summary/report.json`).
+- [`segul read summary`](/docs/cli-usage/read-summary/) (`Read-Summary/report.json`).
+- [`segul align distance`](/docs/cli-usage/align-distance/) (`Align-Distance/report.json`).
+- [`segul contig summary`](/docs/cli-usage/contig-summary/) (`Contig-Summary/report.json`).
 
-SEGUL tells them apart from their content, so a report with an output prefix, such as `uce_alignment-report.json`, opens the same way:
+SEGUL tells them apart from their content (`kind`), so prefixed reports such as `uce_report.json` and legacy v1 summary files (`alignment-report.json`, `read-report.json`, `distance-report.json`, and `contig-report.json`) open the same way:
 
 ```bash
-segul view summary --input Align-Summary/alignment-report.json
+segul view summary --input Align-Summary/report.json
 ```
 
 ```bash
-segul view summary -i Read-Summary/read-report.json
+segul view summary -i Read-Summary/report.json
 ```
 
 Other files stop with a message that names the file.
@@ -161,7 +161,7 @@ Press `F1` or `?` in the viewer to see them.
 
 | Option          | Description                                                                                  |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| `-i`, `--input` | `alignment-report.json` from `segul align summary`, `read-report.json` from `segul read summary --mode complete`, or `distance-report.json` from `segul align distance` |
+| `-i`, `--input` | `report.json` (`<PREFIX>_report.json`) from `segul align summary`, `segul read summary`, `segul align distance`, or `segul contig summary` (legacy v1 summary report files are also supported) |
 | `--theme`       | Colors for a `dark` (default) or `light` terminal                                            |
 | `--colormap`    | Heatmap colors: `viridis` (default), `cividis`, `magma`, `inferno`, `plasma`, `blues`, `greens`, `ylgnbu`, `ylorrd`, `rdbu`, `puor`, or `brbg` |
 | `--log`         | Log file path. Default: `segul.log`                                                          |

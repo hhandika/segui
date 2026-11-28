@@ -2,7 +2,7 @@
 title: Building SEGUL Documentation
 description: Guides on building SEGUL documentation.
 sidebar:
-  order: 3
+  order: 4
 ---
 
 SEGUL documentation is built using [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/), and deployed to [Cloudflare Workers](https://workers.cloudflare.com/). The documentation is written in Markdown and MDX. We use [Bun](https://bun.sh/) to manage dependencies and run scripts.

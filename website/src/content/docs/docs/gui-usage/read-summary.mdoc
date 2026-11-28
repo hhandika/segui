@@ -36,14 +36,14 @@ Summarize raw sequence reads in FASTQ format, plain or compressed, from read cou
 4. The `Input` tab of the file panel {% ref id="E" /%} lists the input files. On phones and narrow windows, open it with the files button next to the tool name. To remove files from the list, choose `Select`, pick the files, and select `Remove`. The files stay on your device.
 5. Select the summary mode. For Basic and Complete modes, `Quality score offset` is `Auto` unless your reads use a known offset. In Complete mode, you can also select a `Quality check profile` (`Auto`, `Short (WGS)`, `Amplicon / Capture`, `Long (ONT)`, or `Long (HiFi)`).
 6. Select the run button {% ref id="D" /%}, labeled `Summarize`, to start the task.
-7. In Complete mode, the `Workbench` tab of the file panel shows a `Report` card when the task finishes. Select `View report` to open the read report. You can also open `read-report.json` from the `Output` tab later.
+7. When the task finishes, the `Workbench` tab of the file panel shows a `Report` card. In Complete mode, select `View report` to open the read report. You can also open `report.json` from the `Output` tab later to view statistics or run provenance and verification.
 8. Export or share the output (optional). See [exporting output](/docs/gui-usage/intro/#exporting-output).
 
 ## Summary Mode
 
 The app supports the following summary modes:
 
-- **Complete** (selected by default): all Basic statistics plus per-position and relative-position profiles, length × quality, distributions, duplication, overrepresented sequences, adapter content, paired-end consistency, cohort balance, and `read-report.json`.
+- **Complete** (selected by default): all Basic statistics plus per-position and relative-position profiles, length × quality, distributions, duplication, overrepresented sequences, adapter content, paired-end consistency, cohort balance, and full statistics in `report.json` (`report.json` is also written for Minimal and Basic runs).
 - **Basic**: per-file and per-read summary statistics in a single CSV (`read-summary.csv`).
 - **Minimal**: read count only (`minimal-read-summary.csv`).
 

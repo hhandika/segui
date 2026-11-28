@@ -2,7 +2,7 @@
 title: Building SEGUL GUI  from source
 description: Learn SEGUL GUI build process.
 sidebar:
-  order: 2
+  order: 3
 ---
 
 For most users, building the GUI version from source may not be necessary. However, this guide is useful if you wish to contribute to the project or build similar apps.

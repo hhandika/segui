@@ -14,8 +14,13 @@ SEGUL comes in three interfaces: a **graphical user interface (GUI)**, a **comma
 | Runs on | Desktop, tablet, phone | Linux, macOS, Windows, WSL | Linux, macOS, Windows, WSL |
 | Requires | Nothing else | Nothing else | Python 3.10+ |
 | Charts and reports | Built-in viewer | `--plot` option | [`PlotOptions` and report loaders](/docs/api-usage/python/plots_reports/) |
+| Reproducibility | `report.json`, Settings checksums, interactive verification & replay | `report.json`, `--checksum`, `segul run`, `segul report` | `report.json`, `checksum=`, `verify_report`, `run_report`, `run_workflow` |
 
 {% interfaceoverview /%}
+
+## Reproduce runs across interfaces
+
+Every interface runs the same `segul-core` implementation and writes a unified `report.json` (`<prefix>_report.json` with a prefix) recording inputs, parameters, outputs, optional SHA-256 checksums, and upstream lineage. A run started on a phone in SEGUI can be verified in Python with PySEGUL or replayed on an HPC cluster with `segul run`. See [Reproducibility and Run Reports](/docs/advance-guides/reproducibility/).
 
 ## Platform support
 

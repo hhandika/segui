@@ -1,0 +1,124 @@
+---
+title: Reproducibility and Run Reports
+description: Share, verify, and replay SEGUL analyses across the CLI, SEGUI, and PySEGUL with report.json.
+sidebar:
+  order: 2
+---
+
+Every SEGUL task across the command line, SEGUI, and PySEGUL writes a unified Schema v2 JSON report named `report.json` (`<prefix>_report.json` when using an output prefix) to its output directory. Each report captures what ran, which inputs and outputs were used, optional SHA-256 digests, task parameters, parent lineage, and any summary statistics, so an analysis created in one interface can be verified, inspected, cited, or replayed in another.
+
+## The unified report
+
+All 21 SEGUL tasks emit `report.json` using the same structure:
+
+```json
+{
+  "schema_version": 2,
+  "kind": "align.summary",
+  "run": {
+    "segul_core_version": "0.26.0",
+    "frontend": { "name": "segul-cli", "version": "0.26.0" },
+    "timestamp_utc": "2026-11-27T16:00:00Z",
+    "elapsed_ms": 142,
+    "platform": { "os": "linux", "arch": "x86_64", "threads": 8 },
+    "checksum_mode": "outputs",
+    "checksum_algorithm": "sha256",
+    "parent_reports": []
+  },
+  "inputs": {
+    "source_mode": "dir",
+    "input_dir": "alignments",
+    "base_dir": "/project",
+    "primary": [
+      { "path": "alignments/uce-1.nex", "size_bytes": 1842, "sha256": "..." }
+    ],
+    "auxiliary": []
+  },
+  "parameters": {
+    "input_fmt": "nexus",
+    "datatype": "dna",
+    "interval": 5,
+    "per_locus": false
+  },
+  "outputs": {
+    "output_dir": "Align-Summary",
+    "files": [
+      { "role": "report", "path": "report.json", "size_bytes": 4120 },
+      { "role": "locus_csv", "path": "locus_summary.csv", "size_bytes": 920, "sha256": "..." }
+    ]
+  },
+  "statistics": {}
+}
+```
+
+### Portable paths and lineage
+
+- **Portable paths:** Input, auxiliary, output, and parent report paths are recorded with forward slashes (`/`) relative to `base_dir` or `output_dir` whenever possible, making reports portable across Windows, macOS, Linux, and mobile sandboxes. When files move, you can override `base_dir` or `output_dir` during verification or replay.
+- **Automatic lineage (`parent_reports`):** When a step consumes files from an earlier SEGUL run's output directory (such as filtering alignments and then concatenating them), `segul-core` detects the upstream `report.json` and records a link to it in `run.parent_reports` (along with the parent report's SHA-256).
+- **Summary statistics (`statistics`):** Summary tasks (`align.summary`, `align.distance`, `contig.summary`, `read.summary`) embed the complete statistics payload under `statistics`.
+- **Legacy v1 compatibility:** Legacy flat reports from earlier versions (`alignment-report.json`, `contig-report.json`, `distance-report.json`, and `read-report.json`) still open in `segul view summary`, SEGUI summary viewers, `segul-core`, and the typed PySEGUL `load_*_report()` helpers.
+
+## Opt-in SHA-256 checksums
+
+File byte sizes (`size_bytes`) are always recorded. Cryptographic SHA-256 digests (`sha256`) are opt-in so large raw-read or alignment runs do not pay unnecessary hashing overhead by default:
+
+| Mode | Files hashed | When to use |
+| --- | --- | --- |
+| `none` (default) | None (sizes only) | Fastest; everyday exploration and large local datasets |
+| `outputs` | Generated output files | Verify outputs before archiving or sharing results |
+| `inputs` | Primary and auxiliary input files | Lock exact input data revisions in a pipeline |
+| `all` | Both inputs and outputs | Full cryptographic audit trail for publications or shared workflows |
+
+Select a mode in any interface:
+
+- **CLI:** Pass `--checksum <none|outputs|inputs|all>` or set the `SEGUL_CHECKSUM` environment variable (the CLI flag overrides `SEGUL_CHECKSUM`).
+- **SEGUI:** Open **Settings › Reproducibility** and choose **None**, **Outputs**, **Inputs**, or **All** under **Report checksums**.
+- **PySEGUL:** Pass `checksum='outputs'` (or `'inputs'`, `'all'`, `'none'`) to any task class constructor, or leave `checksum=None` to inherit `SEGUL_CHECKSUM`.
+
+## Verification
+
+Check that files on disk still match the byte sizes and SHA-256 digests recorded in `report.json`:
+
+- **CLI:** `segul report verify Align-Summary/report.json` (use `--scope inputs` or `--scope outputs`, `--input-dir`, `--output-dir`, and `--json`; exits `0` on pass and `1` on mismatch or missing file).
+- **SEGUI:** Open any `report.json` in **Viewer** or select **Provenance & verify** on the Workbench **Report** card (or the verify button in a summary viewer's top bar), then select **Verify checksums**.
+- **PySEGUL:** Call `pysegul.verify_report(path, scope='all', input_dir=None, output_dir=None)`.
+
+Each verified file reports one of five statuses:
+
+- `ok`: File exists, byte size matches, and recorded SHA-256 matches.
+- `unchecked`: File exists and byte size matches, with no recorded SHA-256 (`checksum_mode` did not hash that group).
+- `mismatch`: File exists, but its SHA-256 digest differs from the recorded digest.
+- `size_mismatch`: File exists (without a SHA-256 digest), and its byte size changed.
+- `missing`: File was not found at the resolved path.
+
+## Cross-frontend replay
+
+Re-execute a `report.json` produced by any interface on another machine or interface with the exact recorded parameters:
+
+- **CLI:** `segul run Align-Summary/report.json --output rerun-summary --verify-inputs`
+- **SEGUI:** Open a `report.json` and select **Replay** to run immediately into a chosen folder, or **Load into tool** to populate the matching tool form with the saved inputs and parameters so you can review or tweak them before running.
+- **PySEGUL:** `pysegul.run_report(path, output_dir, input_dir=None, checksum=None, verify_inputs=True)`
+
+## Multi-step workflow recipes
+
+Chained analyses can be exported into a declarative `segul-workflow.json` recipe (schema version `1`) and re-executed as one pipeline:
+
+- **Export a recipe:** Run `segul report workflow <LEAF_REPORT>` (automatically walks `parent_reports` in execution order) or pass ordered report paths (`segul report workflow step1/report.json step2/report.json -o segul-workflow.json`). In SEGUI, select **Export workflow** in a `RunReportView` or from the Workbench **Report** card after running two or more steps in a session. In PySEGUL, call `pysegul.export_workflow(report_paths, output_path, name=None)`.
+- **Replay a recipe:** Run `segul run segul-workflow.json -o results/ --verify-inputs` in the CLI, or `pysegul.run_workflow(path, output_dir, input_dir=None, checksum=None, verify_inputs=True)` in Python. Each step receives the outputs of earlier steps via `FromStep` references.
+
+## Publication Methods export
+
+Generate draft Methods prose and a summary table of task parameters, core version, and frontend versions directly from a `report.json`, its full `parent_reports` lineage chain, or a `segul-workflow.json`:
+
+- **CLI:** `segul report methods Align-Concat/report.json` (choose `--format markdown` or `--format text`, `--no-chain` for a single step, or `-o methods.md`).
+- **SEGUI:** Open any `report.json` and select **Export methods**, switch between **Markdown** and **Plain text**, then **Copy** or **Save**.
+- **PySEGUL:** Call `pysegul.export_methods(report_path, format='markdown', include_chain=True, output_path=None)`.
+
+## Interface guides
+
+{% cardgrid %}
+{% linkcard title="CLI Reproducibility & Reports" description="Flags and examples for segul run and segul report." href="/docs/cli-usage/reproducibility/" /%}
+{% linkcard title="SEGUI Run Report Viewer" description="Verify checksums, replay, inspect lineage, and export methods or workflows." href="/docs/gui-usage/viewer/#run-reports" /%}
+{% linkcard title="Python Charts & Reproducibility" description="load_report, verify_report, run_report, run_workflow, export_workflow, and export_methods." href="/docs/api-usage/python/plots_reports/#reproducibility" /%}
+{% linkcard title="Rust Library (segul-core)" description="Programmatic report, verify, replay, workflow, and methods modules." href="/docs/api-usage/rust-api/#run-reports-and-reproducibility" /%}
+{% /cardgrid %}

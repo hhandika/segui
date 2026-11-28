@@ -73,37 +73,77 @@ These charts use the default options. The alignment charts come from 4,040 UCE l
 
 ## Output paths
 
-The `from_dir` and `from_files` methods of the summary classes return a dictionary of output paths. Outputs that were not written are `None`. Every dictionary also has `plots`, a list of chart paths, which is empty without `plot`.
+The `from_dir` and `from_files` methods of the summary classes return a dictionary of output paths. Outputs that were not written are `None`. Every dictionary also has `plots`, a list of chart paths, which is empty without `plot`. Every one of the 21 task classes also exposes a `.report_path` property pointing to its written `report.json` (`<output_prefix>_report.json` when using a prefix).
 
 | Class | Keys |
 | --- | --- |
-| `AlignmentSummary` | `locus`, `taxon`, `text`, `report` (empty dictionary with `per_locus=True`) |
+| `AlignmentSummary` | `locus`, `taxon`, `text`, `report` (only `report` written with `per_locus=True` as `None` / empty) |
 | `AlignmentDistance` | `summary`, `per_locus_dir`, `group_mean`, `pairwise_long`, `report` |
-| `ReadSummary` | `summary`, `positions`, `distributions`, `report` (`complete` mode only) |
+| `ReadSummary` | `summary`, `positions`, `distributions`, `report` (`positions` and `distributions` are written in `complete` mode only) |
 | `ContigSummary` | `summary`, `report` |
-| `MafSummary` | `per_file`, `per_species` |
+| `MafSummary` | `per_file`, `per_species`, `report` |
 
-`MafConversion` returns block and locus counts instead, such as `blocks_read` and `loci_written`.
+`MafConversion` returns block and locus counts instead, such as `blocks_read` and `loci_written`; access its report path via `converter.report_path`.
 
 ## Reports
 
-Load a JSON report as a dictionary:
+Load the full Schema v2 `report.json` envelope (provenance, inputs, parameters, outputs, parent lineage, and statistics) with `load_report(path)`, or load just the parsed summary statistics dictionary with the typed helpers below (which read both v2 `report.json` and legacy v1 summary files):
 
-| Function | Report |
+| Function | Returns |
 | --- | --- |
-| `load_align_report(path)` | Alignment summary |
-| `load_contig_report(path)` | Contig summary |
-| `load_distance_report(path)` | Genetic distances |
-| `load_read_report(path)` | Read summary in `complete` mode |
+| `load_report(path)` | Full unified v2 `report.json` dictionary |
+| `load_align_report(path)` | Alignment summary statistics |
+| `load_contig_report(path)` | Contig summary statistics |
+| `load_distance_report(path)` | Genetic distances statistics |
+| `load_read_report(path, qc_profile=None)` | Read summary statistics and QC checks (`complete` mode) |
 
 ```python
 import pysegul
 
-def load_report():
+def inspect_contig_report():
     summary = pysegul.ContigSummary('auto', 'tests/output')
     outputs = summary.from_dir('tests/contig-data')
     report = pysegul.load_contig_report(outputs['report'])
-    print(report.keys())
+    envelope = pysegul.load_report(outputs['report'])
+    print(report.keys(), envelope['run']['frontend'])
 ```
 
 The read report also has the read quality checks for each sample. See [Genomic Read Summary](/docs/api-usage/python/read_summary/#quality-checks).
+
+## Reproducibility
+
+Pass `checksum` (`'none'`, `'outputs'`, `'inputs'`, or `'all'`) to any task class constructor—or leave `checksum=None` to inherit the `SEGUL_CHECKSUM` environment variable—to record SHA-256 digests in `report.json`.
+
+| Function | Signature | Description |
+| --- | --- | --- |
+| `verify_report` | `(path, scope='all', input_dir=None, output_dir=None)` | Verify recorded SHA-256 digests and byte sizes (`scope` is `'all'`, `'inputs'`, or `'outputs'`) |
+| `run_report` | `(path, output_dir, input_dir=None, checksum=None, verify_inputs=True)` | Replay any `report.json` (from CLI, SEGUI, or PySEGUL) into `output_dir` |
+| `export_workflow` | `(report_paths, output_path, name=None)` | Build a `segul-workflow.json` recipe from chained or ordered report paths |
+| `run_workflow` | `(path, output_dir, input_dir=None, checksum=None, verify_inputs=True)` | Replay every step of a `segul-workflow.json` into `output_dir` |
+| `export_methods` | `(report_path, format='markdown', include_chain=True, output_path=None)` | Render Methods text (`'markdown'` or `'text'`) from a report, its lineage chain, or a workflow |
+
+```python
+import pysegul
+
+summary = pysegul.AlignmentSummary(
+    'nexus',
+    'dna',
+    'tests/output',
+    checksum='all',
+)
+summary.from_dir('tests/align-data')
+
+verification = pysegul.verify_report(summary.report_path, scope='all')
+assert verification['passed']
+
+rerun = pysegul.run_report(
+    summary.report_path,
+    output_dir='tests/output_rerun',
+    verify_inputs=True,
+)
+methods = pysegul.export_methods(summary.report_path, format='markdown')
+print(rerun['outputs']['output_dir'])
+print(methods)
+```
+
+See [Reproducibility and Run Reports](/docs/advance-guides/reproducibility/) for the Schema v2 specification and CLI/GUI interoperability.

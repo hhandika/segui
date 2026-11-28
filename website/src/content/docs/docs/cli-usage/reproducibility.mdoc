@@ -1,0 +1,134 @@
+---
+title: Reproducibility, Replay & Reports
+sidebar:
+  order: 23
+  label: Reproducibility & Reports
+---
+
+{% commandanatomy
+   command="report"
+   subcommand="verify"
+   input="Align-Summary/report.json"
+   inputSub="report"
+   option="--scope all"
+   optionSub="optional" /%}
+
+Every `segul` subcommand writes a unified Schema v2 `report.json` (`<PREFIX>_report.json` when `--prefix` is set) to its output directory. Use the global `--checksum` option to record SHA-256 digests, `segul report` to verify files, export workflow recipes, or draft Methods text, and `segul run` to replay saved runs or workflows. See [Reproducibility and Run Reports](/docs/advance-guides/reproducibility/) for the JSON schema and cross-frontend concepts.
+
+## Record SHA-256 checksums
+
+Add `--checksum <MODE>` to any command, or set the `SEGUL_CHECKSUM` environment variable, to compute SHA-256 digests alongside file byte sizes inside `report.json`:
+
+```bash
+# Record SHA-256 digests for generated outputs only
+segul --checksum outputs align summary -d alignments/
+
+# Record digests for both inputs and outputs via environment variable
+export SEGUL_CHECKSUM=all
+segul align filter -d alignments/ --percent 0.75
+```
+
+| Mode | Effect |
+| --- | --- |
+| `none` (default) | Record byte sizes only; fastest for large datasets |
+| `outputs` | Compute SHA-256 digests for generated output files |
+| `inputs` | Compute SHA-256 digests for primary and auxiliary input files |
+| `all` | Compute SHA-256 digests for both inputs and outputs |
+
+When both `--checksum` and `SEGUL_CHECKSUM` are set, `--checksum` takes precedence.
+
+## Verify a report
+
+Check whether input and output files still match the sizes and SHA-256 digests recorded in `report.json`:
+
+```bash
+segul report verify Align-Summary/report.json
+```
+
+If files were moved to a different machine or folder, point SEGUL to the new locations and optionally emit machine-readable JSON for pipelines:
+
+```bash
+segul report verify Align-Summary/report.json \
+  --scope all \
+  --input-dir /data/alignments \
+  --output-dir /results/Align-Summary \
+  --json
+```
+
+`segul report verify` exits with status `0` when all checked files pass (`ok` or `unchecked`) and `1` if any file is missing, size-mismatched, or fails its SHA-256 check.
+
+### Options (`segul report verify`)
+
+| Option | Description |
+| --- | --- |
+| `<REPORT>` | Path to `report.json` |
+| `--scope <SCOPE>` | Files to verify: `all` (default), `inputs`, or `outputs` |
+| `--input-dir <DIR>` | Override input base directory when resolving recorded input paths |
+| `--output-dir <DIR>` | Override output directory when resolving recorded output paths |
+| `--json` | Print machine-readable JSON verification results |
+
+## Replay a run or workflow
+
+Re-run any single `report.json` (whether created by the SEGUL CLI, SEGUI, or PySEGUL) or multi-step `segul-workflow.json` recipe with `segul run`:
+
+```bash
+# Replay a single run into a new output directory after verifying recorded inputs
+segul run Align-Summary/report.json --output Align-Summary-Rerun --verify-inputs --force
+
+# Replay a multi-step workflow with output checksums enabled
+segul --checksum outputs run segul-workflow.json --input-dir /data --output results/ --verify-inputs
+```
+
+### Options (`segul run`)
+
+| Option | Description |
+| --- | --- |
+| `<FILE>` | Path to `report.json` or `segul-workflow.json` |
+| `-o`, `--output <DIR>` | Override the output directory |
+| `--input-dir <DIR>` | Override the input base directory |
+| `--force` | Overwrite an existing output directory |
+| `--verify-inputs` | Verify recorded input hashes and byte sizes before re-running |
+| `--checksum <MODE>` | Global checksum mode (`none`, `outputs`, `inputs`, or `all`) for newly written reports |
+| `--log <PATH>` | Log file path. Default: `segul.log` |
+
+## Export a workflow recipe
+
+Build a multi-step `segul-workflow.json` recipe from upstream `parent_reports` links or an explicit sequence of report files:
+
+```bash
+# Auto-walk parent_reports starting from the final report
+segul report workflow Align-Concat/report.json --name shrew-uce -o segul-workflow.json
+
+# Or specify ordered reports explicitly
+segul report workflow Align-Filter/report.json Align-Trim/report.json Align-Concat/report.json \
+  -o segul-workflow.json
+```
+
+### Options (`segul report workflow`)
+
+| Option | Description |
+| --- | --- |
+| `<REPORTS>...` | Leaf `report.json` (auto-walks `parent_reports`) or ordered `report.json` files |
+| `--name <NAME>` | Workflow name recorded in the recipe |
+| `-o`, `--output <FILE>` | Output workflow recipe path. Default: `segul-workflow.json` |
+
+## Export publication Methods
+
+Generate a draft Methods summary and parameter table from a `report.json`, its full `parent_reports` lineage chain, or a `segul-workflow.json`:
+
+```bash
+# Print Markdown Methods text to stdout, including upstream steps
+segul report methods Align-Concat/report.json
+
+# Write plain text for only the single step
+segul report methods Align-Concat/report.json --format text --no-chain -o methods.txt
+```
+
+### Options (`segul report methods`)
+
+| Option | Description |
+| --- | --- |
+| `<FILE>` | Path to `report.json` or `segul-workflow.json` |
+| `--format <FORMAT>` | Output format: `markdown` (default) or `text` |
+| `--no-chain` | Only describe the given report instead of walking `parent_reports` |
+| `-o`, `--output <FILE>` | Write output to a file instead of stdout |

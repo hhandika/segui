@@ -39,7 +39,7 @@ or using directory input:
 segul read summary -d /raw_read_dir
 ```
 
-The output file will be saved as `read-summary.csv` (along with the Complete mode archives and `read-report.json`) in the `Read-Summary` directory.
+The output file will be saved as `read-summary.csv` (along with the Complete mode archives and `report.json`) in the `Read-Summary` directory.
 
 To specify the output directory, use the `--output` or `-o` argument:
 
@@ -59,7 +59,7 @@ SEGUL provides three modes to calculate summary statistics for raw reads:
 
 - **Minimal**: read count only (`minimal-read-summary.csv`)
 - **Basic**: per-file and per-read summary statistics in a single CSV (`read-summary.csv`)
-- **Complete** (default): all Basic statistics plus per-position and relative-position profiles, read length × quality, distributions, duplication, overrepresented sequences, adapter content, paired-end consistency, cohort balance, and `read-report.json`.
+- **Complete** (default): all Basic statistics plus per-position and relative-position profiles, read length × quality, distributions, duplication, overrepresented sequences, adapter content, paired-end consistency, cohort balance, and full statistics in `report.json` (`report.json` is also written for Minimal and Basic runs; see [Reproducibility, Replay & Reports](/docs/cli-usage/reproducibility/)).
 
 Use the `--mode` option to choose `minimal`, `basic`, or `complete` (`default` is kept as an alias for `basic`):
 
@@ -93,7 +93,7 @@ Complete mode adds:
 - Overrepresented sequences, above 0.1% of all reads, with the adapter they match. Reads longer than 75 bp are compared by their first 50 bp
 - Adapter content by position for Illumina Universal, Nextera, Illumina Small RNA, poly-A, and poly-G
 - Technology- and library-aware QC checks (`--qc-profile auto|short-wgs|amplicon|long-ont|long-hifi`)
-- All of the above in `read-report.json`, which SEGUI opens as an interactive report. Open it in the terminal with [`segul view summary`](/docs/cli-usage/view-summary/)
+- All of the above in `report.json` (`<PREFIX>_report.json` with `--prefix`), which SEGUI opens as an interactive report. Open it in the terminal with [`segul view summary`](/docs/cli-usage/view-summary/)
 
 ## Comparison with other tools
 
@@ -142,7 +142,7 @@ Use `--dup-size` to change the sample size. Larger samples are more accurate, an
 segul read summary -d /raw_read_dir --mode complete --dup-size 1000000
 ```
 
-Duplication results are the same with any number of threads. Overrepresented sequences are found among all reads. In files with many distinct sequences, their counts can be short by up to 0.025% of reads, listed as `max_error_pct` in `read-report.json`.
+Duplication results are the same with any number of threads. Overrepresented sequences are found among all reads. In files with many distinct sequences, their counts can be short by up to 0.025% of reads, listed as `max_error_pct` in `report.json`.
 
 ## Quality score offset
 

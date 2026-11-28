@@ -1,7 +1,7 @@
 ---
 title: Cross Compilation
 sidebar:
-  order: 4
+  order: 5
 ---
 
 The CLI version of SEGUL support cross-complication for target platform Linux, macOS, and Windows. This method allow us to create executable for target platform using a different operating system. For example, your system is running macOS and you want to create SEGUL executable for Linux. The cross-compilation can be done using the [`cargo-zigbuild`](https://github.com/rust-cross/cargo-zigbuild) crate.

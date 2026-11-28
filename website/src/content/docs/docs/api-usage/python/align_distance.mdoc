@@ -47,6 +47,7 @@ distance.from_files(['tests/align-data/locus1.nex', 'tests/align-data/locus2.nex
 | `long_format` | `False` | Also write long-format tables with one row per pair |
 | `output_prefix` | `None` | Name of the output files |
 | `plot` | `None` | Chart options. See [Charts](#charts) |
+| `checksum` | `None` | SHA-256 checksum mode in `report.json`: `'none'`, `'outputs'`, `'inputs'`, `'all'`, or `None` (`SEGUL_CHECKSUM`) |
 
 A model that does not match the data type raises a `ValueError`.
 

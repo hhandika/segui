@@ -30,7 +30,7 @@ You can also open a file from a tool's `Input` or `Output` tab, or from the insp
 
 - Sequence files in FASTA, NEXUS, or PHYLIP format, which open in the [alignment viewer](#alignment-viewer)
 - Comma-separated values (`.csv`), which open in the [table viewer](#table-viewer)
-- Summary reports: `alignment-report.json`, `distance-report.json`, and `read-report.json`, which open as [summary reports](#summary-reports)
+- Run reports (`report.json`, `<prefix>_report.json`) written by every task, which open as interactive [summary reports](#summary-reports) for summary tasks or in the [run report viewer](#run-reports) for provenance, verification, and replay (legacy v1 summary files `alignment-report.json`, `contig-report.json`, `distance-report.json`, and `read-report.json` are also supported)
 - NEXUS partition files, plain text (`.txt`), and log files, which open as text
 
 Compressed files, such as `.fastq.gz` reads, and archives are not listed in the Viewer.
@@ -91,13 +91,14 @@ CSV files, such as the locus, taxon, contig, and MAF summaries, open in a table.
 
 ## Summary reports
 
-Summary tools write a report that SEGUI opens as interactive charts and tables:
+Summary tools write a `report.json` (`<prefix>_report.json` with a prefix) that SEGUI opens as interactive charts and tables:
 
 - [Alignment report](/docs/gui-usage/align-summary/#alignment-report) from `Summarize alignments`.
 - [Read report](/docs/gui-usage/read-summary/#read-report) from the Complete mode of `Summarize genomic reads`.
 - [Distance report](/docs/gui-usage/align-distance/#distance-report) from `Compute genetic distances`.
+- [Contig summary](/docs/gui-usage/contig-summary/) from `Summarize genomic contigs`.
 
-Open a report from the `Report` card in the `Workbench` tab after a run, or open its JSON file from the `Output` tab or the inspector later. The other summary tools, such as contig and MAF summaries, write CSV files that open in the [table viewer](#table-viewer).
+Open a report from the `Report` card in the `Workbench` tab after a run, or open `report.json` from the `Output` tab or the inspector later. `Run details & verify` in the summary viewer's top bar opens the underlying provenance and verification view described in [Run reports](#run-reports). Other summary outputs, such as MAF summaries, write CSV files that open in the [table viewer](#table-viewer), along with their own `report.json` provenance file.
 
 The reports work the same way:
 
@@ -106,3 +107,13 @@ The reports work the same way:
 - **Fixed controls**: the controls stay at the top and the open item's values stay at the bottom, while the bars or rows scroll between them. On phones and short windows, the whole tab scrolls instead.
 - **Tables**: the same table as the [table viewer](#table-viewer), sortable by column, a page at a time, with a bar behind each number. The open item's row is highlighted, and the table turns to its page when you open another item.
 - **Charts**: hover over or touch a chart to see its values. Zoom along the horizontal axis with the mouse wheel or a pinch, and drag or scroll with a trackpad to pan. A reset button appears at the top right of a zoomed chart; select it to show the whole chart again.
+
+## Run reports
+
+Every task writes a unified Schema v2 `report.json`. Opening any non-summary `report.json` directly—or selecting `Provenance & verify` on the Workbench `Report` card or `Run details & verify` in a summary viewer—opens the run report view:
+
+- **Provenance, parameters, and manifests**: shows the task kind, frontend and `segul-core` versions, UTC timestamp, checksum mode, runtime, recorded parameters, inputs, auxiliary files, outputs (with sizes and SHA-256 previews), and clickable upstream links under `Lineage`.
+- **Verify checksums**: checks every recorded file size and SHA-256 digest against disk and lists per-file results (`ok`, `unchecked`, `mismatch`, `size_mismatch`, or `missing`).
+- **Replay** and **Load into tool**: re-run the saved task into a chosen output folder with recorded input verification enabled, or populate the matching tool form in SEGUI with the saved inputs and parameters so you can inspect or adjust them first.
+- **Export methods**: generates a publication Methods summary in **Markdown** or **Plain text** (including chained upstream steps), ready to **Copy** or **Save**.
+- **Export workflow**: saves a declarative `segul-workflow.json` recipe from the report lineage (or from two or more runs in the current Workbench session). See [Reproducibility and Run Reports](/docs/advance-guides/reproducibility/).

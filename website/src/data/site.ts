@@ -242,7 +242,7 @@ export const pillars = [
   {
     title: "Accessible and reproducible",
     description:
-      "Runs on phones, laptops, and clusters with no runtime dependencies, Docker, or Singularity.",
+      "Runs on phones, laptops, and clusters with no runtime dependencies, backed by unified report.json manifests with SHA-256 verification and cross-interface replay.",
   },
   {
     title: "Fast and memory efficient",
@@ -369,7 +369,7 @@ export const viewerShowcase = {
     {
       title: "segul view summary.",
       caption: "The same report as terminal plots.",
-      label: "$ segul view summary --input alignment-report.json",
+      label: "$ segul view summary --input Align-Summary/report.json",
       terminal: true,
       src: cliSummaryScreenshot,
       alt: "segul view summary in a terminal showing a histogram of sites per locus across 4,040 loci",
